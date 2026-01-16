@@ -1,1 +1,0 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/andlerrl/Development/git_local/monorepo/align-core-infra/apps/web-regulator/app/layout\":[\"static/media/4cf2300e9c8272f7-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
