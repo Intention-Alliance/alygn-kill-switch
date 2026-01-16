@@ -1,0 +1,17 @@
+{
+  "name": "@align/tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "bun test",
+    "test:integration": "bun test integration/",
+    "test:e2e": "bun test e2e/",
+    "test:stress": "bun test stress/",
+    "test:challenges": "bun test --timeout 30000"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  }
+}

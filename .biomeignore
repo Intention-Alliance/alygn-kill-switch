@@ -1,0 +1,30 @@
+# node_modules and build outputs
+node_modules/
+dist/
+build/
+coverage/
+.tmp/
+.temp/
+
+# .env files
+.env
+.env.*
+*.log
+
+# TypeScript
+*.js
+*.d.ts
+*.map
+
+# OS, IDE/Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+./guide

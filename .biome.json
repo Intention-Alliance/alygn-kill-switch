@@ -1,0 +1,42 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"**",
+			"!apps/web-regulator/.next",
+			"!apps/server-slashing-engine/public"
+		]
+	},
+	"formatter": { "enabled": true, "indentStyle": "tab", "indentWidth": 2 },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"style": {
+				"recommended": true,
+				"noYodaExpression": "error",
+				"noNonNullAssertion": "warn",
+				"noUselessElse": "error",
+				"useForOf": "error",
+				"useImportType": "error"
+			},
+			"correctness": {
+				"recommended": true,
+				"noEmptyPattern": "warn"
+			},
+			"suspicious": {
+				"recommended": true,
+				"noExplicitAny": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": { "quoteStyle": "single", "semicolons": "asNeeded" }
+	}
+}

@@ -1,0 +1,20 @@
+# Base image
+FROM node:20-alpine
+
+# Create working directory
+WORKDIR /app
+
+# Install packages (utilize cache)
+COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* ./
+RUN if [ -f yarn.lock ]; then yarn install; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install; \
+    else npm install; fi
+
+# Copy all code (node_modules is excluded)
+COPY . .
+
+# Development port (e.g., 3000)
+EXPOSE 3000
+
+# Development command: nodemon, ts-node-dev etc
+CMD [ "npm", "run", "dev"]
