@@ -49,7 +49,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 /coverage
 
 # next.js
-/.next/
+.next
 /out/
 
 # production
