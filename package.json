@@ -1,0 +1,31 @@
+{
+  "name": "align-core-infra",
+  "description": "Implementing hardware-enforced AI safety compliance with cryptoeconomic incentives on the Bitcoin blockchain.",
+  "version": "1.0.1",
+  "private": true,
+  "scripts": {
+    "prepare": "husky prepare",
+    "dev": "bun --filter '*' dev",
+    "build": "bun --filter '*' build",
+    "lint": "bun --filter '*' lint",
+    "test": "bun --filter '*' test",
+    "test:challenges": "bun --filter '*' test:challenges",
+    "db:migrate": "cd packages/db-schema && supabase db push",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "latest",
+    "@types/bun": "latest",
+    "biomejs": "latest",
+    "husky": "latest"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "packageManager": "bun@1.3.3"
+}

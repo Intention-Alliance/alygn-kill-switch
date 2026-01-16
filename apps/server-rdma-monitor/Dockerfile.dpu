@@ -1,0 +1,48 @@
+# ============================================
+# RDMA Security Monitor - BlueField-3 DPU Build
+# ============================================
+# This Dockerfile is for building the binary.
+# Actual deployment is via DPU flashing, not containers.
+# ============================================
+
+# Use NVIDIA DOCA base image for BlueField-3
+FROM nvcr.io/nvidia/doca/doca:2.5.0-devel AS builder
+
+# Set build environment
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install additional build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    pkg-config \
+    libnuma-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create build directory
+WORKDIR /build
+
+# Copy source files
+COPY CMakeLists.txt .
+COPY src/ src/
+COPY include/ include/
+
+# Build the application
+RUN mkdir -p build && cd build \
+    && cmake -DCMAKE_BUILD_TYPE=Release \
+             -DDOCA_DIR=/opt/mellanox/doca \
+             -DDPDK_DIR=/opt/mellanox/dpdk \
+             .. \
+    && make -j$(nproc)
+
+# Output binary location
+# The binary will be at /build/build/rdma_security_monitor
+# Copy this to the DPU using: scp rdma_security_monitor ubuntu@bf3-dpu:/opt/security/
+
+# For development/testing, create a minimal runtime image
+FROM nvcr.io/nvidia/doca/doca:2.5.0-base AS runtime
+
+COPY --from=builder /build/build/rdma_security_monitor /usr/local/bin/
+
+# Note: This container won't run on x86 - it's for ARM64 DPU only
+CMD ["rdma_security_monitor", "-a", "03:00.0", "-a", "03:00.1"]

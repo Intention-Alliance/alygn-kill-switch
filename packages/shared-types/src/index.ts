@@ -1,0 +1,11 @@
+/**
+ * ALIGN Core Infrastructure - Shared Types
+ * 
+ * Re-exports all type definitions used across the monorepo.
+ */
+
+export * from './cluster';
+export * from './compliance';
+export * from './slashing';
+export * from './telemetry';
+

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  telemetry-handler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: align-telemetry-handler
+    restart: unless-stopped
+    environment:
+      - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
+      - DPU_ID=${DPU_ID:-dpu-node-001}
+      - BATCH_SIZE=${BATCH_SIZE:-50}
+      - FLUSH_INTERVAL_MS=${FLUSH_INTERVAL_MS:-3000}
+      - ENABLE_ZKP=${ENABLE_ZKP:-true}
+      - ENABLE_METRICS=${ENABLE_METRICS:-true}
+    networks:
+      - align-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  align-network:
+    driver: bridge
