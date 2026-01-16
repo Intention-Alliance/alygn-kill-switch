@@ -14,10 +14,28 @@ export class SlashingRoute implements Routes {
 	public path = "/slashing";
 
 	constructor(@inject(SlashingController) private slashingController: SlashingController) {
-    this.initializeRoutes();
-  }
+		this.initializeRoutes();
+	}
 
 	private initializeRoutes() {
+		/**
+		 * GET /api/slashing
+		 *
+		 * Base endpoint for slashing information
+		 */
+		this.router.get(this.path, (_req, res) => {
+			res.json({
+				status: "OK",
+				message: "ALIGN Slashing API",
+				endpoints: {
+					webhook: `${this.path}/webhook`,
+					violations: `${this.path}/violations`,
+					rules: `${this.path}/rules`,
+					test: `${this.path}/test`,
+				},
+			});
+		});
+
 		/**
 		 * POST /api/slashing/webhook
 		 *

@@ -3,7 +3,6 @@ import "reflect-metadata";
 import App from "@/app";
 import "@config/env";
 import { UsersRepository } from "@repositories/users.repository";
-import { AuthRoute } from "@routes/auth.route";
 import { SlashingRoute } from "@routes/slashing.route";
 import { UsersRoute } from "@routes/users.route";
 import { container } from "tsyringe";
@@ -14,7 +13,6 @@ container.registerInstance(UsersRepository, new UsersRepository());
 // Route modules can be dynamically added to array as needed
 const routes = [
 	container.resolve(UsersRoute),
-	container.resolve(AuthRoute),
 	container.resolve(SlashingRoute),
 ];
 
