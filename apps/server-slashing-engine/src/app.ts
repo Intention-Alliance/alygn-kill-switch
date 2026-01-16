@@ -109,6 +109,19 @@ class App {
 		this.app.use(express.json({ limit: "10mb" }));
 		this.app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 		this.app.use(cookieParser());
+
+		// Basic root route for health check / discovery
+		this.app.get("/", (_req, res) => {
+			res.json({
+				status: "OK",
+				message: "ALIGN Slashing Engine API",
+				version: "1.0.0",
+				endpoints: {
+					slashing: "/api/v1/slashing",
+					users: "/api/v1/users",
+				},
+			});
+		});
 	}
 
 	private initializeRoutes(routes: Routes[], apiPrefix: string) {
