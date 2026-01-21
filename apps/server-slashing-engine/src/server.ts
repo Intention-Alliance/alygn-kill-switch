@@ -2,19 +2,11 @@ import "reflect-metadata";
 
 import App from "@/app";
 import "@config/env";
-import { UsersRepository } from "@repositories/users.repository";
 import { SlashingRoute } from "@routes/slashing.route";
-import { UsersRoute } from "@routes/users.route";
 import { container } from "tsyringe";
 
-// Dependency Injection registration
-container.registerInstance(UsersRepository, new UsersRepository());
-
 // Route modules can be dynamically added to array as needed
-const routes = [
-	container.resolve(UsersRoute),
-	container.resolve(SlashingRoute),
-];
+const routes = [container.resolve(SlashingRoute)];
 
 // API prefix is set in app.ts with default value, can be passed as argument if needed
 const appInstance = new App(routes);

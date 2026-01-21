@@ -8,6 +8,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <csignal>
 #include <condition_variable>
 #include <cstdlib>
 #include <fstream>
@@ -49,6 +50,7 @@ struct SOSConfig {
   std::chrono::milliseconds flush_interval{5000};
   bool enable_zkp = true;
   bool enable_performance_metrics = true;
+  bool enable_debug = false;
 };
 
 // ============================================================================
@@ -476,7 +478,6 @@ private:
                      const std::string &metadata) {
 
     TelemetryEvent event;
-    event.id = CryptoUtils::generate_uuid();
     event.timestamp =
         std::chrono::system_clock::now().time_since_epoch().count();
     event.event_type = event_type;
@@ -484,6 +485,12 @@ private:
     event.intent_hash = intent_manifest_hash_;
     event.behavior_hash = CryptoUtils::sha256(behavior_data);
     event.redline_violated = redline_violated;
+
+    if (sos_config_.enable_debug) {
+      std::cout << "[DEBUG] Event Type: " << event_type << std::endl;
+      std::cout << "[DEBUG] Behavior Data: " << behavior_data.substr(0, 50) << (behavior_data.length() > 50 ? "..." : "") << " -> Hash: " << event.behavior_hash << std::endl;
+      std::cout << "[DEBUG] Intent Hash: " << event.intent_hash << std::endl;
+    }
 
     // Generate cryptographic attestation
     std::string attestation_input = event.intent_hash + event.behavior_hash +
@@ -496,6 +503,9 @@ private:
       auto proof = zkp_system_->prove_compliance(
           event.intent_hash, event.behavior_hash, model_weights_hash);
       event.zkp_proof = zkp_system_->serialize_proof(proof);
+      if (sos_config_.enable_debug) {
+        std::cout << "[DEBUG] ZKP Generated: " << event.zkp_proof.substr(0, 50) << "..." << std::endl;
+      }
     } else {
       event.zkp_proof = "{}";
     }
@@ -549,9 +559,9 @@ private:
 
       for (const auto &event : events) {
         std::string query = "INSERT INTO " + supabase_config_.table_name +
-                            " (id, timestamp, dpu_id, redline_violated, "
+                            " (timestamp, dpu_id, redline_violated, "
                             "intent_hash, proof_data) VALUES (" +
-                            txn.quote(event.id) + ", " + "to_timestamp(" +
+                            "to_timestamp(" +
                             std::to_string(event.timestamp / 1000000000.0) +
                             "), " + txn.quote(event.dpu_id) + ", " +
                             (event.redline_violated.empty()
@@ -559,6 +569,10 @@ private:
                                  : txn.quote(event.redline_violated)) +
                             ", " + txn.quote(event.intent_hash) + ", " +
                             txn.quote(event.zkp_proof) + ")";
+
+        if (sos_config_.enable_debug) {
+          std::cout << "[DEBUG] SQL Loop Item: " << query.substr(0, 100) << "..." << std::endl;
+        }
 
         txn.exec(query);
       }
@@ -647,6 +661,7 @@ int main(int argc, char *argv[]) {
     sos_cfg.flush_interval = std::chrono::milliseconds(get_env_int("FLUSH_INTERVAL_MS", 3000));
     sos_cfg.enable_zkp = get_env_bool("ENABLE_ZKP", true);
     sos_cfg.enable_performance_metrics = get_env_bool("ENABLE_METRICS", true);
+    sos_cfg.enable_debug = get_env_bool("ENABLE_DEBUG", false);
     sos_cfg.intent_manifest_path = get_env("INTENT_MANIFEST_PATH");
 
     // Create handler
@@ -690,14 +705,19 @@ int main(int argc, char *argv[]) {
       std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
-    // Wait for all async operations
-    for (auto &f : futures) {
-      f.get();
+    std::cout << "\n✅ SOS-Hook Handler initialized and running." << std::endl;
+    std::cout << "🚢 Press Ctrl+C to stop.\n" << std::endl;
+
+    // Use a flag for graceful shutdown via signals
+    static std::atomic<bool> keep_running{true};
+    std::signal(SIGINT, [](int) { keep_running = false; });
+    std::signal(SIGTERM, [](int) { keep_running = false; });
+
+    while (keep_running) {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    std::cout << "\n⏳ Waiting for batch flush..." << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(5));
-
+    std::cout << "\n⏳ Shutting down gracefully..." << std::endl;
     handler.stop();
 
   } catch (const std::exception &e) {
