@@ -22,16 +22,38 @@ Asynchronous telemetry logging service with Zero-Knowledge Proof generation for 
 
 ### Local Build
 
+#### Ubuntu / Debian
+
 ```bash
-# Install dependencies (Ubuntu/Debian)
+# Install dependencies
 sudo apt-get install -y \
     build-essential cmake pkg-config \
     libpqxx-dev libpq-dev libssl-dev libsodium-dev
 
 # Build
-mkdir build && cd build
+mkdir -p build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc)
+
+# Run
+./sos_telemetry_handler
+```
+
+#### macOS (Homebrew)
+
+```bash
+# Install dependencies
+brew install cmake pkgconf libpqxx libpq openssl@3 libsodium
+
+# Set environment paths for keg-only libraries (essential for macOS)
+export PKG_CONFIG_PATH="/usr/local/opt/openssl@3/lib/pkgconfig:/usr/local/opt/libpq/lib/pkgconfig"
+export LDFLAGS="-L/usr/local/opt/openssl@3/lib -L/usr/local/opt/libpq/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl@3/include -I/usr/local/opt/libpq/include"
+
+# Build
+mkdir -p build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j$(sysctl -n hw.ncpu)
 
 # Run
 ./sos_telemetry_handler
@@ -47,7 +69,7 @@ docker build -t align-telemetry-handler .
 docker run --env-file .env align-telemetry-handler
 
 # Or use Docker Compose
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Configuration
@@ -98,7 +120,7 @@ spec:
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                   SOS-Hook Handler                       │
 ├─────────────────────────────────────────────────────────┤

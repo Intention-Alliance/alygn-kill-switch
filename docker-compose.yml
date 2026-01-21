@@ -7,7 +7,7 @@ services:
   slashing-engine:
     build:
       context: ./apps/server-slashing-engine
-      dockerfile: Dockerfile.dev
+      dockerfile: ./apps/server-slashing-engine/Dockerfile.dev
     container_name: align-slashing-engine
     restart: unless-stopped
     ports:
@@ -22,6 +22,8 @@ services:
       - /app/node_modules
     networks:
       - align-network
+    depends_on:
+      - rdma-monitor
 
   # ============================================
   # Telemetry Handler (C++)
@@ -29,7 +31,7 @@ services:
   telemetry-handler:
     build:
       context: ./apps/server-telemetry-handler
-      dockerfile: Dockerfile
+      dockerfile: ./apps/server-telemetry-handler/Dockerfile
     container_name: align-telemetry-handler
     restart: unless-stopped
     environment:
@@ -43,28 +45,50 @@ services:
       - align-network
     depends_on:
       - slashing-engine
+      - rdma-monitor
+  
+  # ============================================
+  # RDMA Monitor
+  # ============================================
+  rdma-monitor:
+    build:
+      context: ./apps/server-rdma-monitor
+      dockerfile: ./apps/server-rdma-monitor/Dockerfile
+    container_name: align-rdma-monitor
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+    volumes:
+      - ./apps/server-rdma-monitor:/app
+      - /app/node_modules
+    networks:
+      - align-network
+  
 
   # ============================================
   # Web Regulator (Next.js)
   # ============================================
-  web-regulator:
-    build:
-      context: ./apps/web-regulator
-      dockerfile: Dockerfile
-    container_name: align-web-regulator
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${SUPABASE_ANON_KEY}
-    volumes:
-      - ./apps/web-regulator:/app
-      - /app/node_modules
-      - /app/.next
-    networks:
-      - align-network
+  # TODO: Add web regulator Dockerfile
+  # web-regulator:
+  #   build:
+  #     context: ./apps/web-regulator
+  #     dockerfile: ./apps/web-regulator/Dockerfile
+  #   container_name: align-web-regulator
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+  #     - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${SUPABASE_ANON_KEY}
+  #   volumes:
+  #     - ./apps/web-regulator:/app
+  #     - /app/node_modules
+  #     - /app/.next
+  #   networks:
+  #     - align-network
 
   # ============================================
   # PostgreSQL (Local Development)
