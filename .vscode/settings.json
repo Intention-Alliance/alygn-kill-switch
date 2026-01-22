@@ -1,3 +1,7 @@
 {
-	"cmake.sourceDirectory": "/Users/andlerrl/Development/git_local/monorepo/align-core/apps/server-telemetry-handler"
+	"cmake.sourceDirectory": "/Users/andlerrl/Development/git_local/monorepo/align-core/apps/server-telemetry-handler",
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"css.validate": false
 }
