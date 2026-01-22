@@ -27,7 +27,7 @@ import {
   Server,
   Shield,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // ============================================================================
 // TYPES
@@ -140,7 +140,7 @@ const generateMockLogs = (): AuditLogEntry[] => {
 // ============================================================================
 
 export default function DashboardPage() {
-  const [clusters, setClusters] = useState<GPUCluster[]>(MOCK_CLUSTERS);
+  const [clusters] = useState<GPUCluster[]>(MOCK_CLUSTERS);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [stats, setStats] = useState<SystemStats>({
     totalEvents: 0,
@@ -149,9 +149,9 @@ export default function DashboardPage() {
     uptime: 99.97,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [useMockData, setUseMockData] = useState(true);
+  const [useMockData, setUseMockData] = useState(false);
 
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   // Fetch audit logs from Supabase
   const fetchAuditLogs = useCallback(async () => {
@@ -244,19 +244,6 @@ export default function DashboardPage() {
     a.download = `compliance-report-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "operational":
-        return "default";
-      case "degraded":
-        return "destructive";
-      case "offline":
-        return "destructive";
-      default:
-        return "secondary";
-    }
   };
 
   return (
