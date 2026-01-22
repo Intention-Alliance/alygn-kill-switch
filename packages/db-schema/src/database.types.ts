@@ -34,6 +34,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      cluster_gpus: {
+        Row: {
+          cluster_id: string
+          cores: number
+          created_at: string | null
+          id: string
+          memory_gb: number
+          model: string
+          updated_at: string | null
+        }
+        Insert: {
+          cluster_id: string
+          cores: number
+          created_at?: string | null
+          id?: string
+          memory_gb: number
+          model: string
+          updated_at?: string | null
+        }
+        Update: {
+          cluster_id?: string
+          cores?: number
+          created_at?: string | null
+          id?: string
+          memory_gb?: number
+          model?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cluster_gpus_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "dpu_clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compliance_audit_log: {
         Row: {
           dpu_id: string

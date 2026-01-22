@@ -14,6 +14,36 @@ export const jsonSchema: z.ZodSchema<Json> = z.lazy(() =>
     .nullable(),
 );
 
+export const clusterGpusRowSchema = z.object({
+  cluster_id: z.string(),
+  cores: z.number(),
+  created_at: z.string().nullable(),
+  id: z.string(),
+  memory_gb: z.number(),
+  model: z.string(),
+  updated_at: z.string().nullable(),
+});
+
+export const clusterGpusInsertSchema = z.object({
+  cluster_id: z.string(),
+  cores: z.number(),
+  created_at: z.string().optional().nullable(),
+  id: z.string().optional(),
+  memory_gb: z.number(),
+  model: z.string(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export const clusterGpusUpdateSchema = z.object({
+  cluster_id: z.string().optional(),
+  cores: z.number().optional(),
+  created_at: z.string().optional().nullable(),
+  id: z.string().optional(),
+  memory_gb: z.number().optional(),
+  model: z.string().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
 export const complianceAuditLogRowSchema = z.object({
   dpu_id: z.string(),
   id: z.string(),

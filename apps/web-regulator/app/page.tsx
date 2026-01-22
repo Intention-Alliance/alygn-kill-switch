@@ -1,14 +1,19 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 import {
   Activity,
   AlertTriangle,
   Clock,
   Download,
+  LogOut,
+  Plus,
   Server,
   Shield,
+  UserIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface SystemStats {
@@ -39,6 +44,7 @@ export default function DashboardPage() {
     uptime: 99.97,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -48,7 +54,7 @@ export default function DashboardPage() {
       // Fetch clusters
       const { data: clusterData, error: clusterError } = await supabase
         .from("dpu_clusters")
-        .select("*")
+        .select("*, cluster_gpus(*)")
         .order("name");
 
       if (clusterError) throw clusterError;
@@ -86,6 +92,15 @@ export default function DashboardPage() {
 
   // Subscribe to realtime updates
   useEffect(() => {
+    // Check user session
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    checkUser();
     fetchData();
 
     // Re-subscribe to audit logs for global counts
@@ -159,12 +174,57 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <div className="hidden md:flex flex-col items-end mr-2">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Authenticated Regulator
+                </p>
+                <p className="text-xs font-medium">{user.email}</p>
+              </div>
+              <Button
+                asChild
+                variant="outline"
+                className="border-primary/20 hover:bg-primary/5"
+              >
+                <Link href="/clusters/add">
+                  <Plus className="size-4 mr-2" />
+                  Add Cluster
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.reload();
+                }}
+                className="text-muted-foreground hover:text-destructive transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="size-5" />
+              </Button>
+            </>
+          ) : (
+            <Button
+              asChild
+              variant="default"
+              className="shadow-lg shadow-primary/20"
+            >
+              <Link href="/auth/login">
+                <UserIcon className="size-4 mr-2" />
+                Sign In to Manage
+              </Link>
+            </Button>
+          )}
           <Button
             onClick={exportReport}
-            className="shadow-lg shadow-primary/20"
+            variant="ghost"
+            size="icon"
+            className="text-muted-foreground hover:text-foreground"
+            title="Export Report"
           >
-            <Download className="size-5 mr-2" />
-            Generate Compliance Proof
+            <Download className="size-5" />
           </Button>
         </div>
       </header>

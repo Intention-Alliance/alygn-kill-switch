@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { Tables } from "@packages/db-schema";
+import type { Cluster, ClusterGPU } from "@/types/supabase.types";
 import {
   Activity,
   AlertTriangle,
@@ -20,11 +20,16 @@ import {
 } from "lucide-react";
 
 interface ClusterSidebarProps {
-  cluster?: Partial<Tables<"dpu_clusters">>;
+  cluster?: Partial<Cluster>;
+  gpuDetails?: ClusterGPU | null;
   isLoading?: boolean;
 }
 
-export function ClusterSidebar({ cluster, isLoading }: ClusterSidebarProps) {
+export function ClusterSidebar({
+  cluster,
+  gpuDetails,
+  isLoading,
+}: ClusterSidebarProps) {
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -81,8 +86,15 @@ export function ClusterSidebar({ cluster, isLoading }: ClusterSidebarProps) {
               <span className="text-muted-foreground flex items-center gap-1">
                 <Cpu className="h-3 w-3" /> Hardware
               </span>
-              <p className="font-medium text-foreground">
-                {cluster.gpus} Nvidia H100s
+              <p className="font-medium text-foreground text-xs leading-tight">
+                {cluster.gpus || cluster.cluster_gpus?.length}{" "}
+                {gpuDetails ? `${gpuDetails.model}` : "NVIDIA Hardware"}
+                {gpuDetails && (
+                  <span className="block text-[10px] text-muted-foreground font-mono mt-0.5">
+                    {gpuDetails.memory_gb}GB VRAM •{" "}
+                    {gpuDetails.cores.toLocaleString()} Cores/Unit
+                  </span>
+                )}
               </p>
             </div>
             <div className="space-y-1 text-right">
@@ -92,12 +104,14 @@ export function ClusterSidebar({ cluster, isLoading }: ClusterSidebarProps) {
               <p
                 className={cn(
                   "font-medium",
-                  cluster.avg_latency < 4
+                  cluster.avg_latency !== null &&
+                    cluster.avg_latency !== undefined &&
+                    cluster.avg_latency < 4
                     ? "text-green-500"
                     : "text-yellow-500",
                 )}
               >
-                {cluster.avg_latency.toFixed(1)}ms
+                {cluster.avg_latency?.toFixed(1) || "0.0"}ms
               </p>
             </div>
           </div>

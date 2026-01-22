@@ -13,7 +13,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/client";
-import type { AuditLogEntry, Cluster } from "@/types/supabase.types";
+import type {
+  AuditLogEntry,
+  Cluster,
+  ClusterGPU,
+} from "@/types/supabase.types";
 import {
   Activity,
   AlertTriangle,
@@ -30,6 +34,7 @@ export default function ClusterDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [cluster, setCluster] = useState<Cluster | null>(null);
+  const [gpuDetails, setGpuDetails] = useState<ClusterGPU | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,6 +51,16 @@ export default function ClusterDetailPage() {
 
       if (clusterError) throw clusterError;
       setCluster(clusterData);
+
+      // Fetch GPU details (just get one to show specs, count comes from cluster.gpus)
+      const { data: gpuData } = await supabase
+        .from("cluster_gpus")
+        .select("*")
+        .eq("cluster_id", clusterData.id)
+        .limit(1)
+        .single();
+
+      setGpuDetails(gpuData);
 
       // Fetch audit logs for this specific cluster (matching dpu_id prefix or specific filter)
       // For now, let's assume dpu_id in logs relates to clusters (this might need a schema bridge later)
@@ -193,7 +208,7 @@ export default function ClusterDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Detail Sidebar */}
         <div className="lg:col-span-1">
-          <ClusterSidebar cluster={cluster} />
+          <ClusterSidebar cluster={cluster} gpuDetails={gpuDetails} />
         </div>
 
         {/* Local Feed */}

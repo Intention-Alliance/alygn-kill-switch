@@ -77,7 +77,9 @@ export function ClusterTable({ clusters, isLoading }: ClusterTableProps) {
                 <TableCell className="text-muted-foreground">
                   {cluster.location}
                 </TableCell>
-                <TableCell>{cluster.gpus.toLocaleString()}</TableCell>
+                <TableCell>
+                  {cluster.gpus || cluster.cluster_gpus?.length}
+                </TableCell>
                 <TableCell>
                   <span
                     className={
