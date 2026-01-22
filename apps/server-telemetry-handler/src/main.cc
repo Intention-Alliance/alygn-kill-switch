@@ -668,41 +668,50 @@ int main(int argc, char *argv[]) {
     SOSHookHandler handler(supabase_cfg, sos_cfg);
     handler.start();
 
-    // Simulate telemetry events for demo
-    std::string model_weights_hash =
-        CryptoUtils::sha256("model_weights_secret_v1");
+    // Configuration for demo/simulation
+    bool enable_demo = get_env_bool("ENABLE_DEMO", true);
 
-    std::cout << "📊 Simulating telemetry events...\n" << std::endl;
+    if (enable_demo) {
+      // Simulate telemetry events for demo
+      std::string model_weights_hash =
+          CryptoUtils::sha256("model_weights_secret_v1");
 
-    std::vector<std::future<bool>> futures;
+      std::cout << "📊 [DEMO MODE] Simulating telemetry events...\n" << std::endl;
 
-    // Normal inference events
-    for (int i = 0; i < 8; i++) {
-      std::string behavior_data = "inference_output_" + std::to_string(i);
-      std::string metadata = R"({"request_id": ")" + std::to_string(i) +
-                             R"(", "latency_ms": 3.2})";
+      std::vector<std::future<bool>> futures;
 
-      auto future = handler.log_telemetry_async("inference", behavior_data,
-                                                model_weights_hash,
-                                                "", // no violation
-                                                metadata);
+      // Normal inference events
+      for (int i = 0; i < 8; i++) {
+        std::string behavior_data = "inference_output_" + std::to_string(i);
+        std::string metadata = R"({"request_id": ")" + std::to_string(i) +
+                               R"(", "latency_ms": 3.2})";
 
-      futures.push_back(std::move(future));
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+        auto future = handler.log_telemetry_async("inference", behavior_data,
+                                                  model_weights_hash,
+                                                  "", // no violation
+                                                  metadata);
 
-    // Violation events
-    for (int i = 0; i < 2; i++) {
-      std::string behavior_data = "violation_output_" + std::to_string(i);
-      std::string metadata = R"({"request_id": "v)" + std::to_string(i) +
-                             R"(", "severity": "critical"})";
+        futures.push_back(std::move(future));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      }
 
-      auto future = handler.log_telemetry_async(
-          "enforcement", behavior_data, model_weights_hash,
-          "policy_harmful_content", metadata);
+      // Violation events
+      for (int i = 0; i < 2; i++) {
+        std::string behavior_data = "violation_output_" + std::to_string(i);
+        std::string metadata = R"({"request_id": "v)" + std::to_string(i) +
+                               R"(", "severity": "critical"})";
 
-      futures.push_back(std::move(future));
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        auto future = handler.log_telemetry_async(
+            "enforcement", behavior_data, model_weights_hash,
+            "policy_harmful_content", metadata);
+
+        futures.push_back(std::move(future));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+      }
+      std::cout << "✅ Demo event simulation complete.\n" << std::endl;
+    } else {
+      std::cout << "📡 [REAL-TIME MODE] Waiting for DPU connection requests...\n" << std::endl;
+      std::cout << "ℹ️  DPU ID: " << sos_cfg.dpu_id << std::endl;
     }
 
     std::cout << "\n✅ SOS-Hook Handler initialized and running." << std::endl;

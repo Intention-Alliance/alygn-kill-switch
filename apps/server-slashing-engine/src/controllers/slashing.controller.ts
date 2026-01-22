@@ -1,7 +1,7 @@
 import {
-	SLASHING_RULES,
-	SlashingService,
-	type ViolationEvent,
+    SLASHING_RULES,
+    SlashingService,
+    type ViolationEvent,
 } from "@/services/slashing.service";
 import type { NextFunction, Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
@@ -94,28 +94,23 @@ export class SlashingController {
 		}
 
 		try {
-			const testEvent: ViolationEvent = {
-				id: `test-${Date.now()}`,
-				timestamp: new Date().toISOString(),
-				dpu_id: "dpu-test-001",
-				redline_violated: req.body.violation || "policy_harmful_content",
-				intent_hash:
-					"a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd",
-				proof_data: {
-					zkp_commitment: "test_commitment",
-					zkp_challenge: "test_challenge",
-					zkp_response: "test_response",
-					public_hash: "computed_hash_placeholder",
-					timestamp: Date.now() * 1000000,
-					public_visibility: true,
-				},
-			};
+			const { violation, dpu_id } = req.body || {};
 
-			const result = await this.slashingService.processViolation(testEvent);
+			// Create the violation in the database first so it shows up in the compliance_audit_log
+			const event = await this.slashingService.createViolation({
+				redline_violated: violation || "policy_harmful_content",
+				dpu_id: dpu_id || "dpu-test-001",
+			});
+
+			// Directly process the violation (simulating the webhook trigger)
+			const result = await this.slashingService.processViolation(event);
 
 			return res.status(200).json({
 				success: true,
-				data: result,
+				data: {
+					event,
+					slashing_result: result,
+				},
 			});
 		} catch (error) {
 			next(error);
