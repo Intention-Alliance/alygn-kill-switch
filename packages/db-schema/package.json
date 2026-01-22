@@ -7,7 +7,7 @@
 	},
 	"license": "MIT",
 	"main": "./src/index.ts",
-	"name": "@services/supabase",
+	"name": "@packages/db-schema",
 	"private": true,
 	"scripts": {
 		"db:pull": "supabase db pull --local",
