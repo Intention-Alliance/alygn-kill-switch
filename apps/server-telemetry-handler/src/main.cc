@@ -43,15 +43,6 @@ struct SupabaseConfig {
   int pool_size = 5;
 };
 
-struct SOSConfig {
-  std::string intent_manifest_path;
-  std::string dpu_id;
-  size_t batch_size = 100;
-  std::chrono::milliseconds flush_interval{5000};
-  bool enable_zkp = true;
-  bool enable_performance_metrics = true;
-  bool enable_debug = false;
-};
 
 // ============================================================================
 // CRYPTOGRAPHIC UTILITIES
@@ -334,6 +325,17 @@ public:
   ConnectionGuard get_connection() { return ConnectionGuard(*this); }
 };
 
+struct SOSConfig {
+  std::string intent_manifest_path;
+  std::string dpu_id;    // Resolved UUID
+  std::string dpu_slug;  // User-provided slug
+  size_t batch_size = 100;
+  std::chrono::milliseconds flush_interval{5000};
+  bool enable_zkp = true;
+  bool enable_performance_metrics = true;
+  bool enable_debug = false;
+};
+
 // ============================================================================
 // SOS-HOOK HANDLER
 // ============================================================================
@@ -341,7 +343,7 @@ public:
 class SOSHookHandler {
 private:
   SupabaseConfig supabase_config_;
-  SOSConfig sos_config_;
+  SOSConfig sos_config_; // Not const anymore so we can update dpu_id
   std::unique_ptr<DatabasePool> db_pool_;
   std::unique_ptr<ZKPSystem> zkp_system_;
   std::unique_ptr<PerformanceMonitor> perf_monitor_;
@@ -371,6 +373,9 @@ public:
     // Initialize database pool
     db_pool_ = std::make_unique<DatabasePool>(
         supabase_config_.connection_string, supabase_config_.pool_size);
+
+    // Resolve DPU Identity
+    resolve_dpu_identity();
 
     // Initialize ZKP system
     if (sos_config_.enable_zkp) {
@@ -440,6 +445,39 @@ public:
   }
 
 private:
+  void resolve_dpu_identity() {
+    // Priority 1: Check for DPU_SLUG
+    if (!sos_config_.dpu_slug.empty()) {
+        std::cout << "🔍 Resolving DPU Slug: " << sos_config_.dpu_slug << "..." << std::endl;
+        try {
+            auto conn = db_pool_->get_connection();
+            pqxx::work txn(conn.get());
+
+            // Use quote for safety
+            std::string query = "SELECT id FROM dpu_clusters WHERE slug = " + txn.quote(sos_config_.dpu_slug);
+            pqxx::result res = txn.exec(query);
+
+            if (res.empty()) {
+                throw std::runtime_error("DPU Slug '" + sos_config_.dpu_slug + "' not found in registry.");
+            }
+
+            sos_config_.dpu_id = res[0][0].as<std::string>();
+            std::cout << "✅ Identity Verified. Resolved Slug '" << sos_config_.dpu_slug << "' to UUID: " << sos_config_.dpu_id << std::endl;
+        } catch (const std::exception &e) {
+            throw std::runtime_error("❌ Registration Error: " + std::string(e.what()));
+        }
+        return;
+    }
+
+    // Priority 2: Check for DPU_ID
+    if (!sos_config_.dpu_id.empty()) {
+        std::cout << "⚠️  Using Direct DPU ID (Unverified): " << sos_config_.dpu_id << std::endl;
+        return;
+    }
+
+    throw std::runtime_error("❌ Configuration Error: Either DPU_SLUG or DPU_ID must be set.");
+  }
+
   void load_intent_manifest() {
     std::string manifest;
 
@@ -656,7 +694,8 @@ int main(int argc, char *argv[]) {
     }
 
     SOSConfig sos_cfg;
-    sos_cfg.dpu_id = get_env("DPU_ID", "dpu-node-001");
+    sos_cfg.dpu_slug = get_env("DPU_SLUG"); // Read slug
+    sos_cfg.dpu_id = get_env("DPU_ID", ""); // Remove default, handled in resolve logic
     sos_cfg.batch_size = get_env_int("BATCH_SIZE", 50);
     sos_cfg.flush_interval = std::chrono::milliseconds(get_env_int("FLUSH_INTERVAL_MS", 3000));
     sos_cfg.enable_zkp = get_env_bool("ENABLE_ZKP", true);

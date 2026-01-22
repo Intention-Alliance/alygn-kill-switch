@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
     environment:
       - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
-      - DPU_ID=dpu-local-001
+      - DPU_ID=0903c9a1-3a1d-49d3-8b30-79731a9b9792
       - BATCH_SIZE=50
       - FLUSH_INTERVAL_MS=3000
       - ENABLE_ZKP=true
