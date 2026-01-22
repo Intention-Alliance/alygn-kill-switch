@@ -149,25 +149,11 @@ export default function DashboardPage() {
     uptime: 99.97,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [useMockData, setUseMockData] = useState(false);
 
   const supabase = useMemo(() => createClient(), []);
 
   // Fetch audit logs from Supabase
   const fetchAuditLogs = useCallback(async () => {
-    if (useMockData) {
-      const mockLogs = generateMockLogs();
-      setAuditLogs(mockLogs);
-      setStats({
-        totalEvents: mockLogs.length,
-        violations: mockLogs.filter((l) => l.redline_violated).length,
-        avgLatency: 3.2,
-        uptime: 99.97,
-      });
-      setIsLoading(false);
-      return;
-    }
-
     try {
       const { data, error } = await supabase
         .from("compliance_audit_log")
@@ -192,38 +178,36 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [supabase, useMockData]);
+  }, [supabase]);
 
   // Subscribe to realtime updates
   useEffect(() => {
     fetchAuditLogs();
 
-    if (!useMockData) {
-      const channel = supabase
-        .channel("audit-logs")
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "compliance_audit_log" },
-          (payload) => {
-            setAuditLogs((prev) => [
-              payload.new as AuditLogEntry,
-              ...prev.slice(0, 49),
-            ]);
-            setStats((prev) => ({
-              ...prev,
-              totalEvents: prev.totalEvents + 1,
-              violations:
-                prev.violations + (payload.new.redline_violated ? 1 : 0),
-            }));
-          },
-        )
-        .subscribe();
+    const channel = supabase
+      .channel("audit-logs")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "compliance_audit_log" },
+        (payload) => {
+          setAuditLogs((prev) => [
+            payload.new as AuditLogEntry,
+            ...prev.slice(0, 49),
+          ]);
+          setStats((prev) => ({
+            ...prev,
+            totalEvents: prev.totalEvents + 1,
+            violations:
+              prev.violations + (payload.new.redline_violated ? 1 : 0),
+          }));
+        },
+      )
+      .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
-  }, [fetchAuditLogs, supabase, useMockData]);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchAuditLogs, supabase]);
 
   // Export compliance report
   const exportReport = () => {
@@ -259,12 +243,6 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setUseMockData(!useMockData)}
-          >
-            {useMockData ? "Mock Data" : "Live Data"}
-          </Button>
           <Button onClick={exportReport}>
             <Download className="w-4 h-4 mr-2" />
             Export Proof
