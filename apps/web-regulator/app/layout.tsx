@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Geist } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   description: "Dashboard ALIGN Regulator",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const figtreeSans = Figtree({
+  variable: "--font-figtree-sans",
   display: "swap",
   subsets: ["latin"],
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body className={`${figtreeSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
