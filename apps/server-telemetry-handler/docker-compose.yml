@@ -10,6 +10,7 @@ services:
     environment:
       - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
       - DPU_ID=${DPU_ID:-dpu-node-001}
+      - DPU_SLUG=${DPU_SLUG:-austin-primary}
       - BATCH_SIZE=${BATCH_SIZE:-50}
       - FLUSH_INTERVAL_MS=${FLUSH_INTERVAL_MS:-3000}
       - ENABLE_ZKP=${ENABLE_ZKP:-true}
