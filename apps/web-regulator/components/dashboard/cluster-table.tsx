@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { Cluster } from "@/types/supabase.types";
 import { useRouter } from "next/navigation";
 
 interface ClusterTableProps {
@@ -83,15 +84,15 @@ export function ClusterTable({ clusters, isLoading }: ClusterTableProps) {
                 <TableCell>
                   <span
                     className={
-                      cluster.avg_latency < 4
+                      (cluster.avg_latency || 0.0) < 4
                         ? "text-green-500"
                         : "text-yellow-500"
                     }
                   >
-                    {cluster.avg_latency.toFixed(1)}ms
+                    {(cluster.avg_latency || 0.0).toFixed(1)}ms
                   </span>
                 </TableCell>
-                <TableCell>{cluster.uptime.toFixed(2)}%</TableCell>
+                <TableCell>{(cluster.uptime || 0.0).toFixed(2)}%</TableCell>
                 <TableCell>
                   <Badge
                     variant={

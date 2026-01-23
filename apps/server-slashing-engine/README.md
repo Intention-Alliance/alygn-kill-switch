@@ -43,10 +43,10 @@ graph LR
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
 # Run development server
-npm run dev
+bun run dev
 ```
 
 ### Configuration
