@@ -10,7 +10,7 @@ A comprehensive monorepo for the ALIGN (Artificial Ledger for Intelligence Gover
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         ALIGN Core Infrastructure                        │
+│                         ALIGN Core vInfrastructure                        │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐      │

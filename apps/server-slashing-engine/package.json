@@ -3,17 +3,13 @@
   "version": "1.0.0",
   "description": "ALIGN Slashing Engine - Cryptoeconomic enforcement for AI Safety compliance",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
-    "dev:watch": "tsx watch src/server.ts",
-    "build": "tsc && tsc-alias",
-    "lint": "biome lint .",
-    "check": "biome check .",
-    "format": "biome format . --write",
-    "start:tsup": "node -r tsconfig-paths/register dist/server.js",
-    "build:tsup": "tsup --config tsup.config.ts",
-    "deploy:prod": "pm2 start ecosystem.config.js --only prod",
-    "deploy:dev": "pm2 start ecosystem.config.js --only dev"
+    "build": "bun build src/server.ts --outdir dist --target bun --sourcemap",
+		"build:node": "bun build src/server.ts --outdir dist --target node --format esm",
+		"dev": "cross-env NODE_ENV=development bun --watch src/server.ts",
+		"start": "cross-env NODE_ENV=production bun dist/server.js",
+		"start:node": "cross-env NODE_ENV=production node dist/server.js",
+		"test": "bun test src/__tests__/*.test.ts",
+		"test:watch": "bun test --watch src/__tests__/*.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",

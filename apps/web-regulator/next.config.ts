@@ -2,9 +2,6 @@ import type { NextConfig } from "next";
 
 const isProduction = process.env.NODE_ENV === "production";
 const nextConfig: NextConfig = {
-	experimental: {
-		esmExternals: "loose",
-	},
 	serverExternalPackages: ["@packages/lib"],
 	images: {
 		remotePatterns: [
