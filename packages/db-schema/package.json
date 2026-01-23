@@ -2,7 +2,7 @@
 	"author": "AndlerRL",
 	"description": "supabase module for align system",
 	"devDependencies": {
-		"supabase": "^2.0.0",
+		"supabase": "^2.72.8",
 		"supabase-to-zod": "1.0.5"
 	},
 	"license": "MIT",

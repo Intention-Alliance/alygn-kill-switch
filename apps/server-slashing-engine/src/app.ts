@@ -118,7 +118,6 @@ class App {
 				version: "1.0.0",
 				endpoints: {
 					slashing: "/api/v1/slashing",
-					users: "/api/v1/users",
 				},
 			});
 		});

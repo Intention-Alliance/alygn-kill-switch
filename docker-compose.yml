@@ -2,69 +2,52 @@ version: '3.8'
 
 services:
   # ============================================
-  # Slashing Engine (Node.js/Express)
-  # ============================================
-  slashing-engine:
-    build:
-      context: ./apps/server-slashing-engine
-      dockerfile: ./apps/server-slashing-engine/Dockerfile.dev
-    container_name: align-slashing-engine
-    restart: unless-stopped
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
-    volumes:
-      - ./apps/server-slashing-engine:/app
-      - /app/node_modules
-    networks:
-      - align-network
-    depends_on:
-      - rdma-monitor
-
-  # ============================================
   # Telemetry Handler (C++)
   # ============================================
   telemetry-handler:
     build:
       context: ./apps/server-telemetry-handler
-      dockerfile: ./apps/server-telemetry-handler/Dockerfile
+      dockerfile: Dockerfile
     container_name: align-telemetry-handler
     restart: unless-stopped
     environment:
       - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
-      - DPU_ID=0903c9a1-3a1d-49d3-8b30-79731a9b9792
-      - BATCH_SIZE=50
-      - FLUSH_INTERVAL_MS=3000
-      - ENABLE_ZKP=true
-      - ENABLE_METRICS=true
+      - DPU_ID=${DPU_ID:-dpu-node-001}
+      - DPU_SLUG=${DPU_SLUG:-austin-primary}
+      - BATCH_SIZE=${BATCH_SIZE:-50}
+      - FLUSH_INTERVAL_MS=${FLUSH_INTERVAL_MS:-3000}
+      - ENABLE_ZKP=${ENABLE_ZKP:-true}
+      - ENABLE_METRICS=${ENABLE_METRICS:-true}
+      - ENABLE_DEBUG=${ENABLE_DEBUG:-false}
     networks:
       - align-network
-    depends_on:
-      - slashing-engine
-      - rdma-monitor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # depends_on:
+    #   - slashing-engine
+    #   - rdma-monitor
   
   # ============================================
   # RDMA Monitor
   # ============================================
-  rdma-monitor:
-    build:
-      context: ./apps/server-rdma-monitor
-      dockerfile: ./apps/server-rdma-monitor/Dockerfile
-    container_name: align-rdma-monitor
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=development
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
-    volumes:
-      - ./apps/server-rdma-monitor:/app
-      - /app/node_modules
-    networks:
-      - align-network
+  # rdma-monitor:
+  #   build:
+  #     context: ./apps/server-rdma-monitor
+  #     dockerfile: ./apps/server-rdma-monitor/Dockerfile
+  #   container_name: align-rdma-monitor
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=development
+  #     - SUPABASE_URL=${SUPABASE_URL}
+  #     - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+  #   volumes:
+  #     - ./apps/server-rdma-monitor:/app
+  #     - /app/node_modules
+  #   networks:
+  #     - align-network
   
 
   # ============================================
@@ -93,25 +76,25 @@ services:
   # ============================================
   # PostgreSQL (Local Development)
   # ============================================
-  postgres:
-    image: postgres:15-alpine
-    container_name: align-postgres
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=align_ledger
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./packages/db-schema/supabase/migrations:/docker-entrypoint-initdb.d:ro
-    networks:
-      - align-network
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: align-postgres
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=align_ledger
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./packages/db-schema/supabase/migrations:/docker-entrypoint-initdb.d:ro
+  #   networks:
+  #     - align-network
 
 networks:
   align-network:
     driver: bridge
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
