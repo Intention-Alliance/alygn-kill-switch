@@ -1,7 +1,7 @@
 {
   "name": "@align/server-slashing-engine",
   "version": "1.0.0",
-  "description": "ALIGN Slashing Engine - Cryptoeconomic enforcement for AI Safety compliance",
+  "description": "ALYGN Slashing Engine - Cryptoeconomic enforcement for AI Safety compliance",
   "scripts": {
     "build": "bun build src/server.ts --outdir dist --target bun --sourcemap",
 		"build:node": "bun build src/server.ts --outdir dist --target node --format esm",

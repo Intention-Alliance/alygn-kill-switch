@@ -148,7 +148,7 @@ export default function AddClusterPage() {
                   Node Onboarding
                 </CardTitle>
                 <CardDescription className="text-sm">
-                  Register new hardware resources to the ALIGN sovereign
+                  Register new hardware resources to the ALYGN sovereign
                   network.
                 </CardDescription>
               </div>

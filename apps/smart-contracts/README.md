@@ -1,17 +1,17 @@
-# $ALIGN Token Smart Contracts
+# $ALYGN Token Smart Contracts
 
-Bitcoin Taproot-based token contracts for the ALIGN Sovereign Compliance Infrastructure.
+Bitcoin Taproot-based token contracts for the ALYGN Sovereign Compliance Infrastructure.
 
 ## Overview
 
-The ALIGN token is a ledger token based on the Taproot protocol in Bitcoin Blockchain. It serves as the cryptoeconomic staking mechanism for the sovereign compliance infrastructure.
+The ALYGN token is a ledger token based on the Taproot protocol in Bitcoin Blockchain. It serves as the cryptoeconomic staking mechanism for the sovereign compliance infrastructure.
 
 ## Token Economics
 
 | Parameter | Value |
 |-----------|-------|
 | **Protocol** | Bitcoin Taproot (BIP 341) |
-| **Standard** | Custom (ALIGN Protocol) |
+| **Standard** | Custom (ALYGN Protocol) |
 | **Supply** | TBD |
 | **Staking** | Required for data center participation |
 
@@ -31,7 +31,7 @@ Token slashing is triggered by the Slashing Engine when violations are detected:
 
 ```
 ┌─────────────────────────────────────────┐
-│           ALIGN Token Contract           │
+│           ALYGN Token Contract           │
 ├─────────────────────────────────────────┤
 │  ┌─────────────┐   ┌─────────────────┐  │
 │  │   Staking   │   │    Slashing     │  │

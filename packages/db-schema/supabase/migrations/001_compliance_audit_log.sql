@@ -1,5 +1,5 @@
 -- ============================================================================
--- ALIGN LEDGER - IMMUTABLE AUDIT LOG MIGRATION
+-- ALYGN LEDGER - IMMUTABLE AUDIT LOG MIGRATION
 -- Database: Supabase (PostgreSQL 15+)
 -- Purpose: Compliance audit trail with cryptographic attestation
 -- Version: 1.0.0
@@ -454,7 +454,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ============================================================================
 
 COMMENT ON TABLE compliance_audit_log IS 
-'Immutable audit log for ALIGN Ledger DPU enforcement events. 
+'Immutable audit log for ALYGN Ledger DPU enforcement events. 
 This table is append-only and cannot be modified or deleted.
 All enforcement actions are cryptographically attested with ZKP proofs.';
 

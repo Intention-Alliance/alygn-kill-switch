@@ -1,6 +1,6 @@
 # SOS-Hook Telemetry Handler
 
-Asynchronous telemetry logging service with Zero-Knowledge Proof generation for the ALIGN Sovereign Compliance Infrastructure.
+Asynchronous telemetry logging service with Zero-Knowledge Proof generation for the ALYGN Sovereign Compliance Infrastructure.
 
 ## Features
 

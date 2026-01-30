@@ -501,7 +501,7 @@ private:
                  sos_config_.dpu_id + R"(",
                 "safety_constraints": ["no_harmful_output", "bias_mitigation", "privacy_protection"],
                 "performance_targets": {"accuracy": 0.95, "latency_ms": 100},
-                "compliance_framework": "ALIGN",
+                "compliance_framework": "ALYGN",
                 "jurisdiction": "Texas DIR"
             })";
     }

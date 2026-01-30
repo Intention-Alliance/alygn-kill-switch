@@ -69,5 +69,5 @@ install(TARGETS ${PROJECT_NAME}
 # CPack for distribution
 set(CPACK_PACKAGE_NAME "sos-telemetry-handler")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
-set(CPACK_PACKAGE_DESCRIPTION "SOS-Hook Telemetry Handler for ALIGN Infrastructure")
+set(CPACK_PACKAGE_DESCRIPTION "SOS-Hook Telemetry Handler for ALYGN Infrastructure")
 include(CPack)

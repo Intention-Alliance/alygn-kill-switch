@@ -1,8 +1,8 @@
-# ALIGN Slashing Engine
+# ALYGN Slashing Engine
 
 **Cryptoeconomic Enforcement Service for AI Safety**
 
-The Slashing Engine is the enforcement arm of the ALIGN infrastructure. It listens for compliance violations from the audit log, verifies Zero-Knowledge Proofs (ZKPs), and executes on-chain slashing penalties against non-compliant Data Processing Units (DPUs).
+The Slashing Engine is the enforcement arm of the ALYGN infrastructure. It listens for compliance violations from the audit log, verifies Zero-Knowledge Proofs (ZKPs), and executes on-chain slashing penalties against non-compliant Data Processing Units (DPUs).
 
 ---
 
@@ -145,4 +145,4 @@ The engine enforces the following default rules (configurable):
 
 ## 📄 License
 
-Private - ALIGN Core Infrastructure
+Private - ALYGN Core Infrastructure

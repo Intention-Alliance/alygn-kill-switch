@@ -1,5 +1,5 @@
 # ============================================================================
-# ALIGN Token - Taproot Script (Placeholder)
+# ALYGN Token - Taproot Script (Placeholder)
 # ============================================================================
 # Protocol: Bitcoin Taproot (BIP 341)
 # Purpose: Staking and slashing for AI Safety compliance
@@ -18,7 +18,7 @@
 # - Timelock condition (minimum stake duration)
 
 # Script Path 1: Slashing (violation detected)
-# - Oracle signature (from ALIGN Slashing Engine)
+# - Oracle signature (from ALYGN Slashing Engine)
 # - Proof of violation (hash commitment)
 # - Burns tokens or redistributes to validators
 
