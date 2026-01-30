@@ -38,12 +38,12 @@ TO service_role
 USING (true);
 
 -- Seed data based on former mock data
-INSERT INTO dpu_clusters (slug, name, location, gpus, avg_latency, uptime, status)
+INSERT INTO dpu_clusters (id, slug, name, location, gpus, avg_latency, uptime, status)
 VALUES 
-    ('austin-primary', 'Austin Primary', 'Austin, TX', 1024, 2.8, 99.98, 'operational'),
-    ('dallas-corridor', 'Dallas Corridor', 'Dallas, TX', 768, 3.1, 99.95, 'operational'),
-    ('houston-grid', 'Houston Grid', 'Houston, TX', 512, 4.2, 98.50, 'degraded'),
-    ('san-antonio-hub', 'San Antonio Hub', 'San Antonio, TX', 384, 3.4, 99.99, 'operational')
+    ('1d7b904d-c165-47f4-9169-17ce8f8c2fe5', 'austin-primary', 'Austin Primary', 'Austin, TX', 1024, 2.8, 99.98, 'operational'),
+    ('0903c9a1-3a1d-49d3-8b30-79731a9b9792', 'dallas-corridor', 'Dallas Corridor', 'Dallas, TX', 768, 3.1, 99.95, 'operational'),
+    ('23456789-2345-6789-2345-678923456789', 'houston-grid', 'Houston Grid', 'Houston, TX', 512, 4.2, 98.50, 'degraded'),
+    ('34567890-3456-7890-3456-789034567890', 'san-antonio-hub', 'San Antonio Hub', 'San Antonio, TX', 384, 3.4, 99.99, 'operational')
 ON CONFLICT (slug) DO NOTHING;
 
 COMMIT;

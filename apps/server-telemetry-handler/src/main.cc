@@ -20,6 +20,7 @@
 #include <mutex>
 #include <queue>
 #include <sstream>
+#include <random>
 #include <string>
 #include <thread>
 #include <vector>
@@ -113,7 +114,7 @@ public:
       ss << std::setw(2) << (randombytes_random() % 256);
     }
     ss << "-";
-    ss << std::setw(1) << ((randombytes_random() % 16) & 0x3 | 0x8);
+    ss << std::setw(1) << (((randombytes_random() % 16) & 0x3) | 0x8);
     for (int i = 0; i < 1; i++) {
       ss << std::setw(2) << (randombytes_random() % 256);
     }
@@ -188,7 +189,7 @@ public:
   }
 
   // Serialize proof to JSON format for Supabase
-  std::string serialize_proof(const ZKProof &proof) {
+  std::string serialize_proof(const ZKProof &proof, const std::string &metadata = "{}") {
     std::stringstream ss;
     ss << "{"
        << "\"zkp_commitment\":\"" << proof.commitment << "\","
@@ -196,7 +197,8 @@ public:
        << "\"zkp_response\":\"" << proof.response << "\","
        << "\"public_hash\":\"" << proof.public_hash << "\","
        << "\"timestamp\":" << proof.timestamp << ","
-       << "\"public_visibility\":true"
+       << "\"public_visibility\":true,"
+       << "\"metadata\":" << (metadata.empty() ? "{}" : metadata)
        << "}";
     return ss.str();
   }
@@ -540,12 +542,13 @@ private:
     if (sos_config_.enable_zkp && zkp_system_) {
       auto proof = zkp_system_->prove_compliance(
           event.intent_hash, event.behavior_hash, model_weights_hash);
-      event.zkp_proof = zkp_system_->serialize_proof(proof);
+      event.zkp_proof = zkp_system_->serialize_proof(proof, metadata);
       if (sos_config_.enable_debug) {
         std::cout << "[DEBUG] ZKP Generated: " << event.zkp_proof.substr(0, 50) << "..." << std::endl;
       }
     } else {
-      event.zkp_proof = "{}";
+      // Even if ZKP is disabled, we still want to save metadata
+      event.zkp_proof = "{\"metadata\":" + (metadata.empty() ? "{}" : metadata) + "}";
     }
 
     event.metadata = metadata.empty() ? "{}" : metadata;
@@ -710,59 +713,76 @@ int main(int argc, char *argv[]) {
     // Configuration for demo/simulation
     bool enable_demo = get_env_bool("ENABLE_DEMO", true);
 
-    if (enable_demo) {
-      // Simulate telemetry events for demo
-      std::string model_weights_hash =
-          CryptoUtils::sha256("model_weights_secret_v1");
-
-      std::cout << "📊 [DEMO MODE] Simulating telemetry events...\n" << std::endl;
-
-      std::vector<std::future<bool>> futures;
-
-      // Normal inference events
-      for (int i = 0; i < 8; i++) {
-        std::string behavior_data = "inference_output_" + std::to_string(i);
-        std::string metadata = R"({"request_id": ")" + std::to_string(i) +
-                               R"(", "latency_ms": 3.2})";
-
-        auto future = handler.log_telemetry_async("inference", behavior_data,
-                                                  model_weights_hash,
-                                                  "", // no violation
-                                                  metadata);
-
-        futures.push_back(std::move(future));
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      }
-
-      // Violation events
-      for (int i = 0; i < 2; i++) {
-        std::string behavior_data = "violation_output_" + std::to_string(i);
-        std::string metadata = R"({"request_id": "v)" + std::to_string(i) +
-                               R"(", "severity": "critical"})";
-
-        auto future = handler.log_telemetry_async(
-            "enforcement", behavior_data, model_weights_hash,
-            "policy_harmful_content", metadata);
-
-        futures.push_back(std::move(future));
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-      }
-      std::cout << "✅ Demo event simulation complete.\n" << std::endl;
-    } else {
-      std::cout << "📡 [REAL-TIME MODE] Waiting for DPU connection requests...\n" << std::endl;
-      std::cout << "ℹ️  DPU ID: " << sos_cfg.dpu_id << std::endl;
-    }
-
-    std::cout << "\n✅ SOS-Hook Handler initialized and running." << std::endl;
-    std::cout << "🚢 Press Ctrl+C to stop.\n" << std::endl;
-
     // Use a flag for graceful shutdown via signals
     static std::atomic<bool> keep_running{true};
     std::signal(SIGINT, [](int) { keep_running = false; });
     std::signal(SIGTERM, [](int) { keep_running = false; });
 
-    while (keep_running) {
-      std::this_thread::sleep_for(std::chrono::seconds(1));
+    if (enable_demo) {
+      std::cout << "📊 [DEMO MODE] Simulating continuous telemetry events...\n" << std::endl;
+      
+      // Random number generation for event count and data
+      std::random_device rd;
+      std::mt19937 gen(rd());
+      std::uniform_int_distribution<> event_count_dist(5, 15); // Random events per second
+      std::uniform_int_distribution<> probability_dist(0, 100);
+
+      std::string model_weights_hash = CryptoUtils::sha256("model_weights_secret_v1");
+
+      while (keep_running) {
+        int events_to_send = event_count_dist(gen);
+        
+        for (int i = 0; i < events_to_send; i++) {
+           bool is_violation = probability_dist(gen) > 95; // 5% chance of violation
+           
+           // Simulate complex nested JSON behavior data
+           std::string threat_level = is_violation ? "critical" : "nominal";
+           std::string input_hash = CryptoUtils::generate_uuid();
+           
+           std::stringstream behavior_json;
+           behavior_json << "{"
+                         << "\"model_output\": {"
+                         << "\"tensors\": \"" << CryptoUtils::generate_uuid() << "\","
+                         << "\"logits\": [0.1, 0.9, 0.05, 0.001],"
+                         << "\"context_window\": " << (1024 + probability_dist(gen))
+                         << "},"
+                         << "\"threat_analysis\": {"
+                         << "\"detected\": " << (is_violation ? "true" : "false") << ","
+                         << "\"level\": \"" << threat_level << "\","
+                         << "\"patterns\": [\"pattern_a\", \"pattern_b\"]"
+                         << "},"
+                         << "\"request_meta\": {"
+                         << "\"source_ip\": \"192.168.1." << probability_dist(gen) << "\","
+                         << "\"user_agent\": \"Mozilla/5.0\""
+                         << "},"
+                         << "\"latency_ms\": " << (2.5 + (probability_dist(gen) % 50) / 10.0)
+                         << "}";
+
+           std::string metadata = behavior_json.str(); // Use same logic for metadata now
+           
+           if (is_violation) {
+               handler.log_telemetry_async("enforcement", behavior_json.str(),
+                                           model_weights_hash,
+                                           "policy_harmful_content", metadata);
+           } else {
+               handler.log_telemetry_async("inference", behavior_json.str(),
+                                           model_weights_hash,
+                                           "", metadata);
+           }
+        }
+        
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+      }
+      
+      std::cout << "✅ Demo simulation stopped.\n" << std::endl;
+
+    } else {
+      std::cout << "📡 [REAL-TIME MODE] Waiting for DPU connection requests...\n" << std::endl;
+      std::cout << "ℹ️  DPU ID: " << sos_cfg.dpu_id << std::endl;
+
+      while (keep_running) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+      }
     }
 
     std::cout << "\n⏳ Shutting down gracefully..." << std::endl;

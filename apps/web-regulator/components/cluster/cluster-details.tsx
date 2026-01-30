@@ -37,6 +37,7 @@ export function ClusterDetails({ slug }: { slug: string }) {
 
   const supabase = useMemo(() => createClient(), []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const fetchData = useCallback(async () => {
     try {
       // Fetch cluster details
@@ -47,7 +48,13 @@ export function ClusterDetails({ slug }: { slug: string }) {
         .single();
 
       if (clusterError) throw clusterError;
-      setCluster(clusterData);
+      setCluster({
+        ...clusterData,
+        total_requests: clusterData.total_requests || 0,
+        policy_violations: clusterData.policy_violations || 0,
+        avg_latency: Math.max(0, clusterData.avg_latency || 0),
+        last_seen: clusterData.last_seen || new Date().toISOString(),
+      });
 
       // Fetch GPU details (just get one to show specs, count comes from cluster.gpus)
       const { data: gpuData } = await supabase
@@ -55,7 +62,7 @@ export function ClusterDetails({ slug }: { slug: string }) {
         .select("*")
         .eq("cluster_id", clusterData.id)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       setGpuDetails(gpuData);
 
@@ -74,10 +81,13 @@ export function ClusterDetails({ slug }: { slug: string }) {
     } finally {
       setIsLoading(false);
     }
-  }, [slug, supabase]);
+  }, [slug]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    fetchData();
+    if (!auditLogs.length) {
+      fetchData();
+    }
 
     // Subscribe to realtime updates for this cluster's metrics
     const clusterChannel = supabase
@@ -91,15 +101,69 @@ export function ClusterDetails({ slug }: { slug: string }) {
           filter: `slug=eq.${slug}`,
         },
         (payload) => {
-          setCluster(payload.new as Cluster);
+          setCluster((prev) =>
+            prev ? { ...prev, ...payload.new } : (payload.new as Cluster),
+          );
+        },
+      )
+      .subscribe();
+
+    // Subscribe to new audit logs for this cluster
+    const logsChannel = supabase
+      .channel(`logs-${slug}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "compliance_audit_log",
+          filter: cluster ? `dpu_id=eq.${cluster.id}` : undefined,
+        },
+        (payload) => {
+          const newLog = payload.new as AuditLogEntry;
+
+          // Update logs list
+          setAuditLogs((prev) => [newLog, ...prev].slice(0, 20));
+
+          // Simulate live stat updates since aggregation might be slow
+          setCluster((prev) => {
+            if (!prev) return null;
+
+            // Extract latency from proof_data if available
+            let newLatency = prev.avg_latency || 0;
+            try {
+              if (newLog.proof_data && typeof newLog.proof_data === "object") {
+                const metadata = (newLog.proof_data as any).metadata;
+                if (metadata && metadata.latency_ms) {
+                  const lat = Number(metadata.latency_ms);
+                  newLatency = newLatency * 0.9 + lat * 0.1;
+                }
+              }
+            } catch (e) {
+              // Fallback to jitter if parsing fails
+              newLatency = newLatency + (Math.random() - 0.5) * 2;
+            }
+
+            return {
+              ...prev,
+              total_requests: (prev.total_requests || 0) + 1,
+              policy_violations:
+                newLog.redline_violated && newLog.redline_violated !== ""
+                  ? (prev.policy_violations || 0) + 1
+                  : prev.policy_violations || 0,
+              avg_latency: Math.max(0, newLatency),
+              last_seen: newLog.timestamp, // Update last seen
+            };
+          });
         },
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(clusterChannel);
+      supabase.removeChannel(logsChannel);
     };
-  }, [fetchData, slug, supabase]);
+  }, [slug, cluster]);
 
   if (isLoading) {
     return (
@@ -195,10 +259,12 @@ export function ClusterDetails({ slug }: { slug: string }) {
         <StatCard
           icon={<AlertTriangle className="w-4 h-4" />}
           label="Policy Violations"
-          value="0"
-          trend="Clean Record"
-          trendUp={false}
-          alert={false}
+          value={cluster?.policy_violations?.toLocaleString() || "0"}
+          trend={
+            cluster?.policy_violations > 0 ? "Under Review" : "Clean Record"
+          }
+          trendUp={cluster?.policy_violations === 0}
+          alert={(cluster?.policy_violations || 0) > 0}
         />
       </div>
 

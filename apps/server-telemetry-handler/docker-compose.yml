@@ -16,6 +16,7 @@ services:
       - ENABLE_ZKP=${ENABLE_ZKP:-true}
       - ENABLE_METRICS=${ENABLE_METRICS:-true}
       - ENABLE_DEBUG=${ENABLE_DEBUG:-false}
+      - ENABLE_DEMO=${ENABLE_DEMO:-true}
     networks:
       - align-network
     logging:
