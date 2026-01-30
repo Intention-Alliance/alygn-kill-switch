@@ -106,8 +106,10 @@ export type Database = {
           gpus: number
           id: string
           last_heartbeat: string | null
+          last_seen: string | null
           location: string
           name: string
+          policy_violations: number | null
           slug: string
           status: string
           total_requests: number | null
@@ -120,8 +122,10 @@ export type Database = {
           gpus?: number
           id?: string
           last_heartbeat?: string | null
+          last_seen?: string | null
           location: string
           name: string
+          policy_violations?: number | null
           slug: string
           status?: string
           total_requests?: number | null
@@ -134,8 +138,10 @@ export type Database = {
           gpus?: number
           id?: string
           last_heartbeat?: string | null
+          last_seen?: string | null
           location?: string
           name?: string
+          policy_violations?: number | null
           slug?: string
           status?: string
           total_requests?: number | null

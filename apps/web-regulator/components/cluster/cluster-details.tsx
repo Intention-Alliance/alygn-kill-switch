@@ -260,11 +260,9 @@ export function ClusterDetails({ slug }: { slug: string }) {
           icon={<AlertTriangle className="w-4 h-4" />}
           label="Policy Violations"
           value={cluster?.policy_violations?.toLocaleString() || "0"}
-          trend={
-            cluster?.policy_violations > 0 ? "Under Review" : "Clean Record"
-          }
-          trendUp={cluster?.policy_violations === 0}
-          alert={(cluster?.policy_violations || 0) > 0}
+          trend={cluster?.policy_violations ? "Under Review" : "Clean Record"}
+          trendUp={!cluster?.policy_violations}
+          alert={Boolean(cluster?.policy_violations)}
         />
       </div>
 
