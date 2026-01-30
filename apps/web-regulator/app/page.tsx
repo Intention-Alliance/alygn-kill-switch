@@ -99,6 +99,7 @@ export default function DashboardPage() {
   }, [supabase]);
 
   // Subscribe to realtime updates
+  // biome-ignore lint/correctness/useExhaustiveDependencies: No need to add functions as dep else, we get infinite loop
   useEffect(() => {
     // Check user session
     const checkUser = async () => {
@@ -109,7 +110,10 @@ export default function DashboardPage() {
     };
 
     checkUser();
-    fetchData();
+
+    if (!clusters.length) {
+      fetchData();
+    }
 
     // Re-subscribe to audit logs for global counts
     const auditChannel = supabase
@@ -154,16 +158,25 @@ export default function DashboardPage() {
       supabase.removeChannel(auditChannel);
       supabase.removeChannel(clusterChannel);
     };
-  }, [fetchData, supabase]);
+  }, []);
 
   // Export compliance report
   const exportReport = () => {
+    const auditLogsLength = auditLogs.length;
+    const auditViolationsLength = auditLogs.filter(
+      (log) => log.redline_violated,
+    ).length;
     const report = {
       generated_at: new Date().toISOString(),
-      system_status: "COMPLIANT",
+      system_status:
+        // ? If more than the 10% of audits are in violations, then we do declare it as compliant...
+        // ? the percetange may change in future.
+        auditViolationsLength > auditLogsLength * 0.1
+          ? "NON-COMPLIANT"
+          : "COMPLIANT",
       clusters: clusters,
       statistics: stats,
-      recent_logs: auditLogs.slice(0, 10),
+      recent_logs: auditLogs.slice(0, 100),
     };
 
     const blob = new Blob([JSON.stringify(report, null, 2)], {
