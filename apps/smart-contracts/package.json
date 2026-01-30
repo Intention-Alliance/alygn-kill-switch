@@ -1,7 +1,7 @@
 {
   "name": "@align/smart-contracts",
   "version": "1.0.0",
-  "description": "ALIGN token smart contracts for Bitcoin Taproot protocol",
+  "description": "ALYGN token smart contracts for Bitcoin Taproot protocol",
   "private": true,
   "scripts": {
     "test": "echo 'Tests not yet implemented'",

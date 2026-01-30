@@ -1,6 +1,6 @@
-# ALIGN Ledger - Database Schema
+# ALYGN Ledger - Database Schema
 
-Immutable audit log schema for the ALIGN Sovereign Compliance Infrastructure.
+Immutable audit log schema for the ALYGN Sovereign Compliance Infrastructure.
 
 ## Overview
 

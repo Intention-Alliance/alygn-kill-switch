@@ -26,7 +26,7 @@ export class SlashingRoute implements Routes {
 		this.router.get(this.path, (_req, res) => {
 			res.json({
 				status: "OK",
-				message: "ALIGN Slashing API",
+				message: "ALYGN Slashing API",
 				endpoints: {
 					webhook: `${this.path}/webhook`,
 					violations: `${this.path}/violations`,

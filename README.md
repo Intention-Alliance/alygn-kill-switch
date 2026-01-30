@@ -1,8 +1,8 @@
-# ALIGN Core Infrastructure
+# ALYGN Core Infrastructure
 
 **Sovereign Compliance Infrastructure for AI Safety**
 
-A comprehensive monorepo for the ALIGN (Artificial Ledger for Intelligence Governance Networks) system, implementing hardware-enforced AI safety compliance with cryptoeconomic incentives on the Bitcoin blockchain.
+A comprehensive monorepo for the ALYGN (Artificial Ledger for Intelligence Governance Networks) system, implementing hardware-enforced AI safety compliance with cryptoeconomic incentives on the Bitcoin blockchain.
 
 ---
 
@@ -10,7 +10,7 @@ A comprehensive monorepo for the ALIGN (Artificial Ledger for Intelligence Gover
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         ALIGN Core vInfrastructure                        │
+│                         ALYGN Core vInfrastructure                        │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐      │
@@ -41,7 +41,7 @@ A comprehensive monorepo for the ALIGN (Artificial Ledger for Intelligence Gover
 | [`apps/server-slashing-engine`](./apps/server-slashing-engine) | Express.js | Cryptoeconomic enforcement |
 | [`apps/server-telemetry-handler`](./apps/server-telemetry-handler) | C++ | ZKP telemetry logging |
 | [`apps/server-rdma-monitor`](./apps/server-rdma-monitor) | C++ | BlueField-3 DPU security |
-| [`apps/smart-contracts`](./apps/smart-contracts) | Bitcoin | ALIGN token (Taproot) |
+| [`apps/smart-contracts`](./apps/smart-contracts) | Bitcoin | ALYGN token (Taproot) |
 | [`packages/db-schema`](./packages/db-schema) | SQL | Supabase migrations |
 | [`packages/shared-types`](./packages/shared-types) | TypeScript | Shared type definitions |
 
@@ -264,7 +264,7 @@ Examples:
 
 ## 📚 Additional Resources
 
-- [ALIGN Core Infrastructure Guide](./align-core-infrastructure-guide.md)
+- [ALYGN Core Infrastructure Guide](./align-core-infrastructure-guide.md)
 - [Data Center Onboarding Guide](./guide/Data%20Center%20Onboarding%20Guide.md)
 - [NVIDIA DOCA SDK](https://docs.nvidia.com/doca/)
 - [Supabase Documentation](https://supabase.com/docs)
@@ -288,5 +288,5 @@ Private - All Rights Reserved
 ---
 
 <p align="center">
-  <strong>ALIGN</strong> - Sovereign Compliance for the AI Era
+  <strong>ALYGN</strong> - Sovereign Compliance for the AI Era
 </p>

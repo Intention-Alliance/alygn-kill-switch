@@ -1,6 +1,6 @@
 # RDMA Security Monitor for BlueField-3 DPU
 
-Hardware-level RDMA packet inspection and AI Safety enforcement for the ALIGN Sovereign Compliance Infrastructure.
+Hardware-level RDMA packet inspection and AI Safety enforcement for the ALYGN Sovereign Compliance Infrastructure.
 
 ## Features
 

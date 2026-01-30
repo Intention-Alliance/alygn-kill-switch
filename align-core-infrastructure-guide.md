@@ -1,10 +1,10 @@
-# ALIGN Core Infrastructure Guide
+# ALYGN Core Infrastructure Guide
 
 ## Overview
 
 The **align-core-infra/guide** folder contains 9 files, which outline the architecture and implementation details for a cutting-edge AI Safety compliance platform centered on NVIDIA BlueField-3 DPUs, Zero-Knowledge Proofs (ZKPs), and a blockchain-style immutable audit ledger managed by Supabase. Every system file has instructions on how to build and deploy it and/or key features that contains (ts, tsx, sql and cc files).
 
-The folder documents a comprehensive, multi-layer **Sovereign Compliance Infrastructure** designed to enforce AI Safety Redlines in high-performance GPU clusters, specifically targeting the NVIDIA Blackwell Corridor. The core of the system involves a low-latency hardware monitor (the **Advanced RDMA Security Monitor**) running on the BlueField-3 DPU, which integrates with an asynchronous, attestable logging mechanism (the **SOS-Hook Telemetry Handler**) that records all events and violations to an immutable **ALIGN Ledger**, and finally, an automated **Slashing Engine** for cryptoeconomic enforcement.
+The folder documents a comprehensive, multi-layer **Sovereign Compliance Infrastructure** designed to enforce AI Safety Redlines in high-performance GPU clusters, specifically targeting the NVIDIA Blackwell Corridor. The core of the system involves a low-latency hardware monitor (the **Advanced RDMA Security Monitor**) running on the BlueField-3 DPU, which integrates with an asynchronous, attestable logging mechanism (the **SOS-Hook Telemetry Handler**) that records all events and violations to an immutable **ALYGN Ledger**, and finally, an automated **Slashing Engine** for cryptoeconomic enforcement.
 
 ## Key Components and Functionality
 
@@ -14,8 +14,8 @@ The architecture is structured into five distinct layers, detailed across the do
 | :------------------ | :----------------------------- | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Infrastructure**  | Advanced RDMA Security Monitor | C / DOCA (BlueField-3)             | Real-time packet inspection (RDMA Read/Write), Malformed packet detection, Memory Intent Manifest validation, 380Gbps Grid Threat detection.                                                 |
 | **Data Collection** | C++ SOS-Hook Telemetry Handler | C++ / libpqxx, OpenSSL, libsodium  | Collects DPU events, generates Zero-Knowledge Proofs (ZKP) and cryptographic attestations, and asynchronously batches/flushes events to the Ledger.                                          |
-| **Storage**         | ALIGN Ledger (Supabase)        | SQL / PostgreSQL, JSONB            | Immutable audit log (`compliance_audit_log` table) to store enforcement events and ZKPs. Enforces immutability via database triggers and manages Row-Level Security (RLS).                   |
-| **Enforcement**     | Slashing Engine                | Node.js / ethers.js                | Webhook listener for Ledger violations. Verifies ZKPs and timestamps, calculates token slash amounts based on `SLASHING_RULES`, and executes on-chain $ALIGN token burns or redistributions. |
+| **Storage**         | ALYGN Ledger (Supabase)        | SQL / PostgreSQL, JSONB            | Immutable audit log (`compliance_audit_log` table) to store enforcement events and ZKPs. Enforces immutability via database triggers and manages Row-Level Security (RLS).                   |
+| **Enforcement**     | Slashing Engine                | Node.js / ethers.js                | Webhook listener for Ledger violations. Verifies ZKPs and timestamps, calculates token slash amounts based on `SLASHING_RULES`, and executes on-chain $ALYGN token burns or redistributions. |
 | **Presentation**    | Regulatory Portal (React)      | React / JavaScript (Mock Supabase) | Real-time dashboard for monitoring system status, GPU clusters (Blackwell Corridor), live ledger feeds, and exporting cryptographically signed Proofs of Alignment (compliance reports).     |
 
 ## In-Depth Review of Content
@@ -37,13 +37,13 @@ The **"Advanced RDMA Security Monitor for BlueField-3 DPU"** provides the founda
 The **"SOS-Hook Telemetry Handler"** and the database schema work together to ensure data integrity and verifiability.
 
 * The C++ Handler is responsible for generating the ZKPs (Zero-Knowledge Proofs) and HMAC attestations for every telemetry event before logging. The ZKP structure is designed to prove that the "model weights produce behavior matching intent" without revealing the actual model weights.
-* The **"Storage: ALIGN Ledger (Supabase)"** document shows the SQL migration for the `compliance_audit_log` table, which is strictly *append-only* (updates and deletes are prevented by a trigger). It stores the `intent_hash`, `redline_violated`, and the ZKP/attestation data in a `JSONB` column.
+* The **"Storage: ALYGN Ledger (Supabase)"** document shows the SQL migration for the `compliance_audit_log` table, which is strictly *append-only* (updates and deletes are prevented by a trigger). It stores the `intent_hash`, `redline_violated`, and the ZKP/attestation data in a `JSONB` column.
 
 ### 3\. Compliance and Onboarding Process
 
 The **"Data Center Onboarding Guide"** outlines the formal process for a facility to join the network (the "Blackwell Corridor"):
 
-* **Prerequisites:** NVIDIA Blackwell/BlueField-3 hardware, a signed **Sovereign Circle Member Agreement (SCMA)**, and initial **ALIGN staking deposit**.
+* **Prerequisites:** NVIDIA Blackwell/BlueField-3 hardware, a signed **Sovereign Circle Member Agreement (SCMA)**, and initial **ALYGN staking deposit**.
 * **Integration Steps:**
     1. **SOS-Hook Flash:** Flashing the Sovereign Kernel micro-code to the DPU.
     2. **Judicial Connectivity:** Initializing the encrypted telemetry stream and synchronizing the latest Safety Redlines into the DPU's fast-path memory (SRAM).
@@ -67,11 +67,11 @@ A monorepo is ideal for managing the shared data structures (like the event payl
 | Folder Path              | Component Name                   | Technology/Files Mapped                                                                                                                           | Deployment Target            |
 | :----------------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------- |
 | `apps/web-regulator`          | Regulatory Portal                | **`Frontend: Regulatory Portal (React)...`** (React/Next.js code), Next.js configuration, UI components.                                  | Vercel / Next.js Server      |
-| `apps/server-slashing-engine`   | ALIGN Slashing Engine            | **`Slashing Engine`** (Node.js/Express.js code), configuration (Supabase keys), business logic for token slashing and proof verification. | Express.js Server / Elest.io |
+| `apps/server-slashing-engine`   | ALYGN Slashing Engine            | **`Slashing Engine`** (Node.js/Express.js code), configuration (Supabase keys), business logic for token slashing and proof verification. | Express.js Server / Elest.io |
 | `apps/server-telemetry-handler` | SOS-Hook Telemetry Handler (C++) | **`SOS-Hook Telemetry Handler`** (C++ code), configuration files, Dockerfile (for deployment).                                            | Cloud Run / Kubernetes       |
 | `apps/server-rdma-monitor`      | RDMA Security Monitor (C++)      | **`Advanced RDMA Security Monitor...`** (C++ DPU micro-code).                                                                             | Hardware DPU (NVIDIA)        |
-| `apps/smart-contracts`   | $ALIGN Token Contract (Bitcoin)  | Bitcoin Smart Contract (Script or Simplicity) code, testing utilities.                                                                            | Bitcoin Ecosystem/Node       |
-| `packages/db-schema`     | ALIGN Ledger Schema              | **`Storage: ALIGN Ledger (Supabase)`** (SQL migration files), a single source of truth for the `compliance_audit_log` table.              | Supabase / PostgreSQL        |
+| `apps/smart-contracts`   | $ALYGN Token Contract (Bitcoin)  | Bitcoin Smart Contract (Script or Simplicity) code, testing utilities.                                                                            | Bitcoin Ecosystem/Node       |
+| `packages/db-schema`     | ALYGN Ledger Schema              | **`Storage: ALYGN Ledger (Supabase)`** (SQL migration files), a single source of truth for the `compliance_audit_log` table.              | Supabase / PostgreSQL        |
 | `packages/shared-types`  | Shared Data Types                | TypeScript interfaces for the Web app, Node.js process (servers), and C++ (e.g., event structures, violation payloads).                                    | N/A (Code Library)           |
 
 ### Deployment Strategy for C++ Services

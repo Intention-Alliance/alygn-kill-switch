@@ -70,15 +70,23 @@ export default function DashboardPage() {
       if (logsError) throw logsError;
       setAuditLogs(logsData || []);
 
-      // Calculate global stats
+      // Calculate global stats from cluster aggregations
+      const totalEvents =
+        clusterData?.reduce(
+          (acc, curr) => acc + (Number(curr.total_requests) || 0),
+          0,
+        ) || 0;
       const totalViolations =
-        logsData?.filter((l) => l.redline_violated).length || 0;
+        clusterData?.reduce(
+          (acc, curr) => acc + (Number(curr.policy_violations) || 0),
+          0,
+        ) || 0;
       const avgLat =
-        clusterData?.reduce((acc, curr) => acc + curr.avg_latency, 0) /
-        (clusterData?.length || 1);
+        (clusterData?.reduce((acc, curr) => acc + (curr.avg_latency || 0), 0) ||
+          0) / (clusterData?.length || 1);
 
       setStats({
-        totalEvents: logsData?.length || 0,
+        totalEvents,
         violations: totalViolations,
         avgLatency: avgLat || 0,
         uptime: 99.98, // Placeholder for global uptime
@@ -110,27 +118,35 @@ export default function DashboardPage() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "compliance_audit_log" },
         (payload) => {
-          setAuditLogs((prev) => [
-            payload.new as AuditLogEntry,
-            ...prev.slice(0, 49),
-          ]);
+          const newLog = payload.new as AuditLogEntry;
+          setAuditLogs((prev) => [newLog, ...prev.slice(0, 49)]);
+
+          // We increment locally for immediate feedback,
+          // but cluster updates will eventually trigger fetchData() for absolute truth
           setStats((prev) => ({
             ...prev,
             totalEvents: prev.totalEvents + 1,
-            violations:
-              prev.violations + (payload.new.redline_violated ? 1 : 0),
+            violations: prev.violations + (newLog.redline_violated ? 1 : 0),
           }));
         },
       )
       .subscribe();
 
-    // Subscribe to cluster changes for status updates
+    // Subscribe to cluster changes for status and stats updates
     const clusterChannel = supabase
       .channel("global-clusters")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "dpu_clusters" },
-        () => fetchData(), // Refresh all statistics on cluster change
+        (payload) => {
+          if (payload.eventType === "UPDATE") {
+            // If it's an update, we could surgically update the stats,
+            // but fetchData is safer to keep totals in sync with reality
+            fetchData();
+          } else {
+            fetchData();
+          }
+        },
       )
       .subscribe();
 
@@ -167,7 +183,7 @@ export default function DashboardPage() {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-            ALIGN Ledger
+            ALYGN Ledger
           </h1>
           <p className="text-muted-foreground mt-1 text-lg">
             Sovereign Compliance Monitoring Dashboard
@@ -289,7 +305,7 @@ export default function DashboardPage() {
             <div className="space-y-2">
               <h3 className="font-semibold text-lg">System Health</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                All ALIGN nodes are currently reporting within nominal
+                All ALYGN nodes are currently reporting within nominal
                 parameters. Average kill-switch latency is performing at 140%
                 above target threshold.
               </p>

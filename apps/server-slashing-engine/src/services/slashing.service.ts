@@ -2,7 +2,7 @@
  * Slashing Service
  *
  * Handles violation processing, ZKP verification, and token slashing
- * for the ALIGN Sovereign Compliance Infrastructure.
+ * for the ALYGN Sovereign Compliance Infrastructure.
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -244,7 +244,7 @@ export class SlashingService {
 
 		switch (rule.action) {
 			case "BURN":
-				// Full token burn - in production, this would call the ALIGN token contract
+				// Full token burn - in production, this would call the ALYGN token contract
 				result.amount_slashed = "100%";
 				console.log(`🔥 BURN: Full stake burned for DPU ${dpuId}`);
 

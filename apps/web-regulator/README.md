@@ -1,11 +1,11 @@
-# ALIGN Regulator Dashboard
+# ALYGN Regulator Dashboard
 ### Sovereign Compliance Infrastructure for AI Safety
 
-The **ALIGN Regulator Dashboard** is the central command center for managing the Sovereign Operating System (SOS) network. It provides real-time oversight of Data Processing Unit (DPU) clusters, ensuring that all AI workloads comply with safety redlines and intent manifests.
+The **ALYGN Regulator Dashboard** is the central command center for managing the Sovereign Operating System (SOS) network. It provides real-time oversight of Data Processing Unit (DPU) clusters, ensuring that all AI workloads comply with safety redlines and intent manifests.
 
 ## Platform Intention
 
-This platform serves as the "Regulator" node in the ALIGN network architecture. Its primary goals are:
+This platform serves as the "Regulator" node in the ALYGN network architecture. Its primary goals are:
 1.  **Hardware Registry**: Authenticate and track physical GPU resources (DPU Nodes) via cryptographic attestation.
 2.  **Compliance Oversight**: Visualize immutable audit logs for every AI inference and training job.
 3.  **Real-Time Telemetry**: Monitor the health, latency, and operational status of the distributed compute grid.

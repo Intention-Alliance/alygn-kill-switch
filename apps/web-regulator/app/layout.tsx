@@ -10,8 +10,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "ALIGN Regulator",
-  description: "Dashboard ALIGN Regulator",
+  title: "ALYGN Regulator",
+  description: "Dashboard ALYGN Regulator",
 };
 
 const figtreeSans = Figtree({

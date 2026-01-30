@@ -114,7 +114,7 @@ class App {
 		this.app.get("/", (_req, res) => {
 			res.json({
 				status: "OK",
-				message: "ALIGN Slashing Engine API",
+				message: "ALYGN Slashing Engine API",
 				version: "1.0.0",
 				endpoints: {
 					slashing: "/api/v1/slashing",
