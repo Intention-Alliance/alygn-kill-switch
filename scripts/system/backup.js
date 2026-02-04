@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /**
- * ALYGN Backup & Archive
+ * ALYGN Backup & Archive (IMPROVED)
  * 
  * Daily backup of ALYGN data and logs
  * Runs at 2:00 AM CST
+ * Uses centralized logger for Notion integration
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { success, error, LogLevel } = require('../shared/logger');
 
 const WORKSPACE = path.join(process.env.HOME, '.openclaw', 'workspace');
 const BACKUP_DIR = path.join(WORKSPACE, 'backups');
@@ -17,9 +19,9 @@ const TIMESTAMP = new Date().toISOString().split('T')[0];
 function exec(command) {
   try {
     return execSync(command, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
-  } catch (error) {
+  } catch (err) {
     console.error(`Command failed: ${command}`);
-    console.error(error.message);
+    console.error(err.message);
     return null;
   }
 }
@@ -34,7 +36,7 @@ function ensureBackupDir() {
 function backupDirectory(source, name) {
   if (!fs.existsSync(source)) {
     console.log(`⚠️ Skipping ${name}: directory not found`);
-    return false;
+    return { success: false, reason: 'not found' };
   }
   
   const targetDir = path.join(BACKUP_DIR, TIMESTAMP);
@@ -48,101 +50,82 @@ function backupDirectory(source, name) {
   const result = exec(`cp -r "${source}" "${targetPath}"`);
   
   if (result !== null) {
-    console.log(`   ✅ ${name} backed up successfully`);
-    return true;
+    const size = exec(`du -sh "${targetPath}" | cut -f1`);
+    console.log(`✅ ${name}: ${size ? size.trim() : 'done'}`);
+    return { success: true, size: size ? size.trim() : 'unknown' };
   } else {
-    console.log(`   ❌ ${name} backup failed`);
-    return false;
+    console.log(`❌ ${name}: backup failed`);
+    return { success: false, reason: 'copy failed' };
   }
 }
 
-function cleanOldBackups(keepDays = 30) {
-  console.log('');
-  console.log(`🧹 Cleaning backups older than ${keepDays} days...`);
-  
-  if (!fs.existsSync(BACKUP_DIR)) {
-    console.log('   No backups to clean');
-    return;
-  }
-  
-  const backups = fs.readdirSync(BACKUP_DIR);
-  const cutoffDate = new Date(Date.now() - keepDays * 24 * 60 * 60 * 1000);
-  
-  let removedCount = 0;
-  
-  backups.forEach(backup => {
-    const backupPath = path.join(BACKUP_DIR, backup);
-    const stats = fs.statSync(backupPath);
-    
-    if (stats.isDirectory() && stats.mtime < cutoffDate) {
-      console.log(`   🗑️ Removing old backup: ${backup}`);
-      exec(`rm -rf "${backupPath}"`);
-      removedCount++;
-    }
-  });
-  
-  if (removedCount === 0) {
-    console.log('   ✅ No old backups to remove');
-  } else {
-    console.log(`   ✅ Removed ${removedCount} old backup(s)`);
-  }
-}
-
-function generateBackupReport() {
-  console.log('');
-  console.log('📊 Backup Report:');
-  
-  const backupPath = path.join(BACKUP_DIR, TIMESTAMP);
-  if (!fs.existsSync(backupPath)) {
-    console.log('   ❌ No backup created');
-    return;
-  }
-  
-  const files = fs.readdirSync(backupPath);
-  console.log(`   ✅ Backed up ${files.length} directory/directories`);
-  
-  files.forEach(file => {
-    const filePath = path.join(backupPath, file);
-    const stats = fs.statSync(filePath);
-    const sizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-    console.log(`      - ${file}: ${sizeMB} MB`);
-  });
-}
-
-function performBackup() {
-  console.log('💾 ALYGN Backup & Archive');
-  console.log(`📅 ${TIMESTAMP}`);
-  console.log('');
+async function runBackup() {
+  console.log('🗄️ **ALYGN Daily Backup**\n');
+  console.log(`📅 ${TIMESTAMP}\n`);
   
   ensureBackupDir();
   
-  // Backup critical directories
   const backups = [
-    { source: path.join(WORKSPACE, 'alygn-automation'), name: 'alygn-automation' },
     { source: path.join(WORKSPACE, 'memory'), name: 'memory' },
     { source: path.join(WORKSPACE, 'daily-reports'), name: 'daily-reports' },
+    { source: path.join(WORKSPACE, 'logs'), name: 'logs' },
     { source: path.join(WORKSPACE, 'contact-tracking'), name: 'contact-tracking' },
-    { source: path.join(WORKSPACE, 'knowledge'), name: 'knowledge' }
+    { source: path.join(WORKSPACE, 'scripts'), name: 'scripts' },
+    { source: path.join(WORKSPACE, 'config'), name: 'config' }
   ];
   
+  const results = {};
   let successCount = 0;
-  backups.forEach(backup => {
-    if (backupDirectory(backup.source, backup.name)) {
+  let failCount = 0;
+  
+  for (const backup of backups) {
+    const result = backupDirectory(backup.source, backup.name);
+    results[backup.name] = result;
+    
+    if (result.success) {
       successCount++;
+    } else {
+      failCount++;
     }
-  });
+  }
   
-  generateBackupReport();
-  cleanOldBackups(30);
+  console.log(`\n📊 Backup Summary:`);
+  console.log(`   ✅ Success: ${successCount}`);
+  console.log(`   ❌ Failed: ${failCount}`);
   
-  console.log('');
-  console.log(`✅ Backup complete: ${successCount}/${backups.length} directories backed up`);
+  const targetDir = path.join(BACKUP_DIR, TIMESTAMP);
+  const totalSize = exec(`du -sh "${targetDir}" | cut -f1`);
+  console.log(`   📦 Total size: ${totalSize ? totalSize.trim() : 'unknown'}\n`);
+  
+  // Log to Notion
+  await success(
+    'backup',
+    `Daily Backup - ${TIMESTAMP}`,
+    `${successCount} directories backed up successfully`,
+    {
+      timestamp: TIMESTAMP,
+      successCount,
+      failCount,
+      totalSize: totalSize ? totalSize.trim() : 'unknown',
+      results
+    }
+  );
+  
+  return { successCount, failCount, results };
 }
 
 // Main execution
-try {
-  performBackup();
-} catch (error) {
-  console.error('❌ Backup failed:', error.message);
-  process.exit(1);
+if (require.main === module) {
+  runBackup()
+    .then(result => {
+      console.log('✅ Backup complete!');
+      process.exit(result.failCount > 0 ? 1 : 0);
+    })
+    .catch(err => {
+      console.error('❌ Backup failed:', err.message);
+      error('backup', 'Daily Backup Failed', err)
+        .then(() => process.exit(1));
+    });
 }
+
+module.exports = { runBackup };

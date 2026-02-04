@@ -1,106 +1,155 @@
 #!/usr/bin/env node
 /**
- * ALYGN Monthly Project Review
+ * ALYGN Monthly Review (IMPROVED)
  * 
- * Comprehensive monthly project analysis and insights
- * Runs on 1st of month at 10:00 AM CST
+ * Monthly project retrospective and strategic planning
+ * Runs on the 1st of each month at 6:00 PM CST
+ * Uses centralized logger for Notion integration
  */
 
 const fs = require('fs');
 const path = require('path');
+const { success } = require('../shared/logger');
 
-const DAILY_REPORTS_DIR = path.join(__dirname, '../daily-reports');
 const MEMORY_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', 'memory');
 
-function getLastMonth() {
-  const now = new Date();
-  const year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear();
-  const month = now.getMonth() === 0 ? 11 : now.getMonth() - 1;
+function getThisMonth() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
   
-  return { year, month: month + 1, monthName: new Date(year, month).toLocaleString('en-US', { month: 'long' }) };
-}
-
-function getDaysInMonth(year, month) {
   const dates = [];
-  const daysInMonth = new Date(year, month, 0).getDate();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month - 1, day);
+    const date = new Date(year, month, day);
     dates.push(date.toISOString().split('T')[0]);
   }
   
   return dates;
 }
 
-function generateMonthlyReview() {
-  const lastMonth = getLastMonth();
-  const dates = getDaysInMonth(lastMonth.year, lastMonth.month);
+function getMonthName() {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                  'July', 'August', 'September', 'October', 'November', 'December'];
+  return months[new Date().getMonth()];
+}
+
+async function analyzeMonth() {
+  const monthDates = getThisMonth();
+  const monthName = getMonthName();
+  const year = new Date().getFullYear();
   
-  console.log('📊 ALYGN Monthly Project Review');
-  console.log(`📅 ${lastMonth.monthName} ${lastMonth.year}`);
-  console.log('═'.repeat(50));
-  console.log('');
+  console.log('📊 **ALYGN Monthly Review**\n');
+  console.log(`📅 ${monthName} ${year}\n`);
   
-  // Activity Analysis
-  console.log('📈 Activity Analysis:');
+  // Count days with memory entries
   let activeDays = 0;
-  let totalReports = 0;
+  const weeklyBreakdown = [];
   
-  dates.forEach(date => {
-    const reportFile = path.join(DAILY_REPORTS_DIR, `${date}-summary.txt`);
-    if (fs.existsSync(reportFile)) {
+  monthDates.forEach(date => {
+    const memoryFile = path.join(MEMORY_DIR, `${date}.md`);
+    if (fs.existsSync(memoryFile)) {
       activeDays++;
-      totalReports++;
     }
   });
   
-  console.log(`   Active Days: ${activeDays}/${dates.length} (${((activeDays/dates.length)*100).toFixed(1)}%)`);
-  console.log(`   Reports Generated: ${totalReports}`);
+  const activityRate = Math.round((activeDays / monthDates.length) * 100);
+  
+  console.log('📊 **Monthly Activity Summary:**');
+  console.log(`   Active days: ${activeDays}/${monthDates.length} (${activityRate}%)\n`);
+  
+  // Monthly highlights
+  const highlights = {
+    technical: [
+      'Centralized logging system implemented',
+      'Grok API integration completed',
+      'Multi-org automation deployed'
+    ],
+    organizational: [
+      'Daily tracking operational',
+      'VC outreach system established',
+      'Contact tracking automated'
+    ],
+    growth: [
+      'Twitter automation with Grok',
+      'Morning briefing audio system',
+      'Health monitoring active'
+    ]
+  };
+  
+  console.log('🎯 **Monthly Highlights:**\n');
+  console.log('**Technical Achievements:**');
+  highlights.technical.forEach(h => console.log(`- ${h}`));
   console.log('');
   
-  // Project Highlights
-  console.log('🎯 Project Highlights:');
-  console.log('   ✅ ALYGN automation system deployed');
-  console.log('   ✅ Daily tracking and monitoring operational');
-  console.log('   ✅ Integration with Notion, GitHub, WhatsApp');
-  console.log('   ✅ Proactive Jacobo communication tracking');
+  console.log('**Organizational:**');
+  highlights.organizational.forEach(h => console.log(`- ${h}`));
   console.log('');
   
-  // Key Metrics
-  console.log('📊 Key Metrics:');
-  console.log(`   Daily Reports: ${totalReports}`);
-  console.log('   GitHub Commits: (tracking started this month)');
-  console.log('   Notion Pages: (tracking started this month)');
+  console.log('**Growth Initiatives:**');
+  highlights.growth.forEach(h => console.log(`- ${h}`));
   console.log('');
   
-  // Lessons Learned
-  console.log('💡 Lessons Learned:');
-  console.log('   • Automation reduces cognitive load significantly');
-  console.log('   • Daily tracking provides valuable context continuity');
-  console.log('   • Proactive monitoring prevents communication gaps');
-  console.log('   • Structured reporting helps identify patterns');
+  // Strategic focus for next month
+  const nextMonthFocus = [
+    'Scale Twitter engagement automation',
+    'Complete VC outreach with contact discovery',
+    'Enhance daily briefing intelligence',
+    'Implement cross-project analytics'
+  ];
+  
+  console.log('🚀 **Next Month Focus:**');
+  nextMonthFocus.forEach(f => console.log(`- [ ] ${f}`));
   console.log('');
   
-  // Next Month Goals
-  const nextMonth = new Date(lastMonth.year, lastMonth.month);
-  const nextMonthName = nextMonth.toLocaleString('en-US', { month: 'long' });
+  // Areas for improvement
+  const improvements = [
+    'Increase GitHub commit frequency',
+    'More proactive Notion updates',
+    'Better time allocation for deep work',
+    'Strengthen Jacobo collaboration'
+  ];
   
-  console.log(`🚀 ${nextMonthName} Goals:`);
-  console.log('   1. Increase daily activity consistency to 90%+');
-  console.log('   2. Complete Intention Alliance core deliverables');
-  console.log('   3. Enhance GitHub commit frequency');
-  console.log('   4. Expand automation workflows');
-  console.log('   5. Strengthen Jacobo collaboration');
+  console.log('💡 **Areas for Improvement:**');
+  improvements.forEach(i => console.log(`- ${i}`));
   console.log('');
   
-  console.log('═'.repeat(50));
-  console.log('💪 Another month of progress! Keep building, Andler!');
+  const summary = {
+    month: monthName,
+    year,
+    activeDays,
+    totalDays: monthDates.length,
+    activityRate: `${activityRate}%`,
+    highlights,
+    nextMonthFocus,
+    improvements
+  };
+  
+  // Log to Notion
+  await success(
+    'monthly-review',
+    `Monthly Review - ${monthName} ${year}`,
+    `${activeDays}/${monthDates.length} active days (${activityRate}%)`,
+    summary
+  );
+  
+  console.log('🎉 **Great month! Keep the momentum going!**\n');
+  
+  return summary;
 }
 
 // Main execution
-try {
-  generateMonthlyReview();
-} catch (error) {
-  console.error('❌ Monthly review failed:', error.message);
-  process.exit(1);
+if (require.main === module) {
+  analyzeMonth()
+    .then(() => {
+      console.log('✅ Monthly review complete!');
+      process.exit(0);
+    })
+    .catch(error => {
+      console.error('❌ Monthly review failed:', error.message);
+      process.exit(1);
+    });
 }
+
+module.exports = { analyzeMonth };

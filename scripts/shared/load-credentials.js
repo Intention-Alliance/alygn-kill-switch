@@ -64,6 +64,7 @@ function getCredential(path, required = true) {
 // Convenience getters
 const getNotionKey = () => getCredential('notion.apiKey');
 const getNotionPage = (name) => getCredential(`notion.pages.${name}`);
+const getNotionDatabase = (name) => getCredential(`notion.databases.${name}`);
 const getGrokKey = () => getCredential('grok.apiKey');
 const getGrokModel = () => getCredential('grok.model', false) || 'grok-4-latest';
 const getTwitterHandle = () => getCredential('twitter.handle', false);
@@ -113,6 +114,7 @@ module.exports = {
   getCredential,
   getNotionKey,
   getNotionPage,
+  getNotionDatabase,
   getGrokKey,
   getGrokModel,
   getTwitterHandle,

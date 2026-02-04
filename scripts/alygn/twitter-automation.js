@@ -1,327 +1,307 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 /**
- * ALYGN Twitter/X Automation - Grok Integration
- * Fetches prompts from Notion and executes them via Grok API
+ * ALYGN Twitter/X Automation - Grok Integration (Modern Fetch API)
  * 
- * Notion Pages:
- * - Prompts: https://www.notion.so/Twitter-X-Growth-Strategy-2fc334874af681889a5fd95a1fa1dd72
- * - Logs: https://www.notion.so/Automation-Logs-2fc334874af681e3a0f1d8fe3001a98e
+ * Uses Grok API with prompt engineering for real-time tweet data
+ * Documentation: https://docs.x.ai/docs
  */
 
-const https = require('https');
-const { getNotionKey, getGrokKey, getGrokModel, getNotionPage } = require('../shared/load-credentials');
+import { promises as fs } from 'fs';
+import path from 'path';
+import { getNotionKey, getGrokKey, getNotionPage } from '../shared/load-credentials.js';
+import { log, success, error, LogLevel } from '../shared/logger.js';
 
 const NOTION_API_KEY = getNotionKey();
 const GROK_API_KEY = getGrokKey();
-const GROK_MODEL = getGrokModel();
+const GROK_MODEL = 'grok-4-1-fast';
 const TWITTER_PROMPTS_PAGE_ID = getNotionPage('twitter_prompts');
-const AUTOMATION_LOGS_PAGE_ID = getNotionPage('automation_logs');
 
+/**
+ * Modern fetch-based Notion request
+ */
 async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
+  const response = await fetch(`https://api.notion.com/v1${endpoint}`, {
+    method,
+    headers: {
+      'Authorization': `Bearer ${NOTION_API_KEY}`,
+      'Notion-Version': '2022-06-28',
+      'Content-Type': 'application/json'
+    },
+    body: body ? JSON.stringify(body) : undefined
   });
+
+  const data = await response.json();
+  
+  if (!response.ok) {
+    throw new Error(`Notion API error: ${data.message || JSON.stringify(data)}`);
+  }
+  
+  return data;
 }
 
-async function grokRequest(prompt) {
+/**
+ * Enhanced Grok Request with Search Instructions
+ * Uses modern fetch API
+ */
+async function grokRequestWithSearch(prompt, useSearch = false) {
   if (!GROK_API_KEY || GROK_API_KEY === 'PENDING') {
-    throw new Error('GROK_API_KEY not configured. Check config/credentials.json');
+    throw new Error('GROK_API_KEY not configured');
   }
+  
+  // Enhance prompt to trigger search if needed
+  const today = new Date().toISOString().split('T')[0];
+  const enhancedPrompt = useSearch
+    ? `[SEARCH X/TWITTER] ${prompt}\n\nIMPORTANT: Search X (Twitter) for today's (${today}) most recent and relevant posts. Provide actual tweet examples with engagement metrics if available.`
+    : prompt;
 
-  return new Promise((resolve, reject) => {
-    const postData = JSON.stringify({
-      model: GROK_MODEL,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7
-    });
-
-    const options = {
-      hostname: 'api.x.ai',
-      path: '/v1/chat/completions',
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${GROK_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
+  const requestBody = {
+    model: GROK_MODEL,
+    messages: [
+      {
+        role: "system",
+        content: "You are Grok with real-time access to X (Twitter). When instructed to search, provide current information from today's tweets."
+      },
+      {
+        role: "user",
+        content: enhancedPrompt
       }
-    };
+    ],
+    temperature: 0.7,
+    stream: false
+  };
 
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Grok API error: ${parsed.error?.message || data}`));
-          } else {
-            resolve(parsed.choices[0].message.content);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse Grok response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    req.write(postData);
-    req.end();
+  const response = await fetch('https://api.x.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${GROK_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestBody)
   });
-}
 
-async function logToNotion(promptNumber, status, details) {
-  const timestamp = new Date().toISOString();
-  const logEntry = `[${timestamp}] Prompt #${promptNumber} - ${status}\n${details}`;
-
-  try {
-    // Append to Automation Logs page
-    await notionRequest('PATCH', `/v1/blocks/${AUTOMATION_LOGS_PAGE_ID}/children`, {
-      children: [
-        {
-          object: 'block',
-          type: 'paragraph',
-          paragraph: {
-            rich_text: [
-              {
-                type: 'text',
-                text: { content: logEntry }
-              }
-            ]
-          }
-        }
-      ]
-    });
-  } catch (error) {
-    console.error('Failed to log to Notion:', error.message);
+  const data = await response.json();
+  
+  if (!response.ok) {
+    throw new Error(`Grok API error: ${data.error?.message || JSON.stringify(data)}`);
   }
+
+  return {
+    content: data.choices[0].message.content,
+    citations: data.citations || [],
+    toolCalls: data.tool_calls || [],
+    model: data.model,
+    usage: data.usage
+  };
 }
 
+/**
+ * Fetch prompt from Notion
+ */
 async function fetchPromptFromNotion(promptNumber) {
-  console.log(`📖 Fetching Prompt #${promptNumber} from Notion...`);
-
-  // Fetch blocks from Twitter/X Growth Strategy page
-  const response = await notionRequest('GET', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
-
-  // Find the paragraph matching "[Prompt #N]"
-  let promptText = null;
+  const response = await notionRequest('GET', `/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
 
   for (const block of response.results) {
     if (block.type === 'paragraph') {
       const text = block.paragraph.rich_text.map(rt => rt.text.content).join('');
       
-      // Format: [Prompt #N] Title: 'prompt text' or "prompt text"
       if (text.includes(`[Prompt #${promptNumber}]`)) {
-        // Extract the quoted text after the colon
         const match = text.match(/:\s*['"](.+?)['"]\s*$/);
         if (match) {
-          promptText = match[1];
-        } else {
-          // Fallback: take everything after the colon
-          const colonIndex = text.indexOf(':');
-          if (colonIndex > -1) {
-            promptText = text.substring(colonIndex + 1).trim().replace(/^['"]|['"]$/g, '');
-          }
+          return {
+            number: promptNumber,
+            title: text.match(/\[Prompt #\d+\]\s*(.+?):/)?.[1]?.trim() || 'Untitled',
+            text: match[1]
+          };
         }
-        break;
       }
     }
   }
 
-  if (!promptText) {
-    throw new Error(`Prompt #${promptNumber} not found in Twitter/X Growth Strategy page`);
-  }
-
-  console.log(`✅ Found: ${promptText.substring(0, 100)}...`);
-  return promptText;
+  throw new Error(`Prompt #${promptNumber} not found`);
 }
 
-async function executePrompt(promptNumber, context = {}) {
-  console.log(`\n🚀 Executing Prompt #${promptNumber}`);
-  console.log('================================\n');
-
-  try {
-    // Fetch prompt from Notion
-    const promptTemplate = await fetchPromptFromNotion(promptNumber);
-
-    // Replace placeholders if any
-    let finalPrompt = promptTemplate;
-    for (const [key, value] of Object.entries(context)) {
-      finalPrompt = finalPrompt.replace(new RegExp(`\\[${key}\\]`, 'g'), value);
-    }
-
-    console.log(`📝 Prompt: ${finalPrompt.substring(0, 150)}...\n`);
-
-    // Execute via Grok
-    if (!GROK_API_KEY) {
-      console.log('⚠️  Grok API key not set - skipping AI execution');
-      console.log('ℹ️  Set GROK_API_KEY environment variable to enable\n');
-      
-      await logToNotion(promptNumber, 'DRY RUN', `Prompt: ${finalPrompt.substring(0, 200)}`);
-      
-      return `[DRY RUN] Would execute: ${finalPrompt}`;
-    }
-
-    console.log('🤖 Calling Grok API...\n');
-    const response = await grokRequest(finalPrompt);
-
-    console.log('✅ Grok Response:\n');
-    console.log(response);
-    console.log('\n================================\n');
-
-    // Log to Notion
-    await logToNotion(
-      promptNumber,
-      'SUCCESS',
-      `Prompt: ${finalPrompt.substring(0, 200)}\n\nResponse: ${response.substring(0, 500)}`
-    );
-
-    return response;
-
-  } catch (error) {
-    console.error('❌ Error:', error.message);
-    
-    await logToNotion(
-      promptNumber,
-      'ERROR',
-      `Error: ${error.message}`
-    );
-    
-    throw error;
-  }
-}
-
+/**
+ * List all prompts
+ */
 async function listPrompts() {
-  console.log('📋 Listing all prompts from Twitter/X Growth Strategy\n');
-
-  const response = await notionRequest('GET', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
-
+  const response = await notionRequest('GET', `/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
   const prompts = [];
 
   for (const block of response.results) {
     if (block.type === 'paragraph') {
       const text = block.paragraph.rich_text.map(rt => rt.text.content).join('');
+      const match = text.match(/\[Prompt #(\d+)\]\s*(.+?):\s*['"](.+?)['"]/);
       
-      // Format: [Prompt #N] Title: 'prompt text'
-      const match = text.match(/\[Prompt #(\d+)\]\s*([^:]+):/);
       if (match) {
-        const promptNumber = parseInt(match[1]);
-        const title = match[2].trim();
-        
-        // Extract preview (first 80 chars of prompt text after colon)
-        const colonIndex = text.indexOf(':', match.index);
-        let preview = '';
-        if (colonIndex > -1) {
-          preview = text.substring(colonIndex + 1).trim().replace(/^['"]/, '').substring(0, 80);
-        }
-        
-        prompts.push({ number: promptNumber, title, preview });
+        prompts.push({
+          number: parseInt(match[1]),
+          title: match[2].trim(),
+          preview: match[3].substring(0, 80) + '...'
+        });
       }
     }
   }
 
-  prompts.sort((a, b) => a.number - b.number);
-
-  prompts.forEach(p => {
-    console.log(`#${p.number}: ${p.title}`);
-    if (p.preview) console.log(`   ${p.preview}...`);
-    console.log('');
-  });
-
-  console.log(`Total: ${prompts.length} prompts found\n`);
+  return prompts.sort((a, b) => a.number - b.number);
 }
 
-// CLI usage
-if (require.main === module) {
-  const [,, cmd, ...args] = process.argv;
+/**
+ * Execute prompt with Grok (with optional X Search via prompt engineering)
+ */
+async function executePrompt(promptNumber, useSearch = false) {
+  try {
+    // Fetch prompt
+    const prompt = await fetchPromptFromNotion(promptNumber);
+    
+    await log({
+      type: 'twitter-automation',
+      title: `Executing Prompt #${promptNumber}: ${prompt.title}`,
+      level: LogLevel.INFO,
+      summary: `Fetching response from Grok${useSearch ? ' (with X Search prompt)' : ''}`,
+      details: { prompt: prompt.text, useSearch },
+      notionParent: 'organizations_todos'
+    });
 
-  if (cmd === 'exec') {
-    const promptNumber = parseInt(args[0]);
-    const contextStr = args[1] || '{}';
-    let context = {};
-    try {
-      context = JSON.parse(contextStr);
-    } catch (e) {
-      console.error('Invalid context JSON:', e.message);
-      process.exit(1);
+    // Execute with Grok
+    const response = await grokRequestWithSearch(prompt.text, useSearch);
+    
+    // Format response as markdown
+    let outputMd = `# Twitter Automation - Prompt #${promptNumber}\n\n`;
+    outputMd += `## ${prompt.title}\n\n`;
+    outputMd += `**Executed:** ${new Date().toISOString()}\n`;
+    outputMd += `**Model:** ${response.model}\n`;
+    outputMd += `**X Search Enabled:** ${useSearch ? 'Yes' : 'No'}\n\n`;
+    
+    if (response.citations && response.citations.length > 0) {
+      outputMd += `### 🔍 Citations\n\n`;
+      outputMd += `Found ${response.citations.length} sources:\n\n`;
+      response.citations.forEach((citation, i) => {
+        outputMd += `${i + 1}. ${citation}\n`;
+      });
+      outputMd += '\n';
+    }
+    
+    if (response.toolCalls && response.toolCalls.length > 0) {
+      outputMd += `### 🛠️ Tool Calls\n\n`;
+      response.toolCalls.forEach((call, i) => {
+        outputMd += `${i + 1}. ${call.function.name}\n`;
+        outputMd += `   Args: ${JSON.stringify(call.function.arguments, null, 2)}\n`;
+      });
+      outputMd += '\n';
+    }
+    
+    outputMd += `### 📝 Response\n\n`;
+    outputMd += response.content;
+    outputMd += `\n\n---\n\n`;
+    
+    if (response.usage) {
+      outputMd += `**Tokens Used:** ${response.usage.total_tokens}\n`;
+      outputMd += `**Prompt Tokens:** ${response.usage.prompt_tokens}\n`;
+      outputMd += `**Completion Tokens:** ${response.usage.completion_tokens}\n`;
     }
 
-    executePrompt(promptNumber, context)
-      .then(() => process.exit(0))
-      .catch(err => {
-        console.error('\n❌ Failed:', err.message);
-        process.exit(1);
-      });
+    // Log success with complete output
+    await success(
+      'twitter-automation',
+      `Prompt #${promptNumber} Completed Successfully`,
+      `Generated ${response.content.length} characters${response.citations.length > 0 ? ` with ${response.citations.length} citations` : ''}`,
+      outputMd
+    );
 
-  } else if (cmd === 'fetch') {
-    const promptNumber = parseInt(args[0]);
-    fetchPromptFromNotion(promptNumber)
-      .then(prompt => {
-        console.log('\n📝 Prompt Text:\n');
-        console.log(prompt);
-        process.exit(0);
-      })
-      .catch(err => {
-        console.error('Error:', err.message);
-        process.exit(1);
-      });
+    // Save to local file for reference
+    const outputDir = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs');
+    await fs.mkdir(outputDir, { recursive: true });
+    const filename = `prompt-${promptNumber}-${Date.now()}.md`;
+    await fs.writeFile(path.join(outputDir, filename), outputMd);
 
-  } else if (cmd === 'list') {
-    listPrompts()
-      .then(() => process.exit(0))
-      .catch(err => {
-        console.error('Error:', err.message);
-        process.exit(1);
-      });
+    return {
+      success: true,
+      prompt,
+      response: response.content,
+      citations: response.citations,
+      toolCalls: response.toolCalls,
+      outputFile: filename
+    };
 
-  } else {
-    console.log('ALYGN Twitter/X Automation - Grok Integration\n');
-    console.log('Usage:');
-    console.log('  node twitter-automation.js exec <prompt-number> [context-json]');
-    console.log('  node twitter-automation.js fetch <prompt-number>');
-    console.log('  node twitter-automation.js list');
-    console.log('\nExamples:');
-    console.log('  node twitter-automation.js exec 1');
-    console.log('  node twitter-automation.js exec 6 \'{"topic":"AGI safety"}\'');
-    console.log('  node twitter-automation.js fetch 15');
-    console.log('  node twitter-automation.js list');
+  } catch (err) {
+    await error(
+      'twitter-automation',
+      `Prompt #${promptNumber} Failed`,
+      err
+    );
+    throw err;
+  }
+}
+
+/**
+ * Main CLI
+ */
+async function main() {
+  const command = process.argv[2];
+  const arg = process.argv[3];
+
+  try {
+    if (command === 'list') {
+      console.log('📋 Listing all prompts from Twitter/X Growth Strategy\n');
+      const prompts = await listPrompts();
+      
+      for (const p of prompts) {
+        console.log(`#${p.number}: ${p.title}`);
+        console.log(`   ${p.preview}\n`);
+      }
+      
+      console.log(`\nTotal: ${prompts.length} prompts available`);
+      
+    } else if (command === 'fetch' && arg) {
+      const promptNumber = parseInt(arg);
+      const prompt = await fetchPromptFromNotion(promptNumber);
+      
+      console.log(`\n📖 Prompt #${promptNumber}: ${prompt.title}\n`);
+      console.log(`Full text:\n"${prompt.text}"\n`);
+      
+    } else if (command === 'exec' && arg) {
+      const promptNumber = parseInt(arg);
+      const useSearch = process.argv.includes('--search');
+      
+      console.log(`\n🚀 Executing Prompt #${promptNumber}${useSearch ? ' (with X Search)' : ''}...\n`);
+      
+      const result = await executePrompt(promptNumber, useSearch);
+      
+      console.log('\n✅ Execution complete!');
+      console.log(`   Output saved: ${result.outputFile}`);
+      console.log(`   Response length: ${result.response.length} chars`);
+      
+      if (result.citations && result.citations.length > 0) {
+        console.log(`   Citations: ${result.citations.length} sources`);
+      }
+      
+      if (result.toolCalls && result.toolCalls.length > 0) {
+        console.log(`   Tool calls: ${result.toolCalls.length} executions`);
+      }
+      
+    } else {
+      console.log('ALYGN Twitter Automation (with X Search)\n');
+      console.log('Usage:');
+      console.log('  bun twitter-automation.js list                    # List all prompts');
+      console.log('  bun twitter-automation.js fetch <number>          # Fetch prompt text');
+      console.log('  bun twitter-automation.js exec <number>           # Execute prompt');
+      console.log('  bun twitter-automation.js exec <number> --search  # Execute with X Search (real tweets)');
+      console.log('\nExamples:');
+      console.log('  bun twitter-automation.js list');
+      console.log('  bun twitter-automation.js exec 1');
+      console.log('  bun twitter-automation.js exec 13 --search        # Trend monitoring with real tweets');
+    }
+
+  } catch (err) {
+    console.error('\n❌ Error:', err.message);
     process.exit(1);
   }
 }
 
-module.exports = {
-  executePrompt,
-  fetchPromptFromNotion,
-  grokRequest,
-  logToNotion
-};
+// Run if main module
+if (import.meta.main) {
+  main();
+}
+
+export { executePrompt, listPrompts, fetchPromptFromNotion };

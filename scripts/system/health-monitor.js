@@ -1,23 +1,31 @@
 #!/usr/bin/env node
 /**
- * ALYGN Project Health Monitor
+ * ALYGN Project Health Monitor (IMPROVED)
  * 
  * Monitors project health metrics and alerts on anomalies
  * Runs every 6 hours
+ * Uses centralized logger for Notion integration
  */
 
 const fs = require('fs');
 const path = require('path');
+const { success, warning } = require('../shared/logger');
 
-const DAILY_REPORTS_DIR = path.join(__dirname, '../daily-reports');
-const HEALTH_LOG = path.join(__dirname, '../logs/health-monitor.log');
+const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
+const DAILY_REPORTS_DIR = path.join(WORKSPACE, 'daily-reports');
 
-function checkSystemHealth() {
-  console.log('🏥 ALYGN Project Health Monitor');
-  console.log(`📅 ${new Date().toISOString()}`);
-  console.log('');
+async function checkSystemHealth() {
+  console.log('🏥 **ALYGN Project Health Monitor**\n');
+  console.log(`📅 ${new Date().toISOString()}\n`);
   
   const issues = [];
+  const checks = {
+    dailyReports: false,
+    contactTracking: false,
+    workspace: false,
+    memory: false,
+    logs: false
+  };
   
   // Check daily reports directory
   if (!fs.existsSync(DAILY_REPORTS_DIR)) {
@@ -25,60 +33,86 @@ function checkSystemHealth() {
   } else {
     const files = fs.readdirSync(DAILY_REPORTS_DIR);
     console.log(`✅ Daily reports: ${files.length} files`);
+    checks.dailyReports = true;
   }
   
   // Check contact tracking
-  const contactTrackingDir = path.join(process.env.HOME, '.openclaw', 'workspace', 'contact-tracking');
+  const contactTrackingDir = path.join(WORKSPACE, 'contact-tracking');
   if (!fs.existsSync(contactTrackingDir)) {
     issues.push('⚠️ Contact tracking directory missing');
   } else {
     console.log('✅ Contact tracking: operational');
+    checks.contactTracking = true;
   }
   
   // Check workspace
-  const workspace = path.join(process.env.HOME, '.openclaw', 'workspace');
-  if (!fs.existsSync(workspace)) {
+  if (!fs.existsSync(WORKSPACE)) {
     issues.push('❌ CRITICAL: Workspace directory missing');
   } else {
     console.log('✅ Workspace: accessible');
+    checks.workspace = true;
   }
   
   // Check memory directory
-  const memoryDir = path.join(workspace, 'memory');
+  const memoryDir = path.join(WORKSPACE, 'memory');
   if (!fs.existsSync(memoryDir)) {
     issues.push('⚠️ Memory directory missing');
   } else {
     const memoryFiles = fs.readdirSync(memoryDir).filter(f => f.endsWith('.md'));
     console.log(`✅ Memory files: ${memoryFiles.length}`);
+    checks.memory = true;
+  }
+  
+  // Check logs directory
+  const logsDir = path.join(WORKSPACE, 'logs');
+  if (!fs.existsSync(logsDir)) {
+    issues.push('⚠️ Logs directory missing');
+  } else {
+    console.log('✅ Logs: operational');
+    checks.logs = true;
   }
   
   console.log('');
   
+  const healthStatus = issues.length === 0 ? 'OPTIMAL' : `${issues.length} ISSUES`;
+  
   if (issues.length === 0) {
     console.log('✅ System health: OPTIMAL');
-    console.log('   All subsystems operational');
+    console.log('   All subsystems operational\n');
+    
+    await success(
+      'health-monitor',
+      'System Health Check - All Systems Operational',
+      'No issues detected',
+      checks
+    );
   } else {
-    console.log(`⚠️ System health: ${issues.length} issue(s) detected`);
-    console.log('');
+    console.log(`⚠️ System health: ${issues.length} issue(s) detected\n`);
     issues.forEach(issue => console.log(`   ${issue}`));
-    console.log('');
-    console.log('💡 Action required: Review system configuration');
+    console.log('\n💡 Action required: Review system configuration\n');
+    
+    await warning(
+      'health-monitor',
+      `System Health Check - ${issues.length} Issues Detected`,
+      issues.join(', '),
+      { checks, issues }
+    );
   }
   
-  // Log health check
-  const logDir = path.dirname(HEALTH_LOG);
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true });
-  }
-  
-  const logEntry = `[${new Date().toISOString()}] Health check: ${issues.length === 0 ? 'OK' : 'ISSUES: ' + issues.join(', ')}\n`;
-  fs.appendFileSync(HEALTH_LOG, logEntry);
+  return { healthStatus, issues, checks };
 }
 
 // Main execution
-try {
-  checkSystemHealth();
-} catch (error) {
-  console.error('❌ Health monitor failed:', error.message);
-  process.exit(1);
+if (require.main === module) {
+  checkSystemHealth()
+    .then(result => {
+      console.log(`✅ Health check complete: ${result.healthStatus}`);
+      process.exit(result.issues.length > 0 ? 1 : 0);
+    })
+    .catch(error => {
+      console.error('❌ Health monitor failed:', error.message);
+      process.exit(1);
+    });
 }
+
+module.exports = { checkSystemHealth };
