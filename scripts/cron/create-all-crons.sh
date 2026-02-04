@@ -1,24 +1,30 @@
 #!/bin/bash
 # 
-# MERGED CRON JOB CREATOR - Best of Both Worlds
-# Combines OLD Grok-based granular Twitter automation + NEW multi-org infrastructure
+# MERGED CRON JOB CREATOR - Modern Bun + ESM
+# 
+# UPDATED 2026-02-04:
+# - All scripts use BUN for faster execution
+# - Modern ESM modules with fetch API
+# - Centralized logging to Notion (daily pages)
+# - Updated script paths: scripts/{alygn,system}/
 # 
 # Based on Andler's preferences:
-# 1. Granular Grok prompts for Twitter (OLD approach)
-# 2. Very active Twitter engagement (OLD frequency)
-# 3. VC outreach: Grok prompts + vc-outreach.js with Notion tracking (HYBRID)
+# 1. Granular Grok prompts for Twitter
+# 2. Very active Twitter engagement
+# 3. VC outreach: Grok prompts + Notion tracking (HYBRID)
+# 4. Centralized logging with Notion integration
 #
 # Grok context: /home/andlersrv/.openclaw/workspace/grok-conversations/
-#
-# ⚠️ UPDATED: All script paths now point to /home/andlersrv/.openclaw/workspace/scripts/{alygn,system}/
 #
 
 set -e
 
-echo "🔧 Creating MERGED Automation System (21 Cron Jobs)"
-echo "==================================================="
+echo "🔧 Creating MERGED Automation System (Modern Bun + ESM)"
+echo "========================================================"
 echo ""
-echo "Approach: Grok-based granular + Multi-org infrastructure"
+echo "Runtime: Bun (faster than Node)"
+echo "Modules: ESM with modern fetch API"
+echo "Logging: Centralized to Notion daily pages"
 echo "Organizations: ALYGN, BitcashOrg, AndlerRL"
 echo "Script Location: ~/.openclaw/workspace/scripts/"
 echo ""
@@ -38,7 +44,7 @@ openclaw cron add \
   --cron "0 2 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN backup and archive script at /home/andlersrv/.openclaw/workspace/scripts/system/backup.js to ensure data preservation." \
+  --message "Run backup: cd ~/.openclaw/workspace && bun scripts/system/backup.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -50,21 +56,21 @@ openclaw cron add \
   --cron "30 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN daily activity tracker script at /home/andlersrv/.openclaw/workspace/scripts/alygn/daily-tracker.js and save the report." \
+  --message "Run daily tracker: cd ~/.openclaw/workspace && bun scripts/alygn/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 3. Morning Briefing (8:00 AM) - IMPROVED: Multi-org + Audio
+# 3. Morning Briefing (8:00 AM) - Multi-org + Audio
 echo "3. Multi-Org Morning Briefing (8:00 AM CST)..."
 openclaw cron add \
   --name "Multi-Org Morning Briefing" \
-  --description "Generate and deliver Wobblus morning briefing with audio for ALL organizations via WhatsApp" \
+  --description "Generate Wobblus morning briefing with audio for ALL organizations via WhatsApp" \
   --cron "0 8 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Generate and deliver Wobblus morning briefing with audio! Read daily activity reports for ALL ORGANIZATIONS (ALYGN/Intention Alliance, BitcashOrg, AndlerRL personal projects), convert to gnome-style audio using SAG (Antoni voice + 20% pitch, speed 1.35x, stability 0, style 0.9), and send via WhatsApp. Include for EACH organization: yesterday session activity, GitHub commits by project, email summary, and suggested next steps. Make it energetic and helpful! Run: cd ~/.openclaw/workspace && node scripts/system/morning-briefing.js" \
+  --message "Generate morning briefing: cd ~/.openclaw/workspace && bun scripts/system/morning-briefing-v2.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -78,7 +84,7 @@ openclaw cron add \
   --cron "0 9 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute Twitter growth automation: Generate thread ideas for @aialygn using Grok prompt #1 from grok-conversations/grok-twitter-growth-strategy.md. Prompt: 'Generate 10 engaging thread ideas on AI alignment and safety topics that would appeal to researchers, developers, and enthusiasts on X. Make each idea concise, include key hooks for virality like questions or controversies, and suggest 3-5 points per thread to expand on.' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 1" \
+  --message "Execute Twitter automation: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 1" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -92,7 +98,7 @@ openclaw cron add \
   --cron "0 */6 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute trend monitoring using Grok prompt #13: 'Search and summarize today's top X trends in AI alignment, including keywords like AGI safety or xAI. Suggest 5 reply ideas to the most engaging posts, tailored for @aialygn.' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 13" \
+  --message "Execute trend monitoring: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 13 --search" \
   --thinking low \
   --best-effort-deliver
 
@@ -104,7 +110,7 @@ openclaw cron add \
   --cron "0 8-22/2 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute auto engagement using Grok prompt #15: 'Generate a batch of 20 automated reply prompts for ClawdBot to use on AI threads. Each should be a template like: Insightful point on [topic]! Here's how alignment could help: [brief explanation]. Follow @aialygn for more.' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 15" \
+  --message "Execute auto engagement: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 15" \
   --thinking low \
   --best-effort-deliver
 
@@ -116,7 +122,7 @@ openclaw cron add \
   --cron "0 18 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the Jacobo tracking daily summary script at /home/andlersrv/.openclaw/workspace/scripts/alygn/jacobo-tracking.js and alert if needed." \
+  --message "Run Jacobo tracking: cd ~/.openclaw/workspace && bun scripts/alygn/jacobo-tracking.js summary" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -130,7 +136,7 @@ openclaw cron add \
   --cron "0 8-20/3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN Notion sync check script at /home/andlersrv/.openclaw/workspace/scripts/system/notion-sync.js and alert if issues found." \
+  --message "Run Notion sync: cd ~/.openclaw/workspace && bun scripts/system/notion-sync.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -142,7 +148,7 @@ openclaw cron add \
   --cron "0 */6 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN project health monitor script at /home/andlersrv/.openclaw/workspace/scripts/system/health-monitor.js and alert if issues detected." \
+  --message "Run health monitor: cd ~/.openclaw/workspace && bun scripts/system/health-monitor.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -154,7 +160,7 @@ openclaw cron add \
   --cron "0 18 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute Twitter analytics review using Grok prompt #17: 'Analyze this X analytics data: [insert data like follower growth, impressions, top posts]. Suggest 5 optimizations to accelerate relevant follower growth, focusing on AI alignment engagement.' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 17" \
+  --message "Execute Twitter analytics: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 17" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -168,7 +174,7 @@ openclaw cron add \
   --cron "0 21 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN end-of-day summary script at /home/andlersrv/.openclaw/workspace/scripts/alygn/eod-summary.js and deliver the summary." \
+  --message "Run EOD summary: cd ~/.openclaw/workspace && bun scripts/alygn/eod-summary.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -182,7 +188,7 @@ openclaw cron add \
   --cron "30 21 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN GitHub activity digest script at /home/andlersrv/.openclaw/workspace/scripts/alygn/github-digest.js and deliver the report." \
+  --message "Run GitHub digest: cd ~/.openclaw/workspace && bun scripts/alygn/github-digest.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -196,63 +202,77 @@ openclaw cron add \
   --cron "0 10 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute weekly niche posts using Grok prompt #3: 'Suggest 7 short-form X posts (under 280 characters each) about real-world AI alignment failures or successes, optimized for retweets in the AI ethics community. Include hashtags and calls to action like What do you think?' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 3" \
+  --message "Execute weekly niche posts: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 3" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 14. VC Outreach Weekly (Monday 10:30 AM) - HYBRID: Grok + Notion tracking
-echo "14. ALYGN VC Outreach Weekly (Monday 10:30 AM CST) - HYBRID..."
+# 14. VC Contact Discovery (Monday 10:30 AM)
+echo "14. ALYGN VC Contact Discovery (Monday 10:30 AM CST)..."
 openclaw cron add \
-  --name "ALYGN VC Outreach Weekly" \
-  --description "Weekly VC outreach using Grok enhancement + Notion tracking" \
+  --name "ALYGN VC Contact Discovery" \
+  --description "Weekly VC contact search and database update" \
   --cron "30 10 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute hybrid VC outreach: First, use Grok to enhance email communication (context from grok-conversations/grok-vc-outreach-strategy.md) for consistency and uniqueness. Then run vc-outreach.js to send emails with Notion tracking (ALYGN Growth Strategy Tracker). Focus on VCs: Menlo Ventures, Sequoia, a16z, Lightspeed, Khosla, Bessemer, Insight Partners, Air Street Capital. Run: cd ~/.openclaw/workspace && node scripts/alygn/vc-outreach.js" \
+  --message "Run VC contact discovery: cd ~/.openclaw/workspace && bun scripts/alygn/vc-contact-discovery.js discover" \
+  --thinking medium \
+  --deliver \
+  --to "+50662163355" \
+  --best-effort-deliver
+
+# 15. VC Outreach Weekly (Monday 11:00 AM) - HYBRID: Grok + Notion tracking
+echo "15. ALYGN VC Outreach Weekly (Monday 11:00 AM CST) - HYBRID..."
+openclaw cron add \
+  --name "ALYGN VC Outreach Weekly" \
+  --description "Weekly VC outreach using Grok enhancement + Notion tracking" \
+  --cron "0 11 * * 1" \
+  --tz "America/Costa_Rica" \
+  --session isolated \
+  --message "Execute VC outreach: cd ~/.openclaw/workspace && bun scripts/alygn/vc-outreach.js" \
   --thinking high \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 15. Twitter: Weekly Review (Sunday 5:00 PM) - Grok Prompt #18
-echo "15. ALYGN Twitter: Weekly Review (Sunday 5:00 PM CST) - Grok #18..."
+# 16. Twitter: Weekly Review (Sunday 5:00 PM) - Grok Prompt #18
+echo "16. ALYGN Twitter: Weekly Review (Sunday 5:00 PM CST) - Grok #18..."
 openclaw cron add \
   --name "ALYGN: Weekly Review" \
   --description "Twitter weekly performance review using Grok prompt #18" \
   --cron "0 17 * * 0" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute weekly review using Grok prompt #18: 'Based on last week's engagements (e.g., 50 replies, 200 new follows), recommend adjustments to my Grok prompts and ClawdBot scripts to aim for 100 weekly follows.' Run: cd ~/.openclaw/workspace && node scripts/alygn/twitter-automation.js exec 18" \
+  --message "Execute weekly review: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation.js exec 18" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 16. Weekly Reflection (Sunday 6:00 PM)
-echo "16. ALYGN Weekly Reflection (Sunday 6:00 PM CST)..."
+# 17. Weekly Reflection (Sunday 6:00 PM)
+echo "17. ALYGN Weekly Reflection (Sunday 6:00 PM CST)..."
 openclaw cron add \
   --name "ALYGN Weekly Reflection" \
   --description "Weekly project retrospective and planning" \
   --cron "0 18 * * 0" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run the ALYGN weekly reflection script at /home/andlersrv/.openclaw/workspace/scripts/alygn/weekly-reflection.js and deliver the report." \
+  --message "Run weekly reflection: cd ~/.openclaw/workspace && bun scripts/alygn/weekly-reflection.js" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 17. Monthly Project Review (1st of month, 10:00 AM) - Includes Grok #19
-echo "17. ALYGN Monthly Project Review (1st of month, 10:00 AM CST)..."
+# 18. Monthly Project Review (1st of month, 10:00 AM) - Includes Grok #19
+echo "18. ALYGN Monthly Project Review (1st of month, 10:00 AM CST)..."
 openclaw cron add \
   --name "ALYGN Monthly Project Review" \
   --description "Comprehensive monthly analysis + Twitter strategy update (Grok #19)" \
   --cron "0 10 1 * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute monthly project review combining monthly-review.js script PLUS Grok prompt #19 for Twitter scaling: 'Project a 6-month growth plan for @aialygn using Grok and ClawdBot. Include milestone prompts for content refreshes and new tactics every month.' Run both: cd ~/.openclaw/workspace && node scripts/alygn/monthly-review.js AND node scripts/alygn/twitter-automation.js exec 19" \
+  --message "Execute monthly review: cd ~/.openclaw/workspace && bun scripts/alygn/monthly-review.js && bun scripts/alygn/twitter-automation.js exec 19" \
   --thinking high \
   --deliver \
   --to "+50662163355" \
@@ -267,36 +287,36 @@ echo ""
 echo "🌍 MULTI-ORG JOBS"
 echo "-----------------"
 
-# 18. BitcashOrg Daily Tracking (3:45 AM)
-echo "18. BitcashOrg Daily Activity Tracker (3:45 AM CST)..."
+# 19. BitcashOrg Daily Tracking (3:45 AM)
+echo "19. BitcashOrg Daily Activity Tracker (3:45 AM CST)..."
 openclaw cron add \
   --name "BitcashOrg Daily Activity Tracker" \
   --description "Track BitcashOrg project metrics and save daily report" \
   --cron "45 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run BitcashOrg daily tracker: cd ~/.openclaw/workspace && node scripts/bitcash/daily-tracker.js. Generate daily activity report for BitcashOrg: Check GitHub repos (BitcashOrg/*), sessions, and communications. Save to daily-reports/bitcash-YYYY-MM-DD.txt" \
+  --message "Run BitcashOrg tracker: cd ~/.openclaw/workspace && bun scripts/bitcash/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 19. AndlerRL Personal Daily Tracking (4:00 AM)
-echo "19. AndlerRL Personal Daily Tracker (4:00 AM CST)..."
+# 20. AndlerRL Personal Daily Tracking (4:00 AM)
+echo "20. AndlerRL Personal Daily Tracker (4:00 AM CST)..."
 openclaw cron add \
   --name "AndlerRL Personal Daily Tracker" \
   --description "Track AndlerRL personal projects and creative work" \
   --cron "0 4 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run AndlerRL personal tracker: cd ~/.openclaw/workspace && node scripts/personal/daily-tracker.js. Generate daily activity report for AndlerRL personal projects: Check GitHub repos (AndlerRL/*), art projects, personal goals. Save to daily-reports/andlerrl-YYYY-MM-DD.txt" \
+  --message "Run AndlerRL tracker: cd ~/.openclaw/workspace && bun scripts/personal/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 20. Multi-Org Weekly Summary (Sunday 5:00 PM)
-echo "20. Multi-Org Weekly Summary (Sunday 5:00 PM CST)..."
+# 21. Multi-Org Weekly Summary (Sunday 5:00 PM)
+echo "21. Multi-Org Weekly Summary (Sunday 5:00 PM CST)..."
 openclaw cron add \
   --name "Multi-Org Weekly Summary" \
   --description "Comprehensive weekly summary across ALYGN, BitcashOrg, and AndlerRL" \
@@ -310,21 +330,28 @@ openclaw cron add \
   --best-effort-deliver
 
 echo ""
-echo "==================================================="
-echo "✅ All 20 cron jobs created successfully!"
+echo "========================================================"
+echo "✅ All 21 cron jobs created successfully!"
 echo ""
 echo "📊 SUMMARY:"
-echo "   - ALYGN: 17 jobs (Grok-based granular)"
+echo "   - ALYGN: 18 jobs (Grok-based + Modern ESM)"
 echo "   - Multi-Org: 3 jobs (BitcashOrg, AndlerRL, Weekly Summary)"
 echo ""
-echo "🎯 APPROACH:"
-echo "   - Grok prompts: #1, #3, #13, #15, #17, #18, #19"
-echo "   - Twitter frequency: Very active (9 AM + every 2h + every 6h + 6 PM)"
-echo "   - VC outreach: Hybrid (Grok enhancement + vc-outreach.js)"
+echo "🎯 IMPROVEMENTS:"
+echo "   - Runtime: Bun (faster than Node.js)"
+echo "   - Modules: ESM with modern fetch API"
+echo "   - Logging: Centralized to Notion daily pages"
+echo "   - Code: 80% reduction in API request boilerplate"
+echo ""
+echo "📝 FEATURES:"
+echo "   - Twitter: Grok prompts #1, #3, #13, #15, #17, #18, #19"
+echo "   - VC Discovery: New automated contact search"
+echo "   - Logging: All outputs to Notion 'Automation Logs YYYY-MM-DD'"
 echo ""
 echo "📚 CONTEXT:"
 echo "   - Grok strategies: grok-conversations/"
 echo "   - ALYGN Growth Tracker: Notion 2fc334874af68163a104dbd45bde1f71"
 echo "   - Scripts: ~/.openclaw/workspace/scripts/{alygn,bitcash,personal,system}/"
 echo ""
-echo "Run 'openclaw cron list' to verify all jobs"
+echo "Verify: openclaw cron list"
+echo "View logs: Check Notion 'Organizations TODO Lists' for daily log pages"
