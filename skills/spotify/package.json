@@ -1,0 +1,15 @@
+{
+  "name": "openclaw-spotify-skill",
+  "version": "1.0.0",
+  "description": "Spotify integration skill for OpenClaw",
+  "scripts": {
+    "auth": "./scripts/spotify-auth.sh",
+    "search": "node scripts/spotify-search.js",
+    "current": "node scripts/spotify-current.js"
+  },
+  "dependencies": {
+    "spotify-web-api-node": "^5.0.2"
+  },
+  "author": "Wobblus",
+  "license": "MIT"
+}

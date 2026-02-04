@@ -1,0 +1,54 @@
+#!/bin/bash
+# Wrapper script for easy manual commands
+# Usage: ./track [command] [args...]
+
+SCRIPT_DIR="$HOME/.openclaw/workspace"
+
+case "$1" in
+    log)
+        shift
+        exec "$SCRIPT_DIR/log-contact.sh" "$@"
+        ;;
+    check)
+        shift
+        exec "$SCRIPT_DIR/check-contact.sh" "$@"
+        ;;
+    list)
+        LOG_FILE="$HOME/.openclaw/workspace/contact-tracking/interactions.jsonl"
+        if [[ ! -f "$LOG_FILE" ]]; then
+            echo "No interactions logged yet"
+            exit 0
+        fi
+        echo "Recent interactions (last 10):"
+        cat "$LOG_FILE" | jq -r '"\(.timestamp) - \(.contact)\(if .note != "" and .note != null then " - \(.note)" else "" end)"' | tail -10
+        ;;
+    stats)
+        LOG_FILE="$HOME/.openclaw/workspace/contact-tracking/interactions.jsonl"
+        if [[ ! -f "$LOG_FILE" ]]; then
+            echo "No interactions logged yet"
+            exit 0
+        fi
+        echo "Contact interaction stats:"
+        cat "$LOG_FILE" | jq -r '.contact' | sort | uniq -c | sort -rn
+        ;;
+    help|*)
+        echo "Contact Tracking System"
+        echo ""
+        echo "Usage: ./track <command> [args]"
+        echo ""
+        echo "Commands:"
+        echo "  log <contact> [note]   - Log an interaction with a contact"
+        echo "  check <contact> [days] - Check last interaction (default: 1 day)"
+        echo "  list                   - Show recent interactions"
+        echo "  stats                  - Show interaction statistics"
+        echo "  help                   - Show this help"
+        echo ""
+        echo "Examples:"
+        echo "  ./track log jacobo"
+        echo "  ./track log jacobo 'Discussed project timeline'"
+        echo "  ./track check jacobo"
+        echo "  ./track check jacobo 7"
+        echo "  ./track list"
+        echo "  ./track stats"
+        ;;
+esac
