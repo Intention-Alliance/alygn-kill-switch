@@ -311,7 +311,7 @@ async function main() {
       
       // Send via WhatsApp
       console.log('\n📱 Sending to WhatsApp...');
-      const sendCmd = `openclaw message send --channel whatsapp --target +50662163355 --media "${audioPath}" --caption "Good morning! Your strategic briefing 🔧"`;
+      const sendCmd = `openclaw message send --channel whatsapp --target +50662163355 --media "${audioPath}" --message "Good morning! Your strategic briefing 🔧"`;
       
       try {
         execSync(sendCmd, { stdio: 'inherit' });
