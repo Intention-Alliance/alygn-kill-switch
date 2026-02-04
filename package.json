@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@notionhq/client": "^5.9.0"
+    "@ai-sdk/xai": "^3.0.46",
+    "@notionhq/client": "^5.9.0",
+    "ai": "^6.0.69"
   }
 }
