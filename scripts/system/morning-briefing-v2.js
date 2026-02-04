@@ -95,11 +95,11 @@ async function generateIntelligentBriefing() {
   let briefing = [];
   
   // === INTRODUCTION ===
-  briefing.push("Good morning, Andler.");
+  briefing.push("Good morning, Andler!");
   briefing.push("Here's your strategic overview for today.");
   
   // === YESTERDAY SECTION ===
-  briefing.push("\nWhat happened yesterday:");
+  briefing.push("\nWhat Happened Yesterday:");
   
   if (alygn.found) {
     const summary = buildOrgSummary('ALYGN', alygn);
@@ -121,25 +121,25 @@ async function generateIntelligentBriefing() {
   }
   
   // === TODAY SECTION ===
-  briefing.push("\nPriorities for today:");
+  briefing.push("\nPriorities For Today:");
   
   const priorities = buildPriorities(alygn, bitcash, andlerrl);
   briefing.push(...priorities);
   
   // === OPPORTUNITIES SECTION ===
-  briefing.push("\nOpportunities to consider:");
+  briefing.push("\nOpportunities To Consider:");
   
   const opportunities = buildOpportunities(alygn, bitcash, andlerrl);
   briefing.push(...opportunities);
   
   // === QUESTIONS SECTION ===
-  briefing.push("\nQuestions for you:");
+  briefing.push("\nQuestions For You:");
   
   const questions = buildQuestions(alygn, bitcash, andlerrl);
   briefing.push(...questions);
   
   // === CLOSING ===
-  briefing.push("\nLet's make it count today.");
+  briefing.push("\nLet's make it count today!");
   
   return briefing.join(' ');
 }
@@ -309,9 +309,17 @@ async function main() {
         }
       );
       
-      // Output send command for cron
-      console.log('\n📱 Send command:');
-      console.log(`openclaw message send --channel whatsapp --to +50662163355 --media "${audioPath}" --caption "Good morning! Your strategic briefing 🔧"`);
+      // Send via WhatsApp
+      console.log('\n📱 Sending to WhatsApp...');
+      const sendCmd = `openclaw message send --channel whatsapp --to +50662163355 --media "${audioPath}" --caption "Good morning! Your strategic briefing 🔧"`;
+      
+      try {
+        execSync(sendCmd, { stdio: 'inherit' });
+        console.log('✅ Briefing sent successfully!');
+      } catch (sendErr) {
+        console.error('❌ Failed to send WhatsApp message:', sendErr.message);
+        await logError('morning-briefing', 'WhatsApp Send Failed', sendErr);
+      }
       
     } else {
       console.log('⚠️ Audio generation failed, sending text only');
@@ -322,8 +330,18 @@ async function main() {
         'Falling back to text-only delivery'
       );
       
-      console.log('\n📝 Text briefing:');
-      console.log(briefingText);
+      // Send text-only briefing via WhatsApp
+      console.log('\n📱 Sending text briefing to WhatsApp...');
+      const textSendCmd = `openclaw message send --channel whatsapp --to +50662163355 --message "${briefingText.replace(/"/g, '\\"')}"`;
+      
+      try {
+        execSync(textSendCmd, { stdio: 'inherit' });
+        console.log('✅ Text briefing sent!');
+      } catch (sendErr) {
+        console.error('❌ Failed to send text:', sendErr.message);
+        console.log('\n📝 Text briefing:');
+        console.log(briefingText);
+      }
     }
     
   } catch (err) {
