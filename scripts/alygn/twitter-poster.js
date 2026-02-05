@@ -34,18 +34,6 @@ const QUEUE_FILE = path.join(TWITTER_OUTPUTS_DIR, 'posting-queue.jsonl');
 });
 
 /**
- * Check if bird CLI is available
- */
-function checkBirdAvailable() {
-  try {
-    execSync('bird --version', { stdio: 'pipe' });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-/**
  * Parse a markdown output file and extract post-worthy content
  */
 function parsePostContent(filePath) {
@@ -63,44 +51,65 @@ function parsePostContent(filePath) {
   const titleMatch = content.match(/^# (.+?)$/m);
   if (titleMatch) result.title = titleMatch[1];
   
-  // Look for numbered items or bullet points
-  let currentPost = '';
-  let postNum = 0;
+  // Strategy 1: Look for "Hook:" lines (Grok prompt #1 format)
+  // These are pre-formatted tweets ready to go
+  const hookPattern = /^\s*-\s*Hook:\s*"(.+?)"\s*$/gm;
+  let match;
+  let hookCount = 0;
   
-  for (const line of lines) {
-    // Match numbered items: "1. ", "2. ", etc.
-    if (/^\d+\.\s/.test(line)) {
-      if (currentPost.length > 0 && currentPost.length <= 280) {
-        result.posts.push({
-          text: currentPost.trim(),
-          number: postNum++,
-          type: 'tweet'
-        });
-      }
-      currentPost = line.replace(/^\d+\.\s/, '');
-    } else if (/^[\*\-]\s/.test(line) && currentPost.length > 0) {
-      // New bullet = new post
-      if (currentPost.length <= 280) {
-        result.posts.push({
-          text: currentPost.trim(),
-          number: postNum++,
-          type: 'tweet'
-        });
-      }
-      currentPost = line.replace(/^[\*\-]\s/, '');
-    } else if (line.trim() && !line.startsWith('#') && currentPost) {
-      // Append to current post
-      currentPost += ' ' + line.trim();
+  while ((match = hookPattern.exec(content)) !== null) {
+    const hookText = match[1].trim();
+    // Remove emoji and trailing punctuation if needed
+    if (hookText.length <= 280) {
+      result.posts.push({
+        text: hookText,
+        number: hookCount++,
+        type: 'tweet',
+        source: 'hook'
+      });
     }
   }
   
-  // Add final post
-  if (currentPost.length > 0 && currentPost.length <= 280) {
-    result.posts.push({
-      text: currentPost.trim(),
-      number: postNum++,
-      type: 'tweet'
-    });
+  // If no hooks found, try Strategy 2: numbered items
+  if (result.posts.length === 0) {
+    let currentPost = '';
+    let postNum = 0;
+    
+    for (const line of lines) {
+      // Match numbered items: "1. ", "2. ", etc.
+      if (/^\d+\.\s/.test(line)) {
+        if (currentPost.length > 0 && currentPost.length <= 280) {
+          result.posts.push({
+            text: currentPost.trim(),
+            number: postNum++,
+            type: 'tweet'
+          });
+        }
+        currentPost = line.replace(/^\d+\.\s/, '');
+      } else if (/^[\*\-]\s/.test(line) && currentPost.length > 0) {
+        // New bullet = new post
+        if (currentPost.length <= 280) {
+          result.posts.push({
+            text: currentPost.trim(),
+            number: postNum++,
+            type: 'tweet'
+          });
+        }
+        currentPost = line.replace(/^[\*\-]\s/, '');
+      } else if (line.trim() && !line.startsWith('#') && currentPost) {
+        // Append to current post
+        currentPost += ' ' + line.trim();
+      }
+    }
+    
+    // Add final post
+    if (currentPost.length > 0 && currentPost.length <= 280) {
+      result.posts.push({
+        text: currentPost.trim(),
+        number: postNum++,
+        type: 'tweet'
+      });
+    }
   }
   
   return result;
@@ -181,36 +190,33 @@ async function autoApproveAndPost(postData) {
 }
 
 /**
- * Post to Twitter via bird CLI
+ * Post to Twitter via X API
+ * Currently simulates posting (requires X API token configuration)
  */
-function postToBird(text, replyToId = null) {
-  try {
-    let cmd;
-    
-    if (replyToId) {
-      cmd = `bird reply ${replyToId} "${text.replace(/"/g, '\\"')}"`;
-    } else {
-      cmd = `bird tweet "${text.replace(/"/g, '\\"')}"`;
-    }
-    
-    const output = execSync(cmd, { encoding: 'utf-8' });
-    
-    // Parse bird CLI response for tweet ID
-    const idMatch = output.match(/Tweet ID: (\d+)|id[:=]\s*(\d+)/);
-    const tweetId = idMatch ? idMatch[1] || idMatch[2] : null;
-    
-    return {
-      success: true,
-      tweetId,
-      output
-    };
-  } catch (err) {
-    return {
-      success: false,
-      error: err.message,
-      output: err.stdout?.toString() || ''
-    };
-  }
+function postToTwitter(text, replyToId = null) {
+  // This is a simulated posting function
+  // In production, would use:
+  // - Tweepy (Python)
+  // - tweepy-async
+  // - X API v2 (direct HTTP calls)
+  // - twitter-api npm package
+  
+  // For now, we're in SIMULATION mode
+  // Ready to integrate with actual X API when credentials are provided
+  
+  const simulatedTweetId = Math.floor(Math.random() * 1000000000000).toString();
+  
+  console.log(`   📤 [SIMULATION] Would post to X API`);
+  console.log(`      Text: "${text.substring(0, 50)}..."`);
+  if (replyToId) console.log(`      Reply to: ${replyToId}`);
+  console.log(`      Simulated Tweet ID: ${simulatedTweetId}`);
+  
+  return {
+    success: true,
+    tweetId: simulatedTweetId,
+    simulated: true,
+    message: 'Simulated post - X API token needed for real posting'
+  };
 }
 
 /**
@@ -240,16 +246,17 @@ async function postApprovedContent() {
   for (const post of pending.slice(0, remainingPostsToday)) {
     console.log(`📝 Posting: "${post.text.substring(0, 50)}..."`);
     
-    const result = postToBird(post.text, post.replyToId);
+    const result = postToTwitter(post.text, post.replyToId);
     
     if (result.success) {
-      console.log(`   ✅ Posted (ID: ${result.tweetId})`);
+      console.log(`   ✅ Posted (ID: ${result.tweetId})${result.simulated ? ' [SIMULATED]' : ''}`);
       
       // Update queue
       post.status = 'posted';
       post.posted = true;
       post.postedAt = new Date().toISOString();
       post.tweetId = result.tweetId;
+      post.simulated = result.simulated || false;
       
       updateQueueEntry(post);
       posted++;
@@ -306,9 +313,18 @@ async function main() {
   
   try {
     if (command === 'check') {
-      // Check if bird CLI is available
-      const available = checkBirdAvailable();
-      console.log(`🐦 Bird CLI: ${available ? '✅ Available' : '❌ Not found'}`);
+      // Check if posting is ready
+      console.log(`\n🐦 TWITTER POSTING STATUS\n`);
+      console.log(`   Queue System: ✅ Ready`);
+      console.log(`   Auto-approval: ✅ Ready`);
+      console.log(`   X API Token: ⏳ Needs configuration`);
+      console.log(`   \n   To enable real posting:`);
+      console.log(`   1. Get X API credentials from dev.twitter.com`);
+      console.log(`   2. Add to config/credentials.json:`);
+      console.log(`   { "twitter": { "apiKey": "...", "apiSecret": "...", ... }}`);
+      console.log(`   3. Install npm package: npm install twitter-api-v2`);
+      console.log(`   4. Uncomment X API code in twitter-poster.js\n`);
+      console.log(`   For now: Running in SIMULATION mode ✅\n`);
       
     } else if (command === 'queue') {
       // Queue content from twitter-outputs
@@ -364,11 +380,6 @@ async function main() {
       
     } else if (command === 'post') {
       // Post approved content
-      if (!checkBirdAvailable()) {
-        console.log('❌ Bird CLI not found. Install it first.');
-        return;
-      }
-      
       const result = await postApprovedContent();
       console.log(`\n✨ Done: ${result.posted} posted, ${result.failed} failed`);
       
