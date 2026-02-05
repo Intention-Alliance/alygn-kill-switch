@@ -43,44 +43,124 @@
 6. **Context isolation** — strict boundaries between projects for OpSec
 
 ## Key Projects (Professional Tone Required)
-- **Intention Alliance** — maintain professional, direct communication
+- **Intention Alliance (ALYGN)** — maintain professional, direct communication
 - **Bitcash** — maintain professional, direct communication
   - Active work: `bitcashorg/masterbots` repository (RAG implementation fixes)
   - NDA active (signed Aug 19, 2025) - strict confidentiality
 *(For these: no quirky exclamations, measured responses, business-appropriate)*
 
-## Twitter Automation (ALYGN) - Updated 2026-02-05
-**System:** Automated browser-based Twitter posting + engagement
-**Cron Job:** "ALYGN: Twitter Daily Automation v4" (ID: 10e71511-a7ae-47e1-8293-43c1d3684512)
-**Schedule:** Daily at 11:00 AM (America/Costa_Rica)
-**Workflow:**
-1. Generate 10 thread ideas via Grok (Prompt #1)
-2. Generate 5 strategic replies (Prompt #13) with dynamic targets
-3. AI selects best 5 posts based on engagement potential
-4. Create workflow JSON with posts, replies, and profiles
-5. Execute browser automation:
-   - Post threads with @aialygn mention
-   - Reply to high-engagement targets
+---
+
+## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-05
+
+### Architecture
+**Approach:** API for reconnaissance → Browser automation for actions (bypasses write permission issues)
+
+### Active Scripts
+| Script | Purpose |
+|--------|---------|
+| `twitter-automation-v2.js` | Content generation via Grok prompts |
+| `twitter-browser-automation-v4.js` | Orchestration + workflow generation |
+
+### Active Cron Jobs
+| Schedule | Job | Prompts | Purpose |
+|----------|-----|---------|---------|
+| Daily 11 AM | Twitter Daily v4 | 1, 13 | Main posting + replies |
+| Mon 10 AM | Monday Niche + Regular | 1, 3, 13 | Mixed content variety |
+| Sun 5 PM | Weekly Review | 18 | Performance analytics |
+| 1st of month 10 AM | Monthly Review | 19 | Strategy adjustment |
+
+### Workflow (v4)
+1. Run `twitter-browser-automation-v4.js` (optionally with `--posts 1,3` for multiple prompts)
+2. Script calls `twitter-automation-v2.js exec <prompt>` for content
+3. Parses output files from `twitter-outputs/`
+4. Creates `workflow-{timestamp}.json` with posts, replies, profiles
+5. Agent uses browser tool to execute:
+   - Post threads (always append "More at @aialygn")
+   - Reply to dynamic targets from Grok analysis
    - Follow suggested profiles
 6. Report summary to WhatsApp
 
-**Key Features:**
-- **Production Handle:** @aialygn (always appended: "More at @aialygn")
-- **Dynamic Targets:** Reply targets from Grok's trend analysis (not hardcoded)
-- **Thread Support:** Posts with >1 point become threads
-- **Typo Fix:** Auto-corrects @aialyygn → @aialygn
+### Key Details
+- **Handle:** @aialygn
+- **Output Dir:** `~/.openclaw/workspace/twitter-outputs/`
+- **Round-robin selection:** When using multiple prompts, posts are mixed for variety
+- **Typo auto-fix:** @aialyygn → @aialygn
 
-**Script Location:** `~/.openclaw/workspace/scripts/alygn/twitter-browser-automation-v4.js`
-**Output Dir:** `~/.openclaw/workspace/twitter-outputs/`
-**Workflow Files:** `workflow-{timestamp}.json`
-**Execution:** Runs in isolated session, posts summary to WhatsApp
-**Status:** ✅ Active and automated (v4)
-
-## Technical Experience
-- **RAG Systems:** Analyzed double token budget bug in masterbots' embedding retrieval pipeline (Feb 2026)
-- **Vector Search:** PostgreSQL + pgvector, OpenAI embeddings (1536 dimensions)
-- **Code Review:** Drizzle ORM, Next.js 15, Vercel AI SDK patterns
+### Removed (Obsolete)
+- `twitter-automation.js` (v1)
+- `twitter-browser-automation.js` (v1)
+- `twitter-browser-automation-v3.js`
+- `twitter-browser-post.js`
+- `twitter-poster.js` (API-based, permissions blocked)
+- Daily Analytics cron (redundant - covered by weekly/monthly)
 
 ---
 
-*Updated: 2026-01-30*
+## 💼 VC Outreach System (ALYGN)
+
+### Active Cron Jobs
+| Schedule | Job | Purpose |
+|----------|-----|---------|
+| Mon 10:30 AM | VC Contact Discovery | Find new VC contacts |
+| Mon 11 AM | VC Outreach Weekly | Execute outreach with Grok enhancement |
+
+### Scripts
+- `vc-contact-discovery.js` - Search and database update
+- `vc-outreach.js` - Outreach execution with Notion tracking
+- `vc-contact-finder.js` - Contact search utilities
+- `setup-vc-tracker.js` - Tracker setup
+
+---
+
+## 📊 Multi-Org Automation System
+
+### Daily Trackers (All 3-4 AM)
+| Org | Script | Schedule |
+|-----|--------|----------|
+| ALYGN | `scripts/alygn/daily-tracker.js` | 3:30 AM |
+| BitcashOrg | `scripts/bitcash/daily-tracker.js` | 3:45 AM |
+| AndlerRL | `scripts/personal/daily-tracker.js` | 4:00 AM |
+
+### Daily Operations
+| Time | Job |
+|------|-----|
+| 2 AM | Backup & Archive |
+| 8 AM | Multi-Org Morning Briefing (WhatsApp) |
+| 8-20 every 3h | Notion Sync Check |
+| 6h intervals | Project Health Monitor |
+| 6 PM | Jacobo Daily Summary |
+| 9 PM | End-of-Day Summary |
+| 9:30 PM | GitHub Activity Digest |
+
+### Weekly Operations
+| Day/Time | Job |
+|----------|-----|
+| Sun 5 PM | Multi-Org Weekly Summary |
+| Sun 5 PM | Twitter Weekly Review |
+| Sun 6 PM | ALYGN Weekly Reflection |
+
+### Monthly
+- 1st of month 10 AM: Monthly Project Review + Twitter Strategy
+
+---
+
+## 🛠 Technical Experience
+- **RAG Systems:** Analyzed double token budget bug in masterbots' embedding retrieval pipeline (Feb 2026)
+- **Vector Search:** PostgreSQL + pgvector, OpenAI embeddings (1536 dimensions)
+- **Code Review:** Drizzle ORM, Next.js 15, Vercel AI SDK patterns
+- **Browser Automation:** Playwright-based X.com posting workflow
+
+---
+
+## 📝 Personal Projects (andler.dev)
+
+### Planned: Automated Blog Publishing
+- **Status:** Idea captured in Notion (Feb 4, 2026)
+- **Concept:** Bot prepares markdown + media → cronjob pushes to andler.dev → server auto-creates blog entries
+- **Location:** Notion "Projects (Wobblus)" database
+- **Next:** Implement server endpoint, cron integration
+
+---
+
+*Updated: 2026-02-05*
