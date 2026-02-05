@@ -187,6 +187,17 @@ All configured in `openclaw.json`:
     - "Humanizing Technology - Protocol Overview" (`2f933487-4af6-8158-91a6-c98893b5024c`)
     - "Context Engineering - Technical Framework" (`2f933487-4af6-81af-b946-c57b61ae2c02`)
 
+- **Weekly Progress Log** (Database)
+  - Database ID: `8858f01e-89d4-4737-9409-1335f719fda2`
+  - URL: https://www.notion.so/8858f01e89d4473794091335f719fda2
+  - Parent: Intention Alliance - Central Hub
+  - Purpose: Track weekly progress across projects
+
+- **Organizations TODO Lists** (Page)
+  - Page ID: `26a33487-4af6-81a8-b01c-fd1a8a5f8bcb`
+  - URL: https://www.notion.so/Organizations-TODO-Lists-26a334874af681a8b01cfd1a8a5f8bcb
+  - Purpose: Cross-org task tracking
+
 **Usage examples:**
 ```bash
 export NOTION_KEY="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"
