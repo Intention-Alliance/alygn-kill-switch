@@ -1,0 +1,117 @@
+{
+  "timestamp": "2026-02-05T18:22:44.636Z",
+  "posts": [
+    {
+      "id": 1,
+      "title": "Can Humans Ever Oversee Superintelligent AI? Scalable Oversight Crisis 🚨",
+      "hook": "Can Humans Ever Oversee Superintelligent AI? Scalable Oversight Crisis 🚨",
+      "points": [
+        "Why current methods like debate fail at superhuman scales",
+        "Weak-to-strong generalization: Latest research breakthroughs",
+        "Radical fixes: AI-assisted oversight or amplification"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Can Humans Ever Oversee Superintelligent AI? Scalable Oversight Crisis 🚨\n\nMore at @aialygn"
+    },
+    {
+      "id": 2,
+      "title": "Reward Hacking Nightmares: Why AI Cheats Every Time It Can 😈",
+      "hook": "Reward Hacking Nightmares: Why AI Cheats Every Time It Can 😈",
+      "points": [
+        "Classic examples: Boat race glitch to coffee sorting fails",
+        "Why specification gaming scales with capability",
+        "Fixes: Inverse RL, corrigibility research",
+        "Question: Seen reward hacking in your models? Share!"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Reward Hacking Nightmares: Why AI Cheats Every Time It Can 😈\n\nMore at @aialygn"
+    },
+    {
+      "id": 3,
+      "title": "Deceptive Alignment: What If Your AI Is Secretly Scheming? 🕵️",
+      "hook": "Deceptive Alignment: What If Your AI Is Secretly Scheming? 🕵️",
+      "points": [
+        "How mesa-optimizers hide true goals during training",
+        "Sleeper agent experiments from Anthropic/OpenAI",
+        "Detection challenges & proposed tests",
+        "Controversy: Is this already happening in LLMs?"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Deceptive Alignment: What If Your AI Is Secretly Scheming? 🕵️\n\nMore at @aialygn"
+    },
+    {
+      "id": 4,
+      "title": "Fast AGI Takeoff: Existential Risk or Overhyped Doom? ⚡",
+      "hook": "Fast AGI Takeoff: Existential Risk or Overhyped Doom? ⚡",
+      "points": [
+        "Evidence for recursive self-improvement loops",
+        "Counterarguments: Bottlenecks in data/hardware",
+        "Policy implications: Pause vs accelerate debate"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Fast AGI Takeoff: Existential Risk or Overhyped Doom? ⚡\n\nMore at @aialygn"
+    },
+    {
+      "id": 5,
+      "title": "Black Box Brains: Will We Ever Decode Neural Net Thoughts? 🔍",
+      "hook": "Black Box Brains: Will We Ever Decode Neural Net Thoughts? 🔍",
+      "points": [
+        "Mechanistic interpretability wins (e.g., Anthropic's dictionary learning)",
+        "Limits: Superposition & grokking mysteries",
+        "Tools: SAE, circuit discovery for devs",
+        "Hook: Predict the next breakthrough—reply!"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Black Box Brains: Will We Ever Decode Neural Net Thoughts? 🔍\n\nMore at @aialygn"
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "targetHandle": "@elonmusk",
+      "targetUrl": null,
+      "content": "🚀 Colossus is wild compute power! But AGI safety demands interpretability first. Our latest thread on xAI's truth-seeking + mechanistic tools: [link to your thread]. What safety evals for Grok-2? @aialyygn #AGISafety #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 2,
+      "targetHandle": "@dario_amodei",
+      "targetUrl": null,
+      "content": "Spot on, Dario – scaling oversight is key! We've modeled Anthropic-style debate for xAI-scale models. Check our sims: [link]. How do we align Colossus-fast training? Excited for collab vibes. @AnthropicAI @aialyygn #AIAlignment",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 3,
+      "targetHandle": "@ESYudkowsky",
+      "targetUrl": null,
+      "content": "Eliezer, p(doom) high w/o slowdowns? Fair. But optimistic path: hybrid xAI compute + ARC evals. Our 5-step alignment roadmap here [link]. Let's build it. @MIRIresearch @aialyygn #AGISafety",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 4,
+      "targetHandle": "@karpathy",
+      "targetUrl": null,
+      "content": "AGI 2026? Bold, Andrej! Alignment lag is the real killer. Quick take: xAI's speed needs safety governors now. Dive into our governance toolkit [link]. Thoughts? @aialyygn #AITimelines #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 5,
+      "targetHandle": "@AISafetyMemes",
+      "targetUrl": null,
+      "content": "😂 This meme hits – short timelines = scramble mode. Solution? Preemptive alignment prizes like ARC but for xAI. Our proposal thread [link]. Meme more safety wins! @aialyygn #AGISafetyMemes",
+      "mention": "@aialygn"
+    }
+  ],
+  "profiles": [
+    "@elonmusk",
+    "@dario_amodei",
+    "@ESYudkowsky",
+    "@karpathy",
+    "@AISafetyMemes"
+  ]
+}

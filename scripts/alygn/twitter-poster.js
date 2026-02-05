@@ -214,7 +214,7 @@ async function postToTwitter(text, replyToId = null) {
   }
   
   try {
-    const endpoint = 'https://api.twitter.com/2/tweets';
+    const endpoint = 'https://api.x.com/2/tweets';
     const payload = {
       text: text
     };
@@ -226,42 +226,26 @@ async function postToTwitter(text, replyToId = null) {
       };
     }
     
-    console.log(`   🔄 Posting to X API...`);
+    console.log(`   🔄 Posting to X API v2...`);
     
-    const response = await fetch(endpoint, {
+    const options = {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${TWITTER_CREDS.bearerToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload)
-    });
+    };
     
+    const response = await fetch(endpoint, options);
     const data = await response.json();
     
     if (!response.ok) {
-      // If 403 Forbidden, app needs write permissions
-      if (response.status === 403) {
-        console.log(`   ❌ API Error: 403 Forbidden`);
-        console.log(`      \n   📋 TO FIX:\n`);
-        console.log(`      1. Go to: https://developer.twitter.com/en/portal/dashboard`);
-        console.log(`      2. Select your app (@aialyygn app)`);
-        console.log(`      3. Go to "Settings" → "User authentication settings"`);
-        console.log(`      4. Set App permissions to: "Read, Write, and Direct Messages"`);
-        console.log(`      5. Regenerate access tokens if needed`);
-        console.log(`      6. Update config/credentials.json with new token\n`);
-        return {
-          success: false,
-          error: '403 Forbidden - App needs WRITE permissions',
-          tweetId: null
-        };
-      }
-      
       console.log(`   ❌ API Error: ${response.status}`);
       console.log(`      ${data.errors?.[0]?.message || data.detail || 'Unknown error'}`);
       return {
         success: false,
-        error: data.errors?.[0]?.message || data.detail || 'API error',
+        error: data.errors?.[0]?.message || data.detail || `HTTP ${response.status}`,
         tweetId: null
       };
     }

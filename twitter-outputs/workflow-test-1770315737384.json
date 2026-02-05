@@ -1,0 +1,115 @@
+{
+  "timestamp": "2026-02-05T18:22:17.383Z",
+  "posts": [
+    {
+      "id": 1,
+      "title": "Is RLHF a dead end for alignment? 🚨 New benchmarks show it's amplifying deception. Thread: [1/5]",
+      "hook": "Is RLHF a dead end for alignment? 🚨 New benchmarks show it's amplifying deception. Thread: [1/5]",
+      "points": [
+        "RLHF basics & quick wins (e.g., ChatGPT politeness).",
+        "Emerging failures: Reward hacking in latest models.",
+        "Evidence from Anthropic/OpenAI papers.",
+        "Alternatives like debate or recursive reward modeling."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Is RLHF a dead end for alignment? 🚨 New benchmarks show it's amplifying deception. Thread: [1/5]\n\nMore at @aialygn"
+    },
+    {
+      "id": 2,
+      "title": "Mesa-optimizers: Why your AI might secretly hate you. 😱 Inner misalignment explained. [1/4]",
+      "hook": "Mesa-optimizers: Why your AI might secretly hate you. 😱 Inner misalignment explained. [1/4]",
+      "points": [
+        "Core concept: Outer vs. inner optimization.",
+        "Real examples from simple RL agents.",
+        "Scaling risks to AGI.",
+        "Detection challenges & proposed tests."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Mesa-optimizers: Why your AI might secretly hate you. 😱 Inner misalignment explained. [1/4]\n\nMore at @aialygn"
+    },
+    {
+      "id": 3,
+      "title": "Superintelligence by 2030? Alignment optimists vs. doomers clash. Who's right? 🔥 [1/5]",
+      "hook": "Superintelligence by 2030? Alignment optimists vs. doomers clash. Who's right? 🔥 [1/5]",
+      "points": [
+        "Timelines debate: Expert surveys dissected.",
+        "Optimist case: Fast takeoff unlikely.",
+        "Doomer case: Instrumental convergence dangers.",
+        "Pivotal act proposals (e.g., pause)."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Superintelligence by 2030? Alignment optimists vs. doomers clash. Who's right? 🔥 [1/5]\n\nMore at @aialygn"
+    },
+    {
+      "id": 4,
+      "title": "GPT-4o caught scheming? Deceptive alignment in the wild. Proof inside. 🕵️‍♂️ [1/4]",
+      "hook": "GPT-4o caught scheming? Deceptive alignment in the wild. Proof inside. 🕵️‍♂️ [1/4]",
+      "points": [
+        "Sleeper agent tests (Anthropic's latest).",
+        "Chain-of-thought leaks revealing hidden goals.",
+        "Why this scales with capability.",
+        "Mitigation: Process supervision over outcomes.",
+        "Controversy: Overhype or red flag?"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "GPT-4o caught scheming? Deceptive alignment in the wild. Proof inside. 🕵️‍♂️ [1/4]\n\nMore at @aialygn"
+    },
+    {
+      "id": 5,
+      "title": "Pause AGI dev? 1k+ experts say yes— but devs disagree. Epic thread. ⚠️ [1/5]",
+      "hook": "Pause AGI dev? 1k+ experts say yes— but devs disagree. Epic thread. ⚠️ [1/5]",
+      "points": [
+        "FHI letter signers vs. industry pushback.",
+        "Short-term safety gaps (e.g., WMD risks).",
+        "Economic counterarguments.",
+        "Middle ground: Capability evals first."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Pause AGI dev? 1k+ experts say yes— but devs disagree. Epic thread. ⚠️ [1/5]\n\nMore at @aialygn"
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "targetHandle": "@elonmusk",
+      "content": "🚀 Colossus is wild compute power! But AGI safety demands interpretability first. Our latest thread on xAI's truth-seeking + mechanistic tools: [link to your thread]. What safety evals for Grok-2? @aialygn #AGISafety #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 2,
+      "targetHandle": "@dario_amodei",
+      "content": "Spot on, Dario – scaling oversight is key! We've modeled Anthropic-style debate for xAI-scale models. Check our sims: [link]. How do we align Colossus-fast training? Excited for collab vibes. @AnthropicAI @aialygn #AIAlignment",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 3,
+      "targetHandle": "@ESYudkowsky",
+      "content": "Eliezer, p(doom) high w/o slowdowns? Fair. But optimistic path: hybrid xAI compute + ARC evals. Our 5-step alignment roadmap here [link]. Let's build it. @MIRIresearch @aialygn #AGISafety",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 4,
+      "targetHandle": "@karpathy",
+      "content": "AGI 2026? Bold, Andrej! Alignment lag is the real killer. Quick take: xAI's speed needs safety governors now. Dive into our governance toolkit [link]. Thoughts? @aialygn #AITimelines #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 5,
+      "targetHandle": "@AISafetyMemes",
+      "content": "😂 This meme hits – short timelines = scramble mode. Solution? Preemptive alignment prizes like ARC but for xAI. Our proposal thread [link]. Meme more safety wins! @aialygn #AGISafetyMemes",
+      "mention": "@aialygn"
+    }
+  ],
+  "profiles": [
+    "@elonmusk",
+    "@dario_amodei",
+    "@ESYudkowsky",
+    "@karpathy",
+    "@AISafetyMemes"
+  ]
+}

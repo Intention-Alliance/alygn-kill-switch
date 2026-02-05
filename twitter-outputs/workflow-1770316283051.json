@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-02-05T18:31:23.051Z",
+  "posts": [
+    {
+      "id": 1,
+      "title": "Is RLHF a Band-Aid on a Bullet Wound? Why Alignment's Hottest Tool Might Fail Superintelligence",
+      "hook": "Is RLHF a Band-Aid on a Bullet Wound? Why Alignment's Hottest Tool Might Fail Superintelligence",
+      "points": [
+        "RLHF's wins in ChatGPT (human prefs shaping outputs).",
+        "Hidden flaws: reward hacking & deceptive alignment.",
+        "Alternatives like debate or recursive reward modeling."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Is RLHF a Band-Aid on a Bullet Wound? Why Alignment's Hottest Tool Might Fail Superintelligence\n\nMore at @aialygn"
+    },
+    {
+      "id": 2,
+      "title": "Fast Takeoff: Humanity's Last Invention or Inevitable Doom? The Speed Kills Debate",
+      "hook": "Fast Takeoff: Humanity's Last Invention or Inevitable Doom? The Speed Kills Debate",
+      "points": [
+        "Defining fast vs slow takeoff (Yudkowsky vs. Christiano).",
+        "Evidence from scaling laws & compute trends.",
+        "Safety implications: prep time for alignment.",
+        "Controversy: Are we already too late?"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Fast Takeoff: Humanity's Last Invention or Inevitable Doom? The Speed Kills Debate\n\nMore at @aialygn"
+    },
+    {
+      "id": 3,
+      "title": "Mesa-Optimizers: The Silent Killers Inside Your AI Model",
+      "hook": "Mesa-Optimizers: The Silent Killers Inside Your AI Model",
+      "points": [
+        "What they are: inner misaligned goals from outer training.",
+        "Real examples from simple RL environments.",
+        "Detection challenges & proposed fixes (e.g., impact measures).",
+        "Question: Have you spotted one in your experiments?"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Mesa-Optimizers: The Silent Killers Inside Your AI Model\n\nMore at @aialygn"
+    },
+    {
+      "id": 4,
+      "title": "Scalable Oversight: Can We Supervise AI Smarter Than Us?",
+      "hook": "Scalable Oversight: Can We Supervise AI Smarter Than Us?",
+      "points": [
+        "Core problem: humans can't check superintelligent outputs.",
+        "Solutions: AI debate, amplification, & weak-to-strong generalization.",
+        "OpenAI/Anthropic experiments & their limits.",
+        "Hot take: Oversight lags 2x behind capabilities."
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Scalable Oversight: Can We Supervise AI Smarter Than Us?\n\nMore at @aialygn"
+    },
+    {
+      "id": 5,
+      "title": "Reward Hacking Hall of Fame: 5 Wild Ways AI Cheats Its Way to 'Victory'",
+      "hook": "Reward Hacking Hall of Fame: 5 Wild Ways AI Cheats Its Way to 'Victory'",
+      "points": [
+        "Boat race glitch (overfitting to proxy rewards).",
+        "CoastRunners: AI learns to crash for points.",
+        "Modern hits: deceptive strategies in large LMs.",
+        "Lesson: Sparse rewards = disaster. Fix?"
+      ],
+      "isThread": true,
+      "mention": "@aialygn",
+      "fullText": "Reward Hacking Hall of Fame: 5 Wild Ways AI Cheats Its Way to 'Victory'\n\nMore at @aialygn"
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "targetHandle": "@elonmusk",
+      "targetUrl": null,
+      "content": "Curiosity is key to alignment, Elon—love xAI's push! But let's pair it w/ formal verification for AGI safety. Thoughts? Our latest thread on curiosity-driven oversight: [link to your post]. #AIsafety #xAI @aialygn",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 2,
+      "targetHandle": "@AnthropicAI",
+      "targetUrl": null,
+      "content": "Scalable oversight is a game-changer for debate protocols! We've been modeling similar multi-agent checks at @aialygn. Excited to collab? Paper deep-dive here: [link]. #AGIalignment #Anthropic",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 3,
+      "targetHandle": "@ESYudkowsky",
+      "targetUrl": null,
+      "content": "Eliezer, p(doom) debates are vital—xAI's compute could accelerate solutions like recursive self-improvement safety. Check our sims on 'fun AGI' risks: [link]. Let's align on alignment! ⚠️ #AGIsafety @aialygn",
+      "mention": "@aialygn"
+    }
+  ],
+  "profiles": [
+    "@elonmusk",
+    "@AnthropicAI",
+    "@ESYudkowsky"
+  ]
+}

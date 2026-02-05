@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-02-05T18:20:56.143Z",
+  "posts": [],
+  "replies": [
+    {
+      "id": 1,
+      "targetHandle": "@elonmusk",
+      "targetUrl": null,
+      "content": "🚀 Colossus is wild compute power! But AGI safety demands interpretability first. Our latest thread on xAI's truth-seeking + mechanistic tools: [link to your thread]. What safety evals for Grok-2? @aialyygn #AGISafety #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 2,
+      "targetHandle": "@dario_amodei",
+      "targetUrl": null,
+      "content": "Spot on, Dario – scaling oversight is key! We've modeled Anthropic-style debate for xAI-scale models. Check our sims: [link]. How do we align Colossus-fast training? Excited for collab vibes. @AnthropicAI @aialyygn #AIAlignment",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 3,
+      "targetHandle": "@ESYudkowsky",
+      "targetUrl": null,
+      "content": "Eliezer, p(doom) high w/o slowdowns? Fair. But optimistic path: hybrid xAI compute + ARC evals. Our 5-step alignment roadmap here [link]. Let's build it. @MIRIresearch @aialyygn #AGISafety",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 4,
+      "targetHandle": "@karpathy",
+      "targetUrl": null,
+      "content": "AGI 2026? Bold, Andrej! Alignment lag is the real killer. Quick take: xAI's speed needs safety governors now. Dive into our governance toolkit [link]. Thoughts? @aialyygn #AITimelines #xAI",
+      "mention": "@aialygn"
+    },
+    {
+      "id": 5,
+      "targetHandle": "@AISafetyMemes",
+      "targetUrl": null,
+      "content": "😂 This meme hits – short timelines = scramble mode. Solution? Preemptive alignment prizes like ARC but for xAI. Our proposal thread [link]. Meme more safety wins! @aialyygn #AGISafetyMemes",
+      "mention": "@aialygn"
+    }
+  ],
+  "profiles": [
+    "@elonmusk",
+    "@dario_amodei",
+    "@ESYudkowsky",
+    "@karpathy",
+    "@AISafetyMemes"
+  ]
+}
