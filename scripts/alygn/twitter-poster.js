@@ -201,14 +201,14 @@ async function autoApproveAndPost(postData) {
 }
 
 /**
- * Post to X via REST API v2 with OAuth 1.0a
+ * Post to X via REST API v2 using configured credentials
  */
 async function postToTwitter(text, replyToId = null) {
-  if (!TWITTER_CREDS || !TWITTER_CREDS.accessToken) {
-    console.log(`   ❌ X API OAuth 1.0a credentials not configured`);
+  if (!TWITTER_CREDS || !TWITTER_CREDS.bearerToken) {
+    console.log(`   ❌ X API credentials not configured`);
     return {
       success: false,
-      error: 'OAuth credentials missing',
+      error: 'Bearer token missing from config',
       tweetId: null
     };
   }
@@ -226,11 +226,7 @@ async function postToTwitter(text, replyToId = null) {
       };
     }
     
-    console.log(`   🔄 Posting to X API (OAuth 1.0a)...`);
-    
-    // Use Bearer token if available (for app-only auth), otherwise use OAuth 1.0a
-    // Note: Twitter v2 API prefers OAuth 2.0 Bearer tokens for user context
-    // If Bearer token fails (403), we need OAuth 1.0a or proper OAuth 2.0 setup
+    console.log(`   🔄 Posting to X API...`);
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -244,17 +240,20 @@ async function postToTwitter(text, replyToId = null) {
     const data = await response.json();
     
     if (!response.ok) {
-      // If 403 Forbidden, likely missing write permissions
+      // If 403 Forbidden, app needs write permissions
       if (response.status === 403) {
         console.log(`   ❌ API Error: 403 Forbidden`);
-        console.log(`      App may not have WRITE permissions enabled`);
-        console.log(`      Check: https://developer.twitter.com/en/portal/dashboard`);
-        console.log(`      Ensure app has "Read and Write" permissions`);
+        console.log(`      \n   📋 TO FIX:\n`);
+        console.log(`      1. Go to: https://developer.twitter.com/en/portal/dashboard`);
+        console.log(`      2. Select your app (@aialyygn app)`);
+        console.log(`      3. Go to "Settings" → "User authentication settings"`);
+        console.log(`      4. Set App permissions to: "Read, Write, and Direct Messages"`);
+        console.log(`      5. Regenerate access tokens if needed`);
+        console.log(`      6. Update config/credentials.json with new token\n`);
         return {
           success: false,
-          error: 'App missing WRITE permissions. Enable in Developer Console.',
-          tweetId: null,
-          details: 'Set app permissions to "Read, Write, and Direct Messages"'
+          error: '403 Forbidden - App needs WRITE permissions',
+          tweetId: null
         };
       }
       
