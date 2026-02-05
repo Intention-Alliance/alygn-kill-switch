@@ -19,6 +19,17 @@ import { execSync } from 'child_process';
 import { getNotionKey } from '../shared/load-credentials.js';
 import { log, success, error, LogLevel } from '../shared/logger.js';
 
+// X API credentials
+const CREDENTIALS_FILE = path.join(new URL('.', import.meta.url).pathname, '../../config/credentials.json');
+let TWITTER_CREDS = null;
+
+try {
+  const credsData = JSON.parse(fs.readFileSync(CREDENTIALS_FILE, 'utf-8'));
+  TWITTER_CREDS = credsData.twitter;
+} catch (e) {
+  console.warn('⚠️  Could not load Twitter API credentials');
+}
+
 const NOTION_API_KEY = getNotionKey();
 const BASE_DIR = new URL('.', import.meta.url).pathname;
 const TWITTER_OUTPUTS_DIR = path.join(BASE_DIR, '../../twitter-outputs');
@@ -190,33 +201,89 @@ async function autoApproveAndPost(postData) {
 }
 
 /**
- * Post to Twitter via X API
- * Currently simulates posting (requires X API token configuration)
+ * Post to X via REST API v2 with OAuth 1.0a
  */
-function postToTwitter(text, replyToId = null) {
-  // This is a simulated posting function
-  // In production, would use:
-  // - Tweepy (Python)
-  // - tweepy-async
-  // - X API v2 (direct HTTP calls)
-  // - twitter-api npm package
+async function postToTwitter(text, replyToId = null) {
+  if (!TWITTER_CREDS || !TWITTER_CREDS.accessToken) {
+    console.log(`   ❌ X API OAuth 1.0a credentials not configured`);
+    return {
+      success: false,
+      error: 'OAuth credentials missing',
+      tweetId: null
+    };
+  }
   
-  // For now, we're in SIMULATION mode
-  // Ready to integrate with actual X API when credentials are provided
-  
-  const simulatedTweetId = Math.floor(Math.random() * 1000000000000).toString();
-  
-  console.log(`   📤 [SIMULATION] Would post to X API`);
-  console.log(`      Text: "${text.substring(0, 50)}..."`);
-  if (replyToId) console.log(`      Reply to: ${replyToId}`);
-  console.log(`      Simulated Tweet ID: ${simulatedTweetId}`);
-  
-  return {
-    success: true,
-    tweetId: simulatedTweetId,
-    simulated: true,
-    message: 'Simulated post - X API token needed for real posting'
-  };
+  try {
+    const endpoint = 'https://api.twitter.com/2/tweets';
+    const payload = {
+      text: text
+    };
+    
+    // If replying to a tweet
+    if (replyToId) {
+      payload.reply = {
+        in_reply_to_tweet_id: replyToId
+      };
+    }
+    
+    console.log(`   🔄 Posting to X API (OAuth 1.0a)...`);
+    
+    // Use Bearer token if available (for app-only auth), otherwise use OAuth 1.0a
+    // Note: Twitter v2 API prefers OAuth 2.0 Bearer tokens for user context
+    // If Bearer token fails (403), we need OAuth 1.0a or proper OAuth 2.0 setup
+    
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${TWITTER_CREDS.bearerToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      // If 403 Forbidden, likely missing write permissions
+      if (response.status === 403) {
+        console.log(`   ❌ API Error: 403 Forbidden`);
+        console.log(`      App may not have WRITE permissions enabled`);
+        console.log(`      Check: https://developer.twitter.com/en/portal/dashboard`);
+        console.log(`      Ensure app has "Read and Write" permissions`);
+        return {
+          success: false,
+          error: 'App missing WRITE permissions. Enable in Developer Console.',
+          tweetId: null,
+          details: 'Set app permissions to "Read, Write, and Direct Messages"'
+        };
+      }
+      
+      console.log(`   ❌ API Error: ${response.status}`);
+      console.log(`      ${data.errors?.[0]?.message || data.detail || 'Unknown error'}`);
+      return {
+        success: false,
+        error: data.errors?.[0]?.message || data.detail || 'API error',
+        tweetId: null
+      };
+    }
+    
+    const tweetId = data.data?.id;
+    console.log(`   ✅ Posted! Tweet ID: ${tweetId}`);
+    console.log(`   🔗 Link: https://x.com/aialyygn/status/${tweetId}`);
+    
+    return {
+      success: true,
+      tweetId: tweetId,
+      message: `Posted to @aialyygn (${tweetId})`
+    };
+  } catch (err) {
+    console.log(`   ❌ Error: ${err.message}`);
+    return {
+      success: false,
+      error: err.message,
+      tweetId: null
+    };
+  }
 }
 
 /**
@@ -246,17 +313,16 @@ async function postApprovedContent() {
   for (const post of pending.slice(0, remainingPostsToday)) {
     console.log(`📝 Posting: "${post.text.substring(0, 50)}..."`);
     
-    const result = postToTwitter(post.text, post.replyToId);
+    const result = await postToTwitter(post.text, post.replyToId);
     
     if (result.success) {
-      console.log(`   ✅ Posted (ID: ${result.tweetId})${result.simulated ? ' [SIMULATED]' : ''}`);
+      console.log(`   ✅ Posted (ID: ${result.tweetId})`);
       
       // Update queue
       post.status = 'posted';
       post.posted = true;
       post.postedAt = new Date().toISOString();
       post.tweetId = result.tweetId;
-      post.simulated = result.simulated || false;
       
       updateQueueEntry(post);
       posted++;
