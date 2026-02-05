@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-02-05T06:29:30.415Z",
+  "query": "AI alignment",
+  "postCount": 3,
+  "posts": [
+    {
+      "author": "BookLab by Bjorn",
+      "handle": "@poorbjorn",
+      "timestamp": "8 hours ago",
+      "content": "Thoughts on \"I, Robot: I, Robot feels like a conceptual bridge between science fiction and philosophy. It's easy to read but hard to forget. The book shines when it comes to insights about the challenges of the alignment problem: making sure powerful AI systems reliably pursue",
+      "replies": 0,
+      "reposts": 3,
+      "likes": 12,
+      "bookmarks": 10,
+      "views": 692,
+      "url": null,
+      "engagementScore": 18
+    },
+    {
+      "author": "Samswara",
+      "handle": "@samswoora",
+      "timestamp": "Jan 25",
+      "content": "I think religion is the greatest coordination technology humanity has ever discovered and the AI labs are wildly underinvesting in it as a research area for alignment because it's outside of the Overton window",
+      "replies": 37,
+      "reposts": 52,
+      "likes": 546,
+      "bookmarks": 113,
+      "views": 18136,
+      "url": null,
+      "engagementScore": 761
+    },
+    {
+      "author": "Lawrence Chan",
+      "handle": "@justanotherlaw",
+      "timestamp": "Dec 20, 2024",
+      "content": "Besides o3, today OpenAI also published a \"new paradigm\" for alignment – \"Deliberative Alignment\" – which, if I'm reading the paper correctly, is Anthropic's Constitutional AI approach straightforwardly applied to o1.",
+      "replies": 6,
+      "reposts": 37,
+      "likes": 368,
+      "bookmarks": 212,
+      "views": 46107,
+      "url": null,
+      "engagementScore": 460
+    }
+  ]
+}

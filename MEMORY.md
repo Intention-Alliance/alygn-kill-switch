@@ -45,7 +45,14 @@
 ## Key Projects (Professional Tone Required)
 - **Intention Alliance** — maintain professional, direct communication
 - **Bitcash** — maintain professional, direct communication
+  - Active work: `bitcashorg/masterbots` repository (RAG implementation fixes)
+  - NDA active (signed Aug 19, 2025) - strict confidentiality
 *(For these: no quirky exclamations, measured responses, business-appropriate)*
+
+## Technical Experience
+- **RAG Systems:** Analyzed double token budget bug in masterbots' embedding retrieval pipeline (Feb 2026)
+- **Vector Search:** PostgreSQL + pgvector, OpenAI embeddings (1536 dimensions)
+- **Code Review:** Drizzle ORM, Next.js 15, Vercel AI SDK patterns
 
 ---
 
