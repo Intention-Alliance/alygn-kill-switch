@@ -208,8 +208,44 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 14. VC Contact Discovery (Monday 10:30 AM)
-echo "14. ALYGN VC Contact Discovery (Monday 10:30 AM CST)..."
+# 14. Twitter: Auto-Post (10:00 AM) - Bird CLI
+echo "14. ALYGN Twitter: Auto-Post Morning (10:00 AM CST) - Bird CLI..."
+openclaw cron add \
+  --name "ALYGN Twitter: Auto-Post (10 AM)" \
+  --description "Post approved content to @aialyygn via bird CLI (morning batch)" \
+  --cron "0 10 * * *" \
+  --tz "America/Costa_Rica" \
+  --session isolated \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --thinking low \
+  --best-effort-deliver
+
+# 15. Twitter: Auto-Post (2:00 PM) - Bird CLI
+echo "15. ALYGN Twitter: Auto-Post Afternoon (2:00 PM CST) - Bird CLI..."
+openclaw cron add \
+  --name "ALYGN Twitter: Auto-Post (2 PM)" \
+  --description "Post approved content to @aialyygn via bird CLI (afternoon batch)" \
+  --cron "0 14 * * *" \
+  --tz "America/Costa_Rica" \
+  --session isolated \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --thinking low \
+  --best-effort-deliver
+
+# 16. Twitter: Auto-Post (6:00 PM) - Bird CLI
+echo "16. ALYGN Twitter: Auto-Post Evening (6:00 PM CST) - Bird CLI..."
+openclaw cron add \
+  --name "ALYGN Twitter: Auto-Post (6 PM)" \
+  --description "Post approved content to @aialyygn via bird CLI (evening batch)" \
+  --cron "0 18 * * *" \
+  --tz "America/Costa_Rica" \
+  --session isolated \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --thinking low \
+  --best-effort-deliver
+
+# 17. VC Contact Discovery (Monday 10:30 AM)
+echo "17. ALYGN VC Contact Discovery (Monday 10:30 AM CST)..."
 openclaw cron add \
   --name "ALYGN VC Contact Discovery" \
   --description "Weekly VC contact search and database update" \
@@ -222,8 +258,8 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 15. VC Outreach Weekly (Monday 11:00 AM) - HYBRID: Grok + Notion tracking
-echo "15. ALYGN VC Outreach Weekly (Monday 11:00 AM CST) - HYBRID..."
+# 18. VC Outreach Weekly (Monday 11:00 AM) - HYBRID: Grok + Notion tracking
+echo "18. ALYGN VC Outreach Weekly (Monday 11:00 AM CST) - HYBRID..."
 openclaw cron add \
   --name "ALYGN VC Outreach Weekly" \
   --description "Weekly VC outreach using Grok enhancement + Notion tracking" \
@@ -236,8 +272,8 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 16. Twitter: Weekly Review (Sunday 5:00 PM) - Grok Prompt #18
-echo "16. ALYGN Twitter: Weekly Review (Sunday 5:00 PM CST) - Grok #18..."
+# 19. Twitter: Weekly Review (Sunday 5:00 PM) - Grok Prompt #18
+echo "19. ALYGN Twitter: Weekly Review (Sunday 5:00 PM CST) - Grok #18..."
 openclaw cron add \
   --name "ALYGN: Weekly Review" \
   --description "Twitter weekly performance review using Grok prompt #18" \
@@ -250,8 +286,8 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 17. Weekly Reflection (Sunday 6:00 PM)
-echo "17. ALYGN Weekly Reflection (Sunday 6:00 PM CST)..."
+# 20. Weekly Reflection (Sunday 6:00 PM)
+echo "20. ALYGN Weekly Reflection (Sunday 6:00 PM CST)..."
 openclaw cron add \
   --name "ALYGN Weekly Reflection" \
   --description "Weekly project retrospective and planning" \
@@ -264,8 +300,8 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 18. Monthly Project Review (1st of month, 10:00 AM) - Includes Grok #19
-echo "18. ALYGN Monthly Project Review (1st of month, 10:00 AM CST)..."
+# 21. Monthly Project Review (1st of month, 10:00 AM) - Includes Grok #19
+echo "21. ALYGN Monthly Project Review (1st of month, 10:00 AM CST)..."
 openclaw cron add \
   --name "ALYGN Monthly Project Review" \
   --description "Comprehensive monthly analysis + Twitter strategy update (Grok #19)" \
@@ -287,8 +323,8 @@ echo ""
 echo "🌍 MULTI-ORG JOBS"
 echo "-----------------"
 
-# 19. BitcashOrg Daily Tracking (3:45 AM)
-echo "19. BitcashOrg Daily Activity Tracker (3:45 AM CST)..."
+# 22. BitcashOrg Daily Tracking (3:45 AM)
+echo "22. BitcashOrg Daily Activity Tracker (3:45 AM CST)..."
 openclaw cron add \
   --name "BitcashOrg Daily Activity Tracker" \
   --description "Track BitcashOrg project metrics and save daily report" \
@@ -301,8 +337,8 @@ openclaw cron add \
   --to "+50662163355" \
   --best-effort-deliver
 
-# 20. AndlerRL Personal Daily Tracking (4:00 AM)
-echo "20. AndlerRL Personal Daily Tracker (4:00 AM CST)..."
+# 23. AndlerRL Personal Daily Tracking (4:00 AM)
+echo "23. AndlerRL Personal Daily Tracker (4:00 AM CST)..."
 openclaw cron add \
   --name "AndlerRL Personal Daily Tracker" \
   --description "Track AndlerRL personal projects and creative work" \
@@ -331,20 +367,23 @@ openclaw cron add \
 
 echo ""
 echo "========================================================"
-echo "✅ All 21 cron jobs created successfully!"
+echo "✅ All 24 cron jobs created successfully!"
 echo ""
 echo "📊 SUMMARY:"
-echo "   - ALYGN: 18 jobs (Grok-based + Modern ESM)"
+echo "   - ALYGN: 21 jobs (Grok-based + Twitter posting via bird CLI)"
 echo "   - Multi-Org: 3 jobs (BitcashOrg, AndlerRL, Weekly Summary)"
 echo ""
 echo "🎯 IMPROVEMENTS:"
 echo "   - Runtime: Bun (faster than Node.js)"
 echo "   - Modules: ESM with modern fetch API"
 echo "   - Logging: Centralized to Notion daily pages"
-echo "   - Code: 80% reduction in API request boilerplate"
+echo "   - Twitter Posting: Bird CLI integration with rate limiting"
+echo "   - Dynamic Injection: Real data replaces placeholders"
 echo ""
 echo "📝 FEATURES:"
-echo "   - Twitter: Grok prompts #1, #3, #13, #15, #17, #18, #19"
+echo "   - Twitter Automation: Grok prompts #1, #3, #13, #15, #17, #18, #19"
+echo "   - Twitter Posting: Auto-post approved content (10 AM, 2 PM, 6 PM)"
+echo "   - Dynamic Values: [TRENDING_TOPICS], [TARGET_AUDIENCE], [ANALYTICS_DATA]"
 echo "   - VC Discovery: New automated contact search"
 echo "   - Logging: All outputs to Notion 'Automation Logs YYYY-MM-DD'"
 echo ""
