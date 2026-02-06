@@ -262,7 +262,12 @@ def send_email(recipient, variant):
       </div>
     </div>
     <div class="footer">
-      <p style="margin: 0;">© 2026 Intention Alliance. All rights reserved.</p>
+      <p style="margin: 0 0 12px 0;">© 2026 Intention Alliance</p>
+      <p style="margin: 0; font-size: 14px;">
+        <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
+        <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
+        <a href="https://linkedin.com/company/intentionalliance/posts/?feedView=all&utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
+      </p>
     </div>
   </div>
 </body>

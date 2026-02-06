@@ -35,6 +35,12 @@ class ALYGNEmailBuilder:
     def build_html(self, recipient_name='there', company_name='', pain_points='', variant='governance'):
         """Build HTML email template with personalization"""
         
+        # Build mailto: template for this variant
+        mailto_template = self.build_mailto_template(variant)
+        mailto_subject = mailto_template['subject'].replace(' ', '%20')
+        mailto_body = mailto_template['body'].replace('\n', '%0A').replace(' ', '%20')
+        mailto_link = f"mailto:tanialeaidm@gmail.com?subject={mailto_subject}&body={mailto_body}"
+        
         # Personalization
         company_mention = f' at {company_name}' if company_name else ''
         pain_point_text = ''
@@ -242,6 +248,10 @@ We've built the SOS Protocol as the governance substrate for that future—and i
     .footer a {{
       color: #0f172a;
       text-decoration: none;
+      font-weight: 500;
+    }}
+    .footer a:hover {{
+      text-decoration: underline;
     }}
   </style>
 </head>
@@ -268,7 +278,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
 
       <div class="body-text">{copy['body']}</div>
 
-      <a href="mailto:contact@andler.dev" class="cta-button">{copy['cta']}</a>
+      <a href="{mailto_link}" class="cta-button">{copy['cta']}</a>
 
       <p class="closing">{copy['closing']}</p>
 
@@ -280,7 +290,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
         </p>
         <p class="signature-role">Founder & CEO, Intention Alliance</p>
         <p class="signature-role" style="margin: 4px 0 0 0;">
-          <a href="mailto:tanialeaidm@gmail.com">tanialeaidm@gmail.com</a>
+          <a href="{mailto_link}">tanialeaidm@gmail.com</a>
         </p>
         <p class="team-contact">
           Team inquiries: <a href="mailto:contact@andler.dev">contact@andler.dev</a>
@@ -290,13 +300,32 @@ We've built the SOS Protocol as the governance substrate for that future—and i
 
     <!-- Footer -->
     <div class="footer">
-      <p style="margin: 0;">© 2026 Intention Alliance | <a href="https://alygn.us">alygn.us</a></p>
+      <p style="margin: 0 0 12px 0;">© 2026 Intention Alliance</p>
+      <p style="margin: 0; font-size: 14px;">
+        <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
+        <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
+        <a href="https://linkedin.com/company/intentionalliance/posts/?feedView=all&utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
+      </p>
     </div>
   </div>
 </body>
 </html>'''
         
         return copy['subject'], html_template
+    
+    def build_mailto_template(self, variant='governance'):
+        """Build pre-filled mailto: templates for different variants"""
+        templates = {
+            'governance': {
+                'subject': 'Re: Building AGI Resilience',
+                'body': 'Hi Tania,\n\nI\'m interested in learning more about the SOS Protocol and how it applies to our organization\'s AGI governance strategy.\n\nLet\'s schedule a time to discuss.\n\nBest regards'
+            },
+            'technical': {
+                'subject': 'Re: AGI Governance Architecture',
+                'body': 'Hi Tania,\n\nYour approach to confidence-aware crisis response and multi-stakeholder alignment resonates with our technical roadmap. I\'d like to dive deeper into the architecture.\n\nLooking forward to connecting.\n\nBest regards'
+            }
+        }
+        return templates.get(variant, templates['governance'])
     
     def send_email(self, recipient_email, recipient_name='there', company_name='', pain_points='', variant='governance'):
         """Send email with personalization and MIME-embedded images"""
@@ -310,7 +339,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
         try:
             # Create MIME message with related parts (for inline images)
             msg = MIMEMultipart('related')
-            msg['From'] = self.smtp_config['user']
+            msg['From'] = 'Alygn R&D <admin@alygn.us>'
             msg['To'] = recipient_email
             msg['Subject'] = subject
             
