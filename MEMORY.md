@@ -51,6 +51,41 @@
 
 ---
 
+## 📧 VC Outreach Email System (ALYGN) - Updated 2026-02-05 23:38
+
+### Phase 1: Email Templates ✅ COMPLETE
+
+**Status:** Production-ready. Two professional variants with SOS Protocol positioning.
+
+**Variants:**
+- **Governance:** "The Question Isn't If AGI Arrives—It's Who Coordinates the Response"
+- **Technical:** "Existential Risk Management at Scale"
+
+**Key Features:**
+- Dark header (#252525) with centered ALYGN logo + wordmark
+- Margin-based CSS alignment (universal email client support)
+- MIME-embedded logo (Content-ID) for reliable rendering
+- Personalization framework (recipient name, company, pain points)
+- AI agent transparency P.S. ("researched and drafted by our AI agent—because we practice what we preach")
+- Secure credential loading (JSON-based, no hardcoding)
+- Tania Lea signature (CEO, tanialeaidm@gmail.com)
+- Footer: alygn.us
+
+**Files:**
+```
+scripts/alygn/
+├── vc-outreach-email-template.py      # Secure Python sender
+├── vc-outreach-email-template.js      # JS template generator
+├── email-template-governance.html     # Editable governance variant
+├── email-template-technical.html      # Editable technical variant
+├── send-email-test.js                 # Test/demo script
+└── VC-OUTREACH-ROADMAP.md            # Full Phase 2 plan
+```
+
+**Tested:** ✅ Governance + Technical variants sent successfully
+
+---
+
 ## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-05
 
 ### Architecture
@@ -163,4 +198,39 @@
 
 ---
 
-*Updated: 2026-02-05*
+## 📋 VC Outreach Phase 2 (Pending - Tomorrow 2026-02-06)
+
+**Overview:** Browser automation + web research integration for intelligent VC discovery & personalization
+
+**Workflow:**
+1. **VC Research** → web_search (find firms) + web_fetch (scrape websites) + browser (LinkedIn)
+2. **Intelligence Extraction** → pain points, investment thesis alignment, portfolio analysis
+3. **Personalization** → merge research into email template (recipient, company, context)
+4. **Email Delivery** → secure SMTP + personalized HTML
+5. **Tracking** → Notion database logging (audit trail)
+
+**Tools for Phase 2:**
+- `web_search()` → Brave API for VC discovery by vertical/stage/geo
+- `web_fetch()` → HTML scraping for firm websites, portfolios, blogs
+- `browser` tool (Playwright) → LinkedIn partner scraping, contact extraction
+- Python orchestration → master coordination script
+- Notion API → log all outreach attempts
+
+**Scripts to Build:**
+- `vc-research.py` → web search + scraping
+- `vc-intelligence.py` → pain point extraction, relevance scoring
+- `vc-browser-automation.js` → LinkedIn scraping, contact forms
+- `vc-outreach-orchestrator.py` → master coordination
+- `vc-notion-logger.py` → Notion API integration
+
+**Success Metrics:**
+- 50+ qualified VC contacts/week discovered
+- 100% personalization (no generic emails)
+- Complete audit trail in Notion
+- Target response rate: 10-15%
+
+**Reference:** Full Phase 2 roadmap in `scripts/alygn/VC-OUTREACH-ROADMAP.md`
+
+---
+
+*Updated: 2026-02-05 23:38*
