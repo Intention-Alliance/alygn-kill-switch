@@ -319,3 +319,31 @@ scripts/alygn/
 ---
 
 *Updated: 2026-02-07 12:10 PM CST*
+
+---
+
+## 🔧 Browser Automation Lessons (Feb 7, 2026)
+
+### What Learned
+**When automating browser-heavy sites (like Twitter):**
+- ❌ Don't restart browser for each action (login context lost)
+- ✅ Reuse single session throughout
+- ❌ Don't fight JavaScript-heavy pages (compose breaks easily)
+- ✅ Use CLI tools when available (Bird CLI better than Puppeteer for Twitter)
+
+### Three Paths Forward
+1. **Bird CLI** - Simplest, fastest (use next time)
+2. **Keep browser open** - Reuse existing session (works but slower)
+3. **X API** - Most reliable (when write access available)
+
+### Key Insight from Andler
+"Check for existing logged-in sessions before launching new ones."  
+→ Was creating fresh Chromium instances instead of reusing the open "Work" profile  
+→ Existing session already authenticated, just needed to connect properly
+
+### Outcome
+- 1/5 posts automated successfully ✅
+- 4/5 posts ready for manual (10 min)
+- Full automation learning captured for next iteration
+- Bird CLI will be primary tool next time
+
