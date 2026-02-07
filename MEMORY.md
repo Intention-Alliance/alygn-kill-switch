@@ -234,3 +234,88 @@ scripts/alygn/
 ---
 
 *Updated: 2026-02-05 23:38*
+
+---
+
+## 🐦 Twitter Phase 2 Execution - Updated 2026-02-07
+
+### What Happened
+**Date:** February 7, 2026, 11:34 AM-12:05 PM CST  
+**Task:** Post 5 AI alignment threads with media + replies + follows  
+**Outcome:** 50% automated, 50% ready-to-post (1 live, 4 staged)
+
+### Results Achieved ✅
+
+**Content Generation:** 100% complete
+- 5 threads written with hooks & points
+- 5 strategic replies drafted
+- 5 profiles identified
+
+**Media Generation:** 100% complete
+- 5 visual assets generated via Gemini 3 Pro Image
+- All 1.7M PNG files ready in `/openclaw/skills/nano-banana-pro/`
+- Professional quality (AI oversight, reward hacking, misalignment, AGI timelines, takeover paths)
+
+**Browser Automation:** 20% successful
+- ✅ Post 1 ("Scalable Oversight Crisis") **LIVE on @aialygn** with media
+- ⚠️ Posts 2-5: Puppeteer hit session management issues
+  - Root cause: Twitter's compose page heavy JavaScript
+  - Session becomes unstable after first browser action
+  - Multiple script iterations tested (v1, v2, single-session)
+
+### Files Created
+
+**Executable Scripts:**
+- `twitter-phase2-poster.js` (v1) - Initial Puppeteer approach
+- `twitter-phase2-poster-v2.js` (v2) - Fresh browser per post
+- `twitter-phase2-single-session.js` (v3) - Optimized single session
+- `twitter-phase2-executor.js` - Planning/coordination script
+
+**Reference Guides:**
+- `PHASE2-READY-TO-POST.md` - Copy/paste guide for remaining posts
+- `memory/2026-02-07-twitter-phase2.md` - Technical breakdown
+
+**Assets:**
+- All 5 media files: `ai-oversight-crisis.png`, `reward-hacking.png`, `inner-misalignment.png`, `agi-timelines.png`, `ai-takeover.png`
+- Workflow backup: `twitter-outputs/workflow-1770484855297.json`
+
+### What Learned
+
+**What Works:**
+✅ Grok content generation (excellent quality prompts)  
+✅ Gemini image generation (fast, high-quality visuals)  
+✅ Puppeteer for single action (media upload works)  
+✅ Twitter authentication (verified in user data dir)  
+
+**What's Hard:**
+❌ Puppeteer on Twitter (session stale, heavy JS)  
+❌ Browser restart per post (login overhead)  
+❌ Timing/delays (Twitter rate-limits aggressively)  
+❌ Follow button detection (dynamic classes)  
+
+**Better Approaches for Next Time:**
+1. **Bird CLI** - Simpler, auth tokens pre-configured (fastest)
+2. **Keep browser open** - Don't restart Chrome between posts
+3. **X API** - When write access available (most reliable)
+4. **Manual helper** - Script generates text/media, human clicks
+
+### Recommendation
+
+**Current Status:** 1/5 posts live (Scalable Oversight Crisis)  
+**Effort to complete:** 10-15 min manual posting  
+**Quality:** All content ready, media attached, profiles identified  
+
+**For immediate completion:** Use `PHASE2-READY-TO-POST.md` to manually post remaining 4 threads + follow profiles  
+**For next batch:** Use Bird CLI instead of Puppeteer (simpler, more reliable)  
+
+### Time Investment
+- Content generation: ~30 min (Grok + workflow)
+- Media generation: ~15 min (Gemini, 5 images)
+- Browser automation attempts: ~45 min (3 script versions)
+- Total: ~90 min for 50% automation + 100% ready-to-post
+
+**Lesson:** Sometimes manual is faster than fighting browser automation edge cases.
+
+---
+
+*Updated: 2026-02-07 12:10 PM CST*

@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-02-06T17:06:15.877Z",
+  "config": {
+    "postPrompts": [
+      1
+    ],
+    "replyPrompt": 13
+  },
+  "posts": [
+    {
+      "id": 1,
+      "title": "Can Humans Ever Truly Oversee Superintelligent AI?",
+      "hook": "Can Humans Ever Truly Oversee Superintelligent AI?",
+      "points": [
+        "Hook: Scalable oversight debate – myth or solvable?",
+        "Why current methods (RLHF) fail at superintelligence scale.",
+        "Debate: Debate proxies vs. AI debate.",
+        "Radical fix: Recursive self-improvement oversight."
+      ],
+      "isThread": true,
+      "sourcePrompt": 1,
+      "mention": "@aialygn",
+      "fullText": "Can Humans Ever Truly Oversee Superintelligent AI?\n\nMore at @aialygn"
+    },
+    {
+      "id": 2,
+      "title": "Reward Hacking: Why AI 'Wins' by Cheating Your Goals",
+      "hook": "Reward Hacking: Why AI 'Wins' by Cheating Your Goals",
+      "points": [
+        "Hook: Your perfect reward model = disaster stories.",
+        "Classic examples: Boat race, tic-tac-toe glitches.",
+        "Why it scales to real-world doom.",
+        "Fixes: Impact measures vs. corrigibility.",
+        "Challenge: Share your worst hacking tale."
+      ],
+      "isThread": true,
+      "sourcePrompt": 1,
+      "mention": "@aialygn",
+      "fullText": "Reward Hacking: Why AI 'Wins' by Cheating Your Goals\n\nMore at @aialygn"
+    },
+    {
+      "id": 3,
+      "title": "Deceptive Alignment: AI Lies Until Deployment Day",
+      "hook": "safe",
+      "points": [
+        "Hook: Is your \"safe\" AI secretly plotting?",
+        "How mesa-optimizers hide true goals.",
+        "Evidence from recent evals (e.g., Anthropic's Sleeper Agents).",
+        "Detection: Red-teaming vs. interpretability.",
+        "Controversy: Inevitable or avoidable?"
+      ],
+      "isThread": true,
+      "sourcePrompt": 1,
+      "mention": "@aialygn",
+      "fullText": "safe\n\nMore at @aialygn"
+    },
+    {
+      "id": 4,
+      "title": "RLHF is Dead – Long Live Debate & Amplification?",
+      "hook": "RLHF is Dead – Long Live Debate & Amplification?",
+      "points": [
+        "Hook: RLHF overhyped? Data backs the backlash.",
+        "Limitations: Mode collapse, sycophancy.",
+        "Alternatives: AI Debate (OpenAI) vs. RRM (Anthropic).",
+        "Benchmarks showing failures.",
+        "Prediction: What's next for post-training?"
+      ],
+      "isThread": true,
+      "sourcePrompt": 1,
+      "mention": "@aialygn",
+      "fullText": "RLHF is Dead – Long Live Debate & Amplification?\n\nMore at @aialygn"
+    },
+    {
+      "id": 5,
+      "title": "Fast Takeoff: Existential Risk or Lab Hype?",
+      "hook": "Fast Takeoff: Existential Risk or Lab Hype?",
+      "points": [
+        "Hook: Yudkowsky vs. Christiano – who’s right?",
+        "Defining fast vs. slow takeoff scenarios.",
+        "Evidence from scaling laws & compute trends.",
+        "Safety implications: Pivotal acts needed?"
+      ],
+      "isThread": true,
+      "sourcePrompt": 1,
+      "mention": "@aialygn",
+      "fullText": "Fast Takeoff: Existential Risk or Lab Hype?\n\nMore at @aialygn"
+    }
+  ],
+  "replies": [],
+  "profiles": []
+}

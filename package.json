@@ -6,6 +6,7 @@
     "nodemailer": "^8.0.0",
     "oauth-1.0a": "^2.2.6",
     "oauth-sign": "^0.9.0",
+    "puppeteer-core": "^24.37.2",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "twitter": "^1.7.1",
