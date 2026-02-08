@@ -86,16 +86,15 @@ scripts/alygn/
 
 ---
 
-## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-05
+## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-07
 
 ### Architecture
-**Approach:** API for reconnaissance → Browser automation for actions (bypasses write permission issues)
+**Approach:** X API v4 for content generation via `twitter-automation-v4.js` (Grok-enhanced) → Browser relay for interactive actions (replies, follows, engagement)
 
 ### Active Scripts
 | Script | Purpose |
 |--------|---------|
-| `twitter-automation-v2.js` | Content generation via Grok prompts |
-| `twitter-browser-automation-v4.js` | Orchestration + workflow generation |
+| `twitter-automation-v4.js` | Content generation via Grok prompts + workflow orchestration |
 
 ### Active Cron Jobs
 | Schedule | Job | Prompts | Purpose |
@@ -105,22 +104,34 @@ scripts/alygn/
 | Sun 5 PM | Weekly Review | 18 | Performance analytics |
 | 1st of month 10 AM | Monthly Review | 19 | Strategy adjustment |
 
-### Workflow (v4)
-1. Run `twitter-browser-automation-v4.js` (optionally with `--posts 1,3` for multiple prompts)
-2. Script calls `twitter-automation-v2.js exec <prompt>` for content
-3. Parses output files from `twitter-outputs/`
-4. Creates `workflow-{timestamp}.json` with posts, replies, profiles
-5. Agent uses browser tool to execute:
-   - Post threads (always append "More at @aialygn")
-   - Reply to dynamic targets from Grok analysis
-   - Follow suggested profiles
-6. Report summary to WhatsApp
+### Workflow (v4) - Now with Browser Relay
+1. Generate content via `twitter-automation-v4.js` (Grok-enhanced)
+2. Create `workflow-{timestamp}.json` with posts, replies, profiles
+3. **Browser relay execution (ALYGN PROFILE):**
+   - Use `browser` tool with `profile="alygn"` for X.com automation
+   - Post threads via compose dialog (working 100%)
+   - Reply to users (next: implement via browser snapshots)
+   - Follow profiles (next: implement via browser snapshots)
+4. Report summary to WhatsApp
+
+### Browser Relay Setup (Critical!)
+**✅ WORKING:** `--browser-profiles alygn` (separate Chrome instance authenticated to X.com)
+- **Command:** Use `profile="alygn"` in all browser tool calls
+- **Status:** X.com fully authenticated, compose & posting verified
+- **Limitation:** Cookies not directly accessible via browser tool (workaround below)
+
+### Cookie Extraction for Bird CLI (Future)
+- **Plan:** Create script to extract X.com cookies from Chrome Alygn profile
+- **Location:** `~/.config/google-chrome/Profile*/Cookies` (SQLite)
+- **Usage:** Pass to Bird CLI for faster replies/follows when browser relay slows down
+- **Status:** Pending implementation
 
 ### Key Details
 - **Handle:** @aialygn
 - **Output Dir:** `~/.openclaw/workspace/twitter-outputs/`
-- **Round-robin selection:** When using multiple prompts, posts are mixed for variety
+- **Browser profile:** `alygn` (must use `profile="alygn"` in browser tool)
 - **Typo auto-fix:** @aialyygn → @aialygn
+- **Workflow file:** `workflow-{timestamp}.json` (posts, replies, profiles)
 
 ### Removed (Obsolete)
 - `twitter-automation.js` (v1)
@@ -234,6 +245,126 @@ scripts/alygn/
 ---
 
 *Updated: 2026-02-05 23:38*
+
+---
+
+## 📋 Weekly Summary - Week of Feb 2-8, 2026
+
+### ALYGN (Intention Alliance)
+
+**Shipped This Week:**
+- ✅ VC Outreach Email System Phase 1 (production-ready)
+  - 2 professional templates: Governance + Technical
+  - MIME-embedded logo, secure credential loading
+  - Personalization framework + AI transparency messaging
+  - Tested: Both variants sent successfully
+  
+- ✅ Twitter Automation Phase 1 Working
+  - 1 thread live: "Reward Hacking" (4 posts, Feb 8 on @aialygn)
+  - Browser relay + alygn profile: 100% posting success
+  - Grok-enhanced content generation: high-quality output
+  - Workflow JSON orchestration: ready for tracking
+
+**Current Challenges:**
+- ⚠️ Twitter Phase 2 infrastructure limit: Browser sequential actions timeout
+  - 5 replies drafted, 5 profiles identified
+  - Solution: Manual execution (5 min) OR Bird CLI OR future X API write access
+  - All data staged: `workflow-1770484855297.json`
+
+**GitHub Status:**
+- align-core-infra: Last updated Jan 30
+- No new commits this week (focus on outreach systems)
+
+**Next Week Priorities:**
+→ Execute Twitter Phase 2 (manually or via Bird CLI)
+→ Launch VC Outreach Phase 2 (research + personalization)
+→ Monitor 11 AM Twitter cron execution
+→ Begin VC contact discovery automation
+
+---
+
+### BitcashOrg
+
+**Analysis Completed:**
+- ✅ Masterbots RAG Pipeline Analysis (Issue #604)
+  - Root cause: Double token budget enforcement in embedding retrieval
+  - Secondary issue: Aggressive cosine similarity threshold
+  - Tertiary issue: Silent failure modes in vector search
+  - Full technical analysis documented + clear fix path
+
+**GitHub Activity:**
+- Feb 7: 1 commit, 2 PRs, 2 issues (masterbots)
+- Feb 6: 1 commit, 3 PRs, 4 issues (masterbots)
+- Focus: Embedding retrieval + RAG optimization
+
+**Active Repos:**
+- masterbots: Updated Feb 6 (primary focus)
+- bitcash, smartsale, bitcash-app: Last updated Dec 10
+- Infrastructure repos: Earlier updates
+
+**Next Week Priorities:**
+→ Implement RAG pipeline fixes
+→ Reduce token budget overhead
+→ Test improved cosine threshold sensitivity
+→ Code review: Drizzle ORM patterns
+
+---
+
+### AndlerRL (Personal)
+
+**Design Complete:**
+- ✅ Automated Blog Publishing System Architecture
+  - Concept: Bot prepares markdown + media → cron push → auto-create blog entries on andler.dev
+  - Notion database: "Projects (Wobblus)"
+  - Ready for implementation
+
+**Status:** ⏳ Awaiting development (server endpoint + cron integration)
+
+---
+
+### Cross-Week Metrics
+- GitHub commits: ~3 (BitcashOrg focused on RAG)
+- Cron jobs: 7 active (daily trackers, Twitter, summaries)
+- Browser relay success: 100% single-action workflows
+- Infrastructure limitation identified: Sequential browser timeouts
+
+---
+
+*Updated: 2026-02-08 17:25 PM CST (Multi-Org Weekly Summary)*
+
+---
+
+## 🐦 Browser Relay Twitter Success - 2026-02-08 00:26 CST
+
+**✅ BREAKTHROUGH:** Reward Hacking thread posted successfully via browser relay!
+
+**What worked:**
+- Alygn Chrome profile authenticated to X.com
+- Browser tool with `profile="alygn"` connected cleanly
+- Full 4-post thread composed in compose dialog (4 posts live on timeline)
+- Proper threading maintained
+
+**Phase 2 Status: Replies & Follows - READY FOR EXECUTION**
+- ✅ All 5 reply targets identified with tweet URLs
+- ✅ All reply texts drafted and optimized
+- ✅ All 5 profiles identified for following
+- ✅ Workflow data in `~/.openclaw/workspace/twitter-outputs/workflow-1770484855297.json`
+
+**Discovered limitations:**
+- Chrome cookies are encrypted (DPAPI) - Bird CLI cannot extract
+- Browser relay timeouts when executing multiple sequential snapshots
+- Most practical: Direct manual posting via browser OR use X API (when write access available)
+
+**Immediate action items:**
+1. Navigate to each target tweet (use URLs from workflow)
+2. Click reply → compose → submit
+3. Follow target profiles
+4. Estimated time: 5 min manual execution
+
+**Reference data:**
+- Target URLs: Available via `jq '.replies[].targetUrl' workflow-1770484855297.json`
+- Reply texts: Optimized and ready in workflow file
+- Follower list: `.profiles[]` in workflow
 
 ---
 

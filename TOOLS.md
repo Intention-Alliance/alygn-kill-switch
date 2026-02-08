@@ -119,6 +119,30 @@ goplaces search "sushi" --json
 
 ---
 
+## Browser Relay Configuration
+
+### Extended Timeouts (Updated 2026-02-08)
+**For long-running automation tasks:**
+- **Default timeout:** 10s
+- **Browser navigation:** 30s (for page loads)
+- **Browser snapshot:** 20s (for rendering)
+- **Browser action execution:** 40s (for complex interactions)
+- **Cron timeouts:** 3600s (1 hour for extended runs)
+
+**Usage:**
+```bash
+browser --action=snapshot --timeoutMs=30000 --profile=alygn
+```
+
+### Alygn Profile (Twitter/X Automation)
+- **Profile name:** `alygn`
+- **Chrome instance:** Separate authenticated session
+- **X.com status:** ✅ Fully authenticated
+- **Usage:** `browser --profile="alygn" [action]`
+- **Note:** Use extended timeouts for complex workflows
+
+---
+
 ## Channels
 
 ### WhatsApp
