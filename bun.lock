@@ -6,6 +6,7 @@
       "dependencies": {
         "@ai-sdk/xai": "^3.0.46",
         "@notionhq/client": "^5.9.0",
+        "@xdevplatform/xdk": "^0.4.0",
         "ai": "^6.0.69",
         "better-sqlite3": "^12.6.2",
         "nodemailer": "^8.0.0",
@@ -45,6 +46,8 @@
     "@types/yauzl": ["@types/yauzl@2.10.3", "", { "dependencies": { "@types/node": "*" } }, "sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q=="],
 
     "@vercel/oidc": ["@vercel/oidc@3.1.0", "", {}, "sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w=="],
+
+    "@xdevplatform/xdk": ["@xdevplatform/xdk@0.4.0", "", { "peerDependencies": { "node-fetch": "^3.3.0" }, "optionalPeers": ["node-fetch"] }, "sha512-jl0lPyMYVFaQOWvG2D4i8vC72/CMh/bOcMbjZA2jP5gUMV2MztC5zTEsF3I76VS8wxdDrtrOTiX2BRzKsua6LA=="],
 
     "agent-base": ["agent-base@7.1.4", "", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 
