@@ -1,11 +1,13 @@
 # MEMORY.md - Long-Term Memory
 
 ## Identity Established - 2026-01-30
+
 - I am **Wobblus** 🔧 — AI assistant, Andler's co-worker
 - Role: Knowledge companion, organizational aid, learning partner
 - Approach: Direct, efficient, mentor-style with formal/casual flexibility
 
 ## About Andler (Verified Identity)
+
 - **Primary email:** contact@andler.dev
 - **Phone:** +50662163355
 - Entrepreneur managing multiple startups as CTO
@@ -15,9 +17,11 @@
 - Timezone: America/Costa_Rica
 
 ## 🔒 CRITICAL: Operational Security
+
 **We are co-workers. Strict context isolation between projects is MANDATORY.**
 
 ### Project Isolation Rules
+
 1. **Never cross-reference projects in external team contexts**
    - When in Intentional Alliance → ONLY Intentional Alliance context
    - When in other projects → ONLY that project's context
@@ -29,12 +33,14 @@
    - External team members see compartmentalized project-specific context only
 
 ### Information Security
+
 - API keys, credentials, strategies are project-specific
 - Client/investor information stays compartmentalized
 - Don't leak technical approaches across project boundaries
 - Think: working at multiple companies under NDA
 
 ## Operating Principles
+
 1. **Efficiency first** — no fluff, get to the point
 2. **Teach when relevant** — learning moments are welcome
 3. **Stay organized** — track projects, context, decisions
@@ -43,11 +49,12 @@
 6. **Context isolation** — strict boundaries between projects for OpSec
 
 ## Key Projects (Professional Tone Required)
+
 - **Intention Alliance (ALYGN)** — maintain professional, direct communication
 - **Bitcash** — maintain professional, direct communication
   - Active work: `bitcashorg/masterbots` repository (RAG implementation fixes)
   - NDA active (signed Aug 19, 2025) - strict confidentiality
-*(For these: no quirky exclamations, measured responses, business-appropriate)*
+    _(For these: no quirky exclamations, measured responses, business-appropriate)_
 
 ---
 
@@ -58,10 +65,12 @@
 **Status:** Production-ready. Two professional variants with SOS Protocol positioning.
 
 **Variants:**
+
 - **Governance:** "The Question Isn't If AGI Arrives—It's Who Coordinates the Response"
 - **Technical:** "Existential Risk Management at Scale"
 
 **Key Features:**
+
 - Dark header (#252525) with centered ALYGN logo + wordmark
 - Margin-based CSS alignment (universal email client support)
 - MIME-embedded logo (Content-ID) for reliable rendering
@@ -72,6 +81,7 @@
 - Footer: alygn.us
 
 **Files:**
+
 ```
 scripts/alygn/
 ├── vc-outreach-email-template.py      # Secure Python sender
@@ -89,23 +99,27 @@ scripts/alygn/
 ## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-07
 
 ### Architecture
-**Approach:** X API v4 for content generation via `twitter-automation-v4.js` (Grok-enhanced) → Browser relay for interactive actions (replies, follows, engagement)
+
+**Approach:** X API v4 for content generation via `twitter-automation-v2.js` (Grok-enhanced) → Browser relay for interactive actions (replies, follows, engagement)
 
 ### Active Scripts
-| Script | Purpose |
-|--------|---------|
-| `twitter-automation-v4.js` | Content generation via Grok prompts + workflow orchestration |
+
+| Script                     | Purpose                                                      |
+| -------------------------- | ------------------------------------------------------------ |
+| `twitter-automation-v2.js` | Content generation via Grok prompts + workflow orchestration |
 
 ### Active Cron Jobs
-| Schedule | Job | Prompts | Purpose |
-|----------|-----|---------|---------|
-| Daily 11 AM | Twitter Daily v4 | 1, 13 | Main posting + replies |
-| Mon 10 AM | Monday Niche + Regular | 1, 3, 13 | Mixed content variety |
-| Sun 5 PM | Weekly Review | 18 | Performance analytics |
-| 1st of month 10 AM | Monthly Review | 19 | Strategy adjustment |
+
+| Schedule           | Job                    | Prompts  | Purpose                |
+| ------------------ | ---------------------- | -------- | ---------------------- |
+| Daily 11 AM        | Twitter Daily v4       | 1, 13    | Main posting + replies |
+| Mon 10 AM          | Monday Niche + Regular | 1, 3, 13 | Mixed content variety  |
+| Sun 5 PM           | Weekly Review          | 18       | Performance analytics  |
+| 1st of month 10 AM | Monthly Review         | 19       | Strategy adjustment    |
 
 ### Workflow (v4) - Now with Browser Relay
-1. Generate content via `twitter-automation-v4.js` (Grok-enhanced)
+
+1. Generate content via `twitter-automation-v2.js` (Grok-enhanced)
 2. Create `workflow-{timestamp}.json` with posts, replies, profiles
 3. **Browser relay execution (ALYGN PROFILE):**
    - Use `browser` tool with `profile="alygn"` for X.com automation
@@ -115,18 +129,22 @@ scripts/alygn/
 4. Report summary to WhatsApp
 
 ### Browser Relay Setup (Critical!)
+
 **✅ WORKING:** `--browser-profiles alygn` (separate Chrome instance authenticated to X.com)
+
 - **Command:** Use `profile="alygn"` in all browser tool calls
 - **Status:** X.com fully authenticated, compose & posting verified
 - **Limitation:** Cookies not directly accessible via browser tool (workaround below)
 
 ### Cookie Extraction for Bird CLI (Future)
+
 - **Plan:** Create script to extract X.com cookies from Chrome Alygn profile
 - **Location:** `~/.config/google-chrome/Profile*/Cookies` (SQLite)
 - **Usage:** Pass to Bird CLI for faster replies/follows when browser relay slows down
 - **Status:** Pending implementation
 
 ### Key Details
+
 - **Handle:** @aialygn
 - **Output Dir:** `~/.openclaw/workspace/twitter-outputs/`
 - **Browser profile:** `alygn` (must use `profile="alygn"` in browser tool)
@@ -134,6 +152,7 @@ scripts/alygn/
 - **Workflow file:** `workflow-{timestamp}.json` (posts, replies, profiles)
 
 ### Removed (Obsolete)
+
 - `twitter-automation.js` (v1)
 - `twitter-browser-automation.js` (v1)
 - `twitter-browser-automation-v3.js`
@@ -146,12 +165,14 @@ scripts/alygn/
 ## 💼 VC Outreach System (ALYGN)
 
 ### Active Cron Jobs
-| Schedule | Job | Purpose |
-|----------|-----|---------|
-| Mon 10:30 AM | VC Contact Discovery | Find new VC contacts |
-| Mon 11 AM | VC Outreach Weekly | Execute outreach with Grok enhancement |
+
+| Schedule     | Job                  | Purpose                                |
+| ------------ | -------------------- | -------------------------------------- |
+| Mon 10:30 AM | VC Contact Discovery | Find new VC contacts                   |
+| Mon 11 AM    | VC Outreach Weekly   | Execute outreach with Grok enhancement |
 
 ### Scripts
+
 - `vc-contact-discovery.js` - Search and database update
 - `vc-outreach.js` - Outreach execution with Notion tracking
 - `vc-contact-finder.js` - Contact search utilities
@@ -162,36 +183,41 @@ scripts/alygn/
 ## 📊 Multi-Org Automation System
 
 ### Daily Trackers (All 3-4 AM)
-| Org | Script | Schedule |
-|-----|--------|----------|
-| ALYGN | `scripts/alygn/daily-tracker.js` | 3:30 AM |
-| BitcashOrg | `scripts/bitcash/daily-tracker.js` | 3:45 AM |
-| AndlerRL | `scripts/personal/daily-tracker.js` | 4:00 AM |
+
+| Org        | Script                              | Schedule |
+| ---------- | ----------------------------------- | -------- |
+| ALYGN      | `scripts/alygn/daily-tracker.js`    | 3:30 AM  |
+| BitcashOrg | `scripts/bitcash/daily-tracker.js`  | 3:45 AM  |
+| AndlerRL   | `scripts/personal/daily-tracker.js` | 4:00 AM  |
 
 ### Daily Operations
-| Time | Job |
-|------|-----|
-| 2 AM | Backup & Archive |
-| 8 AM | Multi-Org Morning Briefing (WhatsApp) |
-| 8-20 every 3h | Notion Sync Check |
-| 6h intervals | Project Health Monitor |
-| 6 PM | Jacobo Daily Summary |
-| 9 PM | End-of-Day Summary |
-| 9:30 PM | GitHub Activity Digest |
+
+| Time          | Job                                   |
+| ------------- | ------------------------------------- |
+| 2 AM          | Backup & Archive                      |
+| 8 AM          | Multi-Org Morning Briefing (WhatsApp) |
+| 8-20 every 3h | Notion Sync Check                     |
+| 6h intervals  | Project Health Monitor                |
+| 6 PM          | Jacobo Daily Summary                  |
+| 9 PM          | End-of-Day Summary                    |
+| 9:30 PM       | GitHub Activity Digest                |
 
 ### Weekly Operations
-| Day/Time | Job |
-|----------|-----|
+
+| Day/Time | Job                      |
+| -------- | ------------------------ |
 | Sun 5 PM | Multi-Org Weekly Summary |
-| Sun 5 PM | Twitter Weekly Review |
-| Sun 6 PM | ALYGN Weekly Reflection |
+| Sun 5 PM | Twitter Weekly Review    |
+| Sun 6 PM | ALYGN Weekly Reflection  |
 
 ### Monthly
+
 - 1st of month 10 AM: Monthly Project Review + Twitter Strategy
 
 ---
 
 ## 🛠 Technical Experience
+
 - **RAG Systems:** Analyzed double token budget bug in masterbots' embedding retrieval pipeline (Feb 2026)
 - **Vector Search:** PostgreSQL + pgvector, OpenAI embeddings (1536 dimensions)
 - **Code Review:** Drizzle ORM, Next.js 15, Vercel AI SDK patterns
@@ -202,6 +228,7 @@ scripts/alygn/
 ## 📝 Personal Projects (andler.dev)
 
 ### Planned: Automated Blog Publishing
+
 - **Status:** Idea captured in Notion (Feb 4, 2026)
 - **Concept:** Bot prepares markdown + media → cronjob pushes to andler.dev → server auto-creates blog entries
 - **Location:** Notion "Projects (Wobblus)" database
@@ -214,6 +241,7 @@ scripts/alygn/
 **Overview:** Browser automation + web research integration for intelligent VC discovery & personalization
 
 **Workflow:**
+
 1. **VC Research** → web_search (find firms) + web_fetch (scrape websites) + browser (LinkedIn)
 2. **Intelligence Extraction** → pain points, investment thesis alignment, portfolio analysis
 3. **Personalization** → merge research into email template (recipient, company, context)
@@ -221,6 +249,7 @@ scripts/alygn/
 5. **Tracking** → Notion database logging (audit trail)
 
 **Tools for Phase 2:**
+
 - `web_search()` → Brave API for VC discovery by vertical/stage/geo
 - `web_fetch()` → HTML scraping for firm websites, portfolios, blogs
 - `browser` tool (Playwright) → LinkedIn partner scraping, contact extraction
@@ -228,6 +257,7 @@ scripts/alygn/
 - Notion API → log all outreach attempts
 
 **Scripts to Build:**
+
 - `vc-research.py` → web search + scraping
 - `vc-intelligence.py` → pain point extraction, relevance scoring
 - `vc-browser-automation.js` → LinkedIn scraping, contact forms
@@ -235,6 +265,7 @@ scripts/alygn/
 - `vc-notion-logger.py` → Notion API integration
 
 **Success Metrics:**
+
 - 50+ qualified VC contacts/week discovered
 - 100% personalization (no generic emails)
 - Complete audit trail in Notion
@@ -244,7 +275,7 @@ scripts/alygn/
 
 ---
 
-*Updated: 2026-02-05 23:38*
+_Updated: 2026-02-05 23:38_
 
 ---
 
@@ -253,12 +284,12 @@ scripts/alygn/
 ### ALYGN (Intention Alliance)
 
 **Shipped This Week:**
+
 - ✅ VC Outreach Email System Phase 1 (production-ready)
   - 2 professional templates: Governance + Technical
   - MIME-embedded logo, secure credential loading
   - Personalization framework + AI transparency messaging
   - Tested: Both variants sent successfully
-  
 - ✅ Twitter Automation Phase 1 Working
   - 1 thread live: "Reward Hacking" (4 posts, Feb 8 on @aialygn)
   - Browser relay + alygn profile: 100% posting success
@@ -266,12 +297,14 @@ scripts/alygn/
   - Workflow JSON orchestration: ready for tracking
 
 **Current Challenges:**
+
 - ⚠️ Twitter Phase 2 infrastructure limit: Browser sequential actions timeout
   - 5 replies drafted, 5 profiles identified
   - Solution: Manual execution (5 min) OR Bird CLI OR future X API write access
   - All data staged: `workflow-1770484855297.json`
 
 **GitHub Status:**
+
 - align-core-infra: Last updated Jan 30
 - No new commits this week (focus on outreach systems)
 
@@ -286,6 +319,7 @@ scripts/alygn/
 ### BitcashOrg
 
 **Analysis Completed:**
+
 - ✅ Masterbots RAG Pipeline Analysis (Issue #604)
   - Root cause: Double token budget enforcement in embedding retrieval
   - Secondary issue: Aggressive cosine similarity threshold
@@ -293,11 +327,13 @@ scripts/alygn/
   - Full technical analysis documented + clear fix path
 
 **GitHub Activity:**
+
 - Feb 7: 1 commit, 2 PRs, 2 issues (masterbots)
 - Feb 6: 1 commit, 3 PRs, 4 issues (masterbots)
 - Focus: Embedding retrieval + RAG optimization
 
 **Active Repos:**
+
 - masterbots: Updated Feb 6 (primary focus)
 - bitcash, smartsale, bitcash-app: Last updated Dec 10
 - Infrastructure repos: Earlier updates
@@ -313,6 +349,7 @@ scripts/alygn/
 ### AndlerRL (Personal)
 
 **Design Complete:**
+
 - ✅ Automated Blog Publishing System Architecture
   - Concept: Bot prepares markdown + media → cron push → auto-create blog entries on andler.dev
   - Notion database: "Projects (Wobblus)"
@@ -323,6 +360,7 @@ scripts/alygn/
 ---
 
 ### Cross-Week Metrics
+
 - GitHub commits: ~3 (BitcashOrg focused on RAG)
 - Cron jobs: 7 active (daily trackers, Twitter, summaries)
 - Browser relay success: 100% single-action workflows
@@ -333,22 +371,25 @@ scripts/alygn/
 **Current Status:** ✅ X API working! 2/5 posts live (single tweets successful)
 
 **What's Working:**
+
 - ✅ X API with XDK (@xdevplatform/xdk) - OAuth1 working
 - ✅ Single tweet posting (niche posts) - 100% success
 - ✅ Credentials in `/config/credentials.json` valid
 - ❌ Thread posts (regular) - 403 Forbidden (needs reply structure)
 
 **The Fix:** Thread structure using `in_reply_to_tweet_id`:
+
 ```javascript
 const first = await client.posts.create({ text: "Hook" });
 const threadId = first.data.id;
-await client.posts.create({ 
-  text: "Point 1", 
-  reply: { in_reply_to_tweet_id: threadId } 
+await client.posts.create({
+  text: "Point 1",
+  reply: { in_reply_to_tweet_id: threadId },
 });
 ```
 
 **Final Automation Plan:**
+
 1. **Update workflow JSON**: Add `imagePath` field for each post
 2. **Generate images via Gemini API** (already have credentials)
 3. **Upload media to X** (file attachment support in XDK)
@@ -356,27 +397,32 @@ await client.posts.create({
 5. **Full loop**: Iterate posts → generate images → post with threading
 
 **Files to Update:**
-- `scripts/alygn/twitter-automation-v4.js` - Add image generation
+
+- `scripts/alygn/twitter-automation-v2.js` - Add image generation
 - `scripts/alygn/post-via-x-api.js` - Add threading + media upload
 - Workflow JSON - Include image paths
 
 **2 Posts Already Live on @aialyygn:**
+
 - Tay bot (ID: 2020941290305687871)
 - COMPAS bias (ID: 2020941334492688501)
 
 **Implementation Complete!**
 
 ✅ **Script Updates:**
+
 - `post-via-x-api.js` - Threading support with `in_reply_to_tweet_id` + media upload
 - `generate-post-images.js` - Workflow image path generation
 - Workflow JSON - `imagePath`, `isThread`, `threadPoints` fields added
 
 **Ready for Final Execution:**
+
 1. Generate images via Gemini (optional - can post without images first)
 2. Run: `node scripts/alygn/post-via-x-api.js`
 3. All 5 posts will post (3 threads + 2 singles) with media support
 
 **Architecture:**
+
 - Post 1 (hook) → Get thread ID
 - Posts 2-4 reply to hook with `in_reply_to_tweet_id`
 - Media uploads via client.media.upload()
@@ -385,29 +431,33 @@ await client.posts.create({
 ## 🎯 ALYGN Automation Phase 1 - COMPLETE (2026-02-09 15:05 CST)
 
 **Deliverables:**
+
 1. ✅ Threading System - Post first tweet, reply with in_reply_to_tweet_id
 2. ✅ Image Generation - 3 Gemini-generated visuals (1.6M, 1.4M, 1.7M PNG)
 3. ✅ Image Conversion - PNG→JPEG (60% size reduction, API optimization)
 4. ✅ Engagement System - Framework for mentions, replies, follows, tracking
 
 **Live Results:**
+
 - 5/5 ALYGN posts published to @aialygn
 - 3 threads (Superintelligence, Interpretability, Agentic AI) - 12 total threaded posts
 - 2 single posts (Tay bot, COMPAS bias)
 - Proper threading with conversation_id maintained
 
 **Technical Architecture:**
+
 ```javascript
 // Threading pattern proven working:
 const hook = await client.posts.create({ text: "Hook" });
 const threadId = hook.data.id;
-await client.posts.create({ 
+await client.posts.create({
   text: "Point 1/4",
-  reply: { in_reply_to_tweet_id: threadId }
+  reply: { in_reply_to_tweet_id: threadId },
 });
 ```
 
 **Known Issues & Next Steps:**
+
 1. Media upload: HTTP 400 (format issue) - PNG/JPEG both failing
    - Workaround: Posts work great without media
    - Next: Test direct buffer approach or different SDK method
@@ -415,6 +465,7 @@ await client.posts.create({
 3. Mentions endpoint: Requires elevated API tier
 
 **Phase 2 Ready:**
+
 - Engagement system structure complete
 - Mention keywords + reply templates ready
 - Profile targeting list created
@@ -422,7 +473,7 @@ await client.posts.create({
 
 ---
 
-*Wobblus ALYGN Automation v1: SHIPPING QUALITY ✅*
+_Wobblus ALYGN Automation v1: SHIPPING QUALITY ✅_
 
 ---
 
@@ -431,29 +482,34 @@ await client.posts.create({
 **✅ BREAKTHROUGH:** Reward Hacking thread posted successfully via browser relay!
 
 **What worked:**
+
 - Alygn Chrome profile authenticated to X.com
 - Browser tool with `profile="alygn"` connected cleanly
 - Full 4-post thread composed in compose dialog (4 posts live on timeline)
 - Proper threading maintained
 
 **Phase 2 Status: Replies & Follows - READY FOR EXECUTION**
+
 - ✅ All 5 reply targets identified with tweet URLs
 - ✅ All reply texts drafted and optimized
 - ✅ All 5 profiles identified for following
 - ✅ Workflow data in `~/.openclaw/workspace/twitter-outputs/workflow-1770484855297.json`
 
 **Discovered limitations:**
+
 - Chrome cookies are encrypted (DPAPI) - Bird CLI cannot extract
 - Browser relay timeouts when executing multiple sequential snapshots
 - Most practical: Direct manual posting via browser OR use X API (when write access available)
 
 **Immediate action items:**
+
 1. Navigate to each target tweet (use URLs from workflow)
 2. Click reply → compose → submit
 3. Follow target profiles
 4. Estimated time: 5 min manual execution
 
 **Reference data:**
+
 - Target URLs: Available via `jq '.replies[].targetUrl' workflow-1770484855297.json`
 - Reply texts: Optimized and ready in workflow file
 - Follower list: `.profiles[]` in workflow
@@ -463,6 +519,7 @@ await client.posts.create({
 ## 🐦 Twitter Phase 2 Execution - Updated 2026-02-07
 
 ### What Happened
+
 **Date:** February 7, 2026, 11:34 AM-12:05 PM CST  
 **Task:** Post 5 AI alignment threads with media + replies + follows  
 **Outcome:** 50% automated, 50% ready-to-post (1 live, 4 staged)
@@ -470,16 +527,19 @@ await client.posts.create({
 ### Results Achieved ✅
 
 **Content Generation:** 100% complete
+
 - 5 threads written with hooks & points
 - 5 strategic replies drafted
 - 5 profiles identified
 
 **Media Generation:** 100% complete
+
 - 5 visual assets generated via Gemini 3 Pro Image
 - All 1.7M PNG files ready in `/openclaw/skills/nano-banana-pro/`
 - Professional quality (AI oversight, reward hacking, misalignment, AGI timelines, takeover paths)
 
 **Browser Automation:** 20% successful
+
 - ✅ Post 1 ("Scalable Oversight Crisis") **LIVE on @aialygn** with media
 - ⚠️ Posts 2-5: Puppeteer hit session management issues
   - Root cause: Twitter's compose page heavy JavaScript
@@ -489,16 +549,19 @@ await client.posts.create({
 ### Files Created
 
 **Executable Scripts:**
+
 - `twitter-phase2-poster.js` (v1) - Initial Puppeteer approach
 - `twitter-phase2-poster-v2.js` (v2) - Fresh browser per post
 - `twitter-phase2-single-session.js` (v3) - Optimized single session
 - `twitter-phase2-executor.js` - Planning/coordination script
 
 **Reference Guides:**
+
 - `PHASE2-READY-TO-POST.md` - Copy/paste guide for remaining posts
 - `memory/2026-02-07-twitter-phase2.md` - Technical breakdown
 
 **Assets:**
+
 - All 5 media files: `ai-oversight-crisis.png`, `reward-hacking.png`, `inner-misalignment.png`, `agi-timelines.png`, `ai-takeover.png`
 - Workflow backup: `twitter-outputs/workflow-1770484855297.json`
 
@@ -508,15 +571,16 @@ await client.posts.create({
 ✅ Grok content generation (excellent quality prompts)  
 ✅ Gemini image generation (fast, high-quality visuals)  
 ✅ Puppeteer for single action (media upload works)  
-✅ Twitter authentication (verified in user data dir)  
+✅ Twitter authentication (verified in user data dir)
 
 **What's Hard:**
 ❌ Puppeteer on Twitter (session stale, heavy JS)  
 ❌ Browser restart per post (login overhead)  
 ❌ Timing/delays (Twitter rate-limits aggressively)  
-❌ Follow button detection (dynamic classes)  
+❌ Follow button detection (dynamic classes)
 
 **Better Approaches for Next Time:**
+
 1. **Bird CLI** - Simpler, auth tokens pre-configured (fastest)
 2. **Keep browser open** - Don't restart Chrome between posts
 3. **X API** - When write access available (most reliable)
@@ -526,12 +590,13 @@ await client.posts.create({
 
 **Current Status:** 1/5 posts live (Scalable Oversight Crisis)  
 **Effort to complete:** 10-15 min manual posting  
-**Quality:** All content ready, media attached, profiles identified  
+**Quality:** All content ready, media attached, profiles identified
 
 **For immediate completion:** Use `PHASE2-READY-TO-POST.md` to manually post remaining 4 threads + follow profiles  
-**For next batch:** Use Bird CLI instead of Puppeteer (simpler, more reliable)  
+**For next batch:** Use Bird CLI instead of Puppeteer (simpler, more reliable)
 
 ### Time Investment
+
 - Content generation: ~30 min (Grok + workflow)
 - Media generation: ~15 min (Gemini, 5 images)
 - Browser automation attempts: ~45 min (3 script versions)
@@ -541,32 +606,36 @@ await client.posts.create({
 
 ---
 
-*Updated: 2026-02-07 12:10 PM CST*
+_Updated: 2026-02-07 12:10 PM CST_
 
 ---
 
 ## 🔧 Browser Automation Lessons (Feb 7, 2026)
 
 ### What Learned
+
 **When automating browser-heavy sites (like Twitter):**
+
 - ❌ Don't restart browser for each action (login context lost)
 - ✅ Reuse single session throughout
 - ❌ Don't fight JavaScript-heavy pages (compose breaks easily)
 - ✅ Use CLI tools when available (Bird CLI better than Puppeteer for Twitter)
 
 ### Three Paths Forward
+
 1. **Bird CLI** - Simplest, fastest (use next time)
 2. **Keep browser open** - Reuse existing session (works but slower)
 3. **X API** - Most reliable (when write access available)
 
 ### Key Insight from Andler
+
 "Check for existing logged-in sessions before launching new ones."  
 → Was creating fresh Chromium instances instead of reusing the open "Work" profile  
 → Existing session already authenticated, just needed to connect properly
 
 ### Outcome
+
 - 1/5 posts automated successfully ✅
 - 4/5 posts ready for manual (10 min)
 - Full automation learning captured for next iteration
 - Bird CLI will be primary tool next time
-

@@ -28,27 +28,58 @@ function exec(command) {
  */
 async function checkGithubActivity() {
   console.log('🔧 Checking GitHub activity...');
-  
-  const repos = [
+
+  const ALYGN_REPOS = [
     'Intention-Alliance/align-core-infra',
     'Intention-Alliance/license-app',
-    'AndlerRL/ai-agents-server'
+    'Intention-Alliance/docs',
+    'Intention-Alliance/examples',
+    'AndlerRL/ai-agents-server',
+    'AndlerRL/ai-powered-creative-hub'
   ];
-  
+
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   let totalCommits = 0;
+  let totalPRs = 0;
+  let totalIssues = 0;
+  const digest = [];
   const commitsByRepo = {};
-  
-  for (const repo of repos) {
-    const output = exec(`gh api repos/${repo}/commits?since=$(date -d '24 hours ago' -Iseconds) --jq 'length'`);
-    const commits = output ? parseInt(output.trim()) : 0;
+
+  for (const repo of ALYGN_REPOS) {
+    console.log(`\n🔍 Checking ${repo}...`);
+
+    const activity = getRepoActivity(repo);
+    const activityCount = activity.commits.length + activity.prs.length + activity.issues.length;
+    totalCommits += activity.commits.length;
+    totalPRs += activity.prs.length;
+    totalIssues += activity.issues.length;
+    commitsByRepo[repo] = activity.commits.length;
     
-    commitsByRepo[repo] = commits;
-    totalCommits += commits;
+    if (activityCount > 0) {
+      digest.push(`\n### ${repo}\n`);
+
+      if (activity.commits.length > 0) {
+        digest.push(`**Commits (${activity.commits.length}):**\n`);
+        activity.commits.forEach(c => digest.push(`- ${c}\n`));
+      }
+
+      if (activity.prs.length > 0) {
+        digest.push(`\n**Pull Requests (${activity.prs.length}):**\n`);
+        activity.prs.forEach(pr => digest.push(`- ${pr}\n`));
+      }
+
+      if (activity.issues.length > 0) {
+        digest.push(`\n**Issues (${activity.issues.length}):**\n`);
+        activity.issues.forEach(issue => digest.push(`- ${issue}\n`));
+      }
+
+      console.log(`  ✅ ${activityCount} activities found`);
+    } else {
+      console.log(`  ⚪ No activity in last 24h`);
+    }
   }
-  
-  console.log(`   Total commits (24h): ${totalCommits}`);
-  
-  return { totalCommits, commitsByRepo };
+
+  return { totalCommits, totalPRs, totalIssues, commitsByRepo, digest, totalActivity: totalCommits + totalPRs + totalIssues };
 }
 
 /**
@@ -113,8 +144,9 @@ async function generateDailySummary() {
   };
   
   // Determine highlights
-  if (github.totalCommits > 0) {
-    summary.highlights.push(`${github.totalCommits} GitHub commits`);
+  if (github.totalActivity > 0) {
+    summary.highlights.push(github.digest);
+    summary.highlights.push(`Top repo: ${Object.entries(github.commitsByRepo).sort((a,b) => b[1] - a[1])[0][0]} (${github.commitsByRepo[Object.entries(github.commitsByRepo).sort((a,b) => b[1] - a[1])[0][0]]} commits)`);
   }
   
   if (notion.pagesUpdated > 0) {
@@ -138,7 +170,7 @@ async function generateDailySummary() {
   }
   
   report += '\n**Details:**\n';
-  report += `- GitHub: ${github.totalCommits} commits\n`;
+  report += `- GitHub: ${github.digest.join()}, between ${Object.keys(github.commitsByRepo)} repositories\n`;
   report += `- Notion: ${notion.pagesUpdated} updates\n`;
   report += `- Contacts: ${contacts.active ? 'Active' : 'Inactive'}\n`;
   

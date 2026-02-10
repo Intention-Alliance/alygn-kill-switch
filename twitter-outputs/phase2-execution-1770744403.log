@@ -1,0 +1,27 @@
+📋 Loading workflow...
+🐦 X API Poster with Threading & Media - ALYGN
+============================================================
+
+
+[1/5] Superintelligence by 2030: Safety Roadmap or Pipe Dream?
+    Type: regular
+    Is thread: Yes
+    📝 Posting hook...
+    ⚠️ Media upload failed: client.media.uploadImage is not a function
+    ✅ Hook posted (ID: 2021274648646763007)
+    📝 Posting point 2/5...
+    ⚠️ Media upload failed: client.media.uploadImage is not a function
+    📝 Posting point 3/5...
+    ⚠️ Media upload failed: client.media.uploadImage is not a function
+    📝 Posting point 4/5...
+    ⚠️ Media upload failed: client.media.uploadImage is not a function
+    📝 Posting point 5/5...
+    ⚠️ Media upload failed: client.media.uploadImage is not a function
+    ✅ Thread complete (ID: 2021274648646763007)
+    ⏳ Waiting 15s before next post...
+
+[2/5] Microsoft's Tay bot alignment failure
+    Type: niche
+    Is thread: No
+    ✅ Posted (ID: [object Object])
+    ⏳ Waiting 15s before next post...

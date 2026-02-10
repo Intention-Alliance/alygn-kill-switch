@@ -9,13 +9,13 @@
  * - Sequential action execution with proper waits
  * - Robust error handling + logging
  * 
- * Input: workflow JSON file (from twitter-automation-v4.js)
+ * Input: workflow JSON file (from twitter-automation-v2.js)
  * Output: Execution report + WhatsApp notification
  */
 
+import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
 
 const WORKSPACE = path.join(process.env.HOME!, ".openclaw/workspace");
 const OUTPUTS_DIR = path.join(WORKSPACE, "twitter-outputs");

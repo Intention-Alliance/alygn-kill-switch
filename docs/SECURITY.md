@@ -3,9 +3,11 @@
 ## 🔒 Cambios Implementados
 
 ### 1. Credenciales Centralizadas
+
 **Ubicación:** `~/.openclaw/workspace/config/credentials.json`
 
 **Consolidado:**
+
 - ✅ Notion API + todos los page IDs
 - ✅ Grok API (xAI)
 - ✅ Twitter/X (placeholders para futuro)
@@ -19,9 +21,11 @@
 - ✅ Identity (info personal)
 
 ### 2. Helper Compartido
+
 **Script:** `~/. openclaw/workspace/scripts/shared/load-credentials.js`
 
 **Funciones:**
+
 ```javascript
 const { getNotionKey, getGrokKey, getJacoboPhone } = require('../shared/load-credentials');
 
@@ -41,6 +45,7 @@ const missing = getMissingCredentials();
 ```
 
 **CLI:**
+
 ```bash
 # Verificar estado
 node scripts/shared/load-credentials.js check
@@ -62,30 +67,32 @@ node scripts/shared/load-credentials.js get contacts.jacobo.phone
 │   ├── shared/
 │   │   └── load-credentials.js  # ✅ Helper compartido
 │   ├── alygn/                   # Scripts ALYGN/Intention Alliance
-│   │   ├── daily-tracker.js
-│   │   ├── twitter-automation.js
-│   │   ├── vc-outreach.js
-│   │   └── jacobo-tracking.js
+│   │   ├── x-twitter/           # Scripts relacionados con Twitter/X
+│   │   ├── vc-outreach/         # Scripts de outreach a VCs
+│   │   ├── lib/                 # Librerías específicas para scripts en Alygn.
+│   │   └── *.(js|ts|sh)         # Otros scripts relacionados con Alygn.
 │   ├── bitcash/                 # Scripts BitcashOrg
 │   │   └── daily-tracker.js
 │   ├── personal/                # Scripts AndlerRL
 │   │   └── daily-tracker.js
-│   └── system/                  # Scripts del sistema
-│       ├── morning-briefing.js
-│       ├── backup.js
-│       └── health-monitor.js
+│   ├── system/                  # Scripts del sistema
+│   │   ├── morning-briefing.js
+│   │   ├── backup.js
+│   │   └── health-monitor.js
+│   └── *.(js|sh|ts)             # Otros scripts generales
 │
 ├── repos-readonly/              # Repos clonados (SOLO LECTURA)
 │   ├── bitcash/
 │   └── intention-alliance/
-│
-└── alygn-automation/            # Legacy (migrar gradualmente)
-    └── scripts/
+├── docs/                        # Documentacion de los sistemas y procesos (IMPORTANTE para seguridad y mantenimiento)
+├── memory/                      # Memoria diaria
+└── [archivos de configuración raíz]
 ```
 
 ### 4. Política de Seguridad
 
 **Para Wobblus (yo):**
+
 - ❌ **NO editar** código en repos clonados
 - ✅ **SOLO lectura** para explorar código
 - ✅ Scripts de automatización en carpetas controladas
@@ -94,6 +101,7 @@ node scripts/shared/load-credentials.js get contacts.jacobo.phone
 - ✅ Usar helper compartido para acceso
 
 **Para repos clonados:**
+
 - Clone con `--depth 1` (shallow, más rápido)
 - Carpeta separada `repos-readonly/`
 - No hacer commits/push
@@ -102,6 +110,15 @@ node scripts/shared/load-credentials.js get contacts.jacobo.phone
 ### 5. Migración Gradual
 
 **Pasos siguientes:**
+1` (shallow, más rápido)
+
+- No hacer commits/push
+- Solo para referencia y lectura
+
+### 5. Migración Gradual
+
+**Pasos siguientes:**
+
 1. ✅ Credenciales centralizadas creadas
 2. ✅ Helper compartido funcional
 3. ⏳ Reorganizar scripts por proyecto (alygn/, bitcash/, personal/)

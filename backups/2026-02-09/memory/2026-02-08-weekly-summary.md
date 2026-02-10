@@ -12,11 +12,13 @@
 #### 1. VC Outreach Email System — Phase 1 ✅ PRODUCTION
 
 **Status:** Shipped and tested  
-**Templates:** 2 professional variants  
+**Templates:** 2 professional variants
+
 - Governance: "The Question Isn't If AGI Arrives—It's Who Coordinates the Response"
 - Technical: "Existential Risk Management at Scale"
 
 **Technical Details:**
+
 - Dark header design (#252525) with centered logo
 - Margin-based CSS (universal email client support)
 - MIME-embedded logo (Content-ID) for reliable rendering
@@ -26,6 +28,7 @@
 - Tania Lea signature + alygn.us footer
 
 **Files:**
+
 - `vc-outreach-email-template.py` (secure sender)
 - `vc-outreach-email-template.js` (template generator)
 - `email-template-governance.html` (editable)
@@ -42,18 +45,21 @@
 **Posted:** "Reward Hacking" thread (4 posts, Feb 8 on @aialygn)
 
 **Architecture:**
-- Content generation: `twitter-automation-v4.js` (Grok-enhanced)
+
+- Content generation: `twitter-automation-v2.js` (Grok-enhanced)
 - Posting: Browser relay with `profile="alygn"` (X.com authenticated)
 - Workflow tracking: JSON-based (`workflow-1770484855297.json`)
 - Reporting: Automated to WhatsApp
 
 **What Works (100%):**
+
 - Browser relay posting via compose dialog
 - Thread composition and ordering
 - Media attachment integration
 - X.com authentication persistence
 
 **Cron Job Status:**
+
 - ✅ Scheduled: Daily 11 AM (Costa Rica)
 - ✅ Job ID: `10e71511-a7ae-47e1-8293-43c1d3684512`
 - ✅ Configuration: alygn profile + 120s timeouts
@@ -75,16 +81,19 @@
 **Issue:** Browser relay cannot execute multiple sequential actions (replies, follows)  
 **Root Cause:** Port 18801 conflicts + timing constraints  
 **Evidence:**
+
 - Phase 1 (single complex action): 100% success
 - Phase 2 (5+ sequential actions): Consistent failures after 3-4 actions
 
 **Stages:**
+
 1. 5 replies drafted ✅
 2. 5 profiles identified ✅
 3. Workflow data prepared ✅
 4. Automation attempted ❌ → timeouts
 
 **Solutions Evaluated:**
+
 - ❌ Puppeteer (JavaScript stale errors)
 - ❌ Chrome cookie extraction (encrypted DPAPI)
 - ❌ Multiple sequential browser snapshots (port contention)
@@ -126,15 +135,18 @@
 **Issue:** #604 (embedding retrieval performance)
 
 **Root Cause Identified:** Double token budget enforcement
+
 - Query: Original tokens
 - Embedding retrieval: Additional tokens (doubling budget)
 - Result: Inefficient vector search
 
 **Secondary Issues:**
+
 - Aggressive cosine similarity threshold (too strict, missing relevant docs)
 - Silent failure modes (vector search fails without error messages)
 
 **Technical Stack:**
+
 - Vector database: PostgreSQL + pgvector
 - Embeddings: OpenAI (1536 dimensions)
 - ORM: Drizzle
@@ -155,18 +167,21 @@
 ### GitHub Activity (Week)
 
 **Feb 7:**
+
 - 1 commit
 - 2 pull requests
 - 2 issues
 - Focus: masterbots repository
 
 **Feb 6:**
+
 - 1 commit
 - 3 pull requests
 - 4 issues
 - Focus: masterbots repository
 
 **Repository Status:**
+
 - **masterbots** (active): Updated Feb 6 — Primary development focus
 - **bitcash:** Updated Dec 10
 - **smartsale:** Updated Dec 10
@@ -195,6 +210,7 @@
 **Concept:** End-to-end automation for andler.dev blog
 
 **Flow:**
+
 1. Bot prepares markdown + media assets
 2. Cron job triggers deployment
 3. Server endpoint auto-creates blog entries
@@ -218,13 +234,13 @@
 
 ## 📈 Cross-Org Metrics
 
-| Metric | Week of Feb 2-8 |
-|--------|-----------------|
-| GitHub Commits | ~3 (BitcashOrg focused) |
-| Pull Requests | ~5 (BitcashOrg: masterbots) |
-| Issues Created | ~6 (BitcashOrg: masterbots) |
-| Cron Jobs Running | 7 |
-| Active Repos | 2 (masterbots, align-core-infra) |
+| Metric             | Week of Feb 2-8                      |
+| ------------------ | ------------------------------------ |
+| GitHub Commits     | ~3 (BitcashOrg focused)              |
+| Pull Requests      | ~5 (BitcashOrg: masterbots)          |
+| Issues Created     | ~6 (BitcashOrg: masterbots)          |
+| Cron Jobs Running  | 7                                    |
+| Active Repos       | 2 (masterbots, align-core-infra)     |
 | Automation Systems | Twitter, VC tracking, Daily briefing |
 
 ---
@@ -261,11 +277,13 @@
 ## 🛠 Technical Debt & Infrastructure
 
 ### Addressed This Week
+
 - ✅ Browser relay profile setup (alygn profile authenticated)
 - ✅ Cookie encryption research (DPAPI blocking Bird CLI)
 - ✅ Sequential action bottleneck identified
 
 ### Still Pending
+
 - Chrome DevTools Protocol (CDP) integration for better automation
 - X API write access (most reliable path forward)
 - Blog publishing server endpoint
@@ -294,18 +312,21 @@
 ## 🚀 30-Day Outlook
 
 **Feb 9-15 (Next week):**
+
 - VC Outreach Phase 2 launch (research automation)
 - Twitter Phase 2 completion (manual or Bird CLI)
 - RAG pipeline fixes shipped
 - Blog publishing implementation begins
 
 **Feb 16-22:**
+
 - VC outreach campaign running (50+ contacts/week)
 - Twitter automation hitting full capacity
 - Blog publishing live on andler.dev
 - Multi-org tracking dashboard optimizations
 
 **Feb 23-28:**
+
 - Measure VC response rates (target: 10-15%)
 - Twitter engagement analysis
 - Blog content pipeline established
@@ -313,6 +334,6 @@
 
 ---
 
-*Generated by Wobblus 🔧*  
-*Sent to WhatsApp: 2026-02-08 17:26 PM CST*  
-*Status: ✅ Week reviewed, summary complete, priorities set*
+_Generated by Wobblus 🔧_  
+_Sent to WhatsApp: 2026-02-08 17:26 PM CST_  
+_Status: ✅ Week reviewed, summary complete, priorities set_

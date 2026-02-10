@@ -4,3 +4,8 @@ credentials.json
 *.secret
 *.pem
 .env
+
+# read-only projects
+projects/bitcash/repos-readonly/
+projects/intention-alliance/repos-readonly/
+projects/personal/repos-readonly/
