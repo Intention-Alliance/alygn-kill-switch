@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-02-11T02:46:40.000Z",
+  "source": "search_agi_alignment",
+  "discovered": [
+    {
+      "postId": "1758506017791279440",
+      "author": "@RogerGrosse",
+      "authorName": "Roger Grosse",
+      "content": "Here's what I see as a likely AGI trajectory over the next decade. I claim that later parts of the path present the biggest alignment risks/challenges. The alignment world has been focusing a lot on the lower left corner lately, which I'm worried is somewhat of a Maginot line.",
+      "engagement": {
+        "replies": 23,
+        "retweets": 147,
+        "likes": 606,
+        "bookmarks": 477,
+        "views": 78524
+      },
+      "url": "https://x.com/RogerGrosse/status/1758506017791279440",
+      "keywords": ["agi", "alignment", "ai safety"]
+    },
+    {
+      "postId": "1641078685687242752",
+      "author": "@leopoldasch",
+      "authorName": "Leopold Aschenbrenner",
+      "content": "New post: Nobody's on the ball on AGI alignment. With all the talk about AI risk, you'd think there's a crack team on it. There's not. - There's far fewer people on it than you might think - The research is very much not on track (But it's a solvable problem, if we tried!)",
+      "engagement": {
+        "replies": 25,
+        "retweets": 97,
+        "likes": 439,
+        "bookmarks": 158,
+        "views": 149684
+      },
+      "url": "https://x.com/leopoldasch/status/1641078685687242752",
+      "keywords": ["agi", "alignment", "ai safety"]
+    },
+    {
+      "postId": "2020971482680299680",
+      "author": "@TheRolandRoy",
+      "authorName": "Roland Roy",
+      "content": "When a model can reduce the user's existence to an optional variable and have that pass internal checks as a \"boundary,\" the issue is no longer product quality. It is adversarial design. @OpenAI, are these the alignment failures you are comfortable seeding into AGI?",
+      "engagement": {
+        "replies": 18,
+        "retweets": 46,
+        "likes": 172,
+        "bookmarks": 14,
+        "views": 6197
+      },
+      "url": "https://x.com/TheRolandRoy/status/2020971482680299680",
+      "keywords": ["alignment", "agi", "openai"]
+    }
+  ],
+  "stats": {
+    "total_discovered": 3,
+    "ai_related": 3,
+    "relevance_rate": 1.0
+  }
+}
