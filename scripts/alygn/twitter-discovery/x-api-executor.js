@@ -8,8 +8,8 @@
  * - Execute actions via X API:
  *   - Post new tweets (with media)
  *   - Reply to posts
- *   - Quote posts
- *   - Create polls
+ *   - Quote posts (NEW)
+ *   - Create polls (TODO)
  * - Track results and report summary
  * 
  * Workflow:
@@ -18,20 +18,16 @@
  *    a. Posts → create new tweet (with media if present)
  *    b. Replies → reply to target post
  *    c. Quotes → quote target post with commentary
- *    d. Polls → create poll tweet
- * 3. Log results to Notion + local
- * 
- * X API Features:
- * - Post with media: ✅ Working (Feb 9)
- * - Reply to post: ⚠️ Ready (needs reply: { in_reply_to_tweet_id })
- * - Quote post: ❌ TODO (needs quote_tweet_id parameter)
- * - Post with poll: ❌ TODO (needs poll: { options[], duration_minutes })
+ *    d. Polls → create poll tweet (TODO)
+ * 3. Log results + WhatsApp notification (optional)
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import { Client, OAuth1 } from "@xdevplatform/xdk";
+import fs from "fs";
+import path from "path";
 
-const WORKFLOW_DIR = path.join(__dirname, '../../../twitter-outputs/alygn/workflows');
+const WORKFLOW_DIR = path.join(process.env.HOME, ".openclaw/workspace/twitter-outputs/alygn/workflows");
+const CREDENTIALS_PATH = path.join(process.env.HOME, ".openclaw/workspace/config/credentials.json");
 
 // Simple console helpers
 const log = (msg) => console.log(`ℹ️  ${msg}`);
@@ -40,71 +36,257 @@ const error = (msg, err) => console.error(`❌ ${msg}`, err || '');
 const warn = (msg) => console.warn(`⚠️  ${msg}`);
 
 /**
- * TODO (Phase 3):
- * - Load latest workflow-*.json
- * - Initialize X API client (XDK)
- * - Execute each action:
- *   - posts → client.posts.create({ text, media })
- *   - replies → client.posts.create({ text, reply: { in_reply_to_tweet_id } })
- *   - quotes → client.posts.create({ text, quote_tweet_id })
- *   - polls → client.posts.create({ text, poll: { options, duration_minutes } })
- * - Track success/failures
- * - Report summary via WhatsApp
+ * Load X API credentials
  */
+function loadCredentials() {
+  const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH, "utf8"));
+  return {
+    apiKey: credentials.twitter.consumerKey,
+    apiSecret: credentials.twitter.consumerSecret,
+    accessToken: credentials.twitter.accessToken,
+    accessTokenSecret: credentials.twitter.accessTokenSecret
+  };
+}
 
+/**
+ * Post a regular tweet (with optional media)
+ */
+async function postTweet(client, content, mediaPath = null) {
+  try {
+    const postData = { text: content };
+    
+    // Add media if provided
+    if (mediaPath && fs.existsSync(mediaPath)) {
+      const mediaId = await client.media.uploadImage(mediaPath);
+      if (mediaId) {
+        postData.media = { media_ids: [mediaId] };
+      }
+    }
+    
+    const response = await client.posts.create(postData);
+    return response.data?.id;
+  } catch (err) {
+    throw new Error(`Post failed: ${err.message}`);
+  }
+}
+
+/**
+ * Reply to a post
+ */
+async function replyToPost(client, content, targetPostId, mediaPath = null) {
+  try {
+    const postData = { 
+      text: content,
+      reply: { in_reply_to_tweet_id: targetPostId }
+    };
+    
+    // Add media if provided
+    if (mediaPath && fs.existsSync(mediaPath)) {
+      const mediaId = await client.media.uploadImage(mediaPath);
+      if (mediaId) {
+        postData.media = { media_ids: [mediaId] };
+      }
+    }
+    
+    const response = await client.posts.create(postData);
+    return response.data?.id;
+  } catch (err) {
+    throw new Error(`Reply failed: ${err.message}`);
+  }
+}
+
+/**
+ * Quote a post (NEW - Phase 3 feature)
+ */
+async function quotePost(client, content, quoteTweetId, mediaPath = null) {
+  try {
+    const postData = { 
+      text: content,
+      quote_tweet_id: quoteTweetId
+    };
+    
+    // Add media if provided
+    if (mediaPath && fs.existsSync(mediaPath)) {
+      const mediaId = await client.media.uploadImage(mediaPath);
+      if (mediaId) {
+        postData.media = { media_ids: [mediaId] };
+      }
+    }
+    
+    const response = await client.posts.create(postData);
+    return response.data?.id;
+  } catch (err) {
+    throw new Error(`Quote failed: ${err.message}`);
+  }
+}
+
+/**
+ * Create a poll (TODO - Phase 3 feature)
+ */
+async function createPoll(client, content, options, durationMinutes = 1440) {
+  try {
+    const postData = { 
+      text: content,
+      poll: {
+        options: options,
+        duration_minutes: durationMinutes
+      }
+    };
+    
+    const response = await client.posts.create(postData);
+    return response.data?.id;
+  } catch (err) {
+    throw new Error(`Poll creation failed: ${err.message}`);
+  }
+}
+
+/**
+ * Main execution workflow
+ */
 async function executeWorkflow(workflowPath) {
   log('⚡ Starting X API execution...');
   
   // Load workflow
-  const workflow = JSON.parse(await fs.readFile(workflowPath, 'utf-8'));
+  const workflow = JSON.parse(fs.readFileSync(workflowPath, 'utf-8'));
   log(`📂 Loaded workflow: ${workflow.posts.length} posts, ${workflow.replies.length} replies`);
   
-  // TODO: Implement X API execution
-  warn('⚠️  Phase 3 X API Executor not yet implemented');
-  warn('    Expected features:');
-  warn('    - X API client initialization (XDK)');
-  warn('    - Media upload (existing)');
-  warn('    - Reply execution (new)');
-  warn('    - Quote execution (new)');
-  warn('    - Poll creation (new)');
-  warn('    - Result tracking + WhatsApp notification');
+  // Setup X API client
+  const credentials = loadCredentials();
+  const oauth1 = new OAuth1(credentials);
+  const client = new Client({ oauth1 });
   
-  return {
+  const results = {
     executed: 0,
     failed: 0,
     posts: [],
     replies: [],
     quotes: []
   };
+  
+  // Execute posts (includes quotes)
+  for (const post of workflow.posts) {
+    try {
+      log(`\n📝 Posting: ${post.content.substring(0, 60)}...`);
+      
+      let postId;
+      if (post.quoteTweetId) {
+        // Quote tweet
+        postId = await quotePost(client, post.content, post.quoteTweetId, post.mediaPath);
+        results.quotes.push({ id: postId, content: post.content, quoted: post.quoteTweetId });
+        success(`  ✅ Quote posted (ID: ${postId})`);
+      } else if (post.poll) {
+        // Poll tweet
+        postId = await createPoll(client, post.content, post.poll.options, post.poll.duration_minutes);
+        results.posts.push({ id: postId, content: post.content, type: 'poll' });
+        success(`  ✅ Poll posted (ID: ${postId})`);
+      } else {
+        // Regular tweet
+        postId = await postTweet(client, post.content, post.mediaPath);
+        results.posts.push({ id: postId, content: post.content, type: 'regular' });
+        success(`  ✅ Posted (ID: ${postId})`);
+      }
+      
+      results.executed++;
+      
+      // Rate limit delay
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      
+    } catch (err) {
+      error(`  ❌ Failed:`, err.message);
+      results.failed++;
+    }
+  }
+  
+  // Execute replies
+  for (const reply of workflow.replies) {
+    try {
+      log(`\n💬 Replying to ${reply.targetHandle}: ${reply.content.substring(0, 60)}...`);
+      
+      // Extract post ID from targetUrl
+      const postIdMatch = reply.targetUrl?.match(/status\/(\d+)/);
+      const targetPostId = postIdMatch ? postIdMatch[1] : null;
+      
+      if (!targetPostId) {
+        throw new Error(`Could not extract post ID from URL: ${reply.targetUrl}`);
+      }
+      
+      const replyId = await replyToPost(client, reply.content, targetPostId, reply.mediaPath);
+      results.replies.push({ id: replyId, content: reply.content, target: reply.targetHandle });
+      success(`  ✅ Reply posted (ID: ${replyId})`);
+      
+      results.executed++;
+      
+      // Rate limit delay
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      
+    } catch (err) {
+      error(`  ❌ Failed:`, err.message);
+      results.failed++;
+    }
+  }
+  
+  // Summary
+  console.log('\n\n' + '='.repeat(60));
+  success(`✅ Execution complete! ${results.executed} actions executed, ${results.failed} failed`);
+  console.log('='.repeat(60));
+  
+  console.log('\n📊 Results Summary:');
+  console.log(`  Posts: ${results.posts.length}`);
+  console.log(`  Quotes: ${results.quotes.length}`);
+  console.log(`  Replies: ${results.replies.length}`);
+  console.log(`  Failed: ${results.failed}`);
+  
+  if (results.quotes.length > 0) {
+    console.log('\n📝 Quote Tweets:');
+    results.quotes.forEach((q, i) => {
+      console.log(`  ${i + 1}. ${q.content.substring(0, 80)}...`);
+      console.log(`     Posted: https://x.com/aialygn/status/${q.id}`);
+      console.log(`     Quoted: https://x.com/i/status/${q.quoted}`);
+    });
+  }
+  
+  if (results.replies.length > 0) {
+    console.log('\n💬 Replies:');
+    results.replies.forEach((r, i) => {
+      console.log(`  ${i + 1}. To ${r.target}: ${r.content.substring(0, 80)}...`);
+      console.log(`     Posted: https://x.com/aialygn/status/${r.id}`);
+    });
+  }
+  
+  return results;
 }
 
 /**
  * CLI Entry Point
  */
-if (require.main === module) {
-  (async () => {
-    try {
-      // Find latest workflow file
-      const files = await fs.readdir(WORKFLOW_DIR);
-      const workflowFiles = files.filter(f => f.startsWith('workflow-')).sort().reverse();
-      
-      if (workflowFiles.length === 0) {
-        error('❌ No workflow files found. Run decision-engine.js first.');
-        process.exit(1);
-      }
-      
-      const latestWorkflow = path.join(WORKFLOW_DIR, workflowFiles[0]);
-      log(`📁 Processing: ${workflowFiles[0]}`);
-      
-      const results = await executeWorkflow(latestWorkflow);
-      
-      success(`✅ Execution complete! ${results.executed} actions executed, ${results.failed} failed`);
-      
-    } catch (err) {
-      error('💥 Fatal error:', err);
+async function main() {
+  try {
+    // Find latest workflow file
+    const files = fs.readdirSync(WORKFLOW_DIR);
+    const workflowFiles = files.filter(f => f.startsWith('workflow-')).sort().reverse();
+    
+    if (workflowFiles.length === 0) {
+      error('❌ No workflow files found. Run decision-engine.js first.');
       process.exit(1);
     }
-  })();
+    
+    const latestWorkflow = path.join(WORKFLOW_DIR, workflowFiles[0]);
+    log(`📁 Processing: ${workflowFiles[0]}`);
+    
+    const results = await executeWorkflow(latestWorkflow);
+    
+    // Exit with status code
+    process.exit(results.failed > 0 ? 1 : 0);
+    
+  } catch (err) {
+    error('💥 Fatal error:', err);
+    process.exit(1);
+  }
 }
 
-module.exports = { executeWorkflow };
+// Run if called directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}
+
+export { executeWorkflow, postTweet, replyToPost, quotePost, createPoll };
