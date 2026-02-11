@@ -40,10 +40,10 @@ create_project "Bitcash Frontend" "Bitcash" "Core" "Active" "User interface and 
 create_project "Bitcash Infrastructure" "Bitcash" "Infrastructure" "Active" "DevOps, deployment, and infrastructure management"
 
 echo ""
-echo "🌱 Intention Alliance Projects:"
-create_project "IA Platform" "Intention Alliance" "Core" "Active" "Main platform architecture and development"
-create_project "IA Community Tools" "Intention Alliance" "Core" "Planning" "Community engagement and collaboration features"
-create_project "IA Infrastructure" "Intention Alliance" "Infrastructure" "Planning" "Hosting, deployment, and security setup"
+echo "🌱 Alygn Projects:"
+create_project "IA Platform" "Alygn" "Core" "Active" "Main platform architecture and development"
+create_project "IA Community Tools" "Alygn" "Core" "Planning" "Community engagement and collaboration features"
+create_project "IA Infrastructure" "Alygn" "Infrastructure" "Planning" "Hosting, deployment, and security setup"
 
 echo ""
 echo "👤 Personal Projects:"

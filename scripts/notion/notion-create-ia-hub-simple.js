@@ -7,17 +7,17 @@ async function createHub() {
   try {
     const parentPageId = '26a33487-4af6-81a8-b01c-fd1a8a5f8bcb';
     
-    console.log('🏢 Creating Intention Alliance Central Hub...\n');
+    console.log('🏢 Creating Alygn Central Hub...\n');
     
     const mainPage = await notion.pages.create({
       parent: { page_id: parentPageId },
       icon: { type: 'emoji', emoji: '🎯' },
       properties: {
-        title: [{ text: { content: 'Intention Alliance - Central Hub' } }]
+        title: [{ text: { content: 'Alygn - Central Hub' } }]
       },
       children: [
-        { type: 'heading_1', heading_1: { rich_text: [{ text: { content: '🏢 Intention Alliance' } }] } },
-        { type: 'paragraph', paragraph: { rich_text: [{ text: { content: 'Organization: Intention Alliance' }, annotations: { bold: true } }] } },
+        { type: 'heading_1', heading_1: { rich_text: [{ text: { content: '🏢 Alygn' } }] } },
+        { type: 'paragraph', paragraph: { rich_text: [{ text: { content: 'Organization: Alygn' }, annotations: { bold: true } }] } },
         { type: 'paragraph', paragraph: { rich_text: [{ text: { content: 'Main Project: ALYGN' }, annotations: { bold: true } }] } },
         { type: 'paragraph', paragraph: { rich_text: [{ text: { content: 'Domain: alygn.us' }, annotations: { code: true } }] } },
         { type: 'divider', divider: {} }

@@ -32,7 +32,7 @@ function generateEmailHTML(recipientName = 'there', variant = 'standard') {
       greeting: `Hi ${recipientName},`,
       subject: 'Building the Next Generation of AI Systems',
       headline: 'Humanizing Technology at Scale',
-      intro: `We're building transformative AI infrastructure that bridges the gap between cutting-edge technology and genuine human value. At ALYGN (Intention Alliance), we believe the future of AI isn\'t about raw capability, it\'s about systems that amplify human potential while maintaining ethical integrity.`,
+      intro: `We're building transformative AI infrastructure that bridges the gap between cutting-edge technology and genuine human value. At ALYGN (Alygn), we believe the future of AI isn\'t about raw capability, it\'s about systems that amplify human potential while maintaining ethical integrity.`,
       body: `
         <p style="margin: 16px 0; line-height: 1.6;">
           Our platform enables organizations to deploy AI systems that are:
@@ -245,7 +245,7 @@ function generateEmailHTML(recipientName = 'there', variant = 'standard') {
 
     <!-- Footer -->
     <div class="footer">
-      <p style="margin: 0;">© 2026 Intention Alliance. All rights reserved.</p>
+      <p style="margin: 0;">© 2026 Alygn. All rights reserved.</p>
     </div>
   </div>
 </body>

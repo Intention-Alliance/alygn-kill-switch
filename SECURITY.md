@@ -4,12 +4,12 @@
 
 ### 🔒 Active NDAs
 
-#### Intention Alliance - Mutual Non-Disclosure Agreement
+#### Alygn - Mutual Non-Disclosure Agreement
 
 **Signed:** August 19, 2025  
-**Parties:** Roberto "Andler" Lucas ↔ Intention Alliance  
+**Parties:** Roberto "Andler" Lucas ↔ Alygn  
 **Status:** ACTIVE  
-**Full Document:** `intention-alliance/NDA.md`
+**Full Document:** `alygn/NDA.md`
 
 **Key Terms:**
 
@@ -40,7 +40,7 @@
 
 ### 1. Context Isolation (MANDATORY)
 
-**When in Intention Alliance contexts:**
+**When in Alygn contexts:**
 
 - ✅ ONLY discuss IA-related information
 - ❌ NEVER mention other projects Andler is working on
@@ -57,9 +57,9 @@
 
 **Confidential Material:**
 
-- Stored locally in `intention-alliance/` directory
+- Stored locally in `alygn/` directory
 - NOT to be shared in group chats, external channels, or public repos
-- Notion pages under Intention Alliance are covered by NDA
+- Notion pages under Alygn are covered by NDA
 - Always verify recipient authorization before sharing IA content
 
 **Public Communication:**
@@ -138,11 +138,11 @@ _(Add additional NDAs, security policies, or confidentiality agreements here as 
 
 **Last Updated:** 2026-02-03  
 **NDA Retrieved:** 2026-02-03 06:23 UTC  
-**Source:** Notion (Intention Alliance → Administrative Info → Non-Disclosure Agreement)
+**Source:** Notion (Alygn → Administrative Info → Non-Disclosure Agreement)
 
 ---
 
-_This file is critical workspace context. Read it before any Intention Alliance-related work. More important documentation at "docs" directories._
+_This file is critical workspace context. Read it before any Alygn-related work. More important documentation at "docs" directories._
 
 _(Add additional NDAs, security policies, or confidentiality agreements here as they arise)_
 
@@ -150,8 +150,8 @@ _(Add additional NDAs, security policies, or confidentiality agreements here as 
 
 **Last Updated:** 2026-02-03  
 **NDA Retrieved:** 2026-02-03 06:23 UTC  
-**Source:** Notion (Intention Alliance → Administrative Info → Non-Disclosure Agreement)
+**Source:** Notion (Alygn → Administrative Info → Non-Disclosure Agreement)
 
 ---
 
-_This file is critical workspace context. Read it before any Intention Alliance-related work. More important documentation at "docs" directories for other organizations and/or projects._
+_This file is critical workspace context. Read it before any Alygn-related work. More important documentation at "docs" directories for other organizations and/or projects._

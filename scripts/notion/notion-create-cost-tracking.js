@@ -95,7 +95,7 @@ async function createCostTrackingDatabase() {
         'Cost': 6,
         'Frequency': 'Monthly',
         'Status': 'Pending',
-        'Notes': 'Organization emails for Intention Alliance'
+        'Notes': 'Organization emails for Alygn'
       }
     ];
     

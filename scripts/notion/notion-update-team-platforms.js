@@ -37,7 +37,7 @@ async function updatePages() {
 
       { type: 'heading_3', heading_3: { rich_text: [{ text: { content: 'Jacobo' } }], color: 'blue_background' } },
       { type: 'bulleted_list_item', bulleted_list_item: { rich_text: [
-        { text: { content: 'Team Member (Intention Alliance)' } }
+        { text: { content: 'Team Member (Alygn)' } }
       ]}},
       { type: 'bulleted_list_item', bulleted_list_item: { rich_text: [
         { text: { content: 'Communication: WhatsApp' } }

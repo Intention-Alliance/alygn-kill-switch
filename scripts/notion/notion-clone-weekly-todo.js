@@ -93,7 +93,7 @@ async function duplicateWeeklyTodoBlock() {
               {
                 type: 'paragraph',
                 paragraph: {
-                  rich_text: [{ text: { content: 'ALYGN / Intention Alliance:' } }]
+                  rich_text: [{ text: { content: 'ALYGN / Alygn:' } }]
                 }
               },
               {

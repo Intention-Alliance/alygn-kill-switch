@@ -91,7 +91,7 @@ def send_email(recipient, variant):
             closing = 'Excited to hear about your vision.'
         else:
             headline = 'Humanizing Technology at Scale'
-            intro = 'We are building transformative AI infrastructure that bridges the gap between cutting-edge technology and genuine human value. At ALYGN (Intention Alliance), we believe the future of AI isn\'t about raw capability, it\'s about systems that amplify human potential while maintaining ethical integrity.'
+            intro = 'We are building transformative AI infrastructure that bridges the gap between cutting-edge technology and genuine human value. At ALYGN (Alygn), we believe the future of AI isn\'t about raw capability, it\'s about systems that amplify human potential while maintaining ethical integrity.'
             body = '''<p style="margin: 16px 0; line-height: 1.6;">
           Our platform enables organizations to deploy AI systems that are:
         </p>
@@ -262,7 +262,7 @@ def send_email(recipient, variant):
       </div>
     </div>
     <div class="footer">
-      <p style="margin: 0 0 12px 0;">© 2026 Intention Alliance</p>
+      <p style="margin: 0 0 12px 0;">© 2026 Alygn</p>
       <p style="margin: 0; font-size: 14px;">
         <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
         <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 

@@ -22,7 +22,7 @@ async function notionRequest(endpoint, method = "GET", body = null) {
 }
 
 async function listPages() {
-  console.log("📋 Listing all pages in Intention Alliance Hub...\n");
+  console.log("📋 Listing all pages in Alygn Hub...\n");
   
   const blocks = await notionRequest(`blocks/${IA_HUB_PAGE_ID}/children?page_size=100`);
   

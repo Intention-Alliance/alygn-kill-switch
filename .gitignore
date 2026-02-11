@@ -6,6 +6,9 @@ credentials.json
 .env
 
 # read-only projects
-projects/bitcash/repos-readonly/
-projects/intention-alliance/repos-readonly/
-projects/personal/repos-readonly/
+repos/bitcash/read-only/
+repos/alygn/read-only/
+repos/personal/read-only/
+
+# Compilation directory (node_modules)
+node_modules

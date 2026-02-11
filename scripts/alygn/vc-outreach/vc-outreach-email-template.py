@@ -53,7 +53,7 @@ class ALYGNEmailBuilder:
                 'subject': 'Building AGI Resilience: The SOS Protocol',
                 'headline': 'The Question Isn\'t If AGI Arrives—It\'s Who Coordinates the Response',
                 'subheadline': 'Global Crisis Infrastructure for the Intelligence Age',
-                'intro': '''At Intention Alliance, we're not betting on preventing AGI. We're building the governance infrastructure that ensures humanity navigates it with coordination, transparency, and safety.
+                'intro': '''At Alygn, we're not betting on preventing AGI. We're building the governance infrastructure that ensures humanity navigates it with coordination, transparency, and safety.
 
 The SOS Protocol is our answer: a global crisis coordination framework designed specifically for AGI-related existential risks—not in 2050, but starting now.''',
                 'body': '''<p style="margin: 16px 0; line-height: 1.6;"><strong>Why This Matters:</strong></p>
@@ -288,7 +288,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
         <p style="margin: 0 0 4px 0;">
           <span class="signature-name">Tania Lea</span>
         </p>
-        <p class="signature-role">Founder & CEO, Intention Alliance</p>
+        <p class="signature-role">Founder & CEO, Alygn</p>
         <p class="signature-role" style="margin: 4px 0 0 0;">
           <a href="{mailto_link}">tanialeaidm@gmail.com</a>
         </p>
@@ -300,7 +300,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
 
     <!-- Footer -->
     <div class="footer">
-      <p style="margin: 0 0 12px 0;">© 2026 Intention Alliance</p>
+      <p style="margin: 0 0 12px 0;">© 2026 Alygn</p>
       <p style="margin: 0; font-size: 14px;">
         <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
         <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 

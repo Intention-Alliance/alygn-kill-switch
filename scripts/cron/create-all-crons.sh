@@ -30,7 +30,7 @@ echo "Script Location: ~/.openclaw/workspace/scripts/"
 echo ""
 
 # ============================================================================
-# ALYGN (Intention Alliance) - 18 JOBS (Grok-heavy)
+# ALYGN (Alygn) - 18 JOBS (Grok-heavy)
 # ============================================================================
 
 echo "📊 ALYGN JOBS (Grok-based granular approach)"
@@ -359,7 +359,7 @@ openclaw cron add \
   --cron "0 17 * * 0" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Generate comprehensive weekly summary covering all organizations: ALYGN (Intention Alliance), BitcashOrg, and AndlerRL personal projects. Include GitHub activity, accomplishments, challenges, and next week's priorities for each." \
+  --message "Generate comprehensive weekly summary covering all organizations: ALYGN (Alygn), BitcashOrg, and AndlerRL personal projects. Include GitHub activity, accomplishments, challenges, and next week's priorities for each." \
   --thinking high \
   --deliver \
   --to "+50662163355" \

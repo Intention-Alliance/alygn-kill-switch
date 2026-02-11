@@ -3,11 +3,13 @@
 ## Audio Processing (Speech-to-Text & Text-to-Speech)
 
 ### Whisper CLI (Speech-to-Text)
+
 **Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/whisper`)  
 **Version:** 20250625  
 **Purpose:** Local audio transcription for Spanish (configured in OpenClaw config)  
 **Tested:** Successfully transcribed Spanish audio from WhatsApp  
 **Config:**
+
 ```json
 {
   "tools": {
@@ -15,12 +17,20 @@
       "audio": {
         "enabled": true,
         "maxBytes": 20971520,
-        "models": [{
-          "type": "cli",
-          "command": "whisper",
-          "args": ["--model", "base", "--language", "Spanish", "{{MediaPath}}"],
-          "timeoutSeconds": 45
-        }]
+        "models": [
+          {
+            "type": "cli",
+            "command": "whisper",
+            "args": [
+              "--model",
+              "base",
+              "--language",
+              "Spanish",
+              "{{MediaPath}}"
+            ],
+            "timeoutSeconds": 45
+          }
+        ]
       }
     }
   }
@@ -28,11 +38,13 @@
 ```
 
 ### SAG CLI (Text-to-Speech)
+
 **Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/sag`)  
 **Version:** 0.2.2  
 **Purpose:** ElevenLabs TTS with streaming to speakers or file output  
 **API Key:** Configured in `skills.entries.sag.apiKey` (limited permissions - TTS only, no voice listing)  
-**Environment:** 
+**Environment:**
+
 ```bash
 export ELEVENLABS_API_KEY="sk_7f57cffd5f0cff8c4810b554c69d1e8ecb2de9d7814ca389"
 ```
@@ -43,6 +55,7 @@ export ELEVENLABS_API_KEY="sk_7f57cffd5f0cff8c4810b554c69d1e8ecb2de9d7814ca389"
 **Voice direction:** WoW Gnome style - quirky, enthusiastic, slightly mischievous
 
 **Usage examples:**
+
 ```bash
 # ⚠️ Always specify voice ID (API key can't list voices)
 
@@ -58,6 +71,7 @@ ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output
 ```
 
 **Gnome voice settings (Antoni + Pitch Shift + Processing):**
+
 - **Voice ID:** `ErXwobaYiN019PkySvjV`
 - **Speed:** 1.35x (fast, energetic)
 - **Stability:** 0 (creative mode - more expressive)
@@ -70,6 +84,7 @@ ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output
 - **Model:** eleven_v3 (most expressive, supports audio tags)
 
 **Voice knobs:**
+
 - `--stability` (0|0.5|1 for v3: Creative/Natural/Robust)
 - `--similarity` (0..1: higher = closer to reference voice)
 - `--style` (0..1: higher = more stylized)
@@ -78,11 +93,13 @@ ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output
 - `--seed` (0–4294967295 for repeatability)
 
 **Audio tags (v3 only):**
+
 - `[whispers]`, `[shouts]`, `[sings]`
 - `[laughs]`, `[sighs]`, `[sarcastic]`, `[excited]`
 - `[short pause]`, `[long pause]`
 
 **Models:**
+
 - `eleven_v3` (default) — Most expressive, audio tags
 - `eleven_multilingual_v2` — Stable baseline
 - `eleven_flash_v2_5` — Ultra-low latency (~75ms), 50% cheaper
@@ -93,16 +110,19 @@ ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output
 ## Google Places API
 
 ### goplaces CLI
+
 **Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/goplaces`)  
 **Version:** dev  
 **Purpose:** CLI for Google Places API queries  
 **API Key:** Configured in `skills.entries.goplaces.apiKey`  
 **Environment:**
+
 ```bash
 export GOOGLE_PLACES_API_KEY="AIzaSyAAf8Oj4vpAGAIeNZRySIoZnt6Crer8UDs"
 ```
 
 **Usage examples:**
+
 ```bash
 # Search for places
 goplaces search "coffee" --open-now --min-rating 4 --limit 5
@@ -122,7 +142,9 @@ goplaces search "sushi" --json
 ## Browser Relay Configuration
 
 ### Extended Timeouts (Updated 2026-02-08)
+
 **For long-running automation tasks:**
+
 - **Default timeout:** 10s
 - **Browser navigation:** 30s (for page loads)
 - **Browser snapshot:** 20s (for rendering)
@@ -130,11 +152,13 @@ goplaces search "sushi" --json
 - **Cron timeouts:** 3600s (1 hour for extended runs)
 
 **Usage:**
+
 ```bash
 browser --action=snapshot --timeoutMs=30000 --profile=alygn
 ```
 
 ### Alygn Profile (Twitter/X Automation)
+
 - **Profile name:** `alygn`
 - **Chrome instance:** Separate authenticated session
 - **X.com status:** ✅ Fully authenticated
@@ -146,12 +170,14 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
 ## Channels
 
 ### WhatsApp
+
 - **Number:** +50662163355
 - **Status:** LINKED (authenticated)
 - **Policy:** DM allowlist (only my number)
 - **Group policy:** allowlist
 
 ### Discord
+
 - **Bot:** @ClawdBot MacMini
 - **Token:** Configured
 - **Status:** Connected
@@ -162,17 +188,19 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
 - **DM Policy:** Pairing (approve via `openclaw pairing approve discord <code>`)
 
 **Voice Channel Coordination:**
+
 - **Use case:** Brainstorming, consulting, idea sharing via voice
-- **Workflow:** 
+- **Workflow:**
   1. Andler joins voice channel
   2. I monitor activity and provide text-based coordination
   3. Can take notes, look up info, execute tasks during voice sessions
-- **Commands:** 
+- **Commands:**
   - Ping when joining: "in voice" or similar
   - I can provide real-time assistance via text while you're in voice
   - Post-session: Can summarize discussions, create action items
 
 **Annotations System:**
+
 - **Purpose:** Capture knowledge from voice sessions and discussions
 - **Storage strategy:**
   - Local files in workspace (`knowledge/` directory)
@@ -197,13 +225,15 @@ All configured in `openclaw.json`:
 ## Notion
 
 ### Notion API
+
 **Status:** ✅ Configured and working  
 **API Key:** `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`  
 **Version:** 2022-06-28  
-**Purpose:** Managing project documentation, databases, and knowledge base  
+**Purpose:** Managing project documentation, databases, and knowledge base
 
 **Key Workspaces:**
-- **Intention Alliance - Central Hub**
+
+- **Alygn - Central Hub**
   - Page ID: `2f933487-4af6-819f-a5c5-f32ae95088f1`
   - URL: https://www.notion.so/Intention-Alliance-Central-Hub-2f9334874af6819fa5c5f32ae95088f1
   - Contains: Access & Credentials, GitHub Repos, Platforms & Tools, Team & Roles, Admin Info
@@ -221,6 +251,7 @@ All configured in `openclaw.json`:
     - Properties: Name, Week (date), Project (ALYGN/Bitcash/Personal), Status, Highlights, Blockers
 
 **Usage examples:**
+
 ```bash
 export NOTION_KEY="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"
 
@@ -265,11 +296,13 @@ curl -X PATCH "https://api.notion.com/v1/blocks/{page_id}/children" \
 ## Usage Notes
 
 **Audio workflows:**
+
 1. **Receiving audio** (WhatsApp/Discord) → Whisper transcribes → I process text
 2. **Sending audio** (upon request) → I generate text → SAG converts to audio → Send via channel
 3. **Voice logs:** When you ask for audio instead of text, I'll use SAG to generate spoken responses
 
 **TTS preferences:**
+
 - Preferred voice: **Antoni** (`ErXwobaYiN019PkySvjV`) - well-rounded male
 - Voice direction: **WoW Gnome style** - quirky, enthusiastic, slightly mischievous (both EN/ES-LATAM)
 - Voice settings: Speed 1.35x, Stability 0 (creative), Style 0.9 (very high character), Speaker Boost enabled
@@ -285,4 +318,4 @@ curl -X PATCH "https://api.notion.com/v1/blocks/{page_id}/children" \
 
 ---
 
-*Updated: 2026-01-30 13:18*
+_Updated: 2026-01-30 13:18_

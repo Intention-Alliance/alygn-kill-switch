@@ -5,7 +5,7 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
 async function updateHub() {
   try {
-    console.log('📝 Updating Intention Alliance documentation...\n');
+    console.log('📝 Updating Alygn documentation...\n');
 
     // Page IDs from creation
     const accessPageId = '2f9334874af68131ab09edd9911732f4';
@@ -60,7 +60,7 @@ async function updateHub() {
           { text: { content: 'contact@andler.dev' } }
         ]}},
         { type: 'bulleted_list_item', bulleted_list_item: { rich_text: [
-          { text: { content: 'Shared folders for Intention Alliance documentation' } }
+          { text: { content: 'Shared folders for Alygn documentation' } }
         ]}},
 
         { type: 'heading_2', heading_2: { rich_text: [{ text: { content: '📧 Email & Communication' } }] } },
@@ -199,7 +199,7 @@ async function updateHub() {
 
         { type: 'heading_3', heading_3: { rich_text: [{ text: { content: 'Jacobo' } }], color: 'blue_background' } },
         { type: 'bulleted_list_item', bulleted_list_item: { rich_text: [
-          { text: { content: 'Team Member (Intention Alliance)' } }
+          { text: { content: 'Team Member (Alygn)' } }
         ]}},
         { type: 'bulleted_list_item', bulleted_list_item: { rich_text: [
           { text: { content: 'Communication: ' }, annotations: { bold: true } },

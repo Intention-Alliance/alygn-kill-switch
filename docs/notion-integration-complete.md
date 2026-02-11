@@ -11,16 +11,19 @@
 ## Initial Projects Synced (9 total)
 
 ### 📘 Bitcash (3 projects)
+
 - **Bitcash Backend** (Core, Active)
 - **Bitcash Frontend** (Core, Active)
 - **Bitcash Infrastructure** (Infrastructure, Active)
 
-### 🌱 Intention Alliance (3 projects)
+### 🌱 Alygn (3 projects)
+
 - **IA Platform** (Core, Active)
 - **IA Community Tools** (Core, Planning)
 - **IA Infrastructure** (Infrastructure, Planning)
 
 ### 👤 Personal (3 projects)
+
 - **Skills Development** (Professional, Active)
 - **Network Building** (Professional, Active)
 - **Personal Organization** (Personal, Active)
@@ -29,15 +32,15 @@
 
 ## Database Schema
 
-| Property | Type | Values |
-|----------|------|--------|
-| Name | Title | Project name |
-| Category | Select | Bitcash, Intention Alliance, Personal |
-| Sub-area | Select | Core, Infrastructure, Professional, Personal |
-| Status | Select | Active, Planning, On Hold, Completed |
-| Description | Rich Text | Project details |
-| Tags | Multi-select | Custom tags |
-| Last Updated | Date | Modification date |
+| Property     | Type         | Values                                       |
+| ------------ | ------------ | -------------------------------------------- |
+| Name         | Title        | Project name                                 |
+| Category     | Select       | Bitcash, Alygn, Personal                     |
+| Sub-area     | Select       | Core, Infrastructure, Professional, Personal |
+| Status       | Select       | Active, Planning, On Hold, Completed         |
+| Description  | Rich Text    | Project details                              |
+| Tags         | Multi-select | Custom tags                                  |
+| Last Updated | Date         | Modification date                            |
 
 ---
 
@@ -46,6 +49,7 @@
 ### Managing Projects
 
 **Add new project:**
+
 ```bash
 curl -X POST "https://api.notion.com/v1/pages" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
@@ -63,6 +67,7 @@ curl -X POST "https://api.notion.com/v1/pages" \
 ```
 
 **Query projects:**
+
 ```bash
 curl -X POST "https://api.notion.com/v1/databases/2f833487-4af6-8132-baf4-d60fbcfa3b33/query" \
   -H "Authorization: Bearer $NOTION_API_KEY" \
@@ -96,6 +101,6 @@ curl -X POST "https://api.notion.com/v1/databases/2f833487-4af6-8132-baf4-d60fbc
 
 ---
 
-*Created: 2026-01-30 13:43*  
-*Integration: Wobblus*  
-*Voice: WoW Gnome style (quirky, enthusiastic)* 🔧
+_Created: 2026-01-30 13:43_  
+_Integration: Wobblus_  
+_Voice: WoW Gnome style (quirky, enthusiastic)_ 🔧

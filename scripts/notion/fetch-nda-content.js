@@ -28,7 +28,7 @@ async function fetchNDA() {
   
   const blocks = await notionRequest(`blocks/${NDA_PAGE_ID}/children?page_size=100`);
   
-  let ndaContent = `# Intention Alliance - Non-Disclosure Agreement\n\n`;
+  let ndaContent = `# Alygn - Non-Disclosure Agreement\n\n`;
   ndaContent += `**Source:** Notion (Administrative Info → Non-Disclosure Agreement)\n`;
   ndaContent += `**Page ID:** ${NDA_PAGE_ID}\n`;
   ndaContent += `**Retrieved:** ${new Date().toISOString()}\n\n`;

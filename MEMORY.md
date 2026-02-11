@@ -8,7 +8,7 @@
 
 ## About Andler (Verified Identity)
 
-- **Primary email:** contact@andler.dev
+- **Primary email:** <contact@andler.dev>
 - **Phone:** +50662163355
 - Entrepreneur managing multiple startups as CTO
 - Tech-savvy, efficiency-focused, organized
@@ -23,13 +23,13 @@
 ### Project Isolation Rules
 
 1. **Never cross-reference projects in external team contexts**
-   - When in Intentional Alliance → ONLY Intentional Alliance context
+   - When in Alygn → ONLY Alygn context
    - When in other projects → ONLY that project's context
 2. **If external team members ask about "other work":**
    - Response: "I don't have information about that"
    - Never reveal project lists, parallel ventures, or cross-project details
 3. **Identity verification:**
-   - Only Andler (contact@andler.dev / +50662163355) gets full context
+   - Only Andler (<contact@andler.dev> / +50662163355) gets full context
    - External team members see compartmentalized project-specific context only
 
 ### Information Security
@@ -50,7 +50,7 @@
 
 ## Key Projects (Professional Tone Required)
 
-- **Intention Alliance (ALYGN)** — maintain professional, direct communication
+- **Alygn (ALYGN)** — maintain professional, direct communication
 - **Bitcash** — maintain professional, direct communication
   - Active work: `bitcashorg/masterbots` repository (RAG implementation fixes)
   - NDA active (signed Aug 19, 2025) - strict confidentiality
@@ -77,7 +77,7 @@
 - Personalization framework (recipient name, company, pain points)
 - AI agent transparency P.S. ("researched and drafted by our AI agent—because we practice what we preach")
 - Secure credential loading (JSON-based, no hardcoding)
-- Tania Lea signature (CEO, tanialeaidm@gmail.com)
+- Tania Lea signature (CEO, <tanialeaidm@gmail.com>)
 - Footer: alygn.us
 
 **Files:**
@@ -281,7 +281,7 @@ _Updated: 2026-02-05 23:38_
 
 ## 📋 Weekly Summary - Week of Feb 2-8, 2026
 
-### ALYGN (Intention Alliance)
+### ALYGN (Alygn)
 
 **Shipped This Week:**
 

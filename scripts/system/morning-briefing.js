@@ -5,7 +5,7 @@
  * Runs at 8:00 AM to deliver audio summary for ALL organizations via SAG (ElevenLabs TTS)
  * 
  * Organizations:
- * - ALYGN (Intention Alliance)
+ * - ALYGN (Alygn)
  * - BitcashOrg
  * - AndlerRL Personal Projects
  */
@@ -58,7 +58,7 @@ async function generateMorningBriefing() {
   let briefingText = "Good morning, Andler! Wobblus here with your multi-organization daily briefing!\n\n";
   
   if (reports.alygn) {
-    briefingText += "📊 ALYGN - Intention Alliance:\n";
+    briefingText += "📊 ALYGN - Alygn:\n";
     briefingText += formatReport(reports.alygn) + "\n\n";
   }
   

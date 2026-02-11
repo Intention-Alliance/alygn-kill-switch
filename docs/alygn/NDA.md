@@ -1,4 +1,4 @@
-# Intention Alliance - Non-Disclosure Agreement
+# Alygn - Non-Disclosure Agreement
 
 **Source:** Notion (Administrative Info → Non-Disclosure Agreement)
 **Page ID:** 2fc334874af6801b948cf44183466fc4
@@ -8,7 +8,7 @@
 
 MUTUAL NONDISCLOSURE AGREEMENT
 
-This mutual nondisclosure agreement is between Roberto “Andler” Lucas, and Intention Alliance, (address) San José Province, Escazú Canton, San Rafael District, Central Park Condominium, Tower Number One.
+This mutual nondisclosure agreement is between Roberto “Andler” Lucas, and Alygn, (address) San José Province, Escazú Canton, San Rafael District, Central Park Condominium, Tower Number One.
 
 Each party intends to share certain information and hold discussions to explore the possibility of entering into a business relationship (a “Potential Relationship”), but desire to protect their respective information and business interests
 
@@ -36,7 +36,7 @@ The Disclosing Party shall identify Confidential Information disclosed orally wi
 
 2. OBLIGATION TO MAINTAIN CONFIDENTIALITY.
 
-Mutual Nondisclosure Agreement  1
+Mutual Nondisclosure Agreement 1
 
 (a) Confidentiality. The Receiving Party shall, and shall ensure that each Receiving Party Representative, keep the Confidential Information confidential. Except as otherwise required by law, the Receiving Party and Receiving Party Representatives may not:
 
@@ -66,7 +66,7 @@ The obligations and restrictions of this agreement do not apply to that part of 
 
 (i) the source of such information is not bound by a confidentiality agreement with the Disclosing Party or is not otherwise prohibited from transmitting the information to the Receiving Party or a Receiving Party Representative by a contractual, legal, fiduciary, or other obligation; and
 
-Mutual Nondisclosure Agreement  2
+Mutual Nondisclosure Agreement 2
 
 (ii) the Receiving Party provides the Disclosing Party with written notice of such prior possession, all information that has been shared before signing this contract,is confidential,and covered and protected by this NDA, either (A) before the execution and delivery of this agreement or (B) if the Receiving Party later becomes aware (through disclosure to the Receiving Party) of any aspect of the Confidential Information as to which the Receiving Party had prior possession, promptly on the Receiving Party so becoming aware; or
 
@@ -76,7 +76,7 @@ Mutual Nondisclosure Agreement  2
 
 (ii) provide reasonable assistance to the Disclosing Party in obtaining any such protective order.
 
- If a protective order or other remedy is not obtained or the Disclosing Party grants a waiver under this agreement, then the Receiving Party may furnish that portion (and only that portion) of the Confidential Information that, in the written opinion of counsel reasonably acceptable to the Disclosing Party, the Receiving Party is legally compelled or otherwise required to disclose. The Receiving Party shall make reasonable efforts to obtain reliable assurance that confidential treatment will be accorded any part of the Confidential Information so disclosed; or
+If a protective order or other remedy is not obtained or the Disclosing Party grants a waiver under this agreement, then the Receiving Party may furnish that portion (and only that portion) of the Confidential Information that, in the written opinion of counsel reasonably acceptable to the Disclosing Party, the Receiving Party is legally compelled or otherwise required to disclose. The Receiving Party shall make reasonable efforts to obtain reliable assurance that confidential treatment will be accorded any part of the Confidential Information so disclosed; or
 
 (d)was developed by the Receiving Party independently without breach of this agreement.
 
@@ -94,7 +94,7 @@ The parties shall keep the existence of this agreement, and the transactions or 
 
 6. OWNERSHIP RIGHTS.
 
-Mutual Nondisclosure Agreement  3
+Mutual Nondisclosure Agreement 3
 
 Each party acknowledges that the Confidential Information is, and at all times will be, the Disclosing Party’s sole property, even if suggestions made by a Receiving Party are incorporated into the Confidential Information. Neither party obtains any rights, by license or otherwise, in the other party’s Confidential Information. Neither party solicits any change in the other party’s organization, business practice, service, or products, and the disclosure of the Confidential Information may not be construed as evidencing any intent by a party to purchase any products or services of the other party or as an encouragement to expend funds in development or research efforts. The Confidential Information may pertain to prospective or unannounced products. Neither party may use the other party’s Confidential Information as a basis on which to develop or have a third party develop a competing or similar plan or undertaking.
 
@@ -112,7 +112,7 @@ contemplated by this agreement concerning the business opportunity, if any, and 
 
 ALL CONFIDENTIAL INFORMATION IS PROVIDED “AS IS.” NEITHER PARTY MAKES ANY WARRANTIES, EXPRESS, IMPLIED, OR OTHERWISE, REGARDING THE ACCURACY, COMPLETENESS, OR PERFORMANCE OF ANY SUCH INFORMATION.
 
-Mutual Nondisclosure Agreement  4
+Mutual Nondisclosure Agreement 4
 
 10. GOVERNING LAW; ATTORNEYS’ FEES; EQUITABLE RELIEF.
 
@@ -146,7 +146,7 @@ subsection.
 
 (b)Electronic Signatures. This agreement, agreements ancillary to this agreement, and related documents entered into in connection with this agreement are signed when a party’s signature is delivered by facsimile, email, or other electronic medium. These
 
-Mutual Nondisclosure Agreement  5
+Mutual Nondisclosure Agreement 5
 
 signatures must be treated in all respects as having the same force and effect as original signatures.
 
@@ -172,7 +172,7 @@ No waiver of a breach, failure of any condition, or any right or remedy containe
 
 This agreement constitutes the final agreement of the parties. It is the complete and exclusive expression of the parties’ agreement with respect to the subject matter of this agreement. All prior and contemporaneous communications, negotiations, and agreements between the parties relating to the subject matter of this agreement are expressly merged into and superseded by this agreement. The provisions of this agreement may not be explained, supplemented, or qualified by evidence of trade usage or a prior course of dealings. Neither party was induced to enter this agreement by, and neither party is relying on, any statement, representation, warranty, or agreement of the other party except those set forth expressly in this agreement. Except as set
 
-Mutual Nondisclosure Agreement  6
+Mutual Nondisclosure Agreement 6
 
 forth expressly in this agreement, there are no conditions precedent to this agreement’s effectiveness.
 
@@ -192,11 +192,10 @@ Each party and its officers and directors shall use all reasonable efforts to ta
 
 [SIGNATURE PAGE FOLLOWS]
 
-Mutual Nondisclosure Agreement  7
+Mutual Nondisclosure Agreement 7
 
 Each party is signing this agreement on the date stated opposite that party’s signature.
 
-Intention Alliance
+Alygn
 
-Date: ___August 19, 2025__ By: Intention Alliance
-
+Date: **\_August 19, 2025** By: Alygn

@@ -9,20 +9,20 @@ async function createIntentionAllianceHub() {
     // Find the main workspace or create under Organizations TODO Lists for now
     const parentPageId = '26a33487-4af6-81a8-b01c-fd1a8a5f8bcb';
     
-    console.log('🏢 Creating Intention Alliance Central Hub...\n');
+    console.log('🏢 Creating Alygn Central Hub...\n');
     
     // Create main page
     const mainPage = await notion.pages.create({
       parent: { page_id: parentPageId },
       icon: { type: 'emoji', emoji: '🎯' },
       properties: {
-        title: [{ text: { content: 'Intention Alliance - Central Hub' } }]
+        title: [{ text: { content: 'Alygn - Central Hub' } }]
       },
       children: [
         {
           type: 'heading_1',
           heading_1: {
-            rich_text: [{ text: { content: '🏢 Intention Alliance' } }]
+            rich_text: [{ text: { content: '🏢 Alygn' } }]
           }
         },
         {
@@ -30,7 +30,7 @@ async function createIntentionAllianceHub() {
           paragraph: {
             rich_text: [
               { text: { content: 'Organization: ', annotations: { bold: true } } },
-              { text: { content: 'Intention Alliance' } }
+              { text: { content: 'Alygn' } }
             ]
           }
         },
@@ -181,7 +181,7 @@ async function createIntentionAllianceHub() {
         {
           type: 'paragraph',
           paragraph: {
-            rich_text: [{ text: { content: 'List all repositories related to ALYGN/Intention Alliance here.' } }]
+            rich_text: [{ text: { content: 'List all repositories related to ALYGN/Alygn here.' } }]
           }
         },
         {
@@ -548,7 +548,7 @@ async function createIntentionAllianceHub() {
     });
 
     console.log('✅ Navigation links added!\n');
-    console.log('🎉 Intention Alliance Central Hub is ready!\n');
+    console.log('🎉 Alygn Central Hub is ready!\n');
     console.log(`📍 Main Hub: ${mainPage.url}\n`);
     console.log('📝 Next steps:');
     console.log('   1. Fill in GitHub organization details');

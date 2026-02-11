@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Fetch Intention Alliance NDA from Notion
+ * Fetch Alygn NDA from Notion
  */
 
 const NOTION_KEY = "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";
@@ -26,7 +26,7 @@ async function notionRequest(endpoint, method = "GET", body = null) {
 }
 
 async function searchForNDA() {
-  console.log("🔍 Searching for NDA in Intention Alliance hub...\n");
+  console.log("🔍 Searching for NDA in Alygn hub...\n");
   
   // Search for NDA document
   const searchResult = await notionRequest("search", "POST", {
@@ -84,8 +84,8 @@ async function searchForNDA() {
   // Fetch NDA content
   const ndaBlocks = await notionRequest(`blocks/${ndaPageId}/children?page_size=100`);
   
-  let ndaContent = `# Intention Alliance - NDA\n\n`;
-  ndaContent += `**Source:** Notion (Intention Alliance Hub)\n`;
+  let ndaContent = `# Alygn - NDA\n\n`;
+  ndaContent += `**Source:** Notion (Alygn Hub)\n`;
   ndaContent += `**Document:** ${ndaTitle}\n\n`;
   ndaContent += `---\n\n`;
   

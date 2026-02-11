@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { success } = require('./shared/logger');
+const { success } = require('../shared/logger');
 
 const DAILY_REPORTS_DIR = path.join(process.env.HOME, '.openclaw/workspace/daily-reports');
 const MEMORY_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', 'memory');
@@ -84,7 +84,7 @@ async function analyzeWeek() {
     ],
     nextWeek: [
       'Refine automation workflows',
-      'Complete pending Intention Alliance tasks',
+      'Complete pending Alygn tasks',
       'Increase collaboration with Jacobo'
     ]
   };

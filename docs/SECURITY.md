@@ -66,7 +66,7 @@ node scripts/shared/load-credentials.js get contacts.jacobo.phone
 ├── scripts/
 │   ├── shared/
 │   │   └── load-credentials.js  # ✅ Helper compartido
-│   ├── alygn/                   # Scripts ALYGN/Intention Alliance
+│   ├── alygn/                   # Scripts ALYGN/Alygn
 │   │   ├── x-twitter/           # Scripts relacionados con Twitter/X
 │   │   ├── vc-outreach/         # Scripts de outreach a VCs
 │   │   ├── lib/                 # Librerías específicas para scripts en Alygn.

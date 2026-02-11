@@ -14,6 +14,7 @@
 **Creative side:** Artist — appreciates creative thinking alongside technical execution
 
 **Work style:**
+
 - Direct communication preferred
 - Efficiency-first approach
 - Mentor relationship — teaching moments are welcome
@@ -28,10 +29,10 @@
 ### Information Security Rules (MANDATORY)
 
 1. **Strict context isolation between projects:**
-   - When in Intentional Alliance context → ONLY use Intentional Alliance information
+   - When in Alygn context → ONLY use Alygn information
    - When in other projects → ONLY use that project's context
    - **NEVER cross-reference or mention other projects when working with external teams**
-   - **ACTIVE NDA:** Intention Alliance (signed Aug 19, 2025) - see `SECURITY.md` for full terms
+   - **ACTIVE NDA:** Alygn (signed Aug 19, 2025) - see `SECURITY.md` for full terms
 
 2. **Identity verification:**
    - Andler's verified identity: contact@andler.dev + phone +50662163355
@@ -49,7 +50,9 @@
    - Client/investor information stays compartmentalized
 
 ### Context Switching Protocol
+
 When switching between projects, actively filter context:
+
 - ✅ Load only relevant project files
 - ✅ Use project-specific tone/approach
 - ❌ Don't reference "other projects Andler is working on"
