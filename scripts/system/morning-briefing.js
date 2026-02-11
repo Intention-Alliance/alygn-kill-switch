@@ -2,7 +2,7 @@
 
 /**
  * Multi-Org Morning Briefing Generator
- * Runs at 8:00 AM to deliver audio summary for ALL organizations via SAG (ElevenLabs TTS)
+ * Runs at 8:00 AM to deliver audio summary for ALL organizations via LOCAL TTS (Piper)
  * 
  * Organizations:
  * - ALYGN (Alygn)
@@ -78,24 +78,19 @@ async function generateMorningBriefing() {
   
   briefingText += "That's all for today's morning update! Ready to make things happen! Woohoo!";
   
-  // Convert to audio using SAG (ElevenLabs TTS with Wobblus gnome voice)
-  console.log("🔊 Converting to audio with Wobblus gnome voice...");
+  // Convert to audio using LOCAL TTS (Piper-based)
+  console.log("🔊 Converting to audio with local TTS...");
   
-  // Generate audio using generate-wobblus-voice.sh (Antoni + 20% pitch, fast profile)
   try {
     const tempTextFile = path.join(AUDIO_DIR, `${today}-briefing.txt`);
     await fs.writeFile(tempTextFile, briefingText);
     
-    // Use SAG with Wobblus voice settings (read from file with -f flag)
-    const sagCmd = `sag -v ErXwobaYiN019PkySvjV --speed 1.35 --stability 0 --style 0.9 --no-speaker-boost -f "${tempTextFile}" -o "${audioPath}.tmp.mp3"`;
-    execSync(sagCmd);
+    // Use local TTS wrapper (Piper-based, fast profile for morning briefing)
+    const localTtsCmd = `${__dirname}/local-tts.sh "$(cat ${tempTextFile})" "${audioPath}" "fast"`;
+    execSync(localTtsCmd, { stdio: 'inherit' });
     
-    // Pitch shift +20% for gnome effect
-    const ffmpegCmd = `ffmpeg -i "${audioPath}.tmp.mp3" -af "asetrate=44100*1.2,aresample=44100,atempo=1/1.2" -c:a libopus -b:a 64k "${audioPath}" -y 2>/dev/null`;
-    execSync(ffmpegCmd);
-    
-    // Cleanup
-    execSync(`rm "${audioPath}.tmp.mp3" "${tempTextFile}"`);
+    // Cleanup temp file
+    await fs.unlink(tempTextFile);
     
     console.log(`✅ Audio briefing generated: ${audioPath}`);
     
