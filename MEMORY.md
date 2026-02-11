@@ -122,12 +122,13 @@ scripts/alygn/
 - Decision layer: Grok + web search = intelligent engagement (not just keyword matching)
 
 **Location:** `scripts/alygn/twitter-discovery/`  
-**Status:** ALL 3 PHASES COMPLETE ✅✅✅  
+**Status:** ✅ PRODUCTION - INTEGRATED INTO DAILY CRON  
 **Test Results (Feb 11, 2026):**
 - Phase 1 (Browser Discovery): 100% relevance with search "AGI alignment"
 - Phase 2 (Decision Engine): 3/3 posts approved by Grok
 - Phase 3 (X API Executor): 2/3 posted live ([tweet1](https://x.com/aialygn/status/2021417150179610626), [tweet2](https://x.com/aialygn/status/2021417173046981063))
-**Next:** Cron automation (daily discovery + execution)
+**Cron:** Daily 11 AM (combined with Content Generation)  
+**Documentation:** `docs/TWITTER-AUTOMATION.md`
 
 ---
 
