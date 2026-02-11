@@ -44,7 +44,7 @@ openclaw cron add \
   --cron "0 2 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run backup: cd ~/.openclaw/workspace && bun scripts/system/backup.js" \
+  --message "Run backup: cd ~/.openclaw/workspace && node scripts/system/backup.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -56,7 +56,7 @@ openclaw cron add \
   --cron "30 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run daily tracker: cd ~/.openclaw/workspace && bun scripts/alygn/daily-tracker.js" \
+  --message "Run daily tracker: cd ~/.openclaw/workspace && node scripts/alygn/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -70,7 +70,7 @@ openclaw cron add \
   --cron "0 8 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Generate morning briefing: cd ~/.openclaw/workspace && bun scripts/system/morning-briefing-v2.js" \
+  --message "Generate morning briefing: cd ~/.openclaw/workspace && node scripts/system/morning-briefing.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -84,7 +84,7 @@ openclaw cron add \
   --cron "0 9 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute Twitter automation: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 1" \
+  --message "Execute Twitter automation: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 1" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -98,7 +98,7 @@ openclaw cron add \
   --cron "0 */6 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute trend monitoring: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 13 --search" \
+  --message "Execute trend monitoring: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 13 --search" \
   --thinking low \
   --best-effort-deliver
 
@@ -110,7 +110,7 @@ openclaw cron add \
   --cron "0 8-22/2 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute auto engagement: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 15" \
+  --message "Execute auto engagement: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 15" \
   --thinking low \
   --best-effort-deliver
 
@@ -122,7 +122,7 @@ openclaw cron add \
   --cron "0 18 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run Jacobo tracking: cd ~/.openclaw/workspace && bun scripts/alygn/jacobo-tracking.js summary" \
+  --message "Run Jacobo tracking: cd ~/.openclaw/workspace && node scripts/alygn/jacobo-tracking.js summary" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -136,7 +136,7 @@ openclaw cron add \
   --cron "0 8-20/3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run Notion sync: cd ~/.openclaw/workspace && bun scripts/system/notion-sync.js" \
+  --message "Run Notion sync: cd ~/.openclaw/workspace && node scripts/system/notion-sync.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -148,7 +148,7 @@ openclaw cron add \
   --cron "0 */6 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run health monitor: cd ~/.openclaw/workspace && bun scripts/system/health-monitor.js" \
+  --message "Run health monitor: cd ~/.openclaw/workspace && node scripts/system/health-monitor.js" \
   --thinking low \
   --best-effort-deliver
 
@@ -160,7 +160,7 @@ openclaw cron add \
   --cron "0 18 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute Twitter analytics: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 17" \
+  --message "Execute Twitter analytics: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 17" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -174,7 +174,7 @@ openclaw cron add \
   --cron "0 21 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run EOD summary: cd ~/.openclaw/workspace && bun scripts/alygn/eod-summary.js" \
+  --message "Run EOD summary: cd ~/.openclaw/workspace && node scripts/alygn/eod-summary.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -188,7 +188,7 @@ openclaw cron add \
   --cron "30 21 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run GitHub digest: cd ~/.openclaw/workspace && bun scripts/alygn/github-digest.js" \
+  --message "Run GitHub digest: cd ~/.openclaw/workspace && node scripts/alygn/github-digest.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -202,7 +202,7 @@ openclaw cron add \
   --cron "0 10 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute weekly niche posts: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 3" \
+  --message "Execute weekly niche posts: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 3" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -216,7 +216,7 @@ openclaw cron add \
   --cron "0 10 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && node scripts/alygn/twitter-poster.js post" \
   --thinking low \
   --best-effort-deliver
 
@@ -228,7 +228,7 @@ openclaw cron add \
   --cron "0 14 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && node scripts/alygn/twitter-poster.js post" \
   --thinking low \
   --best-effort-deliver
 
@@ -240,7 +240,7 @@ openclaw cron add \
   --cron "0 18 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Post to Twitter: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-poster.js post" \
+  --message "Post to Twitter: cd ~/.openclaw/workspace && node scripts/alygn/twitter-poster.js post" \
   --thinking low \
   --best-effort-deliver
 
@@ -252,7 +252,7 @@ openclaw cron add \
   --cron "30 10 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run VC contact discovery: cd ~/.openclaw/workspace && bun scripts/alygn/vc-contact-discovery.js discover" \
+  --message "Run VC contact discovery: cd ~/.openclaw/workspace && node scripts/alygn/vc-contact-discovery.js discover" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -266,7 +266,7 @@ openclaw cron add \
   --cron "0 11 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute VC outreach: cd ~/.openclaw/workspace && bun scripts/alygn/vc-outreach.js" \
+  --message "Execute VC outreach: cd ~/.openclaw/workspace && node scripts/alygn/vc-outreach.js" \
   --thinking high \
   --deliver \
   --to "+50662163355" \
@@ -280,7 +280,7 @@ openclaw cron add \
   --cron "0 17 * * 0" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute weekly review: cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js exec 18" \
+  --message "Execute weekly review: cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js exec 18" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -294,7 +294,7 @@ openclaw cron add \
   --cron "0 18 * * 0" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run weekly reflection: cd ~/.openclaw/workspace && bun scripts/alygn/weekly-reflection.js" \
+  --message "Run weekly reflection: cd ~/.openclaw/workspace && node scripts/alygn/weekly-reflection.js" \
   --thinking medium \
   --deliver \
   --to "+50662163355" \
@@ -308,7 +308,7 @@ openclaw cron add \
   --cron "0 10 1 * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute monthly review: cd ~/.openclaw/workspace && bun scripts/alygn/monthly-review.js && bun scripts/alygn/twitter-automation-v2.js exec 19" \
+  --message "Execute monthly review: cd ~/.openclaw/workspace && node scripts/alygn/monthly-review.js && node scripts/alygn/x-twitter/twitter-automation.js exec 19" \
   --thinking high \
   --deliver \
   --to "+50662163355" \
@@ -331,7 +331,7 @@ openclaw cron add \
   --cron "45 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run BitcashOrg tracker: cd ~/.openclaw/workspace && bun scripts/bitcash/daily-tracker.js" \
+  --message "Run BitcashOrg tracker: cd ~/.openclaw/workspace && node scripts/bitcash/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -345,7 +345,7 @@ openclaw cron add \
   --cron "0 4 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run AndlerRL tracker: cd ~/.openclaw/workspace && bun scripts/personal/daily-tracker.js" \
+  --message "Run AndlerRL tracker: cd ~/.openclaw/workspace && node scripts/personal/daily-tracker.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
