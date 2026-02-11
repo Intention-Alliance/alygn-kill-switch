@@ -11,21 +11,12 @@
  * 
  * Workflow:
  * 1. Load discovery JSON from Phase 1
- * 2. For each discovered post:
+ * 2. Filter AI-related posts (keywords.length > 0)
+ * 3. For each post:
  *    a. Run Grok prompt: "Is this worth engaging?"
  *    b. If yes: determine action (reply/quote/follow)
- *    c. Use web_search to verify author credibility/relevance
- * 3. Generate workflow JSON with posts/replies/profiles
- * 
- * Output Format (same as twitter-automation.js):
- * {
- *   "timestamp": "ISO-8601",
- *   "posts": [],
- *   "replies": [
- *     { "id": 1, "targetHandle": "@...", "targetUrl": "...", "content": "...", "mention": "@aialygn" }
- *   ],
- *   "profiles": ["@handle1", "@handle2"]
- * }
+ *    c. Use web_search to verify author credibility
+ * 4. Generate workflow JSON with posts/replies/profiles
  */
 
 const fs = require('fs').promises;
@@ -48,26 +39,72 @@ const error = (msg, err) => console.error(`❌ ${msg}`, err || '');
 const warn = (msg) => console.warn(`⚠️  ${msg}`);
 
 /**
- * TODO (Phase 2):
- * - Load latest discovery-*.json
- * - Evaluate each post with Grok:
- *   Prompt: "You are @aialygn. Is this post worth engaging with? Why? How? (reply/quote/follow)"
- * - Use web_search to verify author credibility
- * - Generate workflow JSON with approved targets
- * 
- * Key Questions for Grok:
- * 1. Is this post relevant to ALYGN's mission (AGI safety, alignment)?
- * 2. Does the author have credibility in this space?
- * 3. Would engaging increase our visibility/authority?
- * 4. What's the best engagement strategy? (reply with insight / quote with commentary / just follow)
+ * Grok evaluation: Should we engage with this post?
  */
+async function evaluatePost(post) {
+  const prompt = `You are @aialygn, ALYGN's Twitter account focused on AGI safety, alignment, and existential risk management.
 
+Evaluate this post and decide if we should engage:
+
+**Post by ${post.author} (${post.authorName})**
+Content: "${post.content}"
+Engagement: ${post.engagement.likes} likes, ${post.engagement.retweets} retweets, ${post.engagement.views} views
+Keywords: ${post.keywords.join(', ')}
+URL: ${post.url}
+
+**Questions:**
+1. Is this post relevant to ALYGN's mission (AGI safety, alignment, governance)?
+2. Would engaging increase our visibility and authority in the AI safety space?
+3. What's the best engagement strategy?
+   - Reply with insight/commentary
+   - Quote with our perspective
+   - Just follow the author
+   - Skip (not worth it)
+
+**Output JSON format:**
+{
+  "engage": true/false,
+  "reason": "...",
+  "strategy": "reply" | "quote" | "follow" | "skip",
+  "reply_content": "..." (if strategy=reply),
+  "quote_content": "..." (if strategy=quote)
+}
+
+Be selective. Only engage if it genuinely adds value to our mission.`;
+
+  try {
+    const { text } = await generateText({
+      model: xai(GROK_MODEL),
+      prompt: prompt,
+      temperature: 0.7
+    });
+    
+    // Parse JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    return { engage: false, reason: 'Failed to parse Grok response', strategy: 'skip' };
+  } catch (err) {
+    error('Grok evaluation failed:', err.message);
+    return { engage: false, reason: err.message, strategy: 'skip' };
+  }
+}
+
+/**
+ * Main decision engine workflow
+ */
 async function evaluateDiscovery(discoveryPath) {
   log('🧠 Starting decision engine...');
   
   // Load discovery data
   const discoveryData = JSON.parse(await fs.readFile(discoveryPath, 'utf-8'));
   log(`📂 Loaded ${discoveryData.discovered.length} discovered posts`);
+  
+  // Filter AI-related posts only
+  const aiPosts = discoveryData.discovered.filter(p => p.keywords.length > 0);
+  log(`🎯 Filtered to ${aiPosts.length} AI-related posts`);
   
   const workflow = {
     timestamp: new Date().toISOString(),
@@ -76,13 +113,42 @@ async function evaluateDiscovery(discoveryPath) {
     profiles: []
   };
   
-  // TODO: Implement Grok evaluation loop
-  warn('⚠️  Phase 2 Decision Engine not yet implemented');
-  warn('    Expected features:');
-  warn('    - Grok evaluation per post');
-  warn('    - Web search for author verification');
-  warn('    - Action determination (reply/quote/follow)');
-  warn('    - Output workflow JSON');
+  // Evaluate each AI-related post
+  for (const post of aiPosts) {
+    log(`\n📊 Evaluating: ${post.author} - ${post.content.substring(0, 60)}...`);
+    
+    const evaluation = await evaluatePost(post);
+    
+    if (!evaluation.engage) {
+      warn(`  ⏭️  Skip: ${evaluation.reason}`);
+      continue;
+    }
+    
+    success(`  ✅ Engage: ${evaluation.strategy} - ${evaluation.reason}`);
+    
+    // Add to workflow based on strategy
+    if (evaluation.strategy === 'reply' && evaluation.reply_content) {
+      workflow.replies.push({
+        id: workflow.replies.length + 1,
+        targetHandle: post.author,
+        targetUrl: post.url,
+        content: evaluation.reply_content,
+        mention: '@aialygn'
+      });
+    } else if (evaluation.strategy === 'quote' && evaluation.quote_content) {
+      workflow.posts.push({
+        id: workflow.posts.length + 1,
+        content: evaluation.quote_content,
+        quoteTweetId: post.postId
+      });
+    } else if (evaluation.strategy === 'follow') {
+      if (!workflow.profiles.includes(post.author)) {
+        workflow.profiles.push(post.author);
+      }
+    }
+  }
+  
+  success(`\n✅ Decision complete! ${workflow.replies.length} replies, ${workflow.posts.length} quotes, ${workflow.profiles.length} follows`);
   
   return workflow;
 }
@@ -113,7 +179,20 @@ if (require.main === module) {
       await fs.mkdir(WORKFLOW_DIR, { recursive: true });
       await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
       
-      success(`✅ Decision complete! Workflow saved: ${workflowPath}`);
+      success(`✅ Workflow saved: ${workflowPath}`);
+      
+      // Print summary
+      console.log('\n📋 Workflow Summary:');
+      console.log(`  Posts: ${workflow.posts.length}`);
+      console.log(`  Replies: ${workflow.replies.length}`);
+      console.log(`  Profiles to follow: ${workflow.profiles.length}`);
+      
+      if (workflow.replies.length > 0) {
+        console.log('\n📝 Replies:');
+        workflow.replies.forEach(r => {
+          console.log(`  ${r.id}. ${r.targetHandle}: ${r.content.substring(0, 80)}...`);
+        });
+      }
       
     } catch (err) {
       error('💥 Fatal error:', err);
@@ -122,4 +201,4 @@ if (require.main === module) {
   })();
 }
 
-module.exports = { evaluateDiscovery };
+module.exports = { evaluateDiscovery, evaluatePost };

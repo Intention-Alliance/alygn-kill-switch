@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-02-11T02:40:00.000Z",
+  "source": "explore_feed_browser_real",
+  "discovered": [
+    {
+      "postId": "2021216159018692792",
+      "author": "@elonmusk",
+      "authorName": "Elon Musk",
+      "content": "New @xAI office opened in Seattle area. NEWS: xAI opened a new engineering office in Bellevue, Washington at Lincoln Square South, joining OpenAI in the Eastside AI corridor.",
+      "engagement": {
+        "replies": 1496,
+        "retweets": 1377,
+        "likes": 12969,
+        "bookmarks": 586,
+        "views": 16064599
+      },
+      "url": "https://x.com/elonmusk/status/2021216159018692792",
+      "keywords": ["xai", "openai", "ai corridor", "grok"]
+    },
+    {
+      "postId": "2021233357514997824",
+      "author": "@socialwithaayan",
+      "authorName": "Muhammad Ayan",
+      "content": "BREAKING: AI can now do market research like McKinsey (for free). Here are 12 insane Claude Opus 4.6 prompts that replace $5,000 consultant",
+      "engagement": {
+        "replies": 133,
+        "retweets": 675,
+        "likes": 5641,
+        "bookmarks": 15542,
+        "views": 758612
+      },
+      "url": "https://x.com/socialwithaayan/status/2021233357514997824",
+      "keywords": ["claude", "opus", "ai"]
+    },
+    {
+      "postId": "2021160753730859110",
+      "author": "@Oceanbreeze473",
+      "authorName": "SweetMarie",
+      "content": "That is an American success story right there.",
+      "engagement": {
+        "replies": 1243,
+        "retweets": 8569,
+        "likes": 132402,
+        "bookmarks": 4495,
+        "views": 5530992
+      },
+      "url": "https://x.com/Oceanbreeze473/status/2021160753730859110",
+      "keywords": []
+    },
+    {
+      "postId": "2021264603464781877",
+      "author": "@SrPeters",
+      "authorName": "Sr Peters",
+      "content": "Epstein spotted again in Tel Aviv, Israel. Guess he's still alive… his death was faked by the Mossad.",
+      "engagement": {
+        "replies": 1802,
+        "retweets": 8707,
+        "likes": 68039,
+        "bookmarks": 9744,
+        "views": 8196459
+      },
+      "url": "https://x.com/SrPeters/status/2021264603464781877",
+      "keywords": []
+    }
+  ],
+  "stats": {
+    "total_discovered": 4,
+    "ai_related": 2,
+    "relevance_rate": 0.5
+  }
+}
