@@ -6,18 +6,22 @@
 set -euo pipefail
 
 # Configuration
+PIPER_VENV="$HOME/.local/share/piper-tts-env"
 PIPER_MODEL="${PIPER_MODEL:-$HOME/.local/share/piper-voices/en-us-lessac-high.onnx}"
 TEXT="${1:?Missing text argument}"
 OUTPUT="${2:-output.ogg}"
 PROFILE="${3:-fast}"  # fast|balanced|high-quality
 
-# Check if Piper is installed
-if ! command -v piper &> /dev/null; then
-    echo "❌ Error: piper not found. Install it first:" >&2
-    echo "   yay -S piper-tts" >&2
+# Check if Piper venv exists
+if [ ! -f "$PIPER_VENV/bin/piper" ]; then
+    echo "❌ Error: Piper not found at $PIPER_VENV/bin/piper" >&2
+    echo "   Run: python -m venv $PIPER_VENV && source $PIPER_VENV/bin/activate && pip install piper-tts pathvalidate" >&2
     echo "   or see scripts/system/local-tts-setup.md" >&2
     exit 1
 fi
+
+# Activate venv for this script
+source "$PIPER_VENV/bin/activate"
 
 # Check if model exists
 if [ ! -f "$PIPER_MODEL" ]; then
