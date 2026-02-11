@@ -160,9 +160,9 @@ node scripts/alygn/twitter-master-automation.js
 openclaw cron list | grep Twitter
 ```
 
-**Job:** "ALYGN: Twitter Daily Automation v4"  
+**Job:** "ALYGN: Twitter Master Automation (Content + Discovery)"  
 **Session:** Isolated (1h timeout)  
-**Delivery:** WhatsApp summary to +50662163355
+**Delivery:** Discord #annotations thread "Alygn: X/Twitter Growth Engagement" (`1470977688368840928`)
 
 ---
 

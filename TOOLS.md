@@ -185,6 +185,7 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
   - **Guild ID:** `1117841083351711785`
   - **Voice Channel:** "General" (`1117841084064735286`)
   - **Annotations Channel:** "annotations" (`1466532145257255004`)
+  - **Twitter Thread:** "Alygn: X/Twitter Growth Engagement" (`1470977688368840928`)
 - **DM Policy:** Pairing (approve via `openclaw pairing approve discord <code>`)
 
 **Voice Channel Coordination:**
