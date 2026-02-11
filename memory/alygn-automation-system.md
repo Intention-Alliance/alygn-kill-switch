@@ -6,7 +6,7 @@
 Complete automation system managing 3 organizations across 17 cron jobs with Notion integration.
 
 ## Organizations Tracked
-1. **ALYGN (Intention Alliance)** - Primary focus, VC outreach, Twitter growth
+1. **ALYGN (Alygn)** - Primary focus, VC outreach, Twitter growth
 2. **BitcashOrg** - Crypto project tracking
 3. **AndlerRL** - Personal projects and creative work
 
@@ -69,12 +69,12 @@ Each daily report page includes:
 4. **📊 Activity Details** - Sessions, GitHub, Email metrics
 
 ## Contact Tracking
-- **Jacobo (Intention Alliance):** Monitored every 10 minutes during work hours
+- **Jacobo (Alygn):** Monitored every 10 minutes during work hours
 - Alert if no contact in 24h
 - Manual logging: `/log jacobo [note]`
 
 ## GitHub Repos Tracked
-**ALYGN/Intention Alliance:**
+**ALYGN/Alygn:**
 - Intention-Alliance/align-core-infra
 - Intention-Alliance/license-app
 - Intention-Alliance/docs

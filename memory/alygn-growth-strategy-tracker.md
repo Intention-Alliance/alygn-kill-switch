@@ -5,7 +5,7 @@
 **Created:** 2026-02-03
 
 ## Purpose
-Central dashboard tracking ALYGN (Intention Alliance) growth initiatives across two primary channels:
+Central dashboard tracking ALYGN (Alygn) growth initiatives across two primary channels:
 1. **VC Outreach** - Investor relations and fundraising
 2. **Twitter/X Growth** - Community building via @aialygn
 

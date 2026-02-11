@@ -5,7 +5,7 @@
 
 ---
 
-## 📊 ALYGN (Intention Alliance)
+## 📊 ALYGN (Alygn)
 
 ### Accomplishments
 

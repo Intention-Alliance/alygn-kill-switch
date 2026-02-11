@@ -23,12 +23,12 @@ assistant: Let me check the actual structure - I may have found the wrong pages:
 assistant: Ah, I see the confusion! I only **searched** for existing pages - I didn't create anything. 
 
 Looking at the structure:
-- **Weekly Progress Log** (database) → is inside **Intention Alliance Central Hub**, not Organizations TODO Lists
+- **Weekly Progress Log** (database) → is inside **Alygn Central Hub**, not Organizations TODO Lists
 - **Organizations TODO Lists** → has to-do items but no Weekly Progress database inside it
 
 Do you want me to:
 1. **Create** a "Weekly Progress" database inside "Organizations TODO Lists"?
-2. Or use the existing "Weekly Progress Log" that's inside Intention Alliance Central Hub?
+2. Or use the existing "Weekly Progress Log" that's inside Alygn Central Hub?
 
 Which structure do you prefer? 🔧
 user: System: [2026-02-05 14:36:53 CST] WhatsApp gateway disconnected (status 499)
@@ -38,7 +38,7 @@ System: [2026-02-05 14:36:57 CST] WhatsApp gateway connected.
 [message_id: AC77A12608202931695B9F2A96B28111]
 assistant: Let me check the existing database structure first, then create the new one with project tags:
 assistant: Creating new "Weekly Progress" database with project tags:
-assistant: Now deleting the old one from Intention Alliance Central Hub:
+assistant: Now deleting the old one from Alygn Central Hub:
 assistant: Now updating my references:
 assistant: Done! ✅
 

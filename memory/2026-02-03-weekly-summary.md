@@ -1,7 +1,7 @@
 # 📊 Multi-Org Weekly Summary - Week of Jan 27 - Feb 3, 2026
 
 **Generated:** Tuesday, February 3rd, 2026 — 7:26 PM (America/Costa_Rica)  
-**Coverage:** ALYGN (Intention Alliance), BitcashOrg, AndlerRL Personal
+**Coverage:** ALYGN (Alygn), BitcashOrg, AndlerRL Personal
 
 ---
 
@@ -17,7 +17,7 @@
 
 ---
 
-## 🚀 ALYGN (Intention Alliance)
+## 🚀 ALYGN (Alygn)
 
 ### Accomplishments
 

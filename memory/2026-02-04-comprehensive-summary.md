@@ -210,7 +210,7 @@ Phase 1 (TanStack Query) ← **BOTTLENECK** - unblocks all work
 
 ## 🔒 Security Context
 
-**Project:** Intentional Alliance / Bitcash  
+**Project:** Alygn / Bitcash  
 **NDA:** Active (signed Aug 19, 2025)  
 **Tone:** Professional (no quirky gnome personality for this project)  
 **Context isolation:** Strict - never mention other Andler projects

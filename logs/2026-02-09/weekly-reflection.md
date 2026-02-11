@@ -25,7 +25,7 @@
   ],
   "nextWeekFocus": [
     "Refine automation workflows",
-    "Complete pending Intention Alliance tasks",
+    "Complete pending Alygn tasks",
     "Increase collaboration with Jacobo"
   ]
 }
