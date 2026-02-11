@@ -96,7 +96,38 @@ scripts/alygn/
 
 ---
 
-## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-07
+## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-11
+
+### Twitter Discovery System (NEW) - Phase 1 Complete ✅
+
+**Architecture:** Hybrid browser discovery + X API execution
+
+**3-Phase Workflow:**
+1. **Phase 1: Browser Discovery** ✅ COMPLETE (`browser-explore.js`)
+   - Navigate /explore with alygn profile (browser relay)
+   - Scroll feed, extract posts (IDs, authors, content, engagement)
+   - Keyword extraction (AI safety, alignment, AGI)
+   - Output: `discovery-{timestamp}.json`
+2. **Phase 2: Decision Engine** ⏳ TODO (`decision-engine.js`)
+   - Load discoveries → Grok evaluation ("Is this worth engaging?")
+   - Web search for author credibility
+   - Output: `workflow-{timestamp}.json` (replies/quotes/profiles)
+3. **Phase 3: X API Execution** ⏳ TODO (`x-api-executor.js`)
+   - Execute via X API: reply/quote/poll/media
+   - Track results → WhatsApp notification
+
+**Why This Approach?**
+- Browser relay: Natural content discovery (algorithm feed, trending topics)
+- X API: Programmable execution (faster, more reliable than browser automation)
+- Decision layer: Grok + web search = intelligent engagement (not just keyword matching)
+
+**Location:** `scripts/alygn/twitter-discovery/`  
+**Status:** Phase 1 tested with mock data, ready for browser integration  
+**Next:** Build Phase 2 (Grok evaluation + web search)
+
+---
+
+## 🐦 Twitter Automation (ALYGN) - Legacy System
 
 ### Architecture
 
