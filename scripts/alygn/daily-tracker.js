@@ -48,31 +48,26 @@ async function checkGithubActivity() {
   for (const repo of ALYGN_REPOS) {
     console.log(`\n🔍 Checking ${repo}...`);
 
-    const activity = getRepoActivity(repo);
-    const activityCount = activity.commits.length + activity.prs.length + activity.issues.length;
-    totalCommits += activity.commits.length;
-    totalPRs += activity.prs.length;
-    totalIssues += activity.issues.length;
-    commitsByRepo[repo] = activity.commits.length;
+    // Check commits in last 24h
+    const commitsOutput = exec(`gh api repos/${repo}/commits?since=$(date -d '24 hours ago' -Iseconds) --jq 'length' 2>/dev/null`);
+    const commits = commitsOutput ? parseInt(commitsOutput.trim()) || 0 : 0;
+    
+    // Check PRs updated in last 24h
+    const prsOutput = exec(`gh api repos/${repo}/pulls?state=all\\&sort=updated\\&direction=desc --jq '[.[] | select(.updated_at > (now - 86400 | todate))] | length' 2>/dev/null`);
+    const prs = prsOutput ? parseInt(prsOutput.trim()) || 0 : 0;
+    
+    // Check issues updated in last 24h
+    const issuesOutput = exec(`gh api repos/${repo}/issues?state=all\\&sort=updated\\&direction=desc --jq '[.[] | select(.updated_at > (now - 86400 | todate))] | length' 2>/dev/null`);
+    const issues = issuesOutput ? parseInt(issuesOutput.trim()) || 0 : 0;
+    
+    const activityCount = commits + prs + issues;
+    totalCommits += commits;
+    totalPRs += prs;
+    totalIssues += issues;
+    commitsByRepo[repo] = commits;
     
     if (activityCount > 0) {
-      digest.push(`\n### ${repo}\n`);
-
-      if (activity.commits.length > 0) {
-        digest.push(`**Commits (${activity.commits.length}):**\n`);
-        activity.commits.forEach(c => digest.push(`- ${c}\n`));
-      }
-
-      if (activity.prs.length > 0) {
-        digest.push(`\n**Pull Requests (${activity.prs.length}):**\n`);
-        activity.prs.forEach(pr => digest.push(`- ${pr}\n`));
-      }
-
-      if (activity.issues.length > 0) {
-        digest.push(`\n**Issues (${activity.issues.length}):**\n`);
-        activity.issues.forEach(issue => digest.push(`- ${issue}\n`));
-      }
-
+      digest.push(`  - ${repo.split('/')[1]}: ${commits} commits, ${prs} PRs, ${issues} issues`);
       console.log(`  ✅ ${activityCount} activities found`);
     } else {
       console.log(`  ⚪ No activity in last 24h`);
