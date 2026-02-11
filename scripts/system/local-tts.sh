@@ -38,27 +38,29 @@ echo "🎙️  Generating speech with Piper..." >&2
 echo "$TEXT" | piper --model "$PIPER_MODEL" --output_file "$TMP_WAV" 2>&1 | grep -v "^$" || true
 
 # Apply audio processing based on profile
+# WOBBLUS GNOME VOICE: Key is +20% pitch shift + faster tempo for nasal gnome quality
 case "$PROFILE" in
   fast)
-    # Minimal processing, 16kHz, Opus for WhatsApp
+    # Fast gnome profile: +20% pitch, 1.35x speed, 16kHz Opus
+    # Mimics: Antoni + 20% pitch (ElevenLabs equivalent)
     ffmpeg -i "$TMP_WAV" \
-      -af "highpass=f=80" \
+      -af "atempo=1.35,asetrate=44100*1.2,aresample=16000,atempo=1/1.2,highpass=f=80" \
       -c:a libopus -b:a 64k -ar 16000 -ac 1 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;
   
   balanced)
-    # Enhanced EQ, 24kHz, Opus
+    # Balanced gnome: +20% pitch, 1.35x speed, enhanced EQ, 24kHz
     ffmpeg -i "$TMP_WAV" \
-      -af "highpass=f=80,equalizer=f=2500:t=h:w=1000:g=2,equalizer=f=4000:t=h:w=1500:g=1.5" \
+      -af "atempo=1.35,asetrate=44100*1.2,aresample=24000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=2.5,equalizer=f=4000:t=h:w=1500:g=1.5" \
       -c:a libopus -b:a 96k -ar 24000 -ac 1 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;
   
   high-quality)
-    # Full processing, 48kHz, Vorbis OGG
+    # High-quality gnome: +20% pitch, 1.35x speed, full processing, 48kHz
     ffmpeg -i "$TMP_WAV" \
-      -af "highpass=f=80,equalizer=f=2500:t=h:w=1000:g=3,equalizer=f=4000:t=h:w=1500:g=2,acompressor=threshold=-18dB:ratio=2.5:attack=5:release=50" \
+      -af "atempo=1.35,asetrate=44100*1.2,aresample=48000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=3,equalizer=f=4000:t=h:w=1500:g=2,acompressor=threshold=-18dB:ratio=2.5:attack=5:release=50" \
       -c:a libvorbis -q:a 6 -ar 48000 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;
