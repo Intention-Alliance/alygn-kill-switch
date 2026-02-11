@@ -294,24 +294,6 @@ curl -X PATCH "https://api.notion.com/v1/blocks/{page_id}/children" \
 
 ---
 
-## Project Name Mapping
-
-**Alygn = Intention Alliance (External Docs)**
-
-In our workspace, we use **"Alygn"** consistently. However, in external documentation (Notion, GitHub repos), the project is still referenced as **"Intention Alliance"** or **"Intentional Alliance"**.
-
-**Why?**
-- Notion pages and GitHub repos cannot be easily renamed
-- External teams may still know it as "Intention Alliance"
-- We maintain the equivalence: `Alygn ≡ Intention Alliance`
-
-**When referencing external docs:**
-- Notion: "Intention Alliance - Central Hub" → refers to Alygn
-- GitHub: `intention-alliance/*` repos → refers to Alygn
-- Our workspace: Always use "Alygn" for consistency
-
----
-
 ## Usage Notes
 
 **Audio workflows:**

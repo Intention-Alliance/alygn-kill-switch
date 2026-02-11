@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 
 /**
- * ALYGN Twitter Master Automation
+ * ALYGN Twitter Master Automation - Governance-First (v2)
  * 
  * Combines two workflows:
- * 1. Content Generation (twitter-automation.js) - original posts/threads
+ * 1. Pre-Approved Posts (one per day, sequential) - institutional content
  * 2. Discovery System (twitter-discovery/) - reactive engagement
  * 
  * Daily Execution:
- * - Generate original content via Grok
- * - Discover AI safety posts via search
- * - Evaluate & engage with community
+ * - Post next pre-approved institutional content
+ * - Discover governance-relevant posts via search
+ * - Evaluate & engage with governance perspective
  * - Post via X API
  * 
- * Target: 5 original posts + 2-5 reactive engagements per day
+ * Updated: Feb 10, 2026 (Governance-First Context Update)
+ * Target: 1 pre-approved post + 2-5 reactive engagements per day
  */
 
 import { execSync } from 'child_process';
@@ -45,75 +46,55 @@ function exec(cmd, cwd = WORKSPACE) {
 }
 
 /**
- * Phase 1: Original Content Generation (Existing System)
+ * Phase 1: Pre-Approved Post (Governance-First Content)
  */
-async function runContentGeneration() {
-  section('PHASE 1: CONTENT GENERATION (Twitter Automation v4)');
+async function runPreApprovedPost() {
+  section('PHASE 1: PRE-APPROVED POST (Governance-First Content)');
   
   try {
-    log('🎨 Generating original posts via Grok...');
+    log('📝 Posting next pre-approved institutional content...');
     
-    // Run twitter-automation.js (generates workflow JSON)
-    exec('node scripts/alygn/x-twitter/twitter-automation.js');
+    // Run post-pre-approved.js (posts next sequential post)
+    exec('node scripts/alygn/post-pre-approved.js');
     
-    success('Content generation complete!');
+    success('Pre-approved post complete!');
     return true;
   } catch (err) {
-    error('Content generation failed:', err.message);
+    error('Pre-approved post failed:', err.message);
+    console.log('\n⚠️  This is non-fatal. Continuing with discovery system...');
     return false;
   }
 }
 
 /**
- * Phase 2: Discovery System (New System)
+ * Phase 2: Discovery System (Reactive Engagement)
  */
 async function runDiscovery() {
   section('PHASE 2: DISCOVERY SYSTEM (Reactive Engagement)');
   
   try {
     // Step 2.1: Browser Discovery
-    log('🔍 Phase 2.1: Browser Discovery (search AI safety keywords)...');
+    log('🔍 Phase 2.1: Browser Discovery (search governance keywords)...');
     
     // This will be called by OpenClaw agent with browser access
     log('⚠️  Note: Browser discovery requires OpenClaw agent execution');
-    log('   Expected: Search "AGI alignment", "AI safety", "existential risk"');
+    log('   Expected: Search "AI governance", "coordination", "institutional AI"');
     log('   Output: discovery-{timestamp}.json\n');
     
-    // Step 2.2: Decision Engine
-    log('🧠 Phase 2.2: Decision Engine (Grok evaluation)...');
+    // Step 2.2: Decision Engine (Governance-First)
+    log('🧠 Phase 2.2: Decision Engine (Grok evaluation with governance lens)...');
     exec('node scripts/alygn/twitter-discovery/decision-engine.js');
     success('Decision engine complete!');
     
     // Step 2.3: X API Execution
-    log('⚡ Phase 2.3: X API Execution (post quotes/replies)...');
+    log('⚡ Phase 2.3: X API Execution (post institutional replies/quotes)...');
     exec('node scripts/alygn/twitter-discovery/x-api-executor.js');
     success('Discovery system complete!');
     
     return true;
   } catch (err) {
     error('Discovery system failed:', err.message);
-    return false;
-  }
-}
-
-/**
- * Phase 3: Browser Posting (Existing System)
- */
-async function runBrowserPosting() {
-  section('PHASE 3: BROWSER POSTING (Original Content)');
-  
-  try {
-    log('🐦 Posting original content via browser relay (alygn profile)...');
-    
-    // This will be called by OpenClaw agent with browser access
-    log('⚠️  Note: Browser posting requires OpenClaw agent execution');
-    log('   Expected: Post threads via compose dialog, replies via target URLs');
-    log('   Browser profile: alygn (authenticated X.com session)\n');
-    
-    success('Browser posting queued!');
-    return true;
-  } catch (err) {
-    error('Browser posting failed:', err.message);
+    console.log('\n⚠️  This is non-fatal. Continuing...');
     return false;
   }
 }
@@ -125,17 +106,18 @@ function generateSummary(results) {
   section('EXECUTION SUMMARY');
   
   console.log('📊 Results:');
-  console.log(`  Content Generation: ${results.contentGen ? '✅' : '❌'}`);
+  console.log(`  Pre-Approved Post: ${results.preApprovedPost ? '✅' : '❌'}`);
   console.log(`  Discovery System: ${results.discovery ? '✅' : '❌'}`);
-  console.log(`  Browser Posting: ${results.browserPost ? '✅' : '❌'}`);
   
-  const totalSuccess = [results.contentGen, results.discovery, results.browserPost].filter(Boolean).length;
-  console.log(`\n  Overall: ${totalSuccess}/3 phases successful`);
+  const totalSuccess = [results.preApprovedPost, results.discovery].filter(Boolean).length;
+  console.log(`\n  Overall: ${totalSuccess}/2 phases successful`);
   
-  if (totalSuccess === 3) {
+  if (totalSuccess === 2) {
     success('\n🎉 ALL PHASES COMPLETE! Twitter automation successful.');
+  } else if (totalSuccess === 1) {
+    console.log('\n⚠️  Partial success. Check logs above for details.');
   } else {
-    error(`\n⚠️  ${3 - totalSuccess} phase(s) failed. Check logs above.`);
+    error('\n❌ Both phases failed. Check logs above.');
   }
 }
 
@@ -143,35 +125,28 @@ function generateSummary(results) {
  * Main Execution
  */
 async function main() {
-  console.log('🐦 ALYGN Twitter Master Automation');
-  console.log('   Original Content + Discovery System');
+  console.log('🐦 ALYGN Twitter Master Automation (Governance-First v2)');
+  console.log('   Pre-Approved Posts + Discovery System');
   console.log('');
   
   const results = {
-    contentGen: false,
-    discovery: false,
-    browserPost: false
+    preApprovedPost: false,
+    discovery: false
   };
   
-  // Phase 1: Content Generation
-  results.contentGen = await runContentGeneration();
+  // Phase 1: Pre-Approved Post (Governance-First)
+  results.preApprovedPost = await runPreApprovedPost();
   
-  // Phase 2: Discovery System
+  // Phase 2: Discovery System (Reactive Engagement)
   results.discovery = await runDiscovery();
-  
-  // Phase 3: Browser Posting (depends on Phase 1)
-  if (results.contentGen) {
-    results.browserPost = await runBrowserPosting();
-  } else {
-    error('⏭️  Skipping browser posting (content generation failed)');
-  }
   
   // Summary
   generateSummary(results);
   
   // Exit with proper code
-  const allSuccess = Object.values(results).every(Boolean);
-  process.exit(allSuccess ? 0 : 1);
+  // Note: Partial success is acceptable (at least one phase succeeded)
+  const anySuccess = Object.values(results).some(Boolean);
+  process.exit(anySuccess ? 0 : 1);
 }
 
 // Run if called directly
@@ -182,4 +157,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   });
 }
 
-export { main, runContentGeneration, runDiscovery, runBrowserPosting };
+export { main, runPreApprovedPost, runDiscovery };

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-ALYGN VC Outreach Email Template v3
-- Custom header with logo + wordmark side-by-side
-- Tania Lea as CEO contact
-- Personalization support (company, pain points)
-- Website: alygn.us
+ALYGN VC Outreach Email Template v4 - Governance-First
+- Independent AI governance institution positioning
+- Institutional restraint and neutral tone
+- No product claims, no hype
+- Focus: coordination, legitimacy, preparedness
+- Updated: Feb 10, 2026 (context update)
 """
 
 import json
@@ -45,47 +46,47 @@ class ALYGNEmailBuilder:
         company_mention = f' at {company_name}' if company_name else ''
         pain_point_text = ''
         if pain_points:
-            pain_point_text = f'<p class="body-text">We\'ve been following your work in {pain_points}—the challenges you\'re tackling are exactly where governance infrastructure needs to evolve.</p>'
+            pain_point_text = f'<p class="body-text">Your work in {pain_points} represents exactly the kind of institutional challenge where coordination infrastructure matters most.</p>'
         
         # Copy variants based on audience/focus
         variants = {
             'governance': {
-                'subject': 'Building AGI Resilience: The SOS Protocol',
-                'headline': 'The Question Isn\'t If AGI Arrives—It\'s Who Coordinates the Response',
-                'subheadline': 'Global Crisis Infrastructure for the Intelligence Age',
-                'intro': '''At Alygn, we're not betting on preventing AGI. We're building the governance infrastructure that ensures humanity navigates it with coordination, transparency, and safety.
+                'subject': 'AI Governance Infrastructure',
+                'headline': 'Coordination Before Crisis',
+                'subheadline': 'Independent AI Governance for Global-Scale Systems',
+                'intro': '''Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.
 
-The SOS Protocol is our answer: a global crisis coordination framework designed specifically for AGI-related existential risks—not in 2050, but starting now.''',
+As AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.''',
                 'body': '''<p style="margin: 16px 0; line-height: 1.6;"><strong>Why This Matters:</strong></p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  <li><strong>SOS Protocol</strong> — Real-time coordination for critical scenarios. When AGI decisions need alignment across governments, enterprises, and researchers, you need a system that works.</li>
-  <li><strong>Judica (Lexi Veritas)</strong> — AI-powered dispute resolution. When superintelligent systems conflict, traditional arbitration fails. We're building systems that can actually adjudicate at that scale.</li>
-  <li><strong>Intention Marketplace</strong> — Economic alignment through ethical, user-empowered systems. Align incentives now, before the stakes get existential.</li>
-  <li><strong>Dual-Token Economy</strong> — IAX (Bitcoin-pegged stability) + Align (utility-driven, non-speculative). Economic infrastructure that scales with governance complexity.</li>
+  <li><strong>Governance legitimacy, not technology.</strong> The hardest AI risks are institutional, not technical. Coordination failure is the real systemic risk.</li>
+  <li><strong>Pre-crisis preparation.</strong> Emergency response that doesn't exist before crisis rarely works during one. Institutions are slow to build and expensive to replace.</li>
+  <li><strong>Institutional restraint.</strong> We enable accountability through neutral infrastructure—not by regulating, controlling, or claiming authority over systems.</li>
+  <li><strong>Independence matters.</strong> Oversight only works if all sides believe it's fair. Trust is harder to scale than technology.</li>
 </ul>
-<p style="margin: 16px 0; line-height: 1.6;">We're already working with organizations building the next generation of AI systems. The ones building now won't wait for perfect frameworks—they'll use ours.</p>''',
-                'cta': 'Explore the SOS Protocol',
-                'closing': 'We\'re excited to discuss how your organization can be part of this.',
+<p style="margin: 16px 0; line-height: 1.6;">Alygn is publicly forming to address the institutional gap in AI governance before urgency removes options. We're building for legitimacy and durability, not speed or visibility.</p>''',
+                'cta': 'Learn more about Alygn',
+                'closing': 'We\'re interested in exploring how governance infrastructure can support your organization\'s work.',
                 'ps': 'This outreach was researched and drafted by our AI agent—because we practice what we preach.'
             },
             
-            'technical': {
-                'subject': 'AGI Governance Architecture: SOS Protocol Deep Dive',
-                'headline': 'Existential Risk Management at Scale',
-                'subheadline': 'The Infrastructure Layer for Global AGI Coordination',
-                'intro': '''Superintelligent systems demand superintelligent governance. Traditional dispute resolution, regulatory frameworks, and coordination mechanisms break down when dealing with AGI-scale complexity and risk.
+            'institutional': {
+                'subject': 'Institutional AI Governance',
+                'headline': 'The Real AI Risk is Coordination Failure',
+                'subheadline': 'Neutral Governance Infrastructure for Advanced Systems',
+                'intro': '''When AI systems scale beyond individual control, coordination becomes the bottleneck. Traditional oversight breaks down when no single actor can credibly intervene alone.
 
-We've built the SOS Protocol as the governance substrate for that future—and it works today.''',
-                'body': '''<p style="margin: 16px 0; line-height: 1.6;"><strong>Our Architecture:</strong></p>
+Alygn is an independent institution focused on making accountability, emergency response, and cross-organization coordination actually work—before crisis conditions force fragmented outcomes.''',
+                'body': '''<p style="margin: 16px 0; line-height: 1.6;"><strong>Core Principles:</strong></p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  <li><strong>Confidence-Aware Crisis Response</strong> — SOS Protocol treats uncertainty quantification as first-class. When coordinating global responses, you need systems that know what they don't know.</li>
-  <li><strong>Multi-Stakeholder Alignment</strong> — Judica resolves conflicts between AI systems, enterprises, and governance structures through cryptographically verifiable arbitration.</li>
-  <li><strong>Economic Incentive Alignment</strong> — Dual tokens ensure that safety participation, dispute resolution, and coordination carry non-speculative utility value.</li>
-  <li><strong>Composable Governance</strong> — Modular protocols that work at every scale—from individual system interactions to global coordination events.</li>
+  <li><strong>Governance-first, not technology-first.</strong> Our value proposition is legitimacy, not technical systems. Any infrastructure exists only in service of coordination.</li>
+  <li><strong>Separation of concerns.</strong> Clear boundaries between governance, oversight, and system operation. We support coordination—we don't control systems.</li>
+  <li><strong>Independent review.</strong> Neutral frameworks are easier to challenge but harder to dismiss. Independence is insulation from capture.</li>
+  <li><strong>Emergency coordination without standing control.</strong> Preparedness is about permission, not prediction. Crisis frameworks designed during crisis reflect panic, not judgment.</li>
 </ul>
-<p style="margin: 16px 0; line-height: 1.6;">This isn\'t theoretical. We're building production systems today that handle the coordination problems most teams haven't even recognized yet.</p>''',
-                'cta': 'Let\'s discuss AGI governance',
-                'closing': 'Looking forward to exploring this with your team.',
+<p style="margin: 16px 0; line-height: 1.6;">The absence of trusted coordination mechanisms is itself a systemic risk. We're addressing this gap deliberately, with institutional restraint rather than claims of authority.</p>''',
+                'cta': 'Discuss institutional coordination',
+                'closing': 'Looking forward to exploring this with you.',
                 'ps': 'This outreach was researched and drafted by our AI agent—because we practice what we preach.'
             }
         }
@@ -304,7 +305,7 @@ We've built the SOS Protocol as the governance substrate for that future—and i
       <p style="margin: 0; font-size: 14px;">
         <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
         <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
-        <a href="https://linkedin.com/company/intentionalliance/posts/?feedView=all&utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
+        <a href="https://linkedin.com/company/alygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
       </p>
     </div>
   </div>
@@ -317,12 +318,12 @@ We've built the SOS Protocol as the governance substrate for that future—and i
         """Build pre-filled mailto: templates for different variants"""
         templates = {
             'governance': {
-                'subject': 'Re: Building AGI Resilience',
-                'body': 'Hi Tania,\n\nI\'m interested in learning more about the SOS Protocol and how it applies to our organization\'s AGI governance strategy.\n\nLet\'s schedule a time to discuss.\n\nBest regards'
+                'subject': 'Re: AI Governance Infrastructure',
+                'body': 'Hi Tania,\n\nI\'m interested in learning more about Alygn\'s approach to coordination infrastructure and how it applies to our work.\n\nLet\'s schedule a time to discuss.\n\nBest regards'
             },
-            'technical': {
-                'subject': 'Re: AGI Governance Architecture',
-                'body': 'Hi Tania,\n\nYour approach to confidence-aware crisis response and multi-stakeholder alignment resonates with our technical roadmap. I\'d like to dive deeper into the architecture.\n\nLooking forward to connecting.\n\nBest regards'
+            'institutional': {
+                'subject': 'Re: Institutional AI Governance',
+                'body': 'Hi Tania,\n\nYour approach to neutral governance infrastructure and emergency coordination resonates with our challenges. I\'d like to explore this further.\n\nLooking forward to connecting.\n\nBest regards'
             }
         }
         return templates.get(variant, templates['governance'])
@@ -378,11 +379,11 @@ We've built the SOS Protocol as the governance substrate for that future—and i
 def main():
     builder = ALYGNEmailBuilder()
     
-    print("🚀 Sending updated ALYGN VC outreach emails...\n")
+    print("🚀 Sending updated ALYGN VC outreach emails (Governance-First v4)...\n")
     
     # Governance variant
     builder.send_email(
-        'andler.dev@gmail.com',
+        'tanialeaidm@gmail.com',
         recipient_name='there',
         company_name='',
         pain_points='',
@@ -390,24 +391,23 @@ def main():
     )
     print()
     
-    # Technical variant
+    # Institutional variant
     builder.send_email(
-        'andler.dev@gmail.com',
+        'tanialeaidm@gmail.com',
         recipient_name='there',
         company_name='',
         pain_points='',
-        variant='technical'
+        variant='institutional'
     )
     
-    print("\n✅ Templates updated and sent!")
-    print("\nTemplate features:")
-    print("  • Dark header (#252525) with logo + wordmark side-by-side")
-    print("  • Logo 20% larger (77px)")
-    print("  • Tighter spacing between logo and wordmark")
-    print("  • Tania Lea as CEO (tanialeaidm@gmail.com)")
-    print("  • Team contact: contact@andler.dev (Andler)")
-    print("  • Website: alygn.us")
-    print("  • Supports personalization (recipient name, company, pain points)")
+    print("\n✅ Templates updated and sent (Governance-First v4)!")
+    print("\nKey changes from v3:")
+    print("  • Removed 'Intention Marketplace' reference")
+    print("  • Governance-first positioning (not SOS Protocol)")
+    print("  • Institutional restraint tone (calm, non-promotional)")
+    print("  • Language: 'Supports coordination', not 'Regulates'")
+    print("  • Focus: Legitimacy, preparedness, coordination")
+    print("  • LinkedIn URL kept (logo/banners updated)")
 
 if __name__ == '__main__':
     main()
