@@ -452,6 +452,209 @@ async function updateVCInNotion(pageId, researchData, markReady = true) {
 }
 
 /**
+ * Create individual VC page in Notion with research data as blocks
+ * Returns page ID for linking
+ */
+async function createVCPage(parentPageId, vc, researchData) {
+  console.log(`   📄 Creating VC page in Notion...\n`);
+
+  try {
+    const notion = new Client({ auth: CONFIG.notionKey });
+
+    // Create new page as child of parent
+    const page = await notion.pages.create({
+      parent: {
+        page_id: parentPageId
+      },
+      properties: {
+        title: [
+          {
+            text: {
+              content: vc.name
+            }
+          }
+        ]
+      }
+    });
+
+    const pageId = page.id;
+
+    // Add Summary block
+    if (researchData.summary) {
+      await notion.blocks.children.append({
+        block_id: pageId,
+        children: [
+          {
+            object: 'block',
+            type: 'heading_2',
+            heading_2: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: 'Summary' }
+                }
+              ]
+            }
+          },
+          {
+            object: 'block',
+            type: 'paragraph',
+            paragraph: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: researchData.summary }
+                }
+              ]
+            }
+          }
+        ]
+      });
+    }
+
+    // Add Investment Thesis block
+    if (researchData.thesis) {
+      await notion.blocks.children.append({
+        block_id: pageId,
+        children: [
+          {
+            object: 'block',
+            type: 'heading_2',
+            heading_2: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: 'Investment Thesis' }
+                }
+              ]
+            }
+          },
+          {
+            object: 'block',
+            type: 'paragraph',
+            paragraph: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: researchData.thesis }
+                }
+              ]
+            }
+          }
+        ]
+      });
+    }
+
+    // Add Focus Areas block
+    if (researchData.focusAreas && researchData.focusAreas.length > 0) {
+      await notion.blocks.children.append({
+        block_id: pageId,
+        children: [
+          {
+            object: 'block',
+            type: 'heading_2',
+            heading_2: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: 'Focus Areas' }
+                }
+              ]
+            }
+          },
+          {
+            object: 'block',
+            type: 'paragraph',
+            paragraph: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: researchData.focusAreas.join(', ') }
+                }
+              ]
+            }
+          }
+        ]
+      });
+    }
+
+    // Add Pain Points block
+    if (researchData.painPoints && researchData.painPoints.length > 0) {
+      const painPointsText = researchData.painPoints
+        .slice(0, 3)
+        .map(p => p.replace(/[;,]/g, ' '))
+        .join('\n');
+
+      await notion.blocks.children.append({
+        block_id: pageId,
+        children: [
+          {
+            object: 'block',
+            type: 'heading_2',
+            heading_2: {
+              rich_text: [
+                {
+                  type: 'text',
+                  text: { content: 'Governance Pain Points' }
+                }
+              ]
+            }
+          },
+          {
+            object: 'block',
+            type: 'bulleted_list_item',
+            bulleted_list_item: {
+              rich_text: painPointsText.split('\n').map(point => ({
+                type: 'text',
+                text: { content: point }
+              }))
+            }
+          }
+        ]
+      });
+    }
+
+    // Add Conversation Logs block (empty for now)
+    await notion.blocks.children.append({
+      block_id: pageId,
+      children: [
+        {
+          object: 'block',
+          type: 'heading_2',
+          heading_2: {
+            rich_text: [
+              {
+                type: 'text',
+                text: { content: 'Conversation Logs' }
+              }
+            ]
+          }
+        },
+        {
+          object: 'block',
+          type: 'paragraph',
+          paragraph: {
+            rich_text: [
+              {
+                type: 'text',
+                text: { content: 'Page created. Outreach and follow-ups will be logged here.' }
+              }
+            ]
+          }
+        }
+      ]
+    });
+
+    console.log(`   ✅ VC page created: https://notion.so/${pageId.replace(/-/g, '')}\n`);
+
+    return pageId;
+  } catch (error) {
+    console.error(`   ⚠️  Failed to create VC page: ${error.message}\n`);
+    return null;
+  }
+}
+
+/**
  * Send summary to Discord
  */
 async function sendDiscordSummary(summary) {
@@ -518,42 +721,59 @@ async function main() {
   });
   console.log('');
 
-  // Research each VC
-  for (const vc of vcs) {
-    try {
-      console.log('='.repeat(60));
-      console.log(`\n🔍 Processing: ${vc.name}\n`);
-      console.log(`   Current status: ${vc.status}\n`);
+  // Research VCs in parallel (optimized for scalability)
+  console.log('🔄 Starting parallel research (up to 3 simultaneous)...\n');
+  
+  const batchSize = 3;
+  for (let i = 0; i < vcs.length; i += batchSize) {
+    const batch = vcs.slice(i, i + batchSize);
+    const batchPromises = batch.map(async (vc) => {
+      try {
+        console.log('='.repeat(60));
+        console.log(`\n🔍 Processing: ${vc.name}\n`);
+        console.log(`   Current status: ${vc.status}\n`);
 
-      // Deep research
-      const researchData = await deepResearchVC(vc);
+        // Deep research
+        const researchData = await deepResearchVC(vc);
 
-      if (!researchData) {
-        stats.failed++;
-        continue;
-      }
-
-      stats.researched++;
-
-      // Update Notion (skip in dry run)
-      if (!dryRun) {
-        const updated = await updateVCInNotion(vc.pageId, researchData);
-        if (updated) {
-          stats.updated++;
-
-          // Check if ready for outreach
-          if (researchData.partnerEmails?.length > 0 && researchData.painPoints?.length > 0) {
-            stats.readyForOutreach++;
-          }
+        if (!researchData) {
+          stats.failed++;
+          return { success: false };
         }
-      } else {
-        console.log(`   [DRY RUN] Would update Notion with research data\n`);
-      }
 
-    } catch (error) {
-      console.error(`❌ Failed to process ${vc.name}: ${error.message}`);
-      stats.failed++;
-    }
+        stats.researched++;
+
+        // Update Notion (skip in dry run)
+        if (!dryRun) {
+          const updated = await updateVCInNotion(vc.pageId, researchData);
+          if (updated) {
+            stats.updated++;
+
+            // Check if ready for outreach
+            if (researchData.partnerEmails?.length > 0 && researchData.painPoints?.length > 0) {
+              stats.readyForOutreach++;
+              
+              // Create individual VC page for ready VCs
+              const vcPageId = await createVCPage(vc.pageId, vc, researchData);
+              if (vcPageId) {
+                console.log(`   📎 Linked VC page to database row\n`);
+              }
+            }
+          }
+        } else {
+          console.log(`   [DRY RUN] Would update Notion with research data\n`);
+        }
+
+        return { success: true };
+      } catch (error) {
+        console.error(`❌ Failed to process ${vc.name}: ${error.message}`);
+        stats.failed++;
+        return { success: false };
+      }
+    });
+
+    // Wait for batch to complete
+    await Promise.all(batchPromises);
   }
 
   // Generate summary

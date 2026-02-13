@@ -3,7 +3,7 @@
     "total_posts": 100,
     "source": "Alygn Pre-Approved Posts (Feb 2026)",
     "strategy": "One post per day, sequential order",
-    "last_updated": "2026-02-12T17:00:59.239Z"
+    "last_updated": "2026-02-13T17:10:11.202Z"
   },
   "posts": [
     {
@@ -30,9 +30,9 @@
     {
       "id": 4,
       "text": "Institutions matter most when systems outgrow individual actors.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-02-13T17:10:11.201Z",
+      "tweet_id": "2022357645995266517"
     },
     {
       "id": 5,
