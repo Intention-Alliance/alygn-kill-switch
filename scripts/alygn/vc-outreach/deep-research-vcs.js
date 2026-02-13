@@ -452,11 +452,12 @@ async function updateVCInNotion(pageId, researchData, markReady = true) {
 }
 
 /**
- * Create individual VC page in Notion with research data as blocks
+ * Create individual VC page in Notion with research data (OPTIMIZED)
+ * Uses single rich_text block for all content (faster than multiple blocks)
  * Returns page ID for linking
  */
 async function createVCPage(parentPageId, vc, researchData) {
-  console.log(`   📄 Creating VC page in Notion...\n`);
+  console.log(`   📄 Creating VC page in Notion (optimized)...\n`);
 
   try {
     const notion = new Client({ auth: CONFIG.notionKey });
@@ -479,157 +480,41 @@ async function createVCPage(parentPageId, vc, researchData) {
 
     const pageId = page.id;
 
-    // Add Summary block
+    // Build single rich_text block with all content (OPTIMIZED - 2 API calls instead of 6)
+    let content = '';
+
+    // Summary section
     if (researchData.summary) {
-      await notion.blocks.children.append({
-        block_id: pageId,
-        children: [
-          {
-            object: 'block',
-            type: 'heading_2',
-            heading_2: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: 'Summary' }
-                }
-              ]
-            }
-          },
-          {
-            object: 'block',
-            type: 'paragraph',
-            paragraph: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: researchData.summary }
-                }
-              ]
-            }
-          }
-        ]
-      });
+      content += `## Summary\n${researchData.summary}\n\n`;
     }
 
-    // Add Investment Thesis block
+    // Investment Thesis
     if (researchData.thesis) {
-      await notion.blocks.children.append({
-        block_id: pageId,
-        children: [
-          {
-            object: 'block',
-            type: 'heading_2',
-            heading_2: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: 'Investment Thesis' }
-                }
-              ]
-            }
-          },
-          {
-            object: 'block',
-            type: 'paragraph',
-            paragraph: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: researchData.thesis }
-                }
-              ]
-            }
-          }
-        ]
-      });
+      content += `## Investment Thesis\n${researchData.thesis}\n\n`;
     }
 
-    // Add Focus Areas block
+    // Focus Areas
     if (researchData.focusAreas && researchData.focusAreas.length > 0) {
-      await notion.blocks.children.append({
-        block_id: pageId,
-        children: [
-          {
-            object: 'block',
-            type: 'heading_2',
-            heading_2: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: 'Focus Areas' }
-                }
-              ]
-            }
-          },
-          {
-            object: 'block',
-            type: 'paragraph',
-            paragraph: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: researchData.focusAreas.join(', ') }
-                }
-              ]
-            }
-          }
-        ]
-      });
+      content += `## Focus Areas\n${researchData.focusAreas.join(', ')}\n\n`;
     }
 
-    // Add Pain Points block
+    // Pain Points
     if (researchData.painPoints && researchData.painPoints.length > 0) {
-      const painPointsText = researchData.painPoints
+      const painPoints = researchData.painPoints
         .slice(0, 3)
         .map(p => p.replace(/[;,]/g, ' '))
         .join('\n');
-
-      await notion.blocks.children.append({
-        block_id: pageId,
-        children: [
-          {
-            object: 'block',
-            type: 'heading_2',
-            heading_2: {
-              rich_text: [
-                {
-                  type: 'text',
-                  text: { content: 'Governance Pain Points' }
-                }
-              ]
-            }
-          },
-          {
-            object: 'block',
-            type: 'bulleted_list_item',
-            bulleted_list_item: {
-              rich_text: painPointsText.split('\n').map(point => ({
-                type: 'text',
-                text: { content: point }
-              }))
-            }
-          }
-        ]
-      });
+      content += `## Governance Pain Points\n${painPoints}\n\n`;
     }
 
-    // Add Conversation Logs block (empty for now)
+    // Conversation Logs section (empty for now, for future communications)
+    content += `## Conversation Logs\nPage created. Outreach communications will be logged here.`;
+
+    // Add single rich_text block with all content
+    // This is MUCH faster than adding 5+ individual blocks
     await notion.blocks.children.append({
       block_id: pageId,
       children: [
-        {
-          object: 'block',
-          type: 'heading_2',
-          heading_2: {
-            rich_text: [
-              {
-                type: 'text',
-                text: { content: 'Conversation Logs' }
-              }
-            ]
-          }
-        },
         {
           object: 'block',
           type: 'paragraph',
@@ -637,7 +522,9 @@ async function createVCPage(parentPageId, vc, researchData) {
             rich_text: [
               {
                 type: 'text',
-                text: { content: 'Page created. Outreach and follow-ups will be logged here.' }
+                text: {
+                  content: content.substring(0, 2000) // Notion paragraph limit
+                }
               }
             ]
           }
