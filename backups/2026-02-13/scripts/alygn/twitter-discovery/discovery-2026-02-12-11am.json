@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-02-12T11:00:00-06:00",
+  "searchQuery": "AGI alignment",
+  "posts": [
+    {
+      "id": "2021992193603354890",
+      "author": "@nicolay1407",
+      "authorName": "H. D. Nicolay",
+      "verified": true,
+      "content": "Sam Altman focuses on AI alignment—making sure AGI serves humanity. But that's only half the problem. What about human alignment? If humans aren't ready for freedom, they'll misuse abundance. Aligned AI + unaligned humans = disaster. The bottleneck isn't the technology. It's the",
+      "url": "https://x.com/nicolay1407/status/2021992193603354890",
+      "timestamp": "3 minutes ago",
+      "engagement": {
+        "replies": 0,
+        "retweets": 0,
+        "likes": 0,
+        "views": 3
+      },
+      "hasMedia": true,
+      "keywords": ["AI alignment", "AGI", "human alignment", "Sam Altman"]
+    },
+    {
+      "id": "2021992709553029312",
+      "author": "@pwlot",
+      "authorName": "Pawel Pachniewski",
+      "verified": true,
+      "content": "Some skeptics will insists we absolutely have no general ability in these models, no \"real\" intelligence, and nothing about even today's best models could ever in the past be mistaken for AGI... denial is not just a river in Egypt. And I *do* think we are not at AGI, nor do I",
+      "url": "https://x.com/pwlot/status/2021992709553029312",
+      "timestamp": "1 minute ago",
+      "engagement": {
+        "replies": 1,
+        "retweets": 0,
+        "likes": 0,
+        "views": 2
+      },
+      "hasMedia": true,
+      "keywords": ["AGI", "general intelligence", "skepticism"]
+    },
+    {
+      "id": "2021992592817443081",
+      "author": "@noxflux",
+      "authorName": "Nox|",
+      "verified": true,
+      "content": "The ARC-AGI-2 benchmark measures AI's ability to reason and abstract on novel tasks, a key indicator of progress toward general intelligence $GOOGL",
+      "url": "https://x.com/noxflux/status/2021992592817443081",
+      "timestamp": "2 minutes ago",
+      "engagement": {
+        "replies": 0,
+        "retweets": 0,
+        "likes": 0,
+        "views": 20
+      },
+      "hasMedia": true,
+      "keywords": ["ARC-AGI-2", "benchmark", "general intelligence", "reasoning"]
+    }
+  ],
+  "profiles": [
+    {
+      "handle": "@bioshok3",
+      "name": "bioshok（INFJ）",
+      "verified": true,
+      "bio": "AI Safety/Governance/Alignment/National security/Singularity/Superintelligence/AGI/X-Risk/prediction",
+      "url": "https://x.com/bioshok3",
+      "relevance": "high"
+    },
+    {
+      "handle": "@nabla_theta",
+      "name": "Leo Gao",
+      "verified": true,
+      "bio": "working on AGI alignment. prev: GPT-Neo, the Pile, LM evals, RL overoptimization, scaling SAEs to GPT-4, interp via circuit sparsity. EleutherAI cofounder.",
+      "url": "https://x.com/nabla_theta",
+      "relevance": "high"
+    }
+  ]
+}

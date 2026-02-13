@@ -1,0 +1,710 @@
+{
+  "meta": {
+    "total_posts": 100,
+    "source": "Alygn Pre-Approved Posts (Feb 2026)",
+    "strategy": "One post per day, sequential order",
+    "last_updated": "2026-02-12T17:00:59.239Z"
+  },
+  "posts": [
+    {
+      "id": 1,
+      "text": "Legitimacy is infrastructure.",
+      "posted": true,
+      "date_posted": "2026-02-11T17:09:00.628Z",
+      "tweet_id": "2021632574263538154"
+    },
+    {
+      "id": 2,
+      "text": "Governance can't be retrofitted at frontier scale.",
+      "posted": true,
+      "date_posted": "2026-02-11T17:16:13.391Z",
+      "tweet_id": "2021634389319233557"
+    },
+    {
+      "id": 3,
+      "text": "Coordination failure is the real systemic AI risk.",
+      "posted": true,
+      "date_posted": "2026-02-12T17:00:59.238Z",
+      "tweet_id": "2021992942970298607"
+    },
+    {
+      "id": 4,
+      "text": "Institutions matter most when systems outgrow individual actors.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 5,
+      "text": "Emergency response that doesn't exist before crisis rarely works during one.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 6,
+      "text": "Trust is harder to scale than technology.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 7,
+      "text": "Neutrality is a feature, not a compromise.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 8,
+      "text": "Self-governance scales until incentives diverge.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 9,
+      "text": "The hardest AI risks are institutional, not technical.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 10,
+      "text": "Authority imposed after crisis is rarely trusted.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 11,
+      "text": "Most AI debates focus on models. The harder problem is coordination between actors who don't trust each other.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 12,
+      "text": "Regulation is often treated as governance. It's what happens when governance fails.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 13,
+      "text": "Speed matters in technology. Restraint matters in institutions.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 14,
+      "text": "AI safety isn't only about preventing failure, it's about managing response when failure occurs.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 15,
+      "text": "Fragmentation is more dangerous than centralization when coordination is required.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 16,
+      "text": "Oversight without legitimacy doesn't scale.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 17,
+      "text": "Crisis governance is usually more expensive than pre-built governance.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 18,
+      "text": "Technical alignment without institutional alignment breaks under pressure.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 19,
+      "text": "Policy debates move faster than institutions can absorb them.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 20,
+      "text": "Governance problems don't announce themselves until they're urgent.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 21,
+      "text": "Coordination mechanisms have to exist before they're needed.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 22,
+      "text": "The costliest failures are often those no single actor is responsible for.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 23,
+      "text": "Independent review only works when independence is credible.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 24,
+      "text": "Institutions fail quietly before they fail publicly.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 25,
+      "text": "Systems rarely collapse from a single error, they collapse from unmanaged interfaces.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 26,
+      "text": "Accountability requires structure, not just intent.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 27,
+      "text": "Emergency response is a systems problem, not a permissions problem.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 28,
+      "text": "Governance without auditability becomes symbolic.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 29,
+      "text": "Complexity doesn't remove responsibility, it redistributes it.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 30,
+      "text": "Durable institutions are designed for stress, not optimism.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 31,
+      "text": "Neutral governance is hardest where stakes are highest.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 32,
+      "text": "Legitimacy can't be declared, it has to be earned repeatedly.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 33,
+      "text": "Oversight only works if all sides believe it's fair.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 34,
+      "text": "Institutions lose credibility faster than they gain it.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 35,
+      "text": "Independence isn't isolation, it's insulation from capture.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 36,
+      "text": "The appearance of neutrality matters almost as much as neutrality itself.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 37,
+      "text": "Trust erodes faster than regulation can respond.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 38,
+      "text": "Governance that favors one actor eventually loses all actors.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 39,
+      "text": "Transparency without context often creates more confusion.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 40,
+      "text": "Institutional design is as important as institutional intent.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 41,
+      "text": "Alygn is publicly forming as an independent AI governance institution.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 42,
+      "text": "Early work at Alygn is focused on institutional design, not products.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 43,
+      "text": "The goal is coordination under pressure, not control.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 44,
+      "text": "Alygn is governance-first, not technology-first.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 45,
+      "text": "Accountability scales only when institutions do.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 46,
+      "text": "Neutral governance is most valuable when incentives diverge.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 47,
+      "text": "The absence of coordination is itself a risk factor.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 48,
+      "text": "Preparing for crisis is different from predicting it.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 49,
+      "text": "Institutions are slow to build, and expensive to replace.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 50,
+      "text": "Legitimacy is easiest to test when it's already needed.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 51,
+      "text": "Advanced systems don't fail because no one cares. They fail because responsibility becomes diffuse, incentives misalign, and no single actor can credibly intervene alone.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 52,
+      "text": "Governance isn't about preventing every failure. It's about making sure failure doesn't cascade unchecked when it inevitably happens.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 53,
+      "text": "The moment coordination becomes necessary is usually the moment it's already too late to design it well.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 54,
+      "text": "Institutions are rarely judged by how they operate in calm conditions. They're judged by how they behave when pressure removes optionality.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 55,
+      "text": "Trust at scale doesn't emerge from goodwill. It emerges from structures that hold even when goodwill erodes.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 56,
+      "text": "Centralization and fragmentation are often framed as opposites. In practice, both can fail the same way: by eroding legitimacy when stakes are high.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 57,
+      "text": "Oversight is often treated as a technical function. In reality, it's a social agreement that has to survive disagreement.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 58,
+      "text": "Emergency response is frequently discussed as a capability. It's better understood as a pre-existing relationship between actors who already trust the process.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 59,
+      "text": "AI governance debates often assume rational coordination. History suggests coordination usually breaks first.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 60,
+      "text": "The absence of a shared response framework is itself a form of systemic risk.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 61,
+      "text": "Most large-scale failures aren't caused by a lack of rules. They're caused by uncertainty over who is expected to act when rules collide.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 62,
+      "text": "When multiple actors share responsibility, responsibility often quietly disappears.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 63,
+      "text": "Complex systems don't collapse because no one warned about risk. They collapse because warnings don't map cleanly to authority.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 64,
+      "text": "Interfaces between systems fail long before systems themselves do.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 65,
+      "text": "Governance gaps tend to show up first at the boundaries — between organizations, jurisdictions, or incentives.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 66,
+      "text": "Legitimacy isn't binary. It degrades gradually, then suddenly becomes decisive.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 67,
+      "text": "Institutions that rely on trust without structure often discover too late that trust isn't transferable.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 68,
+      "text": "Independence isn't just about separation. It's about being trusted by parties who disagree with each other.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 69,
+      "text": "Oversight mechanisms that favor speed over credibility often lose both.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 70,
+      "text": "Institutional neutrality is hardest to maintain when outcomes matter most.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 71,
+      "text": "Coordination failures rarely come from bad actors. They come from rational actors responding to incompatible incentives.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 72,
+      "text": "Shared risk doesn't automatically create shared action.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 73,
+      "text": "Incentives align more slowly than technology scales.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 74,
+      "text": "The cost of coordination is usually underestimated because the cost of fragmentation is deferred.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 75,
+      "text": "When actors can't agree on intent, they must agree on process.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 76,
+      "text": "Crisis response frameworks designed during crisis tend to reflect panic, not judgment.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 77,
+      "text": "Preparedness isn't pessimism. It's an acknowledgment of how systems behave under stress.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 78,
+      "text": "The most valuable governance work often looks unnecessary, until it isn't.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 79,
+      "text": "Institutions that only activate during emergencies rarely function well during them.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 80,
+      "text": "Readiness is less about prediction and more about permission.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 81,
+      "text": "Institutions lose credibility fastest when they try to do too much.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 82,
+      "text": "Restraint is often mistaken for indecision. In governance, it's frequently the opposite.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 83,
+      "text": "Neutral frameworks are easier to challenge but harder to dismiss.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 84,
+      "text": "Governance that attempts to resolve disputes often becomes the dispute.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 85,
+      "text": "The most durable institutions define their limits early.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 86,
+      "text": "Governance discussions tend to accelerate right after systems outgrow existing norms.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 87,
+      "text": "Institutional debt accumulates quietly, then demands repayment during crisis.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 88,
+      "text": "The absence of a trusted forum forces disputes into less stable arenas.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 89,
+      "text": "Coordination problems rarely announce themselves as such.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 90,
+      "text": "Institutional fragility is usually visible only in hindsight.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 91,
+      "text": "Alygn exists to think seriously about coordination before urgency removes options.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 92,
+      "text": "The focus isn't on controlling systems, but on creating conditions where response is possible.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 93,
+      "text": "Alygn approaches governance as infrastructure, not intervention.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 94,
+      "text": "The goal is not to replace existing actors, but to reduce failure between them.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 95,
+      "text": "Governance-first design assumes disagreement, and plans accordingly.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 96,
+      "text": "Systems don't need perfect rules. They need credible processes when rules fail.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 97,
+      "text": "Accountability at scale is less about blame and more about continuity.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 98,
+      "text": "Coordination becomes visible only when it breaks.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 99,
+      "text": "Institutions earn trust slowly and spend it quickly.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    },
+    {
+      "id": 100,
+      "text": "The most important governance work is often the least visible.",
+      "posted": false,
+      "date_posted": null,
+      "tweet_id": null
+    }
+  ]
+}
