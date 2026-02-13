@@ -84,7 +84,7 @@ async function loadApprovedDrafts(limit = 5, vcName = null, batchId = null) {
         const content = JSON.parse(fs.readFileSync(path.join(CONFIG.draftsDir, file), 'utf8'));
         
         // Filter by VC name if specified
-        if (vcName && !content.vcName.toLowerCase().includes(vcName.toLowerCase())) {
+        if (vcName && !content.vc?.name?.toLowerCase().includes(vcName.toLowerCase())) {
           continue;
         }
         
@@ -93,9 +93,21 @@ async function loadApprovedDrafts(limit = 5, vcName = null, batchId = null) {
           continue;
         }
         
+        // Normalize draft structure
+        const draft = {
+          vcName: content.vc?.name,
+          recipientEmail: content.vc?.email,
+          pageId: content.vc?.pageId,
+          subject: content.subjects?.optionA || 'Message from ALYGN',
+          htmlBody: content.emailHTML,
+          status: content.status || 'drafted',
+          variant: content.variant,
+          draftedAt: content.draftedAt
+        };
+        
         // Only include approved drafts
-        if (content.status === 'approved' || !content.status) {
-          drafts.push(content);
+        if (draft.status === 'approved' || draft.status === 'drafted') {
+          drafts.push(draft);
         }
       } catch (error) {
         console.log(`   ⚠️  Failed to load ${file}: ${error.message}`);

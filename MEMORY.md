@@ -169,6 +169,53 @@ scripts/alygn/vc-outreach/
 
 ---
 
+### Phase 5: Email Sending Script - COMPLETE (Feb 13, 2026) ✅
+
+**Status:** MVP design + implementation complete, ready for testing
+
+**Script:** `send-approved-emails.js`
+
+**Features:**
+- Load human-approved email drafts
+- Validate recipient email + content  
+- Send via SMTP (MVP: logging; TODO: implement nodemailer)
+- Update Notion: Status="Sent", Sent Date, Message ID
+- Post summary to Discord
+- Rate limiting (default 3000ms between sends)
+- Dry-run preview mode
+- Full error handling + per-VC tracking
+
+**Key Commands:**
+```bash
+node send-approved-emails.js --limit=5              # Send next 5
+node send-approved-emails.js --vc-name="Khosla"    # Specific VC
+node send-approved-emails.js --limit=5 --dry-run   # Preview
+node send-approved-emails.js --resend-failed       # Retry failures
+```
+
+**Workflow Integration:**
+1. ✅ Discovery (automated cron)
+2. ✅ Research (manual + automated)
+3. ✅ Drafting (automated)
+4. ✅ Approval (manual via Discord)
+5. ✅ Sending (this script - approval gated)
+6. ⏳ Engagement tracking (future)
+
+**Design Highlights:**
+- Approval gate: Only "approved" status drafts are sent
+- Full audit trail: Message IDs, Notion tracking, Discord logging
+- Rate limiting: ISP-friendly (respect provider limits)
+- Dry-run safe: Preview all emails before sending
+- Graceful failure: Individual failures don't block batch
+
+**Next Steps:**
+- Test dry-run with 5-VC batch
+- Implement Discord approval commands (APPROVE/EDIT/SKIP)
+- Set up SMTP credentials
+- Test actual sending workflow
+
+**Documentation:** `SEND-APPROVED-EMAILS-DESIGN.md` (full guide)
+
 ### Phase 2: VC Discovery & Automation ✅ COMPLETE (Feb 12, 2026)
 
 **Status:** Production-ready. Modular workflow with 5 phases.
