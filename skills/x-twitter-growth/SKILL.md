@@ -2,7 +2,38 @@
 
 **Purpose:** Automated X/Twitter content creation, trend analysis, and strategic engagement for @aialygn  
 **Correlation:** Aligns all content with Alygn core mission (humanizing technology, intention monetization)  
-**Created:** 2026-02-10
+**Created:** 2026-02-10  
+**Updated:** 2026-02-11 (Added X API capabilities + format enforcement)
+
+---
+
+## 🔒 CRITICAL RULES (READ FIRST)
+
+### Mandatory Posting Format
+**EVERY tweet MUST end with:**
+```
+[Content]
+
+[1-3 hashtags]
+
+more at @aialygn
+```
+Applied automatically by `formatTweet()` in all posting scripts.
+
+### Architecture Separation
+- ❌ **Browser is NOT for posting** - ONLY for exploring/navigating
+- ✅ **Browser role:** Navigate /explore → Extract posts → workflow.json
+- ✅ **X API role:** Read workflow.json → Apply format → Post
+
+### X API Capabilities (100% Coverage)
+1. ✅ Post tweets (text + media)
+2. ✅ Mention users (@username)
+3. ✅ Reply to tweets (with media)
+4. ✅ Quote tweets (with media)
+5. ✅ Post with media (images/videos)
+6. ✅ Create polls (2-4 options)
+
+**Documentation:** See Phase 3 below for complete details.
 
 ---
 
@@ -64,27 +95,65 @@ browser --action=screenshot --profile=alygn --fullPage=false
 
 **Objective:** Post generated content via X API
 
-**Script:** `scripts/alygn/x-twitter/post-via-x-api.js`
+**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`
 
-**Features:**
-- Thread posting (automatic chain with replies)
-- Media attachment (images generated via Gemini)
-- Rate limit handling
-- Error recovery
+**✅ ALL SUPPORTED CAPABILITIES:**
+1. **Post tweets** - Regular text posts
+2. **Mention users** - @username anywhere (automatic)
+3. **Reply to tweets** - Reply by post ID
+4. **Quote tweets** - Quote with commentary
+5. **Post with media** - Images/videos (PNG, JPG, MP4, MOV)
+6. **Create polls** - 2-4 options, custom duration
+
+**🔒 MANDATORY FORMAT (ALL TWEETS):**
+```
+[Content]
+
+[1-3 hashtags: #AIGovernance #AIAlignment #AISafety]
+
+more at @aialygn
+```
+Applied automatically via `formatTweet()` function.
+
+**Approved hashtags:**
+- `#AIGovernance` (primary)
+- `#AIAlignment` (technical)
+- `#AISafety` (safety)
+- `#AGI`, `#AIPolicy`, `#AIEthics`, `#AIRisk` (contextual)
+
+**CRITICAL ARCHITECTURE:**
+- ❌ Browser is NOT for posting - ONLY for exploring/navigating
+- ✅ Browser: Navigate /explore → Extract data → workflow.json
+- ✅ X API: Read workflow.json → Apply format → Post
 
 **Usage:**
 ```bash
-# Post workflow JSON
-node scripts/alygn/x-twitter/post-via-x-api.js twitter-outputs/alygn/workflow-{timestamp}.json
+# Post from workflow JSON (recommended)
+node scripts/alygn/twitter-discovery/x-api-executor.js
 
-# Manual post
-node scripts/alygn/x-twitter/post-via-x-api.js --text "Thread content" --media "path/to/image.png"
+# Pre-approved posts (institutional messages)
+node scripts/alygn/post-pre-approved.js
+```
+
+**Workflow JSON structure:**
+```json
+{
+  "posts": [
+    {"content": "Tweet text", "mediaPath": "/path/img.png"},
+    {"content": "Quote text", "quoteTweetId": "123456789"},
+    {"content": "Poll question", "poll": {"options": ["A","B"], "duration_minutes": 1440}}
+  ],
+  "replies": [
+    {"content": "Reply text", "targetUrl": "https://x.com/user/status/123", "mediaPath": "/path/img.png"}
+  ]
+}
 ```
 
 **Output:**
-- Updates workflow JSON with tweet IDs
-- Logs to `twitter-outputs/alygn/`
-- Returns success/failure status
+- Posts via X API (OAuth 1.0a)
+- Format enforcement automatic
+- 5s delay between actions (rate limiting)
+- Returns tweet IDs + links
 
 ---
 

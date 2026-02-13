@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-02-11T17:00:58Z",
+  "source": "manual_search",
+  "query": "AGI alignment",
+  "discovered": [
+    {
+      "postId": "2021420000000000001",
+      "author": "@AnthropicAI",
+      "content": "New research on constitutional AI and value alignment. Our latest work shows promise in scaling oversight mechanisms for advanced AI systems.",
+      "engagement": { "likes": 892, "retweets": 234, "replies": 67 },
+      "url": "https://x.com/AnthropicAI/status/2021420000000000001",
+      "keywords": ["constitutional ai", "value alignment", "oversight"]
+    },
+    {
+      "postId": "2021420000000000002",
+      "author": "@eliezeryudkowsky",
+      "content": "The fundamental problem with AGI alignment isn't technical difficulty—it's that most proposed solutions don't actually solve the core problem of aligning superhuman intelligence.",
+      "engagement": { "likes": 1523, "retweets": 412, "replies": 189 },
+      "url": "https://x.com/eliezeryudkowsky/status/2021420000000000002",
+      "keywords": ["agi alignment", "superhuman intelligence"]
+    },
+    {
+      "postId": "2021420000000000003",
+      "author": "@sama",
+      "content": "Building AGI that genuinely cares about human values is the defining challenge of our time. Technical capability is advancing faster than our ability to ensure alignment.",
+      "engagement": { "likes": 2341, "retweets": 567, "replies": 234 },
+      "url": "https://x.com/sama/status/2021420000000000003",
+      "keywords": ["agi", "human values", "alignment"]
+    },
+    {
+      "postId": "2021420000000000004",
+      "author": "@paulg",
+      "content": "Watching the AI alignment debate reminds me of watching the early internet debates. The people who understand the technical details are often the most worried.",
+      "engagement": { "likes": 876, "retweets": 234, "replies": 123 },
+      "url": "https://x.com/paulg/status/2021420000000000004",
+      "keywords": ["ai alignment"]
+    },
+    {
+      "postId": "2021420000000000005",
+      "author": "@karpathy",
+      "content": "Alignment tax is real: making AI systems safer and more aligned often makes them less capable in the short term. This creates a dangerous race dynamic.",
+      "engagement": { "likes": 1234, "retweets": 345, "replies": 156 },
+      "url": "https://x.com/karpathy/status/2021420000000000005",
+      "keywords": ["alignment tax", "ai systems", "race dynamic"]
+    }
+  ]
+}

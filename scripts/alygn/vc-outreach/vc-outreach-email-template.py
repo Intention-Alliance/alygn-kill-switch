@@ -8,6 +8,7 @@ ALYGN VC Outreach Email Template v4 - Governance-First
 - Updated: Feb 10, 2026 (context update)
 """
 
+import base64
 import json
 import os
 import smtplib
@@ -20,8 +21,8 @@ from pathlib import Path
 class ALYGNEmailBuilder:
     def __init__(self):
         self.logo_path = Path.home() / 'Downloads' / 'avatar_400x400.jpg'
+        
         # Load SMTP credentials from config/credentials.json
-
         credentials_path = Path.home() / '.openclaw' / 'workspace' / 'config' / 'credentials.json'
         with open(credentials_path, 'r') as f:
             creds = json.load(f)
@@ -33,14 +34,34 @@ class ALYGNEmailBuilder:
             'password': email_creds['password']
         }
     
-    def build_html(self, recipient_name='there', company_name='', pain_points='', variant='governance'):
-        """Build HTML email template with personalization"""
+    def get_logo_base64(self):
+        """Convert logo to base64 for inline embedding"""
+        if not self.logo_path.exists():
+            print(f"⚠️ Logo not found at {self.logo_path}")
+            return None
+        
+        with open(self.logo_path, 'rb') as f:
+            return base64.b64encode(f.read()).decode('utf-8')
+    
+    def build_html(self, recipient_name='there', company_name='', pain_points='', variant='governance', use_cid=True):
+        """Build HTML email template with personalization
+        
+        Args:
+            use_cid: If True, use cid:logo (MIME attachment). If False, use Base64 data URI.
+        """
+        
+        # Logo embedding strategy
+        if use_cid:
+            logo_img_tag = '<img src="cid:logo" alt="ALYGN Logo" class="logo">'
+        else:
+            logo_base64 = self.get_logo_base64()
+            logo_img_tag = f'<img src="data:image/jpeg;base64,{logo_base64}" alt="ALYGN Logo" class="logo">' if logo_base64 else ''
         
         # Build mailto: template for this variant
         mailto_template = self.build_mailto_template(variant)
         mailto_subject = mailto_template['subject'].replace(' ', '%20')
         mailto_body = mailto_template['body'].replace('\n', '%0A').replace(' ', '%20')
-        mailto_link = f"mailto:tanialeaidm@gmail.com?subject={mailto_subject}&body={mailto_body}"
+        mailto_link = f"mailto:tanialeaidm@gmail.com?subject={mailto_subject}&body={mailto_body}&Bcc=alyyygn@gmail.com"
         
         # Personalization
         company_mention = f' at {company_name}' if company_name else ''
@@ -94,223 +115,218 @@ Alygn is an independent institution focused on making accountability, emergency 
         copy = variants.get(variant, variants['governance'])
         
         html_template = f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{copy['subject']}</title>
-  <style>
-    body {{
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      background-color: #f9fafb;
-      margin: 0;
-      padding: 0;
-      color: #1f2937;
-    }}
-    .container {{
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }}
-    .header {{
-      background-color: rgb(25, 25, 25);
-      padding: 32px 24px;
-      text-align: center;
-    }}
-    .header-brand {{
-      margin: 0 auto;
-      display: inline-block;
-    }}
-    .brand-name {{
-      font-size: 32px;
-      font-weight: 900;
-      color: #ffffff;
-      margin: 0 11px 0 0;
-      letter-spacing: 0.5px;
-      line-height: 1;
-      display: inline-block;
-      vertical-align: middle;
-    }}
-    .logo {{
-      width: 94px;
-      height: 94px;
-      border-radius: 8px;
-      display: inline-block;
-      vertical-align: middle;
-      margin: 0;
-    }}
-    .content {{
-      padding: 32px 24px;
-    }}
-    .headline {{
-      font-size: 28px;
-      font-weight: 700;
-      color: #0f172a;
-      margin: 0 0 8px 0;
-      line-height: 1.2;
-    }}
-    .subheadline {{
-      font-size: 16px;
-      color: #64748b;
-      margin: 0 0 24px 0;
-      font-weight: 500;
-    }}
-    .greeting {{
-      font-size: 16px;
-      color: #1f2937;
-      margin: 0 0 16px 0;
-      font-weight: 500;
-    }}
-    .body-text {{
-      font-size: 15px;
-      line-height: 1.6;
-      color: #374151;
-    }}
-    .body-text p {{
-      margin: 16px 0;
-    }}
-    .body-text ul {{
-      margin: 16px 0;
-      padding-left: 24px;
-      line-height: 1.8;
-    }}
-    .body-text li {{
-      margin: 8px 0;
-    }}
-    .body-text strong {{
-      color: #0f172a;
-    }}
-    .cta-button {{
-      display: inline-block;
-      background-color: #0f172a;
-      color: #ffffff !important;
-      padding: 12px 32px;
-      border-radius: 6px;
-      text-decoration: none !important;
-      font-weight: 500;
-      font-size: 16px;
-      margin: 24px 0;
-      border: 1px solid #0f172a;
-      cursor: pointer;
-    }}
-    .cta-button:hover {{
-      background-color: #1e293b;
-      border-color: #1e293b;
-    }}
-    .closing {{
-      margin: 24px 0 0 0;
-      font-size: 15px;
-      color: #374151;
-    }}
-    .ps {{
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 13px;
-      color: #6b7280;
-      font-style: italic;
-    }}
-    .signature {{
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 14px;
-      color: #6b7280;
-    }}
-    .signature-name {{
-      font-weight: 600;
-      color: #1f2937;
-    }}
-    .signature a {{
-      color: #0f172a;
-      text-decoration: none;
-    }}
-    .signature-role {{
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 4px;
-    }}
-    .team-contact {{
-      margin-top: 12px;
-      font-size: 13px;
-      color: #9ca3af;
-    }}
-    .footer {{
-      background-color: #f3f4f6;
-      padding: 24px;
-      text-align: center;
-      font-size: 12px;
-      color: #9ca3af;
-      border-top: 1px solid #e5e7eb;
-    }}
-    .footer a {{
-      color: #0f172a;
-      text-decoration: none;
-      font-weight: 500;
-    }}
-    .footer a:hover {{
-      text-decoration: underline;
-    }}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <!-- Header with Logo + Wordmark -->
-    <div class="header">
-      <div class="header-brand">
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{copy['subject']}</title>
+        <style>
+          body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+            color: #1f2937;
+          }}
+          /*[if mso]>
+          body, table, td, p, a, li {{
+            font-family: 'Segoe UI', Tahoma, Verdana, sans-serif !important;
+          }}
+          <![endif]*/
+          .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          }}
+          /*[if mso]>
+          .container {{
+            width: 600px !important;
+          }}
+          <![endif]*/
+          .header {{
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 32px 24px;
+            text-align: center;
+          }}
+          .logo {{
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 8px;
+            display: block;
+          }}
+          /*[if mso]>
+          .logo {{
+            display: inline-block;
+            vertical-align: middle;
+          }}
+          <![endif]*/
+          .brand-name {{
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: 0.5px;
+          }}
+          .banner {{
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+          }}
+          .content {{
+            padding: 32px 24px;
+          }}
+          .headline {{
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 8px 0;
+            line-height: 1.2;
+          }}
+          .subheadline {{
+            font-size: 16px;
+            color: #64748b;
+            margin: 0 0 24px 0;
+            font-weight: 500;
+          }}
+          .greeting {{
+            font-size: 16px;
+            color: #1f2937;
+            margin: 0 0 16px 0;
+            font-weight: 500;
+          }}
+          .body-text {{
+            font-size: 15px;
+            line-height: 1.6;
+            color: #374151;
+          }}
+          .body-text p {{
+            margin: 16px 0;
+          }}
+          .body-text ul {{
+            margin: 16px 0;
+            padding-left: 24px;
+            line-height: 1.8;
+          }}
+          .body-text li {{
+            margin: 8px 0;
+          }}
+          .cta-button {{
+            display: inline-block;
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 12px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            margin: 24px 0;
+            transition: background-color 0.2s;
+          }}
+          .cta-button:hover {{
+            background-color: #1e293b;
+          }}
+          .closing {{
+            margin: 24px 0 0 0;
+            font-size: 15px;
+            color: #374151;
+          }}
+          .signature {{
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #6b7280;
+          }}
+          .signature-name {{
+            font-weight: 600;
+            color: #1f2937;
+          }}
+          .ps {{
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+          }}
+          .footer {{
+            background-color: #f3f4f6;
+            padding: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+          }}
+          .footer a {{
+            color: #0f172a;
+            text-decoration: none;
+            margin: 0 8px;
+          }}
+        </style>
+      </head>
+      <body>
+        <!-- Email meta for subject and BCC -->
+        <!-- Subject: RE: The Question -->
+        <!-- BCC: alyyygn@gmail.com -->
+        <div class="container">
+          <!-- Header with Logo + Wordmark -->
+          <div class="header">
+            <div class="header-brand">
         <h2 class="brand-name">ALYGN</h2>
-        <img src="cid:logo" alt="ALYGN Logo" class="logo">
-      </div>
-    </div>
+        {logo_img_tag}
+            </div>
+          </div>
 
-    <!-- Content -->
-    <div class="content">
-      <h1 class="headline">{copy['headline']}</h1>
-      <p class="subheadline">{copy['subheadline']}</p>
+          <!-- Content -->
+          <div class="content">
+            <h1 class="headline">{copy['headline']}</h1>
+            <p class="subheadline">{copy['subheadline']}</p>
 
-      <p class="greeting">Hi {recipient_name},</p>
+            <p class="greeting">Hi {recipient_name},</p>
 
-      {pain_point_text}
+            {pain_point_text}
 
-      <p class="body-text">{copy['intro']}</p>
+            <p class="body-text">{copy['intro']}</p>
 
-      <div class="body-text">{copy['body']}</div>
+            <div class="body-text">{copy['body']}</div>
 
-      <a href="{mailto_link}" class="cta-button">{copy['cta']}</a>
+            <a href="{mailto_link}" class="cta-button">{copy['cta']}</a>
 
-      <p class="closing">{copy['closing']}</p>
+            <p class="closing">{copy['closing']}</p>
 
-      <div class="ps">{copy['ps']}</div>
+            <div class="ps">{copy['ps']}</div>
 
-      <div class="signature">
-        <p style="margin: 0 0 4px 0;">
-          <span class="signature-name">Tania Lea</span>
-        </p>
-        <p class="signature-role">Founder & CEO, Alygn</p>
-        <p class="signature-role" style="margin: 4px 0 0 0;">
-          <a href="{mailto_link}">tanialeaidm@gmail.com</a>
-        </p>
-        <p class="team-contact">
-          Team inquiries: <a href="mailto:contact@andler.dev">contact@andler.dev</a>
-        </p>
-      </div>
-    </div>
+            <div class="signature">
+              <p style="margin: 0 0 4px 0;">
+                <span class="signature-name">Tania Lea</span>
+              </p>
+              <p class="signature-role">Founder & CEO, Alygn</p>
+              <p class="signature-role" style="margin: 4px 0 0 0;">
+                <a href="{mailto_link}">tanialeaidm@gmail.com</a>
+              </p>
+              <p class="team-contact">
+                Team inquiries: <a href="mailto:contact@andler.dev">contact@andler.dev</a>
+              </p>
+            </div>
+          </div>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p style="margin: 0 0 12px 0;">© 2026 Alygn</p>
-      <p style="margin: 0; font-size: 14px;">
-        <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
-        <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
-        <a href="https://linkedin.com/company/alygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
-      </p>
-    </div>
-  </div>
-</body>
-</html>'''
+          <!-- Footer -->
+          <div class="footer">
+            <p style="margin: 0 0 12px 0;">© 2026 Alygn</p>
+            <p style="margin: 0; font-size: 14px;">
+              <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
+              <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
+              <a href="https://linkedin.com/company/alygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>'''
         
         return copy['subject'], html_template
     
@@ -318,11 +334,11 @@ Alygn is an independent institution focused on making accountability, emergency 
         """Build pre-filled mailto: templates for different variants"""
         templates = {
             'governance': {
-                'subject': 'Re: AI Governance Infrastructure',
+                'subject': 'RE: The Question, AI Governance Infrastructure',
                 'body': 'Hi Tania,\n\nI\'m interested in learning more about Alygn\'s approach to coordination infrastructure and how it applies to our work.\n\nLet\'s schedule a time to discuss.\n\nBest regards'
             },
             'institutional': {
-                'subject': 'Re: Institutional AI Governance',
+                'subject': 'RE: The Question, Institutional AI Governance',
                 'body': 'Hi Tania,\n\nYour approach to neutral governance infrastructure and emergency coordination resonates with our challenges. I\'d like to explore this further.\n\nLooking forward to connecting.\n\nBest regards'
             }
         }
@@ -340,7 +356,9 @@ Alygn is an independent institution focused on making accountability, emergency 
         try:
             # Create MIME message with related parts (for inline images)
             msg = MIMEMultipart('related')
-            msg['From'] = 'Alygn R&D <admin@alygn.us>'
+            msg['From'] = 'Alygn R&D <alyyygn@gmail.com>'
+            msg['Reply-To'] = 'Tania Lea <tanialeaidm@gmail.com>'
+            msg['Bcc'] = 'alyyygn@gmail.com'
             msg['To'] = recipient_email
             msg['Subject'] = subject
             
@@ -381,9 +399,10 @@ def main():
     
     print("🚀 Sending updated ALYGN VC outreach emails (Governance-First v4)...\n")
     
+    # TODO: Add dynamic receiver email from a [timestamp]-workflow.json file or similar source for real outreach. For now, using placeholder email for testing.
     # Governance variant
     builder.send_email(
-        'tanialeaidm@gmail.com',
+        'andre.rlucas@outlook.com',
         recipient_name='there',
         company_name='',
         pain_points='',
@@ -391,9 +410,10 @@ def main():
     )
     print()
     
+    # TODO: Add dynamic receiver email from a [timestamp]-workflow.json file or similar source for real outreach. For now, using placeholder email for testing.
     # Institutional variant
     builder.send_email(
-        'tanialeaidm@gmail.com',
+        'andre.rlucas@outlook.com',
         recipient_name='there',
         company_name='',
         pain_points='',

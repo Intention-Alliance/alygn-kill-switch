@@ -1,14 +1,9 @@
 /**
- * ALYGN VC Outreach Email Template v4 - Governance-First
- * Professional, minimalist design with institutional messaging
- * Updated: Feb 10, 2026 (context update)
- * 
- * Key changes from v3:
- * - Removed "Intention Marketplace" reference
- * - Governance-first positioning (not technology products)
- * - Institutional restraint tone (calm, non-promotional)
- * - Language: "Supports coordination", not "Regulates"
- * - Focus: Legitimacy, preparedness, coordination
+ * ALYGN VC Outreach Email Template
+ * Governance-first institutional positioning
+ * - Independent AI governance infrastructure
+ * - Neutral tone, no hype
+ * - Focus: coordination, legitimacy, preparedness
  */
 
 const fs = require('fs');
@@ -26,61 +21,68 @@ function getBase64Image(imagePath) {
   return null;
 }
 
-function generateEmailHTML(recipientName = 'there', variant = 'governance') {
-  const logoPath = path.join(process.env.HOME, 'Downloads', 'avatar_400x400.jpg');
-  const bannerPath = path.join(process.env.HOME, 'Downloads', 'banner-1500x500.jpeg');
+function generateEmailHTML(recipientName = 'there', vcName = '', painPoints = [], variant = 'governance') {
+  const logoPath = path.join(process.env.HOME, 'Downloads/avatar_400x400.jpg');
   
   const logoBase64 = getBase64Image(logoPath);
-  const bannerBase64 = getBase64Image(bannerPath);
+  const logoImg = logoBase64 ? `<img src="data:image/jpeg;base64,${logoBase64}" alt="ALYGN" style="width: 40px; height: 40px; border-radius: 4px;">` : '';
 
-  // Email copy variants for VC outreach (governance-first, institutional tone)
+  // Email copy variants for VC outreach
   const copyVariants = {
     governance: {
       greeting: `Hi ${recipientName},`,
-      subject: 'AI Governance Infrastructure',
-      headline: 'Coordination Before Crisis',
-      subheadline: 'Independent AI Governance for Global-Scale Systems',
-      intro: `Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.
-
-As AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.`,
-      body: `
-        <p style="margin: 16px 0; line-height: 1.6;"><strong>Why This Matters:</strong></p>
+      subject: 'AI Governance Infrastructure for the Frontier',
+      headline: 'Legitimacy is Infrastructure',
+      intro: `ALYGN is building independent AI governance infrastructure — the institutional layer that makes accountability, oversight, and coordination workable at frontier scale. We're not operating AI systems. We're enabling other developers and institutions to coordinate around them responsibly.`,
+      painPoints: painPoints.length > 0 ? `
+        <p style="margin: 16px 0; line-height: 1.6;">
+          Based on research into ${vcName}, we imagine governance challenges around:
+        </p>
         <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-          <li><strong>Governance legitimacy, not technology.</strong> The hardest AI risks are institutional, not technical. Coordination failure is the real systemic risk.</li>
-          <li><strong>Pre-crisis preparation.</strong> Emergency response that doesn't exist before crisis rarely works during one. Institutions are slow to build and expensive to replace.</li>
-          <li><strong>Institutional restraint.</strong> We enable accountability through neutral infrastructure—not by regulating, controlling, or claiming authority over systems.</li>
-          <li><strong>Independence matters.</strong> Oversight only works if all sides believe it's fair. Trust is harder to scale than technology.</li>
+          ${painPoints.slice(0, 3).map(p => `<li>${p.replace(/[;,]/g, ';')}</li>`).join('')}
+        </ul>
+      ` : '',
+      body: `
+        <p style="margin: 16px 0; line-height: 1.6;">
+          We address this through:
+        </p>
+        <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
+          <li><strong>Neutral governance coordination</strong> — enabling labs, operators, and institutions to work together without centralizing control</li>
+          <li><strong>Independent auditability</strong> — credible oversight that doesn't require surveillance</li>
+          <li><strong>Emergency preparedness</strong> — coordination infrastructure that exists before crisis, not after</li>
+          <li><strong>Institutional restraint</strong> — clear separation between governance, oversight, and operation</li>
         </ul>
         <p style="margin: 16px 0; line-height: 1.6;">
-          Alygn is publicly forming to address the institutional gap in AI governance before urgency removes options. We're building for legitimacy and durability, not speed or visibility.
+          The hardest AI risks are institutional, not just technical. Governance infrastructure is how we make frontier AI safe at scale.
         </p>
       `,
-      cta: 'Learn more about Alygn',
-      closing: 'We're interested in exploring how governance infrastructure can support your organization's work.'
+      cta: 'Let\'s discuss frontier AI governance',
+      closing: 'Looking forward to a conversation about coordination at scale.'
     },
     
     institutional: {
       greeting: `Hi ${recipientName},`,
-      subject: 'Institutional AI Governance',
-      headline: 'The Real AI Risk is Coordination Failure',
-      subheadline: 'Neutral Governance Infrastructure for Advanced Systems',
-      intro: `When AI systems scale beyond individual control, coordination becomes the bottleneck. Traditional oversight breaks down when no single actor can credibly intervene alone.
-
-Alygn is an independent institution focused on making accountability, emergency response, and cross-organization coordination actually work—before crisis conditions force fragmented outcomes.`,
-      body: `
-        <p style="margin: 16px 0; line-height: 1.6;"><strong>Core Principles:</strong></p>
-        <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-          <li><strong>Governance-first, not technology-first.</strong> Our value proposition is legitimacy, not technical systems. Any infrastructure exists only in service of coordination.</li>
-          <li><strong>Separation of concerns.</strong> Clear boundaries between governance, oversight, and system operation. We support coordination—we don't control systems.</li>
-          <li><strong>Independent review.</strong> Neutral frameworks are easier to challenge but harder to dismiss. Independence is insulation from capture.</li>
-          <li><strong>Emergency coordination without standing control.</strong> Preparedness is about permission, not prediction. Crisis frameworks designed during crisis reflect panic, not judgment.</li>
-        </ul>
+      subject: 'The Real AI Risk is Coordination Failure',
+      headline: 'Building Governance for Advanced AI',
+      intro: `The frontier AI risk isn't capability. It's coordination failure. ALYGN is the independent institutional layer that makes governance workable at scale — enabling developers, operators, and public institutions to align around safety and accountability without centralizing power.`,
+      painPoints: painPoints.length > 0 ? `
         <p style="margin: 16px 0; line-height: 1.6;">
-          The absence of trusted coordination mechanisms is itself a systemic risk. We're addressing this gap deliberately, with institutional restraint rather than claims of authority.
+          ${vcName} faces governance challenges including:
+        </p>
+        <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
+          ${painPoints.slice(0, 3).map(p => `<li>${p.replace(/[;,]/g, ';')}</li>`).join('')}
+        </ul>
+      ` : '',
+      body: `
+        <p style="margin: 16px 0; line-height: 1.6;">
+          ALYGN enables this through independent review, neutral coordination, and auditable governance structures that build legitimacy without control.
+        </p>
+        <p style="margin: 16px 0; line-height: 1.6;">
+          We're not a regulator. We're the infrastructure that makes coordination possible when it matters most.
         </p>
       `,
-      cta: 'Discuss institutional coordination',
-      closing: 'Looking forward to exploring this with you.'
+      cta: 'Explore governance coordination',
+      closing: 'Interested in building governance infrastructure together.'
     }
   };
 
@@ -99,179 +101,121 @@ Alygn is an independent institution focused on making accountability, emergency 
       margin: 0;
       padding: 0;
       color: #1f2937;
+      line-height: 1.5;
     }
     .container {
       max-width: 600px;
-      margin: 0 auto;
+      margin: 20px auto;
       background-color: #ffffff;
-      border-radius: 8px;
+      border-radius: 4px;
       overflow: hidden;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     .header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
       padding: 32px 24px;
       text-align: center;
     }
     .logo {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 16px;
-      border-radius: 8px;
-      display: block;
+      margin-bottom: 16px;
     }
-    .brand-name {
-      font-size: 20px;
-      font-weight: 600;
-      color: #ffffff;
-      margin: 0;
-      letter-spacing: 0.5px;
-    }
-    .banner {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      display: block;
+    .header h1 {
+      margin: 16px 0;
+      font-size: 28px;
+      font-weight: 700;
     }
     .content {
       padding: 32px 24px;
-    }
-    .headline {
-      font-size: 28px;
-      font-weight: 700;
-      color: #0f172a;
-      margin: 0 0 8px 0;
-      line-height: 1.2;
-    }
-    .subheadline {
-      font-size: 16px;
-      color: #64748b;
-      margin: 0 0 24px 0;
-      font-weight: 500;
-    }
-    .greeting {
-      font-size: 16px;
-      color: #1f2937;
-      margin: 0 0 16px 0;
-      font-weight: 500;
-    }
-    .body-text {
       font-size: 15px;
+    }
+    .content h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 24px 0 16px;
+      color: #111827;
+    }
+    .content p {
+      margin: 16px 0;
       line-height: 1.6;
-      color: #374151;
     }
-    .body-text p {
+    .content ul {
       margin: 16px 0;
-    }
-    .body-text ul {
-      margin: 16px 0;
-      padding-left: 24px;
       line-height: 1.8;
+      padding-left: 24px;
     }
-    .body-text li {
-      margin: 8px 0;
+    .content li {
+      margin-bottom: 8px;
     }
     .cta-button {
       display: inline-block;
-      background-color: #0f172a;
-      color: #ffffff;
-      padding: 12px 32px;
-      border-radius: 6px;
+      background-color: #667eea;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
       text-decoration: none;
-      font-weight: 500;
-      font-size: 16px;
+      font-weight: 600;
       margin: 24px 0;
-      transition: background-color 0.2s;
     }
     .cta-button:hover {
-      background-color: #1e293b;
-    }
-    .closing {
-      margin: 24px 0 0 0;
-      font-size: 15px;
-      color: #374151;
-    }
-    .signature {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 14px;
-      color: #6b7280;
-    }
-    .signature-name {
-      font-weight: 600;
-      color: #1f2937;
-    }
-    .ps {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e7eb;
-      font-size: 13px;
-      color: #6b7280;
-      font-style: italic;
+      background-color: #5568d3;
     }
     .footer {
       background-color: #f3f4f6;
       padding: 24px;
       text-align: center;
-      font-size: 12px;
-      color: #9ca3af;
-      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #6b7280;
     }
     .footer a {
-      color: #0f172a;
+      color: #667eea;
       text-decoration: none;
-      margin: 0 8px;
+    }
+    .divider {
+      border-top: 1px solid #e5e7eb;
+      margin: 24px 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
-      ${logoBase64 ? `<img src="data:image/jpeg;base64,${logoBase64}" alt="ALYGN Logo" class="logo">` : ''}
-      <p class="brand-name">ALYGN</p>
+      ${logoImg}
+      <h1>${copy.headline}</h1>
     </div>
-
-    <!-- Banner -->
-    ${bannerBase64 ? `<img src="data:image/jpeg;base64,${bannerBase64}" alt="ALYGN Banner" class="banner">` : ''}
-
-    <!-- Content -->
+    
     <div class="content">
-      <h1 class="headline">${copy.headline}</h1>
-      <p class="subheadline">${copy.subheadline}</p>
-
-      <p class="greeting">${copy.greeting}</p>
-
-      <p class="body-text">${copy.intro}</p>
-
-      <div class="body-text">${copy.body}</div>
-
-      <a href="mailto:tanialeaidm@gmail.com" class="cta-button">${copy.cta}</a>
-
-      <p class="closing">${copy.closing}</p>
-
-      <div class="ps">This outreach was researched and drafted by our AI agent—because we practice what we preach.</div>
-
-      <div class="signature">
-        <p style="margin: 0 0 8px 0;">
-          <span class="signature-name">Tania Lea</span><br>
-          Founder & CEO, Alygn<br>
-          <a href="mailto:tanialeaidm@gmail.com" style="color: #0f172a; text-decoration: none;">tanialeaidm@gmail.com</a>
-        </p>
-        <p style="margin: 8px 0 0 0; font-size: 13px; color: #9ca3af;">
-          Team inquiries: <a href="mailto:contact@andler.dev" style="color: #0f172a;">contact@andler.dev</a>
-        </p>
-      </div>
+      <p>${copy.greeting}</p>
+      
+      <p>${copy.intro}</p>
+      
+      ${copy.painPoints || ''}
+      
+      ${copy.body}
+      
+      <div class="divider"></div>
+      
+      <p>
+        <a href="mailto:contact@alygn.us?subject=${encodeURIComponent(copy.subject)}" class="cta-button">${copy.cta}</a>
+      </p>
+      
+      <p>${copy.closing}</p>
+      
+      <p style="margin-top: 32px; font-size: 13px; color: #9ca3af;">
+        — Wobblus<br>
+        on behalf of ALYGN<br>
+        <a href="https://alygn.us" style="color: #667eea; text-decoration: none;">alygn.us</a> | <a href="https://x.com/aialygn" style="color: #667eea; text-decoration: none;">@aialygn</a>
+      </p>
     </div>
-
-    <!-- Footer -->
+    
     <div class="footer">
-      <p style="margin: 0 0 12px 0;">© 2026 Alygn</p>
-      <p style="margin: 0;">
-        <a href="https://alygn.us">🌐 alygn.us</a>
-        <a href="https://x.com/aialygn">𝕏 @aialygn</a>
-        <a href="https://linkedin.com/company/alygn">💼 LinkedIn</a>
+      <p>
+        <strong>ALYGN</strong> — Independent AI Governance Infrastructure<br>
+        <a href="https://alygn.us">alygn.us</a> • <a href="https://x.com/aialygn">X/Twitter</a> • <a href="https://linkedin.com/company/alygn">LinkedIn</a>
+      </p>
+      <p style="margin-top: 12px; font-size: 12px;">
+        This email was sent to support AI governance coordination. 
+        <a href="#">Unsubscribe</a>
       </p>
     </div>
   </div>
@@ -280,20 +224,3 @@ Alygn is an independent institution focused on making accountability, emergency 
 }
 
 module.exports = { generateEmailHTML };
-
-// CLI usage
-if (require.main === module) {
-  const variant = process.argv[2] || 'governance';
-  const recipientName = process.argv[3] || 'there';
-  
-  const html = generateEmailHTML(recipientName, variant);
-  console.log(html);
-  console.log(`\n✅ Generated ${variant} variant for ${recipientName}`);
-  console.log('\nAvailable variants: governance, institutional');
-  console.log('\nKey changes from v3:');
-  console.log('  • Removed "Intention Marketplace" reference');
-  console.log('  • Governance-first positioning (not SOS Protocol)');
-  console.log('  • Institutional restraint tone (calm, non-promotional)');
-  console.log('  • Language: "Supports coordination", not "Regulates"');
-  console.log('  • Focus: Legitimacy, preparedness, coordination');
-}

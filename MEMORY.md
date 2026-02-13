@@ -135,41 +135,124 @@ Any technical systems exist only in service of governance and coordination.
 
 ---
 
-## 📧 VC Outreach Email System (ALYGN) - Updated 2026-02-05 23:38
+## 📧 VC Outreach Email System (ALYGN) - Updated 2026-02-12 ✅ READY
 
 ### Phase 1: Email Templates ✅ COMPLETE
 
-**Status:** Production-ready. Two professional variants with SOS Protocol positioning.
+**Status:** Production-ready. Governance-first positioning (updated from SOS Protocol).
 
 **Variants:**
 
-- **Governance:** "The Question Isn't If AGI Arrives—It's Who Coordinates the Response"
-- **Technical:** "Existential Risk Management at Scale"
+- **Governance:** "Coordination Before Crisis" - Independent AI governance infrastructure
+- **Institutional:** "The Real AI Risk is Coordination Failure" - Neutral governance for advanced systems
 
 **Key Features:**
 
-- Dark header (#252525) with centered ALYGN logo + wordmark
+- MIME-embedded logo (Content-ID) - ✅ Working in Chrome/Gmail/Outlook
+- MSO conditional comments for Outlook compatibility (added Feb 12)
 - Margin-based CSS alignment (universal email client support)
-- MIME-embedded logo (Content-ID) for reliable rendering
-- Personalization framework (recipient name, company, pain points)
-- AI agent transparency P.S. ("researched and drafted by our AI agent—because we practice what we preach")
-- Secure credential loading (JSON-based, no hardcoding)
+- Personalization framework (recipient name, pain points)
+- AI agent transparency P.S.
 - Tania Lea signature (CEO, <tanialeaidm@gmail.com>)
-- Footer: alygn.us
+- Footer: alygn.us, X, LinkedIn
 
 **Files:**
 
 ```
-scripts/alygn/
+scripts/alygn/vc-outreach/
 ├── vc-outreach-email-template.py      # Secure Python sender
-├── vc-outreach-email-template.js      # JS template generator
-├── email-template-governance.html     # Editable governance variant
-├── email-template-technical.html      # Editable technical variant
-├── send-email-test.js                 # Test/demo script
-└── VC-OUTREACH-ROADMAP.md            # Full Phase 2 plan
+├── vc-outreach-email-template.js      # ✅ UPDATED - Governance-first v4 + MSO fixes
+└── workflow.json                      # Modular workflow definitions
 ```
 
-**Tested:** ✅ Governance + Technical variants sent successfully
+**Tested:** ✅ Logo rendering verified (Chrome/Outlook), MSO fixes added
+
+---
+
+### Phase 2: VC Discovery & Automation ✅ COMPLETE (Feb 12, 2026)
+
+**Status:** Production-ready. Modular workflow with 5 phases.
+
+**Architecture:**
+```
+1. Discovery → Basic data (automated cron)
+2. Deep Research → Fill missing data (manual/cron)
+3. Email Drafting → Generate personalized emails (manual)
+4. Human Approval → Discord #annotations review
+5. Sending → Schedule approved emails (automated)
+```
+
+**Components:**
+
+1. **Seed VC List** (`seed-vc-list.json`)
+   - 20 curated AI safety/governance VCs (targeting 100 total)
+   - Relevance scoring: 4 VCs @ 9-10, 16 VCs @ 7-8
+   - Top 5: AI2 Incubator (10), Khosla (9), Radical Ventures (9), DCVC (9), Lux (8)
+
+2. **Notion Database Setup** (`setup-vc-notion-tracker.js`)
+   - ✅ Creates new database under Organizations TODO Lists
+   - Imports all 20 seed VCs (no contact info yet)
+   - Schema: Name, Email, Status, Variant, Dates, Sentiment, Relevance, Pain Points, Notes
+   - Database ID saved to `notion-config.json`
+
+3. **Automated Discovery** (`automated-vc-discovery.js`)
+   - Web search (5 configurable queries)
+   - Basic research (name, website, focus areas)
+   - Relevance scoring (1-10, threshold: 7)
+   - Add to Notion with status "Not contacted"
+   - Discord notifications with daily summary
+   - Dry-run mode for testing
+
+4. **Deep Research** (`deep-research-vcs.js`) ✅ NEW
+   - Loads VCs with incomplete data from Notion
+   - Finds partner emails (website, LinkedIn)
+   - Extracts investment thesis, portfolio, pain points (Grok)
+   - Identifies governance signals (quotes, blog posts)
+   - Updates Notion with full personalization data
+   - Marks "Ready for outreach" when complete
+
+5. **Email Drafting** (`draft-outreach-emails.js`) ✅ NEW
+   - Loads VCs with status "Ready for outreach"
+   - Generates 3 subject line options (A/B/C testing)
+   - Selects variant (Governance vs Institutional)
+   - Personalizes body using pain points, portfolio insights
+   - Posts drafts to Discord #annotations for approval
+   - Saves drafts to `drafts/` directory
+
+6. **Human Approval Workflow**
+   - Discord channel: #annotations (`1466532145257255004`)
+   - Commands: `APPROVE [VC]`, `EDIT [VC]: [changes]`, `SKIP [VC]`
+   - Andler reviews drafts and approves for sending
+
+**Files:**
+
+```
+scripts/alygn/vc-outreach/
+├── setup-vc-notion-tracker.js         # Setup (one-time)
+├── automated-vc-discovery.js          # Phase 1 (cron daily 10 AM)
+├── deep-research-vcs.js               # ✅ NEW - Phase 2 (manual/cron)
+├── draft-outreach-emails.js           # ✅ NEW - Phase 3 (manual)
+├── send-approved-emails.js            # Phase 5 (cron) - TO BE CREATED
+├── vc-outreach-email-template.js      # Email HTML generator
+├── seed-vc-list.json                  # 20 seed VCs
+├── notion-config.json                 # Database ID (generated)
+├── drafts/                            # Email drafts for approval
+├── MODULAR-WORKFLOW.md                # ✅ NEW - Full workflow guide
+├── VC-DISCOVERY-AUTOMATION.md         # Discovery docs
+└── TASK-2-COMPLETE.md                 # Setup instructions
+```
+
+**Documentation:** `MODULAR-WORKFLOW.md` (complete workflow guide)
+
+**API Integration (Updated Feb 12, 2026 3:45 PM):**
+- Perplexity API for web search (direct HTTP requests)
+- Firecrawl API for web scraping (direct HTTP requests)
+- API keys loaded from `openclaw.json` config
+- Research now fully automated (web search + scraping + extraction)
+
+**Next:** Phase 5 - Sending script (`send-approved-emails.js`) for automated email delivery
+
+**Documentation:** `scripts/alygn/vc-outreach/SKILL.md` - Complete usage guide
 
 ---
 
@@ -206,6 +289,96 @@ scripts/alygn/
 - Phase 3 (X API Executor): 2/3 posted live ([tweet1](https://x.com/aialygn/status/2021417150179610626), [tweet2](https://x.com/aialygn/status/2021417173046981063))
 **Cron:** Daily 11 AM (combined with Content Generation)  
 **Documentation:** `docs/TWITTER-AUTOMATION.md`
+
+### 📝 MANDATORY POSTING FORMAT (Updated 2026-02-11)
+
+**EVERY tweet must follow this format - NO EXCEPTIONS:**
+
+```
+[Main content - institutional message, thread, or reply]
+
+[1-3 hashtags from approved list]
+
+more at @aialygn
+```
+
+**Approved hashtags:**
+- `#AIGovernance` (primary - use most often)
+- `#AIAlignment` (technical posts)
+- `#AISafety` (safety-focused posts)
+- `#AGI` (frontier AI discussions)
+- `#AIPolicy` (policy/institutional posts)
+- `#AIEthics`, `#AIRisk` (contextual)
+
+**Signature placement:**
+- Short posts: End with hashtag + signature
+- Threads: Last tweet ends with hashtag + signature
+- Replies: End with hashtag + signature
+- Quotes: End with hashtag + signature
+
+**Example:**
+```
+Legitimacy is infrastructure.
+
+#AIGovernance
+
+more at @aialygn
+```
+
+**Scripts with format enforcement:**
+- ✅ `post-pre-approved.js` (formatTweet function)
+- ✅ `x-api-executor.js` (applies formatTweet to ALL posts/replies/quotes) - Updated 2026-02-11
+- ⏳ `twitter-automation.js` (Grok prompts need update for shorter content)
+- ⏳ `decision-engine.js` (reply/quote generation)
+
+**CRITICAL ARCHITECTURE (learned 2026-02-11):**
+- ❌ Browser is NOT for posting - ONLY for exploring/navigating
+- ✅ Browser: Navigate /explore → Extract data → workflow.json
+- ✅ Scripts: Read workflow.json → Apply format → Post via X API
+- ❌ Don't use browser relay for posting (twitter-browser-executor.ts obsolete)
+
+### ✅ X API POSTING CAPABILITIES (COMPLETE - NO EXCEPTIONS)
+
+**Workspace Skill:** `skills/x-twitter-growth/SKILL.md` ✅ (Updated 2026-02-11)  
+**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`  
+**Auth:** OAuth 1.0a User Context  
+**Documentation:** `scripts/alygn/X-API-CAPABILITIES.md`
+
+**ALL supported features:**
+1. ✅ **Post tweets** - Regular text posts with automatic format
+2. ✅ **Mention users** - @username anywhere in content (automatic)
+3. ✅ **Reply to tweets** - Reply to any post by ID
+4. ✅ **Quote tweets** - Quote with commentary
+5. ✅ **Post with media** - Images/videos on ALL post types (posts, replies, quotes)
+6. ✅ **Create polls** - 2-4 options, custom duration
+
+**Format enforcement (MANDATORY):**
+- ALL tweets get: `[content]\n\n[hashtags]\n\nmore at @aialygn`
+- Applied automatically via `formatTweet()` function
+- Works on: posts, replies, quotes, polls
+
+**Media support:**
+- Images: PNG, JPG, JPEG, GIF
+- Videos: MP4, MOV
+- Works with: posts ✅, replies ✅, quotes ✅
+
+**Workflow JSON structure:**
+```json
+{
+  "posts": [
+    {"content": "text", "mediaPath": "/path/image.png"},
+    {"content": "quote", "quoteTweetId": "123"},
+    {"content": "poll", "poll": {"options": [...], "duration_minutes": 1440}}
+  ],
+  "replies": [
+    {"content": "reply", "targetUrl": "https://x.com/user/status/123", "mediaPath": "/path/image.png"}
+  ]
+}
+```
+
+**100% capability coverage - NO feature gaps**
+
+**Documentation:** `scripts/alygn/TWITTER-POSTING-FORMAT.md`
 
 ---
 
