@@ -319,14 +319,36 @@ Script reads cache → Updates Notion
 - ✅ File coordination (simple, reliable)
 - ✅ Timeout-safe (script moves on after 30s)
 
+### Phase 2: Research (FIXED - Feb 14, 2026) ✅
+
+**Script:** `deep-research-vcs-v3.js`
+
+**Correct Pattern:**
+1. Script loads 1 VC from Notion
+2. Posts research request to Discord #annotations
+3. Wobblus spawns sub-agents (sessions_spawn + web_search/web_fetch)
+4. Sub-agents return structured JSON
+5. Wobblus saves to `/tmp/vc-research-[name]-result.json`
+6. Script reads cache, updates Notion
+7. Next iteration when script runs again
+
+**Key difference from Feb 13:**
+- ❌ WRONG: Script calls `sessions_spawn` via shell exec
+- ✅ RIGHT: Wobblus uses `sessions_spawn` tool + file coordination
+
+**Testing:**
+```bash
+node deep-research-vcs-v3.js --limit=1
+```
+
 ### Next Session
 
-1. Implement one-by-one research with file coordination
-2. Test with Khosla Ventures (single VC) to validate approach
-3. Monitor sub-agent output and verify JSON structure
-4. Once working, scale to batch
-5. Discord approval commands (APPROVE/EDIT/SKIP)
-6. SMTP credentials + email sending
+1. ✅ FIXED - Sub-agent pattern corrected
+2. Test Phase 2 with 1 VC (Khosla Ventures)
+3. Verify JSON structure and Notion updates
+4. Scale to 5-10 VCs for batch testing
+5. Phase 3: Discord approval commands (APPROVE/EDIT/SKIP)
+6. Phase 5: SMTP credentials + email sending
 
 ### Phase 2: VC Discovery & Automation ✅ COMPLETE (Feb 12, 2026)
 
