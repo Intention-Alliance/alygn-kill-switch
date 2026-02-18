@@ -1,14 +1,12 @@
 # TOOLS.md - Local Notes & Setup
 
-## Audio Processing (Speech-to-Text & Text-to-Speech)
+## Audio Processing
 
 ### Whisper CLI (Speech-to-Text)
 
-**Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/whisper`)  
-**Version:** 20250625  
-**Purpose:** Local audio transcription for Spanish (configured in OpenClaw config)  
-**Tested:** Successfully transcribed Spanish audio from WhatsApp  
-**Config:**
+- **Installed:** `/home/andlersrv/.local/bin/whisper` (v20250625)
+- **Purpose:** Spanish audio transcription (WhatsApp tested)
+- **Config:** See below for OpenClaw JSON snippet
 
 ```json
 {
@@ -39,71 +37,15 @@
 
 ### SAG CLI (Text-to-Speech)
 
-**Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/sag`)  
-**Version:** 0.2.2  
-**Purpose:** ElevenLabs TTS with streaming to speakers or file output  
-**API Key:** Configured in `skills.entries.sag.apiKey` (limited permissions - TTS only, no voice listing)  
-**Environment:**
+- **Installed:** `/home/andlersrv/.local/bin/sag` (v0.2.2)
+- **Purpose:** ElevenLabs TTS (stream/file)
+- **API Key:** Set in `skills.entries.sag.apiKey` (TTS only)
+- **Voice:** `ErXwobaYiN019PkySvjV` (Antoni, WoW Gnome style)
+- **Usage:** Always specify voice ID (`-v`). Use `generate-wobblus-voice.sh` for profiles: fast (default), balanced, character.
 
-```bash
-export ELEVENLABS_API_KEY="sk_7f57cffd5f0cff8c4810b554c69d1e8ecb2de9d7814ca389"
-```
-
-**⚠️ Important:** This API key has limited permissions (TTS only). When using sag, **always specify a voice ID** with `-v` flag.
-
-**Default voice for Wobblus:** `ErXwobaYiN019PkySvjV` (Antoni - well-rounded male)
-**Voice direction:** WoW Gnome style - quirky, enthusiastic, slightly mischievous
-
-**Usage examples:**
-
-```bash
-# ⚠️ Always specify voice ID (API key can't list voices)
-
-# RECOMMENDED: Use optimized script (fast profile by default - user preference)
-./generate-wobblus-voice.sh "Hello there!" output.ogg
-
-# Or specify profile: fast (default) | balanced (enhanced EQ) | character (MORE gnome!)
-./generate-wobblus-voice.sh "Engineering!" output.ogg balanced
-
-# Manual (legacy method - less optimized):
-sag -v ErXwobaYiN019PkySvjV --speed 1.35 --stability 0 --style 0.9 "Hello there!" -o input.mp3
-ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output.ogg
-```
-
-**Gnome voice settings (Antoni + Pitch Shift + Processing):**
-
-- **Voice ID:** `ErXwobaYiN019PkySvjV`
-- **Speed:** 1.35x (fast, energetic)
-- **Stability:** 0 (creative mode - more expressive)
-- **Style:** 0.9 (high character personality)
-- **Pitch shift:** +20% (fast/balanced) / +25% (character)
-- **Default profile:** fast (16kHz, minimal processing, mobile-optimized)
-- **Formant EQ:** Only in balanced/character profiles (+2.5dB @ 2.5kHz nasality, +1.5dB @ 4kHz presence)
-- **Compression:** Only in balanced/character profiles (gentle/moderate)
-- **Sample rate:** 16kHz (fast - default) / 24kHz (balanced/character)
-- **Model:** eleven_v3 (most expressive, supports audio tags)
-
-**Voice knobs:**
-
-- `--stability` (0|0.5|1 for v3: Creative/Natural/Robust)
-- `--similarity` (0..1: higher = closer to reference voice)
-- `--style` (0..1: higher = more stylized)
-- `--speaker-boost` (clarity boost)
-- `--speed` (0.5–2.0 multiplier)
-- `--seed` (0–4294967295 for repeatability)
-
-**Audio tags (v3 only):**
-
-- `[whispers]`, `[shouts]`, `[sings]`
-- `[laughs]`, `[sighs]`, `[sarcastic]`, `[excited]`
-- `[short pause]`, `[long pause]`
-
-**Models:**
-
-- `eleven_v3` (default) — Most expressive, audio tags
-- `eleven_multilingual_v2` — Stable baseline
-- `eleven_flash_v2_5` — Ultra-low latency (~75ms), 50% cheaper
-- `eleven_turbo_v2_5` — Low latency (~250–300ms), 50% cheaper
+**Voice settings:** Speed 1.35x, Stability 0, Style 0.9, Pitch +20–25%, Speaker Boost, Model: eleven_v3  
+**Audio tags:** `[whispers]`, `[shouts]`, `[sings]`, etc.  
+**Output:** OGG Vorbis (convert for WhatsApp)
 
 ---
 
@@ -111,59 +53,17 @@ ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2" output
 
 ### goplaces CLI
 
-**Status:** ✅ Installed and working (`/home/andlersrv/.local/bin/goplaces`)  
-**Version:** dev  
-**Purpose:** CLI for Google Places API queries  
-**API Key:** Configured in `skills.entries.goplaces.apiKey`  
-**Environment:**
-
-```bash
-export GOOGLE_PLACES_API_KEY="AIzaSyAAf8Oj4vpAGAIeNZRySIoZnt6Crer8UDs"
-```
-
-**Usage examples:**
-
-```bash
-# Search for places
-goplaces search "coffee" --open-now --min-rating 4 --limit 5
-
-# Location bias
-goplaces search "pizza" --lat 40.8 --lng -73.9 --radius-m 3000
-
-# Get place details
-goplaces details <place_id> --reviews
-
-# JSON output
-goplaces search "sushi" --json
-```
+- **Installed:** `/home/andlersrv/.local/bin/goplaces`
+- **API Key:** Set in `skills.entries.goplaces.apiKey`
+- **Usage:** Search, location bias, details, JSON output
 
 ---
 
-## Browser Relay Configuration
+## Browser Relay
 
-### Extended Timeouts (Updated 2026-02-08)
-
-**For long-running automation tasks:**
-
-- **Default timeout:** 10s
-- **Browser navigation:** 30s (for page loads)
-- **Browser snapshot:** 20s (for rendering)
-- **Browser action execution:** 40s (for complex interactions)
-- **Cron timeouts:** 3600s (1 hour for extended runs)
-
-**Usage:**
-
-```bash
-browser --action=snapshot --timeoutMs=30000 --profile=alygn
-```
-
-### Alygn Profile (Twitter/X Automation)
-
-- **Profile name:** `alygn`
-- **Chrome instance:** Separate authenticated session
-- **X.com status:** ✅ Fully authenticated
+- **Timeouts:** Default 10s, navigation 30s, snapshot 20s, actions 40s, cron 3600s
+- **Profile:** `alygn` (Twitter/X, authenticated)
 - **Usage:** `browser --profile="alygn" [action]`
-- **Note:** Use extended timeouts for complex workflows
 
 ---
 
@@ -171,53 +71,26 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
 
 ### WhatsApp
 
-- **Number:** +50662163355
-- **Status:** LINKED (authenticated)
-- **Policy:** DM allowlist (only my number)
-- **Group policy:** allowlist
+- **Number:** +50662163355 (LINKED, DM allowlist)
 
 ### Discord
 
-- **Bot:** @ClawdBot MacMini
-- **Token:** Configured
-- **Status:** Connected
-- **Guild:** andler-develops (annotations enabled)
-  - **Guild ID:** `1117841083351711785`
-  - **Voice Channel:** "General" (`1117841084064735286`)
-  - **Annotations Channel:** "annotations" (`1466532145257255004`)
-  - **Twitter Thread:** "Alygn: X/Twitter Growth Engagement" (`1470977688368840928`)
-- **DM Policy:** Pairing (approve via `openclaw pairing approve discord <code>`)
+- **Bot:** @Wobblus (connected)
+- **Guild:** andler-develops (`1117841083351711785`)
+- **Voice Channel:** "General" (`1117841084064735286`)
+- **Annotations:** "annotations" (`1466532145257255004`)
+- **Twitter Thread:** "Alygn: X/Twitter Growth Engagement" (`1470977688368840928`)
+- **DM Policy:** Pairing approval
 
-**Voice Channel Coordination:**
-
-- **Use case:** Brainstorming, consulting, idea sharing via voice
-- **Workflow:**
-  1. Andler joins voice channel
-  2. I monitor activity and provide text-based coordination
-  3. Can take notes, look up info, execute tasks during voice sessions
-- **Commands:**
-  - Ping when joining: "in voice" or similar
-  - I can provide real-time assistance via text while you're in voice
-  - Post-session: Can summarize discussions, create action items
-
-**Annotations System:**
-
-- **Purpose:** Capture knowledge from voice sessions and discussions
-- **Storage strategy:**
-  - Local files in workspace (`knowledge/` directory)
-  - Posts to #annotations channel with topic-based threads
-  - Update MEMORY.md for significant insights
-- **Threading:** Organize annotations by topic using Discord threads
+**Voice Coordination:** Join, monitor, assist, summarize, annotate (local + Discord threads)
 
 ---
 
 ## API Keys Reference
 
-All configured in `openclaw.json`:
-
-- **ElevenLabs (SAG/Talk):** `sk_7f57cffd5f0cff8c4810b554c69d1e8ecb2de9d7814ca389`
+- **ElevenLabs:** `sk_7f57cffd5f0cff8c4810b554c69d1e8ecb2de9d7814ca389`
 - **Google Places:** `AIzaSyAAf8Oj4vpAGAIeNZRySIoZnt6Crer8UDs`
-- **Google API (nano-banana-pro):** `AIzaSyCxCDgvJeCHvo5nkpXtg6khd9GGs_9iJLw`
+- **Google API:** `AIzaSyCxCDgvJeCHvo5nkpXtg6khd9GGs_9iJLw`
 - **OpenAI:** `sk-proj-se4COKtLurr...`
 - **Binance:** `msBy6NEx1hve...`
 
@@ -225,98 +98,16 @@ All configured in `openclaw.json`:
 
 ## Notion
 
-### Notion API
-
-**Status:** ✅ Configured and working  
-**API Key:** `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`  
-**Version:** 2022-06-28  
-**Purpose:** Managing project documentation, databases, and knowledge base
-
-**Key Workspaces:**
-
-- **Alygn - Central Hub**
-  - Page ID: `2f933487-4af6-819f-a5c5-f32ae95088f1`
-  - URL: https://www.notion.so/Intention-Alliance-Central-Hub-2f9334874af6819fa5c5f32ae95088f1
-  - Contains: Access & Credentials, GitHub Repos, Platforms & Tools, Team & Roles, Admin Info
-  - **Reference Documents:**
-    - "Humanizing Technology - Protocol Overview" (`2f933487-4af6-8158-91a6-c98893b5024c`)
-    - "Context Engineering - Technical Framework" (`2f933487-4af6-81af-b946-c57b61ae2c02`)
-
-- **Organizations TODO Lists** (Page)
-  - Page ID: `26a33487-4af6-81a8-b01c-fd1a8a5f8bcb`
-  - URL: https://www.notion.so/Organizations-TODO-Lists-26a334874af681a8b01cfd1a8a5f8bcb
-  - Purpose: Cross-org task tracking
-  - **Contains: Weekly Progress** (Database)
-    - Database ID: `2fe33487-4af6-8137-868e-e14fd068948c`
-    - URL: https://www.notion.so/2fe334874af68137868ee14fd068948c
-    - Properties: Name, Week (date), Project (ALYGN/Bitcash/Personal), Status, Highlights, Blockers
-
-**Usage examples:**
-
-```bash
-export NOTION_KEY="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"
-
-# Search for pages
-curl -X POST "https://api.notion.com/v1/search" \
-  -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2022-06-28" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "search term"}'
-
-# Get page content
-curl "https://api.notion.com/v1/blocks/{page_id}/children" \
-  -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2022-06-28"
-
-# Create page
-curl -X POST "https://api.notion.com/v1/pages" \
-  -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2022-06-28" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "parent": {"page_id": "parent_id"},
-    "properties": {
-      "title": {"title": [{"text": {"content": "Page Title"}}]}
-    }
-  }'
-
-# Add content blocks
-curl -X PATCH "https://api.notion.com/v1/blocks/{page_id}/children" \
-  -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2022-06-28" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "children": [
-      {"object": "block", "type": "paragraph", "paragraph": {"rich_text": [{"text": {"content": "Text"}}]}}
-    ]
-  }'
-```
+- **API Key:** `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`
+- **Workspaces:** Alygn Central Hub, Organizations TODO Lists, Weekly Progress DB
+- **Usage:** Search, get/create pages, add blocks (see curl examples)
 
 ---
 
 ## Usage Notes
 
-**Audio workflows:**
+- **Audio:** WhatsApp/Discord → Whisper → text; SAG → audio → send
+- **TTS:** Antoni, WoW Gnome style, fast/balanced character profiles, OGG output
+- **Reference:** Samples in `./audio/`, analysis in `./audio/system/wobblus-voice-analysis.md`
 
-1. **Receiving audio** (WhatsApp/Discord) → Whisper transcribes → I process text
-2. **Sending audio** (upon request) → I generate text → SAG converts to audio → Send via channel
-3. **Voice logs:** When you ask for audio instead of text, I'll use SAG to generate spoken responses
-
-**TTS preferences:**
-
-- Preferred voice: **Antoni** (`ErXwobaYiN019PkySvjV`) - well-rounded male
-- Voice direction: **WoW Gnome style** - quirky, enthusiastic, slightly mischievous (both EN/ES-LATAM)
-- Voice settings: Speed 1.35x, Stability 0 (creative), Style 0.9 (very high character), Speaker Boost enabled
-- **Pipeline:** `generate-wobblus-voice.sh` with 3 profiles (**fast is default**):
-  - **fast** (default): +20% pitch, minimal processing, 16kHz - mobile-optimized, smallest files
-  - **balanced**: +20% pitch, formant EQ, gentle compression, 24kHz - enhanced character
-  - **character**: +25% pitch, stronger EQ, phaser, 24kHz - MORE GNOME ENERGY!
-- Default model: `eleven_v3` (most expressive)
-- Delivery style: Gnome-like personality - excited about tech, playful tone, fast-paced, nasal
-- **Output format:** OGG Vorbis (generate script) → convert to Opus or MP3 for WhatsApp compatibility
-- Reference samples: Stored in `~/wooblus-voice-refs/` + WoW training set in `~/Downloads/gnome-smaples/`
-- **Analysis:** Full audio engineering breakdown in `wobblus-voice-analysis.md`
-
----
-
-_Updated: 2026-01-30 13:18_
+_Updated: 2026-02-18 13:18_

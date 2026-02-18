@@ -3,7 +3,7 @@
     "total_posts": 100,
     "source": "Alygn Pre-Approved Posts (Feb 2026)",
     "strategy": "One post per day, sequential order",
-    "last_updated": "2026-02-13T17:10:11.202Z"
+    "last_updated": "2026-02-16T17:10:10.728Z"
   },
   "posts": [
     {
@@ -37,23 +37,23 @@
     {
       "id": 5,
       "text": "Emergency response that doesn't exist before crisis rarely works during one.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-02-14T17:10:04.644Z",
+      "tweet_id": "2022720006224572874"
     },
     {
       "id": 6,
       "text": "Trust is harder to scale than technology.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-02-15T17:10:05.958Z",
+      "tweet_id": "2023082399739817988"
     },
     {
       "id": 7,
       "text": "Neutrality is a feature, not a compromise.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-02-16T17:10:10.728Z",
+      "tweet_id": "2023444807616479633"
     },
     {
       "id": 8,

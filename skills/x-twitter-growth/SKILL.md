@@ -9,6 +9,19 @@
 
 ## 🔒 CRITICAL RULES (READ FIRST)
 
+### ✅ ALL PHASES ARE MANDATORY - DO NOT SKIP
+**Updated: 2026-02-14** - Each phase is critical. Phase 5 (Content Generation) is NOT optional.
+
+**Daily execution MUST include:**
+1. ✅ Phase 1: Pre-approved institutional post
+2. ✅ Phase 2: Browser discovery (explore trends)
+3. ✅ Phase 3: Decision engine (Grok evaluation)
+4. ✅ Phase 4: X API execution (post engagement)
+5. ✅ Phase 5: Content generation (Grok Prompts #1 + #13) - **NEVER SKIP**
+6. ✅ Phase 6: Summary report (Discord thread)
+
+**Why Phase 5 matters:** Generates 5 posts + 5 replies for next cycle or manual review. Missing this phase breaks content pipeline.
+
 ### Mandatory Posting Format
 **EVERY tweet MUST end with:**
 ```
@@ -278,6 +291,26 @@ node scripts/alygn/x-twitter/twitter-automation.js exec 1 --dry-run
 - Auth failure → Alert human
 
 ---
+
+### Phase 5: Content Generation (MANDATORY)
+
+**Objective:** Generate original content for Alygn voice
+
+**Scripts:**
+```bash
+# Prompt #1: Daily thread ideas (10 ideas → select best 5)
+node scripts/alygn/x-twitter/twitter-automation.js exec 1
+
+# Prompt #13: Strategic replies + trend monitoring
+node scripts/alygn/x-twitter/twitter-automation.js exec 13
+```
+
+**Output:**
+- 5 post ideas (threads with hooks + points)
+- 5 strategic reply suggestions
+- Saved to `twitter-outputs/alygn/`
+
+**Critical:** This phase ALWAYS executes - generates content for next cycle or manual review. Do NOT skip.
 
 ### Engagement System
 

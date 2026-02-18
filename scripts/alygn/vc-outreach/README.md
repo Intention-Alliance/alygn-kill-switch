@@ -27,7 +27,7 @@ node orchestration/weekly-report.js
 
 ## 📁 Directory Structure
 
-```
+```plaintext
 scripts/alygn/vc-outreach/
 ├── README.md                              # This file
 ├── VC-OUTREACH-IMPLEMENTATION-PLAN.md     # Complete technical plan
@@ -35,7 +35,7 @@ scripts/alygn/vc-outreach/
 ├── workflow.json                          # Example workflows (see below)
 │
 ├── config/
-│   ├── credentials.json                   # API keys (in parent workspace/config/)
+│   ├── notion-config.json                 # Notion API Access Data
 │   ├── gmail-filters.json                 # Email filter patterns
 │   └── discovery-config.json              # VC discovery parameters
 │
@@ -46,12 +46,7 @@ scripts/alygn/vc-outreach/
 │   └── relevance-scorer.js                # VC alignment scoring
 │
 ├── email/
-│   ├── vc-outreach-email-template.py      # Python email sender (existing)
 │   ├── vc-outreach-email-template.js      # JS template generator (existing)
-│   ├── email-template-governance.html     # Governance variant (existing)
-│   ├── email-template-technical.html      # Technical variant (existing)
-│   ├── email-personalizer.js              # Dynamic personalization
-│   └── subject-line-generator.js          # AI subject line generation
 │
 ├── tracking/
 │   ├── reply-tracker.js                   # IMAP reply detection
@@ -71,7 +66,7 @@ scripts/alygn/vc-outreach/
 │   └── urgent-classifier.js               # Urgency detection
 │
 ├── utils/
-│   ├── notion-api.js                      # Notion helpers (shared)
+│   ├── notion-helper.js                   # Notion helpers (shared)
 │   ├── gmail-api.js                       # Gmail/IMAP helpers
 │   ├── logger.js                          # Structured logging (shared)
 │   └── rate-limiter.js                    # API throttling
@@ -249,7 +244,8 @@ scripts/alygn/vc-outreach/
 **Use these prompts to execute workflows via AI agent:**
 
 ### Prompt 1: Discover New VCs
-```
+
+```plaintext
 Execute VC discovery workflow:
 - Source: Crunchbase
 - Query: "AI safety seed stage investors"
@@ -262,7 +258,8 @@ Confirm top 10 highest-scoring VCs before adding to outreach queue.
 ```
 
 ### Prompt 2: Analyze Reply and Suggest Follow-up
-```
+
+```plaintext
 Check Gmail (alyyygn@gmail.com) for new VC replies:
 - Analyze sentiment (positive/neutral/negative)
 - Extract intent (meeting request/interested/declined/info request)
@@ -275,7 +272,8 @@ Present findings and wait for confirmation on next action.
 ```
 
 ### Prompt 3: Personalize Email for Specific VC
-```
+
+```plaintext
 Research and draft personalized outreach for [VC Name]:
 
 1. Web search: Recent investments, blog posts, partner interviews
@@ -290,7 +288,8 @@ Present draft for review before sending.
 ```
 
 ### Prompt 4: Weekly Performance Review
-```
+
+```plaintext
 Generate ALYGN VC Outreach weekly report (last 7 days):
 
 Metrics to include:
@@ -317,6 +316,7 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
 **Parent:** Organizations TODO Lists
 
 **Key Properties:**
+
 - `VC Name` (Title)
 - `Contact Email` (Email) ⚠️ Use `alyyygn@gmail.com` (3 y's) for staging
 - `Status` (Select: Pending → Contacted → Replied → Meeting Scheduled → Invested/Passed)
@@ -328,6 +328,7 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
 - `Next Action` (Text: AI-generated follow-up suggestion)
 
 **Views:**
+
 - High Priority Pipeline (Status: Pending/Contacted, Priority: High)
 - Active Conversations (Status: Replied, sorted by Reply Date)
 - Needs Follow-up (Replied but no action in 3+ days)
@@ -339,19 +340,20 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
 
 **Managed via OpenClaw cron:**
 
-| Time | Frequency | Job | Command |
-|------|-----------|-----|---------|
-| Mon 8 AM | Weekly | VC Discovery | `node core/vc-discovery.js --source=crunchbase --limit=30` |
-| Mon-Fri 7-7 PM | Hourly | Outreach (1 email/hour) | `node orchestration/outreach-orchestrator.js --send-next` |
-| Mon-Fri 7AM, 9AM, 11AM, 3PM, 5PM, 7PM | 6x/day | Reply Tracking | `node tracking/reply-tracker.js` |
-| Fri 5 PM | Weekly | Performance Report | `node orchestration/weekly-report.js` |
-| 1st of month 10 AM | Monthly | Database Cleanup | `node utils/database-maintenance.js` |
+| Time                                  | Frequency | Job                     | Command                                                    |
+| ------------------------------------- | --------- | ----------------------- | ---------------------------------------------------------- |
+| Mon 8 AM                              | Weekly    | VC Discovery            | `node core/vc-discovery.js --source=crunchbase --limit=30` |
+| Mon-Fri 7-7 PM                        | Hourly    | Outreach (1 email/hour) | `node orchestration/outreach-orchestrator.js --send-next`  |
+| Mon-Fri 7AM, 9AM, 11AM, 3PM, 5PM, 7PM | 6x/day    | Reply Tracking          | `node tracking/reply-tracker.js`                           |
+| Fri 5 PM                              | Weekly    | Performance Report      | `node orchestration/weekly-report.js`                      |
+| 1st of month 10 AM                    | Monthly   | Database Cleanup        | `node utils/database-maintenance.js`                       |
 
 ---
 
 ## 🔐 Configuration
 
 ### credentials.json
+
 ```json
 {
   "gmail": {
@@ -381,6 +383,7 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
 ```
 
 ### gmail-filters.json
+
 ```json
 {
   "filters": [
@@ -392,7 +395,8 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
           "from_domains": [
             "ycombinator.com",
             "a16z.com",
-            "sequoiacap.com"
+            "sequoiacap.com",
+            "..."
           ]
         }
       },
@@ -407,6 +411,7 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
 ```
 
 ### discovery-config.json
+
 ```json
 {
   "sources": {
@@ -417,6 +422,11 @@ Output to: WhatsApp (summary), Discord (detailed), Notion (full report).
         "focus": ["AI/ML", "Deep Tech", "Governance"],
         "location": ["United States", "United Kingdom", "Europe"]
       },
+      "limit": 30
+    },
+    "angellist": {
+      "enabled": true,
+      "queries": ["AI safety seed", "AGI alignment", "AI governance"},
       "limit": 30
     },
     "angellist": {

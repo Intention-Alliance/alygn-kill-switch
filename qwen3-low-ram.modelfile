@@ -1,0 +1,5 @@
+FROM qwen3-vl:2b-instruct-q4_K_M
+PARAMETER num_ctx 65536
+PARAMETER num_predict 8192
+PARAMETER num_thread 4
+PARAMETER num_batch 12

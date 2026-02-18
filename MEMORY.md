@@ -56,8 +56,10 @@
 
 - **Alygn (ALYGN)** — maintain professional, direct communication
 - **Bitcash** — maintain professional, direct communication
-  - Active work: `bitcashorg/masterbots` repository (RAG implementation fixes)
+  - Active work: `bitcashorg/masterbots` repository (RAG + workspace bugs analysis)
   - NDA active (signed Aug 19, 2025) - strict confidentiality
+  - **Repository details:** Bun monorepo (Next.js 15, React 19), PostgreSQL + pgvector, Hasura GraphQL
+  - **Critical findings (Feb 4):** Identified 5 P0/P1 bugs in workspace state management, RAG pipeline, and mobile stability
     _(For these: no quirky exclamations, measured responses, business-appropriate)_
 
 ## Architectural Pattern: Script ↔ AI Execution
@@ -67,6 +69,7 @@
 OpenClaw tools (web_search, web_fetch) are **session-level, not script-level**.
 
 **Correct architecture:**
+
 ```
 Script: Coordinates workflow, loads/saves files, updates external systems
   ↓
@@ -78,18 +81,21 @@ Script: Reads cache, updates Notion/Discord
 ```
 
 **Why this works:**
+
 - Tools need session context (auth, LLM) that scripts don't have
 - Scripts are orchestrators, AI agents are executors
 - File caching avoids re-execution (efficiency)
 - Separation of concerns = clean architecture
 
 **Anti-patterns to avoid:**
+
 - ❌ Scripts trying to call `openclaw run` or `openclaw sessions spawn` with inline tasks
 - ❌ Scripts attempting to call built-in tools directly
 - ❌ Creating new scripts when fixing existing ones would work
 - ❌ Simulating work (placeholder workflows) instead of executing
 
 **Best practices:**
+
 - ✅ Scripts identify what needs work, post to Discord
 - ✅ AI executes using native tools
 - ✅ AI saves structured results to files
@@ -142,12 +148,14 @@ Any technical systems exist only in service of governance and coordination.
 ### Communications Guardrails
 
 **✅ Safe to share publicly:**
+
 - Alygn's purpose, principles, and institutional framing
 - General commentary on AI governance challenges
 - High-level statements about coordination, legitimacy, preparedness
 - Non-specific updates ("Alygn is publicly forming")
 
 **🚫 NOT safe to share publicly:**
+
 - Financial details (valuation, pricing, budgets)
 - Investor names or discussions
 - Governance mechanics or enforcement processes
@@ -155,6 +163,7 @@ Any technical systems exist only in service of governance and coordination.
 - Timelines, commitments, or claims of authority
 
 **Language use:**
+
 - ✅ "Supports coordination" / "Enables accountability" / "Provides neutral governance infrastructure"
 - ❌ "Ensures compliance" / "Regulates" / "Controls" / "Oversees systems directly"
 
@@ -163,14 +172,56 @@ Any technical systems exist only in service of governance and coordination.
 ### Pre-Approved Posts Strategy
 
 **100 pre-approved posts** (one per day, sequential order)
+
 - Tracking: `scripts/alygn/pre-approved-posts.json`
 - Categories: Institutional truths, reframes, process thinking, legitimacy/neutrality, meta-presence
 - All posts align with institutional tone and communications guardrails
 
 **References:**
+
 - `~/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
 - `~/Documents/alygn-context-update/01 Alygn - Boiler Plate.pdf`
 - `~/Documents/alygn-context-update/02 Alygn Pre Approved Posts.pdf`
+
+---
+
+## 🔧 Masterbots Critical Bugs Analysis (Feb 4, 2026)
+
+### Root Causes Identified (Issue #578 - Workspace Bugs Master Plan)
+
+**P0 CRITICAL:**
+
+- **Bug #3 (H3+ sections breaking):** `contentEnd` boundary calculation ignores child sections
+  - Fix: Use next-sibling logic to include all nested content
+- **Bug #1 (new doc not updating):** Race condition in `addDocument()` navigation
+  - Fix: Use `mutateAsync()` before navigation
+
+**P1 HIGH:**
+
+- **Bug #2 (15% mobile idle):** No SSE retry/heartbeat in `use-mb-chat.tsx`
+  - Fix: Custom fetch with exponential backoff + timeout
+- **Bug #4 (version list stale):** Version query cache not invalidated
+  - Fix: `queryClient.invalidateQueries(['versions'])`
+
+**Performance (Issue #555):**
+
+- Markdown parsing called on every streaming chunk (fixes lag on 10MB+ docs)
+- Base64 attachments need caching
+- Document size validation missing
+
+### Files Analyzed
+
+- `use-workspace.tsx` (~700 lines) - state management
+- `use-workspace-chat.tsx` (~1,115 lines) - streaming pipeline
+- `use-mb-chat.tsx` (~1,300 lines) - SSE/chat handling
+- `markdown-utils.ts` (~600 lines) - section parsing
+- RAG pipeline (5 files) - retrieval + embedding
+
+### Deliverables
+
+- GitHub comments posted on #578, #555, #389
+- Notion TODO list updated with findings + time estimates
+- 3 analysis documents created (35KB total)
 
 ---
 
@@ -193,6 +244,7 @@ Any technical systems exist only in service of governance and coordination.
 **Location:** `vc-outreach-email-template.js`
 
 **Features:**
+
 - MIME-embedded logo (Content-ID) - ✅ Working Chrome/Gmail/Outlook
 - MSO conditional comments for Outlook
 - Personalization: recipient name, pain points, investments
@@ -200,6 +252,7 @@ Any technical systems exist only in service of governance and coordination.
 - Tania Lea signature + Alygn footer
 
 **Variants:**
+
 - Governance: "Coordination Before Crisis"
 - Institutional: "The Real AI Risk is Coordination Failure"
 
@@ -208,6 +261,7 @@ Any technical systems exist only in service of governance and coordination.
 **Key insight:** Research is manual (web_search/web_fetch) + script coordination
 
 **Workflow:**
+
 1. Script identifies VCs needing research
 2. Wobblus executes web_search/web_fetch (in session context)
 3. Saves results to `/tmp/vc-research-[name]-result.json`
@@ -215,6 +269,7 @@ Any technical systems exist only in service of governance and coordination.
 5. Marks as "Ready for outreach" when complete
 
 **Why this works:**
+
 - Tools (web_search, web_fetch) are session-level, not script-level
 - Scripts coordinate, AI executes tools
 - Cache-first (no re-research if file exists)
@@ -285,6 +340,7 @@ node send-approved-emails.js --limit=5
 **Problem:** Was trying to use `sessions_spawn` from a Node.js script via shell exec.
 
 **Root Cause:**
+
 - `sessions_spawn` is a **tool only AI agents can use**, not scripts
 - Scripts don't have access to OpenClaw tools
 - Shell `exec` can't trigger tool execution in Wobblus session
@@ -292,7 +348,7 @@ node send-approved-emails.js --limit=5
 **Correct Pattern (from official docs):**
 
 ```
-Script → Posts to Discord → Wobblus uses sessions_spawn tool 
+Script → Posts to Discord → Wobblus uses sessions_spawn tool
   ↓
 Wobblus spawns sub-agents → Execute web_search/web_fetch → JSON
   ↓
@@ -304,6 +360,7 @@ Script reads cache → Updates Notion
 **Key insight:** Scripts orchestrate and update external systems. AI agents execute tools and work with data. File-based coordination between them.
 
 **Implementation:**
+
 - New script: `deep-research-vcs-v3.js` (one-by-one processing)
 - Script posts research request to Discord #annotations
 - Wobblus receives request and spawns sub-agents
@@ -312,6 +369,7 @@ Script reads cache → Updates Notion
 - Script reads, updates Notion, continues to next VC
 
 **Benefits:**
+
 - ✅ Proper tool execution (native OpenClaw tools)
 - ✅ Structured data (JSON from sub-agents)
 - ✅ Transparent (see each request)
@@ -324,6 +382,7 @@ Script reads cache → Updates Notion
 **Script:** `deep-research-vcs-v3.js`
 
 **Correct Pattern:**
+
 1. Script loads 1 VC from Notion
 2. Posts research request to Discord #annotations
 3. Wobblus spawns sub-agents (sessions_spawn + web_search/web_fetch)
@@ -333,10 +392,12 @@ Script reads cache → Updates Notion
 7. Next iteration when script runs again
 
 **Key difference from Feb 13:**
+
 - ❌ WRONG: Script calls `sessions_spawn` via shell exec
 - ✅ RIGHT: Wobblus uses `sessions_spawn` tool + file coordination
 
 **Testing:**
+
 ```bash
 node deep-research-vcs-v3.js --limit=1
 ```
@@ -355,6 +416,7 @@ node deep-research-vcs-v3.js --limit=1
 **Status:** Production-ready. Modular workflow with 5 phases.
 
 **Architecture:**
+
 ```
 1. Discovery → Basic data (automated cron)
 2. Deep Research → Fill missing data (manual/cron)
@@ -426,6 +488,7 @@ scripts/alygn/vc-outreach/
 **Documentation:** `MODULAR-WORKFLOW.md` (complete workflow guide)
 
 **API Integration (Updated Feb 12, 2026 3:45 PM):**
+
 - Perplexity API for web search (direct HTTP requests)
 - Firecrawl API for web scraping (direct HTTP requests)
 - API keys loaded from `openclaw.json` config
@@ -437,13 +500,29 @@ scripts/alygn/vc-outreach/
 
 ---
 
-## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-11 ✅ PRODUCTION
+## 🐦 Twitter Automation (ALYGN) - Updated 2026-02-14 ✅ PRODUCTION
+
+### ✅ ALL PHASES MANDATORY (Updated 2026-02-14)
+
+**IMPORTANT:** Do NOT skip any phase. All 6 phases execute EVERY run:
+
+1. ✅ Phase 1: Pre-approved post (1/100 institutional)
+2. ✅ Phase 2: Browser discovery (explore AI safety posts)
+3. ✅ Phase 3: Decision engine (Grok evaluation)
+4. ✅ Phase 4: X API execution (post quotes/replies)
+5. ✅ Phase 5: Content generation (Grok prompts #1 + #13) - **MANDATORY - DO NOT SKIP**
+6. ✅ Phase 6: Summary report (Discord thread update)
+
+**Each phase is critical to the daily workflow.** Phase 5 generates content for next cycle.
+
+## 🐦 Twitter Automation (ALYGN) - Details
 
 ### Twitter Discovery System (NEW) - Phase 1 Complete ✅
 
 **Architecture:** Hybrid browser discovery + X API execution
 
 **3-Phase Workflow:**
+
 1. **Phase 1: Browser Discovery** ✅ COMPLETE (`browser-explore.js`)
    - Navigate /explore with alygn profile (browser relay)
    - Scroll feed, extract posts (IDs, authors, content, engagement)
@@ -458,6 +537,7 @@ scripts/alygn/vc-outreach/
    - Track results → WhatsApp notification
 
 **Why This Approach?**
+
 - Browser relay: Natural content discovery (algorithm feed, trending topics)
 - X API: Programmable execution (faster, more reliable than browser automation)
 - Decision layer: Grok + web search = intelligent engagement (not just keyword matching)
@@ -465,11 +545,12 @@ scripts/alygn/vc-outreach/
 **Location:** `scripts/alygn/twitter-discovery/`  
 **Status:** ✅ PRODUCTION - INTEGRATED INTO DAILY CRON  
 **Test Results (Feb 11, 2026):**
+
 - Phase 1 (Browser Discovery): 100% relevance with search "AGI alignment"
 - Phase 2 (Decision Engine): 3/3 posts approved by Grok
 - Phase 3 (X API Executor): 2/3 posted live ([tweet1](https://x.com/aialygn/status/2021417150179610626), [tweet2](https://x.com/aialygn/status/2021417173046981063))
-**Cron:** Daily 11 AM (combined with Content Generation)  
-**Documentation:** `docs/TWITTER-AUTOMATION.md`
+  **Cron:** Daily 11 AM (combined with Content Generation)  
+  **Documentation:** `docs/TWITTER-AUTOMATION.md`
 
 ### 📝 MANDATORY POSTING FORMAT (Updated 2026-02-11)
 
@@ -484,6 +565,7 @@ more at @aialygn
 ```
 
 **Approved hashtags:**
+
 - `#AIGovernance` (primary - use most often)
 - `#AIAlignment` (technical posts)
 - `#AISafety` (safety-focused posts)
@@ -492,12 +574,14 @@ more at @aialygn
 - `#AIEthics`, `#AIRisk` (contextual)
 
 **Signature placement:**
+
 - Short posts: End with hashtag + signature
 - Threads: Last tweet ends with hashtag + signature
 - Replies: End with hashtag + signature
 - Quotes: End with hashtag + signature
 
 **Example:**
+
 ```
 Legitimacy is infrastructure.
 
@@ -507,12 +591,14 @@ more at @aialygn
 ```
 
 **Scripts with format enforcement:**
+
 - ✅ `post-pre-approved.js` (formatTweet function)
 - ✅ `x-api-executor.js` (applies formatTweet to ALL posts/replies/quotes) - Updated 2026-02-11
 - ⏳ `twitter-automation.js` (Grok prompts need update for shorter content)
 - ⏳ `decision-engine.js` (reply/quote generation)
 
 **CRITICAL ARCHITECTURE (learned 2026-02-11):**
+
 - ❌ Browser is NOT for posting - ONLY for exploring/navigating
 - ✅ Browser: Navigate /explore → Extract data → workflow.json
 - ✅ Scripts: Read workflow.json → Apply format → Post via X API
@@ -526,6 +612,7 @@ more at @aialygn
 **Documentation:** `scripts/alygn/X-API-CAPABILITIES.md`
 
 **ALL supported features:**
+
 1. ✅ **Post tweets** - Regular text posts with automatic format
 2. ✅ **Mention users** - @username anywhere in content (automatic)
 3. ✅ **Reply to tweets** - Reply to any post by ID
@@ -534,16 +621,19 @@ more at @aialygn
 6. ✅ **Create polls** - 2-4 options, custom duration
 
 **Format enforcement (MANDATORY):**
+
 - ALL tweets get: `[content]\n\n[hashtags]\n\nmore at @aialygn`
 - Applied automatically via `formatTweet()` function
 - Works on: posts, replies, quotes, polls
 
 **Media support:**
+
 - Images: PNG, JPG, JPEG, GIF
 - Videos: MP4, MOV
 - Works with: posts ✅, replies ✅, quotes ✅
 
 **Workflow JSON structure:**
+
 ```json
 {
   "posts": [
