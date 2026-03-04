@@ -1,0 +1,318 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "date": "2026-03-02",
+    "note": "Dynamic language configuration for municipal outreach - scales globally"
+  },
+  "countries": {
+    "CR": {
+      "name": "Costa Rica",
+      "primary_language": "es",
+      "primary_language_name": "Spanish",
+      "secondary_languages": ["en"],
+      "email_language": "es",
+      "x_language": "es",
+      "cultural_adapter": {
+        "formality_level": "high",
+        "address_style": "Estimado/a {title} {name}",
+        "closing_style": "Saludos cordiales",
+        "titles": {
+          "mayor": "Alcalde(sa)",
+          "vice_mayor": "Vice-Alcalde(sa)",
+          "professional": ["Licenciado(a)", "Ingeniero(a)", "Doctor(a)"]
+        },
+        "communication_style": "indirect_polite",
+        "relationship_building": "important",
+        "time_orientation": "flexible",
+        "hierarchy_respect": "high",
+        "taboo_topics": ["personal wealth", "political criticism"],
+        "preferred_topics": ["family", "community", "education", "environment"],
+        "business_etiquette": [
+          "Handshake for greetings",
+          "Maintain eye contact",
+          "Allow time for small talk before business",
+          "Avoid rushing decisions"
+        ],
+        "email_norms": {
+          "greeting_required": true,
+          "signature_required": true,
+          "formal_register": true,
+          "emoji_usage": "never"
+        }
+      },
+      "cultural_notes": [
+        "Formal address required (Estimado/a, Saludos cordiales)",
+        "Use titles (Alcalde(sa), Licenciado(a), Ingeniero(a))",
+        "Spanish mandatory for official communications",
+        "English acceptable for follow-up",
+        "Ticos value politeness and indirect communication",
+        "Pura vida culture - friendly but professional"
+      ],
+      "email_templates": {
+        "governance": "templates/es/governance-email.txt",
+        "institutional": "templates/es/institutional-email.txt"
+      },
+      "x_templates": {
+        "quote": "templates/es/x-quote.txt",
+        "reply": "templates/es/x-reply.txt"
+      }
+    },
+    "US": {
+      "name": "United States",
+      "primary_language": "en",
+      "primary_language_name": "English",
+      "secondary_languages": ["es"],
+      "email_language": "en",
+      "x_language": "en",
+      "cultural_adapter": {
+        "formality_level": "medium",
+        "address_style": "Dear {title} {name} or Dear {first_name}",
+        "closing_style": "Sincerely / Best regards",
+        "titles": {
+          "mayor": "Mayor",
+          "council": "Council Member",
+          "professional": ["Dr.", "Esq.", "CPA"]
+        },
+        "communication_style": "direct_efficient",
+        "relationship_building": "task_focused",
+        "time_orientation": "time_is_money",
+        "hierarchy_respect": "medium",
+        "taboo_topics": ["politics", "religion", "personal finances"],
+        "preferred_topics": ["economy", "jobs", "infrastructure", "education"],
+        "business_etiquette": [
+          "Firm handshake",
+          "Direct eye contact",
+          "Get to the point quickly",
+          "Follow-up in writing"
+        ],
+        "email_norms": {
+          "greeting_required": true,
+          "signature_required": true,
+          "formal_register": false,
+          "emoji_usage": "rarely",
+          "unsubscribe_link": "required"
+        }
+      },
+      "cultural_notes": [
+        "Direct communication style",
+        "First-name basis acceptable in many contexts",
+        "English primary, Spanish for Hispanic communities",
+        "Legal disclaimers required in some states",
+        "Time efficiency valued",
+        "Results-oriented communication"
+      ],
+      "email_templates": {
+        "governance": "templates/en/governance-email.txt",
+        "institutional": "templates/en/institutional-email.txt"
+      },
+      "x_templates": {
+        "quote": "templates/en/x-quote.txt",
+        "reply": "templates/en/x-reply.txt"
+      }
+    },
+    "FR": {
+      "name": "France",
+      "primary_language": "fr",
+      "primary_language_name": "French",
+      "secondary_languages": ["en", "de"],
+      "email_language": "fr",
+      "x_language": "fr",
+      "cultural_adapter": {
+        "formality_level": "very_high",
+        "address_style": "Monsieur le Maire / Madame la Maire",
+        "closing_style": "Veuillez agréer, {title}, l'expression de mes salutations distinguées",
+        "titles": {
+          "mayor": "Monsieur le Maire / Madame la Maire",
+          "deputy": "Monsieur le Maire-adjoint / Madame la Maire-adjointe",
+          "professional": ["Maître", "Docteur", "Professeur"]
+        },
+        "communication_style": "formal_direct",
+        "relationship_building": "formal",
+        "time_orientation": "punctual",
+        "hierarchy_respect": "very_high",
+        "taboo_topics": ["salary", "religion", "personal life"],
+        "preferred_topics": ["culture", "history", "gastronomy", "arts"],
+        "business_etiquette": [
+          "Formal handshake for greetings",
+          "Wait to be seated",
+          "No first names until invited",
+          "Written correspondence preferred"
+        ],
+        "email_norms": {
+          "greeting_required": true,
+          "signature_required": true,
+          "formal_register": true,
+          "emoji_usage": "never",
+          "gdpr_disclaimer": "mandatory"
+        }
+      },
+      "eu_requirements": {
+        "gdpr_compliance": true,
+        "unsubscribe_required": true,
+        "company_registration_required": true,
+        "languages_required": ["fr"]
+      },
+      "cultural_notes": [
+        "Very formal address required (Monsieur le Maire, Madame la Maire)",
+        "French mandatory for official communications (EU law)",
+        "English may be seen as disrespectful",
+        "Hierarchical respect very important",
+        "Cartesian logic valued - be precise and structured",
+        "Separation of personal and professional life"
+      ],
+      "email_templates": {
+        "governance": "templates/fr/governance-email.txt",
+        "institutional": "templates/fr/institutional-email.txt"
+      },
+      "x_templates": {
+        "quote": "templates/fr/x-quote.txt",
+        "reply": "templates/fr/x-reply.txt"
+      }
+    },
+    "DE": {
+      "name": "Germany",
+      "primary_language": "de",
+      "primary_language_name": "German",
+      "secondary_languages": ["en"],
+      "email_language": "de",
+      "x_language": "de",
+      "eu_requirements": {
+        "gdpr_compliance": true,
+        "unsubscribe_required": true,
+        "company_registration_required": true,
+        "languages_required": ["de"]
+      },
+      "cultural_notes": [
+        "Very formal (Sehr geehrter Herr Bürgermeister)",
+        "German mandatory for official communications",
+        "Titles important (Dr., Prof., etc.)",
+        "Direct, factual communication style"
+      ],
+      "email_templates": {
+        "governance": "templates/de/governance-email.txt",
+        "institutional": "templates/de/institutional-email.txt"
+      },
+      "x_templates": {
+        "quote": "templates/de/x-quote.txt",
+        "reply": "templates/de/x-reply.txt"
+      }
+    },
+    "ES": {
+      "name": "Spain",
+      "primary_language": "es",
+      "primary_language_name": "Spanish",
+      "secondary_languages": ["ca", "eu", "gl", "en"],
+      "email_language": "es",
+      "x_language": "es",
+      "eu_requirements": {
+        "gdpr_compliance": true,
+        "unsubscribe_required": true,
+        "company_registration_required": true,
+        "languages_required": ["es"]
+      },
+      "regional_languages": {
+        "Catalonia": "ca",
+        "Basque Country": "eu",
+        "Galicia": "gl"
+      },
+      "cultural_notes": [
+        "Formal address (Estimado Alcalde)",
+        "Spanish mandatory, but regional languages preferred in autonomous communities",
+        "EU compliance required"
+      ],
+      "email_templates": {
+        "governance": "templates/es/governance-email.txt",
+        "institutional": "templates/es/institutional-email.txt"
+      },
+      "x_templates": {
+        "quote": "templates/es/x-quote.txt",
+        "reply": "templates/es/x-reply.txt"
+      }
+    }
+  },
+  "language_codes": {
+    "en": {
+      "name": "English",
+      "native_name": "English",
+      "direction": "ltr",
+      "formal_address": "Dear {title} {name}",
+      "formal_closing": "Sincerely",
+      "templates_ready": true
+    },
+    "es": {
+      "name": "Spanish",
+      "native_name": "Español",
+      "direction": "ltr",
+      "formal_address": "Estimado/a {title} {name}",
+      "formal_closing": "Saludos cordiales",
+      "templates_ready": true
+    },
+    "fr": {
+      "name": "French",
+      "native_name": "Français",
+      "direction": "ltr",
+      "formal_address": "{title} {name}",
+      "formal_closing": "Veuillez agréer, {title}, l'expression de mes salutations distinguées",
+      "templates_ready": false
+    },
+    "de": {
+      "name": "German",
+      "native_name": "Deutsch",
+      "direction": "ltr",
+      "formal_address": "Sehr geehrter {title} {name}",
+      "formal_closing": "Mit freundlichen Grüßen",
+      "templates_ready": false
+    }
+  },
+  "translation_strategy": {
+    "base_language": "en",
+    "workflow": [
+      "1. Create template in English (base)",
+      "2. Professional translation to target language",
+      "3. Native speaker review",
+      "4. Cultural adaptation (not just translation)",
+      "5. Legal compliance check (EU, etc.)"
+    ],
+    "tools": [
+      "DeepL Pro (professional translation)",
+      "Native speaker review (mandatory)",
+      "Legal review for EU compliance"
+    ],
+    "never_use": [
+      "Google Translate (unprofessional)",
+      "Machine translation without review",
+      "Direct translation without cultural adaptation"
+    ]
+  },
+  "research_requirements": {
+    "mandatory_fields": [
+      "municipality_name",
+      "province_state",
+      "country",
+      "language_code",
+      "mayor_name",
+      "mayor_title",
+      "contact_email",
+      "phone",
+      "website"
+    ],
+    "recommended_fields": [
+      "population",
+      "current_issues",
+      "recent_initiatives",
+      "political_affiliation",
+      "x_handle",
+      "linkedin",
+      "pain_points",
+      "ai_governance_signals"
+    ],
+    "deep_research_fields": [
+      "current_crisis_or_challenge",
+      "recent_news_6months",
+      "budget_priorities",
+      "sister_cities",
+      "existing_partnerships",
+      "regulatory_environment"
+    ]
+  }
+}

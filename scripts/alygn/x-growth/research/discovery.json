@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-02-18T16:28:00Z",
+  "search_queries": ["AI safety", "AGI alignment"],
+  "posts": [
+    {
+      "id": "2024035182538617041",
+      "author": "techNmak",
+      "content": "Google DeepMind just published the most important AI safety paper of 2026. And almost nobody is talking about it. \"Intelligent AI Delegation\" - a framework for how AI agents should hand off work to other agents and humans.",
+      "metrics": { "replies": 13, "reposts": 16, "likes": 77, "views": 4892 },
+      "url": "https://x.com/techNmak/status/2024035182538617041",
+      "relevance": "high"
+    },
+    {
+      "id": "2021217888720629795",
+      "author": "rekhadhamika",
+      "content": "This is Mrinank Sharma, an AI safety researcher at Anthropic, until recently. He resigned, saying the world is falling apart and in peril. In a cryptic public note, he hints that there is more happening inside frontier AI labs than what's visible from the outside.",
+      "metrics": { "replies": 10, "reposts": 22, "likes": 50, "views": 6414 },
+      "url": "https://x.com/rekhadhamika/status/2021217888720629795",
+      "relevance": "high"
+    },
+    {
+      "id": "2023239273437151613",
+      "author": "chiefofautism",
+      "content": "i found a way to make UNCENSORED AI AGENT on a RTX 4090 GPU with LOCAL 30B model weights this is GLM-4.7-Flash with abliteration, need 24GB VRAM, safety alignment surgically removed from the weights.",
+      "metrics": { "replies": 87, "reposts": 186, "likes": 2083, "views": 320260 },
+      "url": "https://x.com/chiefofautism/status/2023239273437151613",
+      "relevance": "controversial"
+    }
+  ],
+  "users_found": ["@AnthropicAI", "@aisafety_course", "@Aisafetyorg"]
+}

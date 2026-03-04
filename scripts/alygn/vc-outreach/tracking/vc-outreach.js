@@ -10,10 +10,10 @@
  */
 
 const https = require('https');
-const { getNotionKey } = require('../../../shared/load-credentials');
+const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
 
 const NOTION_API_KEY = getNotionKey();
-const VC_TRACKER_DB_ID = process.env.VC_TRACKER_DB_ID || '2fc33487-4af6-8182-9013-d127ce6778b6'; // Set after running setup-vc-tracker.js
+const VC_TRACKER_DB_ID = process.env.VC_TRACKER_DB_ID || getNotionDatabase('vc_outreach');
 
 async function notionRequest(method, endpoint, body = null) {
   return new Promise((resolve, reject) => {

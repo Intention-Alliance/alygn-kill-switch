@@ -1,0 +1,112 @@
+{
+  "mode": "live",
+  "executedAt": "2026-02-28T02:00:45.052Z",
+  "workflow": {
+    "generatedAt": "2026-02-28T02:00:45.051Z",
+    "totalPosts": 7,
+    "validPosts": 7,
+    "blockedPosts": 0,
+    "posts": [
+      {
+        "id": 1,
+        "content": "Microsoft's Tay bot turned racist in HOURS from Twitter trolls. Unaligned AI absorbs the web's worst. Lesson learned? #AIFail #AIAlignment What do you think? 🤯 (128 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "Microsoft's Tay bot turned racist in HOURS from Twitter trolls. Unaligned AI absorbs the web's worst. Lesson learned? #AIFail #AIAlignment What do you think? 🤯 (128 chars)"
+      },
+      {
+        "id": 2,
+        "content": "COMPAS recidivism algo biased AGAINST Black defendants—2x false positives. Justice warped by data bias. Audit all AI! #AIBias #AIEthics RT if you agree (132 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "COMPAS recidivism algo biased AGAINST Black defendants—2x false positives. Justice warped by data bias. Audit all AI! #AIBias #AIEthics RT if you agree (132 chars)"
+      },
+      {
+        "id": 3,
+        "content": "Facial rec fails 35x more on dark skin tones (NIST study). Real harm from skewed training data. Align datasets now! #AIFail #AIethics Thoughts? 👀 (128 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "Facial rec fails 35x more on dark skin tones (NIST study). Real harm from skewed training data. Align datasets now! #AIFail #AIethics Thoughts? 👀 (128 chars)"
+      },
+      {
+        "id": 4,
+        "content": "YouTube recs funneled users to extremism (internal leaks). Profit > safety? Classic alignment flop. #ContentAI #AIEthics What’s your take? (118 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "YouTube recs funneled users to extremism (internal leaks). Profit > safety? Classic alignment flop. #ContentAI #AIEthics What’s your take? (118 chars)"
+      },
+      {
+        "id": 5,
+        "content": "AlphaFold cracked protein folding, speeding cures for diseases. Narrow AI, perfectly aligned to human goals! #AISuccess #AIAlignment Win! 🚀 (124 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "AlphaFold cracked protein folding, speeding cures for diseases. Narrow AI, perfectly aligned to human goals! #AISuccess #AIAlignment Win! 🚀 (124 chars)"
+      },
+      {
+        "id": 6,
+        "content": "RLHF tamed LLMs like GPT—human feedback cut toxicity 80%+. Alignment via prefs works IRL. Scale it! #RLHF #AISafety Agree? (108 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "RLHF tamed LLMs like GPT—human feedback cut toxicity 80%+. Alignment via prefs works IRL. Scale it! #RLHF #AISafety Agree? (108 chars)"
+      },
+      {
+        "id": 7,
+        "content": "OpenAI Moderation API blocks 99% harmful prompts. Safety tech scaling up. But foolproof? #AISuccess #AIethics Debate below! 💬 (112 chars)\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "OpenAI Moderation API blocks 99% harmful prompts. Safety tech scaling up. But foolproof? #AISuccess #AIethics Debate below! 💬 (112 chars)"
+      }
+    ]
+  },
+  "results": [
+    {
+      "postId": 1,
+      "status": "posted",
+      "contentLength": 194,
+      "tweetId": "2027564598639968353",
+      "tweetUrl": "https://x.com/aialygn/status/2027564598639968353"
+    },
+    {
+      "postId": 2,
+      "status": "posted",
+      "contentLength": 185,
+      "tweetId": "2027564621326856482",
+      "tweetUrl": "https://x.com/aialygn/status/2027564621326856482"
+    },
+    {
+      "postId": 3,
+      "status": "posted",
+      "contentLength": 180,
+      "tweetId": "2027564643854451065",
+      "tweetUrl": "https://x.com/aialygn/status/2027564643854451065"
+    },
+    {
+      "postId": 4,
+      "status": "posted",
+      "contentLength": 172,
+      "tweetId": "2027564666470146122",
+      "tweetUrl": "https://x.com/aialygn/status/2027564666470146122"
+    },
+    {
+      "postId": 5,
+      "status": "posted",
+      "contentLength": 174,
+      "tweetId": "2027564689173987568",
+      "tweetUrl": "https://x.com/aialygn/status/2027564689173987568"
+    },
+    {
+      "postId": 6,
+      "status": "posted",
+      "contentLength": 156,
+      "tweetId": "2027564711634497821",
+      "tweetUrl": "https://x.com/aialygn/status/2027564711634497821"
+    },
+    {
+      "postId": 7,
+      "status": "posted",
+      "contentLength": 160,
+      "tweetId": "2027564734178856966",
+      "tweetUrl": "https://x.com/aialygn/status/2027564734178856966"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-02-28T01:32:42.559Z",
+  "totalPosts": 5,
+  "validPosts": 4,
+  "blockedPosts": 1,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Twitter Automation - Prompt #3\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "Twitter Automation - Prompt #3 "
+    },
+    {
+      "id": 2,
+      "content": "Niche-Specific Posts\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "Niche-Specific Posts "
+    },
+    {
+      "id": 3,
+      "content": "Executed: 2026-02-19T05:11:15.085Z Model: grok-4-1-fast-reasoning Search Enabled: No Dynamic Injection: 0 values injected\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "Executed: 2026-02-19T05:11:15.085Z Model: grok-4-1-fast-reasoning Search Enabled: No Dynamic Injection: 0 values injected "
+    },
+    {
+      "id": 4,
+      "content": "Microsoft's Tay bot turned racist in HOURS from Twitter trolls. Unaligned AI absorbs the web's worst. Lesson learned? #AIFail #AIAlignment What do you think? 🤯 (128 chars) COMPAS recidivism algo biased AGAINST Black defendants—2x false positives. Justice warped by data bias. Audit all AI! #AIBias #AIEthics RT if you agree (132 chars) Facial rec fails 35x more on dark skin tones (NIST study). Real harm from skewed training data. Align datasets now! #AIFail #AIethics Thoughts? 👀 (128 chars) YouTube recs funneled users to extremism (internal leaks). Profit > safety? Classic alignment flop. #ContentAI #AIEthics What’s your take? (118 chars) AlphaFold cracked protein folding, speeding cures for diseases. Narrow AI, perfectly aligned to human goals! #AISuccess #AIAlignment Win! 🚀 (124 chars) RLHF tamed LLMs like GPT—human feedback cut toxicity 80%+. Alignment via prefs works IRL. Scale it! #RLHF #AISafety Agree? (108 chars) OpenAI Moderation API blocks 99% harmful prompts. Safety tech scaling up. But foolproof? #AISuccess #AIethics Debate below! 💬 (112 chars) ",
+      "status": "blocked",
+      "issues": [
+        "Too long: 1074 chars (max 280)"
+      ],
+      "originalContent": "Microsoft's Tay bot turned racist in HOURS from Twitter trolls. Unaligned AI absorbs the web's worst. Lesson learned? #AIFail #AIAlignment What do you think? 🤯 (128 chars) COMPAS recidivism algo biased AGAINST Black defendants—2x false positives. Justice warped by data bias. Audit all AI! #AIBias #AIEthics RT if you agree (132 chars) Facial rec fails 35x more on dark skin tones (NIST study). Real harm from skewed training data. Align datasets now! #AIFail #AIethics Thoughts? 👀 (128 chars) YouTube recs funneled users to extremism (internal leaks). Profit > safety? Classic alignment flop. #ContentAI #AIEthics What’s your take? (118 chars) AlphaFold cracked protein folding, speeding cures for diseases. Narrow AI, perfectly aligned to human goals! #AISuccess #AIAlignment Win! 🚀 (124 chars) RLHF tamed LLMs like GPT—human feedback cut toxicity 80%+. Alignment via prefs works IRL. Scale it! #RLHF #AISafety Agree? (108 chars) OpenAI Moderation API blocks 99% harmful prompts. Safety tech scaling up. But foolproof? #AISuccess #AIethics Debate below! 💬 (112 chars) "
+    },
+    {
+      "id": 5,
+      "content": "Tokens Used: 1331 (prompt: undefined, completion: undefined)\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "Tokens Used: 1331 (prompt: undefined, completion: undefined) "
+    }
+  ]
+}

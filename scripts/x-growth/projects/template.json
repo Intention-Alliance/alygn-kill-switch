@@ -1,0 +1,46 @@
+{
+  "name": "my-project",
+  "description": "General-purpose Twitter growth project",
+  "twitter": {
+    "handle": "@myproject",
+    "consumerKey": "YOUR_CONSUMER_KEY",
+    "consumerSecret": "YOUR_CONSUMER_SECRET",
+    "accessToken": "YOUR_ACCESS_TOKEN",
+    "accessSecret": "YOUR_ACCESS_SECRET",
+    "voice": "professional",
+    "topics": [
+      "Technology",
+      "Innovation",
+      "AI"
+    ],
+    "hashtags": [
+      "#Tech",
+      "#Innovation",
+      "#AI"
+    ],
+    "signature": "more at @myproject",
+    "signaturePosition": "end",
+    "maxTweetsPerDay": 5,
+    "maxRepliesPerDay": 10,
+    "maxQuotesPerDay": 3
+  },
+  "grok": {
+    "systemPrompt": "You are a professional AI assistant creating Twitter content for a technology-focused project.",
+    "temperature": 0.7,
+    "maxTokens": 1000
+  },
+  "schedule": {
+    "postsPerDay": 3,
+    "repliesPerDay": 5,
+    "quotesPerDay": 2,
+    "timezone": "America/Costa_Rica",
+    "postingHours": {
+      "start": 9,
+      "end": 18
+    }
+  },
+  "discord": {
+    "reportChannel": "1466532145257255004",
+    "notifyOnComplete": true
+  }
+}

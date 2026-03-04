@@ -1,0 +1,27 @@
+{
+  "name": "testproject",
+  "twitter": {
+    "handle": "@projecthandle",
+    "voice": "professional",
+    "topics": [
+      "Technology",
+      "Innovation"
+    ],
+    "hashtags": [
+      "#Tech",
+      "#Innovation"
+    ],
+    "signature": "more at @projecthandle",
+    "signaturePosition": "end"
+  },
+  "grok": {
+    "systemPrompt": "You are a professional AI assistant...",
+    "temperature": 0.7,
+    "maxTokens": 1000
+  },
+  "schedule": {
+    "postsPerDay": 3,
+    "repliesPerDay": 5,
+    "quotesPerDay": 2
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "content": "Governance can't be retrofitted at frontier scale. Legitimacy is infrastructure.\n\n#AIGovernance\n\nmore at @aialygn",
+      "mediaPath": null
+    },
+    {
+      "id": 2,
+      "content": "The hardest AI risks are institutional, not technical. Coordination failure is the real systemic threat.\n\n#AISafety #AIRisk\n\nmore at @aialygn"
+    }
+  ],
+  "replies": [
+    {
+      "content": "This highlights why emergency coordination must exist before crisis, not improvised during one.\n\n#AISafety\n\nmore at @aialygn",
+      "targetUrl": "https://x.com/example/status/123456789",
+      "targetHandle": "@example"
+    }
+  ],
+  "quotes": [],
+  "follows": [
+    {
+      "username": "AIResearcher"
+    }
+  ]
+}

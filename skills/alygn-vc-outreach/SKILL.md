@@ -1,3 +1,9 @@
+---
+name: alygn-vc-outreach
+description: Automated VC discovery, personalized outreach, reply tracking, and pipeline management for Alygn's fundraising. Uses Grok for research and personalization.
+metadata: {"openclaw":{"emoji":"💼","requires":{"bins":["node","bash"],"env":["NOTION_API_KEY","GROK_API_KEY","SMTP_PASSWORD"],"os":["linux","darwin"]}}}
+---
+
 # ALYGN VC Outreach Automation Skill
 
 **Purpose:** Automated VC discovery, personalized outreach, reply tracking, and pipeline management for ALYGN's fundraising efforts.

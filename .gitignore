@@ -5,10 +5,7 @@ credentials.json
 *.pem
 .env
 
-# read-only projects
-repos/bitcash/read-only/
-repos/alygn/read-only/
-repos/personal/read-only/
-
 # Compilation directory (node_modules)
 node_modules
+
+backups/

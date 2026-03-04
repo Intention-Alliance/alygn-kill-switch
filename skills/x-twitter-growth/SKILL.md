@@ -1,3 +1,9 @@
+---
+name: x-growth
+description: Automated X/Twitter content creation and strategic engagement for @aialyygn (Alygn R&D). Generates daily threads, niche posts, and strategic replies using Grok API. All content references @aialygn or hashtag #ALYGN if mentions not allowed.
+metadata: {"openclaw":{"emoji":"📣","requires":{"bins":["node","bash"],"env":["X_API_KEY","X_API_SECRET","X_ACCESS_TOKEN","X_ACCESS_SECRET","GROK_API_KEY"],"os":["linux","darwin"]}}}
+---
+
 # X/Twitter Growth Automation Skill
 
 **Purpose:** Automated X/Twitter content creation, trend analysis, and strategic engagement for @aialygn  
@@ -10,17 +16,23 @@
 ## 🔒 CRITICAL RULES (READ FIRST)
 
 ### ✅ ALL PHASES ARE MANDATORY - DO NOT SKIP
-**Updated: 2026-02-14** - Each phase is critical. Phase 5 (Content Generation) is NOT optional.
+**Updated: 2026-02-18** - Each phase is critical. Workflow is NOW CONNECTED.
 
-**Daily execution MUST include:**
-1. ✅ Phase 1: Pre-approved institutional post
-2. ✅ Phase 2: Browser discovery (explore trends)
-3. ✅ Phase 3: Decision engine (Grok evaluation)
-4. ✅ Phase 4: X API execution (post engagement)
-5. ✅ Phase 5: Content generation (Grok Prompts #1 + #13) - **NEVER SKIP**
-6. ✅ Phase 6: Summary report (Discord thread)
+**Daily execution MUST include (8 phases):**
+1. ✅ Phase 1: Pre-approved institutional post (X API)
+2. ✅ Phase 2: Content generation (Grok Prompts #1 + #13) - generates markdown
+3. ✅ Phase 3: Parse content (NEW!) - converts markdown to workflow JSON
+4. ✅ Phase 4: Post original content (X API) - posts Grok-generated posts + replies
+5. ✅ Phase 5: Browser discovery (explore trends)
+6. ✅ Phase 6: Decision engine (Grok evaluation)
+7. ✅ Phase 7: Post discovery content (X API) - posts quotes/replies
+8. ✅ Phase 8: Summary report (Discord thread)
 
-**Why Phase 5 matters:** Generates 5 posts + 5 replies for next cycle or manual review. Missing this phase breaks content pipeline.
+**CRITICAL CONNECTION (FIXED 2026-02-18):**
+BEFORE: Phase 2 generated markdown → Phase 4 posted OLD workflow.json (disconnected!)
+AFTER: Phase 2 generates → Phase 3 parses to JSON → Phase 4 posts generated content (connected!)
+
+**Why Phase 3 matters:** Parses markdown output from Grok → creates workflow JSON → bridges content generation to posting.
 
 ### Mandatory Posting Format
 **EVERY tweet MUST end with:**
@@ -29,7 +41,7 @@
 
 [1-3 hashtags]
 
-more at @aialygn
+more at #ALYGN
 ```
 Applied automatically by `formatTweet()` in all posting scripts.
 
@@ -289,6 +301,67 @@ node scripts/alygn/x-twitter/twitter-automation.js exec 1 --dry-run
 - Rate limit → Wait and retry
 - API error → Log and skip
 - Auth failure → Alert human
+
+---
+
+### Phase 3: Content Parser (NEW - CONNECTS WORKFLOW)
+
+**Objective:** Parse markdown output from Grok and create workflow JSON for posting
+
+**Script:** `scripts/alygn/twitter-content-parser.js`
+
+**Purpose:**
+- Reads markdown files from Phase 2 (Grok Prompts #1 + #13)
+- Extracts posts and replies from markdown
+- Creates workflow JSON in correct format for x-api-executor.js
+- **This is the BRIDGE between content generation and posting**
+
+**Input:** Markdown files (`prompt-1-*.md`, `prompt-13-*.md`) in `twitter-outputs/`
+
+**Output:** `workflow-{timestamp}.json` in `twitter-outputs/alygn/workflows/`
+
+**Usage:**
+```bash
+node scripts/alygn/twitter-content-parser.js
+```
+
+**Workflow JSON structure:**
+```json
+{
+  "timestamp": "2026-02-18T...",
+  "source": "twitter-automation.js (Grok Prompts #1 + #13)",
+  "posts": [
+    {"id": 1, "content": "Post content from Grok", "type": "original"},
+    {"id": 2, "content": "Another post", "type": "original"}
+  ],
+  "replies": [
+    {"content": "Strategic reply from Grok", "type": "strategic-reply"}
+  ],
+  "profiles": []
+}
+```
+
+**Critical:** Without this parser, Grok-generated content stays as markdown files and never gets posted. Phase 4 reads this workflow.json and posts it via X API.
+
+---
+
+### Phase 4: Post Original Content (MANDATORY)
+
+**Objective:** Post Grok-generated content via X API
+
+**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`
+
+**Process:**
+1. Reads workflow.json from Phase 3 (parser output)
+2. Applies formatTweet() to all content
+3. Posts via X API (OAuth 1.0a)
+4. Returns tweet IDs + links
+
+**What gets posted:**
+- 5 original posts from Grok Prompt #1
+- 5 strategic replies from Grok Prompt #13
+
+**Result:** Content generation is now CONNECTED to posting! (was disconnected before)
 
 ---
 

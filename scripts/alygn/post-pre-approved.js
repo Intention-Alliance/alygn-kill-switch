@@ -121,11 +121,14 @@ async function showStatus() {
 }
 
 /**
- * Format tweet with signature + hashtag (MANDATORY)
+ * Format tweet with hashtags (MANDATORY)
+ * 
+ * NOTE: Removed @mention to comply with X API access restrictions.
+ * Using #Alygn hashtag for branding instead of "@aialygn"
  */
-function formatTweet(content, hashtags = ["#AIGovernance"]) {
+function formatTweet(content, hashtags = ["#AIGovernance", "#Alygn"]) {
   const hashtagStr = hashtags.join(" ");
-  return `${content}\n\n${hashtagStr}\n\nmore at @aialygn`;
+  return `${content}\n\n${hashtagStr}`;
 }
 
 /**
@@ -197,6 +200,14 @@ async function postNext() {
   // Load tracking
   const tracking = await loadTracking();
   
+  // Check if a pre-approved post has already been posted today
+  const today = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+  const postedToday = tracking.posts.find(p => p.posted && p.date_posted && p.date_posted.slice(0,10) === today);
+  if (postedToday) {
+    log(`ℹ️ Pre-approved post already posted today: #${postedToday.id} at ${postedToday.date_posted}`);
+    return false; // nothing to do
+  }
+
   // Find next post
   const nextPost = findNextPost(tracking);
   if (!nextPost) {

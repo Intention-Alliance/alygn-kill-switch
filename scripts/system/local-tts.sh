@@ -1,66 +1,57 @@
 #!/bin/bash
-# Local TTS Wrapper - Piper-based speech synthesis
-# Replaces ElevenLabs API (sag) with local Piper TTS
+# Local TTS Wrapper - ElevenLabs Antoni (sag) with pitch shift
+# Original Wobblus gnome voice pipeline
 # Usage: ./local-tts.sh "text" output.ogg [profile]
 
 set -euo pipefail
 
-# Configuration
-PIPER_VENV="$HOME/.local/share/piper-tts-env"
-PIPER_MODEL="${PIPER_MODEL:-$HOME/.local/share/piper-voices/en-us-lessac-high.onnx}"
 TEXT="${1:?Missing text argument}"
 OUTPUT="${2:-output.ogg}"
 PROFILE="${3:-fast}"  # fast|balanced|high-quality
 
-# Check if Piper venv exists
-if [ ! -f "$PIPER_VENV/bin/piper" ]; then
-    echo "❌ Error: Piper not found at $PIPER_VENV/bin/piper" >&2
-    echo "   Run: python -m venv $PIPER_VENV && source $PIPER_VENV/bin/activate && pip install piper-tts pathvalidate" >&2
-    echo "   or see scripts/system/local-tts-setup.md" >&2
-    exit 1
-fi
+# ElevenLabs Antoni voice ID (verified gnome voice)
+VOICE_ID="ErXwobaYiN019PkySvjV"
 
-# Activate venv for this script
-source "$PIPER_VENV/bin/activate"
+# Generate MP3 with sag (ElevenLabs)
+TMP_MP3=$(mktemp --suffix=.mp3)
+trap "rm -f '$TMP_MP3'" EXIT
 
-# Check if model exists
-if [ ! -f "$PIPER_MODEL" ]; then
-    echo "❌ Error: Piper model not found at $PIPER_MODEL" >&2
-    echo "   Download voices: see scripts/system/local-tts-setup.md" >&2
-    exit 1
-fi
+echo "🎙️  Generating speech with ElevenLabs Antoni..." >&2
 
-# Generate WAV with Piper
-TMP_WAV=$(mktemp --suffix=.wav)
-trap "rm -f '$TMP_WAV'" EXIT
-
-echo "🎙️  Generating speech with Piper..." >&2
-echo "$TEXT" | piper --model "$PIPER_MODEL" --output_file "$TMP_WAV" 2>&1 | grep -v "^$" || true
+# Generate with Antoni - fast, expressive gnome base
+sag speak \
+  -v "$VOICE_ID" \
+  --speed 1.35 \
+  --stability 0 \
+  --style 0.9 \
+  --speaker-boost \
+  --model-id eleven_v3 \
+  -o "$TMP_MP3" \
+  "$TEXT" 2>&1 | grep -v "^$" || true
 
 # Apply audio processing based on profile
-# WOBBLUS GNOME VOICE: Key is +20% pitch shift + faster tempo for nasal gnome quality
+# WOBBLUS GNOME VOICE: Key is +20% pitch shift for nasal gnome quality
 case "$PROFILE" in
   fast)
-    # Fast gnome profile: +20% pitch, 1.35x speed, 16kHz Opus
-    # Mimics: Antoni + 20% pitch (ElevenLabs equivalent)
-    ffmpeg -i "$TMP_WAV" \
-      -af "atempo=1.35,asetrate=44100*1.2,aresample=16000,atempo=1/1.2,highpass=f=80" \
-      -c:a libopus -b:a 64k -ar 16000 -ac 1 \
+    # Fast gnome profile: +20% pitch, 16kHz Vorbis (matches test-fast.ogg reference)
+    ffmpeg -i "$TMP_MP3" \
+      -af "asetrate=44100*1.2,aresample=16000,atempo=1/1.2,highpass=f=80" \
+      -c:a libvorbis -q:a 4 -ar 16000 -ac 1 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;
   
   balanced)
-    # Balanced gnome: +20% pitch, 1.35x speed, enhanced EQ, 24kHz
-    ffmpeg -i "$TMP_WAV" \
-      -af "atempo=1.35,asetrate=44100*1.2,aresample=24000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=2.5,equalizer=f=4000:t=h:w=1500:g=1.5" \
+    # Balanced gnome: +20% pitch, enhanced EQ, 24kHz
+    ffmpeg -i "$TMP_MP3" \
+      -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=2.5,equalizer=f=4000:t=h:w=1500:g=1.5" \
       -c:a libopus -b:a 96k -ar 24000 -ac 1 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;
   
   high-quality)
-    # High-quality gnome: +20% pitch, 1.35x speed, full processing, 48kHz
-    ffmpeg -i "$TMP_WAV" \
-      -af "atempo=1.35,asetrate=44100*1.2,aresample=48000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=3,equalizer=f=4000:t=h:w=1500:g=2,acompressor=threshold=-18dB:ratio=2.5:attack=5:release=50" \
+    # High-quality gnome: +20% pitch, full processing, 48kHz Vorbis
+    ffmpeg -i "$TMP_MP3" \
+      -af "asetrate=44100*1.2,aresample=48000,atempo=1/1.2,highpass=f=80,equalizer=f=2500:t=h:w=1000:g=3,equalizer=f=4000:t=h:w=1500:g=2,acompressor=threshold=-18dB:ratio=2.5:attack=5:release=50" \
       -c:a libvorbis -q:a 6 -ar 48000 \
       "$OUTPUT" -y 2>&1 | grep -E "(size=|error)" || true
     ;;

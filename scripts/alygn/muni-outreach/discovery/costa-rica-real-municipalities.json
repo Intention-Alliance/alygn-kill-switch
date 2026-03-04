@@ -1,0 +1,352 @@
+{
+  "metadata": {
+    "source": "Official Costa Rica government data + web research",
+    "date": "2026-03-02",
+    "total_cantones": 84,
+    "country_code": "CR",
+    "primary_language": "es",
+    "language_name": "Spanish",
+    "email_language": "es",
+    "x_language": "es",
+    "cultural_notes": [
+      "Formal address required (Estimado/a, Saludos cordiales)",
+      "Use titles (Alcalde(sa), Licenciado(a), Ingeniero(a))",
+      "Spanish mandatory for official communications",
+      "English acceptable for follow-up"
+    ],
+    "note": "Costa Rica has 84 cantons (not 82), each with elected mayor every 4 years"
+  },
+  "municipalities": [
+    {
+      "name": "San José",
+      "population": 288054,
+      "province": "San José",
+      "code": "101",
+      "website": "https://msj.go.cr",
+      "mayor_name": "Luis Diego Miranda Méndez",
+      "mayor_email": "jvasquez@msj.go.cr",
+      "vice_mayor_email": "pvargas@msj.go.cr",
+      "general_email": "jvasquez@msj.go.cr",
+      "phone": "2547-6000",
+      "whatsapp": "8817-5186",
+      "x_handle": "@MuniSanJoseCR",
+      "notes": "Capital city, mayor elected Feb 2024, term 2024-2028. Email verified 2024-2025",
+      "language": "es",
+      "current_issues": [
+        "Traffic congestion and road infrastructure (120 complaints in 2024)",
+        "Rising crime rates - top voter concern for 2026 elections",
+        "Bureaucracy delays (97 complaints for permits)",
+        "Water access and waste management (68 complaints)",
+        "Street and sidewalk maintenance deficits"
+      ],
+      "recent_initiatives": [
+        "Ombudsman seminars on human rights and local governance",
+        "Public-private partnerships for infrastructure"
+      ],
+      "pain_points": [
+        "Budget shortages for infrastructure maintenance",
+        "Poor planning and centralized governance",
+        "Drug trafficking and organized crime affecting business",
+        "Need for coordinated AI governance in public security",
+        "Data-driven resource allocation for crime prevention"
+      ],
+      "alygn_relevance": [
+        "AI governance for smart city security systems",
+        "Coordination across departments for crime data sharing",
+        "Accountability frameworks for surveillance AI",
+        "Emergency coordination protocols for security crisis"
+      ]
+    },
+    {
+      "name": "Alajuela",
+      "population": 42975,
+      "province": "Alajuela",
+      "code": "201",
+      "website": "https://munialajuela.go.cr",
+      "mayor_name": "Roberto Hernán Thompson Chacón",
+      "mayor_email": null,
+      "general_email": null,
+      "phone": "2436-2300",
+      "x_handle": "@MuniAlajuela",
+      "notes": "No general email listed - use contact form on website. Vice-mayor: Sofía Marcela González Barquero. Office hours: Mon-Thu 7:30am-4:30pm, Fri 7:30am-3:30pm",
+      "language": "es",
+      "current_issues": [
+        "Crime in El Infiernillo area (gang activity, drug-related)",
+        "Urban flooding risks from climate change and rapid urbanization",
+        "Strict environmental regulations hindering development",
+        "Infrastructure strain from fast industrial growth",
+        "Insurance and tenant reliability issues in high-crime areas"
+      ],
+      "recent_initiatives": [
+        "Juan Santamaria Airport (SJO) expansion 2023-2042",
+        "Ruta 27 corridor improvements",
+        "Industrial park development near Grecia (8-10% yields)",
+        "Belén municipality rainwater management and green infrastructure",
+        "Remote worker and retiree attraction initiatives"
+      ],
+      "pain_points": [
+        "Logistics costs high without rail/port infrastructure",
+        "Flooding from rapid urbanization",
+        "Environmental regulations vs development balance",
+        "Market saturation from hotels/Airbnbs",
+        "Need for AI-driven urban planning for flood prevention",
+        "Coordination between industrial growth and residential needs"
+      ],
+      "alygn_relevance": [
+        "AI governance for industrial park monitoring systems",
+        "Coordination for airport expansion AI systems",
+        "Accountability for AI-driven urban planning",
+        "Emergency coordination for climate-related flooding",
+        "Data governance for environmental monitoring AI"
+      ]
+    },
+    {
+      "name": "Cartago",
+      "population": 156600,
+      "province": "Cartago",
+      "code": "301",
+      "website": "https://muni-carta.go.cr",
+      "mayor_name": "Mario Redondo Poveda",
+      "mayor_email": "alcaldia@muni-carta.go.cr",
+      "general_email": "portal@muni-carta.go.cr",
+      "it_email": "tic@muni-carta.go.cr",
+      "phone": "2550-4400",
+      "x_handle": null,
+      "notes": "Lawyer, former deputy (2002-2006, 2014-2018), re-elected 2024-2025, party: Actuemos Ya. Email verified: portal@muni-carta.go.cr",
+      "language": "es",
+      "current_issues": [
+        "Taras-La Lima intersections: 30 months delay, 23% cost overrun",
+        "70% of bridges in poor condition nationally (Cartago on key routes)",
+        "Los Pinos landfill closure (July 2024) - waste crisis",
+        "Road infrastructure failures (top complaint category)",
+        "1,200 new jobs from Boston Scientific facility (positive)"
+      ],
+      "recent_initiatives": [
+        "Boston Scientific facility opening (1,200 jobs)",
+        "$350M loan for disaster-resilient infrastructure",
+        "Waste redirection to GAM landfills"
+      ],
+      "pain_points": [
+        "Infrastructure underinvestment (0.78% of GDP vs 1.56-3.99% needed)",
+        "Bureaucratic delays in public works",
+        "Logistics costs 1.58% of GDP loss (4% in GAM)",
+        "Waste management crisis (landfill capacity exhausted)",
+        "Need for coordinated AI governance for infrastructure monitoring",
+        "Data-driven maintenance prioritization"
+      ],
+      "alygn_relevance": [
+        "AI governance for infrastructure monitoring systems",
+        "Coordination for multi-municipality waste management",
+        "Accountability frameworks for public works AI",
+        "Emergency coordination for infrastructure failures"
+      ]
+    },
+    {
+      "name": "Heredia",
+      "population": 124166,
+      "province": "Heredia",
+      "code": "401",
+      "website": "https://heredia.go.cr",
+      "mayor_name": "Ángela Aguilar Vargas",
+      "mayor_email": "aaguilar@heredia.go.cr",
+      "general_email": "aaguilar@heredia.go.cr",
+      "phone": "2277-1471",
+      "vice_mayors": ["Víctor Sánchez González", "Kenneth Arguedas Navarro"],
+      "x_handle": "@MuniHeredia",
+      "notes": "Mayor since May 1, 2024. Master in Industrial Engineering, economist, 30+ years experience, 17 in municipal management. Email VERIFIED: aaguilar@heredia.go.cr",
+      "language": "es",
+      "current_issues": [
+        "Tech hub growth (Intel, Movate AI facility) but infrastructure gaps",
+        "Lack of computing power, 5G networks, data centers for AI scaling",
+        "Talent shortage - AI-trained professionals demand outpaces supply",
+        "Cybersecurity risks in fintech and healthtech sectors",
+        "Legal framework lag for AI IP, data privacy, liability",
+        "Automation job displacement concerns"
+      ],
+      "recent_initiatives": [
+        "Intel $1.2B reinvestment for infrastructure and upskilling",
+        "Movate Ultrapark-LAG facility (300 jobs by end-2025)",
+        "National AI Strategy (ENIA) 2024-2027",
+        "Costa Rica ranked 5th in Latin America AI Index 2025 (up from 9th in 2024)",
+        "Digital academies for AI talent development"
+      ],
+      "pain_points": [
+        "Infrastructure deficiencies despite tech hub status",
+        "R&D investment insufficient for AI leadership",
+        "Competition from global firms for AI talent",
+        "Cybersecurity vulnerabilities with increased AI reliance",
+        "Need for coordinated AI governance frameworks",
+        "Legal uncertainty for AI-generated IP and liability"
+      ],
+      "alygn_relevance": [
+        "AI governance for tech hub coordination",
+        "Accountability frameworks for AI systems in multinational facilities",
+        "Emergency coordination for cybersecurity incidents",
+        "Data governance for cross-border AI systems",
+        "Coordination between municipal, national, and multinational stakeholders"
+      ]
+    },
+    {
+      "name": "Liberia",
+      "population": 32655,
+      "province": "Guanacaste",
+      "code": "501",
+      "website": "https://muniliberia.go.cr",
+      "mayor_name": "José Javier Calvo Darcia",
+      "mayor_email": "calvodj@muniliberia.go.cr",
+      "vice_mayor_email": "alvarezcm@muniliberia.go.cr",
+      "general_email": "pasospl@muniliberia.go.cr",
+      "it_email": "sanchezad@muniliberia.go.cr",
+      "phone": "2666-0169",
+      "x_handle": "@MuniLiberia",
+      "notes": "VERIFIED EMAILS! Mayor: José Javier Calvo Darcia (calvodj@muniliberia.go.cr). Vice: Marina Álvarez Canales. Office hours: Mon-Fri 8am-4pm. ALYGN TARGET MUNICIPALITY",
+      "language": "es",
+      "current_issues": [
+        "Liberia Airport (LIR) closures - 167 flights canceled, 30,000 passengers affected (Nov 2024)",
+        "Runway deterioration and air traffic controller disputes",
+        "15-20% tourism decline projected for 2025 ($60M loss)",
+        "Water infrastructure strain from rapid eco-luxury development",
+        "Road congestion and poor infrastructure affecting visitor experience",
+        "22,000 tourism jobs lost in 2024-2025"
+      ],
+      "recent_initiatives": [
+        "New airline routes planned for late 2024-2025",
+        "Eco-luxury tourism development in Papagayo",
+        "Airport service recovery efforts for April 2025 high season"
+      ],
+      "pain_points": [
+        "Airport infrastructure can't handle growth (single runway)",
+        "Water utilities can't keep pace with development",
+        "Seasonal economy instability (60% revenue in high season)",
+        "Competition from cheaper destinations (Panama, Nicaragua)",
+        "Need for AI-driven resource management for water/tourism",
+        "Coordination between municipal, airport, and national authorities"
+      ],
+      "alygn_relevance": [
+        "AI governance for airport security and passenger flow systems",
+        "Coordination frameworks for multi-stakeholder crisis response (airport closures)",
+        "Accountability for AI-driven tourism management systems",
+        "Emergency protocols for infrastructure failures",
+        "Data governance for water resource AI systems"
+      ]
+    },
+    {
+      "name": "Puntarenas",
+      "population": 34647,
+      "province": "Puntarenas",
+      "code": "601",
+      "website": "https://puntarenas.go.cr",
+      "mayor_name": null,
+      "mayor_email": null,
+      "general_email": "info@puntarenas.go.cr",
+      "x_handle": null,
+      "notes": "Port city, needs research"
+    },
+    {
+      "name": "Limón",
+      "population": 61072,
+      "province": "Limón",
+      "code": "701",
+      "website": "https://limon.go.cr",
+      "mayor_name": null,
+      "mayor_email": null,
+      "general_email": "info@limon.go.cr",
+      "x_handle": null,
+      "notes": "Caribbean coast, needs research"
+    },
+    {
+      "name": "Escazú",
+      "population": 56800,
+      "province": "San José",
+      "code": "102",
+      "website": "https://escazu.go.cr",
+      "mayor_name": "Arnoldo Valentín Barahona Cortés",
+      "mayor_email": null,
+      "general_email": "info@escazu.go.cr",
+      "x_handle": "@MuniEscazu",
+      "notes": "Elected 2020, term 2024-2025, party: Nueva Generación. Wealthy suburb, tech-savvy population"
+    },
+    {
+      "name": "Desamparados",
+      "population": 208411,
+      "province": "San José",
+      "code": "103",
+      "website": "https://desamparados.go.cr",
+      "mayor_name": "María Antonieta Naranjo Brenes",
+      "mayor_email": null,
+      "general_email": "info@desamparados.go.cr",
+      "x_handle": null,
+      "notes": "Elected Feb 2024, term 2024-2028, party: PLN. Age 69, former regidora (1994-1998, 2016-2024). 'Alcaldía de puertas abiertas'"
+    },
+    {
+      "name": "Curridabat",
+      "population": 65204,
+      "province": "San José",
+      "code": "118",
+      "website": "https://curridabat.go.cr",
+      "mayor_name": null,
+      "mayor_email": null,
+      "general_email": "info@curridabat.go.cr",
+      "x_handle": "@MuniCurridabat",
+      "notes": "Known for innovation initiatives"
+    }
+  ],
+  "provinces": {
+    "San José": {
+      "code": 1,
+      "cantones": 20,
+      "capital": "San José"
+    },
+    "Alajuela": {
+      "code": 2,
+      "cantones": 16,
+      "capital": "Alajuela"
+    },
+    "Cartago": {
+      "code": 3,
+      "cantones": 8,
+      "capital": "Cartago"
+    },
+    "Heredia": {
+      "code": 4,
+      "cantones": 10,
+      "capital": "Heredia"
+    },
+    "Guanacaste": {
+      "code": 5,
+      "cantones": 11,
+      "capital": "Liberia"
+    },
+    "Puntarenas": {
+      "code": 6,
+      "cantones": 13,
+      "capital": "Puntarenas"
+    },
+    "Limón": {
+      "code": 7,
+      "cantones": 6,
+      "capital": "Limón"
+    }
+  },
+  "research_needed": {
+    "mayor_names": [
+      "Cartago",
+      "Heredia",
+      "Liberia",
+      "Puntarenas",
+      "Limón",
+      "Escazú",
+      "Desamparados",
+      "Curridabat"
+    ],
+    "mayor_emails": [
+      "All municipalities - need direct mayor emails"
+    ],
+    "x_handles": [
+      "Cartago",
+      "Puntarenas",
+      "Limón",
+      "Desamparados"
+    ]
+  }
+}

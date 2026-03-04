@@ -1,0 +1,52 @@
+{
+  "name": "alygn",
+  "description": "Alygn - Independent AI Governance Institution",
+  "twitter": {
+    "handle": "@aialygn",
+    "consumerKey": "${TWITTER_CONSUMER_KEY}",
+    "consumerSecret": "${TWITTER_CONSUMER_SECRET}",
+    "accessToken": "${TWITTER_ACCESS_TOKEN}",
+    "accessSecret": "${TWITTER_ACCESS_TOKEN_SECRET}",
+    "voice": "institutional",
+    "topics": [
+      "AI Governance",
+      "AI Safety",
+      "Coordination",
+      "Legitimacy",
+      "Institutional Design"
+    ],
+    "hashtags": [
+      "#AIGovernance",
+      "#AIAlignment",
+      "#AISafety",
+      "#AGI",
+      "#AIPolicy"
+    ],
+    "signature": "more at @aialygn",
+    "signaturePosition": "end",
+    "maxTweetsPerDay": 3,
+    "maxRepliesPerDay": 5,
+    "maxQuotesPerDay": 3,
+    "preApprovedPosts": true,
+    "mandatoryFormat": true
+  },
+  "grok": {
+    "systemPrompt": "You are writing for Alygn, an independent AI governance institution. Focus on governance legitimacy, coordination without centralization, and institutional preparedness. Tone: calm, institutional, restrained, non-promotional.",
+    "temperature": 0.5,
+    "maxTokens": 1500
+  },
+  "schedule": {
+    "postsPerDay": 1,
+    "repliesPerDay": 3,
+    "quotesPerDay": 2,
+    "timezone": "America/Costa_Rica",
+    "postingHours": {
+      "start": 10,
+      "end": 16
+    }
+  },
+  "discord": {
+    "reportChannel": "1466532145257255004",
+    "notifyOnComplete": true
+  }
+}
