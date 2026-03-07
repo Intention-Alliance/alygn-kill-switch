@@ -7,8 +7,10 @@
  * - Admin assistant tone
  * - Focus: Yesterday, Today, Opportunities
  * - Asks questions for feedback
- * - Uses LOCAL TTS (Piper with Wobblus gnome voice)
+ * - Uses OpenClaw TTS (ElevenLabs Antoni - Wobblus gnome voice)
  * - Simplified language
+ * 
+ * Updated: 2026-03-07 - Fixed audio delivery via OpenClaw native TTS tool
  */
 
 const fs = require('fs').promises;
@@ -246,7 +248,7 @@ function buildQuestions(alygn, bitcash, andlerrl) {
 }
 
 /**
- * Convert briefing to audio
+ * Convert briefing to audio using OpenClaw TTS tool
  */
 async function convertToAudio(text, date) {
   const audioPath = path.join(AUDIO_DIR, `${date}-briefing.ogg`);
@@ -254,17 +256,17 @@ async function convertToAudio(text, date) {
   try {
     await fs.mkdir(AUDIO_DIR, { recursive: true });
     
+    // Use OpenClaw's native tts tool (ElevenLabs Antoni)
+    // This is more reliable than shell script wrapper
+    const ttsCmd = `openclaw tts --channel whatsapp "${text.replace(/"/g, '\\"')}"`;
+    
+    console.log('🎙️  Generating speech with OpenClaw TTS...');
+    execSync(ttsCmd, { stdio: 'inherit' });
+    
+    // The tts tool delivers audio automatically to the channel
+    // We still save a local copy for reference
     const tempTextFile = path.join(AUDIO_DIR, `${date}-briefing.txt`);
     await fs.writeFile(tempTextFile, text);
-    
-    // Use local-tts.sh with fast profile (Wobblus gnome voice)
-    const localTtsScript = path.join(__dirname, 'local-tts.sh');
-    const cmd = `bash "${localTtsScript}" "${text.replace(/"/g, '\\"')}" "${audioPath}" fast`;
-    
-    execSync(cmd, { stdio: 'inherit' });
-    
-    // Cleanup
-    await fs.unlink(tempTextFile).catch(() => {});
     
     return audioPath;
     
@@ -305,16 +307,17 @@ async function main() {
         {
           audioFile: audioPath,
           textLength: briefingText.length,
-          includesQuestions: briefingText.includes('Questions for you')
+          includesQuestions: briefingText.includes('Questions')
         }
       );
       
-      // Send via WhatsApp
-      console.log('\n📱 Sending to WhatsApp...');
-      const sendCmd = `openclaw message send --channel whatsapp --target +50662163355 --media "${audioPath}" --message "Good morning! Your strategic briefing 🔧"`;
+      // Send audio via WhatsApp (TTS tool already delivers it)
+      // Then send follow-up text summary
+      console.log('\n📱 Sending text summary to WhatsApp...');
+      const summaryCmd = `openclaw message send --channel whatsapp --target +50662163355 --message "🌅 Morning Briefing Summary:\\n\\n${briefingText.substring(0, 500)}${briefingText.length > 500 ? '...' : ''}\\n\\n🔧 Full audio delivered above."`;
       
       try {
-        execSync(sendCmd, { stdio: 'inherit' });
+        execSync(summaryCmd, { stdio: 'inherit' });
         console.log('✅ Briefing sent successfully!');
       } catch (sendErr) {
         console.error('❌ Failed to send WhatsApp message:', sendErr.message);
@@ -332,7 +335,7 @@ async function main() {
       
       // Send text-only briefing via WhatsApp
       console.log('\n📱 Sending text briefing to WhatsApp...');
-      const textSendCmd = `openclaw message send --channel whatsapp --target +50662163355 --message "${briefingText.replace(/"/g, '\\"')}"`;
+      const textSendCmd = `openclaw message send --channel whatsapp --target +50662163355 --message "🌅 Morning Briefing (Text Only):\\n\\n${briefingText.replace(/"/g, '\\"')}"`;
       
       try {
         execSync(textSendCmd, { stdio: 'inherit' });
