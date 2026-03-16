@@ -6,9 +6,9 @@
  *   node post.js --project=myproject --workflow=/path/to/content.json --mock
  */
 
-const fs = require('fs');
+import fs from "fs";
 
-const { loadProject } = require('./load-project');
+import { loadProject } from "./load-project.js";
 
 /**
  * Posts content to X/Twitter
@@ -110,7 +110,7 @@ function saveResults(results, outputFile) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const projectArg = args.find(a => a.startsWith('--project='));
@@ -151,7 +151,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   postContent,
   simulatePosting
 };

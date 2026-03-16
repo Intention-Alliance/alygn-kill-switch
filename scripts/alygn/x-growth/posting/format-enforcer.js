@@ -200,7 +200,7 @@ function formatWorkflowPosts(workflow) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
@@ -234,7 +234,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   formatTweet,
   formatWorkflowPosts,
   validateFormat,

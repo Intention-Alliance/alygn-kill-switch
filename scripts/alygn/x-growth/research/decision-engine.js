@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN Twitter Discovery - Phase 2: Decision Engine
@@ -19,11 +18,11 @@
  * 4. Generate workflow JSON with posts/replies/profiles
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { xai } = require('@ai-sdk/xai');
-const { generateText } = require('ai');
-const { getGrokKey, getGrokModel } = require('../../../shared/load-credentials');
+import fs from "fs".promises;
+import path from "path";
+import { xai } from "@ai-sdk/xai";
+import { generateText } from "ai";
+import { getGrokKey, getGrokModel } from "../../../shared/load-credentials.js";
 
 const GROK_API_KEY = getGrokKey();
 const GROK_MODEL = getGrokModel();
@@ -177,7 +176,7 @@ async function evaluateDiscovery(discoveryPath) {
 /**
  * CLI Entry Point
  */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   (async () => {
     try {
       // Find latest discovery file
@@ -222,4 +221,4 @@ if (require.main === module) {
   })();
 }
 
-module.exports = { evaluateDiscovery, evaluatePost };
+export { evaluateDiscovery, evaluatePost };

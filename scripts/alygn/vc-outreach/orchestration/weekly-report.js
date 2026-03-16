@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Outreach Weekly Report
  * 
@@ -20,14 +19,14 @@
  *   node weekly-report.js --output=FILE    # Save to file instead
  */
 
-const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
-const { log, success, error, info, LogLevel } = require('../utils/logger');
-const fs = require('fs').promises;
-const path = require('path');
-const https = require('https');
+import { getNotionDatabase } from "../../../shared/load-credentials.js";
+import { getClient, queryDatabase } from "../../../shared/notion-client.js";
+import { log, success, error, info, LogLevel } from "../utils/logger.js";
+import fs from "fs".promises;
+import path from "path";
 
-const NOTION_API_KEY = getNotionKey();
 const VC_DATABASE_ID = getNotionDatabase('vc_outreach');
+const notion = getClient();
 
 // Configuration
 const CONFIG = {
@@ -50,45 +49,6 @@ const CONFIG = {
 };
 
 /**
- * Notion API request helper
- */
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
-
-/**
  * Query Notion for VC data in date range
  */
 async function queryNotionVCs(days = CONFIG.dateRange) {
@@ -97,7 +57,7 @@ async function queryNotionVCs(days = CONFIG.dateRange) {
   startDate.setHours(0, 0, 0, 0);
   const startDateStr = startDate.toISOString();
 
-  const response = await notionRequest('POST', `/v1/databases/${VC_DATABASE_ID}/query`, {
+  const response = await queryDatabase(notion, VC_DATABASE_ID, {
     page_size: 100,
     filter: {
       or: [
@@ -579,11 +539,11 @@ async function main() {
 }
 
 // CLI execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = {
+export {
   queryNotionVCs,
   extractVCData,
   generatePDFReport,

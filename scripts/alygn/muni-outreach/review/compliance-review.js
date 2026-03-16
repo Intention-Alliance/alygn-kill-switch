@@ -7,7 +7,7 @@
  *   node compliance-review.js --input=/tmp/muni-cr-personalized.json
  */
 
-const fs = require('fs');
+import fs from "fs";
 
 /**
  * Prepares emails for human review
@@ -169,7 +169,7 @@ function processDecision(decision, review) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const inputArg = args.find(a => a.startsWith('--input='));
@@ -209,7 +209,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   prepareForReview,
   formatForDiscord,
   saveReview,

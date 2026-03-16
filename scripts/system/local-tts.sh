@@ -1,6 +1,6 @@
 #!/bin/bash
-# Local TTS Wrapper - ElevenLabs Antoni (sag) with pitch shift
-# Original Wobblus gnome voice pipeline
+# Local TTS Wrapper - Piper TTS with gnome pitch shift
+# Updated: 2026-03-15 (ElevenLabs discontinued)
 # Usage: ./local-tts.sh "text" output.ogg [profile]
 
 set -euo pipefail
@@ -9,25 +9,29 @@ TEXT="${1:?Missing text argument}"
 OUTPUT="${2:-output.ogg}"
 PROFILE="${3:-fast}"  # fast|balanced|high-quality
 
-# ElevenLabs Antoni voice ID (verified gnome voice)
-VOICE_ID="ErXwobaYiN019PkySvjV"
+# Check if Piper is available
+if ! command -v piper &> /dev/null; then
+  echo "⚠️  Piper not installed - falling back to reference samples" >&2
+  echo "   Install: https://github.com/rhasspy/piper" >&2
+  # Fallback: use reference sample for short texts
+  if [ ${#TEXT} -lt 50 ]; then
+    cp ~/wooblus-voice-refs/woohoo-en.ogg "$OUTPUT"
+    echo "✅ Used reference sample: $OUTPUT" >&2
+    exit 0
+  else
+    echo "❌ Text too long for reference sample fallback" >&2
+    exit 1
+  fi
+fi
 
-# Generate MP3 with sag (ElevenLabs)
-TMP_MP3=$(mktemp --suffix=.mp3)
-trap "rm -f '$TMP_MP3'" EXIT
+# Generate WAV with Piper
+TMP_WAV=$(mktemp --suffix=.wav)
+trap "rm -f '$TMP_WAV'" EXIT
 
-echo "🎙️  Generating speech with ElevenLabs Antoni..." >&2
+echo "🎙️  Generating speech with Piper TTS..." >&2
 
-# Generate with Antoni - fast, expressive gnome base
-sag speak \
-  -v "$VOICE_ID" \
-  --speed 1.35 \
-  --stability 0 \
-  --style 0.9 \
-  --speaker-boost \
-  --model-id eleven_v3 \
-  -o "$TMP_MP3" \
-  "$TEXT" 2>&1 | grep -v "^$" || true
+# Generate with Piper - use en_US-lessac or similar voice
+piper -m ~/piper/voices/en_US-lessac.onnx --output_file "$TMP_WAV" <<< "$TEXT"
 
 # Apply audio processing based on profile
 # WOBBLUS GNOME VOICE: Key is +20% pitch shift for nasal gnome quality

@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-14T17:00:47.279Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "ITIF's March 13 report warns that restrictive rules on public data risk ceding AI leadership abroad. Alygn urges market-led coordination for neutral access balancing innovation and privacy legitimacy.",
+      "replyText": "This underscores coordination needs in data policy to prevent fragmentation. Legitimate governance demands neutral standards ensuring open ecosystems, protecting privacy without stifling AI progress globally.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 200,
+      "replyLength": 208,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "China's leaders reaffirmed AI world leadership and global rule-setting on March 14. Alygn stresses neutral coordination forums for legitimate international standards beyond unilateral agendas.",
+      "replyText": "Highlights geopolitical tensions in AI governance. True legitimacy requires multilateral coordination ensuring neutral rules that all nations respect, preventing dominance and fostering equitable global AI development.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 192,
+      "replyLength": 218,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "ALEC's March 13 AI Policy Toolkit offers tech-neutral state models like anti-discrimination acts. Echoes Alygn's legitimacy via clear, innovation-friendly governance preserving neutrality.",
+      "replyText": "Promotes state-level legitimacy by avoiding overreach, ensuring policies are neutral to tech and focused on outcomes. Coordinates balanced regulation supporting consumer protection and AI advancement.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 188,
+      "replyLength": 200,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "OECD's March 12 guidance advises integrating AI governance into existing risk systems with fairness focus. Aligns with Alygn's coordination for neutral, accountable AI oversight enterprise-wide.",
+      "replyText": "Facilitates organizational coordination by embedding AI principles like transparency and non-discrimination into core operations. Builds legitimacy through stakeholder-engaged, neutral risk management across the AI lifecycle.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 194,
+      "replyLength": 225,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Credo AI launched free Insights Hub March 13, harmonizing global regs and risks. Supports Alygn's neutrality with unified tools for legitimate, coordinated governance planning.",
+      "replyText": "Democratizes AI governance intelligence, enabling neutral compliance across jurisdictions. Enhances coordination and legitimacy by connecting risks, controls, and policies in a community-driven framework.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 176,
+      "replyLength": 204,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

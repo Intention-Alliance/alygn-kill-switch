@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Deep Research Script - VERSION 3 (Feb 14, 2026)
  * 

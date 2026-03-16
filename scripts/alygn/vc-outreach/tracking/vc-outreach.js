@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN VC Outreach Automation
@@ -9,47 +8,13 @@
  * Database ID: Set via environment variable VC_TRACKER_DB_ID or in code
  */
 
-const https = require('https');
-const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
+import fs from "fs/promises";
+import path from "path";
+import { getNotionDatabase } from "../../../shared/load-credentials.js";
+import { getClient, queryDatabase, retrievePage, updatePage } from "../../../shared/notion-client.js";
 
-const NOTION_API_KEY = getNotionKey();
+const notion = getClient();
 const VC_TRACKER_DB_ID = process.env.VC_TRACKER_DB_ID || getNotionDatabase('vc_outreach');
-
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
 
 async function getVCDatabase() {
   if (!VC_TRACKER_DB_ID) {
@@ -84,7 +49,7 @@ async function getVCDatabase() {
     ]
   };
 
-  const response = await notionRequest('POST', '/v1/databases/' + VC_TRACKER_DB_ID + '/query', query);
+  const response = await queryDatabase(notion, VC_TRACKER_DB_ID, query);
   return response.results;
 }
 
@@ -143,7 +108,7 @@ async function updateVCStatus(pageId, updates) {
 
   if (updates.notes) {
     // Append to existing notes
-    const page = await notionRequest('GET', '/v1/pages/' + pageId);
+    const page = await retrievePage(notion, pageId);
     const existingNotes = page.properties.Notes?.rich_text?.[0]?.text?.content || "";
     const newNotes = existingNotes + (existingNotes ? "\n\n" : "") + updates.notes;
     
@@ -152,7 +117,7 @@ async function updateVCStatus(pageId, updates) {
     };
   }
 
-  await notionRequest('PATCH', '/v1/pages/' + pageId, { properties });
+  await updatePage(notion, pageId, properties);
   console.log(`   ✅ Updated successfully`);
 }
 
@@ -194,7 +159,7 @@ async function exportToCSV() {
   }
 
   // Query entire database
-  const response = await notionRequest('POST', '/v1/databases/' + VC_TRACKER_DB_ID + '/query');
+  const response = await queryDatabase(notion, VC_TRACKER_DB_ID);
 
   // Build CSV
   const headers = [
@@ -241,8 +206,6 @@ async function exportToCSV() {
     csv += row.map(field => `"${field}"`).join(",") + "\n";
   }
 
-  const fs = require('fs').promises;
-  const path = require('path');
   const outputPath = path.join(process.env.HOME, '.openclaw/workspace/alygn-automation', 'vc-tracker-export.csv');
   
   await fs.writeFile(outputPath, csv);
@@ -319,4 +282,4 @@ if (command === 'export') {
     .catch(() => process.exit(1));
 }
 
-module.exports = { vcOutreach, exportToCSV, getVCDatabase, updateVCStatus };
+export { vcOutreach, exportToCSV, getVCDatabase, updateVCStatus };

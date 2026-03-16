@@ -24,21 +24,23 @@
 ### Files Updated
 
 **1. `twitter-content-parser.js`**
+
 ```javascript
 // BEFORE
-function formatPost(content, hashtags = ['#AIGovernance']) {
-  const signature = 'more at @aialygn';
+function formatPost(content, hashtags = ["#AIGovernance"]) {
+  const signature = "more at @aialygn";
   return `${finalContent}\n\n${hashtagLine}\n\n${signature}`;
 }
 
 // AFTER
-function formatPost(content, hashtags = ['#AIGovernance', '#Alygn']) {
+function formatPost(content, hashtags = ["#AIGovernance", "#Alygn"]) {
   // Removed @mention - use hashtag instead
   return `${finalContent}\n\n${hashtagLine}`;
 }
 ```
 
 **2. `twitter-discovery/x-api-executor.js`**
+
 ```javascript
 // BEFORE
 function formatTweet(content, hashtags = ["#AIGovernance"]) {
@@ -56,6 +58,7 @@ function formatTweet(content, hashtags = ["#AIGovernance", "#Alygn"]) {
 ## 📊 Format Comparison
 
 ### Before (403 Forbidden)
+
 ```
 Coordination is the real AI governance challenge.
 
@@ -65,6 +68,7 @@ more at @aialygn
 ```
 
 ### After (✅ Should Work)
+
 ```
 Coordination is the real AI governance challenge.
 
@@ -76,11 +80,13 @@ Coordination is the real AI governance challenge.
 ## 🎯 Why This Works
 
 **X API Access Rules:**
+
 - ✅ **Hashtags:** No restrictions (any access level)
 - ❌ **@mentions in new posts:** Requires elevated access package
 - ✅ **@mentions in replies:** Allowed when replying to threads where mentioned users participate
 
 **Our Solution:**
+
 - Uses `#Alygn` hashtag for branding (no restrictions)
 - Removes `@aialygn` mention from signature
 - Maintains discoverability via hashtag search
@@ -90,15 +96,25 @@ Coordination is the real AI governance challenge.
 ## 🧪 Testing
 
 **Dry-run test:**
+
 ```bash
-bun scripts/alygn/x-twitter/x-api-executor.js \
+bun scripts/shared/x-growth/x-api-executor.js \
   twitter-outputs/grok-output-ai-governance-2026.md \
   --dry-run
 ```
 
 **Live test:**
+
 ```bash
-bun scripts/alygn/x-twitter/x-api-executor.js \
+bun scripts/shared/x-growth/x-api-executor.js \
+  twitter-outputs/grok-output-ai-governance-2026.md \
+  --dry-run
+```
+
+**Live test:**
+
+```bash
+bun scripts/shared/x-growth/x-api-executor.js \
   twitter-outputs/prompt-1-{timestamp}.md \
   --live
 ```

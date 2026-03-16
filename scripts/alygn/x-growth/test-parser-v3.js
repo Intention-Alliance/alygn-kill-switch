@@ -1,12 +1,11 @@
-#!/usr/bin/env node
 
 /**
  * Test Parser v3 - Show Output Before Posting
  */
 
-import { parseGrokOutput } from '../../twitter-content-parser.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { parseGrokOutput } from '../../twitter-content-parser.js';
 
 const TEST_FILE = join(
   process.env.HOME,

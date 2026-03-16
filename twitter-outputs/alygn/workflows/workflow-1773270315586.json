@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-11T23:05:15.586Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Trump admin's OMB M-25-21 unifies AI risks into \"high-impact\" category, boosting agency discretion over centralized rules. Resource gaps risk uneven compliance across federal agencies.\n\nExposes federal coordination breakdowns, with fragmented oversight eroding public trust and legitimacy in high-stakes AI uses like benefits and security.\n\n#AIGovernance #Alygn",
+      "length": 361,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 2,
+      "content": "Anthropic-Pentagon dispute highlights governance risks in national security AI. Enterprises urged to diversify vendors amid safety vs. procurement tensions.\n\nReveals clashes between firm safety commitments and gov demands, challenging institutional coordination and legitimacy of private AI guardrails.\n\n#AIGovernance #Alygn",
+      "length": 324,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 3,
+      "content": "AI governance must shift to \"delegated cognition\" era, where models shape reasoning. Evolve frameworks for human agency, transparency beyond data rules.\n\nDemands institutional evolution against cognitive power concentration, ensuring coordinated legitimacy as AI becomes societal decision infrastructure.\n\n#AIGovernance #Alygn",
+      "length": 326,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 4,
+      "content": "US leans on \"regulation by contract\" for AI, flexible but inadequate per experts. Live discussion pushes institutional design over short-term rules.\n\nSpotlights legitimacy gaps in procurement-led coordination, urging cross-org efforts for state capacity and robust AI oversight foundations.\n\n#AIGovernance #Alygn",
+      "length": 312,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 5,
+      "content": "AI governance void fuels unilateral power by states/firms. Middle-power coalitions proposed for redlines, transparency, incident standards.\n\nPromotes cross-org safety efforts via pragmatic multilateralism, countering power traps to build equitable, legitimate global AI norms.\n\n#AIGovernance #Alygn",
+      "length": 298,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

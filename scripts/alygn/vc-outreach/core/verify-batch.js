@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Phase 2: Batch Verification & Incremental Update Strategy
@@ -24,11 +23,11 @@
  * - Use timestamps to avoid re-researching already-done VCs
  */
 
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
+import { getClient, queryDatabase } from "../../../shared/notion-client.js";
 
-const NOTION_TOKEN = process.env.NOTION_TOKEN;
+const notion = getClient();
 const DB_ID = '30533487-4af6-81ef-983d-f57c7f70de33';
 const BATCH_SIZE = 5;
 const HOURS_AGO_THRESHOLD = 24; // Consider "researched" if edited in last 24h
@@ -38,18 +37,9 @@ const HOURS_AGO_THRESHOLD = 24; // Consider "researched" if edited in last 24h
  */
 async function fetchAllVCs() {
   try {
-    const response = await axios.post(
-      `https://api.notion.com/v1/databases/${DB_ID}/query`,
-      { page_size: 100 },
-      {
-        headers: {
-          'Authorization': `Bearer ${NOTION_TOKEN}`,
-          'Notion-Version': '2022-06-28'
-        }
-      }
-    );
+    const response = await queryDatabase(notion, DB_ID, { page_size: 100 });
     
-    return response.data.results.map(vc => ({
+    return response.results.map(vc => ({
       id: vc.id,
       name: vc.properties.Name?.title?.[0]?.text?.content,
       email: vc.properties.Email?.email,

@@ -1,5 +1,3 @@
-#!/usr/bin/env bun
-
 /**
  * Twitter Browser Executor v1
  * 

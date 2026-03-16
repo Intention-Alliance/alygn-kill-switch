@@ -1,31 +1,14 @@
-#!/usr/bin/env node
 
-const NOTION_KEY = "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";
-const NOTION_VERSION = "2022-06-28";
+import { appendBlocks, getClient } from '../shared/notion-client.js';
+
 const IA_HUB_PAGE_ID = "2f9334874af6819fa5c5f32ae95088f1";
-
-async function notionRequest(endpoint, method = "GET", body = null) {
-  const url = `https://api.notion.com/v1/${endpoint}`;
-  const options = {
-    method,
-    headers: {
-      "Authorization": `Bearer ${NOTION_KEY}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json"
-    }
-  };
-  if (body) options.body = JSON.stringify(body);
-  
-  const res = await fetch(url, options);
-  if (!res.ok) throw new Error(`Notion API error: ${res.status} ${await res.text()}`);
-  return res.json();
-}
+const notion = getClient();
 
 async function createALYGNGrowthTracker() {
   console.log("🚀 Creating ALYGN Growth Tracker in Notion...\n");
 
   // 1. Create main page
-  const mainPage = await notionRequest("pages", "POST", {
+  const mainPage = await notion.pages.create({
     parent: { page_id: IA_HUB_PAGE_ID },
     properties: {
       title: {
@@ -38,8 +21,7 @@ async function createALYGNGrowthTracker() {
   console.log("✅ Main page created:", mainPage.url);
 
   // 2. Add intro content
-  await notionRequest(`blocks/${mainPage.id}/children`, "PATCH", {
-    children: [
+  await appendBlocks(notion, mainPage.id, [
       {
         object: "block",
         type: "heading_1",
@@ -63,11 +45,10 @@ async function createALYGNGrowthTracker() {
         type: "divider",
         divider: {}
       }
-    ]
-  });
+  ]);
 
   // 3. Create VC Outreach Strategy subpage
-  const vcPage = await notionRequest("pages", "POST", {
+  const vcPage = await notion.pages.create({
     parent: { page_id: mainPage.id },
     properties: {
       title: {
@@ -80,8 +61,7 @@ async function createALYGNGrowthTracker() {
   console.log("✅ VC Outreach page created:", vcPage.url);
 
   // Add VC content
-  await notionRequest(`blocks/${vcPage.id}/children`, "PATCH", {
-    children: [
+  await appendBlocks(notion, vcPage.id, [
       {
         object: "block",
         type: "heading_2",
@@ -319,11 +299,10 @@ async function createALYGNGrowthTracker() {
           }]
         }
       }
-    ]
-  });
+  ]);
 
   // 4. Create Twitter/X Growth Strategy subpage
-  const twitterPage = await notionRequest("pages", "POST", {
+  const twitterPage = await notion.pages.create({
     parent: { page_id: mainPage.id },
     properties: {
       title: {
@@ -336,8 +315,7 @@ async function createALYGNGrowthTracker() {
   console.log("✅ Twitter/X Growth page created:", twitterPage.url);
 
   // Add Twitter content
-  await notionRequest(`blocks/${twitterPage.id}/children`, "PATCH", {
-    children: [
+  await appendBlocks(notion, twitterPage.id, [
       {
         object: "block",
         type: "heading_2",
@@ -615,11 +593,10 @@ async function createALYGNGrowthTracker() {
           }]
         }
       }
-    ]
-  });
+  ]);
 
   // 5. Create Implementation Plan subpage
-  const implPage = await notionRequest("pages", "POST", {
+  const implPage = await notion.pages.create({
     parent: { page_id: mainPage.id },
     properties: {
       title: {
@@ -632,8 +609,7 @@ async function createALYGNGrowthTracker() {
   console.log("✅ Implementation Plan page created:", implPage.url);
 
   // Add implementation content
-  await notionRequest(`blocks/${implPage.id}/children`, "PATCH", {
-    children: [
+  await appendBlocks(notion, implPage.id, [
       {
         object: "block",
         type: "heading_2",
@@ -845,8 +821,7 @@ async function createALYGNGrowthTracker() {
           checked: false
         }
       }
-    ]
-  });
+  ]);
 
   console.log("\n🎉 ALYGN Growth Tracker created successfully!");
   console.log("\n📋 Summary:");

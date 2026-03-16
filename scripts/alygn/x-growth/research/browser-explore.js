@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN Twitter Discovery - Phase 1: Browser Exploration
@@ -31,8 +30,8 @@
  * }
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import fs from "fs".promises;
+import path from "path";
 
 // Output directory
 const OUTPUT_DIR = path.join(__dirname, '../../../twitter-outputs/alygn/discovery');
@@ -216,7 +215,7 @@ async function exploreFeed() {
 /**
  * CLI Entry Point
  */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   exploreFeed()
     .then(() => {
       success('🎉 Browser discovery complete!');
@@ -228,4 +227,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { exploreFeed, parsePostsFromSnapshot, extractKeywords };
+export { exploreFeed, parsePostsFromSnapshot, extractKeywords };

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Create VC Outreach Tracker Database in Notion

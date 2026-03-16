@@ -1,0 +1,65 @@
+{
+  "name": "humano",
+  "description": "@humano — Alygn CEO R&D account",
+  "twitter": {
+    "handle": "@humano",
+    "consumerKey": "${X_CONSUMER_KEY}",
+    "consumerSecret": "${X_CONSUMER_SECRET}",
+    "accessToken": "${X_ACCESS_TOKEN}",
+    "accessSecret": "${X_ACCESS_TOKEN_SECRET}",
+    "voice": "institutional",
+    "topics": [
+      "AI Governance",
+      "Institutional Coordination",
+      "Municipal AI Policy",
+      "Legitimacy as Infrastructure",
+      "Accountability without Enforcement",
+      "Public Sector AI"
+    ],
+    "hashtags": [
+      "#AIGovernance",
+      "#SmartCities",
+      "#InstitutionalDesign",
+      "#GovTech",
+      "#AIPolicy"
+    ],
+    "alwaysIncludeHashtags": ["#AIGovernance"],
+    "signature": "more at @aialygn",
+    "signaturePosition": "end",
+    "maxTweetsPerDay": 4,
+    "maxRepliesPerDay": 8,
+    "maxQuotesPerDay": 2
+  },
+  "grok": {
+    "model": "grok-3",
+    "temperature": 0.5,
+    "maxTokens": 2000,
+    "systemPrompt": "You are writing for @humano, CEO of Alygn — an independent AI governance infrastructure initiative. Focus on governance legitimacy, coordination without centralization, and institutional accountability for municipalities and public sector. Tone: institutional, restrained, non-promotional. End every full post with: more at @aialygn. Vocabulary to USE: coordination, governance, infrastructure, legitimacy, accountability, institutional. Vocabulary to AVOID: regulate, control, ensure compliance, AI tool, consulting, platform, product.",
+    "agentPrompts": {
+      "file": "scripts/alygn/humano/lib/agent-prompts.js",
+      "note": "Full 3-agent chain used by agent-chain.js. Single-call path uses grok.systemPrompt above."
+    }
+  },
+  "automation": {
+    "cronSchedule": "0 */3 * * *",
+    "activeHours": { "start": 8, "end": 20 },
+    "timezone": "America/Costa_Rica",
+    "followingListFile": "config/humano-following.txt",
+    "templateFile": "config/humano-template.json",
+    "pollMentionsSinceHours": 3
+  },
+  "schedule": {
+    "postsPerDay": 2,
+    "repliesPerDay": 5,
+    "quotesPerDay": 1,
+    "timezone": "America/Costa_Rica",
+    "postingHours": {
+      "start": 8,
+      "end": 20
+    }
+  },
+  "discord": {
+    "reportChannel": "",
+    "notifyOnComplete": false
+  }
+}

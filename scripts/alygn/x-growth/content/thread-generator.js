@@ -3,8 +3,8 @@
  * Uses prompts from Notion or local config
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Grok API configuration
 const GROK_API_KEY = process.env.GROK_API_KEY;
@@ -191,7 +191,7 @@ function loadPrompts(promptIds) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
@@ -232,7 +232,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   generateContent,
   loadPrompts,
   ALYGN_SYSTEM_PROMPT

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Generate selective, high-quality images for ALYGN Twitter posts
@@ -7,9 +6,8 @@
  */
 
 import fs from "fs";
-import path from "path";
 import https from "https";
-import { spawn } from "child_process";
+import path from "path";
 
 // Load credentials
 const credentialsPath = path.join(process.env.HOME, ".openclaw/workspace/config/credentials.json");

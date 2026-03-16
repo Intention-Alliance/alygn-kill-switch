@@ -1,5 +1,3 @@
-#!/usr/bin/env bun
-
 /**
  * ALYGN Twitter/X Automation - Grok Integration (IMPROVED)
  * 
@@ -14,64 +12,27 @@
  * - Parent: Organizations TODO Lists
  */
 
-const https = require('https');
-const fs = require('fs').promises;
-const path = require('path');
-const { xai } = require('@ai-sdk/xai');
-const { generateText } = require('ai');
-const { getNotionKey, getGrokKey, getGrokModel, getNotionPage } = require('../../shared/load-credentials');
-const { log, success, error, LogLevel } = require('../../shared/logger');
-const { injectDynamicValues, previewInjections } = require('../lib/dynamic-injector');
-const { parsePostsFromSnapshot, savePostsToCache, formatPostsForInjection } = require('../lib/post-discovery');
+import { xai } from '@ai-sdk/xai';
+import { generateText } from 'ai';
+import fs from 'fs/promises';
+import path from 'path';
+import { getGrokKey, getGrokModel, getNotionKey, getNotionPage } from '../../shared/load-credentials.js';
+import { error, log, LogLevel, success } from '../../shared/logger.js';
+import { findBlockByPattern, getClient, listBlocks } from '../../shared/notion-client.js';
+import { injectDynamicValues, previewInjections } from '../lib/dynamic-injector.js';
 
-const NOTION_API_KEY = getNotionKey();
 const GROK_API_KEY = getGrokKey();
 const GROK_MODEL = getGrokModel();
 const TWITTER_PROMPTS_PAGE_ID = getNotionPage('twitter_prompts');
+const notion = getClient(getNotionKey());
 
 // Configure xAI with API key
 process.env.XAI_API_KEY = GROK_API_KEY;
 
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
-
 /**
  * Enhanced Grok Request with Search Support using @ai-sdk/xai
  */
-async function grokRequest(prompt, useSearch = false) {
+async function grokRequest(prompt, useSearch = false, timeoutMs = 300000) {
   if (!GROK_API_KEY || GROK_API_KEY === 'PENDING') {
     throw new Error('GROK_API_KEY not configured');
   }
@@ -88,7 +49,17 @@ async function grokRequest(prompt, useSearch = false) {
     };
   }
 
-  const { text, sources, usage } = await generateText(requestConfig);
+  // Add timeout to prevent silent hangs
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(`Grok API timeout after ${timeoutMs/1000}s`)), timeoutMs);
+  });
+
+  const generatePromise = generateText(requestConfig);
+
+  const { text, sources, usage } = await Promise.race([
+    generatePromise,
+    timeoutPromise
+  ]);
 
   return {
     content: text,
@@ -103,48 +74,50 @@ async function grokRequest(prompt, useSearch = false) {
 }
 
 /**
- * Fetch prompt from Notion
+ * Fetch prompt from Notion using optimized pattern search
  */
 async function fetchPromptFromNotion(promptNumber) {
-  const response = await notionRequest('GET', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
-
-  for (const block of response.results) {
-    if (block.type === 'paragraph') {
-      const text = block.paragraph.rich_text.map(rt => rt.text.content).join('');
-      
-      if (text.includes(`[Prompt #${promptNumber}]`)) {
-        const match = text.match(/:\s*['"](.+?)['"]\s*$/);
-        if (match) {
-          return {
-            number: promptNumber,
-            title: text.match(/\[Prompt #\d+\]\s*(.+?):/)?.[1]?.trim() || 'Untitled',
-            text: match[1]
-          };
-        }
-      }
-    }
+  const promptBlock = await findBlockByPattern(notion, TWITTER_PROMPTS_PAGE_ID, `[Prompt #${promptNumber}]`);
+  
+  if (!promptBlock) {
+    throw new Error(`Prompt #${promptNumber} not found`);
   }
-
-  throw new Error(`Prompt #${promptNumber} not found`);
+  
+  const text = promptBlock.text;
+  const titleMatch = text.match(/\[Prompt #\d+\]\s*(.+?):/);
+  const title = titleMatch?.[1]?.trim() || 'Untitled';
+  const colonIndex = text.indexOf(':');
+  const content = colonIndex > 0 ? text.substring(colonIndex + 1).trim() : '';
+  
+  return {
+    number: promptNumber,
+    title,
+    text: content
+  };
 }
 
 /**
  * List all prompts
  */
 async function listPrompts() {
-  const response = await notionRequest('GET', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
+  const response = await listBlocks(notion, TWITTER_PROMPTS_PAGE_ID);
   const prompts = [];
 
   for (const block of response.results) {
     if (block.type === 'paragraph') {
       const text = block.paragraph.rich_text.map(rt => rt.text.content).join('');
-      const match = text.match(/\[Prompt #(\d+)\]\s*(.+?):\s*['"](.+?)['"]/);
+      // Match prompt title and extract preview (handle multi-line content)
+      const titleMatch = text.match(/\[Prompt #(\d+)\]\s*(.+?):/);
       
-      if (match) {
+      if (titleMatch) {
+        // Extract first 80 chars after the colon as preview
+        const colonIndex = text.indexOf(':');
+        const preview = colonIndex > 0 ? text.substring(colonIndex + 1, colonIndex + 81).trim() + '...' : '...';
+        
         prompts.push({
-          number: parseInt(match[1]),
-          title: match[2].trim(),
-          preview: match[3].substring(0, 80) + '...'
+          number: parseInt(titleMatch[1]),
+          title: titleMatch[2].trim(),
+          preview
         });
       }
     }
@@ -238,12 +211,78 @@ async function executePrompt(promptNumber, useSearch = false, skipInjection = fa
     const filename = `prompt-${promptNumber}-${Date.now()}.md`;
     await fs.writeFile(path.join(outputDir, filename), outputMd);
 
+    // Generate workflow JSON for x-api-executor (only for Prompts #1 and #13)
+    if ([1, 13].includes(promptNumber) && response.content.includes('<responses>')) {
+      const { extractTag } = await import('./parser/twitter-content-parser.js');
+      
+      const contentBlocks = extractTag(response.content, 'content');
+      const posts = contentBlocks.map((block, idx) => {
+        const texts = extractTag(block, 'text');
+        const angles = extractTag(block, 'governance_angle');
+        const sourcesBlocks = extractTag(block, 'sources');
+        const text = texts[0] || '';
+        const angle = angles[0] || '';
+        const sources = sourcesBlocks.length > 0 ? extractTag(sourcesBlocks[0], 'url') : [];
+        const sourceUrl = sources[0] || null;
+        
+        // Each <content> block = THREAD PAIR (main + reply)
+        // Main tweet: <text> field only (~200 chars)
+        // Reply tweet: <governance_angle> field (~250 chars)
+        // Hashtags added dynamically by formatTweet() in executor
+        
+        const mainText = text.trim();
+        const replyText = angle.trim();
+        
+        // Validate lengths
+        const issues = [];
+        if (mainText.length > 280) issues.push('Main exceeds 280 chars');
+        if (replyText.length > 280) issues.push('Reply exceeds 280 chars');
+        
+        return {
+          id: idx + 1,
+          mainText: mainText,
+          replyText: replyText,
+          sourceUrl: sourceUrl,
+          isThread: true,
+          mainLength: mainText.length,
+          replyLength: replyText.length,
+          status: issues.length === 0 ? 'ready' : 'blocked',
+          tweetId: null,
+          url: null,
+          issues
+        };
+      });
+      
+      const workflow = {
+        generatedAt: new Date().toISOString(),
+        source: `Grok Search - Prompt #${promptNumber}`,
+        totalPosts: posts.length,
+        totalThreads: posts.filter(p => p.isThread).length,
+        postedAt: null,
+        posts,
+        executed: 0,
+        failed: 0
+      };
+      
+      // Save workflow JSON
+      const workflowDir = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs/alygn/workflows');
+      await fs.mkdir(workflowDir, { recursive: true });
+      const workflowFile = `workflow-${Date.now()}.json`;
+      await fs.writeFile(path.join(workflowDir, workflowFile), JSON.stringify(workflow, null, 2));
+      
+      // Update latest.json symlink
+      await fs.writeFile(path.join(workflowDir, 'latest.json'), JSON.stringify(workflow, null, 2));
+      
+      console.log(`✅ Workflow generated: ${posts.length} thread pairs ready for execution`);
+    }
+
     return {
       success: true,
       prompt,
       response: response.content,
       searchResults: response.searchResults,
-      outputFile: filename
+      outputFile: filename,
+      workflowFile: [1, 13].includes(promptNumber) && response.content.includes('<responses>') ? 'generated' : null
     };
 
   } catch (err) {
@@ -274,6 +313,7 @@ async function main() {
       }
       
       console.log(`\nTotal: ${prompts.length} prompts available`);
+      process.exit(0);
       
     } else if (command === 'fetch' && arg) {
       const promptNumber = parseInt(arg);
@@ -281,6 +321,7 @@ async function main() {
       
       console.log(`\n📖 Prompt #${promptNumber}: ${prompt.title}\n`);
       console.log(`Full text:\n"${prompt.text}"\n`);
+      process.exit(0);
       
     } else if (command === 'preview' && arg) {
       // Preview injection without executing
@@ -289,6 +330,7 @@ async function main() {
       
       const prompt = await fetchPromptFromNotion(promptNumber);
       await previewInjections(prompt.text);
+      process.exit(0);
       
     } else if (command === 'exec' && arg) {
       const promptNumber = parseInt(arg);
@@ -306,6 +348,7 @@ async function main() {
       if (result.searchResults) {
         console.log(`   Search results: ${result.searchResults.length} items`);
       }
+      process.exit(0);
       
     } else {
       console.log('ALYGN Twitter Automation v2 (with Dynamic Injection)\n');
@@ -327,6 +370,7 @@ async function main() {
       console.log('  bun twitter-automation-v2.js exec 1                   # Thread ideas with real trends');
       console.log('  bun twitter-automation-v2.js exec 13 --search         # Trend monitoring (source data)');
       console.log('  bun twitter-automation-v2.js exec 15                  # Reply templates with real topics');
+      process.exit(0);
     }
 
   } catch (err) {
@@ -335,8 +379,10 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+// Run if called directly
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = { executePrompt, listPrompts, fetchPromptFromNotion };
+export { executePrompt, fetchPromptFromNotion, listPrompts };
+

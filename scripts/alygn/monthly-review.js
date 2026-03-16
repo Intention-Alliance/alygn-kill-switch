@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Monthly Review (IMPROVED)
  * 
@@ -7,9 +6,9 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs');
-const path = require('path');
-const { success } = require('../shared/logger');
+import fs from 'fs';
+import path from 'path';
+import { success } from '../shared/logger.js';
 
 const MEMORY_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', 'memory');
 
@@ -140,7 +139,7 @@ async function analyzeMonth() {
 }
 
 // Main execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   analyzeMonth()
     .then(() => {
       console.log('✅ Monthly review complete!');
@@ -152,4 +151,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { analyzeMonth };
+export { analyzeMonth };

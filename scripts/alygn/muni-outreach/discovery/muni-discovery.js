@@ -7,9 +7,9 @@
  *   node muni-discovery.js --region=cr --limit=10  # Live mode
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from "fs";
+import path from "path";
+import { execSync } from "child_process";
 
 // Configuration
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
@@ -189,7 +189,7 @@ function saveResults(municipalities, outputFile) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const regionArg = args.find(a => a.startsWith('--region='));
@@ -219,7 +219,7 @@ if (require.main === module) {
     });
 }
 
-module.exports = {
+export {
   discoverMunicipalities,
   REGION_CONFIGS
 };

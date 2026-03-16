@@ -1,5 +1,3 @@
-#!/usr/bin/env bun
-
 /**
  * Chrome Cookie Extractor for X.com (Twitter)
  * Uses Bun's built-in sqlite + crypto to extract Chrome cookies
@@ -9,7 +7,6 @@
  */
 
 import { Database } from "bun:sqlite";
-import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 

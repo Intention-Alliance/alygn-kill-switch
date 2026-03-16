@@ -1,12 +1,11 @@
-#!/usr/bin/env node
 
 /**
  * Manual Test - Inline Parser Test
  * No imports, just inline test
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Inline parser functions (copied from twitter-content-parser.js for testing)
 function enhancedParseMarkdownContent(content) {

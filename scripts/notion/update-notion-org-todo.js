@@ -1,29 +1,12 @@
-#!/usr/bin/env node
 
 /**
  * Update Organizations TODO with ALYGN Automation status
  */
 
-const NOTION_KEY = "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";
-const NOTION_VERSION = "2022-06-28";
-const ORG_TODO_PAGE_ID = "26a334874af681a8b01cfd1a8a5f8bcb";
+import { appendBlocks, getClient } from '../shared/notion-client.js';
 
-async function notionRequest(endpoint, method = "GET", body = null) {
-  const url = `https://api.notion.com/v1/${endpoint}`;
-  const options = {
-    method,
-    headers: {
-      "Authorization": `Bearer ${NOTION_KEY}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json"
-    }
-  };
-  if (body) options.body = JSON.stringify(body);
-  
-  const res = await fetch(url, options);
-  if (!res.ok) throw new Error(`Notion API error: ${res.status} ${await res.text()}`);
-  return res.json();
-}
+const ORG_TODO_PAGE_ID = "26a334874af681a8b01cfd1a8a5f8bcb";
+const notion = getClient();
 
 async function updateOrgTodo() {
   console.log("📝 Updating Organizations TODO with ALYGN Automation status...\n");
@@ -31,8 +14,7 @@ async function updateOrgTodo() {
   const today = new Date().toISOString().split('T')[0];
   
   // Add ALYGN Automation entry
-  await notionRequest(`blocks/${ORG_TODO_PAGE_ID}/children`, "PATCH", {
-    children: [
+  await appendBlocks(notion, ORG_TODO_PAGE_ID, [
       {
         object: "block",
         type: "heading_2",
@@ -380,8 +362,7 @@ async function updateOrgTodo() {
         type: "divider",
         divider: {}
       }
-    ]
-  });
+  ]);
   
   console.log("✅ Organizations TODO updated successfully!");
   console.log("\nView at: https://www.notion.so/Organizations-TODO-Lists-26a334874af681a8b01cfd1a8a5f8bcb");

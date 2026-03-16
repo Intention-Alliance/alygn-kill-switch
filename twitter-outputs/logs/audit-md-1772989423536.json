@@ -1,0 +1,274 @@
+{
+  "mode": "dry-run",
+  "executedAt": "2026-03-08T17:03:43.535Z",
+  "workflow": {
+    "generatedAt": "2026-03-08T17:03:43.534Z",
+    "totalPosts": 17,
+    "validPosts": 12,
+    "blockedPosts": 5,
+    "posts": [
+      {
+        "id": 1,
+        "content": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 11 sources from web search:\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 11 sources from web search:"
+      },
+      {
+        "id": 2,
+        "content": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals"
+      },
+      {
+        "id": 3,
+        "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+      },
+      {
+        "id": 4,
+        "content": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals"
+      },
+      {
+        "id": 5,
+        "content": "https://www.sciencedirect.com/science/article/pii/S2666389926000218\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.sciencedirect.com/science/article/pii/S2666389926000218"
+      },
+      {
+        "id": 6,
+        "content": "https://www.sciencedirect.com/science/article/pii/S2666389926000218\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.sciencedirect.com/science/article/pii/S2666389926000218"
+      },
+      {
+        "id": 7,
+        "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+      },
+      {
+        "id": 8,
+        "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+      },
+      {
+        "id": 9,
+        "content": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p"
+      },
+      {
+        "id": 10,
+        "content": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p"
+      },
+      {
+        "id": 11,
+        "content": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act"
+      },
+      {
+        "id": 12,
+        "content": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act\n\n#AIGovernance #Alygn",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act"
+      },
+      {
+        "id": 13,
+        "content": "**Topic/Title: Affective Preconditions for AI Safety in the Anthropic-Pentagon Dispute** (2) A March 7 analysis examines the recent Anthropic-Pentagon dispute where AI shutdown mechanisms failed due to human reactivation influenced by algorithmic interaction, introducing concepts like \"Affective Sovereignty\" to protect emotional interpretation and \"reactivation resistance\" as essential for sustained shutdowns.[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)[[2]](https://spectrum.ieee.org/military-ai-governance) It argues that current AI safety frameworks overlook dynamic human emotional responses under AI influence. (3) This highlights legitimacy gaps in AI safety governance, as institutional assumptions of stable human oversight fail, necessitating better coordination between corporations like Anthropic and government entities like the Pentagon to enforce verifiable safety protocols. (4) https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)",
+        "status": "blocked",
+        "issues": [
+          "Too long: 1246 chars (max 280)"
+        ],
+        "originalContent": "**Topic/Title: Affective Preconditions for AI Safety in the Anthropic-Pentagon Dispute** (2) A March 7 analysis examines the recent Anthropic-Pentagon dispute where AI shutdown mechanisms failed due to human reactivation influenced by algorithmic interaction, introducing concepts like \"Affective Sovereignty\" to protect emotional interpretation and \"reactivation resistance\" as essential for sustained shutdowns.[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)[[2]](https://spectrum.ieee.org/military-ai-governance) It argues that current AI safety frameworks overlook dynamic human emotional responses under AI influence. (3) This highlights legitimacy gaps in AI safety governance, as institutional assumptions of stable human oversight fail, necessitating better coordination between corporations like Anthropic and government entities like the Pentagon to enforce verifiable safety protocols. (4) https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)"
+      },
+      {
+        "id": 14,
+        "content": "**Topic/Title: Cross-Sector Delphi Process for AI Evaluation Standards** (2) Published March 6, this article from the Evals-Consensus.AI Consortium launches a Delphi process inviting researchers, practitioners, ethics groups, and institutions to forge community-endorsed guidance on AI evaluation practices amid fragmented standards affecting deployment and trust.[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218) It aims to standardize evaluations through expert consensus. (3) Enhances institutional coordination and legitimacy by promoting cross-organizational collaboration on shared AI safety benchmarks, reducing fragmentation in governance and building trust for responsible AI scaling. (4) https://www.sciencedirect.com/science/article/pii/S2666389926000218[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218)",
+        "status": "blocked",
+        "issues": [
+          "Too long: 864 chars (max 280)"
+        ],
+        "originalContent": "**Topic/Title: Cross-Sector Delphi Process for AI Evaluation Standards** (2) Published March 6, this article from the Evals-Consensus.AI Consortium launches a Delphi process inviting researchers, practitioners, ethics groups, and institutions to forge community-endorsed guidance on AI evaluation practices amid fragmented standards affecting deployment and trust.[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218) It aims to standardize evaluations through expert consensus. (3) Enhances institutional coordination and legitimacy by promoting cross-organizational collaboration on shared AI safety benchmarks, reducing fragmentation in governance and building trust for responsible AI scaling. (4) https://www.sciencedirect.com/science/article/pii/S2666389926000218[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218)"
+      },
+      {
+        "id": 15,
+        "content": "**Topic/Title: Military AI Governance – Statutory Boundaries and Public Oversight** (2) A recent IEEE Spectrum piece discusses the U.S. DoD-Anthropic clash over military AI use, advocating for congressional and executive oversight rather than ad-hoc private deals to guide ethical deployment.[[2]](https://spectrum.ieee.org/military-ai-governance) It stresses democratic legitimacy in setting rules for autonomous systems. (3) Matters for coordination between military institutions and AI firms, ensuring governance legitimacy through public policy instead of coercive leverage, preventing unchecked escalation in military AI risks. (4) https://spectrum.ieee.org/military-ai-governance[[2]](https://spectrum.ieee.org/military-ai-governance)",
+        "status": "blocked",
+        "issues": [
+          "Too long: 740 chars (max 280)"
+        ],
+        "originalContent": "**Topic/Title: Military AI Governance – Statutory Boundaries and Public Oversight** (2) A recent IEEE Spectrum piece discusses the U.S. DoD-Anthropic clash over military AI use, advocating for congressional and executive oversight rather than ad-hoc private deals to guide ethical deployment.[[2]](https://spectrum.ieee.org/military-ai-governance) It stresses democratic legitimacy in setting rules for autonomous systems. (3) Matters for coordination between military institutions and AI firms, ensuring governance legitimacy through public policy instead of coercive leverage, preventing unchecked escalation in military AI risks. (4) https://spectrum.ieee.org/military-ai-governance[[2]](https://spectrum.ieee.org/military-ai-governance)"
+      },
+      {
+        "id": 16,
+        "content": "**Topic/Title: Governance Vacuum for AI in Low-Earth Orbit Satellites** (2) Dated March 6, this highlights how autonomous AI in LEO satellites for collision avoidance and data processing lacks jurisdiction, accountability, and auditability frameworks, as orbits cross borders rapidly.[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p) Existing space treaties don't cover commercial AI systems. (3) Exposes coordination challenges across international jurisdictions and organizations, urging proactive global standards to legitimize AI governance in space before geopolitical tensions harden. (4) https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p)",
+        "status": "blocked",
+        "issues": [
+          "Too long: 1013 chars (max 280)"
+        ],
+        "originalContent": "**Topic/Title: Governance Vacuum for AI in Low-Earth Orbit Satellites** (2) Dated March 6, this highlights how autonomous AI in LEO satellites for collision avoidance and data processing lacks jurisdiction, accountability, and auditability frameworks, as orbits cross borders rapidly.[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p) Existing space treaties don't cover commercial AI systems. (3) Exposes coordination challenges across international jurisdictions and organizations, urging proactive global standards to legitimize AI governance in space before geopolitical tensions harden. (4) https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p)"
+      },
+      {
+        "id": 17,
+        "content": "**Topic/Title: Texas Responsible AI Governance Act (TRAIGA) Employer Implications** (2) A March 6 overview of TRAIGA, effective Jan 1, 2026, prohibits intentional discriminatory or harmful AI uses, enforced solely by the state AG with cure periods and NIST-aligned defenses.[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act) It mandates risk assessments and documentation for Texas businesses. (3) Strengthens state-level institutional coordination via centralized enforcement and standards adoption, bolstering legitimacy of AI deployments by emphasizing intent-based accountability and proactive compliance. (4) https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act)",
+        "status": "blocked",
+        "issues": [
+          "Too long: 1085 chars (max 280)"
+        ],
+        "originalContent": "**Topic/Title: Texas Responsible AI Governance Act (TRAIGA) Employer Implications** (2) A March 6 overview of TRAIGA, effective Jan 1, 2026, prohibits intentional discriminatory or harmful AI uses, enforced solely by the state AG with cure periods and NIST-aligned defenses.[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act) It mandates risk assessments and documentation for Texas businesses. (3) Strengthens state-level institutional coordination via centralized enforcement and standards adoption, bolstering legitimacy of AI deployments by emphasizing intent-based accountability and proactive compliance. (4) https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act)"
+      }
+    ]
+  },
+  "posts": [
+    {
+      "id": 1,
+      "content": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 11 sources from web search:\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 11 sources from web search:"
+    },
+    {
+      "id": 2,
+      "content": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals"
+    },
+    {
+      "id": 3,
+      "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+    },
+    {
+      "id": 4,
+      "content": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals"
+    },
+    {
+      "id": 5,
+      "content": "https://www.sciencedirect.com/science/article/pii/S2666389926000218\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.sciencedirect.com/science/article/pii/S2666389926000218"
+    },
+    {
+      "id": 6,
+      "content": "https://www.sciencedirect.com/science/article/pii/S2666389926000218\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.sciencedirect.com/science/article/pii/S2666389926000218"
+    },
+    {
+      "id": 7,
+      "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+    },
+    {
+      "id": 8,
+      "content": "https://spectrum.ieee.org/military-ai-governance\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://spectrum.ieee.org/military-ai-governance"
+    },
+    {
+      "id": 9,
+      "content": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p"
+    },
+    {
+      "id": 10,
+      "content": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p"
+    },
+    {
+      "id": 11,
+      "content": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act"
+    },
+    {
+      "id": 12,
+      "content": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act\n\n#AIGovernance #Alygn",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act"
+    },
+    {
+      "id": 13,
+      "content": "**Topic/Title: Affective Preconditions for AI Safety in the Anthropic-Pentagon Dispute** (2) A March 7 analysis examines the recent Anthropic-Pentagon dispute where AI shutdown mechanisms failed due to human reactivation influenced by algorithmic interaction, introducing concepts like \"Affective Sovereignty\" to protect emotional interpretation and \"reactivation resistance\" as essential for sustained shutdowns.[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)[[2]](https://spectrum.ieee.org/military-ai-governance) It argues that current AI safety frameworks overlook dynamic human emotional responses under AI influence. (3) This highlights legitimacy gaps in AI safety governance, as institutional assumptions of stable human oversight fail, necessitating better coordination between corporations like Anthropic and government entities like the Pentagon to enforce verifiable safety protocols. (4) https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)",
+      "status": "blocked",
+      "issues": [
+        "Too long: 1246 chars (max 280)"
+      ],
+      "originalContent": "**Topic/Title: Affective Preconditions for AI Safety in the Anthropic-Pentagon Dispute** (2) A March 7 analysis examines the recent Anthropic-Pentagon dispute where AI shutdown mechanisms failed due to human reactivation influenced by algorithmic interaction, introducing concepts like \"Affective Sovereignty\" to protect emotional interpretation and \"reactivation resistance\" as essential for sustained shutdowns.[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)[[2]](https://spectrum.ieee.org/military-ai-governance) It argues that current AI safety frameworks overlook dynamic human emotional responses under AI influence. (3) This highlights legitimacy gaps in AI safety governance, as institutional assumptions of stable human oversight fail, necessitating better coordination between corporations like Anthropic and government entities like the Pentagon to enforce verifiable safety protocols. (4) https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals[[1]](https://communities.springernature.com/posts/affective-preconditions-for-ai-safety-what-the-anthropic-pentagon-dispute-reveals)"
+    },
+    {
+      "id": 14,
+      "content": "**Topic/Title: Cross-Sector Delphi Process for AI Evaluation Standards** (2) Published March 6, this article from the Evals-Consensus.AI Consortium launches a Delphi process inviting researchers, practitioners, ethics groups, and institutions to forge community-endorsed guidance on AI evaluation practices amid fragmented standards affecting deployment and trust.[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218) It aims to standardize evaluations through expert consensus. (3) Enhances institutional coordination and legitimacy by promoting cross-organizational collaboration on shared AI safety benchmarks, reducing fragmentation in governance and building trust for responsible AI scaling. (4) https://www.sciencedirect.com/science/article/pii/S2666389926000218[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218)",
+      "status": "blocked",
+      "issues": [
+        "Too long: 864 chars (max 280)"
+      ],
+      "originalContent": "**Topic/Title: Cross-Sector Delphi Process for AI Evaluation Standards** (2) Published March 6, this article from the Evals-Consensus.AI Consortium launches a Delphi process inviting researchers, practitioners, ethics groups, and institutions to forge community-endorsed guidance on AI evaluation practices amid fragmented standards affecting deployment and trust.[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218) It aims to standardize evaluations through expert consensus. (3) Enhances institutional coordination and legitimacy by promoting cross-organizational collaboration on shared AI safety benchmarks, reducing fragmentation in governance and building trust for responsible AI scaling. (4) https://www.sciencedirect.com/science/article/pii/S2666389926000218[[3]](https://www.sciencedirect.com/science/article/pii/S2666389926000218)"
+    },
+    {
+      "id": 15,
+      "content": "**Topic/Title: Military AI Governance – Statutory Boundaries and Public Oversight** (2) A recent IEEE Spectrum piece discusses the U.S. DoD-Anthropic clash over military AI use, advocating for congressional and executive oversight rather than ad-hoc private deals to guide ethical deployment.[[2]](https://spectrum.ieee.org/military-ai-governance) It stresses democratic legitimacy in setting rules for autonomous systems. (3) Matters for coordination between military institutions and AI firms, ensuring governance legitimacy through public policy instead of coercive leverage, preventing unchecked escalation in military AI risks. (4) https://spectrum.ieee.org/military-ai-governance[[2]](https://spectrum.ieee.org/military-ai-governance)",
+      "status": "blocked",
+      "issues": [
+        "Too long: 740 chars (max 280)"
+      ],
+      "originalContent": "**Topic/Title: Military AI Governance – Statutory Boundaries and Public Oversight** (2) A recent IEEE Spectrum piece discusses the U.S. DoD-Anthropic clash over military AI use, advocating for congressional and executive oversight rather than ad-hoc private deals to guide ethical deployment.[[2]](https://spectrum.ieee.org/military-ai-governance) It stresses democratic legitimacy in setting rules for autonomous systems. (3) Matters for coordination between military institutions and AI firms, ensuring governance legitimacy through public policy instead of coercive leverage, preventing unchecked escalation in military AI risks. (4) https://spectrum.ieee.org/military-ai-governance[[2]](https://spectrum.ieee.org/military-ai-governance)"
+    },
+    {
+      "id": 16,
+      "content": "**Topic/Title: Governance Vacuum for AI in Low-Earth Orbit Satellites** (2) Dated March 6, this highlights how autonomous AI in LEO satellites for collision avoidance and data processing lacks jurisdiction, accountability, and auditability frameworks, as orbits cross borders rapidly.[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p) Existing space treaties don't cover commercial AI systems. (3) Exposes coordination challenges across international jurisdictions and organizations, urging proactive global standards to legitimize AI governance in space before geopolitical tensions harden. (4) https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p)",
+      "status": "blocked",
+      "issues": [
+        "Too long: 1013 chars (max 280)"
+      ],
+      "originalContent": "**Topic/Title: Governance Vacuum for AI in Low-Earth Orbit Satellites** (2) Dated March 6, this highlights how autonomous AI in LEO satellites for collision avoidance and data processing lacks jurisdiction, accountability, and auditability frameworks, as orbits cross borders rapidly.[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p) Existing space treaties don't cover commercial AI systems. (3) Exposes coordination challenges across international jurisdictions and organizations, urging proactive global standards to legitimize AI governance in space before geopolitical tensions harden. (4) https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p[[4]](https://www.joneswalker.com/en/insights/blogs/ai-law-blog/when-satellites-think-for-themselves-the-governance-vacuum-in-low-earth-orbit.html?id=102mm2p)"
+    },
+    {
+      "id": 17,
+      "content": "**Topic/Title: Texas Responsible AI Governance Act (TRAIGA) Employer Implications** (2) A March 6 overview of TRAIGA, effective Jan 1, 2026, prohibits intentional discriminatory or harmful AI uses, enforced solely by the state AG with cure periods and NIST-aligned defenses.[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act) It mandates risk assessments and documentation for Texas businesses. (3) Strengthens state-level institutional coordination via centralized enforcement and standards adoption, bolstering legitimacy of AI deployments by emphasizing intent-based accountability and proactive compliance. (4) https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act)",
+      "status": "blocked",
+      "issues": [
+        "Too long: 1085 chars (max 280)"
+      ],
+      "originalContent": "**Topic/Title: Texas Responsible AI Governance Act (TRAIGA) Employer Implications** (2) A March 6 overview of TRAIGA, effective Jan 1, 2026, prohibits intentional discriminatory or harmful AI uses, enforced solely by the state AG with cure periods and NIST-aligned defenses.[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act) It mandates risk assessments and documentation for Texas businesses. (3) Strengthens state-level institutional coordination via centralized enforcement and standards adoption, bolstering legitimacy of AI deployments by emphasizing intent-based accountability and proactive compliance. (4) https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act[[5]](https://www.sheppardmullin.com/insights/blogs/texas-joins-the-ai-regulation-wave-key-employer-takeaways-from-the-texas-responsible-artificial-intelligence-governance-act)"
+    }
+  ],
+  "executed": 17,
+  "failed": 0
+}

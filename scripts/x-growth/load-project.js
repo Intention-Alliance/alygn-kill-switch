@@ -7,8 +7,8 @@
  *   node load-project.js --config=/path/to/config.json
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 const PROJECTS_DIR = path.join(__dirname, 'projects');
 
@@ -163,7 +163,7 @@ function getTemplate(templateName) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const projectArg = args.find(a => a.startsWith('--project='));
@@ -224,7 +224,7 @@ if (require.main === module) {
   process.exit(1);
 }
 
-module.exports = {
+export {
   loadProject,
   saveProject,
   createFromTemplate,

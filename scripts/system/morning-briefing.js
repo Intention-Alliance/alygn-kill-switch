@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Multi-Org Morning Briefing Generator
@@ -13,10 +12,10 @@
  * Updated: 2026-03-07 - Fixed audio delivery via OpenClaw native TTS tool
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
-const { success, error: logError } = require('../shared/logger');
+import fs from "fs/promises";
+import path from "path";
+import { execSync } from "child_process";
+import { success, error as logError } from "../shared/logger.js";
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const REPORT_DIR = path.join(WORKSPACE, 'daily-reports');
@@ -354,8 +353,8 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = { generateIntelligentBriefing };
+export { generateIntelligentBriefing };

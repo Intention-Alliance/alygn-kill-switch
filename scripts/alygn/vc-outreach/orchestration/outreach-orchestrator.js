@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Outreach Orchestrator
  * 
@@ -17,10 +16,10 @@
  *   node outreach-orchestrator.js --status        # Check queue status
  */
 
-const { spawn } = require('child_process');
-const fs = require('fs').promises;
-const path = require('path');
-const { log, success, error, info, LogLevel } = require('../utils/logger');
+import { spawn } from "child_process";
+import fs from "fs".promises;
+import path from "path";
+import { log, success, error, info, LogLevel } from "../utils/logger.js";
 
 const WORKSPACE_DIR = path.join(process.env.HOME, '.openclaw', 'workspace');
 const OUTREACH_SCRIPT = path.join(WORKSPACE_DIR, 'scripts', 'alygn', 'vc-outreach', 'email', 'draft-outreach-emails.js');
@@ -231,11 +230,11 @@ async function main() {
 }
 
 // CLI execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = {
+export {
   checkQueueStatus,
   generateDrafts,
   sendApprovedEmails,

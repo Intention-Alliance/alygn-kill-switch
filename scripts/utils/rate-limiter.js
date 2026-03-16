@@ -5,13 +5,13 @@
  * Tracks actions per day, enforces delays, and auto-pauses on rate limit responses.
  * 
  * Usage:
- *   const rateLimiter = require('../utils/rate-limiter');
+ *   import rateLimiter from "../utils/rate-limiter.js";
  *   await rateLimiter.waitForCapacity('follow');
  *   await rateLimiter.recordAction('follow');
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Rate limit configuration (conservative)
 const RATE_LIMITS = {
@@ -211,7 +211,7 @@ function resetCounters() {
 // Initialize
 loadState();
 
-module.exports = {
+export {
   waitForCapacity,
   recordAction,
   handleRateLimitResponse,

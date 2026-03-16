@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-16T17:01:15.550Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Bipartisan Senate Armed Services members plan AI vendor restrictions in NDAA amid Anthropic-Pentagon dispute over military use of Claude AI.",
+      "replyText": "Highlights coordination tensions between private AI safety commitments and military procurement, pushing Congress for clearer regulatory boundaries on defense AI applications.",
+      "sourceUrl": "https://punchbowl.news/article/tech/congress-ai-warfare",
+      "isThread": true,
+      "mainLength": 140,
+      "replyLength": 175,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "OpenAI calls for unified federal AI governance framework over state patchwork, emphasizing AI Safety Institutes for risk assessment.",
+      "replyText": "Addresses legitimacy crisis from fragmented regulations, advocating national standards to harmonize government-company collaboration and match global competitors like China.",
+      "sourceUrl": "https://openaiglobalaffairs.substack.com/p/ai-governance-keeping-up-with-ai",
+      "isThread": true,
+      "mainLength": 132,
+      "replyLength": 173,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Michigan lawmakers introduce bills mandating AI security protocols, restricting workplace monitoring, and banning emotional chatbots for minors.",
+      "replyText": "State-level initiatives fill federal gaps in AI risk management and privacy, balancing innovation with protections amid calls for coordinated national leadership.",
+      "sourceUrl": "https://www.freep.com/story/news/politics/2026/03/16/michigan-artificial-intelligence-regulations-proposals/89137783007",
+      "isThread": true,
+      "mainLength": 144,
+      "replyLength": 162,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "American Fintech Council urges Connecticut regulators to adopt risk-based AI governance for uses like credit and fraud detection.",
+      "replyText": "Promotes tailored oversight aligning industry practices with regulatory needs, enhancing institutional coordination for responsible AI in finance.",
+      "sourceUrl": "https://www.fintechcouncil.org/press-releases/american-fintech-council-afc-urges-risk-based-ai-governance-framework-in-connecticut",
+      "isThread": true,
+      "mainLength": 129,
+      "replyLength": 146,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "EU Council agrees amendments to streamline AI Act, including bans on non-consensual deepfakes and high-risk system timelines.",
+      "replyText": "Strengthens cross-national coordination via harmonized rules and supervisory powers, bolstering legitimacy of EU AI safety efforts globally.",
+      "sourceUrl": "https://techieray.substack.com/p/ctrlaireg-16-march-2026",
+      "isThread": true,
+      "mainLength": 125,
+      "replyLength": 140,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

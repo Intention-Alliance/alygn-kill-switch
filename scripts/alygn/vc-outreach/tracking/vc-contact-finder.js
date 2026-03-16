@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * VC Contact Finder - Browser Automation
@@ -10,51 +9,12 @@
  * - Extract email patterns from LinkedIn, Crunchbase, official sites
  */
 
-const https = require('https');
-const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
-const { success, error: logError, info } = require('../../../shared/logger');
+import { getNotionDatabase } from "../../../shared/load-credentials.js";
+import { getClient, queryDatabase, updatePage } from "../../../shared/notion-client.js";
+import { success, error: logError, info } from "../../../shared/logger.js";
 
-const NOTION_API_KEY = getNotionKey();
 const VC_DATABASE_ID = getNotionDatabase('vc_outreach');
-
-/**
- * Notion API request
- */
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
+const notion = getClient();
 
 /**
  * Query VC database
@@ -69,7 +29,7 @@ async function queryVCDatabase(filter = null) {
     body.filter = filter;
   }
 
-  const response = await notionRequest('POST', `/v1/databases/${VC_DATABASE_ID}/query`, body);
+  const response = await queryDatabase(notion, VC_DATABASE_ID, body);
   
   return response.results.map(page => ({
     id: page.id,
@@ -97,7 +57,7 @@ async function updateVCContact(vcId, contactEmail, partnerName = null) {
     };
   }
 
-  await notionRequest('PATCH', `/v1/pages/${vcId}`, { properties });
+  await updatePage(notion, vcId, properties);
   
   await info(
     'vc-contact-finder',
@@ -193,7 +153,7 @@ async function addVCToDatabase(vcData) {
     };
   }
 
-  const response = await notionRequest('POST', '/v1/pages', {
+  const response = await notion.pages.create({
     parent: { database_id: VC_DATABASE_ID },
     properties
   });
@@ -311,11 +271,11 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = {
+export {
   queryVCDatabase,
   updateVCContact,
   searchVCContact,

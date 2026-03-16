@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Daily Activity Tracker (IMPROVED)
  * 
@@ -7,10 +6,10 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
-const { success, warning } = require('../shared/logger');
+import { execSync } from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
+import { success, warning } from '../shared/logger.js';
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const REPORT_DIR = path.join(WORKSPACE, 'daily-reports');
@@ -197,7 +196,13 @@ async function generateDailySummary() {
 }
 
 // Main execution
-if (require.main === module) {
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+if (process.argv[1] === __filename) {
   generateDailySummary()
     .then(summary => {
       console.log('\n✅ Daily tracker complete!');
@@ -209,4 +214,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { generateDailySummary };
+export { generateDailySummary };

@@ -2,7 +2,7 @@
  * Simple Logger Utility for VC Outreach
  * 
  * Usage:
- *   const { log, success, error, info, LogLevel } = require('../utils/logger');
+ *   import { log, success, error, info, LogLevel } from "../utils/logger.js";
  *   log('Message');
  *   success('Operation complete');
  *   error('Something failed');
@@ -35,7 +35,7 @@ function warn(message) {
   console.warn(`[${LogLevel.WARN}] ⚠️  ${message}`);
 }
 
-module.exports = {
+export {
   log,
   success,
   error,

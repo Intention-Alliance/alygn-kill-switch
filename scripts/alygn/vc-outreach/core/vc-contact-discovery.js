@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * VC Contact Discovery via Browser Automation
  * 
@@ -6,59 +5,18 @@
  * Integrates with Notion VC Outreach Tracker database
  */
 
-const https = require('https');
-const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
-const { log, success, error, LogLevel } = require('../../../shared/logger');
+import { getNotionDatabase } from "../../../shared/load-credentials.js";
+import { error, success } from "../../../shared/logger.js";
+import { getClient, queryDatabase, updatePage } from "../../../shared/notion-client.js";
 
-const NOTION_API_KEY = getNotionKey();
+const notion = getClient();
 const VC_DATABASE_ID = getNotionDatabase('vc_outreach');
-
-/**
- * Notion request helper
- */
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
 
 /**
  * Get all VCs from database
  */
 async function getAllVCs() {
-  const response = await notionRequest('POST', `/v1/databases/${VC_DATABASE_ID}/query`, {
-    page_size: 100
-  });
+  const response = await queryDatabase(notion, VC_DATABASE_ID, { page_size: 100 });
   
   const vcs = [];
   
@@ -137,7 +95,7 @@ async function updateVCContact(vcId, contactData) {
     };
   }
   
-  await notionRequest('PATCH', `/v1/pages/${vcId}`, updatePayload);
+  await updatePage(notion, vcId, updatePayload.properties);
   
   console.log(`✅ Updated ${contactData.vcName || 'VC'}`);
 }
@@ -253,11 +211,12 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main().catch(err => {
     console.error('❌ Error:', err.message);
     process.exit(1);
   });
 }
 
-module.exports = { discoverContacts, updateVCContact, getAllVCs };
+export { discoverContacts, getAllVCs, updateVCContact };
+

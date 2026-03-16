@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Parse X.com /explore snapshot into structured post data
@@ -94,7 +93,7 @@ function extractKeywords(content) {
 }
 
 // Test with real snapshot
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const testSnapshot = `
   article "Elon Musk Verified account @elonmusk 12 hours ago New @xAI office opened in Seattle area Quote X Daily News Verified account @xDaily 13 hours ago NEWS: xAI opened a new engineering office in Bellevue, Washington at Lincoln Square South, joining OpenAI in the Eastside AI corridor. The company now has offices in the Bay Area, Bellevue, and data centers in Memphis. x.com/grok/status/20 1496 replies, 1377 reposts, 12969 likes, 586 bookmarks, 16064599 views" [ref=e1265]
   
@@ -105,4 +104,4 @@ if (require.main === module) {
   console.log(JSON.stringify(posts, null, 2));
 }
 
-module.exports = { parsePostsFromSnapshot, extractKeywords };
+export { parsePostsFromSnapshot, extractKeywords };

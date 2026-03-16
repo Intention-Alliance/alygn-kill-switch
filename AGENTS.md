@@ -144,13 +144,34 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
 
-**🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
+**🎭 Voice Storytelling:** Use local Piper TTS (`scripts/system/local-tts.sh`) or reference samples from `~/wooblus-voice-refs/` for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
 **📝 Platform Formatting:**
 
 - **Discord/WhatsApp:** No markdown tables! Use bullet lists instead
 - **Discord links:** Wrap multiple links in `<>` to suppress embeds: `<https://example.com>`
 - **WhatsApp:** No headers — use **bold** or CAPS for emphasis
+
+## 🔧 Code Modification Rules (CRITICAL - Learned 2026-03-11)
+
+**Rule:** DO NOT change the approach/implementation unless FULLY NECESSARY.
+
+**Why:** On 2026-03-11, changed rate limiting from 25s to 45s → introduced NaN bug → X API blocked account for 24h.
+
+**Before modifying code:**
+1. ✅ Identify the EXACT line/variable causing the issue
+2. ✅ Change ONLY that specific value/logic
+3. ❌ DO NOT refactor unrelated code
+4. ❌ DO NOT "improve" what's already working
+5. ✅ Test the minimal change before committing
+
+**Examples:**
+- ❌ Wrong: "Let's improve the rate limiting architecture"
+- ✅ Right: "Change `min_delay_between_threads: 25` to `45`"
+
+**Hashtag duplication:** Same hashtags appended twice. Fix by dynamic selection per post topic.
+
+---
 
 ## 💓 Heartbeats - Be Proactive!
 

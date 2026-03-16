@@ -7,7 +7,7 @@
  *   node muni-research.js --input=/tmp/muni-cr-discovered.json --output=/tmp/muni-cr-researched.json
  */
 
-const fs = require('fs');
+import fs from "fs";
 
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -185,8 +185,8 @@ async function findXHandle(name, country) {
  * Generates research data from pre-verified source (NOT mock - REAL data)
  */
 function generateMockResearch(municipalities) {
-  const path = require('path');
-  const fs = require('fs');
+  import path from "path";
+  import fs from "fs";
   
   // Load real data from verified source
   const realDataPath = path.join(__dirname, '../discovery/costa-rica-real-municipalities.json');
@@ -302,7 +302,7 @@ function saveResults(municipalities, outputFile) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const inputArg = args.find(a => a.startsWith('--input='));
@@ -340,7 +340,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   researchMunicipalities,
   researchSingleMunicipality,
   generateMockResearch

@@ -7,10 +7,10 @@
  *   node report.js --project=myproject --output=report.json
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
-const { loadProject } = require('./load-project');
+import { loadProject } from "./load-project.js";
 
 /**
  * Generates summary report from all result files
@@ -174,7 +174,7 @@ async function postToDiscord(report, channelId) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const projectArg = args.find(a => a.startsWith('--project='));
@@ -210,7 +210,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   generateReport,
   formatForDiscord,
   saveReport,

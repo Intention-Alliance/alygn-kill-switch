@@ -1,6 +1,6 @@
 # X API Posting Capabilities - COMPLETE REFERENCE
 
-**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`  
+**Script:** `scripts/shared/x-growth/x-api-executor.js`  
 **Authentication:** OAuth 1.0a User Context  
 **Handle:** @aialygn  
 **Status:** ✅ PRODUCTION (Updated 2026-02-11)
@@ -10,27 +10,31 @@
 ## ✅ ALL SUPPORTED CAPABILITIES
 
 ### 1. Post Regular Tweets ✅
+
 **Function:** `postTweet(client, content, mediaPath)`
 
 **Capabilities:**
+
 - Post text tweets (up to 280 chars)
 - Attach media (images, videos)
 - Automatic format enforcement (hashtags + signature)
 
 **Workflow JSON format:**
+
 ```json
 {
   "posts": [
     {
       "id": 1,
       "content": "Governance can't be retrofitted at frontier scale.",
-      "mediaPath": "/path/to/image.png"  // Optional
+      "mediaPath": "/path/to/image.png" // Optional
     }
   ]
 }
 ```
 
 **Result:**
+
 ```
 Governance can't be retrofitted at frontier scale.
 
@@ -44,14 +48,17 @@ more at @aialygn
 ---
 
 ### 2. Mention Users ✅
+
 **Function:** Same as `postTweet()` - mentions are automatic
 
 **How to mention:**
+
 - Include `@username` anywhere in content
 - Can mention multiple users
 - Mentions work in posts, replies, quotes
 
 **Workflow JSON format:**
+
 ```json
 {
   "posts": [
@@ -64,6 +71,7 @@ more at @aialygn
 ```
 
 **Result:**
+
 ```
 Great insights from @ResearcherName on AGI alignment challenges.
 
@@ -75,14 +83,17 @@ more at @aialygn
 ---
 
 ### 3. Reply to Tweets ✅
+
 **Function:** `replyToPost(client, content, targetPostId, mediaPath)`
 
 **Capabilities:**
+
 - Reply to any tweet by post ID
 - Attach media to replies
 - Automatic format enforcement
 
 **Workflow JSON format:**
+
 ```json
 {
   "replies": [
@@ -90,7 +101,7 @@ more at @aialygn
       "content": "This highlights the need for neutral coordination infrastructure.",
       "targetUrl": "https://x.com/username/status/123456789",
       "targetHandle": "@username",
-      "mediaPath": "/path/to/image.png"  // Optional
+      "mediaPath": "/path/to/image.png" // Optional
     }
   ]
 }
@@ -102,15 +113,18 @@ more at @aialygn
 ---
 
 ### 4. Quote Tweets ✅
+
 **Function:** `quotePost(client, content, quoteTweetId, mediaPath)`
 
 **Capabilities:**
+
 - Quote any tweet by post ID
 - Add commentary
 - Attach media to quotes
 - Automatic format enforcement
 
 **Workflow JSON format:**
+
 ```json
 {
   "posts": [
@@ -118,7 +132,7 @@ more at @aialygn
       "id": 1,
       "content": "Exactly. Legitimacy is the missing infrastructure.",
       "quoteTweetId": "987654321",
-      "mediaPath": "/path/to/image.png"  // Optional
+      "mediaPath": "/path/to/image.png" // Optional
     }
   ]
 }
@@ -129,19 +143,23 @@ more at @aialygn
 ---
 
 ### 5. Post with Media ✅
+
 **Function:** All posting functions support `mediaPath` parameter
 
 **Supported media types:**
+
 - Images (PNG, JPG, JPEG, GIF)
 - Videos (MP4, MOV)
 - Animated GIFs
 
 **Media upload process:**
+
 1. Upload media via `client.media.uploadImage(mediaPath)`
 2. Get media ID
 3. Attach to post via `media: { media_ids: [mediaId] }`
 
 **Workflow JSON format:**
+
 ```json
 {
   "posts": [
@@ -155,6 +173,7 @@ more at @aialygn
 ```
 
 **Works with:**
+
 - Regular posts ✅
 - Replies ✅
 - Quote tweets ✅
@@ -162,14 +181,17 @@ more at @aialygn
 ---
 
 ### 6. Create Polls ✅
+
 **Function:** `createPoll(client, content, options, durationMinutes)`
 
 **Capabilities:**
+
 - Create polls with 2-4 options
 - Set poll duration (minutes)
 - Automatic format enforcement
 
 **Workflow JSON format:**
+
 ```json
 {
   "posts": [
@@ -197,6 +219,7 @@ more at @aialygn
 ## 🔧 Format Enforcement (MANDATORY)
 
 **ALL tweets automatically get:**
+
 ```
 [Original content]
 
@@ -208,6 +231,7 @@ more at @aialygn
 **Function:** `formatTweet(content, hashtags = ["#AIGovernance"])`
 
 **Applied to:**
+
 - ✅ Regular posts
 - ✅ Replies
 - ✅ Quote tweets
@@ -220,6 +244,7 @@ more at @aialygn
 ## 📋 Complete Workflow Example
 
 **workflow.json:**
+
 ```json
 {
   "posts": [
@@ -262,12 +287,14 @@ more at @aialygn
 ```
 
 **Execution:**
+
 ```bash
 cd ~/.openclaw/workspace
-node scripts/alygn/twitter-discovery/x-api-executor.js
+node scripts/shared/x-growth/x-api-executor.js
 ```
 
 **Result:**
+
 - 5 posts published (text, media, mention, quote, poll)
 - 1 reply with media
 - All with format enforcement (hashtags + signature)
@@ -278,11 +305,13 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ## 🎯 Usage in Daily Automation
 
 **Cron job workflow:**
+
 1. **Browser discovery:** Navigate /explore → extract posts → discovery.json
 2. **Decision engine:** Grok evaluates → workflow.json
 3. **X API executor:** Read workflow.json → apply format → post
 
 **Key principle:**
+
 - Browser = explore/navigate ONLY
 - Scripts = post/reply/quote/mention/media
 
@@ -291,11 +320,13 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ## 📊 Rate Limiting
 
 **Built-in delays:**
+
 - 5 seconds between posts
 - 5 seconds between replies
 - Prevents rate limit errors
 
 **Twitter limits:**
+
 - ~50 posts/hour (free tier)
 - ~300 posts/3 hours (paid tier)
 
@@ -318,6 +349,7 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ```
 
 **Setup:**
+
 ```javascript
 const credentials = loadCredentials();
 const oauth1 = new OAuth1(credentials);
@@ -328,19 +360,52 @@ const client = new Client({ oauth1 });
 
 ## ✅ Summary - ALL Capabilities
 
-| Feature | Status | Media Support | Format Applied |
-|---------|--------|---------------|----------------|
-| Post tweets | ✅ Working | ✅ Yes | ✅ Yes |
-| Mention users | ✅ Working | ✅ Yes | ✅ Yes |
-| Reply to tweets | ✅ Working | ✅ Yes | ✅ Yes |
-| Quote tweets | ✅ Working | ✅ Yes | ✅ Yes |
-| Post with media | ✅ Working | ✅ Yes | ✅ Yes |
-| Create polls | ✅ Working | ❌ No | ✅ Yes |
+| Feature         | Status     | Media Support | Format Applied |
+| --------------- | ---------- | ------------- | -------------- |
+| Post tweets     | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Mention users   | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Reply to tweets | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Quote tweets    | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Post with media | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Create polls    | ✅ Working | ❌ No         | ✅ Yes         |
 
 **100% feature coverage - NO EXCEPTIONS**
 
 ---
 
-*Created: 2026-02-11*  
-*Last Updated: 2026-02-11*  
-*Status: PRODUCTION - All features tested and working*
+_Created: 2026-02-11_  
+_Last Updated: 2026-02-11_  
+_Status: PRODUCTION - All features tested and working_
+}
+}
+
+````
+
+**Setup:**
+
+```javascript
+const credentials = loadCredentials();
+const oauth1 = new OAuth1(credentials);
+const client = new Client({ oauth1 });
+````
+
+---
+
+## ✅ Summary - ALL Capabilities
+
+| Feature         | Status     | Media Support | Format Applied |
+| --------------- | ---------- | ------------- | -------------- |
+| Post tweets     | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Mention users   | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Reply to tweets | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Quote tweets    | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Post with media | ✅ Working | ✅ Yes        | ✅ Yes         |
+| Create polls    | ✅ Working | ❌ No         | ✅ Yes         |
+
+**100% feature coverage - NO EXCEPTIONS**
+
+---
+
+_Created: 2026-02-11_  
+_Last Updated: 2026-02-11_  
+_Status: PRODUCTION - All features tested and working_

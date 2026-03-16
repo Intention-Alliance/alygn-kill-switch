@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alianza Estratégica para la Salvaguarda Institucional - San José</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .brand-name {
+      color: #ffffff !important;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .logo-container {
+      margin-bottom: 16px;
+    }
+    .headline {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+    .subheadline {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .content {
+      padding: 32px 24px;
+    }
+    .greeting {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #1f2937;
+    }
+    .body-content {
+      line-height: 1.6;
+      font-size: 15px;
+      color: #374151;
+    }
+    .body-content p {
+      margin: 16px 0;
+    }
+    .body-content ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+    .body-content li {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 500;
+      margin: 24px 0;
+    }
+    .closing {
+      margin-top: 24px;
+      font-size: 15px;
+      color: #374151;
+    }
+    .signature {
+      margin-top: 24px;
+      font-size: 15px;
+      color: #1f2937;
+    }
+    .ps {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 13px;
+      color: #6b7280;
+      font-style: italic;
+    }
+    .footer {
+      background-color: #f3f4f6;
+      padding: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer a,
+    .footer p {
+      color: #0f172a;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header with Logo + Wordmark -->
+    <div class="header">
+      <div class="header-brand">
+        <h2 class="brand-name">ALYGN</h2>
+          <img src="data:image/jpeg;base64,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fH1GZ06Hq6GgQhwiibN5F1Ike1JaARCLSpTIpoJgJqUz0W3yAhmAAARGAKNz8UAAAAkGT2AYcG7fF9y4YK4ge6AAmYsiH7b7Edc6N3gg/fgTkcCmQiOGyyjQRHUYRfwRgCD9QwFNJSqWbZcGfSxUxqhDawGEtAacU5IxBciii0WIgE5YJRy2X+TOfpHuslTx352IMWzxsg6gDihPr4iFgRFZFiDl3XqtMlLjoQUzU9FBA00gSz2PTwhjVr1RS3VDn41RZajzzV+YejAvUuPwHYvYFFwaWHiq3SD0J2PkAVUBgIY1PJEQaIYJ+AtI/CAFxAgagiYlzJfQYoGPbB0Qqlz1+34pEnIghCgjQp+U3e4VGYRKRpgTkTmiEND3HydCAaZAuMxZEag67+fjhgnkSQoZPx1CYuqgGI0VAtkVHM6hExs7y61oIkxzH8oYYsJuaBxFQCaLmtVHwinHgv8AktHqpISMk+pQTIzF29vVB0o6ovYtdEU4OwpkmIwJ/O5AxUySIzEnX/gH/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjbb7zzzzzzzzzzzzzzzzzzzzl83ItHzzzzzzzzzzzzzzzzzzyl3zzz7TDjzzzzzzzzzzzzzzzy7XzgCgyxxRjzzzzzzzzzzzzzy33jyTzzzyxBzzzzzzzzzzzzzzx6LTzzzzzyyxTzzzzzzzzzzzzy+/zzzzzzzzzDzzzzzzzzzzzzzz5zzzzzzzygjzzzzzzzzzzzzzzqfzzzzzzzxTzzzzzzzzzzzzzxjm3XzzzzyxzbzzzzzzzzzzzzzzQA37zzzizxBzzzzzzzzzzzzzwhBALfyCRzy5bzzzzzzzzzzzzzxywT91pzzyz3zzzzzzzzzzzzzzzzz50DX7A9/wA888888888888888888sdl6u88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888//EACgRAAEDAgQFBQEAAAAAAAAAAAEA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" alt="ALYGN" style="width: 40px; height: 40px; border-radius: 4px; display: block;">
+      </div>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">Estimado Luis, Alcalde de San José,</p>
+      
+      <div class="body-content">
+        <p>Estimado Alcalde Luis,</p>
+
+<p><strong>San José</strong> está atravesando la misma transición hacia sistemas de Inteligencia Artificial Avanzada que operan a escala global y sistémica.</p>
+
+<p>Como capital de Costa Rica, San José enfrenta desafíos únicos en <strong>traffic congestion</strong> y <strong>rising crime rates</strong>, que requieren coordinación institucional antes del despliegue de sistemas de IA.</p>
+
+<p>Alygn funciona como una capa de gobernanza y coordinación neutral—similar a como SWIFT permite coordinación financiera global sin ser un banco.</p>
+
+<h3>Beneficios para San José:</h3>
+<ul>
+  <li><strong>Alineación Pre-Crisis:</strong> Adoptar protocolos de seguridad antes del despliegue</li>
+  <li><strong>Interoperabilidad de Gobernanza:</strong> Supervisión bajo estándar único y neutral</li>
+  <li><strong>Protocolos de Emergencia 24/7:</strong> Canales de escalabilidad con Frontier Labs</li>
+  <li><strong>Mitigación de Riesgo de Responsabilidad:</strong> Diligencia debida demostrada</li>
+</ul>
+
+<p>La gobernanza legítima, no la tecnología, es la infraestructura que escala.</p>
+      </div>
+      
+      <div class="closing">
+        <p>
+          Saludos,<br>
+          <strong>Equipo Alygn</strong>
+        </p>
+      </div>
+
+      <p class="ps">P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p style="margin: 0 0 12px 0;">
+        Alygn - Independent AI Governance Institution<br>
+        2026 © All rights reserved.
+      </p>
+      <p style="margin: 0; font-size: 14px;">
+        <a href="https://alygn.us?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">🌐 alygn.us</a> | 
+        <a href="https://x.com/aialygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">𝕏 @aialygn</a> | 
+        <a href="https://linkedin.com/company/alygn?utm_source=email&utm_medium=vc-outreach&utm_campaign={variant}" style="display: inline-block; margin: 0 8px;">💼 LinkedIn</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

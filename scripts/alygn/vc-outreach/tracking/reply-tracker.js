@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Reply Tracker
  * 
@@ -18,11 +17,11 @@
  *   node reply-tracker.js --force-notif      # Send WhatsApp notification even if no new replies
  */
 
-const Imap = require('imap');
-const { simpleParser } = require('mailparser');
-const { getNotionKey, getNotionDatabase } = require('../../../shared/load-credentials');
-const { log, success, error, info, LogLevel } = require('../utils/logger');
-const https = require('https');
+import Imap from "imap";
+import { simpleParser } from "mailparser";
+import { getNotionDatabase } from "../../../shared/load-credentials.js";
+import { getClient, queryDatabase, updatePage } from "../../../shared/notion-client.js";
+import { error, info, log, success } from "../utils/logger.js";
 
 // Configuration
 const CONFIG = {
@@ -103,51 +102,15 @@ const CONFIG = {
 let WHOLE_MESSAGE = ''; // Store full message for Notion
 
 // Notion helpers
-const NOTION_API_KEY = getNotionKey();
 const VC_DATABASE_ID = getNotionDatabase('vc_outreach');
-
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application.json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
+const notion = getClient();
 
 /**
  * Get all VCs from Notion for email matching
  */
 async function loadVCsFromNotion() {
   try {
-    const response = await notionRequest('POST', `/v1/databases/${VC_DATABASE_ID}/query`, {
+    const response = await queryDatabase(notion, VC_DATABASE_ID, {
       page_size: 100
     });
 
@@ -285,7 +248,7 @@ async function updateNotionWithReply(vcId, replyData, dryRun = false) {
   }
 
   try {
-    await notionRequest('PATCH', `/v1/pages/${vcId}`, { properties });
+    await updatePage(notion, vcId, properties);
     success(`✅ Updated Notion: ${replyData.vcName} - ${replyData.sentiment}`);
     return true;
   } catch (err) {
@@ -539,13 +502,11 @@ async function main() {
 }
 
 // CLI execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = {
-  checkGmailForReplies,
-  analyzeSentiment,
-  extractIntent,
-  generateFollowUp
+export {
+    analyzeSentiment, checkGmailForReplies, extractIntent,
+    generateFollowUp
 };

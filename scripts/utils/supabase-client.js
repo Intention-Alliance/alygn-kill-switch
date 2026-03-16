@@ -5,12 +5,16 @@
  * Loads credentials from config/credentials.json or environment variables.
  * 
  * Usage:
- *   const supabase = require('../utils/supabase-client');
+ *   import supabase from "../utils/supabase-client.js";
  *   const { data, error } = await supabase.from('municipalities').select('*');
  */
 
-const path = require('path');
-const { createClient } = require('@supabase/supabase-js');
+import path from "path";
+import fs from "fs";
+import { createClient } from "@supabase/supabase-js";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load credentials
 let supabaseUrl;
@@ -18,7 +22,7 @@ let supabaseKey;
 let supabaseServiceKey;
 
 try {
-  const credentials = require(path.join(__dirname, '../../config/credentials.json'));
+  const credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/credentials.json'), 'utf8'));
   supabaseUrl = credentials.supabase?.url || process.env.SUPABASE_URL;
   supabaseKey = credentials.supabase?.key || process.env.SUPABASE_KEY;
   supabaseServiceKey = credentials.supabase?.serviceKey || process.env.SUPABASE_SERVICE_KEY;
@@ -30,9 +34,9 @@ try {
 }
 
 // Validate credentials
-if (!supabaseUrl || !supabaseKey) {
+if (!supabaseUrl || (!supabaseKey && !supabaseServiceKey)) {
   console.error('❌ Supabase credentials not found');
-  console.error('Set SUPABASE_URL and SUPABASE_KEY in environment or config/credentials.json');
+  console.error('Set SUPABASE_URL, SUPABASE_KEY, and/or SUPABASE_SERVICE_KEY in environment or config/credentials.json');
   process.exit(1);
 }
 
@@ -57,7 +61,7 @@ async function testConnection() {
   }
 }
 
-module.exports = {
+export {
   supabase,
   supabaseAdmin,
   testConnection,

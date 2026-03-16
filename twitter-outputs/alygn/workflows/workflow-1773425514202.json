@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-13T18:11:54.201Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Canada signals intent to regulate AI chatbots following youth concerns over mental health risks and lacking safety standards.",
+      "replyText": "Exposes legitimacy issues from stalled bills and voluntary measures; pushes for independent oversight akin to EU AI Act for effective coordination.",
+      "sourceUrl": "https://opencanada.org/chatbots-and-canadas-ai-governance-gap",
+      "isThread": true,
+      "mainLength": 125,
+      "replyLength": 147,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "WEF calls for evolving AI governance to address delegated cognition as foundational infrastructure beyond data protection.",
+      "replyText": "Current frameworks inadequate for AI's decision-shaping role; demands transparency and human agency to rebuild institutional trust.",
+      "sourceUrl": "https://www.weforum.org/stories/2026/03/ai-cognition-infrastructure-future-governance-decisions",
+      "isThread": true,
+      "mainLength": 122,
+      "replyLength": 131,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "India AI Impact Summit takeaways highlight sovereignty and safety; Delhi Declaration signed by 91 nations for voluntary AI cooperation.",
+      "replyText": "Fosters managed interdependence via non-binding frameworks, elevating Global South in cross-org AI legitimacy and diffusion efforts.",
+      "sourceUrl": "https://www.brookings.edu/articles/takeaways-from-the-india-ai-impact-summit",
+      "isThread": true,
+      "mainLength": 135,
+      "replyLength": 132,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Brunei releases AI Governance and Ethics Guide aligned with ASEAN framework for ethical AI practices.",
+      "replyText": "Demonstrates regional institutional coordination through shared soft law, bridging enforcement disparities across ASEAN members.",
+      "sourceUrl": "https://fulcrum.sg/what-is-shaping-artificial-intelligence-ai-governance-policies-in-southeast-asia",
+      "isThread": true,
+      "mainLength": 101,
+      "replyLength": 128,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "AI governance gap arises from cultural deficits in institutional literacy, accountability beyond policies.",
+      "replyText": "Underscores need for cultural embedding to ensure legitimacy, preventing performative governance disconnected from operations.",
+      "sourceUrl": "https://www.linkedin.com/pulse/ai-governance-gap-cultural-patrick-upmann-2ewlf",
+      "isThread": true,
+      "mainLength": 106,
+      "replyLength": 126,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

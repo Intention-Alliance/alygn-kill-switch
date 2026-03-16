@@ -6,7 +6,7 @@
  *   node x-engager.js --municipalities=/tmp/muni-cr-approved.json --mock
  */
 
-const fs = require('fs');
+import fs from "fs";
 
 const X_API_KEY = process.env.X_API_KEY || process.env.TWITTER_CONSUMER_KEY;
 const X_API_SECRET = process.env.X_API_SECRET || process.env.TWITTER_CONSUMER_SECRET;
@@ -197,7 +197,7 @@ function saveResults(results, outputFile) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const muniArg = args.find(a => a.startsWith('--municipalities='));
@@ -236,7 +236,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   engageOnX,
   engageWithMunicipality
 };

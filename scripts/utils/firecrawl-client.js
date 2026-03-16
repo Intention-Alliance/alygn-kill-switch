@@ -5,17 +5,21 @@
  * Loads credentials from config/credentials.json or environment variables.
  * 
  * Usage:
- *   const firecrawl = require('../utils/firecrawl-client');
+ *   import firecrawl from "../utils/firecrawl-client.js";
  *   const result = await firecrawl.scrape('https://example.com');
  */
 
-const path = require('path');
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load credentials
 let apiKey;
 
 try {
-  const credentials = require(path.join(__dirname, '../../config/credentials.json'));
+  const credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/credentials.json'), 'utf8'));
   apiKey = credentials.firecrawl?.apiKey || process.env.FIRECRAWL_API_KEY;
 } catch (error) {
   // Fallback to environment variables
@@ -255,7 +259,7 @@ async function testConnection() {
   }
 }
 
-module.exports = {
+export {
   scrape,
   crawl,
   checkCrawlStatus,

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Outreach Email Sending Script (Phase 5)
  *
@@ -31,12 +30,11 @@
  * Created: Feb 13, 2026
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { exec } = require('child_process');
-const { promisify } = require('util');
-const { Client } = require('@notionhq/client');
+import { exec } from "child_process";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
+import { getClient } from "../../../shared/notion-client.js";
 const execAsync = promisify(exec);
 
 // Load database ID from config
@@ -55,8 +53,6 @@ function loadDatabaseId() {
 
 // Configuration
 const CONFIG = {
-  notionKey: process.env.NOTION_KEY || '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',
-  notionVersion: '2022-06-28',
   databaseId: loadDatabaseId(),
   discordChannel: '1471206314435809431', // #annotations
   rateLimit: 3000, // ms between sends
@@ -185,7 +181,7 @@ async function sendEmail(to, subject, htmlBody) {
  */
 async function updateSentStatusInNotion(pageId, messageId, sentDate) {
   try {
-    const notion = new Client({ auth: CONFIG.notionKey });
+    const notion = getClient();
 
     const properties = {
       'Status': {
@@ -364,11 +360,11 @@ Database: https://www.notion.so/${CONFIG.databaseId}
 }
 
 // Run
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main().catch(error => {
     console.error('❌ Error:', error.message);
     process.exit(1);
   });
 }
 
-module.exports = { loadApprovedDrafts, sendEmail, updateSentStatusInNotion };
+export { loadApprovedDrafts, sendEmail, updateSentStatusInNotion };

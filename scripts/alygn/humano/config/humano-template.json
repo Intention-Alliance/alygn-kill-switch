@@ -1,0 +1,10 @@
+{
+  "_comment": "Approved post template — filled out in Fase 1 after human approval in Grok Chat. Used by agent-chain.js as context for automated generation.",
+  "approvedTone": "institutional-thoughtful",
+  "approvedHashtags": ["#AIGovernance", "#SmartCities", "#GovTech"],
+  "approvedStructure": "hook + argument + implication + signature",
+  "signature": "→ más en @aialygn",
+  "examplePost": "",
+  "lastUpdated": "",
+  "approvedBy": ""
+}

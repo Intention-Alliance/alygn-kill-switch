@@ -1,13 +1,12 @@
-#!/usr/bin/env node
 /**
  * BitcashOrg Daily Activity Tracker
  * Tracks GitHub activity for bitcashorg repos and generates daily report
  * Runs at 3:45 AM to prepare summary for morning briefing
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const REPORT_DIR = path.join(WORKSPACE, 'daily-reports');

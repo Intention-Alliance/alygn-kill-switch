@@ -3,8 +3,8 @@
  * Posts summary to Discord thread
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Aggregates results from all phase output files
@@ -126,7 +126,7 @@ async function postToDiscord(summary) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const results = aggregateResults();
   const summary = generateDiscordSummary(results);
   
@@ -142,7 +142,7 @@ if (require.main === module) {
   // postToDiscord(summary);
 }
 
-module.exports = {
+export {
   aggregateResults,
   generateDiscordSummary,
   postToDiscord

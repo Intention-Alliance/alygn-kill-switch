@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN Pre-Approved Post Automation
@@ -22,9 +21,9 @@
  */
 
 import { Client, OAuth1 } from "@xdevplatform/xdk";
+import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const TRACKING_FILE = path.join(__dirname, 'pre-approved-posts.json');
@@ -302,4 +301,5 @@ main().catch(err => {
   process.exit(1);
 });
 
-export { postNext, showStatus, resetAll, loadTracking };
+export { loadTracking, postNext, resetAll, showStatus };
+

@@ -9,8 +9,8 @@
  *   node cultural-adapter.js --country=FR --content-type=x-post
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Load language config
 const LANGUAGE_CONFIG_PATH = path.join(__dirname, '../discovery/language-config.json');
@@ -230,7 +230,7 @@ function getCulturalChecklist(countryCode) {
 /**
  * CLI Entry Point
  */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const countryArg = args.find(a => a.startsWith('--country='));
@@ -294,7 +294,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   loadCulturalAdapter,
   generateTranslatorPrompt,
   generateReviewerPrompt,

@@ -1,0 +1,17 @@
+{
+  "name": "@humano-automation",
+  "version": "1.0.0",
+  "description": "Humano Twitter automation via Grok AI and xdk",
+  "type": "module",
+  "scripts": {
+    "post": "node post.js --project=humano",
+    "discover": "node trend-discovery.js --project=humano",
+    "cron": "node cron.js --project=humano",
+    "test": "node cron.js --project=humano --once --dry-run"
+  },
+  "dependencies": {
+    "@xdevplatform/xdk": "^0.4.0",
+    "dotenv": "^16.0.0",
+    "node-cron": "^3.0.0"
+  }
+}

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN End-of-Day Summary
  * 
@@ -6,8 +5,8 @@
  * Runs at 9:00 PM CST
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 const DAILY_REPORTS_DIR = path.join(__dirname, '../daily-reports');
 

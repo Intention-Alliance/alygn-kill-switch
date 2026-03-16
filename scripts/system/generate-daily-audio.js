@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Generate Audio for Daily Reports
  * Uses local Piper TTS (no API calls, no rate limits)
@@ -11,9 +10,9 @@
  * - Multi-org summary
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from "fs".promises;
+import path from "path";
+import { execSync } from "child_process";
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const REPORTS_DIR = path.join(WORKSPACE, 'daily-reports');

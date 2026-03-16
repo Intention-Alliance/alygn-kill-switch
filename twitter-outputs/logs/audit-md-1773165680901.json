@@ -1,0 +1,267 @@
+{
+  "mode": "dry-run",
+  "executedAt": "2026-03-10T18:01:20.901Z",
+  "workflow": {
+    "generatedAt": "2026-03-10T18:01:20.900Z",
+    "totalPosts": 12,
+    "validPosts": 7,
+    "blockedPosts": 5,
+    "sourcesExtracted": 0,
+    "posts": [
+      {
+        "id": 1,
+        "mainTweet": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 6 sources from web search:\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 6 sources from web search:"
+      },
+      {
+        "id": 2,
+        "mainTweet": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html"
+      },
+      {
+        "id": 3,
+        "mainTweet": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation"
+      },
+      {
+        "id": 4,
+        "mainTweet": "https://humanstatement.org/\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://humanstatement.org/",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://humanstatement.org/"
+      },
+      {
+        "id": 5,
+        "mainTweet": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women"
+      },
+      {
+        "id": 6,
+        "mainTweet": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road"
+      },
+      {
+        "id": 7,
+        "mainTweet": "https://x.com/AIAwardsIrl/status/2031346008446177383\n\n#AIGovernance #Alygn",
+        "replyTweet": null,
+        "isThread": false,
+        "sourceUrl": "https://x.com/AIAwardsIrl/status/2031346008446177383",
+        "status": "ready",
+        "issues": [],
+        "originalContent": "https://x.com/AIAwardsIrl/status/2031346008446177383"
+      },
+      {
+        "id": 8,
+        "mainTweet": "**Anthropic's Lawsuit Against the U.S. Department of Defense** Anthropic filed a lawsuit against the Pentagon on March 9, 2026, challenging its designation as a \"supply chain risk\" after the company refused to allow its AI tools to be used in autonomous weapons or government surveillance, escalating an ongoing feud. The dispute has drawn support from AI leaders and highlights potential $5 billion losses for Anthropic, with allegations that the DoD used its tools despite the ban.[[1]](https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html)[[2]](https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation) **Governance angle**: Exposes breakdowns in institutional coordination between AI firms enforcing safety guardrails and military/government entities, questioning the legitimacy of unilateral risk labels and the need for clearer cross-sector agreements on permissible AI uses. **Source URL**: https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html",
+        "replyTweet": null,
+        "isThread": false,
+        "status": "blocked",
+        "issues": [
+          "Too long: 1092 chars (max 280)"
+        ],
+        "originalContent": "**Anthropic's Lawsuit Against the U.S. Department of Defense** Anthropic filed a lawsuit against the Pentagon on March 9, 2026, challenging its designation as a \"supply chain risk\" after the company refused to allow its AI tools to be used in autonomous weapons or government surveillance, escalating an ongoing feud. The dispute has drawn support from AI leaders and highlights potential $5 billion losses for Anthropic, with allegations that the DoD used its tools despite the ban.[[1]](https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html)[[2]](https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation) **Governance angle**: Exposes breakdowns in institutional coordination between AI firms enforcing safety guardrails and military/government entities, questioning the legitimacy of unilateral risk labels and the need for clearer cross-sector agreements on permissible AI uses. **Source URL**: https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html"
+      },
+      {
+        "id": 9,
+        "mainTweet": "**Pro-Human AI Declaration Launch** A new coalition launched the Pro-Human AI Declaration in March 2026, uniting experts from organizations like Future of Life Institute and Center for Humane Technology, along with figures such as Stuart Russell and Yoshua Bengio. It outlines five principles prioritizing human control, avoiding power concentration, protecting human experience, ensuring agency/liberty, and holding AI companies accountable via liability and independent standards.[[3]](https://humanstatement.org/) **Governance angle**: Builds cross-organization legitimacy through broad coalitions and public-backed principles (e.g., polls favoring superintelligence bans), pushing for mandatory oversight, transparency, and democratic processes beyond self-regulation to coordinate safe AI development. **Source URL**: https://humanstatement.org/",
+        "replyTweet": null,
+        "isThread": false,
+        "status": "blocked",
+        "issues": [
+          "Too long: 850 chars (max 280)"
+        ],
+        "originalContent": "**Pro-Human AI Declaration Launch** A new coalition launched the Pro-Human AI Declaration in March 2026, uniting experts from organizations like Future of Life Institute and Center for Humane Technology, along with figures such as Stuart Russell and Yoshua Bengio. It outlines five principles prioritizing human control, avoiding power concentration, protecting human experience, ensuring agency/liberty, and holding AI companies accountable via liability and independent standards.[[3]](https://humanstatement.org/) **Governance angle**: Builds cross-organization legitimacy through broad coalitions and public-backed principles (e.g., polls favoring superintelligence bans), pushing for mandatory oversight, transparency, and democratic processes beyond self-regulation to coordinate safe AI development. **Source URL**: https://humanstatement.org/"
+      },
+      {
+        "id": 10,
+        "mainTweet": "**UN PGA Remarks on AI Governance and Gender Equality** On March 9, 2026, UN President of the General Assembly Philemon Yang addressed the Commission on the Status of Women, warning of AI accelerating abuse against women via deepfakes and calling for a new UN AI scientific panel with equal female representation to ensure justice.[[4]](https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women) **Governance angle**: Advances multilateral coordination via a gender-balanced UN panel for AI assessments, enhancing legitimacy by addressing representation gaps and framing regulation as a political choice for equity and rights protection. **Source URL**: https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women",
+        "replyTweet": null,
+        "isThread": false,
+        "status": "blocked",
+        "issues": [
+          "Too long: 845 chars (max 280)"
+        ],
+        "originalContent": "**UN PGA Remarks on AI Governance and Gender Equality** On March 9, 2026, UN President of the General Assembly Philemon Yang addressed the Commission on the Status of Women, warning of AI accelerating abuse against women via deepfakes and calling for a new UN AI scientific panel with equal female representation to ensure justice.[[4]](https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women) **Governance angle**: Advances multilateral coordination via a gender-balanced UN panel for AI assessments, enhancing legitimacy by addressing representation gaps and framing regulation as a political choice for equity and rights protection. **Source URL**: https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women"
+      },
+      {
+        "id": 11,
+        "mainTweet": "**China's Digital Silk Road and AI Governance Influence** Published March 9, 2026, an analysis details how China's Digital Silk Road extends to AI governance in the Global South through infrastructure, standards, and capacity-building, using a hybrid state-enterprise model to promote sovereignty-focused norms via UN and BRICS channels.[[5]](https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road) **Governance angle**: Illustrates competing visions for international AI coordination, with China building legitimacy in developing nations through development-oriented frameworks, challenging Western-led efforts and highlighting geopolitical tensions in global standards. **Source URL**: https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road",
+        "replyTweet": null,
+        "isThread": false,
+        "status": "blocked",
+        "issues": [
+          "Too long: 810 chars (max 280)"
+        ],
+        "originalContent": "**China's Digital Silk Road and AI Governance Influence** Published March 9, 2026, an analysis details how China's Digital Silk Road extends to AI governance in the Global South through infrastructure, standards, and capacity-building, using a hybrid state-enterprise model to promote sovereignty-focused norms via UN and BRICS channels.[[5]](https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road) **Governance angle**: Illustrates competing visions for international AI coordination, with China building legitimacy in developing nations through development-oriented frameworks, challenging Western-led efforts and highlighting geopolitical tensions in global standards. **Source URL**: https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road"
+      },
+      {
+        "id": 12,
+        "mainTweet": "**Calls for Dedicated AI Governance Structures in Corporate Boards** A March 10, 2026 post urges boards to establish AI committees for overseeing strategy, risk, compliance, and ethics amid accelerating AI adoption, noting only 21% of companies have mature strategies.[[6]](https://x.com/AIAwardsIrl/status/2031346008446177383) **Governance angle**: Emphasizes institutional need for internal coordination mechanisms to legitimize AI deployment, bridging enterprise gaps in oversight and aligning with broader safety efforts through structured accountability. **Source URL**: https://x.com/AIAwardsIrl/status/2031346008446177383",
+        "replyTweet": null,
+        "isThread": false,
+        "status": "blocked",
+        "issues": [
+          "Too long: 628 chars (max 280)"
+        ],
+        "originalContent": "**Calls for Dedicated AI Governance Structures in Corporate Boards** A March 10, 2026 post urges boards to establish AI committees for overseeing strategy, risk, compliance, and ethics amid accelerating AI adoption, noting only 21% of companies have mature strategies.[[6]](https://x.com/AIAwardsIrl/status/2031346008446177383) **Governance angle**: Emphasizes institutional need for internal coordination mechanisms to legitimize AI deployment, bridging enterprise gaps in oversight and aligning with broader safety efforts through structured accountability. **Source URL**: https://x.com/AIAwardsIrl/status/2031346008446177383"
+      }
+    ]
+  },
+  "posts": [
+    {
+      "id": 1,
+      "mainTweet": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 6 sources from web search:\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": null,
+      "status": "ready",
+      "issues": [],
+      "originalContent": "## Governance Trend Monitoring ### 🔍 Search Results & Citations Found 6 sources from web search:"
+    },
+    {
+      "id": 2,
+      "mainTweet": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html"
+    },
+    {
+      "id": 3,
+      "mainTweet": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation"
+    },
+    {
+      "id": 4,
+      "mainTweet": "https://humanstatement.org/\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://humanstatement.org/",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://humanstatement.org/"
+    },
+    {
+      "id": 5,
+      "mainTweet": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women"
+    },
+    {
+      "id": 6,
+      "mainTweet": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road"
+    },
+    {
+      "id": 7,
+      "mainTweet": "https://x.com/AIAwardsIrl/status/2031346008446177383\n\n#AIGovernance #Alygn",
+      "replyTweet": null,
+      "isThread": false,
+      "sourceUrl": "https://x.com/AIAwardsIrl/status/2031346008446177383",
+      "status": "ready",
+      "issues": [],
+      "originalContent": "https://x.com/AIAwardsIrl/status/2031346008446177383"
+    },
+    {
+      "id": 8,
+      "mainTweet": "**Anthropic's Lawsuit Against the U.S. Department of Defense** Anthropic filed a lawsuit against the Pentagon on March 9, 2026, challenging its designation as a \"supply chain risk\" after the company refused to allow its AI tools to be used in autonomous weapons or government surveillance, escalating an ongoing feud. The dispute has drawn support from AI leaders and highlights potential $5 billion losses for Anthropic, with allegations that the DoD used its tools despite the ban.[[1]](https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html)[[2]](https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation) **Governance angle**: Exposes breakdowns in institutional coordination between AI firms enforcing safety guardrails and military/government entities, questioning the legitimacy of unilateral risk labels and the need for clearer cross-sector agreements on permissible AI uses. **Source URL**: https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html",
+      "replyTweet": null,
+      "isThread": false,
+      "status": "blocked",
+      "issues": [
+        "Too long: 1092 chars (max 280)"
+      ],
+      "originalContent": "**Anthropic's Lawsuit Against the U.S. Department of Defense** Anthropic filed a lawsuit against the Pentagon on March 9, 2026, challenging its designation as a \"supply chain risk\" after the company refused to allow its AI tools to be used in autonomous weapons or government surveillance, escalating an ongoing feud. The dispute has drawn support from AI leaders and highlights potential $5 billion losses for Anthropic, with allegations that the DoD used its tools despite the ban.[[1]](https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html)[[2]](https://www.wired.com/story/anthropic-claims-business-is-in-peril-due-to-supply-chain-risk-designation) **Governance angle**: Exposes breakdowns in institutional coordination between AI firms enforcing safety guardrails and military/government entities, questioning the legitimacy of unilateral risk labels and the need for clearer cross-sector agreements on permissible AI uses. **Source URL**: https://www.nytimes.com/2026/03/09/technology/anthropic-defense-artificial-intelligence-lawsuit.html"
+    },
+    {
+      "id": 9,
+      "mainTweet": "**Pro-Human AI Declaration Launch** A new coalition launched the Pro-Human AI Declaration in March 2026, uniting experts from organizations like Future of Life Institute and Center for Humane Technology, along with figures such as Stuart Russell and Yoshua Bengio. It outlines five principles prioritizing human control, avoiding power concentration, protecting human experience, ensuring agency/liberty, and holding AI companies accountable via liability and independent standards.[[3]](https://humanstatement.org/) **Governance angle**: Builds cross-organization legitimacy through broad coalitions and public-backed principles (e.g., polls favoring superintelligence bans), pushing for mandatory oversight, transparency, and democratic processes beyond self-regulation to coordinate safe AI development. **Source URL**: https://humanstatement.org/",
+      "replyTweet": null,
+      "isThread": false,
+      "status": "blocked",
+      "issues": [
+        "Too long: 850 chars (max 280)"
+      ],
+      "originalContent": "**Pro-Human AI Declaration Launch** A new coalition launched the Pro-Human AI Declaration in March 2026, uniting experts from organizations like Future of Life Institute and Center for Humane Technology, along with figures such as Stuart Russell and Yoshua Bengio. It outlines five principles prioritizing human control, avoiding power concentration, protecting human experience, ensuring agency/liberty, and holding AI companies accountable via liability and independent standards.[[3]](https://humanstatement.org/) **Governance angle**: Builds cross-organization legitimacy through broad coalitions and public-backed principles (e.g., polls favoring superintelligence bans), pushing for mandatory oversight, transparency, and democratic processes beyond self-regulation to coordinate safe AI development. **Source URL**: https://humanstatement.org/"
+    },
+    {
+      "id": 10,
+      "mainTweet": "**UN PGA Remarks on AI Governance and Gender Equality** On March 9, 2026, UN President of the General Assembly Philemon Yang addressed the Commission on the Status of Women, warning of AI accelerating abuse against women via deepfakes and calling for a new UN AI scientific panel with equal female representation to ensure justice.[[4]](https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women) **Governance angle**: Advances multilateral coordination via a gender-balanced UN panel for AI assessments, enhancing legitimacy by addressing representation gaps and framing regulation as a political choice for equity and rights protection. **Source URL**: https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women",
+      "replyTweet": null,
+      "isThread": false,
+      "status": "blocked",
+      "issues": [
+        "Too long: 845 chars (max 280)"
+      ],
+      "originalContent": "**UN PGA Remarks on AI Governance and Gender Equality** On March 9, 2026, UN President of the General Assembly Philemon Yang addressed the Commission on the Status of Women, warning of AI accelerating abuse against women via deepfakes and calling for a new UN AI scientific panel with equal female representation to ensure justice.[[4]](https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women) **Governance angle**: Advances multilateral coordination via a gender-balanced UN panel for AI assessments, enhancing legitimacy by addressing representation gaps and framing regulation as a political choice for equity and rights protection. **Source URL**: https://www.un.org/pga/80/2026/03/09/pga-remarks-at-the-opening-of-the-70th-session-of-the-commission-on-the-status-of-women"
+    },
+    {
+      "id": 11,
+      "mainTweet": "**China's Digital Silk Road and AI Governance Influence** Published March 9, 2026, an analysis details how China's Digital Silk Road extends to AI governance in the Global South through infrastructure, standards, and capacity-building, using a hybrid state-enterprise model to promote sovereignty-focused norms via UN and BRICS channels.[[5]](https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road) **Governance angle**: Illustrates competing visions for international AI coordination, with China building legitimacy in developing nations through development-oriented frameworks, challenging Western-led efforts and highlighting geopolitical tensions in global standards. **Source URL**: https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road",
+      "replyTweet": null,
+      "isThread": false,
+      "status": "blocked",
+      "issues": [
+        "Too long: 810 chars (max 280)"
+      ],
+      "originalContent": "**China's Digital Silk Road and AI Governance Influence** Published March 9, 2026, an analysis details how China's Digital Silk Road extends to AI governance in the Global South through infrastructure, standards, and capacity-building, using a hybrid state-enterprise model to promote sovereignty-focused norms via UN and BRICS channels.[[5]](https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road) **Governance angle**: Illustrates competing visions for international AI coordination, with China building legitimacy in developing nations through development-oriented frameworks, challenging Western-led efforts and highlighting geopolitical tensions in global standards. **Source URL**: https://www.stopfake.org/en/ai-cooperation-under-the-shadow-of-china-s-digital-silk-road"
+    },
+    {
+      "id": 12,
+      "mainTweet": "**Calls for Dedicated AI Governance Structures in Corporate Boards** A March 10, 2026 post urges boards to establish AI committees for overseeing strategy, risk, compliance, and ethics amid accelerating AI adoption, noting only 21% of companies have mature strategies.[[6]](https://x.com/AIAwardsIrl/status/2031346008446177383) **Governance angle**: Emphasizes institutional need for internal coordination mechanisms to legitimize AI deployment, bridging enterprise gaps in oversight and aligning with broader safety efforts through structured accountability. **Source URL**: https://x.com/AIAwardsIrl/status/2031346008446177383",
+      "replyTweet": null,
+      "isThread": false,
+      "status": "blocked",
+      "issues": [
+        "Too long: 628 chars (max 280)"
+      ],
+      "originalContent": "**Calls for Dedicated AI Governance Structures in Corporate Boards** A March 10, 2026 post urges boards to establish AI committees for overseeing strategy, risk, compliance, and ethics amid accelerating AI adoption, noting only 21% of companies have mature strategies.[[6]](https://x.com/AIAwardsIrl/status/2031346008446177383) **Governance angle**: Emphasizes institutional need for internal coordination mechanisms to legitimize AI deployment, bridging enterprise gaps in oversight and aligning with broader safety efforts through structured accountability. **Source URL**: https://x.com/AIAwardsIrl/status/2031346008446177383"
+    }
+  ],
+  "executed": 12,
+  "failed": 0
+}

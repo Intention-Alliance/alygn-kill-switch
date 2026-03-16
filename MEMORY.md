@@ -607,7 +607,7 @@ more at @aialygn
 ### ✅ X API POSTING CAPABILITIES (COMPLETE - NO EXCEPTIONS)
 
 **Workspace Skill:** `skills/x-twitter-growth/SKILL.md` ✅ (Updated 2026-02-11)  
-**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`  
+**Script:** `scripts/shared/x-growth/x-api-executor.js`  
 **Auth:** OAuth 1.0a User Context  
 **Documentation:** `scripts/alygn/X-API-CAPABILITIES.md`
 

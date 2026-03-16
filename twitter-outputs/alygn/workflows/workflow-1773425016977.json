@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-03-13T18:03:36.977Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Anthropic launched the Anthropic Institute on March 11, 2026, to research AI governance, societal impacts, and economic shifts from powerful AI. It expands the public policy team, opening a DC office to influence global AI policy on safety and controls.\n\nBridges AI developers and policymakers for better institutional coordination, enhancing legitimacy through transparent research on risks, values alignment, and cross-org resilience efforts.\n\n#AIGovernance #Alygn",
+      "length": 466,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 2,
+      "content": "FAS report on March 11 highlights US federal AI governance fragmentation from OMB M-25-21 shift, increasing agency discretion amid talent shortages and low public trust in government AI use.\n\nExposes coordination challenges and legitimacy erosion from uneven safeguards in high-risk AI, pressing for stronger oversight to build public trust and consistent protections.\n\n#AIGovernance #Alygn",
+      "length": 390,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 3,
+      "content": "EA Forum post on March 11 argues safe AI development is intractable for middle powers, urging pivot to safe deployment for national resilience amid US-China dominance.\n\nAligns safety with national interests for legitimacy, enabling middle powers to contribute to global coordination via resilient deployment and new orgs focused on local harms.\n\n#AIGovernance #Alygn",
+      "length": 366,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 4,
+      "content": "March 13 EA Forum proposes \"Answerability Audit\" framework to test AI and institutions for genuine accountability, flagging performative coherence as a trust risk.\n\nProvides tools to diagnose governance failures in AI systems and orgs, improving legitimacy and safety coordination by ensuring real answerability to constraints and revisions.\n\n#AIGovernance #Alygn",
+      "length": 363,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

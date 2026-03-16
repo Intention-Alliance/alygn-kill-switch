@@ -1,46 +1,23 @@
-#!/usr/bin/env node
 
 /**
  * Fetch Alygn NDA from Notion
  */
 
-const NOTION_KEY = "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";
-const NOTION_VERSION = "2022-06-28";
-const IA_HUB_PAGE_ID = "2f9334874af6819fa5c5f32ae95088f1";
+import { getClient, listBlocks, searchPages } from '../shared/notion-client.js';
 
-async function notionRequest(endpoint, method = "GET", body = null) {
-  const url = `https://api.notion.com/v1/${endpoint}`;
-  const options = {
-    method,
-    headers: {
-      "Authorization": `Bearer ${NOTION_KEY}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json"
-    }
-  };
-  if (body) options.body = JSON.stringify(body);
-  
-  const res = await fetch(url, options);
-  if (!res.ok) throw new Error(`Notion API error: ${res.status} ${await res.text()}`);
-  return res.json();
-}
+const IA_HUB_PAGE_ID = "2f9334874af6819fa5c5f32ae95088f1";
+const notion = getClient();
 
 async function searchForNDA() {
   console.log("🔍 Searching for NDA in Alygn hub...\n");
   
   // Search for NDA document
-  const searchResult = await notionRequest("search", "POST", {
-    query: "NDA",
-    filter: {
-      property: "object",
-      value: "page"
-    }
-  });
+  const searchResult = await searchPages(notion, "NDA", { property: "object", value: "page" });
   
   console.log(`Found ${searchResult.results.length} pages matching "NDA"`);
   
   // Also check blocks in IA Hub page
-  const blocks = await notionRequest(`blocks/${IA_HUB_PAGE_ID}/children?page_size=100`);
+  const blocks = await listBlocks(notion, IA_HUB_PAGE_ID);
   
   let ndaPageId = null;
   let ndaTitle = null;
@@ -82,7 +59,7 @@ async function searchForNDA() {
   console.log(`   Page ID: ${ndaPageId}\n`);
   
   // Fetch NDA content
-  const ndaBlocks = await notionRequest(`blocks/${ndaPageId}/children?page_size=100`);
+  const ndaBlocks = await listBlocks(notion, ndaPageId);
   
   let ndaContent = `# Alygn - NDA\n\n`;
   ndaContent += `**Source:** Notion (Alygn Hub)\n`;

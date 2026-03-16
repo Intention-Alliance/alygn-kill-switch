@@ -1,21 +1,19 @@
 {
   "name": "wobblus-workspace-brain",
+  "type": "module",
   "dependencies": {
-    "@ai-sdk/xai": "^3.0.46",
-    "@notionhq/client": "^5.9.0",
-    "@supabase/supabase-js": "^2.98.0",
-    "@xdevplatform/xdk": "^0.4.0",
-    "ai": "^6.0.69",
-    "axios": "^1.13.5",
+    "@ai-sdk/xai": "^3.0.67",
+    "@notionhq/client": "^5.12.0",
+    "@xdevplatform/xdk": "^0.5.0",
+    "ai": "^6.0.116",
+    "axios": "^1.13.6",
     "better-sqlite3": "^12.6.2",
-    "glob": "^13.0.5",
-    "nodemailer": "^8.0.0",
+    "glob": "^13.0.6",
+    "nodemailer": "^8.0.2",
     "oauth-1.0a": "^2.2.6",
     "oauth-sign": "^0.9.0",
-    "puppeteer-core": "^24.37.2",
+    "puppeteer-core": "^24.39.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6",
-    "twitter": "^1.7.1",
-    "twitter-api": "^1.0.6"
+    "request-promise": "^4.2.6"
   }
 }

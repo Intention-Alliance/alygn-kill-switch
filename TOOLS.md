@@ -35,17 +35,44 @@
 }
 ```
 
-### SAG CLI (Text-to-Speech)
+### SAG CLI (Text-to-Speech) - ❌ REMOVED
 
-- **Installed:** `/home/andlersrv/.local/bin/sag` (v0.2.2)
-- **Purpose:** ElevenLabs TTS (stream/file)
-- **API Key:** Set in `skills.entries.sag.apiKey` (TTS only)
-- **Voice:** `ErXwobaYiN019PkySvjV` (Antoni, WoW Gnome style)
-- **Usage:** Always specify voice ID (`-v`). Use `generate-wobblus-voice.sh` for profiles: fast (default), balanced, character.
+- **Status:** ElevenLabs discontinued - DO NOT USE
+- **Current approach:** Use local Piper TTS (`scripts/system/local-tts.sh`) + reference samples from `~/wooblus-voice-refs/`
 
-**Voice settings:** Speed 1.35x, Stability 0, Style 0.9, Pitch +20–25%, Speaker Boost, Model: eleven_v3  
-**Audio tags:** `[whispers]`, `[shouts]`, `[sings]`, etc.  
-**Output:** OGG Vorbis (convert for WhatsApp)
+---
+
+### Wobblus Voice Samples (Reference Audio)
+
+**Location:** `~/wooblus-voice-refs/`
+
+**Available samples:**
+- `woohoo-en.ogg` - "Woohoo!" exclamation (69KB, 22kHz Vorbis)
+- `salutacion-es.ogg` - Spanish greeting (8KB, 22kHz AAC)
+- `greding-es.ogg` - "¡Greding!" gnome greeting (10KB, 22kHz AAC)
+- `GnomeMalePissed05.ogg` - Angry gnome sounds (78KB, 22kHz Vorbis)
+
+**Usage:** For short responses, use these samples directly or stitch together with `scripts/system/wobblus-audio-stitch.sh`
+
+**Voice characteristics:**
+- Pitch: High (gnome-like, nasal quality)
+- Sample rate: 22.05 kHz
+- Format: OGG Vorbis / AAC
+- Character: WoW Gnome engineer (quirky, enthusiastic)
+
+---
+
+### Audio Generation Pipeline (Current)
+
+**For new audio generation:**
+
+1. **Short phrases:** Use reference samples from `~/wooblus-voice-refs/`
+2. **Long content:** Use `scripts/system/local-tts.sh` (Piper TTS) + pitch shift
+3. **WhatsApp:** Convert to Opus or MP3 (Vorbis doesn't play)
+
+**Script:** `scripts/system/generate-wobblus-voice.sh`
+- Default profile: `fast` (16kHz, minimal processing)
+- Other profiles: `balanced`, `character` (more gnome processing)
 
 ---
 
@@ -106,8 +133,36 @@
 
 ## Usage Notes
 
-- **Audio:** WhatsApp/Discord → Whisper → text; SAG → audio → send
-- **TTS:** Antoni, WoW Gnome style, fast/balanced character profiles, OGG output
-- **Reference:** Samples in `./audio/`, analysis in `./audio/system/wobblus-voice-analysis.md`
+- **Audio:** WhatsApp/Discord → Whisper → text; Reference samples → audio → send
+- **TTS:** Use reference samples from `~/wooblus-voice-refs/` for short responses
+- **Long content:** Use `scripts/system/local-tts.sh` (Piper) with pitch shift
+- **WhatsApp:** Convert OGG to Opus/MP3 (Vorbis doesn't play on WhatsApp)
+- **Reference:** Samples in `~/wooblus-voice-refs/`, analysis in `./audio/system/wobblus-voice-analysis.md`
 
-_Updated: 2026-02-18 13:18_
+**⚠️ IMPORTANT:** Do NOT use `sag` CLI or ElevenLabs - use reference samples or local Piper TTS (`scripts/system/local-tts.sh`) instead.
+
+---
+
+## 🔧 CRITICAL: Code Modification Rules (LEARNED 2026-03-11)
+
+**Rule:** DO NOT change the approach/implementation unless FULLY NECESSARY.
+
+**Why:** On 2026-03-11, changed rate limiting from 25s to 45s → introduced NaN bug → X API blocked account for 24h.
+
+**Before modifying code:**
+1. ✅ Identify the EXACT line/variable causing the issue
+2. ✅ Change ONLY that specific value/logic
+3. ❌ DO NOT refactor unrelated code
+4. ❌ DO NOT "improve" what's already working
+5. ✅ Test the minimal change before committing
+
+**Examples:**
+- ❌ Wrong: "Let's improve the rate limiting architecture"
+- ✅ Right: "Change `min_delay_between_threads: 25` to `45`"
+
+**Hashtag duplication issue:** Same hashtags appended twice to each post. Fix by:
+- ✅ Pass hashtags as parameter, don't hardcode
+- ✅ Dynamic selection based on post content topic
+- ❌ Don't append `#AIGovernance #Alygn` to every single post
+
+_Updated: 2026-03-11 17:10_

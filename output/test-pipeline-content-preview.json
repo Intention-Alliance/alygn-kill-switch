@@ -1,0 +1,184 @@
+{
+  "generatedAt": "2026-03-05T16:15:00-06:00",
+  "region": "cr",
+  "wave": 1,
+  "batchSize": 5,
+  
+  "discoveredLocalGovernments": [
+    {
+      "name": "San José",
+      "type": "canton",
+      "province": "San José",
+      "xHandle": "MuniSanJose",
+      "website": "https://msj.go.cr",
+      "priorityScore": 95,
+      "recentInitiatives": [
+        "Plataforma digital para consultas de uso de suelo",
+        "Certificados de uso de suelo digitales (próximamente)",
+        "Hub de IA y diseño de semiconductores",
+        "Programa Zero Lines del gobierno"
+      ],
+      "politicians": [
+        {
+          "name": "Diego Miranda",
+          "handle": "DiegoMirandaSJ",
+          "party": "PLN",
+          "position": "Alcalde",
+          "ideologyAlignment": "high"
+        }
+      ]
+    },
+    {
+      "name": "Escazú",
+      "type": "canton",
+      "province": "San José",
+      "xHandle": "MunicipalidadEscazu",
+      "website": "https://escazu.go.cr",
+      "priorityScore": 90,
+      "recentInitiatives": [
+        "2do lugar en Índice de Competitividad Cantonal",
+        "Fuerte gestión municipal e innovación",
+        "Participación en sectorización de buses eléctricos"
+      ],
+      "politicians": []
+    },
+    {
+      "name": "Santa Ana",
+      "type": "canton",
+      "province": "San José",
+      "xHandle": "MunicipalidadSantaAna",
+      "website": "https://santaana.go.cr",
+      "priorityScore": 90,
+      "recentInitiatives": [
+        "Clúster de conectividad sostenible con Mora y Belén",
+        "Ubicación en clústeres de movilidad eléctrica"
+      ],
+      "politicians": []
+    },
+    {
+      "name": "Curridabat",
+      "type": "canton",
+      "province": "San José",
+      "xHandle": "Curridabat",
+      "website": "https://curridabat.go.cr",
+      "priorityScore": 85,
+      "recentInitiatives": [
+        "Clúster de infraestructura ciclística (EUROCLIMA+)",
+        "Fortaleza en infraestructura y clima empresarial"
+      ],
+      "politicians": []
+    },
+    {
+      "name": "Desamparados",
+      "type": "canton",
+      "province": "San José",
+      "xHandle": "MDesamparados",
+      "website": "https://md.go.cr",
+      "priorityScore": 85,
+      "recentInitiatives": [],
+      "politicians": []
+    }
+  ],
+  
+  "xEngagementsReady": [
+    {
+      "target": "San José",
+      "handle": "@MuniSanJose",
+      "action": "reply",
+      "context": "Plataforma digital de uso de suelo",
+      "draftTweet": "Excelente iniciativa la plataforma digital de consultas de uso de suelo. La coordinación institucional es clave para escalar estas soluciones de gobierno digital. more at @aialygn #GobiernoDigital"
+    },
+    {
+      "target": "Escazú",
+      "handle": "@MunicipalidadEscazu",
+      "action": "like",
+      "context": "2do lugar en competitividad cantonal"
+    },
+    {
+      "target": "Santa Ana",
+      "handle": "@MunicipalidadSantaAna",
+      "action": "follow",
+      "context": "Clúster de conectividad sostenible"
+    },
+    {
+      "target": "Curridabat",
+      "handle": "@Curridabat",
+      "action": "reply",
+      "context": "Infraestructura ciclística EUROCLIMA+",
+      "draftTweet": "La infraestructura ciclística es un gran ejemplo de coordinación interinstitucional. Iniciativas como EUROCLIMA+ muestran cómo el gobierno local puede liderar la transformación sostenible. more at @aialygn"
+    },
+    {
+      "target": "Desamparados",
+      "handle": "@MDesamparados",
+      "action": "follow",
+      "context": "General engagement"
+    }
+  ],
+  
+  "emailsReadyToSend": [
+    {
+      "type": "institutional",
+      "target": "San José",
+      "recipient": "alcalde@msj.go.cr",
+      "subject": "Coordinación en gobernanza de IA para San José",
+      "body": "Estimado Alcalde Miranda,\n\nSan José está liderando la transformación digital con su plataforma de uso de suelo y el hub de IA. Alygn apoya la coordinación institucional en gobernanza de IA, sin centralizar control.\n\n¿15 minutos para explorar sinergias?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Este mensaje fue asistido por IA y revisado por humanos.",
+      "wordCount": 52,
+      "complianceStatus": "approved"
+    },
+    {
+      "type": "institutional",
+      "target": "Escazú",
+      "recipient": "info@escazu.go.cr",
+      "subject": "Gobernanza de IA para cantones competitivos",
+      "body": "Estimados,\n\nEscazú ocupa el 2do lugar en competitividad cantonal. Alygn proporciona infraestructura de gobernanza para IA que escala la coordinación institucional.\n\n¿15 minutos para conocer más?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Mensaje asistido por IA.",
+      "wordCount": 45,
+      "complianceStatus": "approved"
+    },
+    {
+      "type": "institutional",
+      "target": "Santa Ana",
+      "recipient": "info@santaana.go.cr",
+      "subject": "Coordinación IA - Clúster de conectividad",
+      "body": "Estimados,\n\nEl clúster de conectividad sostenible de Santa Ana es un modelo de coordinación interinstitucional. Alygn extiende este enfoque a la gobernanza de IA.\n\n¿15 minutos para intercambiar perspectivas?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Asistido por IA.",
+      "wordCount": 48,
+      "complianceStatus": "approved"
+    },
+    {
+      "type": "institutional",
+      "target": "Curridabat",
+      "recipient": "info@curridabat.go.cr",
+      "subject": "Gobernanza de IA - EUROCLIMA+ model",
+      "body": "Estimados,\n\nLa infraestructura ciclística de Curridabat (EUROCLIMA+) demuestra coordinación efectiva. Alygn aplica este modelo a la gobernanza de IA municipal.\n\n¿15 minutos para explorar?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Mensaje asistido por IA.",
+      "wordCount": 46,
+      "complianceStatus": "approved"
+    },
+    {
+      "type": "institutional",
+      "target": "Desamparados",
+      "recipient": "info@md.go.cr",
+      "subject": "Infraestructura de gobernanza de IA",
+      "body": "Estimados,\n\nAlygn proporciona infraestructura de gobernanza para IA que facilita la coordinación entre instituciones municipales, sin centralizar control.\n\n¿15 minutos para presentar Alygn?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Asistido por IA.",
+      "wordCount": 42,
+      "complianceStatus": "approved"
+    },
+    {
+      "type": "political",
+      "target": "Diego Miranda",
+      "party": "PLN",
+      "recipient": "dmiranda@msj.go.cr",
+      "subject": "IA y gobierno digital - Diego Miranda",
+      "body": "Alcalde Miranda,\n\nVi su anuncio sobre la plataforma digital de uso de suelo. Su enfoque en coordinación institucional alinea con Alygn.\n\n¿15 minutos para intercambiar perspectivas sobre gobernanza de IA?\n\nSaludos,\nEquipo Alygn\n\nP.S.: Mensaje asistido por IA.",
+      "wordCount": 48,
+      "complianceStatus": "approved"
+    }
+  ],
+  
+  "summary": {
+    "localGovernmentsDiscovered": 5,
+    "politiciansIdentified": 1,
+    "xEngagementsReady": 5,
+    "emailsReadyToSend": 6,
+    "emailsApproved": 6,
+    "estimatedReach": "5 cantones, 1 político clave"
+  }
+}

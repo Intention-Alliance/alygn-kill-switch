@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Weekly Reflection (IMPROVED)
  * 
@@ -7,9 +6,9 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs');
-const path = require('path');
-const { success } = require('../shared/logger');
+import fs from "fs";
+import path from "path";
+import { success } from "../shared/logger.js";
 
 const DAILY_REPORTS_DIR = path.join(process.env.HOME, '.openclaw/workspace/daily-reports');
 const MEMORY_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', 'memory');
@@ -129,7 +128,7 @@ ${summary.nextWeek.map(t => `- [ ] ${t}`).join('\n')}
 }
 
 // Main execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   analyzeWeek()
     .then(() => {
       console.log('\n✅ Weekly reflection complete!');
@@ -141,4 +140,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { analyzeWeek };
+export { analyzeWeek };

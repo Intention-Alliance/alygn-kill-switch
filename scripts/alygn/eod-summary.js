@@ -1,13 +1,12 @@
-#!/usr/bin/env bun
 /**
  * ALYGN End-of-Day Summary
  * Runs at 9 PM to summarize the day's activities
  */
 
 import { exec } from "child_process";
-import { promisify } from "util";
 import fs from "fs/promises";
 import path from "path";
+import { promisify } from "util";
 
 const execAsync = promisify(exec);
 const WORKSPACE = process.env.HOME + "/.openclaw/workspace";

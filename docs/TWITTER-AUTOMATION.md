@@ -24,8 +24,9 @@ ALYGN's Twitter automation combines two complementary systems:
 **Purpose:** Generate original thought leadership content
 
 **Workflow:**
+
 ```
-Grok Prompts (Notion) 
+Grok Prompts (Notion)
   ↓
 twitter-automation.js (generate 10 ideas, select 5)
   ↓
@@ -35,6 +36,7 @@ Browser Relay (alygn profile) → post threads
 ```
 
 **Features:**
+
 - Grok-powered content generation
 - AI selects best 5 from 10 ideas
 - Multi-point threads
@@ -42,6 +44,7 @@ Browser Relay (alygn profile) → post threads
 - Profile follows
 
 **Scripts:**
+
 - `scripts/alygn/x-twitter/twitter-automation.js` - Content generation
 - `scripts/alygn/x-twitter/twitter-browser-executor.ts` - Browser posting
 
@@ -77,6 +80,7 @@ Phase 3: X API Executor
 ```
 
 **Features:**
+
 - Keyword-based search discovery (100% relevance)
 - Grok mission-alignment evaluation
 - Quote tweets (`quote_tweet_id`)
@@ -86,11 +90,13 @@ Phase 3: X API Executor
 - Rate limiting (5s delays)
 
 **Scripts:**
+
 - `scripts/alygn/twitter-discovery/browser-explore.js` - Phase 1
 - `scripts/alygn/twitter-discovery/decision-engine.js` - Phase 2
-- `scripts/alygn/twitter-discovery/x-api-executor.js` - Phase 3
+- `scripts/shared/x-growth/x-api-executor.js` - Phase 3
 
 **Test Results (Feb 11, 2026):**
+
 - Discovery relevance: 100% (search "AGI alignment")
 - Decision approval: 100% (3/3 posts approved)
 - Execution success: 67% (2/3 posted)
@@ -103,16 +109,19 @@ Phase 3: X API Executor
 **Script:** `scripts/alygn/twitter-master-automation.js`
 
 **Combines both systems:**
+
 ```bash
 node scripts/alygn/twitter-master-automation.js
 ```
 
 **Execution Order:**
+
 1. Content Generation → workflow JSON
 2. Discovery System → search → evaluate → post
 3. Browser Posting → original content threads
 
 **Expected Output:**
+
 - 5 original posts (threads)
 - 2-5 reactive engagements (quotes/replies)
 - Summary report via WhatsApp
@@ -169,6 +178,7 @@ openclaw cron list | grep Twitter
 ## Discovery Keywords
 
 **Primary searches:**
+
 - "AGI alignment"
 - "AI safety"
 - "existential risk"
@@ -176,6 +186,7 @@ openclaw cron list | grep Twitter
 - "AI governance"
 
 **Target authors (monitor):**
+
 - @eliezeryudkowsky
 - @AnthropicAI
 - @amodei
@@ -192,6 +203,7 @@ openclaw cron list | grep Twitter
 **Page ID:** `2fc334874af681889a5fd95a1fa1dd72`
 
 **Key Prompts:**
+
 - Prompt #1: Content generation (10 ideas)
 - Prompt #13: Strategic replies
 - (Discovery System uses inline evaluation prompts)
@@ -224,15 +236,18 @@ twitter-outputs/alygn/
 ### Common Issues
 
 **HTTP 403 on old posts:**
+
 - Quote tweets fail on posts >6 months old
 - Solution: Focus on recent posts (<3 months)
 
 **Rate limiting:**
+
 - Wait 5s between API calls
 - Wait 45s between browser actions
 - Reduce frequency if hitting limits
 
 **Browser relay timeouts:**
+
 - Use extended timeouts (120s+ for navigation)
 - Keep browser profile active between runs
 - Restart if session becomes stale
@@ -242,12 +257,14 @@ twitter-outputs/alygn/
 ## Manual Execution
 
 ### Content Generation Only
+
 ```bash
 cd ~/.openclaw/workspace
 node scripts/alygn/x-twitter/twitter-automation.js
 ```
 
 ### Discovery System Only
+
 ```bash
 cd ~/.openclaw/workspace
 
@@ -262,6 +279,7 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ```
 
 ### Full Master Automation
+
 ```bash
 cd ~/.openclaw/workspace
 node scripts/alygn/twitter-master-automation.js
@@ -272,22 +290,52 @@ node scripts/alygn/twitter-master-automation.js
 ## Maintenance
 
 ### Update Grok Prompts
+
 1. Edit in Notion: "Twitter/X Growth Strategy"
 2. Prompts auto-sync via API
 3. No code changes needed
 
 ### Add Discovery Keywords
+
 Edit `scripts/alygn/twitter-discovery/browser-explore.js`:
+
 ```javascript
 const keywords = ["AGI alignment", "AI safety", "NEW KEYWORD"];
 ```
 
 ### Adjust Selectivity
+
 Edit `scripts/alygn/twitter-discovery/decision-engine.js`:
+
 - Lower approval threshold: engage with more posts
 - Raise approval threshold: engage with fewer posts
 
 ### Monitor Performance
+
+
+### Update Grok Prompts
+
+1. Edit in Notion: "Twitter/X Growth Strategy"
+2. Prompts auto-sync via API
+3. No code changes needed
+
+### Add Discovery Keywords
+
+Edit `scripts/alygn/twitter-discovery/browser-explore.js`:
+
+```javascript
+const keywords = ["AGI alignment", "AI safety", "NEW KEYWORD"];
+```
+
+### Adjust Selectivity
+
+Edit `scripts/alygn/twitter-discovery/decision-engine.js`:
+
+- Lower approval threshold: engage with more posts
+- Raise approval threshold: engage with fewer posts
+
+### Monitor Performance
+
 ```bash
 # Check recent workflows
 ls -lt twitter-outputs/alygn/workflows/ | head -5
@@ -319,7 +367,7 @@ openclaw cron runs <job-id>
 
 - **System Design:** `scripts/alygn/twitter-discovery/README.md`
 - **Cron Configuration:** `openclaw cron list --json`
-- **X API Docs:** https://docs.x.com/x-api/
+- **X API Docs:** <https://docs.x.com/x-api/>
 - **Browser Relay:** OpenClaw browser tool (profile="alygn")
 
 ---

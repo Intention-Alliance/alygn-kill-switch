@@ -8,20 +8,23 @@
 ## 🎯 **Problema Resuelto**
 
 ### **Antes (Código Duplicado)** ❌
+
 ```
-scripts/alygn/x-growth/x-api-executor.js          (11 KB) - Legacy cronjob
+scripts/shared/x-growth/x-api-executor.js          (11 KB) - Legacy cronjob
 scripts/alygn/x-growth/research/x-api-executor.js (8 KB)  - Research variant
 scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js (9 KB) - Municipal warmup
 scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js (11 KB) - Municipal warmup
 ```
 
 **Problemas:**
+
 - ❌ 4 scripts con lógica duplicada
 - ❌ Fix de search mode aplicado solo a uno
 - ❌ Mantenimiento nightmare (cambiar en 4 lugares)
 - ❌ Inconsistencias entre versiones
 
 ### **Después (Código Unificado)** ✅
+
 ```
 scripts/shared/x-growth/x-api-executor.js         (17 KB) - Shared executor
 scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js (6 KB) - Wrapper
@@ -29,6 +32,7 @@ scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js (8 KB) - Wrapper
 ```
 
 **Beneficios:**
+
 - ✅ Single source of truth
 - ✅ Todos los fixes aplican automáticamente
 - ✅ Fácil mantenimiento
@@ -43,17 +47,21 @@ scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js (8 KB) - Wrapper
 **Tamaño:** 17 KB (518 líneas)
 
 **Funcionalidades:**
+
 1. **Workflow Mode** (Alygn growth posting)
+
    ```bash
    node x-api-executor.js --workflow=workflow.json [--dry-run|--live]
    ```
 
 2. **Batch Mode** (municipal outreach X warmup)
+
    ```bash
    node x-api-executor.js --batch=muni-warmup.json [--dry-run|--live]
    ```
 
 3. **Single Action Mode** (individual operations)
+
    ```bash
    node x-api-executor.js --action=follow --handle=@username [--mock]
    node x-api-executor.js --action=like --tweet-id=123 [--mock]
@@ -62,6 +70,7 @@ scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js (8 KB) - Wrapper
    ```
 
 4. **Mock Mode** (simulate without API calls)
+
    ```bash
    Add --mock flag to any command
    ```
@@ -71,33 +80,34 @@ scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js (8 KB) - Wrapper
 ## 🔧 **Funciones Exportadas**
 
 ### **Core Operations:**
+
 ```javascript
 // Credentials & client
-loadCredentials()
-createClient()
+loadCredentials();
+createClient();
 
 // Tweet operations
-postTweet(client, content, mediaPath)
-replyToPost(client, content, targetPostId, mediaPath)
-quotePost(client, content, targetPostId, mediaPath)
+postTweet(client, content, mediaPath);
+replyToPost(client, content, targetPostId, mediaPath);
+quotePost(client, content, targetPostId, mediaPath);
 
 // Social operations
-followUser(client, username)
-likeTweet(client, tweetId)
-getUserTweets(client, username, count)
-searchTweets(client, query, count)
+followUser(client, username);
+likeTweet(client, tweetId);
+getUserTweets(client, username, count);
+searchTweets(client, query, count);
 
 // Formatting
-formatTweet(content, hashtags)
+formatTweet(content, hashtags);
 
 // Execution
-executeWorkflow(workflow, mode)      // For Alygn growth
-executeBatchActions(actions, mode)   // For municipal outreach
+executeWorkflow(workflow, mode); // For Alygn growth
+executeBatchActions(actions, mode); // For municipal outreach
 
 // Utilities
-ensureDirectories()
-parseArgs(args)
-main(args)
+ensureDirectories();
+parseArgs(args);
+main(args);
 ```
 
 ---
@@ -110,21 +120,24 @@ main(args)
 **Ahora:** 6 KB, usa shared executor
 
 **Cambios:**
+
 ```javascript
 // ANTES: Lógica duplicada de X API calls
 const X_API_KEY = process.env.X_API_KEY;
 // ... 200 líneas de código de API ...
 
 // AHORA: Usa shared executor
-const { executeBatchActions } = require('../../../../shared/x-growth/x-api-executor.js');
+const {
+  executeBatchActions,
+} = require("../../../../shared/x-growth/x-api-executor.js");
 
 async function executePhase1(municipalities, mock) {
-    const actions = municipalities.map(muni => ({
-        type: 'follow',
-        handle: muni.x_handle
-    }));
-    
-    return await executeBatchActions(actions, mock ? 'dry-run' : 'live');
+  const actions = municipalities.map((muni) => ({
+    type: "follow",
+    handle: muni.x_handle,
+  }));
+
+  return await executeBatchActions(actions, mock ? "dry-run" : "live");
 }
 ```
 
@@ -134,23 +147,26 @@ async function executePhase1(municipalities, mock) {
 **Ahora:** 8 KB, usa shared executor
 
 **Cambios:**
+
 ```javascript
 // ANTES: Lógica duplicada de quote/reply
 async function quotePost(client, content, tweetId) {
-    // ... 50 líneas de código ...
+  // ... 50 líneas de código ...
 }
 
 // AHORA: Usa shared executor
-const { executeBatchActions } = require('../../../../shared/x-growth/x-api-executor.js');
+const {
+  executeBatchActions,
+} = require("../../../../shared/x-growth/x-api-executor.js");
 
 async function executePhase2(municipalities, mock) {
-    const actions = municipalities.map(muni => ({
-        type: 'quote',
-        content: buildQuoteText(muni.name),
-        tweetId: '...'
-    }));
-    
-    return await executeBatchActions(actions, mock ? 'dry-run' : 'live');
+  const actions = municipalities.map((muni) => ({
+    type: "quote",
+    content: buildQuoteText(muni.name),
+    tweetId: "...",
+  }));
+
+  return await executeBatchActions(actions, mock ? "dry-run" : "live");
 }
 ```
 
@@ -159,6 +175,7 @@ async function executePhase2(municipalities, mock) {
 ## 🎯 **Casos de Uso Soportados**
 
 ### **1. Alygn Growth (Legacy Cronjob)**
+
 ```bash
 # El cronjob existente puede usar el shared executor
 node scripts/shared/x-growth/x-api-executor.js \
@@ -167,6 +184,7 @@ node scripts/shared/x-growth/x-api-executor.js \
 ```
 
 ### **2. Municipal Outreach X-First (New)**
+
 ```bash
 # Phase 1: Follow + Like
 node scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js \
@@ -180,6 +198,7 @@ node scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js \
 ```
 
 ### **3. Single Actions (Testing/Manual)**
+
 ```bash
 # Follow a municipality
 node scripts/shared/x-growth/x-api-executor.js \
@@ -223,6 +242,7 @@ export async function searchTweets(client, query, count = 5) {
 ```
 
 **Ventaja:** El fix aplica automáticamente para:
+
 - ✅ Alygn growth cronjob
 - ✅ Municipal outreach warmup
 - ✅ Cualquier nuevo script que use el shared executor
@@ -231,12 +251,12 @@ export async function searchTweets(client, query, count = 5) {
 
 ## 📊 **Comparación de Código**
 
-| Métrica | Antes (4 scripts) | Después (3 scripts) | Mejora |
-|---------|-------------------|---------------------|--------|
-| **Total líneas** | ~800 líneas | ~650 líneas | -19% |
-| **Lógica duplicada** | ~400 líneas | ~0 líneas | -100% |
-| **Puntos de cambio** | 4 lugares | 1 lugar | -75% |
-| **Funcionalidades** | Limitadas | Workflow + Batch + Single | +200% |
+| Métrica              | Antes (4 scripts) | Después (3 scripts)       | Mejora |
+| -------------------- | ----------------- | ------------------------- | ------ |
+| **Total líneas**     | ~800 líneas       | ~650 líneas               | -19%   |
+| **Lógica duplicada** | ~400 líneas       | ~0 líneas                 | -100%  |
+| **Puntos de cambio** | 4 lugares         | 1 lugar                   | -75%   |
+| **Funcionalidades**  | Limitadas         | Workflow + Batch + Single | +200%  |
 
 ---
 
@@ -244,11 +264,11 @@ export async function searchTweets(client, query, count = 5) {
 
 ### **Paso 1: Actualizar el cronjob existente**
 
-El script legacy (`scripts/alygn/x-growth/x-api-executor.js`) puede ser reemplazado con:
+El script legacy (`scripts/shared/x-growth/x-api-executor.js`) puede ser reemplazado con:
 
 ```bash
 # ANTES (en crontab o scheduler)
-node scripts/alygn/x-growth/x-api-executor.js workflow.json --dry-run
+node scripts/shared/x-growth/x-api-executor.js workflow.json --dry-run
 
 # AHORA (usa shared executor)
 node scripts/shared/x-growth/x-api-executor.js --workflow=workflow.json --dry-run
@@ -259,14 +279,13 @@ node scripts/shared/x-growth/x-api-executor.js --workflow=workflow.json --dry-ru
 Si querés mantener el path viejo:
 
 ```javascript
-#!/usr/bin/env node
-// scripts/alygn/x-growth/x-api-executor.js (wrapper)
+// scripts/shared/x-growth/x-api-executor.js (wrapper)
 
 // Re-export from shared
-export * from '../../shared/x-growth/x-api-executor.js';
+export * from "../../shared/x-growth/x-api-executor.js";
 
 // Or run main if called directly
-import { main } from '../../shared/x-growth/x-api-executor.js';
+import { main } from "../../shared/x-growth/x-api-executor.js";
 main(process.argv.slice(2));
 ```
 
@@ -274,11 +293,11 @@ main(process.argv.slice(2));
 
 ```bash
 # Backup primero
-cp scripts/alygn/x-growth/x-api-executor.js scripts/alygn/x-growth/x-api-executor.js.backup
+cp scripts/shared/x-growth/x-api-executor.js scripts/shared/x-growth/x-api-executor.js.backup
 cp scripts/alygn/x-growth/research/x-api-executor.js scripts/alygn/x-growth/research/x-api-executor.js.backup
 
 # Eliminar duplicados
-rm scripts/alygn/x-growth/x-api-executor.js
+rm scripts/shared/x-growth/x-api-executor.js
 rm scripts/alygn/x-growth/research/x-api-executor.js
 
 # Actualizar imports en otros scripts
@@ -290,6 +309,7 @@ rm scripts/alygn/x-growth/research/x-api-executor.js
 ## 🧪 **Testing**
 
 ### **Test 1: Shared Executor (Mock Mode)**
+
 ```bash
 cd /home/andlersrv/.openclaw/workspace
 
@@ -304,6 +324,7 @@ node scripts/shared/x-growth/x-api-executor.js --workflow=/tmp/workflow.json --m
 ```
 
 ### **Test 2: Municipal Warmup Phase 1**
+
 ```bash
 node scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js \
   --input=/tmp/muni-researched.json \
@@ -311,6 +332,7 @@ node scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js \
 ```
 
 ### **Test 3: Municipal Warmup Phase 2**
+
 ```bash
 node scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js \
   --input=/tmp/muni-researched.json \
@@ -339,12 +361,14 @@ node scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js \
 ## 🎯 **Próximos Pasos**
 
 **Inmediato:**
+
 1. ✅ Shared executor creado
 2. ✅ Wrappers actualizados
 3. ⏳ Testear shared executor con datos mock
 4. ⏳ Validar que municipal warmup funciona con shared executor
 
 **Después:**
+
 1. ⏳ Actualizar cronjob legacy para usar shared executor
 2. ⏳ Eliminar scripts duplicados (con backup)
 3. ⏳ Documentar shared executor en README
@@ -355,11 +379,13 @@ node scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js \
 ## ✅ **STATUS: DEDUPLICATION COMPLETE**
 
 **Listo para:**
+
 - ✅ Usar shared executor en nuevos scripts
 - ✅ Testear municipal warmup con shared executor
 - ✅ Migrar cronjob legacy cuando estés listo
 
 **Archivos creados/modificados:**
+
 - `scripts/shared/x-growth/x-api-executor.js` (17 KB) - ✅ Nuevo
 - `scripts/alygn/muni-outreach/engagement/x-warmup-phase1.js` (6 KB) - ✅ Actualizado
 - `scripts/alygn/muni-outreach/engagement/x-warmup-phase2.js` (8 KB) - ✅ Actualizado

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Generate Seed Files for Database Backup
@@ -13,7 +12,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
-import path from 'path';
 
 // Configuration
 const SUPABASE_URL = process.env.SUPABASE_URL;

@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-const { Client } = require('@notionhq/client');
+import { Client } from "@notionhq/client";
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
 async function createDb() {

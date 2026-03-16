@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-03-13T17:01:04.330Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Anthropic sues Pentagon over blacklisting tied to AI safety stance, claiming First Amendment violation.\n\nThis case highlights need for neutral coordination between safety firms and defense, ensuring legitimate governance balances risk and innovation without punitive measures.\n\n#AIGovernance #Alygn",
+      "length": 298,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 2,
+      "content": "New York law targets AI consumer deception, positioning state as battleground for national AI regulation.\n\nDemonstrates states filling federal void, underscoring urgency for coordinated, legitimate national frameworks to maintain neutrality across jurisdictions.\n\n#AIGovernance #Alygn",
+      "length": 284,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 3,
+      "content": "Anthropic funds super PAC millions to advocate AI safety in political arena.\n\nIllustrates coordination through political channels for legitimacy in AI safety, while challenging neutrality in governance influence.\n\n#AIGovernance #Alygn",
+      "length": 234,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "content": "Pentagon labels AI governance a blocker, seeks unconstrained models for lawful military use.\n\nExposes coordination gaps between governance and defense needs, requiring neutral institutions to legitimize flexible yet safe AI policies.\n\n#AIGovernance #Alygn",
+      "length": 255,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "content": "Survey reveals 40% orgs believe AI governance mature, only 22% actually are amid security shifts.\n\nReveals maturity gap demanding better internal coordination, legitimate standards, and neutral oversight for responsible AI adoption.\n\n#AIGovernance #Alygn",
+      "length": 254,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

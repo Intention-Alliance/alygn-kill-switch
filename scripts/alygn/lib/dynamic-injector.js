@@ -9,7 +9,7 @@
  * - [topic] / [brief explanation] — Legacy patterns from Grok templates
  */
 
-const { getInjectionData } = require('./data-aggregator');
+import { getInjectionData } from './data-aggregator.js';
 
 // Mapping of common placeholder variations to canonical names
 const PLACEHOLDER_ALIASES = {
@@ -198,7 +198,7 @@ async function previewInjections(promptText) {
   return result;
 }
 
-module.exports = {
+export {
   injectValues,
   injectDynamicValues,
   previewInjections,

@@ -1,32 +1,15 @@
-#!/usr/bin/env node
 
-const fs = require('fs').promises;
+import fs from "fs".promises;
 
-const NOTION_KEY = "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";
-const NOTION_VERSION = "2022-06-28";
+import { getClient, listBlocks } from '../shared/notion-client.js';
+
 const NDA_PAGE_ID = "2fc334874af6801b948cf44183466fc4";
-
-async function notionRequest(endpoint, method = "GET", body = null) {
-  const url = `https://api.notion.com/v1/${endpoint}`;
-  const options = {
-    method,
-    headers: {
-      "Authorization": `Bearer ${NOTION_KEY}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json"
-    }
-  };
-  if (body) options.body = JSON.stringify(body);
-  
-  const res = await fetch(url, options);
-  if (!res.ok) throw new Error(`Notion API error: ${res.status} ${await res.text()}`);
-  return res.json();
-}
+const notion = getClient();
 
 async function fetchNDA() {
   console.log("📄 Fetching NDA content from Notion...\n");
   
-  const blocks = await notionRequest(`blocks/${NDA_PAGE_ID}/children?page_size=100`);
+  const blocks = await listBlocks(notion, NDA_PAGE_ID);
   
   let ndaContent = `# Alygn - Non-Disclosure Agreement\n\n`;
   ndaContent += `**Source:** Notion (Administrative Info → Non-Disclosure Agreement)\n`;

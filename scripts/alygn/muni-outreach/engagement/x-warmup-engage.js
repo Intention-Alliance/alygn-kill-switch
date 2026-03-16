@@ -15,13 +15,13 @@
  *   node x-warmup-engage.js --wave=1 --phase=1 --dry-run
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Load utilities
-const loadCredentials = require('../../../../shared/load-credentials');
-const supabase = require('../../../../utils/supabase-client').supabase;
-const rateLimiter = require('../../../../utils/rate-limiter');
+import loadCredentials from "../../../../shared/load-credentials.js";
+import supabase from "../../../../utils/supabase-client.js".supabase;
+import rateLimiter from "../../../../utils/rate-limiter.js";
 
 // Rate limits (conservative - from spec)
 const RATE_LIMITS = {
@@ -349,7 +349,7 @@ function buildReplyText(municipalityName) {
 }
 
 // CLI
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const parseArg = (name) => {
@@ -378,4 +378,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { executeEngagement, executePhase1, executePhase2 };
+export { executeEngagement, executePhase1, executePhase2 };

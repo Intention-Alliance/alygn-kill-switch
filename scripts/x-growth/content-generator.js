@@ -6,10 +6,10 @@
  *   node content-generator.js --project=myproject --trends=/path/to/trends.json --mock
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
-const { loadProject } = require('./load-project');
+import { loadProject } from "./load-project.js";
 
 // Grok API configuration
 const GROK_API_KEY = process.env.GROK_API_KEY;
@@ -221,7 +221,7 @@ function saveResults(workflow, outputFile, config) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const projectArg = args.find(a => a.startsWith('--project='));
@@ -266,7 +266,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   generateContent,
   generateMockContent,
   buildSystemPrompt,

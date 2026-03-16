@@ -1,5 +1,3 @@
-#!/usr/bin/env bun
-
 /**
  * Extract Chrome Cookies via Chrome DevTools Protocol (CDP)
  * 
@@ -8,7 +6,6 @@
  */
 
 import { execSync } from "child_process";
-import * as fs from "fs";
 
 async function extractViaCDP() {
   console.log("🔐 Chrome Cookie Extractor via CDP");

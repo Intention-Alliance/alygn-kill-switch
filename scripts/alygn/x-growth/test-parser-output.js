@@ -1,13 +1,12 @@
-#!/usr/bin/env node
 
 /**
  * Test Parser Output - Debug Mode
  * Shows exactly what will be posted BEFORE sending to X API
  */
 
-import { parseGrokOutput } from '../../twitter-content-parser.js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { parseGrokOutput } from '../../twitter-content-parser.js';
 
 const TEST_FILE = join(
   process.env.HOME,

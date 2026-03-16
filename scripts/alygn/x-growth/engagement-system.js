@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN X Engagement System v1
@@ -253,4 +252,5 @@ main().catch(error => {
 });
 
 // Export workflow for other scripts
-export { engagementWorkflow, replyToTweet, followUser, getMentions };
+export { engagementWorkflow, followUser, getMentions, replyToTweet };
+

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Twitter Automation Orchestration v4
  * Full browser-based Twitter automation with AI-driven selection
@@ -10,9 +9,9 @@
  *   node twitter-browser-automation-v4.js --replies 13       # Custom reply prompt
  */
 
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 
 const CONFIG = {
   WORKSPACE: path.join(process.env.HOME, ".openclaw/workspace"),
@@ -311,9 +310,9 @@ function parseRepliesAndTargets(content) {
   return { replies, targets };
 }
 
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main().then(r => { console.log("🎉 Done!", JSON.stringify(r)); process.exit(0); })
     .catch(e => { console.error("💥", e.message); process.exit(1); });
 }
 
-module.exports = { main, parseMarkdownPosts, parseRepliesAndTargets };
+export { main, parseMarkdownPosts, parseRepliesAndTargets };

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Outreach Tracker - Notion Database Setup
  * 
@@ -27,13 +26,12 @@
  * Created: Feb 12, 2026
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from "fs";
+import path from "path";
+import { getClient } from "../../../shared/notion-client.js";
 
 // Configuration
-const NOTION_KEY = process.env.NOTION_KEY || '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';
-const NOTION_VERSION = '2022-06-28';
+const notion = getClient();
 
 // Database: VC Outreach Tracker
 const DATABASE_ID = '305334874af681ef983df57c7f70de33';
@@ -159,63 +157,13 @@ const DATABASE_SCHEMA = {
 };
 
 /**
- * Make Notion API request
- */
-function notionRequest(method, path, data = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      port: 443,
-      path: path,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_KEY}`,
-        'Notion-Version': NOTION_VERSION,
-        'Content-Type': 'application/json'
-      }
-    };
-    
-    const req = https.request(options, (res) => {
-      let body = '';
-      
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
-      
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(body);
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(parsed);
-          } else {
-            reject(new Error(`Notion API error (${res.statusCode}): ${parsed.message || body}`));
-          }
-        } catch (error) {
-          reject(new Error(`Failed to parse Notion response: ${error.message}`));
-        }
-      });
-    });
-    
-    req.on('error', (error) => {
-      reject(error);
-    });
-    
-    if (data) {
-      req.write(JSON.stringify(data));
-    }
-    
-    req.end();
-  });
-}
-
-/**
  * Create VC Outreach Tracker database
  */
 async function createDatabase() {
   console.log('🚀 Creating ALYGN VC Outreach Tracker database...\n');
   
   try {
-    const database = await notionRequest('POST', '/v1/databases', DATABASE_SCHEMA);
+    const database = await notion.databases.create(DATABASE_SCHEMA);
     
     console.log('✅ Database created successfully!\n');
     console.log(`   Database ID: ${database.id}`);
@@ -316,7 +264,7 @@ async function addSeedVCs(databaseId) {
       }
       
       // Create page in database
-      await notionRequest('POST', '/v1/pages', {
+      await notion.pages.create({
         parent: { database_id: databaseId },
         properties
       });
@@ -376,8 +324,9 @@ async function main() {
 }
 
 // Run
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = { createDatabase, addSeedVCs };
+export { addSeedVCs, createDatabase };
+

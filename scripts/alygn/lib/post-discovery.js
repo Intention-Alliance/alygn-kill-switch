@@ -11,8 +11,8 @@
  * 4. Return structured data for [insert post text here] injection
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises';
+import path from 'path';
 
 const POSTS_CACHE_DIR = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs/discovered-posts');
 
@@ -242,7 +242,7 @@ function getBestPostForReply(posts) {
   return validPosts[0];
 }
 
-module.exports = {
+export {
   parsePostsFromSnapshot,
   parseArticleDescription,
   formatPostsForInjection,

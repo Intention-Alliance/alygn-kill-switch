@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Centralized Logging System for ALYGN Automation (IMPROVED)
  * 
@@ -10,14 +9,20 @@
  * - Support different log levels and types
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const https = require('https');
-const { getNotionKey, getNotionPage } = require('./load-credentials');
+import fs from 'fs/promises';
+import path from 'path';
+import { getNotionPage } from './load-credentials.js';
+import { appendBlocks, createPage, getClient, searchPages } from './notion-client.js';
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const LOGS_DIR = path.join(WORKSPACE, 'logs');
-const NOTION_API_KEY = getNotionKey();
+
+// Lazy Notion client — only initialized when Notion sync is actually used
+let _notion = null;
+function getNotionClient() {
+  if (!_notion) _notion = getClient();
+  return _notion;
+}
 
 // Cache daily Notion page IDs to avoid recreating
 let dailyNotionPageCache = {};
@@ -232,9 +237,9 @@ async function getDailyNotionPage(parentPageId) {
   
   // Search for existing page
   try {
-    const searchResults = await notionRequest('POST', '/v1/search', {
-      query: `Automation Logs ${today}`,
-      filter: { property: 'object', value: 'page' }
+    const searchResults = await searchPages(getNotionClient(), `Automation Logs ${today}`, {
+      property: 'object',
+      value: 'page'
     });
     
     // Check if page exists
@@ -251,14 +256,7 @@ async function getDailyNotionPage(parentPageId) {
   
   // Create new page
   try {
-    const newPage = await notionRequest('POST', '/v1/pages', {
-      parent: { page_id: parentPageId },
-      properties: {
-        title: {
-          title: [{ text: { content: `Automation Logs ${today}` } }]
-        }
-      }
-    });
+    const newPage = await createPage(getNotionClient(), parentPageId, `Automation Logs ${today}`);
     
     dailyNotionPageCache[cacheKey] = newPage.id;
     return newPage.id;
@@ -292,54 +290,13 @@ async function appendToNotion(entry, markdown) {
     const blocks = markdownToNotionBlocks(markdown);
     
     // Append blocks to page
-    await notionRequest('PATCH', `/v1/blocks/${dailyPageId}/children`, {
-      children: blocks
-    });
+    await appendBlocks(getNotionClient(), dailyPageId, blocks);
     
     return dailyPageId;
   } catch (error) {
     console.error('Failed to append to Notion:', error.message);
     return null;
   }
-}
-
-/**
- * Make Notion API request
- */
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
 }
 
 /**
@@ -414,17 +371,14 @@ async function error(type, title, errorDetails) {
   });
 }
 
-module.exports = {
-  log,
-  info,
-  success,
-  warning,
-  error,
-  LogLevel
+export {
+  error, info, log, LogLevel, success,
+  warning
 };
 
 // CLI usage
-if (require.main === module) {
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
   const testEntry = {
     type: 'test',
     title: 'Test Log Entry',

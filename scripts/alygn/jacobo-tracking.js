@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Daily Jacobo Summary
  * 
@@ -6,9 +5,8 @@
  * Checks WhatsApp messages with Jacobo (+50663877142) and reports summary
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const JACOBO_PHONE = '+50663877142';
 const CONTACT_TRACKING_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', 'contact-tracking');

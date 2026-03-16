@@ -9,7 +9,7 @@
  * - Fallback 2: OpenClaw web_fetch tool
  * 
  * Usage:
- *   const web = require('../utils/web-intelligence');
+ *   import web from "../utils/web-intelligence.js";
  *   
  *   // Search
  *   const results = await web.search('municipalities Costa Rica');
@@ -18,13 +18,17 @@
  *   const content = await web.scrape('https://example.com');
  */
 
-const path = require('path');
-const { execSync } = require('child_process');
+import path from "path";
+import fs from "fs";
+import { execSync } from "child_process";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load credentials
 let credentials;
 try {
-  credentials = require(path.join(__dirname, '../../config/credentials.json'));
+  credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/credentials.json'), 'utf8'));
 } catch (error) {
   console.error('⚠️  Failed to load credentials:', error.message);
 }
@@ -45,11 +49,11 @@ async function search(query, options = {}) {
   console.log(`🔍 Searching: "${query}"`);
   
   // Try Perplexity via OpenRouter first
-  try {
-    const perplexityKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
-    const baseUrl = credentials?.openrouter?.baseUrl || 'https://openrouter.ai/api/v1';
-    
-    if (perplexityKey) {
+  if (credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey) {
+    try {
+      const perplexityKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
+      const baseUrl = credentials?.openrouter?.baseUrl || 'https://openrouter.ai/api/v1';
+      
       console.log('   → Using Perplexity Sonar Pro (via OpenRouter)');
       
       const response = await fetch(`${baseUrl}/chat/completions`, {
@@ -83,36 +87,40 @@ async function search(query, options = {}) {
       } else {
         throw new Error(data.error?.message || 'No results from Perplexity');
       }
-    }
-  } catch (error) {
-    console.log(`   ⚠️  Perplexity failed: ${error.message}`);
-    
-    if (!useFallback) {
-      throw error;
+    } catch (error) {
+      console.log(`   ⚠️  Perplexity failed: ${error.message}`);
+      
+      if (!useFallback) {
+        throw error;
+      }
     }
   }
   
   // Fallback 1: OpenClaw web_search tool (Brave API)
-  try {
-    console.log('   → Fallback 1: OpenClaw web_search (Brave API)');
-    
-    const result = execSync(`openclaw run web_search --query="${query.replace(/"/g, '\\"')}" --count=${count}`, {
-      encoding: 'utf8',
-      timeout: 30000
-    });
-    
-    const parsed = JSON.parse(result);
-    
-    console.log('   ✅ web_search success');
-    return {
-      success: true,
-      source: 'web_search',
-      content: parsed.content || parsed.answer,
-      citations: parsed.citations || []
-    };
-    
-  } catch (error) {
-    console.log(`   ⚠️  web_search failed: ${error.message}`);
+  if (useFallback) {
+    try {
+      console.log('   → Fallback 1: OpenClaw web_search (Brave API)');
+      
+      const result = execSync(`openclaw run web_search --query="${query.replace(/"/g, '\\"')}" --count=${count}`, {
+        encoding: 'utf8',
+        timeout: 30000,
+        stdio: ['pipe', 'pipe', 'pipe']
+      });
+      
+      // Parse JSON output
+      const parsed = JSON.parse(result.trim());
+      
+      console.log('   ✅ web_search success');
+      return {
+        success: true,
+        source: 'web_search',
+        content: parsed.content || parsed.answer || JSON.stringify(parsed),
+        citations: parsed.citations || []
+      };
+      
+    } catch (error) {
+      console.log(`   ⚠️  web_search failed: ${error.message}`);
+    }
   }
   
   // All methods failed
@@ -120,12 +128,13 @@ async function search(query, options = {}) {
   return {
     success: false,
     error: 'All search methods failed',
-    source: 'none'
+    source: 'none',
+    query
   };
 }
 
 /**
- * Scrape a URL with fallback
+ * Scrape a URL with fallback (tries www and non-www)
  * @param {string} url - URL to scrape
  * @param {Object} options - Scrape options
  * @returns {Promise<Object>} Scraped content
@@ -133,76 +142,100 @@ async function search(query, options = {}) {
 async function scrape(url, options = {}) {
   const {
     formats = ['markdown'],
-    useFallback = true
+    useFallback = true,
+    tryBothVariants = true
   } = options;
   
-  console.log(`📄 Scraping: ${url}`);
+  // Generate URL variants (www and non-www)
+  const urlVariants = generateUrlVariants(url);
   
-  // Try Firecrawl first
-  try {
-    const firecrawlKey = credentials?.firecrawl?.apiKey;
-    
-    if (firecrawlKey) {
-      console.log('   → Using Firecrawl API');
-      
-      const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${firecrawlKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          url,
-          formats: ['markdown']
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success && data.markdown) {
-        console.log('   ✅ Firecrawl success');
-        return {
-          success: true,
-          source: 'firecrawl',
-          content: data.markdown,
-          metadata: data.metadata
-        };
-      } else {
-        throw new Error(data.error || 'Firecrawl failed');
+  console.log(`📄 Scraping: ${url}`);
+  if (urlVariants.length > 1) {
+    console.log(`   Trying ${urlVariants.length} variants: ${urlVariants.join(', ')}`);
+  }
+  
+  // Try Firecrawl first (with URL variants)
+  if (credentials?.firecrawl?.apiKey && useFallback !== false) {
+    for (const variantUrl of urlVariants) {
+      try {
+        const firecrawlKey = credentials.firecrawl.apiKey;
+        
+        console.log(`   → Using Firecrawl API: ${variantUrl}`);
+        
+        const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${firecrawlKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            url: variantUrl,
+            formats: ['markdown']
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.markdown) {
+          console.log(`   ✅ Firecrawl success (${variantUrl})`);
+          return {
+            success: true,
+            source: 'firecrawl',
+            content: data.markdown,
+            metadata: { ...data.metadata, requestedUrl: url, actualUrl: variantUrl }
+          };
+        } else {
+          throw new Error(data.error || 'Firecrawl failed');
+        }
+      } catch (error) {
+        console.log(`   ⚠️  Firecrawl failed (${variantUrl}): ${error.message}`);
+        
+        // If this is the last variant and fallback disabled, throw
+        if (variantUrl === urlVariants[urlVariants.length - 1] && !useFallback) {
+          throw error;
+        }
+        // Continue to next variant
       }
-    }
-  } catch (error) {
-    console.log(`   ⚠️  Firecrawl failed: ${error.message}`);
-    
-    if (!useFallback) {
-      throw error;
     }
   }
   
-  // Fallback 2: OpenClaw web_fetch tool
-  try {
-    console.log('   → Fallback 2: OpenClaw web_fetch');
-    
-    const result = execSync(`openclaw run web_fetch --url="${url}" --extractMode=markdown`, {
-      encoding: 'utf8',
-      timeout: 30000
-    });
-    
-    const parsed = JSON.parse(result);
-    
-    console.log('   ✅ web_fetch success');
-    return {
-      success: true,
-      source: 'web_fetch',
-      content: parsed.text || parsed.content,
-      metadata: {
-        title: parsed.title,
-        url: parsed.url
+  // Fallback 2: OpenClaw web_fetch tool (with URL variants)
+  if (useFallback) {
+    for (const variantUrl of urlVariants) {
+      try {
+        console.log(`   → Fallback 2: OpenClaw web_fetch: ${variantUrl}`);
+        
+        const result = execSync(`openclaw run web_fetch --url="${variantUrl}" --extractMode=markdown`, {
+          encoding: 'utf8',
+          timeout: 30000,
+          stdio: ['pipe', 'pipe', 'pipe']
+        });
+        
+        const parsed = JSON.parse(result.trim());
+        
+        console.log(`   ✅ web_fetch success (${variantUrl})`);
+        return {
+          success: true,
+          source: 'web_fetch',
+          content: parsed.text || parsed.content || parsed.markdown,
+          metadata: {
+            title: parsed.title,
+            url: parsed.url || variantUrl,
+            requestedUrl: url,
+            actualUrl: variantUrl
+          }
+        };
+        
+      } catch (error) {
+        console.log(`   ⚠️  web_fetch failed (${variantUrl}): ${error.message}`);
+        
+        // If this is the last variant, continue to error handling
+        if (variantUrl === urlVariants[urlVariants.length - 1]) {
+          // All variants failed, will return error below
+        }
+        // Continue to next variant
       }
-    };
-    
-  } catch (error) {
-    console.log(`   ⚠️  web_fetch failed: ${error.message}`);
+    }
   }
   
   // All methods failed
@@ -210,7 +243,8 @@ async function scrape(url, options = {}) {
   return {
     success: false,
     error: 'All scrape methods failed',
-    source: 'none'
+    source: 'none',
+    url
   };
 }
 
@@ -324,9 +358,41 @@ async function testAll() {
   return results;
 }
 
-module.exports = {
+/**
+ * Generate URL variants (www and non-www)
+ * @param {string} url - Original URL
+ * @returns {Array} Array of URL variants
+ */
+function generateUrlVariants(url) {
+  const variants = [url];
+  
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+    
+    // If already has www, add non-www variant
+    if (hostname.startsWith('www.')) {
+      const nonWww = hostname.replace('www.', '');
+      const nonWwwUrl = `${urlObj.protocol}//${nonWww}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
+      variants.push(nonWwwUrl);
+    } 
+    // If doesn't have www, add www variant
+    else {
+      const wwwUrl = `${urlObj.protocol}//www.${hostname}${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
+      variants.push(wwwUrl);
+    }
+  } catch (error) {
+    // If URL parsing fails, just return original
+    console.log('   ⚠️  Could not parse URL, using original only');
+  }
+  
+  return variants;
+}
+
+export {
   search,
   scrape,
   research,
-  testAll
+  testAll,
+  generateUrlVariants
 };

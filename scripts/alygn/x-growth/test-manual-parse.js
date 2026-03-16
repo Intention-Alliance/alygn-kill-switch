@@ -1,8 +1,7 @@
-#!/usr/bin/env node
 
 // Manual test - inline parser to avoid import issues
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 function enhancedParseMarkdownContent(content) {
   let lines = content.split('\n');

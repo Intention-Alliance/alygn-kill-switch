@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Generate images for Twitter posts using Gemini API
@@ -6,8 +5,8 @@
  */
 
 import fs from "fs";
-import path from "path";
 import https from "https";
+import path from "path";
 
 // Load credentials
 const credentialsPath = path.join(process.env.HOME, ".openclaw/workspace/config/credentials.json");

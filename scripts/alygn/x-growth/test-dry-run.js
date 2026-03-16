@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Test Script - Parser & Executor Dry-Run
@@ -6,9 +5,9 @@
  * Quick test of the Twitter content parser pipeline
  */
 
-const { parseGrokOutput } = require('../../twitter-content-parser.js');
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
+import { parseGrokOutput } from "../../twitter-content-parser.js";
 
 const TEST_FILE = path.join(
   process.env.HOME,

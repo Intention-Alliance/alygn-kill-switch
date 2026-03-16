@@ -144,7 +144,7 @@ workflows/
 - ✅ Exported functions for programmatic use
 
 **Legacy paths maintained via symlinks:**
-- `scripts/alygn/x-growth/x-api-executor.js` → symlink
+- `scripts/shared/x-growth/x-api-executor.js` → symlink
 - `scripts/alygn/x-growth/research/x-api-executor.js` → symlink
 
 See `SCRIPT-UNIFICATION-COMPLETE.md` for full details.

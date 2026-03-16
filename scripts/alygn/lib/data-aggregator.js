@@ -9,9 +9,9 @@
  * Returns structured data for dynamic injection into prompts.
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { loadCachedPosts, formatPostsForInjection, formatSinglePost, getBestPostForReply } = require('./post-discovery');
+import fs from 'fs/promises';
+import path from 'path';
+import { loadCachedPosts, formatPostsForInjection, formatSinglePost, getBestPostForReply } from './post-discovery.js';
 
 const OUTPUT_DIR = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs');
 
@@ -364,7 +364,7 @@ function getTargetAudience() {
   return audiences[hourIndex % audiences.length];
 }
 
-module.exports = {
+export {
   getAggregatedData,
   getInjectionData,
   getLatestOutputFile,

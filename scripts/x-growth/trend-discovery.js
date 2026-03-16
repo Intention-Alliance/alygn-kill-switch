@@ -7,10 +7,10 @@
  *   node trend-discovery.js --project=myproject --output=trends.json
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
-const { loadProject } = require('./load-project');
+import { loadProject } from "./load-project.js";
 
 /**
  * Discovers trends for a project
@@ -171,7 +171,7 @@ function saveResults(trends, outputFile, config) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const projectArg = args.find(a => a.startsWith('--project='));
@@ -209,7 +209,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   discoverTrends,
   generateMockTrends,
   calculateRelevance

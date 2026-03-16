@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Backup & Archive (IMPROVED)
  * 
@@ -7,10 +6,10 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const { success, error, LogLevel } = require('../shared/logger');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { error, success } from '../shared/logger.js';
 
 const WORKSPACE = path.join(process.env.HOME, '.openclaw', 'workspace');
 const BACKUP_DIR = path.join(WORKSPACE, 'backups');
@@ -115,7 +114,7 @@ async function runBackup() {
 }
 
 // Main execution
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   runBackup()
     .then(result => {
       console.log('✅ Backup complete!');
@@ -128,4 +127,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { runBackup };
+export { runBackup };

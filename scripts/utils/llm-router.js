@@ -5,7 +5,7 @@
  * Uses Ollama qwen3.5:cloud for all tasks (as per project decision).
  * 
  * Usage:
- *   const llm = require('../utils/llm-router');
+ *   import llm from "../utils/llm-router.js";
  *   
  *   // Bulk task (parsing, templates)
  *   const result = await llm.complete('bulk', 'Parse this JSON...');
@@ -17,7 +17,11 @@
  *   const result = await llm.complete('heavy', 'Generate personalized email...');
  */
 
-const path = require('path');
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Model configuration (all use qwen3.5:cloud as per project decision)
 // Note: qwen3.5:cloud for text, qwen3.5:397b-cloud for vision+text
@@ -31,7 +35,7 @@ const MODELS = {
 let anthropicApiKey;
 
 try {
-  const credentials = require(path.join(__dirname, '../../config/credentials.json'));
+  const credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/credentials.json'), 'utf8'));
   anthropicApiKey = credentials.anthropic?.apiKey || process.env.ANTHROPIC_API_KEY;
 } catch (error) {
   anthropicApiKey = process.env.ANTHROPIC_API_KEY;
@@ -243,7 +247,7 @@ function getModelInfo(tier) {
   };
 }
 
-module.exports = {
+export {
   complete,
   chat,
   parseJSON,

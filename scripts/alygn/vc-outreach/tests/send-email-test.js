@@ -1,19 +1,16 @@
-#!/usr/bin/env node
 
 /**
  * Test email sender for ALYGN VC outreach template
  * Sends preview emails with HTML template
  */
 
-const nodemailer = require('nodemailer');
-const path = require('path');
-const { spawn } = require('child_process');
+import { spawn } from "child_process";
 
 // Import template generator
 let generateEmailHTML;
 try {
   // Try with require - might fail if nodemailer not installed
-  const templateModule = require('./vc-outreach-email-template.js');
+  import templateModule from "./vc-outreach-email-template.js";
   generateEmailHTML = templateModule.generateEmailHTML;
 } catch (err) {
   // Fallback: use exec with python

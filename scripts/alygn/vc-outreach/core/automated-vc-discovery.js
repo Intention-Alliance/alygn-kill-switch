@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Automated VC Discovery & Research
  * 
@@ -19,12 +18,13 @@
  * Created: Feb 12, 2026
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+import { exec } from "child_process";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
 const execAsync = promisify(exec);
+
+import { getClient, queryDatabase } from "../../../shared/notion-client.js";
 
 // Load database ID from config (created by setup-vc-notion-tracker.js)
 function loadDatabaseId() {
@@ -42,8 +42,6 @@ function loadDatabaseId() {
 
 // Configuration
 const CONFIG = {
-  notionKey: process.env.NOTION_KEY || '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',
-  notionVersion: '2022-06-28',
   databaseId: loadDatabaseId(), // Load from config file
   minRelevanceScore: 7,
   defaultLimit: 20,
@@ -64,55 +62,7 @@ const RELEVANCE_KEYWORDS = {
   low: ['AI', 'machine learning', 'deep tech', 'frontier tech']
 };
 
-/**
- * Make Notion API request
- */
-function notionRequest(method, path, data = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      port: 443,
-      path: path,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${CONFIG.notionKey}`,
-        'Notion-Version': CONFIG.notionVersion,
-        'Content-Type': 'application/json'
-      }
-    };
-    
-    const req = https.request(options, (res) => {
-      let body = '';
-      
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
-      
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(body);
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(parsed);
-          } else {
-            reject(new Error(`Notion API error (${res.statusCode}): ${parsed.message || body}`));
-          }
-        } catch (error) {
-          reject(new Error(`Failed to parse Notion response: ${error.message}`));
-        }
-      });
-    });
-    
-    req.on('error', (error) => {
-      reject(error);
-    });
-    
-    if (data) {
-      req.write(JSON.stringify(data));
-    }
-    
-    req.end();
-  });
-}
+const notion = getClient();
 
 /**
  * Search web for VCs (using OpenClaw web_search)
@@ -229,7 +179,7 @@ function scoreRelevance(vcData) {
  */
 async function vcExists(vcName) {
   try {
-    const response = await notionRequest('POST', '/v1/databases/' + CONFIG.databaseId + '/query', {
+    const response = await queryDatabase(notion, CONFIG.databaseId, {
       filter: {
         property: 'Name',
         title: {
@@ -304,7 +254,7 @@ async function addVCToNotion(vcData) {
   }
   
   // Create page
-  await notionRequest('POST', '/v1/pages', {
+  await notion.pages.create({
     parent: { database_id: CONFIG.databaseId },
     properties
   });
@@ -442,11 +392,12 @@ Database: https://www.notion.so/${CONFIG.databaseId}
 }
 
 // Run
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main().catch(error => {
     console.error('❌ Error:', error.message);
     process.exit(1);
   });
 }
 
-module.exports = { searchVCs, researchVC, scoreRelevance, addVCToNotion };
+export { addVCToNotion, researchVC, scoreRelevance, searchVCs };
+

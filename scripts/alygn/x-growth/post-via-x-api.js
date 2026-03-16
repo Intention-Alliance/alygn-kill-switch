@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { Client, OAuth1 } from "@xdevplatform/xdk";
 import fs from "fs";
 import path from "path";

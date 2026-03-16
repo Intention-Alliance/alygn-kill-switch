@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Cron Job Orchestrator for Batch VC Research Iterations
@@ -26,15 +25,15 @@
  * - Reports completion status each iteration
  */
 
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+import { exec } from "child_process";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
+import { getClient, queryDatabase } from "../../../shared/notion-client.js";
 
 const execAsync = promisify(exec);
 
-const NOTION_TOKEN = process.env.NOTION_TOKEN;
+const notion = getClient();
 const DB_ID = '30533487-4af6-81ef-983d-f57c7f70de33';
 const BATCH_SIZE = 5;
 const RESEARCH_TIMEOUT_MS = 30000; // 30 seconds per VC
@@ -44,18 +43,9 @@ const RESEARCH_TIMEOUT_MS = 30000; // 30 seconds per VC
  */
 async function getUnresearchedVCs() {
   try {
-    const response = await axios.post(
-      `https://api.notion.com/v1/databases/${DB_ID}/query`,
-      { page_size: 100 },
-      {
-        headers: {
-          'Authorization': `Bearer ${NOTION_TOKEN}`,
-          'Notion-Version': '2022-06-28'
-        }
-      }
-    );
+    const response = await queryDatabase(notion, DB_ID, { page_size: 100 });
     
-    return response.data.results
+    return response.results
       .filter(vc => {
         const hasEmail = !!vc.properties.Email?.email;
         const hasSummary = (vc.properties.Summary?.rich_text?.length || 0) > 0;

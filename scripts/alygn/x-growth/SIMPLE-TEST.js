@@ -1,6 +1,5 @@
-#!/usr/bin/env node
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Simplest possible parser test
 const testFile = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs/test-grok-real.md');

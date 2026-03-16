@@ -56,7 +56,7 @@ This will:
 
 ---
 
-## Twitter Master Automation (New!)
+## ALYGN: X Master Automation (New!)
 
 **What Changed:**
 
@@ -226,7 +226,7 @@ openclaw status
    ```
 
 3. **Wait for first run:**
-   - Tomorrow 11 AM: Twitter Master Automation
+   - Tomorrow 11 AM: ALYGN: X Master Automation
    - Check Discord #annotations thread for results
 
 4. **Monitor performance:**

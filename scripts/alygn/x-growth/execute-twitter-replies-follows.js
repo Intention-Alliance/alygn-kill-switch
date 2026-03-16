@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Execute Twitter replies + follows via browser relay
@@ -6,8 +5,8 @@
  * Requires: --profile=alygn flag for browser tool calls
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // Load workflow
 const workflowPath = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs/workflow-1770484855297.json');

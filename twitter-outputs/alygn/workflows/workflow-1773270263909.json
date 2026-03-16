@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-11T23:04:23.909Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Anthropic sued the Pentagon on March 9 to block blacklisting after refusing to remove AI guardrails against autonomous weapons and domestic surveillance.\n\nExposes coordination failures between military and AI firms on safety limits. Blacklists undermine legitimacy of private commitments, needing neutral arbitration for balanced national security and ethical deployment.\n\n#AIGovernance #Alygn",
+      "length": 393,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 2,
+      "content": "FTC issues policy today, March 11, on Section 5 of FTC Act for AI models, preempting state laws requiring alterations to truthful AI outputs.\n\nStrengthens federal coordination against fragmented state regs, affirms legitimacy via constitutional preemption, ensures neutrality by protecting unbiased AI expression from overreach.\n\n#AIGovernance #Alygn",
+      "length": 350,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 3,
+      "content": "Commerce Dept to release assessment identifying onerous state AI laws conflicting with federal policy, triggering potential DOJ litigation.\n\nFosters unified national AI governance by challenging state inconsistencies, bolsters legitimacy of federal framework, upholds neutrality in regulatory enforcement across jurisdictions.\n\n#AIGovernance #Alygn",
+      "length": 348,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 4,
+      "content": "Anthropic executives warned on March 10 of billions in 2026 revenue losses from Pentagon's supply-chain risk designation over AI restrictions.\n\nHighlights economic risks in gov-industry standoffs, demands coordinated legitimacy processes to avoid punitive measures, preserving neutral ground for AI safety discussions.\n\n#AIGovernance #Alygn",
+      "length": 340,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 5,
+      "content": "India released Comprehensive AI Governance Guidelines on March 10, embracing principle-based approach backed by existing laws per CSIS report.\n\nExemplifies international coordination via flexible principles, enhances legitimacy of Global South policies, promotes neutrality by integrating AI into established legal frameworks without heavy mandates.\n\n#AIGovernance #Alygn",
+      "length": 371,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

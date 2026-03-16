@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN Notion Prompt Updater - Governance-First Context Update
@@ -13,10 +12,9 @@
  * Page: Twitter/X Growth Strategy (2fc334874af681889a5fd95a1fa1dd72)
  */
 
-const https = require('https');
-const { getNotionKey } = require('../shared/load-credentials');
+import { appendBlocks, getClient, listBlocks } from "../shared/notion-client.js";
 
-const NOTION_API_KEY = getNotionKey();
+const notion = getClient();
 const TWITTER_PROMPTS_PAGE_ID = '2fc334874af681889a5fd95a1fa1dd72';
 
 // Updated prompts (governance-first)
@@ -50,48 +48,12 @@ const UPDATED_PROMPTS = {
 // Prompts to deprecate
 const DEPRECATED_PROMPTS = [2, 11, 12, 16, 19];
 
-async function notionRequest(method, endpoint, body = null) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.notion.com',
-      path: endpoint,
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${NOTION_API_KEY}`,
-        'Notion-Version': '2022-06-28',
-        'Content-Type': 'application/json'
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (res.statusCode >= 400) {
-            reject(new Error(`Notion API error: ${parsed.message || data}`));
-          } else {
-            resolve(parsed);
-          }
-        } catch (e) {
-          reject(new Error(`Failed to parse response: ${data}`));
-        }
-      });
-    });
-
-    req.on('error', reject);
-    if (body) req.write(JSON.stringify(body));
-    req.end();
-  });
-}
-
 /**
  * Fetch all blocks (prompts) from the page
  */
 async function fetchPrompts() {
   console.log('📖 Fetching current prompts from Notion...\n');
-  const response = await notionRequest('GET', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children?page_size=100`);
+  const response = await listBlocks(notion, TWITTER_PROMPTS_PAGE_ID);
   
   const prompts = [];
   for (const block of response.results) {
@@ -131,7 +93,7 @@ async function updatePrompt(blockId, promptNumber, title, newText) {
     }
   };
   
-  await notionRequest('PATCH', `/v1/blocks/${blockId}`, body);
+  await notion.blocks.update({ block_id: blockId, ...body });
   console.log(`✅ Updated Prompt #${promptNumber}: ${title}`);
 }
 
@@ -156,7 +118,7 @@ async function deprecatePrompt(blockId, promptNumber, title, originalText) {
     }
   };
   
-  await notionRequest('PATCH', `/v1/blocks/${blockId}`, body);
+  await notion.blocks.update({ block_id: blockId, ...body });
   console.log(`❌ Deprecated Prompt #${promptNumber}: ${title}`);
 }
 
@@ -183,7 +145,7 @@ async function appendPrompt(promptNumber, title, text) {
     ]
   };
   
-  await notionRequest('PATCH', `/v1/blocks/${TWITTER_PROMPTS_PAGE_ID}/children`, body);
+  await appendBlocks(notion, TWITTER_PROMPTS_PAGE_ID, body.children);
   console.log(`➕ Added Prompt #${promptNumber}: ${title}`);
 }
 
@@ -255,8 +217,9 @@ async function main() {
 }
 
 // Execute
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main();
 }
 
-module.exports = { updatePrompt, deprecatePrompt, appendPrompt, fetchPrompts };
+export { appendPrompt, deprecatePrompt, fetchPrompts, updatePrompt };
+

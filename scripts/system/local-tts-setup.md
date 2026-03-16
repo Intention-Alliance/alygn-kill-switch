@@ -9,6 +9,7 @@ This guide sets up local Text-to-Speech (TTS) for daily reports, avoiding Eleven
 Generate audio versions of daily reports using **local machine resources** (no external API calls).
 
 **Requirements:**
+
 - High-quality voice output
 - Fast processing (daily reports = 1-2 minutes of audio)
 - Low resource usage
@@ -26,7 +27,7 @@ Generate audio versions of daily reports using **local machine resources** (no e
 ✅ **Fast** - Real-time synthesis on CPU  
 ✅ **High Quality** - Neural voices (better than espeak)  
 ✅ **Multiple voices** - English, Spanish, and more  
-✅ **Lightweight** - Minimal dependencies  
+✅ **Lightweight** - Minimal dependencies
 
 ---
 
@@ -86,18 +87,18 @@ docker run -it --rm \
 
 ### Available Voices (English)
 
-| Voice | Quality | Speed | Character |
-|-------|---------|-------|-----------|
-| `en-us-lessac-high` | High | Slow | Male, clear |
-| `en-us-amy-medium` | Medium | Fast | Female, neutral |
-| `en-us-danny-low` | Low | Very fast | Male, casual |
+| Voice               | Quality | Speed     | Character       |
+| ------------------- | ------- | --------- | --------------- |
+| `en-us-lessac-high` | High    | Slow      | Male, clear     |
+| `en-us-amy-medium`  | Medium  | Fast      | Female, neutral |
+| `en-us-danny-low`   | Low     | Very fast | Male, casual    |
 
 ### Available Voices (Spanish)
 
-| Voice | Quality | Speed | Character |
-|-------|---------|-------|-----------|
-| `es-es-carlfm-x_low` | Low | Very fast | Male, Spanish |
-| `es-mx-claude-high` | High | Slow | Male, Mexican |
+| Voice                | Quality | Speed     | Character     |
+| -------------------- | ------- | --------- | ------------- |
+| `es-es-carlfm-x_low` | Low     | Very fast | Male, Spanish |
+| `es-mx-claude-high`  | High    | Slow      | Male, Mexican |
 
 **Recommendation for Wobblus:** `en-us-lessac-high` (clear, professional)
 
@@ -144,27 +145,29 @@ rm daily-reports/audio/alygn-daily-$(date +%Y-%m-%d).wav
 **Location:** `scripts/system/generate-daily-audio.js`
 
 ```javascript
-#!/usr/bin/env node
 /**
  * Generate Audio for Daily Reports
  * Uses local Piper TTS (no API calls)
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
 
-const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
-const REPORTS_DIR = path.join(WORKSPACE, 'daily-reports');
-const AUDIO_DIR = path.join(REPORTS_DIR, 'audio');
-const PIPER_MODEL = path.join(process.env.HOME, '.local/share/piper-voices/en-us-lessac-high.onnx');
+const WORKSPACE = process.env.HOME + "/.openclaw/workspace";
+const REPORTS_DIR = path.join(WORKSPACE, "daily-reports");
+const AUDIO_DIR = path.join(REPORTS_DIR, "audio");
+const PIPER_MODEL = path.join(
+  process.env.HOME,
+  ".local/share/piper-voices/en-us-lessac-high.onnx",
+);
 
-const today = new Date().toISOString().split('T')[0];
+const today = new Date().toISOString().split("T")[0];
 
 async function generateAudio(reportFile, outputName) {
   const inputPath = path.join(REPORTS_DIR, today, reportFile);
-  const wavPath = path.join(AUDIO_DIR, outputName + '.wav');
-  const oggPath = path.join(AUDIO_DIR, outputName + '.ogg');
+  const wavPath = path.join(AUDIO_DIR, outputName + ".wav");
+  const oggPath = path.join(AUDIO_DIR, outputName + ".ogg");
 
   if (!fs.existsSync(inputPath)) {
     console.log(`⚠️  Report not found: ${reportFile}`);
@@ -175,13 +178,16 @@ async function generateAudio(reportFile, outputName) {
 
   try {
     // Generate WAV with Piper
-    execSync(`piper --model ${PIPER_MODEL} --output_file ${wavPath} < ${inputPath}`, {
-      stdio: ['pipe', 'pipe', 'pipe']
-    });
+    execSync(
+      `piper --model ${PIPER_MODEL} --output_file ${wavPath} < ${inputPath}`,
+      {
+        stdio: ["pipe", "pipe", "pipe"],
+      },
+    );
 
     // Convert to OGG
     execSync(`ffmpeg -i ${wavPath} -c:a libvorbis -q:a 4 ${oggPath} -y`, {
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ["pipe", "pipe", "pipe"],
     });
 
     // Clean up WAV
@@ -205,9 +211,12 @@ async function main() {
   await generateAudio(`alygn-daily-${today}.md`, `alygn-daily-${today}`);
   await generateAudio(`bitcash-daily-${today}.md`, `bitcash-daily-${today}`);
   await generateAudio(`personal-daily-${today}.md`, `personal-daily-${today}`);
-  await generateAudio(`multi-org-summary-${today}.md`, `multi-org-summary-${today}`);
+  await generateAudio(
+    `multi-org-summary-${today}.md`,
+    `multi-org-summary-${today}`,
+  );
 
-  console.log('\n✅ All audio reports generated!');
+  console.log("\n✅ All audio reports generated!");
 }
 
 main().catch(console.error);
@@ -237,6 +246,7 @@ openclaw cron add \
 ```
 
 **Flow:**
+
 1. 3:30 AM - ALYGN daily tracker
 2. 3:45 AM - BitcashOrg daily tracker
 3. 4:00 AM - Personal daily tracker
@@ -281,12 +291,12 @@ ls -lh daily-reports/audio/
 
 ### Expected Metrics
 
-| Report Type | Text Length | Audio Duration | Generation Time | File Size (OGG) |
-|-------------|-------------|----------------|-----------------|-----------------|
-| ALYGN Daily | ~500 words | ~3 min | ~5 sec | ~1 MB |
-| BitcashOrg Daily | ~300 words | ~2 min | ~3 sec | ~700 KB |
-| Personal Daily | ~200 words | ~1 min | ~2 sec | ~500 KB |
-| Multi-Org Summary | ~800 words | ~5 min | ~8 sec | ~1.5 MB |
+| Report Type       | Text Length | Audio Duration | Generation Time | File Size (OGG) |
+| ----------------- | ----------- | -------------- | --------------- | --------------- |
+| ALYGN Daily       | ~500 words  | ~3 min         | ~5 sec          | ~1 MB           |
+| BitcashOrg Daily  | ~300 words  | ~2 min         | ~3 sec          | ~700 KB         |
+| Personal Daily    | ~200 words  | ~1 min         | ~2 sec          | ~500 KB         |
+| Multi-Org Summary | ~800 words  | ~5 min         | ~8 sec          | ~1.5 MB         |
 
 **Total:** ~11 min audio, ~18 sec generation, ~3.7 MB
 
@@ -301,6 +311,7 @@ ls -lh daily-reports/audio/
 ### "Model file not found"
 
 **Fix:** Download voice models:
+
 ```bash
 mkdir -p ~/.local/share/piper-voices
 cd ~/.local/share/piper-voices
@@ -311,6 +322,7 @@ tar -xzf voice-en-us-lessac-high.tar.gz
 ### "ffmpeg: command not found"
 
 **Fix:** Install ffmpeg:
+
 ```bash
 sudo pacman -S ffmpeg
 ```
@@ -318,6 +330,7 @@ sudo pacman -S ffmpeg
 ### Audio quality is poor
 
 **Fix:** Use higher-quality voice model:
+
 ```bash
 # Download high-quality model
 wget https://github.com/rhasspy/piper/releases/download/v1.2.0/voice-en-us-lessac-high.tar.gz
@@ -331,15 +344,15 @@ piper --model ~/.local/share/piper-voices/en-us-lessac-high.onnx ...
 
 ## 🆚 Comparison: Piper vs ElevenLabs
 
-| Feature | Piper (Local) | ElevenLabs (API) |
-|---------|---------------|------------------|
-| Cost | Free | $22/mo (paid tier) |
-| API Limits | None (local) | 100K characters/mo |
-| Quality | Good (neural) | Excellent (natural) |
-| Speed | Fast (~2x real-time) | Fast (~1x real-time) |
-| Voices | 50+ languages | 1000+ voices |
-| Offline | ✅ Yes | ❌ No |
-| Setup | Medium | Easy (API key) |
+| Feature    | Piper (Local)        | ElevenLabs (API)     |
+| ---------- | -------------------- | -------------------- |
+| Cost       | Free                 | $22/mo (paid tier)   |
+| API Limits | None (local)         | 100K characters/mo   |
+| Quality    | Good (neural)        | Excellent (natural)  |
+| Speed      | Fast (~2x real-time) | Fast (~1x real-time) |
+| Voices     | 50+ languages        | 1000+ voices         |
+| Offline    | ✅ Yes               | ❌ No                |
+| Setup      | Medium               | Easy (API key)       |
 
 **Verdict:** Piper is perfect for daily automation (no API limits, free, good quality).
 

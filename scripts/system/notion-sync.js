@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Notion Sync (IMPROVED)
  * 
@@ -7,9 +6,9 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs').promises;
-const path = require('path');
-const { success, warning } = require('../shared/logger');
+import fs from "fs".promises;
+import path from "path";
+import { success, warning } from "../shared/logger.js";
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const MEMORY_DIR = path.join(WORKSPACE, 'memory');
@@ -92,7 +91,7 @@ async function syncMemoryToNotion() {
 }
 
 // Main execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   syncMemoryToNotion()
     .then(result => {
       console.log(`✅ Sync complete: ${result.synced} files processed`);
@@ -104,4 +103,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { syncMemoryToNotion };
+export { syncMemoryToNotion };

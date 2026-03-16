@@ -1,0 +1,69 @@
+{
+  "startTime": "2026-03-05T21:20:21.412Z",
+  "steps": [
+    {
+      "name": "discovery",
+      "status": "success",
+      "result": {
+        "discovered": 5,
+        "results": [
+          {
+            "localGovernment": "San José",
+            "status": "timeout",
+            "error": "Timeout waiting for sub-agent result"
+          },
+          {
+            "localGovernment": "Escazú",
+            "status": "timeout",
+            "error": "Timeout waiting for sub-agent result"
+          },
+          {
+            "localGovernment": "Desamparados",
+            "status": "timeout",
+            "error": "Timeout waiting for sub-agent result"
+          },
+          {
+            "localGovernment": "Puriscal",
+            "status": "timeout",
+            "error": "Timeout waiting for sub-agent result"
+          },
+          {
+            "localGovernment": "Tarrazú",
+            "status": "timeout",
+            "error": "Timeout waiting for sub-agent result"
+          }
+        ],
+        "totalPoliticians": 0
+      }
+    },
+    {
+      "name": "x-warmup",
+      "status": "success",
+      "result": {
+        "tracked": 0,
+        "results": []
+      }
+    },
+    {
+      "name": "campaign-approval",
+      "status": "success",
+      "result": {
+        "generated": 0,
+        "results": [],
+        "outputFile": "/home/andlersrv/.openclaw/workspace/scripts/output/campaign-samples-cr-wave1-1772745952747.json"
+      }
+    },
+    {
+      "name": "compliance",
+      "status": "failed",
+      "error": "emails is not iterable"
+    }
+  ],
+  "contentPreview": {
+    "xPosts": [],
+    "emails": []
+  },
+  "endTime": "2026-03-05T21:25:52.748Z",
+  "successCount": 3,
+  "failureCount": 1
+}

@@ -1,16 +1,15 @@
-#!/usr/bin/env node
 /**
  * Shared Credentials Loader
  * Centralizes all credential access across automation scripts
  * 
  * Usage:
- *   const { loadCredentials, getNotionKey, getGrokKey } = require('../shared/load-credentials');
+ *   import { loadCredentials, getNotionKey, getGrokKey } from "../shared/load-credentials.js";
  *   const creds = loadCredentials();
  *   const notionKey = getNotionKey();
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const CREDENTIALS_PATH = path.join(
   process.env.HOME,
@@ -109,26 +108,15 @@ function getMissingCredentials() {
   return missing;
 }
 
-module.exports = {
-  loadCredentials,
-  getCredential,
-  getNotionKey,
-  getNotionPage,
-  getNotionDatabase,
-  getGrokKey,
-  getGrokModel,
-  getTwitterHandle,
-  getEmailAddress,
-  getElevenLabsKey,
-  getWobblusVoice,
-  getJacoboPhone,
-  getDeliveryPhone,
-  hasCredential,
-  getMissingCredentials
+export {
+    getCredential, getDeliveryPhone, getElevenLabsKey, getEmailAddress, getGrokKey,
+    getGrokModel, getJacoboPhone, getMissingCredentials, getNotionDatabase, getNotionKey,
+    getNotionPage, getTwitterHandle, getWobblusVoice, hasCredential, loadCredentials
 };
 
 // CLI usage
-if (require.main === module) {
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
   const cmd = process.argv[2];
   
   if (cmd === 'check') {

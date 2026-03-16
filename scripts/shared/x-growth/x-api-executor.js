@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * X API Executor - Unified Twitter Execution Engine
@@ -37,23 +36,30 @@ const LOGS_DIR = path.join(OUTPUT_DIR, 'logs');
 const ALYGN_WORKFLOW_DIR = path.join(process.env.HOME, ".openclaw/workspace/twitter-outputs/alygn/workflows");
 const CREDENTIALS_PATH = path.join(process.env.HOME, '.openclaw/workspace/config/credentials.json');
 
-// Rate limits (CONSERVATIVE - Outreach Strategy)
-// Prioritize account safety over speed
+// Rate limits (CONSERVATIVE - Quality over Quantity)
+// Prioritize account safety and engagement quality - avoid 403/406/409 errors
 const RATE_LIMITS = {
-  // Daily limits for municipal outreach
-  posts_per_day: 3,         // Original Alygn content
-  replies_per_day: 4,       // To municipal accounts
-  quotes_per_day: 2,        // Quote municipal content
+  // Daily limits for Alygn Twitter automation
+  posts_per_day: 3,         // Main tweets (3 thread pairs)
+  replies_per_day: 3,       // Reply tweets (3 thread pairs)
+  quotes_per_day: 3,        // Quote posts (2-4 range)
   follows_per_day: 4,       // Hard limit (X API)
   likes_per_day: 8,         // Hard limit (X API)
+  pre_approved_per_day: 1,  // Pre-approved post (separate from posts_per_day)
   
   // Weekly limits (prevent burnout patterns)
-  max_actions_per_week: 60,  // Total actions cap
+  max_actions_per_week: 50,  // Total actions cap (reduced from 80)
   skip_days_per_week: 1,     // Rest 1 day/week (natural pattern)
   
-  // Delays (increased for natural behavior)
-  min_delay_between_actions: 15,  // 15-25s random
-  max_delay_between_actions: 25,
+  // Delays (CONSERVATIVE to avoid rate limiting)
+  min_delay_between_threads: 45,  // 45-60s between thread pairs
+  max_delay_between_threads: 60,
+  min_delay_before_reply: 3,      // 3-5s before posting reply
+  max_delay_before_reply: 5,
+  
+  // Engagement targets
+  min_engagement_per_day: 2,      // Minimum quotes/replies
+  max_engagement_per_day: 4,      // Maximum quotes/replies
   
   // Account age factor
   account_age_days: 30,           // Check if account < 30 days
@@ -66,29 +72,19 @@ const success = (msg) => console.log(`✅ ${msg}`);
 const error = (msg, err) => console.error(`❌ ${msg}`, err || '');
 const warn = (msg) => console.warn(`⚠️  ${msg}`);
 
-/**
- * Load X API credentials
- */
-function loadCredentials() {
-  try {
-    const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH, "utf8"));
-    return {
-      apiKey: credentials.twitter.consumerKey,
-      apiSecret: credentials.twitter.consumerSecret,
-      accessToken: credentials.twitter.accessToken,
-      accessTokenSecret: credentials.twitter.accessTokenSecret
-    };
-  } catch (err) {
-    throw new Error(`Failed to load credentials: ${err.message}`);
-  }
-}
+import { loadCredentials } from "../load-credentials.js";
 
 /**
  * Initialize X API client
  */
 function createClient() {
   const creds = loadCredentials();
-  const oauth1 = new OAuth1(creds);
+  const oauth1 = new OAuth1({
+    apiKey: creds.twitter.consumerKey,
+    apiSecret: creds.twitter.consumerSecret,
+    accessToken: creds.twitter.accessToken,
+    accessTokenSecret: creds.twitter.accessTokenSecret
+  });
   return new Client({ oauth1 });
 }
 
@@ -108,9 +104,16 @@ function ensureDirectories() {
 /**
  * Format tweet with hashtags (MANDATORY for Alygn branding)
  * Applies to ALL tweets: posts, replies, quotes
+ * Detects existing hashtags to avoid duplication
  */
 function formatTweet(content, hashtags = ["#AIGovernance", "#Alygn"]) {
   const hashtagStr = hashtags.join(" ");
+  
+  // Check if content already ends with these hashtags (avoid duplication)
+  if (content.endsWith(hashtagStr) || content.endsWith('#Alygn')) {
+    return content; // Hashtags already present
+  }
+  
   return `${content}\n\n${hashtagStr}`;
 }
 
@@ -255,24 +258,63 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
     if (workflow.posts) {
       for (const post of workflow.posts) {
         try {
-          log(`📝 Posting: ${post.content.substring(0, 60)}...`);
-          
-          let postId;
-          if (post.quoteTweetId) {
-            postId = await quotePost(client, post.content, post.quoteTweetId, post.mediaPath);
-            results.quotes.push({ id: postId, content: post.content, quoted: post.quoteTweetId });
-          } else {
-            postId = await postTweet(client, post.content, post.mediaPath);
-            results.posts.push({ id: postId, content: post.content });
+          // Check if this is a thread pair (mainText + replyText)
+          if (post.mainText && post.isThread) {
+            // Thread pair execution: main tweet + reply
+            log(`📝 Thread #${post.id}: ${post.mainText.substring(0, 60)}...`);
+            
+            // Post main tweet with dynamic hashtags
+            const mainFormatted = formatTweet(post.mainText);
+            const mainId = await postTweet(client, mainFormatted, post.mediaPath);
+            results.posts.push({ id: mainId, content: mainFormatted, type: 'main' });
+            success(`  ✅ Main posted (ID: ${mainId})`);
+            results.executed++;
+            
+            // Post reply (governance angle) with delay to avoid rate limiting
+            if (post.replyText) {
+              log(`💬 Reply: ${post.replyText.substring(0, 50)}...`);
+              
+              // Wait 3-5s before posting reply (natural behavior)
+              const replyDelay = Math.floor(Math.random() * 3) + 3;
+              await new Promise(resolve => setTimeout(resolve, replyDelay * 1000));
+              
+              const replyFormatted = formatTweet(post.replyText);
+              const replyId = await replyToPost(client, replyFormatted, mainId);
+              results.posts.push({ id: replyId, content: replyFormatted, type: 'reply', parentId: mainId });
+              success(`  ✅ Reply posted (ID: ${replyId})`);
+              results.executed++;
+              
+              if (post.sourceUrl && !post.sourceUrl.includes('twitter.com')) {
+                log(`   🔗 Source: ${post.sourceUrl}`);
+              }
+            }
+            
+            // Random delay 45-60s between thread pairs (conservative rate limiting)
+            const delay = Math.floor(Math.random() * (RATE_LIMITS.max_delay_between_threads - RATE_LIMITS.min_delay_between_threads + 1)) + RATE_LIMITS.min_delay_between_threads;
+            log(`  ⏱️  Waiting ${delay}s before next thread...`);
+            await new Promise(resolve => setTimeout(resolve, delay * 1000));
+            
+          } else if (post.content) {
+            // Legacy single post format
+            log(`📝 Posting: ${post.content.substring(0, 60)}...`);
+            
+            let postId;
+            if (post.quoteTweetId) {
+              postId = await quotePost(client, post.content, post.quoteTweetId, post.mediaPath);
+              results.quotes.push({ id: postId, content: post.content, quoted: post.quoteTweetId });
+            } else {
+              postId = await postTweet(client, post.content, post.mediaPath);
+              results.posts.push({ id: postId, content: post.content });
+            }
+            
+            success(`  ✅ Posted (ID: ${postId})`);
+            results.executed++;
+            
+            // Random delay between 10-15 seconds (avoid rate limit triggers)
+            const delay = Math.floor(Math.random() * (RATE_LIMITS.max_delay_between_posts - RATE_LIMITS.min_delay_between_posts + 1)) + RATE_LIMITS.min_delay_between_posts;
+            log(`  ⏱️  Waiting ${delay}s before next action...`);
+            await new Promise(resolve => setTimeout(resolve, delay * 1000));
           }
-          
-          success(`  ✅ Posted (ID: ${postId})`);
-          results.executed++;
-          
-          // Random delay between 10-15 seconds (avoid rate limit triggers)
-          const delay = Math.floor(Math.random() * (RATE_LIMITS.max_delay_between_posts - RATE_LIMITS.min_delay_between_posts + 1)) + RATE_LIMITS.min_delay_between_posts;
-          log(`  ⏱️  Waiting ${delay}s before next action...`);
-          await new Promise(resolve => setTimeout(resolve, delay * 1000));
           
         } catch (err) {
           error(`  ❌ Failed:`, err.message);
@@ -331,7 +373,7 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
   log(`📄 Loading markdown: ${markdownPath}`);
   
   const markdown = fs.readFileSync(markdownPath, 'utf-8');
-  const workflow = parseGrokOutput(markdown);
+  const workflow = await parseGrokOutput(markdown);
   
   log(`📊 Parsed: ${workflow.totalPosts} posts, ${workflow.validPosts} ready, ${workflow.blockedPosts} blocked`);
   
@@ -348,14 +390,24 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
     log('🔍 DRY-RUN MODE - No posts will be sent\n');
     
     workflow.posts.forEach((post, idx) => {
-      log(`📝 Post #${idx + 1} [${post.status.toUpperCase()}]`);
-      log(`   Content: ${post.content.substring(0, 80)}...`);
-      log(`   Length: ${post.content.length} chars`);
+      log(`📝 Thread #${idx + 1} [${post.status.toUpperCase()}]`);
+      
+      // Main tweet
+      log(`   📌 Main: ${post.mainTweet.substring(0, 80)}...`);
+      log(`   📏 Length: ${post.mainTweet.length} chars`);
+      
+      // Reply tweet
+      if (post.isThread && post.replyTweet) {
+        log(`   💬 Reply: ${post.replyTweet.substring(0, 60)}...`);
+        if (post.sourceUrl) {
+          log(`   🔗 Source: ${post.sourceUrl}`);
+        }
+      }
       
       if (post.issues?.length > 0) {
         warn(`   Issues: ${post.issues.join(', ')}`);
       } else {
-        success('   Ready to post');
+        success('   Ready to post as thread');
       }
       
       results.posts.push(post);
@@ -363,7 +415,7 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
     });
     
   } else {
-    // Live execution
+    // Live execution - THREAD PAIRS
     const client = createClient();
     success('X API client initialized\n');
     
@@ -374,14 +426,32 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
       }
       
       try {
-        log(`📝 Posting: ${post.content.substring(0, 60)}...`);
+        // Post main tweet
+        log(`📝 Main tweet: ${post.mainTweet.substring(0, 60)}...`);
         
-        const postId = await postTweet(client, post.content, post.mediaPath);
-        results.posts.push({ id: postId, content: post.content });
-        success(`  ✅ Posted (ID: ${postId})`);
+        const mainId = await postTweet(client, post.mainTweet, post.mediaPath);
+        results.posts.push({ id: mainId, content: post.mainTweet, type: 'main' });
+        success(`  ✅ Main posted (ID: ${mainId})`);
         results.executed++;
         
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        // Post reply with source if thread (with delay to avoid rate limiting)
+        if (post.isThread && post.replyTweet) {
+          log(`💬 Reply with source: ${post.sourceUrl || 'context'}`);
+          
+          // Wait 3-5s before posting reply (natural behavior)
+          const replyDelay = Math.floor(Math.random() * 3) + 3;
+          await new Promise(resolve => setTimeout(resolve, replyDelay * 1000));
+          
+          const replyId = await replyToPost(client, post.replyTweet, mainId);
+          results.posts.push({ id: replyId, content: post.replyTweet, type: 'reply', parentId: mainId });
+          success(`  ✅ Reply posted (ID: ${replyId})`);
+          results.executed++;
+        }
+        
+        // Random delay 25-40s between thread pairs (conservative rate limiting)
+        const delay = Math.floor(Math.random() * 16) + 25;
+        log(`  ⏱️  Waiting ${delay}s before next thread...`);
+        await new Promise(resolve => setTimeout(resolve, delay * 1000));
         
       } catch (err) {
         error(`  ❌ Failed:`, err.message);
@@ -514,14 +584,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 }
 
 // Export for programmatic use
-export { 
-  executeJsonWorkflow, 
-  executeMarkdownWorkflow, 
-  searchMode,
-  postTweet, 
-  replyToPost, 
-  quotePost, 
-  createPoll,
-  loadCredentials,
-  createClient
+export {
+  createClient, createPoll, executeJsonWorkflow,
+  executeMarkdownWorkflow, postTweet, quotePost, replyToPost, searchMode
 };
+

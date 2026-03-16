@@ -7,8 +7,8 @@
  *   node weekly-summary.js --wave=1 --region=cr
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 /**
  * Generates weekly summary report
@@ -184,7 +184,7 @@ async function postToDiscord(report, channelId) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const waveArg = args.find(a => a.startsWith('--wave='));
@@ -214,7 +214,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   generateWeeklySummary,
   formatForDiscord,
   saveReport

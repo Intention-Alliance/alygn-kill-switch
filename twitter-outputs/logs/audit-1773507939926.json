@@ -1,0 +1,117 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-14T17:01:58.742Z",
+  "workflow": {
+    "generatedAt": "2026-03-14T17:01:35.922Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 4,
+    "totalThreads": 4,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "UN announced a 40-member Independent International Scientific Panel on AI, selected from 2600 applicants across 140 countries, to deliver evidence-based assessments of AI risks and impacts.",
+        "replyText": "Bolsters global AI governance legitimacy by incorporating diverse perspectives, enabling coordinated international policy through scientific evidence on safety and societal effects.",
+        "sourceUrl": "https://dsup.substack.com/p/dsfsi-spotlight-prof-vukosi-marivate",
+        "isThread": true,
+        "mainLength": 189,
+        "replyLength": 181,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "Vitalik Buterin warned AI safety efforts risk losing global credibility if tied to specific companies or countries attempting tech dominance.",
+        "replyText": "Highlights legitimacy challenges in AI safety coordination, urging broad, neutral approaches to maintain trust across institutions and avoid perceptions of power grabs.",
+        "sourceUrl": "https://crypto.news/vitalik-buterin-explains-500m-shib-donation",
+        "isThread": true,
+        "mainLength": 141,
+        "replyLength": 168,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "OECD released guidance for organizations to shape AI governance frameworks, integrating principles like fairness, risk assessment, monitoring, and remediation into existing compliance systems.",
+        "replyText": "Promotes institutional coordination by aligning enterprise AI practices with international standards, enhancing cross-org legitimacy through standardized risk management.",
+        "sourceUrl": "https://www.lexology.com/library/detail.aspx?g=fafc86ba-cf78-48fc-a287-6bd2c84930a8",
+        "isThread": true,
+        "mainLength": 192,
+        "replyLength": 170,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "Analysis calls for institutional governance of autonomous AI agents via mandatory safety benchmarks, independent audits, autonomy levels, liability rules, and international norms.",
+        "replyText": "Addresses coordination gaps by advocating US-led global standards and regulations, crucial for cross-organization safety efforts amid rising agentic AI risks.",
+        "sourceUrl": "https://nationalinterest.org/blog/techland/when-tools-become-agents-the-autonomous-ai-governance-challenge",
+        "isThread": true,
+        "mainLength": 179,
+        "replyLength": 158,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2032864830353244553",
+      "content": "UN announced a 40-member Independent International Scientific Panel on AI, selected from 2600 applicants across 140 countries, to deliver evidence-based assessments of AI risks and impacts.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2032864848917270829",
+      "content": "Bolsters global AI governance legitimacy by incorporating diverse perspectives, enabling coordinated international policy through scientific evidence on safety and societal effects.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2032864830353244553"
+    },
+    {
+      "id": "2032865081352994818",
+      "content": "Vitalik Buterin warned AI safety efforts risk losing global credibility if tied to specific companies or countries attempting tech dominance.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2032865104006410657",
+      "content": "Highlights legitimacy challenges in AI safety coordination, urging broad, neutral approaches to maintain trust across institutions and avoid perceptions of power grabs.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2032865081352994818"
+    },
+    {
+      "id": "2032865332096823601",
+      "content": "OECD released guidance for organizations to shape AI governance frameworks, integrating principles like fairness, risk assessment, monitoring, and remediation into existing compliance systems.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2032865345946497440",
+      "content": "Promotes institutional coordination by aligning enterprise AI practices with international standards, enhancing cross-org legitimacy through standardized risk management.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2032865332096823601"
+    },
+    {
+      "id": "2032865544735453465",
+      "content": "Analysis calls for institutional governance of autonomous AI agents via mandatory safety benchmarks, independent audits, autonomy levels, liability rules, and international norms.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2032865567393063003",
+      "content": "Addresses coordination gaps by advocating US-led global standards and regulations, crucial for cross-organization safety efforts amid rising agentic AI risks.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2032865544735453465"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 8,
+  "failed": 0
+}

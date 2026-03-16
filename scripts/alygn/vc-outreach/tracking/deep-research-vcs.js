@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Deep Research Script
  *
@@ -27,12 +26,11 @@
  * Created: Feb 12, 2026
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
-const { exec } = require('child_process');
-const { promisify } = require('util');
-const { Client } = require('@notionhq/client');
+import { exec } from "child_process";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
+import { getClient, queryDatabase, retrievePage, updatePage } from '../../../shared/notion-client.js';
 const execAsync = promisify(exec);
 
 // Load database ID from config
@@ -51,72 +49,14 @@ function loadDatabaseId(dataSource = false) {
 
 // Configuration
 const CONFIG = {
-  notionKey: process.env.NOTION_KEY || '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',
-  notionVersion: '2022-06-28',
   dataSourceId: loadDatabaseId(true),
   databaseId: loadDatabaseId(),
   defaultLimit: 5,
   discordChannel: '1466532145257255004', // #annotations
 };
 
-/**
- * Make Notion API request
- */
-async function notionRequest(method, endpoint, data = null) {
-  // Use @notionhq/client for Notion API calls
-  const notion = new Client({ auth: CONFIG.notionKey });
-  // Map endpoint to @notionhq/client methods
-  // Only support endpoints used in this script
-  // e.g. /v1/data_sources/:id/query → dataSources.query
-  //      /v1/pages/:id → pages.update
-  //      /v1/blocks/:id/children → blocks.children.append or update
+const notion = getClient();
 
-  // Extract resource and id from endpoint
-  const match = endpoint.match(/^\/v1\/([^/]+)\/([^/]+)(?:\/([^/]+))?/);
-  if (!match) throw new Error(`Unsupported Notion endpoint: ${endpoint}`);
-
-  const [, resource, id, subResource] = match;
-
-  try {
-    if (resource === 'data_sources' && subResource === 'query' && method === 'POST') {
-      const response = await notion.dataSources.query({
-        data_source_id: id,
-        ...data
-      });
-      console.log('[response] Datasource Retrieve', response)
-      // Query database
-      return response;
-    } else if (resource === 'pages' && !subResource && method === 'PATCH') {
-      const request = await notion.pages.update({
-        page_id: id,
-        ...data
-      });
-
-      console.log('[request] Pages Update', request)
-      // Update page properties
-      return request;
-    } else if (resource === 'blocks' && subResource === 'children' && method === 'PATCH') {
-      // Replace children (Notion API only supports append, not replace)
-      // We'll append for now
-      return await notion.blocks.update({
-        block_id: id,
-        ...data
-      });
-    } else if (resource === 'pages' && !subResource && method === 'GET') {
-      const request = await notion.pages.retrieve({
-        page_id: id
-      });
-
-      console.log('[request] Pages Retrieve', request)
-      // Retrieve page properties
-      return request;
-    } else {
-      throw new Error(`Notion endpoint/method not supported: ${endpoint} (${method})`);
-    }
-  } catch (error) {
-    throw new Error(`Notion API error: ${error.message}`);
-  }
-}
 
 /**
  * Load VCs from Notion that need research
@@ -125,7 +65,7 @@ async function loadVCsNeedingResearch(limit = 1) {
   console.log(`\n📚 Loading VCs needing research from Notion...\n`);
 
   try {
-    const response = await notionRequest('POST', `/v1/databases/${CONFIG.databaseId}/query`, {
+    const response = await queryDatabase(notion, CONFIG.databaseId, {
       filter: {
         property: 'Status',
         select: {
@@ -276,7 +216,7 @@ async function getIncompleteVCs(limit = CONFIG.defaultLimit, vcName = null) {
       });
     }
 
-    const response = await notionRequest('POST', `/v1/data_sources/${CONFIG.dataSourceId}/query`, {
+    const response = await notion.databases.query({ database_id: CONFIG.dataSourceId,
       filter,
       page_size: limit
     });
@@ -460,7 +400,7 @@ async function updateVCInNotion(pageId, researchData, markReady = true) {
     let existingConversationLogs = '';
     
     try {
-      const existingPage = await notionRequest('GET', `/v1/pages/${pageId}`);
+      const existingPage = await retrievePage(notion, pageId);
       const existingNotes = existingPage.properties?.Notes?.rich_text?.[0]?.text?.content || '';
       
       // Extract existing Conversation Logs section if it exists
@@ -595,7 +535,7 @@ async function updateVCInNotion(pageId, researchData, markReady = true) {
     }
 
     // Update database item properties (including Notes with Summary + Conversation Logs)
-    await notionRequest('PATCH', `/v1/pages/${pageId}`, { properties });
+    await updatePage(notion, pageId, properties);
 
     console.log(`   ✅ Notion updated (properties + Notes with Summary & Conversation Logs)\n`);
 
@@ -615,8 +555,6 @@ async function createVCPage(parentPageId, vc, researchData) {
   console.log(`   📄 Creating VC page in Notion (optimized)...\n`);
 
   try {
-    const notion = new Client({ auth: CONFIG.notionKey });
-
     // Create new page as child of parent
     const page = await notion.pages.create({
       parent: {
@@ -847,11 +785,12 @@ Database: https://www.notion.so/${CONFIG.databaseId}
 }
 
 // Run
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   main().catch(error => {
     console.error('❌ Error:', error.message);
     process.exit(1);
   });
 }
 
-module.exports = { getIncompleteVCs, deepResearchVC, updateVCInNotion };
+export { deepResearchVC, getIncompleteVCs, updateVCInNotion };
+

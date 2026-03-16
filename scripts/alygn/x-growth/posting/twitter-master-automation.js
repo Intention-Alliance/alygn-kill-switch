@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * ALYGN Twitter Master Automation - Governance-First (v3)
@@ -19,8 +18,8 @@
  */
 
 import { execSync } from 'child_process';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 const WORKSPACE = path.join(process.env.HOME, '.openclaw/workspace');
 const SCRIPTS_DIR = path.join(WORKSPACE, 'scripts/alygn');
@@ -104,11 +103,11 @@ async function runContentGeneration() {
     
     // Run parser/validator in dry-run first
     log('   Running dry-run validation...');
-    exec(`node scripts/alygn/x-growth/x-api-executor.js twitter-outputs/${latestOutput} --dry-run`);
+    exec(`node scripts/shared/x-growth/x-api-executor.js twitter-outputs/${latestOutput} --dry-run`);
     
     // Run live posting
     log('   Posting validated content via X API...');
-    exec(`node scripts/alygn/x-growth/x-api-executor.js twitter-outputs/${latestOutput} --live`);
+    exec(`node scripts/shared/x-growth/x-api-executor.js twitter-outputs/${latestOutput} --live`);
     
     success('Parser/validator pipeline complete!');
     
@@ -142,7 +141,7 @@ async function runDiscovery() {
     
     // Step 3.3: X API Execution
     log('⚡ Phase 3.3: X API Execution (post institutional replies/quotes)...');
-    exec('node scripts/alygn/x-growth/research/x-api-executor.js');
+    exec('node scripts/shared/x-growth/x-api-executor.js');
     success('Discovery system complete!');
     
     return true;
@@ -216,4 +215,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   });
 }
 
-export { main, runPreApprovedPost, runContentGeneration, runDiscovery };
+export { main, runContentGeneration, runDiscovery, runPreApprovedPost };
+

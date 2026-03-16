@@ -1,0 +1,10 @@
+# Accounts to monitor for @humano
+# One @handle per line. Used by cron.js to poll for relevant activity.
+# Lines starting with # are ignored.
+
+# AI governance / institutional tech voices
+@aialygn
+@meri_nova
+@aibymario
+
+# Add relevant accounts here

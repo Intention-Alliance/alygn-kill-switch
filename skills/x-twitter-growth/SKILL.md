@@ -120,7 +120,7 @@ browser --action=screenshot --profile=alygn --fullPage=false
 
 **Objective:** Post generated content via X API
 
-**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`
+**Script:** `scripts/shared/x-growth/x-api-executor.js`
 
 **✅ ALL SUPPORTED CAPABILITIES:**
 1. **Post tweets** - Regular text posts
@@ -154,7 +154,7 @@ Applied automatically via `formatTweet()` function.
 **Usage:**
 ```bash
 # Post from workflow JSON (recommended)
-node scripts/alygn/twitter-discovery/x-api-executor.js
+node scripts/shared/x-growth/x-api-executor.js
 
 # Pre-approved posts (institutional messages)
 node scripts/alygn/post-pre-approved.js
@@ -349,7 +349,7 @@ node scripts/alygn/twitter-content-parser.js
 
 **Objective:** Post Grok-generated content via X API
 
-**Script:** `scripts/alygn/twitter-discovery/x-api-executor.js`
+**Script:** `scripts/shared/x-growth/x-api-executor.js`
 
 **Process:**
 1. Reads workflow.json from Phase 3 (parser output)

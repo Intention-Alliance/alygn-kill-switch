@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-03-13T18:04:58.921Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "UN co-chairs from El Salvador and Estonia issued a March 11 letter inviting stakeholders to a March 18 virtual multistakeholder consultation for Global Dialogue on AI Governance.\n\nStrengthens UN legitimacy in AI governance through inclusive, transparent consultations that foster international coordination and best practices sharing among governments and stakeholders.\n\n#AIGovernance #Alygn",
+      "length": 391,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 2,
+      "content": "UNESCO's STEPAN network hosted a March 12 webinar on AI ethics policy and readiness in Asia-Pacific, featuring perspectives from Philippines, Timor-Leste, Cambodia, and Bangladesh.\n\nPromotes cross-organization regional coordination on AI safety and ethics, building legitimacy via peer-to-peer learning and collaborative policy development.\n\n#AIGovernance #Alygn",
+      "length": 362,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 3,
+      "content": "WEF argues AI governance must evolve to address 'delegated cognition' as infrastructure, prioritizing human agency, transparency, and accountability in global frameworks.\n\nCalls for institutional adaptation of AI oversight to new risks, enhancing legitimacy and coordination among global bodies for effective societal governance.\n\n#AIGovernance #Alygn",
+      "length": 351,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    },
+    {
+      "id": 4,
+      "content": "ALEC launched State AI Policy Toolkit on March 13, offering model policies like an Office of AI Policy and technology-neutral anti-discrimination acts.\n\nEnables coordinated state-level AI regulation balancing innovation and safety, legitimizing decentralized governance through clear, consistent model legislation.\n\n#AIGovernance #Alygn",
+      "length": 336,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": [
+        "Exceeds 280 chars"
+      ]
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

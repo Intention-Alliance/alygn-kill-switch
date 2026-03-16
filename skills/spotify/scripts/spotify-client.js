@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Spotify API client helper

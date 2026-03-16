@@ -3,8 +3,8 @@
  * Ensures content meets format requirements and safety checks
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Validates workflow JSON structure
@@ -219,7 +219,7 @@ function loadAndValidate(filePath) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
@@ -253,7 +253,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   validateWorkflow,
   validatePost,
   validateReply,

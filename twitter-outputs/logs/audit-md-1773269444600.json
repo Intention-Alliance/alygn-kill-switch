@@ -1,0 +1,123 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-11T22:47:26.853Z",
+  "workflow": {
+    "generatedAt": "2026-03-11T22:47:26.853Z",
+    "parsingMode": "xml",
+    "totalPosts": 5,
+    "validPosts": 5,
+    "blockedPosts": 0,
+    "sourcesExtracted": 0,
+    "posts": [
+      {
+        "id": 1,
+        "mainTweet": "<content id=\"1\"> Pentagon orders removal of Anthropic AI from military systems due to supply chain risks, urging neutral governance frameworks for defense tech coordination.\n\n#AIGovernance #Alygn",
+        "replyTweet": "<governance_angle> This event stresses legitimacy in AI procurement; Alygn's neutral...",
+        "isThread": true,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "<content id=\"1\"> Pentagon orders removal of Anthropic AI from military systems due to supply chain risks, urging neutral governance frameworks for defense tech coordination. <governance_angle> This event stresses legitimacy in AI procurement; Alygn's neutral assessments"
+      },
+      {
+        "id": 2,
+        "mainTweet": "</governance_angle> <content id=\"2\"> India releases comprehensive AI governance guidelines, adopting principle-based approach backed by laws for effective oversight and global coordination.\n\n#AIGovernance #Alygn",
+        "replyTweet": "<governance_angle> Highlights need for legitimate, coordinated...",
+        "isThread": true,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "</governance_angle> <content id=\"2\"> India releases comprehensive AI governance guidelines, adopting principle-based approach backed by laws for effective oversight and global coordination. <governance_angle> Highlights need for legitimate, coordinated international"
+      },
+      {
+        "id": 3,
+        "mainTweet": "</governance_angle> <content id=\"3\"> AAA showcases AI governance best practices at Legalweek 2026, emphasizing operational discipline essential for legitimate institutional AI adoption.\n\n#AIGovernance #Alygn",
+        "replyTweet": "<governance_angle> Reinforces that governance is operational, not just...",
+        "isThread": true,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "</governance_angle> <content id=\"3\"> AAA showcases AI governance best practices at Legalweek 2026, emphasizing operational discipline essential for legitimate institutional AI adoption. <governance_angle> Reinforces that governance is operational, not just policy;"
+      },
+      {
+        "id": 4,
+        "mainTweet": "</governance_angle> <content id=\"4\"> Chief AI Officers from FBI, FTC to speak at 2026 AI Summit, advancing coordinated government strategies for neutral AI policy legitimacy.\n\n#AIGovernance #Alygn",
+        "replyTweet": "<governance_angle> Promotes inter-agency coordination vital for governance; Alygn's...",
+        "isThread": true,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "</governance_angle> <content id=\"4\"> Chief AI Officers from FBI, FTC to speak at 2026 AI Summit, advancing coordinated government strategies for neutral AI policy legitimacy. <governance_angle> Promotes inter-agency coordination vital for governance; Alygn's neutrality"
+      },
+      {
+        "id": 5,
+        "mainTweet": "</governance_angle> <content id=\"5\"> Fabrizio Degni introduces PALO Framework for responsible AI governance, embedding principles throughout lifecycle for coordinated legitimacy.\n\n#AIGovernance #Alygn",
+        "replyTweet": "<governance_angle> Framework advances neutral, lifecycle oversight; aligns with...",
+        "isThread": true,
+        "sourceUrl": null,
+        "status": "ready",
+        "issues": [],
+        "originalContent": "</governance_angle> <content id=\"5\"> Fabrizio Degni introduces PALO Framework for responsible AI governance, embedding principles throughout lifecycle for coordinated legitimacy. <governance_angle> Framework advances neutral, lifecycle oversight; aligns with Alygn's"
+      }
+    ]
+  },
+  "posts": [
+    {
+      "id": "2031864606704963769",
+      "content": "<content id=\"1\"> Pentagon orders removal of Anthropic AI from military systems due to supply chain risks, urging neutral governance frameworks for defense tech coordination.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2031864624618836143",
+      "content": "<governance_angle> This event stresses legitimacy in AI procurement; Alygn's neutral...",
+      "type": "reply",
+      "parentId": "2031864606704963769"
+    },
+    {
+      "id": "2031864793259237802",
+      "content": "</governance_angle> <content id=\"2\"> India releases comprehensive AI governance guidelines, adopting principle-based approach backed by laws for effective oversight and global coordination.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2031864811085066650",
+      "content": "<governance_angle> Highlights need for legitimate, coordinated...",
+      "type": "reply",
+      "parentId": "2031864793259237802"
+    },
+    {
+      "id": "2031864975535264039",
+      "content": "</governance_angle> <content id=\"3\"> AAA showcases AI governance best practices at Legalweek 2026, emphasizing operational discipline essential for legitimate institutional AI adoption.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2031864989691081134",
+      "content": "<governance_angle> Reinforces that governance is operational, not just...",
+      "type": "reply",
+      "parentId": "2031864975535264039"
+    },
+    {
+      "id": "2031865095421075479",
+      "content": "</governance_angle> <content id=\"4\"> Chief AI Officers from FBI, FTC to speak at 2026 AI Summit, advancing coordinated government strategies for neutral AI policy legitimacy.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2031865113385337137",
+      "content": "<governance_angle> Promotes inter-agency coordination vital for governance; Alygn's...",
+      "type": "reply",
+      "parentId": "2031865095421075479"
+    },
+    {
+      "id": "2031865278041088104",
+      "content": "</governance_angle> <content id=\"5\"> Fabrizio Degni introduces PALO Framework for responsible AI governance, embedding principles throughout lifecycle for coordinated legitimacy.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2031865291815137732",
+      "content": "<governance_angle> Framework advances neutral, lifecycle oversight; aligns with...",
+      "type": "reply",
+      "parentId": "2031865278041088104"
+    }
+  ],
+  "executed": 10,
+  "failed": 0
+}

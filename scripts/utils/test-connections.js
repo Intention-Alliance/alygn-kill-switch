@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Test All API Connections
  * 
@@ -7,12 +6,17 @@
  * Usage: node test-connections.js
  */
 
-const path = require('path');
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { getClient, retrievePage } from '../shared/notion-client.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load credentials
 let credentials;
 try {
-  credentials = require(path.join(__dirname, '../../config/credentials.json'));
+  credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/credentials.json'), 'utf8'));
   console.log('✅ Credentials loaded from config/credentials.json\n');
 } catch (error) {
   console.error('❌ Failed to load credentials:', error.message);
@@ -50,7 +54,7 @@ function skip(name, reason) {
 // Test 1: Supabase
 async function testSupabase() {
   try {
-    const { createClient } = require('@supabase/supabase-js');
+    import { createClient } from "@supabase/supabase-js";
     const supabase = createClient(credentials.supabase.url, credentials.supabase.key || credentials.supabase.serviceKey);
     
     const { data, error } = await supabase.from('municipalities').select('id').limit(1);
@@ -212,8 +216,8 @@ async function testOllama() {
 // Test 8: X API (Twitter)
 async function testXAPI() {
   try {
-    const OAuth = require('oauth-1.0a');
-    const crypto = require('crypto');
+    import OAuth from "oauth-1.0a";
+    import crypto from "crypto";
     
     const oauth = OAuth({
       consumer: {
@@ -249,18 +253,12 @@ async function testXAPI() {
 // Test 9: Notion
 async function testNotion() {
   try {
-    const response = await fetch('https://api.notion.com/v1/pages/' + credentials.notion.pages.alygn_tracker, {
-      headers: {
-        'Authorization': `Bearer ${credentials.notion.apiKey}`,
-        'Notion-Version': credentials.notion.version || '2022-06-28'
-      }
-    });
-    
-    const data = await response.json();
-    if (data.object === 'page' || response.ok) {
+    const notion = getClient(credentials.notion.apiKey);
+    const data = await retrievePage(notion, credentials.notion.pages.alygn_tracker);
+    if (data.object === 'page') {
       pass('Notion');
     } else {
-      fail('Notion', data.message || 'Unknown error');
+      fail('Notion', 'Unexpected response');
     }
   } catch (error) {
     fail('Notion', error.message);

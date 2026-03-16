@@ -9,9 +9,9 @@
  *   node x-profile-validator.js --input=/tmp/muni-cr-researched.json --output=/tmp/muni-cr-verified-x.json
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from "fs";
+import path from "path";
+import { execSync } from "child_process";
 
 /**
  * Validates X/Twitter handles for municipalities
@@ -198,7 +198,7 @@ async function searchMunicipalityMentions(municipalityName) {
 /**
  * CLI Entry Point
  */
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const inputArg = args.find(a => a.startsWith('--input='));
@@ -311,7 +311,7 @@ function generateMarkdownReport(validated, outputFile) {
   console.log(`📄 Report saved to: ${outputFile}`);
 }
 
-module.exports = {
+export {
   validateXProfiles,
   validateSingleProfile
 };

@@ -9,7 +9,7 @@
  *   node muni-personalizer.js --input=/tmp/muni-cr-researched.json --mock
  */
 
-const fs = require('fs');
+import fs from "fs";
 
 const GROK_API_KEY = process.env.GROK_API_KEY;
 const GROK_ENDPOINT = process.env.GROK_ENDPOINT || 'https://api.x.ai/v1';
@@ -269,7 +269,7 @@ function saveResults(municipalities, outputFile) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const inputArg = args.find(a => a.startsWith('--input='));
@@ -307,7 +307,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   personalizeOutreach,
   generatePersonalizedEmail,
   TEMPLATES

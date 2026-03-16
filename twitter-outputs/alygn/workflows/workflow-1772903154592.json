@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-03-07T17:05:54.591Z",
+  "source": "Grok Search - Governance Trends",
+  "totalPosts": 5,
+  "postedAt": "2026-03-07T17:07:33.302Z",
+  "posts": [
+    {
+      "id": 1,
+      "content": "Antitrust Reforms for AI Safety\n\nFrontier AI labs hesitate to collaborate on safety due to antitrust fears. Policymakers urged to amend frameworks for safe harbors.\n\nEnables cross-lab coordination for AI risk mitigation\n\n#AIGovernance #Alygn",
+      "length": 241,
+      "status": "posted",
+      "tweetId": "2030329518510969229",
+      "url": "https://x.com/aialygn/status/2030329518510969229",
+      "issues": []
+    },
+    {
+      "id": 2,
+      "content": "AI Governance Arbitrage\n\nActors exploit gaps between international AI frameworks, risking fragmentation & race-to-bottom regulation.\n\nUNU calls for interoperability via mutual recognition of standards\n\n#AIGovernance #Alygn",
+      "length": 222,
+      "status": "posted",
+      "tweetId": "2030329519563780495",
+      "url": "https://x.com/aialygn/status/2030329519563780495",
+      "issues": []
+    },
+    {
+      "id": 3,
+      "content": "Industry Influence in AI Regulation\n\nIndustry stakeholders increasingly shape AI rules. Experts push multi-stakeholder inclusion for balanced oversight.\n\nPromoting diverse coordination to counter industry dominance\n\n#AIGovernance #Alygn",
+      "length": 236,
+      "status": "posted",
+      "tweetId": "2030329520587235532",
+      "url": "https://x.com/aialygn/status/2030329520587235532",
+      "issues": []
+    },
+    {
+      "id": 4,
+      "content": "Anthropic vs DoD Contract\n\nAnthropic seeks to revise US DoD deal after being labeled supply-chain risk for rejecting surveillance clauses.\n\nSets precedents for ethical coordination & institutional guardrails\n\n#AIGovernance #Alygn",
+      "length": 229,
+      "status": "posted",
+      "tweetId": "2030329521556099244",
+      "url": "https://x.com/aialygn/status/2030329521556099244",
+      "issues": []
+    },
+    {
+      "id": 5,
+      "content": "OpenAI Safety Protocols\n\nSam Altman commits to stricter reporting & law enforcement ties post-incident, applying standards retroactively.\n\nExemplifies bilateral institutional coordination for safety\n\n#AIGovernance #Alygn",
+      "length": 220,
+      "status": "posted",
+      "tweetId": "2030329522550083743",
+      "url": "https://x.com/aialygn/status/2030329522550083743",
+      "issues": []
+    }
+  ],
+  "executed": 5,
+  "failed": 0
+}

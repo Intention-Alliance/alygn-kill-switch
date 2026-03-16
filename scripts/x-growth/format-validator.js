@@ -6,10 +6,10 @@
  *   node format-validator.js /path/to/workflow.json --project=myproject
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
-const { loadProject } = require('./load-project');
+import { loadProject } from "./load-project.js";
 
 /**
  * Validates workflow content against project rules
@@ -219,7 +219,7 @@ function autoFixWorkflow(workflow, config) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   
   const workflowArg = args.find(a => !a.startsWith('--'));
@@ -292,7 +292,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   validateWorkflow,
   validateContent,
   autoFixWorkflow

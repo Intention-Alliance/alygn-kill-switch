@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN VC Discovery & Curation Script
  * 
@@ -20,10 +19,10 @@
  * Created: Feb 12, 2026
  */
 
-const fs = require('fs');
-const path = require('path');
-const { exec } = require('child_process');
-const { promisify } = require('util');
+import { exec } from "child_process";
+import fs from "fs";
+import path from "path";
+import { promisify } from "util";
 const execAsync = promisify(exec);
 
 // Configuration

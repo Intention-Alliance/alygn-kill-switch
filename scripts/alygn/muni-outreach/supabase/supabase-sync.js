@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Supabase Sync Script - Real Database Operations
@@ -368,4 +367,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { syncToSupabase, upsertMunicipality, logOutreachEmail, logXEngagement };
+export { logOutreachEmail, logXEngagement, syncToSupabase, upsertMunicipality };
+

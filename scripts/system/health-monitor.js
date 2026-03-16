@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ALYGN Project Health Monitor (IMPROVED)
  * 
@@ -7,9 +6,9 @@
  * Uses centralized logger for Notion integration
  */
 
-const fs = require('fs');
-const path = require('path');
-const { success, warning } = require('../shared/logger');
+import fs from "fs";
+import path from "path";
+import { success, warning } from "../shared/logger.js";
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const DAILY_REPORTS_DIR = path.join(WORKSPACE, 'daily-reports');
@@ -103,7 +102,7 @@ async function checkSystemHealth() {
 }
 
 // Main execution
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   checkSystemHealth()
     .then(result => {
       console.log(`✅ Health check complete: ${result.healthStatus}`);
@@ -115,4 +114,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { checkSystemHealth };
+export { checkSystemHealth };

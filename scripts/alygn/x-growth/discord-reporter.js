@@ -3,7 +3,7 @@
  * Handles all Alygn Twitter workflow communication
  */
 
-const https = require('https');
+import https from "https";
 
 // Discord configuration
 const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -247,7 +247,7 @@ function discordRequest(method, path, body) {
 }
 
 // CLI usage
-if (require.main === module) {
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
   const args = process.argv.slice(2);
   const command = args[0];
 
@@ -278,7 +278,7 @@ if (require.main === module) {
   }
 }
 
-module.exports = {
+export {
   createThread,
   postToThread,
   postDailySummary,

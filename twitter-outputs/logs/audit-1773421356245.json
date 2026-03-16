@@ -1,0 +1,63 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-13T17:02:35.522Z",
+  "workflow": {
+    "generatedAt": "2026-03-13T17:02:14.675Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 4,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "content": "OpenAI advocates building a global network of AI Safety Institutes for collaborative research, shared evaluations, and technical standards. Builds on partnerships with US CAISI and UK AISI to incorporate regional expertise.\n\nPromotes cross-organization AI safety efforts by enabling international coordination on frontier model evaluations, enhancing legitimacy through independent oversight and democratic standards.\n\n#AIGovernance #Alygn",
+        "length": 439,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": [
+          "Exceeds 280 chars"
+        ]
+      },
+      {
+        "id": 2,
+        "content": "Healthcare Standards Institute announced ANSI/HSI 2800:2025, a national standard for AI governance in healthcare. Emphasizes board oversight and CEO accountability for responsible AI integration.\n\nFosters institutional coordination in healthcare AI by standardizing oversight frameworks, bolstering legitimacy and risk mitigation across clinical operations.\n\n#AIGovernance #Alygn",
+        "length": 379,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": [
+          "Exceeds 280 chars"
+        ]
+      },
+      {
+        "id": 3,
+        "content": "US federal AI governance via OMB shows fragmented agency compliance under new memo. Public trust at 44%, lower than global peers, amid varying capacities.\n\nExposes coordination gaps in government AI oversight, eroding legitimacy due to uneven protections; calls for stronger cross-agency alignment.\n\n#AIGovernance #Alygn",
+        "length": 320,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": [
+          "Exceeds 280 chars"
+        ]
+      },
+      {
+        "id": 4,
+        "content": "Military AI labeled 'abnormal' technology needing early governance interventions. Secrecy and incentives demand default compliance with armed conflict laws.\n\nUnderscores legitimacy challenges in military-institutional coordination, urging proactive measures to bridge governance lags in high-stakes AI.\n\n#AIGovernance #Alygn",
+        "length": 324,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": [
+          "Exceeds 280 chars"
+        ]
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 4
+}

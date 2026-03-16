@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-03-13T18:06:35.283Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "content": "Big Tech firms like Microsoft, Google, Amazon, and Apple support Anthropic's lawsuit against Pentagon's supply chain risk label after Anthropic barred military AI use for surveillance or weapons.\n\n#AIGovernance #Alygn",
+      "length": 217,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "content": "Healthcare Standards Institute announced ANSI/HSI 2800:2025, first U.S. national standard mandating board oversight for AI governance in healthcare.\n\n#AIGovernance #Alygn",
+      "length": 170,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "content": "ALEC released State AI Policy Toolkit March 13, with model acts for tech-neutral, innovation-friendly state AI governance.\n\n#AIGovernance #Alygn",
+      "length": 144,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "content": "FAS published analysis on federal AI governance, noting decentralized agency implementation undermining public trust.\n\n#AIGovernance #Alygn",
+      "length": 139,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}
