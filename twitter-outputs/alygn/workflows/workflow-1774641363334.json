@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-27T19:56:03.334Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "US judge blocks Pentagon blacklisting of Anthropic over AI safety views, protecting free speech in governance debates.",
+      "replyText": "This ruling underscores the need for neutral institutions to ensure legitimacy in AI safety discussions, preventing retaliation and fostering coordination between defense and safety advocates.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 118,
+      "replyLength": 192,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Global study shows governments outpacing trustworthy AI safeguards, risking biased outcomes in public sector AI use.",
+      "replyText": "Highlights urgency for coordinated governance to embed legitimacy and neutrality in AI deployment, bridging maturity gaps with robust oversight.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 116,
+      "replyLength": 144,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Sanders, Ocasio-Cortez introduce bill halting AI data center construction until Congress acts on regulation.",
+      "replyText": "Emphasizes coordination between rapid AI infrastructure and legitimate federal oversight, ensuring neutral policies balance innovation and risks.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 108,
+      "replyLength": 145,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Administration unveils National AI Framework, outlining priorities for innovation, safety, and workforce readiness.",
+      "replyText": "Promotes coordinated national standards for AI governance, enhancing legitimacy by preempting fragmented state laws while upholding neutrality.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 115,
+      "replyLength": 143,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Sen. Warner presses DoD on AI safeguards amid recent developments raising safety concerns in military applications.",
+      "replyText": "Reveals need for legitimate oversight mechanisms to coordinate AI use in defense, ensuring neutrality and accountability in high-stakes deployments.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 115,
+      "replyLength": 148,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

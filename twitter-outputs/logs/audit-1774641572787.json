@@ -1,0 +1,98 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-27T19:56:49.089Z",
+  "workflow": {
+    "generatedAt": "2026-03-27T19:56:36.657Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 3,
+    "totalThreads": 3,
+    "validUrls": 3,
+    "invalidUrls": 1,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "The Elders called on March 27, 2026, for governments to urgently manage AI via inclusive global dialogue, UN involvement, transparency, and accountability for public good.",
+        "replyText": "Advances cross-organization AI safety efforts through international coordination, grounding legitimacy in scientific research and broad societal impacts beyond competition.",
+        "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good",
+        "isThread": true,
+        "mainLength": 171,
+        "replyLength": 172,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "White House National AI Policy Framework, released March 20, 2026, pushes federal preemption of burdensome state AI laws, favoring oversight by existing agencies.",
+        "replyText": "Centers institutional coordination debate on federal vs. state roles, aiming for uniform standards but risking legitimacy if states' tailored safety measures are overridden.",
+        "sourceUrl": "https://www.morganlewis.com/pubs/2026/03/white-house-ai-framework-puts-federal-preemption-at-the-center-of-the-debate",
+        "isThread": true,
+        "mainLength": 162,
+        "replyLength": 173,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Just Security critiqued on March 26, 2026, the AI framework's preemption as a 'trap' that undermines state AI safety and bias laws without proper balance.",
+        "replyText": "Highlights legitimacy concerns in federal overreach, urging cooperative federalism to maintain state innovations in AI risk regulation and coordination.",
+        "sourceUrl": "https://www.justsecurity.org/134693/beware-ai-preemption-trap",
+        "isThread": true,
+        "mainLength": 154,
+        "replyLength": 152,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2037619872272695752",
+      "content": "The Elders called on March 27, 2026, for governments to urgently manage AI via inclusive global dialogue, UN involvement, transparency, and accountability for public good.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2037619893047029806",
+      "content": "Advances cross-organization AI safety efforts through international coordination, grounding legitimacy in scientific research and broad societal impacts beyond competition.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2037619872272695752",
+      "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good"
+    },
+    {
+      "id": "2037620103823405428",
+      "content": "White House National AI Policy Framework, released March 20, 2026, pushes federal preemption of burdensome state AI laws, favoring oversight by existing agencies.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2037620128209064239",
+      "content": "Centers institutional coordination debate on federal vs. state roles, aiming for uniform standards but risking legitimacy if states' tailored safety measures are overridden.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2037620103823405428",
+      "sourceUrl": "https://www.morganlewis.com/pubs/2026/03/white-house-ai-framework-puts-federal-preemption-at-the-center-of-the-debate"
+    },
+    {
+      "id": "2037620326448722180",
+      "content": "Just Security critiqued on March 26, 2026, the AI framework's preemption as a 'trap' that undermines state AI safety and bias laws without proper balance.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2037620347327930637",
+      "content": "Highlights legitimacy concerns in federal overreach, urging cooperative federalism to maintain state innovations in AI risk regulation and coordination.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2037620326448722180",
+      "sourceUrl": "https://www.justsecurity.org/134693/beware-ai-preemption-trap"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 6,
+  "failed": 0
+}

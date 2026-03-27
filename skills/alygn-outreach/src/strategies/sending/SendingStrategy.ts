@@ -3,6 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
 
 interface SendingResult {
   success: boolean;
@@ -24,9 +25,19 @@ interface EmailPayload {
   from?: string;
 }
 
+interface SentEmailEntry {
+  email: string;
+  name: string;
+  partnerName: string | null;
+  vcName: string;
+  subject: string;
+  sentAt: string;
+  messageId: string;
+}
+
 export class SendingStrategy {
   protected config: Record<string, unknown>;
-  protected emailService: unknown;
+  protected emailService: EmailService | null;
   
   constructor(config: Record<string, unknown> = {}) {
     this.config = config;
@@ -56,25 +67,26 @@ export class SendingStrategy {
       }
     }
     
-    // Use local EmailService
+    // Use local EmailService with async initialization
     try {
-      const { EmailService } = await import('../../lib/email/EmailService.js');
+      const { EmailService } = await import('../../lib/email/EmailService');
       this.emailService = new EmailService(providerType, providerConfig);
+      // Initialize synchronously - provider will be created lazily on first send
     } catch (err) {
-      console.warn('   ⚠️  Could not load EmailService:', (err as Error).message);
+      const error = err as Error;
+      console.warn('   ⚠️  Could not load EmailService:', error.message);
     }
     
     // Set test email if configured
     if (this.config.testEmail && this.emailService) {
-      // @ts-ignore - testEmail will be set on the service if it exists
-      this.emailService?.setTestEmail?.(this.config.testEmail);
+      this.emailService.setTestEmail(this.config.testEmail as string);
     }
   }
   
   /**
    * Load credentials from config file
    */
-  loadCredentials(): Record<string, unknown> | null {
+  private loadCredentials(): Record<string, unknown> | null {
     try {
       // Self-contained: check skill's config first, then fallback to legacy
       const configPath = path.resolve(__dirname, '../../../config/credentials.json');
@@ -95,16 +107,10 @@ export class SendingStrategy {
   /**
    * Send email to entity
    */
-  async send(entity: { 
-    id: string; 
-    name: string; 
-    email: string | null; 
-    type: string; 
-    status?: string; 
-    personalizationContext?: { customSubject?: string; customBody?: string };
-    draftStatus?: string;
-    pageId?: string;
-  }, options: Record<string, unknown> = {}): Promise<SendingResult> {
+  async send(
+    entity: OutreachEntity, 
+    options: Record<string, unknown> = {}
+  ): Promise<SendingResult> {
     if (!this.emailService) {
       await this.initialize();
     }
@@ -155,8 +161,8 @@ export class SendingStrategy {
       };
     }
 
-    const subject = entity.personalizationContext?.customSubject || `Outreach from Alygn`;
-    const html = entity.personalizationContext?.customBody;
+    const subject = (entity.personalizationContext?.customSubject as string) || `Outreach from Alygn`;
+    const html = entity.personalizationContext?.customBody as string | undefined;
     
     if (!html) {
       console.log(`   ⚠️  No personalized content for ${entity.name}`);
@@ -188,8 +194,7 @@ export class SendingStrategy {
     console.log(`📧 Sending email to ${entity.name} (${entity.email})...`);
 
     try {
-      // @ts-ignore - emailService may be loaded dynamically
-      const result = await this.emailService?.sendEmail?.(payload) || { success: false, error: 'Email service not initialized' };
+      const result = await this.emailService?.sendEmail(payload) || { success: false, error: 'Email service not initialized' };
 
       if (result.success) {
         entity.status = 'sent';
@@ -206,10 +211,11 @@ export class SendingStrategy {
       };
 
     } catch (error) {
-      console.error(`   ❌ Send error: ${(error as Error).message}`);
+      const err = error as Error;
+      console.error(`   ❌ Send error: ${err.message}`);
       return {
         success: false,
-        error: (error as Error).message
+        error: err.message
       };
     }
   }
@@ -217,12 +223,12 @@ export class SendingStrategy {
   /**
    * Check if entity was already sent
    */
-  protected async checkAlreadySent(email: string, type: string): Promise<{ alreadySent: boolean; sentAt?: string }> {
+  private async checkAlreadySent(email: string, type: string): Promise<{ alreadySent: boolean; sentAt?: string }> {
     try {
       // Use local SentEmailTracker
-      const { SentEmailTracker } = await import('../../lib/SentEmailTracker.js');
+      const { SentEmailTracker } = await import('../../lib/SentEmailTracker');
       const tracker = new SentEmailTracker();
-      const existing = tracker.getSentEntry(email, '', type);
+      const existing = tracker.getSentEntry(email, '', type as 'vc' | 'municipal');
       
       if (existing) {
         return { alreadySent: true, sentAt: existing.sentAt };
@@ -232,6 +238,13 @@ export class SendingStrategy {
     }
     return { alreadySent: false };
   }
+}
+
+// Forward declare EmailService for type reference
+declare class EmailService {
+  constructor(providerType: string, config: Record<string, unknown>);
+  setTestEmail(email: string): void;
+  sendEmail(payload: EmailPayload): Promise<{ success: boolean; messageId?: string; error?: string; provider?: string }>;
 }
 
 export default SendingStrategy;

@@ -4,9 +4,10 @@
 **Date:** 2026-03-26  
 **Context:** Alygn Outreach - VC vs Municipal Campaign Analysis  
 **Sources Reviewed:**
+
 - Discord #annotations channel (past 48 hours, ~100 messages)
 - alygn-vc-outreach.lobster workflow file
-- alygn-muni-outreach.lobster workflow file  
+- alygn-muni-outreach.lobster workflow file
 - alygn-campaign.lobster (municipal)
 - alygn-outreach skill files
 
@@ -23,19 +24,22 @@
 ### FAILURE 1: Entity ID Mismatch Crisis
 
 **What Happened:**
+
 - Agent generated municipal drafts using custom entity IDs like `muni-alvarado-cartago` and `muni-desamparados-sj`
 - These IDs do NOT exist in the Supabase `municipalities` table (which uses UUIDs like `56be6450-c75e-4b1e-871e-859058a44426`)
 - When attempting to send emails, the system couldn't match drafts to database records
 
 **Evidence from Discord:**
+
 ```
-andler.dev: "No. Something is off on all of this. The entity ID doesn't match at all 
-with Notion (VC) and Supabase (Municipalities). I see these drafts would be able 
-to pass the email send step since these ID MUST match with their reference on 
+andler.dev: "No. Something is off on all of this. The entity ID doesn't match at all
+with Notion (VC) and Supabase (Municipalities). I see these drafts would be able
+to pass the email send step since these ID MUST match with their reference on
 their databases, otherwise we will fail on running this."
 ```
 
 **Root Cause:**
+
 - VC workflow uses Notion entity IDs (custom format like `vc-J1XPeT`)
 - Municipal workflow uses Supabase UUIDs (format like `56be6450-c75e-4b1e-871e-859058a44426`)
 - The agent was generating synthetic IDs instead of querying actual Supabase UUIDs
@@ -47,17 +51,20 @@ their databases, otherwise we will fail on running this."
 ### FAILURE 2: Database State Inconsistency
 
 **What Happened:**
+
 - The agent reported municipalities as "sent" that were NOT properly marked in Supabase
 - Some had `outreach_sent_at: null` despite being sent the previous day
 - Only 5 municipalities existed in Supabase when there should have been 82
 
 **Evidence from Discord:**
+
 ```
-Wobblus: "I see the issue - these municipalities have `outreach_sent_at: null` 
+Wobblus: "I see the issue - these municipalities have `outreach_sent_at: null`
 but we sent to them yesterday."
 ```
 
 **Root Cause:**
+
 - Discovery phase claimed to find all 82 cantones but didn't actually populate Supabase
 - Sent status tracking was inconsistent between local JSON files and Supabase database
 - The 82-cantone discovery either failed silently or wasn't saved properly
@@ -69,18 +76,21 @@ but we sent to them yesterday."
 ### FAILURE 3: Context Overflow from Mixed Workflow Attempts
 
 **What Happened:**
+
 - The agent attempted to run VC and municipal outreach simultaneously
 - Each workflow has different requirements, database schemas, and rate limits
 - The agent lost track of which phase each workflow was in
 - Multiple "Continue where you left off" messages indicate session/state loss
 
 **Evidence from Discord:**
+
 ```
 andler.dev: "Continue where you left off. The previous step (2) either failed or timeout."
 andler.dev: "Continue where you left off. The previous model either timeout or failed."
 ```
 
 **Root Cause:**
+
 - The unified `alygn-outreach` skill attempts to handle both VC and municipal but the lobster files define separate workflows
 - VC: 3 emails/day, uses Notion for entity tracking
 - Municipal: 5 emails/day, uses Supabase for entity tracking
@@ -93,13 +103,15 @@ andler.dev: "Continue where you left off. The previous model either timeout or f
 ### FAILURE 4: Draft-to-Send Connection Breakdown
 
 **What Happened:**
+
 - The "Two-Filter System" (Draft Status + Explicit Entity IDs) was not properly implemented
 - Agent was selecting VCs for sending that didn't match the drafted/personalized content
 - This caused generic emails to be sent instead of personalized ones
 
 **Evidence from Discord:**
+
 ```
-Wobblus: "I've been generating local JSON drafts instead of inserting into the 
+Wobblus: "I've been generating local JSON drafts instead of inserting into the
 correct database tables."
 
 Root Cause: "The outreach workflow expects:
@@ -108,6 +120,7 @@ Root Cause: "The outreach workflow expects:
 ```
 
 **Root Cause:**
+
 - Drafts were created as local JSON files, not inserted into the `outreach_emails` table
 - The send phase expected records in the database to link against
 - Entity IDs in drafts didn't match database primary keys
@@ -119,17 +132,20 @@ Root Cause: "The outreach workflow expects:
 ### FAILURE 5: Rate Limit and Daily Cap Confusion
 
 **What Happened:**
+
 - Agent was confused about daily email limits (5 per type vs 5 total)
 - Attempted to mix VC and municipal counts
 - Generated 6 drafts total (2 VC + 1 municipal) when expecting 5 per type
 
 **Evidence from Discord:**
+
 ```
-andler.dev: "You are also mixing the maximum emails. It is 5 per type of outreach 
+andler.dev: "You are also mixing the maximum emails. It is 5 per type of outreach
 (10 total), not 5 between those 2."
 ```
 
 **Root Cause:**
+
 - VC workflow: 3 emails/day, 60-180s delay
 - Municipal workflow: 5 emails/day, 60-180s delay
 - Agent was treating them as shared quota instead of separate quotas
@@ -144,16 +160,16 @@ andler.dev: "You are also mixing the maximum emails. It is 5 per type of outreac
 
 The fundamental issue is that VC and municipal outreach use **different data stores**:
 
-| Aspect | VC Outreach | Municipal Outreach |
-|--------|-------------|-------------------|
-| **Primary DB** | Notion | Supabase PostgreSQL |
-| **Entity IDs** | Notion page IDs (vc-xxx) | Supabase UUIDs |
-| **Draft Storage** | Notion properties | `outreach_emails` table |
-| **Status Tracking** | Notion select properties | `outreach_sent_at` timestamp |
-| **CLI Command** | `alygn-outreach --type=vc` | `alygn-outreach --type=municipal` |
-| **Rate Limit** | 3/day | 5/day |
-| **Language** | English | Spanish |
-| **Template** | Governance/Technical | TRAIGA Act (governance) |
+| Aspect              | VC Outreach                | Municipal Outreach                |
+| ------------------- | -------------------------- | --------------------------------- |
+| **Primary DB**      | Notion                     | Supabase PostgreSQL               |
+| **Entity IDs**      | Notion page IDs (vc-xxx)   | Supabase UUIDs                    |
+| **Draft Storage**   | Notion properties          | `outreach_emails` table           |
+| **Status Tracking** | Notion select properties   | `outreach_sent_at` timestamp      |
+| **CLI Command**     | `alygn-outreach --type=vc` | `alygn-outreach --type=municipal` |
+| **Rate Limit**      | 3/day                      | 5/day                             |
+| **Language**        | English                    | Spanish                           |
+| **Template**        | Governance/Technical       | TRAIGA Act (governance)           |
 
 **Why This Causes Context Overflow:**
 
@@ -167,6 +183,7 @@ The fundamental issue is that VC and municipal outreach use **different data sto
 ### Workflow Problem: Too Many Steps in Single Session
 
 The municipal lobster file defines **7 phases**:
+
 1. Prelude: X Account Discovery
 2. Phase 1: Discovery (Firecrawl)
 3. Phase 2: Research Mayor Names
@@ -187,6 +204,7 @@ The municipal lobster file defines **7 phases**:
 ### Process Problem: Missing State Tracking
 
 The agent has no persistent checkpoint mechanism between phases. When a session fails:
+
 - Discovery results may not be saved
 - Research progress is lost
 - Draft generation must restart
@@ -199,6 +217,7 @@ The agent has no persistent checkpoint mechanism between phases. When a session 
 ### Design Problem: Unclear Handoffs Between Phases
 
 Phase transitions require manual approval (Phase 5: "Manual Review") but there's no clear mechanism for:
+
 - How the agent knows which drafts are approved
 - How approved drafts link to send phase
 - How to resume after human intervention
@@ -223,6 +242,7 @@ The two-filter system (`--draft-status=Approved` + `--email-send-to={ids}`) requ
 ```
 
 **Rationale:**
+
 - Each workflow has different rate limits, databases, and approval checkpoints
 - Separating them eliminates context switching overhead
 - Allows independent cron scheduling (VC at 9 AM, Municipal at 2 PM)
@@ -236,7 +256,7 @@ The two-filter system (`--draft-status=Approved` + `--email-send-to={ids}`) requ
 ```yaml
 # alygn-municipal-outreach.lobster (revised)
 state_management:
-  backend: supabase  # or file-based for local dev
+  backend: supabase # or file-based for local dev
   table: outreach_state_checkpoints
   columns:
     - workflow_id: varchar (e.g., "muni-cr-wave1")
@@ -249,32 +269,32 @@ state_management:
 
 phases:
   - id: phase1-discovery
-    checkpoint: true  # Save state after this phase
+    checkpoint: true # Save state after this phase
     command: bun alygn-outreach --type=municipal --action=discover
-    
+
   - id: phase2-research
     depends_on: phase1-discovery
     checkpoint: true
     command: bun alygn-outreach --type=municipal --action=research
-    
+
   - id: phase3-validate
     depends_on: phase2-research
     checkpoint: true
     command: bun alygn-outreach --type=municipal --action=validate
-    
+
   - id: phase4-personalize
     depends_on: phase3-validate
     checkpoint: true
     command: bun alygn-outreach --type=municipal --action=personalize
-    
+
   - id: phase5-human-review
     depends_on: phase4-personalize
     checkpoint: true
-    requires_approval: true  # Pause for human
+    requires_approval: true # Pause for human
     notification:
       channel: discord
       message: "Drafts ready for review at {{output_file}}"
-    
+
   - id: phase6-send
     depends_on: phase5-human-review
     checkpoint: true
@@ -282,6 +302,7 @@ phases:
 ```
 
 **Benefits:**
+
 - Agent can resume from last successful checkpoint
 - Human approval gates are explicit
 - Failed phases can be retried independently
@@ -297,27 +318,27 @@ phases:
 // $HOME/.openclaw/workspace/scripts/alygn/shared/entity-id-resolver.ts
 export class EntityIDResolver {
   async resolveEntityID(
-    type: 'vc' | 'municipal' | 'grant',
-    identifier: string
+    type: "vc" | "municipal" | "grant",
+    identifier: string,
   ): Promise<ResolvedEntity> {
     switch (type) {
-      case 'vc':
+      case "vc":
         // Query Notion by ID or name
         return await this.notionClient.queryVC(identifier);
-        
-      case 'municipal':
+
+      case "municipal":
         // Query Supabase by UUID or name
         return await this.supabaseClient.queryMunicipality(identifier);
-        
-      case 'grant':
+
+      case "grant":
         // Query appropriate store
         return await this.grantStore.query(identifier);
     }
   }
-  
+
   async getDraftEntityIDs(
-    type: 'vc' | 'municipal',
-    status: 'drafted' | 'approved' | 'rejected'
+    type: "vc" | "municipal",
+    status: "drafted" | "approved" | "rejected",
   ): Promise<string[]> {
     // Returns actual database IDs, not synthetic ones
   }
@@ -325,17 +346,18 @@ export class EntityIDResolver {
 ```
 
 **Usage in Lobster:**
+
 ```yaml
 - id: phase4-generate-drafts
   command: bun alygn-outreach --type=municipal --action=personalize
   post_process:
-    - resolve_ids: true  # Convert synthetic IDs to database IDs
+    - resolve_ids: true # Convert synthetic IDs to database IDs
     - save_mapping: /tmp/id-mapping.json
-    
+
 - id: phase6-send
   command: bun alygn-outreach --type=municipal --action=send
   pre_process:
-    - load_mapping: /tmp/id-mapping.json  # Use resolved IDs
+    - load_mapping: /tmp/id-mapping.json # Use resolved IDs
 ```
 
 ---
@@ -369,6 +391,7 @@ Friday:
 ```
 
 **Benefits:**
+
 - Each day has clear, bounded scope
 - Human approval gates are natural pause points
 - Agent can complete discrete tasks within session limits
@@ -393,14 +416,15 @@ Friday:
 ```
 
 **Usage in Lobster:**
+
 ```yaml
 - id: phase4-generate-drafts
   command: bun supabase-utils.ts --action=insert-drafts --input=/tmp/drafts.json
-  
+
 - id: phase5-get-approved
   command: bun supabase-utils.ts --action=get-approved-for-send --limit=5
   capture_output: /tmp/approved-ids.json
-  
+
 - id: phase6-send
   command: bun alygn-outreach --type=municipal --action=send --input=/tmp/approved-ids.json
   post_process:
@@ -448,6 +472,7 @@ Friday:
 ```
 
 **Benefits:**
+
 - VC and municipal workflows don't compete for agent time
 - Different schedules accommodate different rate limits
 - Reply tracking is unified (replies come to same inbox)
@@ -476,12 +501,12 @@ Friday:
 
 ### Short-term (This Week)
 
-4. **Implement Checkpoint System:**
+1. **Implement Checkpoint System:**
    - Add `--checkpoint` flag to alygn-outreach CLI
-   - Save state to `/tmp/alygn-checkpoints/{workflow}/{phase}.json`
+   - Save state to `$HOME/.openclaw/workspace/reports/alygn-checkpoints/{workflow}/{phase}.json`
    - Add `--resume-from-checkpoint` flag
 
-5. **Create Phase-Specific Lobster Files:**
+2. **Create Phase-Specific Lobster Files:**
    - Split alygn-muni-outreach.lobster into:
      - alygn-muni-phase1-discovery.lobster
      - alygn-muni-phase2-research.lobster
@@ -490,19 +515,19 @@ Friday:
      - alygn-muni-phase5-review.lobster (human gate)
      - alygn-muni-phase6-send.lobster
 
-6. **Fix Draft-to-Database Linkage:**
+3. **Fix Draft-to-Database Linkage:**
    - Ensure `personalize` action INSERTs into `outreach_emails` table
    - Verify `send` action reads from `outreach_emails`, not local files
    - Test with `--dry-run` before production
 
 ### Medium-term (Next 2 Weeks)
 
-7. **Build Unified Reporting:**
+1. **Build Unified Reporting:**
    - Create cross-workflow dashboard
    - Track total outreach volume (VC + municipal combined)
    - Monitor reply rates by type
 
-8. **Add Retry Logic:**
+2. **Add Retry Logic:**
    - Failed phases should auto-retry with backoff
    - Max 3 attempts per phase before human alert
    - Alert Discord #annotations on persistent failures

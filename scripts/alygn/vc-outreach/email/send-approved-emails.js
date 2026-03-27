@@ -533,7 +533,7 @@ async function main() {
 
   // Save results to temp file
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const outputFile = `/tmp/alygn-vc-sent-${timestamp}.json`;
+  const outputFile = `${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-${timestamp}.json`;
 
   const results = {
     timestamp: sentAt,
@@ -568,7 +568,7 @@ async function main() {
       },
       operations: dryRunOperations,
       files: {
-        wouldCreate: [`/tmp/alygn-vc-sent-${timestamp}.json`]
+        wouldCreate: [`${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-${timestamp}.json`]
       },
       provider: provider,
       testMode: !!testEmail,

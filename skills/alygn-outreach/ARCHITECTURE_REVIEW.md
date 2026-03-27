@@ -26,6 +26,7 @@ The Strategy Pattern is **correctly implemented**:
 - **Type-specific implementations**: VC vs Municipal extend base interfaces appropriately
 
 **Files Verified:**
+
 - ✅ `src/strategies/StrategyRegistry.ts` - Factory with fallback to defaults
 - ✅ `src/strategies/discovery/*.ts` - Type-specific discovery
 - ✅ `src/strategies/research/*.ts` - Type-specific research
@@ -47,6 +48,7 @@ this.registry.register('municipal', 'discover', new MunicipalDiscoveryStrategy(.
 ### 1.3 CLI Structure ✅ PASS
 
 The CLI is well-structured:
+
 - Clean argument parsing with typed interface
 - Proper help text
 - Supports dry-run, limits, regions, and action switching
@@ -61,6 +63,7 @@ The CLI is well-structured:
 **Good news:** No `any` types found in source files!
 
 All files use proper TypeScript:
+
 - Interface definitions in `types.ts` are comprehensive
 - Entity classes properly typed
 - Strategy methods have typed signatures
@@ -69,6 +72,7 @@ All files use proper TypeScript:
 ### 2.2 Error Handling ✅ PASS
 
 Proper error handling patterns:
+
 - Try/catch blocks with typed errors `(error as Error).message`
 - Fallback values with null coalescing (`??`)
 - Validation before operations
@@ -77,6 +81,7 @@ Proper error handling patterns:
 ### 2.3 Clean Code Principles ✅ PASS
 
 Code follows clean code principles:
+
 - Single Responsibility: Each class has one purpose
 - DRY principle: Common logic abstracted to base classes
 - Meaningful naming: Clear, descriptive names
@@ -95,21 +100,22 @@ No obvious shortcuts found. All implementations are complete and production-read
 
 ### Files with External References (MUST FIX):
 
-| File | Line | External Import |
-|------|------|-----------------|
-| `src/strategies/validation/ValidationStrategy.ts` | ~45 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/EmailValidatorFactory.js` |
-| `src/strategies/personalization/VCPersonalizationStrategy.ts` | ~66 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/outreach-email-template.js` |
-| `src/strategies/personalization/MunicipalPersonalizationStrategy.ts` | ~58 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/outreach-email-template.js` |
-| `src/strategies/sending/SendingStrategy.ts` | ~65 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/EmailService.js` |
-| `src/strategies/sending/SendingStrategy.ts` | ~118 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/SentEmailTracker.js` |
-| `src/core/Pipeline.ts` | ~240 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/sent-emails.json` |
-| `src/core/Pipeline.ts` | ~241 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/SentEmailTracker.js` |
-| `src/strategies/discovery/VCDiscoveryStrategy.ts` | ~82 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/RegexMXValidator.js` |
-| `src/strategies/research/VCResearchStrategy.ts` | ~98 | `${process.env.HOME}/.openclaw/workspace/config/credentials.json` |
-| `src/lib/email/validators/EmailValidatorFactory.ts` | ~10 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/RegexMXValidator.js` |
-| `src/core/sync-vcs-to-notion.ts` | ~5 | `${process.env.HOME}/.openclaw/workspace/scripts/shared/notion-client.js` |
+| File                                                                 | Line | External Import                                                                                       |
+| -------------------------------------------------------------------- | ---- | ----------------------------------------------------------------------------------------------------- |
+| `src/strategies/validation/ValidationStrategy.ts`                    | ~45  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/EmailValidatorFactory.js` |
+| `src/strategies/personalization/VCPersonalizationStrategy.ts`        | ~66  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/outreach-email-template.js`                |
+| `src/strategies/personalization/MunicipalPersonalizationStrategy.ts` | ~58  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/outreach-email-template.js`                |
+| `src/strategies/sending/SendingStrategy.ts`                          | ~65  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/EmailService.js`                     |
+| `src/strategies/sending/SendingStrategy.ts`                          | ~118 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/SentEmailTracker.js`                       |
+| `src/core/Pipeline.ts`                                               | ~240 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/sent-emails.json`                          |
+| `src/core/Pipeline.ts`                                               | ~241 | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/SentEmailTracker.js`                       |
+| `src/strategies/discovery/VCDiscoveryStrategy.ts`                    | ~82  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/RegexMXValidator.js`      |
+| `src/strategies/research/VCResearchStrategy.ts`                      | ~98  | `${process.env.HOME}/.openclaw/workspace/config/credentials.json`                                     |
+| `src/lib/email/validators/EmailValidatorFactory.ts`                  | ~10  | `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib/email/validators/RegexMXValidator.js`      |
+| `src/core/sync-vcs-to-notion.ts`                                     | ~5   | `${process.env.HOME}/.openclaw/workspace/scripts/shared/notion-client.js`                             |
 
 ### Self-Contained Files ✅:
+
 - `src/entities/*.ts` - All entities are self-contained
 - `src/strategies/StrategyRegistry.ts` - Self-contained
 - `src/lib/email/` (most files) - Self-contained
@@ -121,6 +127,7 @@ No obvious shortcuts found. All implementations are complete and production-read
 ### 4.1 Strategy Files ✅ PASS
 
 All required strategy files exist:
+
 - ✅ `DiscoveryStrategy.ts` (base)
 - ✅ `VCDiscoveryStrategy.ts`
 - ✅ `MunicipalDiscoveryStrategy.ts`
@@ -136,6 +143,7 @@ All required strategy files exist:
 ### 4.2 Lib Utilities ✅ PASS
 
 All lib utilities are present:
+
 - ✅ `src/lib/email/EmailService.ts`
 - ✅ `src/lib/email/EmailProviderFactory.ts`
 - ✅ `src/lib/email/providers/EmailProvider.ts`
@@ -174,14 +182,15 @@ This is needed for LLM personalization prompts.
 
 ```typescript
 // Lines referencing undefined types:
-export type MunicipalityRow = Tables<'municipalities'>;
-export type MunicipalityInsert = TablesInsert<'municipalities'>;
+export type MunicipalityRow = Tables<"municipalities">;
+export type MunicipalityInsert = TablesInsert<"municipalities">;
 // etc...
 ```
 
 **Problem:** These types (`Tables`, `TablesInsert`, `TablesUpdate`) are **not defined** anywhere in the skill.
 
 **Fix Required:** Either:
+
 1. Import from external Supabase types (violates self-containment)
 2. Define inline types in the skill
 3. Remove Supabase-specific types and use generic interfaces
@@ -193,6 +202,7 @@ Database queries are implemented via dynamic imports from external paths. The ac
 ### 5.3 Translation System ✅ PASS
 
 The translation system for Spanish (municipal) vs English (VC) is properly implemented:
+
 - `MunicipalPersonalizationStrategy.ts` uses Spanish templates (`language: 'es'`)
 - `VCPersonalizationStrategy.ts` uses English templates (`language: 'en'`)
 - Template variants: `governance`, `institutional`, `traiga`
@@ -201,31 +211,33 @@ The translation system for Spanish (municipal) vs English (VC) is properly imple
 
 ## Summary Table
 
-| Review Area | Status | Notes |
-|-------------|--------|-------|
-| Architecture (Strategy Pattern) | ✅ PASS | Well implemented |
-| Pipeline Routing | ✅ PASS | Correct type routing |
-| CLI Structure | ✅ PASS | Clean implementation |
-| TypeScript Type Safety | ✅ PASS | No `any` types found |
-| Error Handling | ✅ PASS | Proper try/catch |
-| Clean Code Principles | ✅ PASS | Follows best practices |
-| Import Path Verification | ❌ FAIL | 11 external references to `scripts/alygn/` |
-| Strategy Files Completeness | ✅ PASS | All 11 strategies present |
-| Lib Utilities Completeness | ✅ PASS | All 11 lib files present |
-| Prompts Directory | ❌ MISSING | No prompts/ directory found |
-| Supabase Type Safety | ❌ FAIL | `Tables` types not defined |
-| Translation System | ✅ PASS | Spanish/English working |
+| Review Area                     | Status     | Notes                                      |
+| ------------------------------- | ---------- | ------------------------------------------ |
+| Architecture (Strategy Pattern) | ✅ PASS    | Well implemented                           |
+| Pipeline Routing                | ✅ PASS    | Correct type routing                       |
+| CLI Structure                   | ✅ PASS    | Clean implementation                       |
+| TypeScript Type Safety          | ✅ PASS    | No `any` types found                       |
+| Error Handling                  | ✅ PASS    | Proper try/catch                           |
+| Clean Code Principles           | ✅ PASS    | Follows best practices                     |
+| Import Path Verification        | ❌ FAIL    | 11 external references to `scripts/alygn/` |
+| Strategy Files Completeness     | ✅ PASS    | All 11 strategies present                  |
+| Lib Utilities Completeness      | ✅ PASS    | All 11 lib files present                   |
+| Prompts Directory               | ❌ MISSING | No prompts/ directory found                |
+| Supabase Type Safety            | ❌ FAIL    | `Tables` types not defined                 |
+| Translation System              | ✅ PASS    | Spanish/English working                    |
 
 ---
 
 ## Critical Issues Requiring Fixes
 
 ### 1. External Dependencies (CRITICAL)
+
 **Priority:** 🔴 **MUST FIX BEFORE DEPLOYMENT**
 
 11 files reference external `scripts/alygn/` paths. These must be internalized.
 
 **Files requiring copies from external sources:**
+
 - `lib/email/EmailService.js` (external) → Should use local `src/lib/email/EmailService.ts`
 - `lib/email/validators/EmailValidatorFactory.js` → Already exists locally
 - `lib/SentEmailTracker.js` → Already exists locally (but external ref remains)
@@ -234,11 +246,13 @@ The translation system for Spanish (municipal) vs English (VC) is properly imple
 **Action:** Replace all `${process.env.HOME}/.openclaw/workspace/scripts/alygn/...` imports with relative imports to local skill files.
 
 ### 2. Supabase Types Undefined (HIGH)
+
 **Priority:** 🟠 **HIGH**
 
 The `types.ts` file references `Tables`, `TablesInsert`, `TablesUpdate` which are not defined.
 
 **Fix Options:**
+
 - Option A: Define mock/placeholder types inline
 - Option B: Remove Supabase-specific type aliases and use generic interfaces
 - Option C: Copy Supabase generated types into the skill
@@ -246,11 +260,13 @@ The `types.ts` file references `Tables`, `TablesInsert`, `TablesUpdate` which ar
 **Recommendation:** Option B - Remove Supabase-specific type aliases since the skill should be database-agnostic.
 
 ### 3. Missing Prompts Directory (MEDIUM)
+
 **Priority:** 🟡 **MEDIUM**
 
 The personalization strategies reference prompts but no `prompts/` directory exists.
 
 **Fix:** Create `src/prompts/` with LLM prompt templates for:
+
 - VC research personalization
 - Municipal research personalization
 - Email generation prompts
@@ -269,7 +285,7 @@ const validatorPath = `${process.env.HOME}/.openclaw/workspace/scripts/alygn/lib
 const { RegexMXValidator } = await import(validatorPath);
 
 // AFTER (self-contained)
-import { RegexMXValidator } from '../../lib/email/validators/RegexMXValidator.js';
+import { RegexMXValidator } from "../../lib/email/validators/RegexMXValidator";
 ```
 
 ### Fix 2: Remove Supabase Types
@@ -278,9 +294,9 @@ In `src/entities/types.ts`:
 
 ```typescript
 // Remove these lines (lines 23-30):
-export type MunicipalityRow = Tables<'municipalities'>;
-export type MunicipalityInsert = TablesInsert<'municipalities'>;
-export type MunicipalityUpdate = TablesUpdate<'municipalities'>;
+export type MunicipalityRow = Tables<"municipalities">;
+export type MunicipalityInsert = TablesInsert<"municipalities">;
+export type MunicipalityUpdate = TablesUpdate<"municipalities">;
 // ... etc
 
 // Replace with:
@@ -293,6 +309,7 @@ export type MunicipalityUpdate = Record<string, unknown>;
 ### Fix 3: Add Prompts Directory
 
 Create `src/prompts/` with:
+
 - `vc-research.txt` - Prompt for VC research
 - `municipal-research.txt` - Prompt for municipal research
 - `personalization.txt` - Prompt for email personalization
@@ -325,6 +342,7 @@ Create `src/prompts/` with:
 **Estimated Effort to Fix:** 2-4 hours
 
 **Steps to Complete:**
+
 1. Replace all external `scripts/alygn/` imports with local imports (1-2 hours)
 2. Fix undefined Supabase types (30 min)
 3. Create prompts directory (30 min)
@@ -343,5 +361,5 @@ The code quality is excellent - no shortcuts, proper error handling, and compreh
 
 ---
 
-*Review completed by: Subagent Reviewer*  
-*Date: March 26, 2026*
+_Review completed by: Subagent Reviewer_  
+_Date: March 26, 2026_

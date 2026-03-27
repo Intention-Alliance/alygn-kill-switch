@@ -2,18 +2,133 @@
  * Supabase Mappers - Convert entities to Supabase database format
  * 
  * Maps skill entity types to Supabase table row types for upserts/inserts.
+ * 
+ * Note: This file provides type definitions for Supabase integration.
+ * The actual Supabase types should be defined in data/supabase/ directory.
  */
 
-import type { MunicipalEntity } from './MunicipalEntity.js';
-import type { VCEntity } from './VCEntity.js';
-import type { OutreachEntity } from './OutreachEntity.js';
-import type {
-  MunicipalityInsert,
-  MunicipalityUpdate,
-  LocalGovernmentRow,
-  OutreachEmailInsert,
-  PoliticalFigureInsert
-} from './types.js';
+import type { MunicipalEntity } from './MunicipalEntity';
+import type { VCEntity } from './VCEntity';
+
+// Re-export types from types.ts
+export type {
+  ICostaRicaCanton, IMunicipalTypeData
+} from './types';
+
+/**
+ * Supabase municipalities table insert type
+ */
+export interface MunicipalityInsert {
+  name: string;
+  country: string;
+  id?: string;
+  website_url?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  region?: string | null;
+  province?: string | null;
+  population?: number | null;
+  government_type?: string | null;
+  mayor_name?: string | null;
+  mayor_email?: string | null;
+  general_email?: string | null;
+  council_emails?: string | null;
+  pain_points?: string[] | null;
+  ai_governance_signals?: unknown | null;
+  verified_at?: string | null;
+  researched_at?: string | null;
+  outreach_sent_at?: string | null;
+  outreach_variant?: string | null;
+  replied_at?: string | null;
+  reply_sentiment?: string | null;
+  wave_number?: number | null;
+  wave_date?: string | null;
+  batch_status?: string | null;
+  x_handle?: string | null;
+  x_url?: string | null;
+  x_warmup_phase1_at?: string | null;
+  x_warmup_phase2_at?: string | null;
+  x_engagement_count?: number | null;
+  x_last_engagement_at?: string | null;
+  priority_score?: number;
+  discovered_at: string;
+  updated_at: string;
+  created_at?: string;
+}
+
+/**
+ * Supabase municipalities table update type
+ */
+export type MunicipalityUpdate = Partial<MunicipalityInsert>;
+
+/**
+ * Supabase local_governments table row type
+ */
+export interface LocalGovernmentRow {
+  id?: string | null;
+  municipality_id?: string | null;
+  name?: string | null;
+  government_type?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  website_url?: string | null;
+  head_name?: string | null;
+  head_title?: string | null;
+  city?: string | null;
+  province?: string | null;
+  country?: string | null;
+  is_active?: boolean;
+  wave_number?: number | null;
+  notes?: string | null;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  postal_code?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+/**
+ * Supabase outreach_emails table insert type
+ */
+export interface OutreachEmailInsert {
+  subject: string;
+  body: string;
+  recipient_email: string;
+  recipient_name: string;
+  local_government_id?: string | null;
+  municipality_id?: string | null;
+  political_figure_id?: string | null;
+  variant?: string | null;
+  wave_number?: number | null;
+  wave_date?: string | null;
+  status?: string;
+  political_context?: Record<string, unknown> | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+/**
+ * Supabase political_figures table insert type
+ */
+export interface PoliticalFigureInsert {
+  full_name: string;
+  municipality_id?: string | null;
+  local_government_id?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  title?: string | null;
+  department?: string | null;
+  role_description?: string | null;
+  ai_governance_interest?: string | null;
+  is_decision_maker?: boolean;
+  influence_level?: number;
+  wave_number?: number | null;
+  linkedin_url?: string | null;
+  x_handle?: string | null;
+  last_contacted_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
 
 /**
  * Convert MunicipalEntity to Supabase municipalities table insert
@@ -38,32 +153,32 @@ export function toMunicipalityInsert(entity: MunicipalEntity): MunicipalityInser
     population: entity.typeData.population,
     government_type: entity.typeData.governmentType,
     mayor_name: entity.typeData.keyContacts?.[0]?.name,
-    mayor_email: entity.email, // If known
+    mayor_email: entity.email,
     general_email: entity.email,
-    council_emails: null, // Will be populated after research
+    council_emails: null,
     
-    // Pain points (Supabase: municipalities.pain_points as string[])
+    // Pain points
     pain_points: entity.typeData.painPoints,
     
-    // AI governance signals (Supabase: municipalities.ai_governance_signals as Json)
+    // AI governance signals
     ai_governance_signals: null,
     
     // Research and verification
     verified_at: entity.verifiedAt,
     researched_at: entity.researchedAt,
     
-    // Outreach tracking (Supabase: municipalities.outreach_* fields)
+    // Outreach tracking
     outreach_sent_at: entity.outreachSentAt,
     outreach_variant: entity.outreachVariant,
     replied_at: entity.repliedAt,
     reply_sentiment: entity.replySentiment,
     
-    // Wave tracking (Supabase: municipalities.wave_number, wave_date)
+    // Wave tracking
     wave_number: entity.waveNumber,
     wave_date: entity.waveDate,
     batch_status: entity.batchStatus,
     
-    // X/Twitter tracking (Supabase: municipalities.x_* fields)
+    // X/Twitter tracking
     x_handle: entity.xHandle,
     x_url: entity.xUrl,
     x_warmup_phase1_at: entity.xWarmupPhase1At,
@@ -71,7 +186,7 @@ export function toMunicipalityInsert(entity: MunicipalEntity): MunicipalityInser
     x_engagement_count: entity.xEngagementCount,
     x_last_engagement_at: entity.xLastEngagementAt,
     
-    // Priority scoring (Supabase: municipalities.priority_score)
+    // Priority scoring
     priority_score: entity.priority === 'high' ? 100 : entity.priority === 'medium' ? 50 : 25,
     
     // Timestamps
@@ -85,9 +200,9 @@ export function toMunicipalityInsert(entity: MunicipalEntity): MunicipalityInser
  */
 export function toMunicipalityUpdate(entity: MunicipalEntity): MunicipalityUpdate {
   const insert = toMunicipalityInsert(entity);
-  // Remove computed/auto fields that shouldn't be updated directly
-  delete (insert as Partial<MunicipalityInsert>).id;
-  delete (insert as Partial<MunicipalityInsert>).created_at;
+  // Remove computed/auto fields
+  delete (insert as Record<string, unknown>).id;
+  delete (insert as Record<string, unknown>).created_at;
   return insert;
 }
 
@@ -125,67 +240,40 @@ export function toOutreachEmailInsert(
   emailData: { subject: string; body: string; recipientEmail: string; recipientName: string }
 ): OutreachEmailInsert {
   return {
-    // Required fields
     subject: emailData.subject,
     body: emailData.body,
     recipient_email: emailData.recipientEmail,
     recipient_name: emailData.recipientName,
-    
-    // Links
     local_government_id: entity.localGovernmentId,
     municipality_id: entity.municipalityId || entity.id,
     political_figure_id: null,
-    
-    // Variant and wave (Supabase: outreach_emails.variant, wave_number, wave_date)
-    variant: entity.outreachVariant || entity.personalizationContext?.variant as string || 'traiga',
+    variant: entity.outreachVariant || (entity.personalizationContext?.variant as string) || 'traiga',
     wave_number: entity.waveNumber,
     wave_date: entity.waveDate,
-    
-    // Status (Supabase: outreach_emails.status)
-    status: 'draft', // Will be 'sent' after actually sending
-    
-    // Personalization context
-    political_context: entity.personalizationContext as unknown as Record<string, unknown> | null,
+    status: 'draft',
+    political_context: entity.personalizationContext as Record<string, unknown> | null,
   };
 }
 
 /**
  * Convert VC entity to Supabase political_figures insert
- * (VCs are tracked as political figures with is_decision_maker=true)
  */
 export function toPoliticalFigureInsert(entity: VCEntity): PoliticalFigureInsert {
   return {
-    // Required fields
     full_name: entity.name,
-    
-    // VCs have their own firm-level data
     municipality_id: null,
     local_government_id: null,
-    
-    // Contact
     email: entity.email,
     phone: entity.phone,
-    
-    // VC-specific
     title: entity.typeData.firmType,
     department: entity.typeData.sectorFocus?.join(', '),
     role_description: `VC firm: ${entity.typeData.stageFocus?.join(', ')}`,
-    
-    // AI governance interest
     ai_governance_interest: entity.typeData.sectorFocus?.join(', '),
-    
-    // Decision maker status (VCs are decision makers)
     is_decision_maker: true,
-    influence_level: 5, // High influence
-    
-    // Wave tracking
+    influence_level: 5,
     wave_number: null,
-    
-    // Links
-    linkedin_url: null,
+    linkedin_url: entity.typeData.linkedInUrl || null,
     x_handle: null,
-    
-    // Timestamps
     last_contacted_at: entity.sentAt?.toISOString(),
     created_at: entity.discoveredAt.toISOString(),
     updated_at: entity.lastUpdatedAt.toISOString(),

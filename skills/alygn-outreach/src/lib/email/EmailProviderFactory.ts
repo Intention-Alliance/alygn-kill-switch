@@ -2,22 +2,22 @@
  * EmailProviderFactory
  * Creates email provider instances based on type
  */
-import { SMTPProvider } from './providers/SMTPProvider.js';
-import { SmartleadProvider } from './providers/SmartleadProvider.js';
+import type { EmailProvider } from './providers/EmailProvider';
 
 export class EmailProviderFactory {
   /**
    * Create email provider instance
-   * @param {string} type - Provider type ('smtp' | 'smartlead')
-   * @param {Object} config - Provider configuration
-   * @returns {EmailProvider}
    */
-  static create(type, config) {
+  static async create(type: string, config: Record<string, unknown> = {}): Promise<EmailProvider> {
     switch (type.toLowerCase()) {
-      case 'smtp':
+      case 'smtp': {
+        const { SMTPProvider } = await import('./providers/SMTPProvider');
         return new SMTPProvider(config);
-      case 'smartlead':
+      }
+      case 'smartlead': {
+        const { SmartleadProvider } = await import('./providers/SmartleadProvider');
         return new SmartleadProvider(config);
+      }
       default:
         throw new Error(`Unknown email provider type: ${type}`);
     }
@@ -25,9 +25,8 @@ export class EmailProviderFactory {
 
   /**
    * Get available provider types
-   * @returns {string[]}
    */
-  static getAvailableTypes() {
+  static getAvailableTypes(): string[] {
     return ['smtp', 'smartlead'];
   }
 }

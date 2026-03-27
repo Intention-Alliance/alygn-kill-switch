@@ -3,7 +3,7 @@
     "total_posts": 100,
     "source": "Alygn Pre-Approved Posts (Feb 2026)",
     "strategy": "One post per day, sequential order",
-    "last_updated": "2026-03-26T17:21:08.175Z"
+    "last_updated": "2026-03-27T19:43:21.476Z"
   },
   "posts": [
     {
@@ -226,9 +226,9 @@
     {
       "id": 32,
       "text": "Legitimacy can't be declared, it has to be earned repeatedly.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-27T19:43:21.476Z",
+      "tweet_id": "2037616483124007112"
     },
     {
       "id": 33,

@@ -29,7 +29,7 @@ import path from "path";
 import { promisify } from "util";
 const execAsync = promisify(exec);
 
-import { getClient, queryDatabase } from "../../../shared/notion-client.js";
+import { getClient } from "../../../shared/notion-client.js";
 import { EmailValidatorFactory } from "../../lib/email/validators/EmailValidatorFactory.js";
 
 // Load database ID from config
@@ -610,7 +610,7 @@ async function main() {
   
   // Save to temp file
   const timestamp = generateTimestamp();
-  const outputFile = `/tmp/alygn-vc-discovered-${timestamp}.json`;
+  const outputFile = `/home/andlersrv/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-${timestamp}.json`;
   
   if (!dryRun && newVCs.length > 0) {
     fs.writeFileSync(outputFile, JSON.stringify({

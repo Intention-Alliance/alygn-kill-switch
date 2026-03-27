@@ -1,9 +1,16 @@
 /**
- * ResearchStrategy - Base interface for research strategies
+ * ResearchStrategy - Abstract base class for research strategies
  */
-import type { OutreachEntity } from '../entities/OutreachEntity.js';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
 
-export class ResearchStrategy {
+export interface IResearchResult {
+  success: boolean;
+  research: Record<string, unknown>;
+  entity: OutreachEntity;
+  error?: string;
+}
+
+export abstract class ResearchStrategy {
   protected config: Record<string, unknown>;
   protected name: string;
 
@@ -11,16 +18,12 @@ export class ResearchStrategy {
     this.config = config;
     this.name = 'base-research';
   }
-  
+
   /**
    * Research entity
-   * @param entity - Entity to research
-   * @returns Promise<Object> Research result with notes and context
    */
-  async research(entity: OutreachEntity): Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }> {
-    throw new Error('Not implemented');
-  }
-  
+  abstract research(entity: OutreachEntity): Promise<IResearchResult>;
+
   /**
    * Get strategy name
    */

@@ -3,22 +3,41 @@
  * Validates emails using ZeroBounce API
  * https://www.zerobounce.net/
  */
-import { EmailValidator } from './EmailValidator.js';
+import { EmailValidator, type IEmailValidationResult } from './EmailValidator';
+
+interface ZeroBounceConfig {
+  apiKey?: string;
+  [key: string]: unknown;
+}
+
+interface ZeroBounceResponse {
+  status: string;
+  confidence_score?: number;
+  catch_all?: string;
+  disposable?: string;
+  role_based?: string;
+  free_domain?: string;
+  did_you_mean?: string;
+  processed_at?: string;
+}
 
 export class ZeroBounceValidator extends EmailValidator {
-  constructor(config) {
-    super();
-    this.apiKey = config.apiKey;
-    this.baseUrl = 'https://api.zerobounce.net/v2';
+  private apiKey: string;
+  
+  constructor(config: ZeroBounceConfig) {
+    super(config);
+    this.apiKey = config.apiKey || '';
   }
 
   /**
    * Validate email via ZeroBounce API
    */
-  async validate(email) {
+  async validate(email: string): Promise<IEmailValidationResult> {
+    const baseUrl = 'https://api.zerobounce.net/v2';
+    
     try {
       const response = await fetch(
-        `${this.baseUrl}/validate?api_key=${this.apiKey}&email=${encodeURIComponent(email)}&ip_address=`,
+        `${baseUrl}/validate?api_key=${this.apiKey}&email=${encodeURIComponent(email)}&ip_address=`,
         {
           method: 'GET',
           headers: {
@@ -31,7 +50,7 @@ export class ZeroBounceValidator extends EmailValidator {
         throw new Error(`ZeroBounce API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as ZeroBounceResponse;
 
       return {
         result: this.mapStatus(data.status),
@@ -46,14 +65,15 @@ export class ZeroBounceValidator extends EmailValidator {
           rawStatus: data.status
         },
         validator: this.getName(),
-        raw: data
+        raw: data as Record<string, unknown>
       };
     } catch (error) {
+      const err = error as Error;
       return {
         result: 'unknown',
         confidence: 0,
         details: {
-          error: error.message
+          error: err.message
         },
         validator: this.getName()
       };
@@ -62,11 +82,9 @@ export class ZeroBounceValidator extends EmailValidator {
 
   /**
    * Map ZeroBounce status to our standard results
-   * @param {string} zbStatus - ZeroBounce status
-   * @returns {string} - 'valid' | 'invalid' | 'risky' | 'unknown'
    */
-  mapStatus(zbStatus) {
-    const mapping = {
+  private mapStatus(zbStatus: string): 'valid' | 'invalid' | 'risky' | 'unknown' {
+    const mapping: Record<string, 'valid' | 'invalid' | 'risky' | 'unknown'> = {
       'valid': 'valid',
       'invalid': 'invalid',
       'catch-all': 'risky',
@@ -82,7 +100,7 @@ export class ZeroBounceValidator extends EmailValidator {
   /**
    * Get validator name
    */
-  getName() {
+  getName(): string {
     return 'zerobounce';
   }
 }

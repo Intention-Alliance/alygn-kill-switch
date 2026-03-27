@@ -1,11 +1,11 @@
 // StateManager - Pipeline state persistence
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import os from 'os';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const STATE_DIR = process.env.STATE_DIR || '/tmp/alygn-grants-state';
+const STATE_DIR = process.env.STATE_DIR || `${process.env.HOME}/.openclaw/workspace/reports/alygn/grants`;
 
 export class StateManager {
   constructor(prefix = 'grants') {

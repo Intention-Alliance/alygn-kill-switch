@@ -64,7 +64,7 @@ import type {
   Tables,
   TablesInsert,
   TablesUpdate
-} from '../../../../scripts/alygn/muni-outreach/supabase/src/database.types.js';
+} from '../../../../scripts/alygn/muni-outreach/supabase/src/database.types';
 ```
 
 **Generated Types Location**: `scripts/alygn/muni-outreach/supabase/src/database.types.ts`
@@ -354,7 +354,7 @@ Municipal outreach uses a **6-cronjob architecture** for batch processing:
 
 **State Persistence**:
 
-Pipeline state is saved to `/tmp/alygn-{type}-{phase}-{date}.json`:
+Pipeline state is saved to `$HOME/.openclaw/workspace/reports/alygn/{subFolderType}/alygn-{type}-{phase}-{date}.json`:
 
 ```json
 {
@@ -500,8 +500,8 @@ bun bin/alygn-outreach.ts --type=vc --action=send \
 ### Programmatic API
 
 ```typescript
-import { Pipeline } from './src/core/Pipeline.js';
-import { VCEntity } from './src/entities/VCEntity.js';
+import { Pipeline } from './src/core/Pipeline';
+import { VCEntity } from './src/entities/VCEntity';
 
 // Create pipeline with configuration
 const pipeline = new Pipeline('vc', {
@@ -532,7 +532,7 @@ const fullResult = await pipeline.run('pipeline', {
 ### Error Handling
 
 ```typescript
-import { Pipeline } from './src/core/Pipeline.js';
+import { Pipeline } from './src/core/Pipeline';
 
 const pipeline = new Pipeline('municipal', {
   sending: { providerType: 'smtp' }
@@ -563,7 +563,7 @@ try {
 ### Resuming from State
 
 ```typescript
-import { Pipeline } from './src/core/Pipeline.js';
+import { Pipeline } from './src/core/Pipeline';
 
 const pipeline = new Pipeline('vc', {});
 
@@ -571,7 +571,7 @@ const pipeline = new Pipeline('vc', {});
 const result = await pipeline.run('validate', {
   dryRun: false,
   limit: 20,
-  input: '/tmp/alygn-vc-discovered-2026-03-26.json'
+  input: '$HOME/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-2026-03-26.json'
 });
 ```
 
@@ -746,7 +746,7 @@ bun bin/alygn-outreach.ts --type=vc --action=validate --validator=zerobounce --l
 
 ### TypeScript import errors
 **Cause:** Missing .js extension in imports
-**Fix:** All imports must use `.js` extension (e.g., `import { Pipeline } from './Pipeline.js'`)
+**Fix:** All imports must use `.js` extension (e.g., `import { Pipeline } from './Pipeline'`)
 
 ### Supabase types not found
 **Cause:** Generated types file missing

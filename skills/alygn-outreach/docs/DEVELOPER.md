@@ -4,12 +4,12 @@
 
 ## Prerequisites
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| **Bun** | ≥ 1.0 | Primary runtime. Required. |
-| **Node.js** | ≥ 18 | Fallback if Bun isn't available |
-| **Git** | Any recent | For cloning/pulling |
-| **Supabase CLI** | Latest | Only if you need to regenerate DB types |
+| Requirement      | Version    | Notes                                   |
+| ---------------- | ---------- | --------------------------------------- |
+| **Bun**          | ≥ 1.0      | Primary runtime. Required.              |
+| **Node.js**      | ≥ 18       | Fallback if Bun isn't available         |
+| **Git**          | Any recent | For cloning/pulling                     |
+| **Supabase CLI** | Latest     | Only if you need to regenerate DB types |
 
 ### Install Bun
 
@@ -79,36 +79,36 @@ cp .env.example .env
 
 ### Required Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `ZEROBOUNCE_API_KEY` | ZeroBounce email validation API key | `xxx` |
-| `SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
-| `SUPABASE_ANON_KEY` | Supabase anonymous (public) key | `eyJ...` |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key (for migrations) | `eyJ...` |
+| Variable               | Description                                | Example                   |
+| ---------------------- | ------------------------------------------ | ------------------------- |
+| `ZEROBOUNCE_API_KEY`   | ZeroBounce email validation API key        | `xxx`                     |
+| `SUPABASE_URL`         | Supabase project URL                       | `https://xxx.supabase.co` |
+| `SUPABASE_ANON_KEY`    | Supabase anonymous (public) key            | `eyJ...`                  |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key (for migrations) | `eyJ...`                  |
 
 ### SMTP Variables (for email sending)
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `SMTP_SERVER` | SMTP server hostname | `smtp.gmail.com` |
-| `SMTP_PORT` | SMTP port | `587` |
-| `SMTP_USER` | SMTP username | `user@gmail.com` |
-| `SMTP_PASS` | SMTP password or app password | `xxxx` |
-| `SMTP_FROM` | From email address | `andrew@alygn.com` |
+| Variable      | Description                   | Default            |
+| ------------- | ----------------------------- | ------------------ |
+| `SMTP_SERVER` | SMTP server hostname          | `smtp.gmail.com`   |
+| `SMTP_PORT`   | SMTP port                     | `587`              |
+| `SMTP_USER`   | SMTP username                 | `user@gmail.com`   |
+| `SMTP_PASS`   | SMTP password or app password | `xxxx`             |
+| `SMTP_FROM`   | From email address            | `andrew@alygn.com` |
 
 ### Smartlead Variables (alternative to SMTP)
 
-| Variable | Description |
-|----------|-------------|
+| Variable            | Description                |
+| ------------------- | -------------------------- |
 | `SMARTLEAD_API_KEY` | Smartlead campaign API key |
 
 ### Optional Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NOTION_API_KEY` | Notion integration token | — |
-| `NOTION_DATABASE_ID` | Notion database ID for VC outreach | — |
-| `XAI_API_KEY` | x.ai/Grok API key for research | — |
+| Variable             | Description                        | Default |
+| -------------------- | ---------------------------------- | ------- |
+| `NOTION_API_KEY`     | Notion integration token           | —       |
+| `NOTION_DATABASE_ID` | Notion database ID for VC outreach | —       |
+| `XAI_API_KEY`        | x.ai/Grok API key for research     | —       |
 
 ### Loading env vars
 
@@ -152,18 +152,18 @@ bun bin/alygn-outreach.ts --type=vc --action=send \
 
 ### Input/Output State Files
 
-State is persisted to `/tmp/alygn-{type}-{phase}-{date}.json` automatically. To resume from a previous run:
+State is persisted to `$HOME/.openclaw/workspace/reports/alygn/{subFolderType}/alygn-{type}-{phase}-{date}.json` automatically. To resume from a previous run:
 
 ```bash
 bun bin/alygn-outreach.ts --type=vc --action=validate \
-  --input=/tmp/alygn-vc-discovered-2026-03-26.json \
+  --input=$HOME/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-2026-03-26.json \
   --limit=10
 ```
 
 To use a specific output directory for state files:
 
 ```bash
-export TMPDIR=/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/tmp
+export STATEDIR=/home/andlersrv/.openclaw/workspace/reports/alygn/{subFolderType}/
 ```
 
 ### Development Debugging
@@ -234,7 +234,7 @@ alygn-outreach/
 
 ## TypeScript Notes
 
-- All imports **must** use `.js` extension (ESM requirement): `import { Pipeline } from './Pipeline.js'`
+- All imports **must** use `.js` extension (ESM requirement): `import { Pipeline } from './Pipeline'`
 - The skill uses **inline Supabase types** in `src/entities/types.ts` to avoid external file dependencies
 - Supabase DB types are defined inline in `src/entities/types.ts` as `Database`, `Tables`, `TablesInsert`, `TablesUpdate` (placeholder aliases)
 - If you need to regenerate types from a live Supabase schema, run `supabase gen types typescript` in `scripts/alygn/muni-outreach/supabase/`
@@ -252,6 +252,7 @@ supabase db reset  # Applies migrations
 ```
 
 The migration files are at:
+
 ```
 scripts/alygn/muni-outreach/supabase/migrations/
 ├── 000_municipal_outreach_pipeline_schema.sql
@@ -267,6 +268,7 @@ scripts/alygn/muni-outreach/supabase/migrations/
 ### VS Code
 
 Recommended extensions:
+
 - `esbenp.prettier-vscode` — formatting
 - `denoland.vscode-deno` — TypeScript/Bun support (optional)
 - `bradlc.vscode-tailwindcss` — if working on email templates

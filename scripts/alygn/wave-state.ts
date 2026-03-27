@@ -5,7 +5,7 @@
  * Manages wave-based outreach tracking with atomic file operations
  */
 
-import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "fs";
 import { dirname } from "path";
 
 // ============================================================
@@ -40,8 +40,8 @@ export type PhaseType = WaveState["phaseCompleted"];
 
 const STATE_DIR = "/tmp";
 const STATE_FILES: Record<WaveType, string> = {
-  vc: "/tmp/alygn-vc-wave-state.json",
-  muni: "/tmp/alygn-muni-wave-state.json",
+  vc: `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-vc-wave-state.json`,
+  muni: `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-muni-wave-state.json`,
 };
 
 const DEFAULT_WAVE_INTERVAL_DAYS = 7;

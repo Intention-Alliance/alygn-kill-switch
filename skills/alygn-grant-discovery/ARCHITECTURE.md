@@ -195,13 +195,23 @@ Strategy (abstract base)
 
 ```javascript
 class Strategy {
-  async discover(context)   { throw new Error('Not implemented') }
-  async validate(context)   { throw new Error('Not implemented') }
-  async score(context)      { throw new Error('Not implemented') }
+  async discover(context) {
+    throw new Error("Not implemented");
+  }
+  async validate(context) {
+    throw new Error("Not implemented");
+  }
+  async score(context) {
+    throw new Error("Not implemented");
+  }
 
   // Shared helpers
-  async throttle(ms = 1000) { /* rate-limit delay */ }
-  async fetchWithRetry(url, options, retries = 3) { /* exponential backoff */ }
+  async throttle(ms = 1000) {
+    /* rate-limit delay */
+  }
+  async fetchWithRetry(url, options, retries = 3) {
+    /* exponential backoff */
+  }
 }
 ```
 
@@ -333,48 +343,48 @@ PipelinePhase (abstract base)
 
 ### Properties
 
-| Property | Type | Purpose |
-|----------|------|---------|
-| **Grant Name** | Title | Primary identifier |
-| **Agency/Funder** | Text | Granting organization |
-| **Grant Type** | Select | Federal / Private Foundation / Corporate / Research Institution |
-| **Status** | Select | discovered / researched / validated / scored / submitted / awarded / rejected / closed |
-| **Priority** | Select | Critical (7+ days) / High (30 days) / Medium (90 days) / Low (>90 days) |
-| **Amount Min** | Number | Minimum award amount (USD) |
-| **Amount Max** | Number | Maximum award amount (USD) |
-| **LOI Deadline** | Date | Letter of Intent deadline (optional) |
-| **Full Deadline** | Date | Full application deadline |
-| **Notification Date** | Date | Expected award notification |
-| **Project Start** | Date | Anticipated project start |
-| **Duration (months)** | Number | Project period length |
-| **Focus Areas** | Multi-select | AI Safety / Governance / Alignment / AGI / Coordination / Other |
-| **ALYGN Fit Score** | Number | 1-10 mission alignment |
-| **Priority Score** | Number | Composite (deadline × amount × confidence) |
-| **Eligibility Confidence** | Number | 0-1 likelihood ALYGN qualifies |
-| **Eligibility Notes** | Text | Eligibility verification details |
-| **Key Requirements** | Text | Top 3-5 eligibility/app requirements |
-| **Application Complexity** | Select | Low / Medium / High |
-| **Research Sources** | URL | Links to research (multi-value) |
-| **Fit Summary** | Text | 2-3 sentence ALYGN fit description |
-| **Application Due in** | Formula | Days remaining until deadline |
-| **Submitted** | Checkbox | Has application been submitted? |
-| **Submission Date** | Date | When application was submitted |
-| **Awarded** | Checkbox | Was grant awarded? |
-| **Award Amount** | Number | Actual awarded amount |
-| **Notes** | Text | Manual notes (Andler/Tania) |
-| **Last Updated** | Date | Auto-timestamp of last change |
+| Property                   | Type         | Purpose                                                                                |
+| -------------------------- | ------------ | -------------------------------------------------------------------------------------- |
+| **Grant Name**             | Title        | Primary identifier                                                                     |
+| **Agency/Funder**          | Text         | Granting organization                                                                  |
+| **Grant Type**             | Select       | Federal / Private Foundation / Corporate / Research Institution                        |
+| **Status**                 | Select       | discovered / researched / validated / scored / submitted / awarded / rejected / closed |
+| **Priority**               | Select       | Critical (7+ days) / High (30 days) / Medium (90 days) / Low (>90 days)                |
+| **Amount Min**             | Number       | Minimum award amount (USD)                                                             |
+| **Amount Max**             | Number       | Maximum award amount (USD)                                                             |
+| **LOI Deadline**           | Date         | Letter of Intent deadline (optional)                                                   |
+| **Full Deadline**          | Date         | Full application deadline                                                              |
+| **Notification Date**      | Date         | Expected award notification                                                            |
+| **Project Start**          | Date         | Anticipated project start                                                              |
+| **Duration (months)**      | Number       | Project period length                                                                  |
+| **Focus Areas**            | Multi-select | AI Safety / Governance / Alignment / AGI / Coordination / Other                        |
+| **ALYGN Fit Score**        | Number       | 1-10 mission alignment                                                                 |
+| **Priority Score**         | Number       | Composite (deadline × amount × confidence)                                             |
+| **Eligibility Confidence** | Number       | 0-1 likelihood ALYGN qualifies                                                         |
+| **Eligibility Notes**      | Text         | Eligibility verification details                                                       |
+| **Key Requirements**       | Text         | Top 3-5 eligibility/app requirements                                                   |
+| **Application Complexity** | Select       | Low / Medium / High                                                                    |
+| **Research Sources**       | URL          | Links to research (multi-value)                                                        |
+| **Fit Summary**            | Text         | 2-3 sentence ALYGN fit description                                                     |
+| **Application Due in**     | Formula      | Days remaining until deadline                                                          |
+| **Submitted**              | Checkbox     | Has application been submitted?                                                        |
+| **Submission Date**        | Date         | When application was submitted                                                         |
+| **Awarded**                | Checkbox     | Was grant awarded?                                                                     |
+| **Award Amount**           | Number       | Actual awarded amount                                                                  |
+| **Notes**                  | Text         | Manual notes (Andler/Tania)                                                            |
+| **Last Updated**           | Date         | Auto-timestamp of last change                                                          |
 
 ### Views
 
-| View | Filter | Sort |
-|------|--------|------|
-| **Critical Deadline** | Status ≠ submitted/awarded/rejected/closed AND Full Deadline ≤ 7 days | Full Deadline ASC |
-| **High Priority** | Status ≠ submitted/awarded/rejected/closed AND Priority = High | ALYGN Fit Score DESC |
-| **Research Queue** | Status = discovered | ALYGN Fit Score DESC |
-| **Validation Queue** | Status = researched | Priority Score DESC |
-| **Submitted Applications** | Submitted = true | Submission Date DESC |
-| **Awarded Grants** | Awarded = true | Award Amount DESC |
-| **Weekly Digest** | Full Deadline within 30 days | Priority Score DESC |
+| View                       | Filter                                                                | Sort                 |
+| -------------------------- | --------------------------------------------------------------------- | -------------------- |
+| **Critical Deadline**      | Status ≠ submitted/awarded/rejected/closed AND Full Deadline ≤ 7 days | Full Deadline ASC    |
+| **High Priority**          | Status ≠ submitted/awarded/rejected/closed AND Priority = High        | ALYGN Fit Score DESC |
+| **Research Queue**         | Status = discovered                                                   | ALYGN Fit Score DESC |
+| **Validation Queue**       | Status = researched                                                   | Priority Score DESC  |
+| **Submitted Applications** | Submitted = true                                                      | Submission Date DESC |
+| **Awarded Grants**         | Awarded = true                                                        | Award Amount DESC    |
+| **Weekly Digest**          | Full Deadline within 30 days                                          | Priority Score DESC  |
 
 ---
 
@@ -523,19 +533,19 @@ node bin/alygn-grant-discovery --action=check-status
 
 ### CLI Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--action` | Phase to run | `pipeline` |
-| `--full` | Run all phases (shorthand) | false |
-| `--limit` | Max grants to process | 50 |
-| `--dry-run` | Simulate without writing to Notion | false |
-| `--grant-type` | Filter by grant type | all |
-| `--min-score` | Minimum ALYGN fit score | 0 |
-| `--days` | Deadline window (monitoring) | 14 |
-| `--format` | Report format | `email` |
-| `--recipient` | Email recipient | `tania` |
-| `--channel` | Discord channel name | `alygn-grants` |
-| `--grant-id` | Specific grant to report on | null |
+| Option         | Description                        | Default        |
+| -------------- | ---------------------------------- | -------------- |
+| `--action`     | Phase to run                       | `pipeline`     |
+| `--full`       | Run all phases (shorthand)         | false          |
+| `--limit`      | Max grants to process              | 50             |
+| `--dry-run`    | Simulate without writing to Notion | false          |
+| `--grant-type` | Filter by grant type               | all            |
+| `--min-score`  | Minimum ALYGN fit score            | 0              |
+| `--days`       | Deadline window (monitoring)       | 14             |
+| `--format`     | Report format                      | `email`        |
+| `--recipient`  | Email recipient                    | `tania`        |
+| `--channel`    | Discord channel name               | `alygn-grants` |
+| `--grant-id`   | Specific grant to report on        | null           |
 
 ---
 
@@ -553,6 +563,7 @@ node bin/alygn-grant-discovery --action=check-status
 **Subject:** `ALYGN Grant Discovery — {count} new opportunities, {critical} critical deadlines`
 
 **Body sections:**
+
 1. **Critical Deadlines (≤7 days)** — Table: Grant Name | Deadline | Amount | Fit Score
 2. **High-Priority Opportunities (Score ≥ 8)** — Table: Grant Name | Agency | Amount | Deadline | Fit Summary
 3. **New This Week** — List: Grant Name | Source | Quick take
@@ -561,6 +572,7 @@ node bin/alygn-grant-discovery --action=check-status
 ### 8.3 Discord Digest
 
 **Embed fields:**
+
 - **Critical Deadline Alerts** — Inline table
 - **Top 5 Grant Opportunities** — Table (name, agency, amount, deadline, fit score)
 - **New Grants Discovered** — Bulleted list with source
@@ -569,6 +581,7 @@ node bin/alygn-grant-discovery --action=check-status
 ### 8.4 Analysis Report (on-demand)
 
 Detailed markdown report per grant:
+
 - Executive summary (fit assessment)
 - Grant overview (funder, amount, duration)
 - Eligibility analysis
@@ -642,6 +655,7 @@ Detailed markdown report per grant:
 ```
 
 **Composite Score Formula:**
+
 ```
 compositeScore = (
   (alygnFitScore / 10) * 0.5 +
@@ -655,31 +669,36 @@ compositeScore = (
 ## 11. Key Implementation Notes
 
 ### 11.1 Deduplication Strategy
+
 Grants are deduplicated by normalized name + agency + deadline tuple. A grant seen from multiple sources (Grok, Perplexity, Firecrawl) is merged — taking the highest confidence values for each field.
 
 ### 11.2 Rate Limiting
+
 - Grok: 60 req/min (tier dependent)
 - Perplexity: 100 req/day (Pro tier)
 - Firecrawl: 100 pages/min (Pro tier)
 - Notion: 3 req/sec (hard limit)
 
 ### 11.3 State Persistence
-Pipeline state saved to `/tmp/alygn-grants-{phase}-{date}.json` between phases. Resume via `--input` flag.
+
+Pipeline state saved to `$HOME/.openclaw/workspace/reports/alygn/grants/alygn-grants-{phase}-{date}.json` between phases. Resume via `--input` flag.
 
 ### 11.4 Error Handling
+
 - Discovery failures: Log + skip source, continue with others
 - Validation failures: Flag grant with error note, don't halt pipeline
 - Notion write failures: Retry 3x with exponential backoff, alert on persistent failure
 - Cron failures: WhatsApp notification to Andler
 
 ### 11.5 ALYGN-Specific Eligibility Defaults
+
 ```javascript
 const ALYGN_ELIGIBILITY = {
-  organizationType: 'nonprofit-501c3',
-  location: ['US', 'International'],
+  organizationType: "nonprofit-501c3",
+  location: ["US", "International"],
   aiSpecific: true,
   governanceFocus: true,
-  yearsOperating: 1                // ALYGN is new but qualifies for most grants
+  yearsOperating: 1, // ALYGN is new but qualifies for most grants
 };
 ```
 
@@ -687,17 +706,17 @@ const ALYGN_ELIGIBILITY = {
 
 ## 12. Port Mapping from VC Outreach
 
-| VC Outreach Component | Grant Discovery Equivalent |
-|-----------------------|---------------------------|
-| `VCEntity` | `GrantEntity` |
-| `VCDiscoveryStrategy` | `DiscoveryStrategy` (multi-source) |
-| `PainPointExtractor` | `AlignmentValidator` (ALYGN fit check) |
-| `EmailPersonalizer` | `ApplicationPreparer` (optional prep workflow) |
-| `OutreachOrchestrator` | `PipelineOrchestrator` |
-| `ReplyTracker` | `DeadlineMonitor` + `StatusTracker` |
-| `WeeklyReport` | `GrantReportGenerator` |
-| `Notion VC DB` | `Notion Grant DB` |
-| Gmail IMAP | Notion API polling |
+| VC Outreach Component  | Grant Discovery Equivalent                     |
+| ---------------------- | ---------------------------------------------- |
+| `VCEntity`             | `GrantEntity`                                  |
+| `VCDiscoveryStrategy`  | `DiscoveryStrategy` (multi-source)             |
+| `PainPointExtractor`   | `AlignmentValidator` (ALYGN fit check)         |
+| `EmailPersonalizer`    | `ApplicationPreparer` (optional prep workflow) |
+| `OutreachOrchestrator` | `PipelineOrchestrator`                         |
+| `ReplyTracker`         | `DeadlineMonitor` + `StatusTracker`            |
+| `WeeklyReport`         | `GrantReportGenerator`                         |
+| `Notion VC DB`         | `Notion Grant DB`                              |
+| Gmail IMAP             | Notion API polling                             |
 
 ---
 

@@ -2,26 +2,44 @@
  * VCResearchStrategy - Research VC firms for personalization
  */
 import fs from 'fs';
-import { VCEntity } from '../../entities/VCEntity.js';
-import { ResearchStrategy } from './ResearchStrategy.js';
+import path from 'path';
+import { VCEntity } from '../../entities/VCEntity';
+import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
+
+interface VCPortfolioCompany {
+  company: string;
+  date: string;
+  stage: string;
+}
+
+interface VCSearchResult {
+  thesis?: string;
+  portfolio?: string[];
+  partners?: Array<{ name: string; title: string }>;
+  recentInvestments?: VCPortfolioCompany[];
+  painPoints?: string[];
+  governanceSignals?: string[];
+  whyAlygn?: string;
+  [key: string]: unknown;
+}
 
 export class VCResearchStrategy extends ResearchStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
     this.name = 'vc-research';
   }
-  
+
   /**
    * Research VC firm using OpenClaw Script ↔ AI Execution pattern
    */
-  async research(entity: VCEntity): Promise<{ success: boolean; research: Record<string, unknown>; entity: VCEntity }> {
+  async research(entity: VCEntity): Promise<IResearchResult> {
     console.log(`📚 Researching VC: ${entity.name}...`);
     
     // Cache-first: Check for existing research results
     const cacheFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-result.json`;
     if (fs.existsSync(cacheFile)) {
       console.log(`   📁 Found cached research results`);
-      const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8')) as { research?: VCSearchResult };
       if (cached.research) {
         console.log(`   ✅ Using cached research`);
         fs.unlinkSync(cacheFile);
@@ -59,29 +77,29 @@ export class VCResearchStrategy extends ResearchStrategy {
     // Return fallback data for now
     return this.fallbackResearch(entity);
   }
-  
+
   /**
    * Apply research data to entity
    */
-  applyResearch(entity: VCEntity, research: Record<string, unknown>): { success: boolean; research: Record<string, unknown>; entity: VCEntity } {
+  private applyResearch(entity: VCEntity, research: VCSearchResult): IResearchResult {
     // Update entity with research
-    entity.researchNotes = (research.thesis as string) || `${entity.name} is a venture capital firm.`;
+    entity.researchNotes = research.thesis || `${entity.name} is a venture capital firm.`;
     entity.personalizationContext = {
       ...entity.personalizationContext,
       painPoints: research.painPoints || ['AI governance', 'Coordination challenges'],
       tailoredHook: research.whyAlygn || 'Alygn provides governance infrastructure for AI coordination.',
-      recentNews: (research.governanceSignals as string[])?.[0]
+      recentNews: research.governanceSignals?.[0]
     };
     
     // Update typeData
-    if (research.portfolio && (research.portfolio as unknown[]).length > 0) {
-      entity.typeData.portfolioCompanies = research.portfolio as string[];
+    if (research.portfolio && research.portfolio.length > 0) {
+      entity.typeData.portfolioCompanies = research.portfolio;
     }
-    if (research.partners && (research.partners as unknown[]).length > 0) {
-      entity.typeData.partners = research.partners as Array<{ name: string; title: string }>;
+    if (research.partners && research.partners.length > 0) {
+      entity.typeData.partners = research.partners;
     }
-    if (research.recentInvestments && (research.recentInvestments as unknown[]).length > 0) {
-      entity.typeData.recentInvestments = research.recentInvestments as Array<{ company: string; date: string; stage: string }>;
+    if (research.recentInvestments && research.recentInvestments.length > 0) {
+      entity.typeData.recentInvestments = research.recentInvestments;
     }
     
     entity.updateStatus('researched');
@@ -90,15 +108,15 @@ export class VCResearchStrategy extends ResearchStrategy {
     
     return {
       success: true,
-      research,
+      research: research as Record<string, unknown>,
       entity
     };
   }
-  
+
   /**
    * Fallback research when no cache exists
    */
-  fallbackResearch(entity: VCEntity): { success: boolean; research: Record<string, unknown>; entity: VCEntity } {
+  private fallbackResearch(entity: VCEntity): IResearchResult {
     const research = {
       thesis: `${entity.name} is a venture capital firm focused on technology investments.`,
       portfolio: entity.typeData?.portfolioCompanies || [],
@@ -125,18 +143,18 @@ export class VCResearchStrategy extends ResearchStrategy {
       entity
     };
   }
-  
+
   /**
    * Sanitize name for filename
    */
-  sanitizeName(name: string): string {
+  private sanitizeName(name: string): string {
     return name.replace(/[^a-zA-Z0-9]/g, '-').substring(0, 50);
   }
-  
+
   /**
    * Dry-run research (mock data)
    */
-  async researchDryRun(entity: VCEntity): Promise<{ success: boolean; research: Record<string, unknown>; entity: VCEntity }> {
+  async researchDryRun(entity: VCEntity): Promise<IResearchResult> {
     console.log(`📚 [DRY RUN] Researching VC: ${entity.name}...`);
     
     const mockResearch = {
@@ -164,11 +182,11 @@ export class VCResearchStrategy extends ResearchStrategy {
       entity
     };
   }
-  
+
   /**
    * Research VC via Perplexity API (direct fallback)
    */
-  async researchViaAPI(entity: VCEntity, cacheFile: string): Promise<{ success: boolean; research: Record<string, unknown>; entity: VCEntity }> {
+  private async researchViaAPI(entity: VCEntity, cacheFile: string): Promise<IResearchResult> {
     try {
       // Load credentials from skill's config directory (with legacy fallback)
       const configPath = path.resolve(__dirname, '../../../config/credentials.json');
@@ -221,7 +239,7 @@ export class VCResearchStrategy extends ResearchStrategy {
       const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
       const content = data.choices?.[0]?.message?.content || '{}';
       
-      let research: Record<string, unknown>;
+      let research: VCSearchResult;
       try {
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         research = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
@@ -236,7 +254,8 @@ export class VCResearchStrategy extends ResearchStrategy {
       return this.applyResearch(entity, research);
       
     } catch (error) {
-      console.error(`   ❌ API failed: ${(error as Error).message}`);
+      const err = error as Error;
+      console.error(`   ❌ API failed: ${err.message}`);
       console.log(`   📤 Falling back to request file pattern`);
       return this.fallbackResearch(entity);
     }

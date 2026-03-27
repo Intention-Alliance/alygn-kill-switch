@@ -1,7 +1,7 @@
 /**
  * Alygn Outreach Skill - Main Entry Point (TypeScript)
  */
-import { Pipeline } from './core/Pipeline.js';
+import { Pipeline } from './core/Pipeline';
 
 // CLI argument types
 interface CLIArgs {
@@ -178,4 +178,4 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { parseArgs, main };
+export { main, parseArgs };

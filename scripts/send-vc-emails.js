@@ -3,10 +3,10 @@
  */
 
 import { Client } from '@notionhq/client';
-import { getNotionKey } from './shared/load-credentials.js';
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
+import { getNotionKey } from './shared/load-credentials.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -276,7 +276,7 @@ async function main() {
 
   // Save results
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const outputFile = `/tmp/alygn-vc-sent-${timestamp}.json`;
+  const outputFile = `${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-${timestamp}.json`;
   fs.writeFileSync(outputFile, JSON.stringify(results, null, 2));
 
   console.log('\n' + '='.repeat(60));

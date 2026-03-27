@@ -1,21 +1,8 @@
 /**
  * OutreachPipeline - Unified pipeline for processing outreach entities
  */
-import { StrategyRegistry } from '../strategies/StrategyRegistry.js';
-import type { OutreachEntity } from '../entities/OutreachEntity.js';
-
-/**
- * @typedef {'discover'|'validate'|'research'|'personalize'|'send'} PipelineStage
- */
-
-/**
- * @typedef {Object} PipelineContext
- * @property {'vc'|'municipal'} type
- * @property {Object} config
- * @property {Object} [logger]
- * @property {Object} [metrics]
- * @property {boolean} [dryRun]
- */
+import type { OutreachEntity } from '../entities/OutreachEntity';
+import { StrategyRegistry } from '../strategies/StrategyRegistry';
 
 export type PipelineContext = {
   type: 'vc' | 'municipal';
@@ -87,16 +74,15 @@ export class OutreachPipeline {
     const startTime = Date.now();
     
     try {
-      let result: { success: boolean; entities?: OutreachEntity[]; validation?: Record<string, unknown>; error?: string };
+      let result: { success: boolean; entities?: OutreachEntity[]; validation?: Record<string, unknown>; error?: string; entity?: OutreachEntity };
       
       switch (stage) {
         case 'discover': {
-          const discoverStrategy = strategy as { discover: (query: string, options: Record<string, unknown>) => Promise<{ success: boolean; entities: OutreachEntity[] }> };
-          const discoverResult = await discoverStrategy.discover('', { limit: 1 });
+          const discoverStrategy = strategy as { discover: (query: string, options: Record<string, unknown>) => Promise<OutreachEntity[]> };
+          const entities = await discoverStrategy.discover('', { limit: 1 });
           result = {
-            success: discoverResult.success,
-            entities: discoverResult.entities,
-            error: discoverResult.error
+            success: true,
+            entities: entities
           };
           break;
         }
@@ -104,7 +90,7 @@ export class OutreachPipeline {
           const validateStrategy = strategy as { validate: (entity: OutreachEntity) => Promise<Record<string, unknown>> };
           const validation = await validateStrategy.validate(entity);
           result = {
-            success: validation.valid || validation.result !== 'invalid',
+            success: validation.valid !== false && validation.result !== 'invalid',
             validation,
             entity
           };
@@ -118,7 +104,8 @@ export class OutreachPipeline {
       }
 
       return {
-        ...result,
+        success: result.success,
+        error: result.error,
         duration: Date.now() - startTime
       };
     } catch (error) {

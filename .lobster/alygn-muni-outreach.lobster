@@ -4,10 +4,19 @@ metadata:
   project: alygn
   region: costa-rica
   type: muni-outreach
-  wave: 1
+  wave: {{ LATEST_WAVE_NUMBER + 1 }}
   total_municipalities: 82
-  skill: alygn-municipal-ai-governance-outreach
+  skill: alygn-outreach
   learnings_source: vc-outreach (adapted for municipal context)
+
+# Wave State File Schema
+# Path: $HOME/.openclaw/workspace/reports/alygn/muni-wave-state.json
+# {
+#   "wave": { "number": 1, "date": "2026-03-26", "nextDate": "2026-04-02", "status": "idle" },
+#   "entities": {},
+#   "lastRun": "2026-03-26T14:00:00Z",
+#   "phaseCompleted": null
+# }
 
 # Municipal Outreach Campaign Workflow
 # Database: Supabase PostgreSQL (remote - use JS utilities, NOT raw SQL)
@@ -20,9 +29,34 @@ metadata:
 #   VIEW: v_x_warmup_status  - shows warmup phase
 #   VIEW: v_ready_for_email  - municipalities ready for email (x_warmup_phase2_at NOT NULL AND outreach_sent_at IS NULL)
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# MODE A vs MODE B EXECUTION
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# MODE A (Dry Run - Default):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Uses MOCK data for all API calls (Perplexity, email validation, etc.)
+#   → Simulated Supabase database responses
+#   → Safe for testing workflow logic without external API calls
+#
+# MODE B (Real API + Dry Run):
+#   USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Real Perplexity/web_search API calls for mayor research
+#   → Real email validation via ZeroBounce
+#   → Simulated Supabase database responses
+#   → Use when you need real research data but don't want to write to database
+#
+# MODE C (Production - No Flags):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts
+#   → Real API calls + real Supabase database writes
+#   → ACTUAL EMAIL SENDING via Smartlead
+#   → Requires explicit approval gates
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
 # IMPORTANT: All database operations use Bun TypeScript utilities via supabase-utils.ts!
 # ❌ DO NOT use raw SQL commands - they will FAIL against remote Supabase
-# ✅ USE: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=<action>
+# ✅ USE: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=<action>
 
 # Costa Rica Pilot Workflow - VC Learnings Applied to Municipal Context
 # Tests end-to-end municipal outreach automation with TRAIGA Act focus
@@ -45,7 +79,7 @@ steps:
     command: openclaw invoke --tool x-growth --action discover --target=municipalities --filter="Costa Rica" --limit=20 --dry-run
     description: "Discover official municipal X accounts via x-growth"
     output:
-      file: /tmp/muni-cr-x-accounts.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-x-accounts/muni-cr-x-accounts-{timestamp}.json
     notes: |
       Warms up before email outreach by discovering official municipal X accounts.
       Links to x-warmup.lobster for engagement sequencing.
@@ -54,26 +88,28 @@ steps:
 
   # ============================================================
   # PHASE 1: Discovery (Firecrawl)
+  # MODE B: USE_DIRECT_API=true enables real web scraping for canton discovery
   # ============================================================
   - id: phase1-discovery
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
-    description: "Discover all 82 Costa Rican cantones"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
+    description: "Discover all 82 Costa Rican cantones (Mode B: real web scraping)"
     after: prelude-x-discovery
     output:
-      file: /tmp/muni-cr-discovered.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-discover/muni-cr-discovered-{timestamp}.json
     notes: |
       Discovery results INSERTed into municipalities table.
       Supabase: INSERT INTO municipalities (name, country, region, province, discovered_at)
 
   # ============================================================
   # PHASE 2: Research Mayor Names
+  # MODE B: USE_DIRECT_API=true enables real Perplexity research for mayor names
   # ============================================================
   - id: phase2-research-mayors
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=research --region=costa-rica --input=/tmp/muni-cr-discovered.json --dry-run
-    description: "Research actual mayor names for each canton BEFORE email validation"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=research --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-discover/muni-cr-discovered-{timestamp}.json --dry-run
+    description: "Research actual mayor names for each canton (Mode B: real Perplexity research)"
     after: phase1-discovery
     output:
-      file: /tmp/muni-cr-mayor-names.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-mayor/muni-cr-mayor-names-{timestamp}.json
     notes: |
       CRITICAL: Must research mayor names BEFORE validation phase.
       Uses --action=research (NOT research-mayors).
@@ -87,13 +123,14 @@ steps:
 
   # ============================================================
   # PHASE 2.5: Email Validation with Mayor Name Context
+  # MODE B: USE_DIRECT_API=true enables real ZeroBounce validation
   # ============================================================
   - id: phase2-5-validate-emails
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=validate --region=costa-rica --input=/tmp/muni-cr-mayor-names.json --dry-run
-    description: "Validate emails using mayor name context - generic=Fail, personal=Pass"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=validate --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-mayor/muni-cr-mayor-names-{timestamp}.json --dry-run
+    description: "Validate emails using mayor name context (Mode B: real ZeroBounce API)"
     after: phase2-research-mayors
     output:
-      file: /tmp/muni-cr-validated.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-validate/muni-cr-validated-{timestamp}.json
     notes: |
       Validation rules (CRITICAL):
         - Generic emails (contacto@, info@, administracion@) → FAIL
@@ -101,20 +138,20 @@ steps:
         - On FAIL: Update municipalities.notes JSONB with validation failure reason
       Supabase on FAIL: 
         SCRIPT: supabase-utils.ts
-        CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=update-validation --muni-id=<id> --reason="generic email - research mayor name"
+        CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=update-validation --muni-id=<id> --reason="generic email - research mayor name"
       Supabase on PASS: 
         SCRIPT: supabase-utils.ts
-        CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=update-research --muni-id=<id> --mayor-name=<name>
+        CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=update-research --muni-id=<id> --mayor-name=<name>
 
   # ============================================================
   # PHASE 3: Supabase Status Update (Research)
   # ============================================================
   - id: phase3-update-supabase-research
-    command: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=update-research --input=/tmp/muni-cr-validated.json --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=update-research --input=$HOME/.openclaw/workspace/reports/alygn/muni-validate/muni-cr-validated-{timestamp}.json --dry-run
     description: "Update Supabase municipalities table with research status"
     after: phase2-5-validate-emails
     output:
-      file: /tmp/muni-cr-supabase-research.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-research/muni-cr-supabase-research-{timestamp}.json
     notes: |
       Supabase columns updated:
         - researched_at: NOW()
@@ -126,13 +163,14 @@ steps:
 
   # ============================================================
   # PHASE 4: Personalization (Grok) - Municipal-Specific
+  # MODE B: USE_DIRECT_API=true enables real Groq/Grok personalization
   # ============================================================
   - id: phase4-personalize
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=personalize --region=costa-rica --input=/tmp/muni-cr-validated.json --variant=traiga --language=es --dry-run
-    description: "Generate personalized Spanish emails with TRAIGA Act context"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=personalize --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-validate/muni-cr-validated-{timestamp}.json --variant=traiga --language=es --dry-run
+    description: "Generate personalized Spanish emails (Mode B: real Grok API)"
     after: phase3-update-supabase-research
     output:
-      file: /tmp/muni-cr-personalized.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
     notes: |
       Personalization requirements:
         - Body: 1-2 sentences connecting to TRAIGA Act implementation
@@ -143,18 +181,18 @@ steps:
       Template lookup: SELECT * FROM outreach_templates WHERE variant=? AND is_active=TRUE
       Draft tracking: 
         SCRIPT: supabase-utils.ts
-        CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=log-outreach --muni-id=<id> --variant=<variant> --input=/tmp/muni-cr-personalized.json
+        CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=log-outreach --muni-id=<id> --variant=<variant> --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
         This creates outreach_email_logs record for tracking
 
   # ============================================================
   # PHASE 5: Manual Review (Approval Required)
   # ============================================================
   - id: phase5-review
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=review --region=costa-rica --input=/tmp/muni-cr-personalized.json --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=review --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json --dry-run
     description: "Manual review and approval of drafts before sending"
     after: phase4-personalize
     output:
-      file: /tmp/muni-cr-review.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-review/muni-cr-reviewed-{timestamp}.json
     notes: |
       MANUAL APPROVAL REQUIRED before Phase 6.
       Review requirements:
@@ -166,17 +204,17 @@ steps:
         2. Human approves via Discord/Notion
         3. THEN: Update status via Supabase
            SCRIPT: supabase-utils.ts
-           CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=update-sent --muni-id=<muniId> --message-id=<emailId>
+           CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=update-sent --muni-id=<muniId> --message-id=<emailId>
 
   # ============================================================
   # PHASE 5.5: SentEmailTracker Check (Pre-Send)
   # ============================================================
   - id: phase5-5-sent-tracker-check
-    command: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=check-sent --input=/tmp/muni-cr-personalized.json --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=check-sent --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json --dry-run
     description: "Check SentEmailTracker before any send - skip if already contacted"
     after: phase5-review
     output:
-      file: /tmp/muni-cr-sent-check.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-sent/muni-cr-sent-check-{timestamp}.json
     notes: |
       SentEmailTracker check (CRITICAL - uses municipal_outreach table):
         - Query via Supabase:
@@ -190,44 +228,46 @@ steps:
 
   # ============================================================
   # PHASE 6: Email Sending (Smartlead) - Production Only
+  # NO DRY RUN FLAG = REAL SENDING
   # ============================================================
   - id: phase6-send
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=send --region=costa-rica --input=/tmp/muni-cr-personalized.json --dry-run
-    description: "Send emails via Smartlead with Tania CC and rate limiting"
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=send --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
+    description: "Send emails via Smartlead with Tania CC and rate limiting (PRODUCTION)"
     after: phase5-5-sent-tracker-check
     output:
-      file: /tmp/muni-cr-sent.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-sent/muni-cr-sent-{timestamp}.json
     notes: |
       Rate limiting, municipal-specific:
         - 5 emails per run
         - Delay between sends: 60-180 seconds (randomized)
         - Daily cap: 5 municipal emails/day
       CC requirement:
-        - CC: tanialeaidm@gmail.com (PRODUCTION ONLY, not --dry-run)
+        - CC: tanialeaidm@gmail.com (PRODUCTION ONLY - no --dry-run flag)
       Supabase updates on send (TWO operations - use supabase-utils.ts):
         1. Log sent email:
            SCRIPT: supabase-utils.ts
-           CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=log-outreach --muni-id=<id> --input=/tmp/muni-cr-sent.json
+           CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=log-outreach --muni-id=<id> --input=$HOME/.openclaw/workspace/reports/alygn/muni-sent/muni-cr-sent-{timestamp}.json
         2. Update municipality:
            SCRIPT: supabase-utils.ts  
-           CALL: bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=update-sent --muni-id=<muniId> --message-id=<msgId> --sent-date=<ISOdate>
+           CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=update-sent --muni-id=<muniId> --message-id=<msgId> --sent-date=<ISOdate>
 
   # ============================================================
-  # PHASE 7: Full Pipeline Execution (for testing)
+  # PHASE 7 (OPTIONAL): Full Pipeline Execution (for testing)
+  # MODE B: Real API calls for discovery and research phases
   # ============================================================
   - id: phase7-pipeline
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=pipeline --region=costa-rica --limit=5 --dry-run
-    description: "Run complete pipeline end-to-end with all VC learnings"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=pipeline --region=costa-rica --limit=5 --dry-run
+    description: "Run complete pipeline end-to-end with all VC learnings (Mode B)"
     after: phase6-send
     output:
-      file: /tmp/muni-cr-pipeline.json
+      file: $HOME/.openclaw/workspace/reports/alygn/muni-pipeline/muni-cr-pipeline-{timestamp}.json
 
 # ============================================================
 # ERROR HANDLING & SAFETY
 # ============================================================
 on_error:
   notify: discord
-  channel: "1466532145257255004"
+  channel: "1486784946134712500"
   include_log: true
   halt_on_critical: true
   safety_rules:
@@ -287,7 +327,7 @@ error_handling:
 # ============================================================
 resume:
   enabled: true
-  token_file: /tmp/muni-cr-resume-token.json
+  token_file: $HOME/.openclaw/workspace/reports/alygn/muni-cr-resume-token.json
   skip_completed_steps: true
 
 # ============================================================
@@ -296,23 +336,23 @@ resume:
 notifications:
   on_start:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "🏛️ Starting Alygn Municipal Outreach (Costa Rica) - TRAIGA Act focus..."
   on_complete:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "✅ Alygn Municipal Outreach (Costa Rica) completed! All 82 cantones processed."
   on_error:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "❌ Alygn Municipal Outreach (Costa Rica) workflow failed at step: {{failed_step}}"
   on_rate_limit:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "⏸️ Rate limit hit - pausing before retry..."
   on_invalid_email:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "⚠️ Invalid email detected - marked in municipalities.notes for research"
 
 # Municipal Personalization Specifications
@@ -386,7 +426,7 @@ validation_failure_protocol:
 #
 # UTILITY SCRIPT:
 #   supabase-utils.ts   - Core status operations (Bun runtime)
-#     bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=<action>
+#     bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=<action>
 #
 # AVAILABLE ACTIONS:
 #   --action=check-sent           - Check if municipality already sent (--muni-id=<id>)
@@ -400,10 +440,10 @@ validation_failure_protocol:
 #   JSON array of objects with relevant fields per action
 #
 # ENVIRONMENT VARS REQUIRED:
-#   (Loaded from $HOME/.openclaw/workspace/config/credentials.json)
+#   (Loaded from $HOME/.openclaw/workspace/config/credentials.json and exported at $HOME/.openclaw/workspace/scripts/shared/load-credentials.js)
 #
 # EXECUTION PATTERN:
-#   bun $HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts --action=<action> [--dry-run]
+#   bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=<action> [--dry-run]
 
 # ============================================================
 # DATABASE REFERENCE CARD (for alygn-outreach CLI)

@@ -3,6 +3,7 @@
 ## Overview
 
 The Alygn Outreach Skill exposes a dual API:
+
 1. **CLI** — Human- or script-driven command execution
 2. **Programmatic** — TypeScript module import for use in other Node.js projects
 
@@ -18,17 +19,17 @@ alygn-outreach --type=<vc|municipal> --action=<action> [options]
 
 ### Arguments
 
-| Argument | Required | Default | Description |
-|---|---|---|---|
-| `--type` | Yes | — | Entity type: `vc` or `municipal` |
-| `--action` | Yes | — | One of: `discover`, `validate`, `research`, `personalize`, `send`, `pipeline`, `stats` |
-| `--limit` | No | `20` | Max entities to process |
-| `--region` | No | — | Region filter (e.g., `costa-rica`) |
-| `--input` | No | — | Query or entity ID(s) to process |
-| `--dry-run` | No | `false` | Simulate without side effects |
-| `--draft-status` | No | `Approved` | Filter by draft status |
-| `--send-to-list` | No | `[]` | Comma-separated entity IDs to explicitly send to |
-| `--config` | No | `{}` | JSON config object |
+| Argument         | Required | Default    | Description                                                                            |
+| ---------------- | -------- | ---------- | -------------------------------------------------------------------------------------- |
+| `--type`         | Yes      | —          | Entity type: `vc` or `municipal`                                                       |
+| `--action`       | Yes      | —          | One of: `discover`, `validate`, `research`, `personalize`, `send`, `pipeline`, `stats` |
+| `--limit`        | No       | `20`       | Max entities to process                                                                |
+| `--region`       | No       | —          | Region filter (e.g., `costa-rica`)                                                     |
+| `--input`        | No       | —          | Query or entity ID(s) to process                                                       |
+| `--dry-run`      | No       | `false`    | Simulate without side effects                                                          |
+| `--draft-status` | No       | `Approved` | Filter by draft status                                                                 |
+| `--send-to-list` | No       | `[]`       | Comma-separated entity IDs to explicitly send to                                       |
+| `--config`       | No       | `{}`       | JSON config object                                                                     |
 
 ### Examples
 
@@ -57,13 +58,13 @@ alygn-outreach --type=vc --action=stats
 
 ### Exit Codes
 
-| Code | Meaning |
-|---|---|
-| `0` | Success |
-| `1` | General error |
-| `2` | Invalid arguments |
-| `3` | No strategy registered for action |
-| `4` | Dry run completed (treated as success) |
+| Code | Meaning                                |
+| ---- | -------------------------------------- |
+| `0`  | Success                                |
+| `1`  | General error                          |
+| `2`  | Invalid arguments                      |
+| `3`  | No strategy registered for action      |
+| `4`  | Dry run completed (treated as success) |
 
 ---
 
@@ -84,7 +85,7 @@ class DiscoveryStrategy {
    */
   async discover(
     query: string,
-    options?: Record<string, unknown>
+    options?: Record<string, unknown>,
   ): Promise<OutreachEntity[]>;
 }
 ```
@@ -168,7 +169,7 @@ class SendingStrategy {
    */
   async send(
     entity: OutreachEntity,
-    options?: Record<string, unknown>
+    options?: Record<string, unknown>,
   ): Promise<SendingResult>;
 }
 ```
@@ -182,7 +183,7 @@ class SendingStrategy {
 ```typescript
 interface IOutreachEntity {
   id: string;
-  type: 'vc' | 'municipal';
+  type: "vc" | "municipal";
   name: string;
   email: string | null;
   website: string | null;
@@ -213,21 +214,26 @@ interface Location {
 }
 
 type EntityStatus =
-  | 'discovered' | 'validated' | 'researched'
-  | 'personalized' | 'sent' | 'replied'
-  | 'meeting' | 'passed' | 'not_interested';
+  | "discovered"
+  | "validated"
+  | "researched"
+  | "personalized"
+  | "sent"
+  | "replied"
+  | "meeting"
+  | "passed"
+  | "not_interested";
 
-type Priority = 'high' | 'medium' | 'low';
+type Priority = "high" | "medium" | "low";
 
-type DraftStatus =
-  'Not drafted' | 'Drafted' | 'Approved' | 'Rejected' | 'Sent';
+type DraftStatus = "Not drafted" | "Drafted" | "Approved" | "Rejected" | "Sent";
 ```
 
 ### `VCEntity`
 
 ```typescript
 interface IVCTypeData {
-  firmType: 'vc' | 'angel' | 'corporate' | 'accelerator';
+  firmType: "vc" | "angel" | "corporate" | "accelerator";
   stageFocus: string[];
   sectorFocus: string[];
   checkSizeMin: number | null;
@@ -254,7 +260,7 @@ interface IRecentInvestment {
 }
 
 interface IVC extends IOutreachEntity {
-  type: 'vc';
+  type: "vc";
   typeData: IVCTypeData;
 }
 ```
@@ -263,7 +269,7 @@ interface IVC extends IOutreachEntity {
 
 ```typescript
 interface IMunicipalTypeData {
-  governmentType: 'city' | 'county' | 'state' | 'regional';
+  governmentType: "city" | "county" | "state" | "regional";
   population: number | null;
   budget: number | null;
   departments: IDepartment[];
@@ -293,18 +299,18 @@ interface IKeyContact {
 interface IInitiative {
   name: string;
   description: string;
-  status: 'active' | 'planned' | 'completed' | 'paused';
+  status: "active" | "planned" | "completed" | "paused";
   budget?: number;
 }
 
 interface IDecisionMaker {
   name: string;
   title: string;
-  influence: 'high' | 'medium' | 'low';
+  influence: "high" | "medium" | "low";
 }
 
 interface IMunicipality extends IOutreachEntity {
-  type: 'municipal';
+  type: "municipal";
   typeData: IMunicipalTypeData;
 }
 ```
@@ -340,7 +346,7 @@ interface IDiscoveryResult {
 interface IValidationResult {
   valid: boolean;
   confidenceScore: number;
-  result: 'valid' | 'invalid' | 'risky' | 'unknown';
+  result: "valid" | "invalid" | "risky" | "unknown";
   details: { reason: string; message: string };
   validator?: string;
 }
@@ -350,8 +356,15 @@ interface IValidationResult {
 
 ```typescript
 interface ICLIArgs {
-  type: 'vc' | 'municipal';
-  action: 'discover' | 'validate' | 'research' | 'personalize' | 'send' | 'pipeline' | 'stats';
+  type: "vc" | "municipal";
+  action:
+    | "discover"
+    | "validate"
+    | "research"
+    | "personalize"
+    | "send"
+    | "pipeline"
+    | "stats";
   dryRun: boolean;
   limit: number;
   region: string | null;
@@ -370,7 +383,7 @@ interface IDiscoveryConfig {
 }
 
 interface IValidationConfig {
-  validatorType?: 'regex-mx' | 'zerobounce';
+  validatorType?: "regex-mx" | "zerobounce";
   checkMxRecords?: boolean;
   checkDisposable?: boolean;
   checkRoleBased?: boolean;
@@ -378,7 +391,7 @@ interface IValidationConfig {
 }
 
 interface ISendingConfig {
-  providerType?: 'smtp' | 'smartlead';
+  providerType?: "smtp" | "smartlead";
   providerConfig?: Record<string, unknown>;
   fromEmail?: string;
   testEmail?: string;
@@ -393,61 +406,65 @@ interface ISendingConfig {
 ### Basic Usage
 
 ```typescript
-import { OutreachPipeline } from './src/core/OutreachPipeline.js';
-import { VCDiscoveryStrategy } from './src/strategies/discovery/VCDiscoveryStrategy.js';
-import { VCResearchStrategy } from './src/strategies/research/VCResearchStrategy.js';
-import { VCPersonalizationStrategy } from './src/strategies/personalization/VCPersonalizationStrategy.js';
-import { DefaultValidationStrategy } from './src/strategies/validation/DefaultValidationStrategy.js';
-import { DefaultSendingStrategy } from './src/strategies/sending/DefaultSendingStrategy.js';
+import { OutreachPipeline } from "./src/core/OutreachPipeline";
+import { VCDiscoveryStrategy } from "./src/strategies/discovery/VCDiscoveryStrategy";
+import { VCResearchStrategy } from "./src/strategies/research/VCResearchStrategy";
+import { VCPersonalizationStrategy } from "./src/strategies/personalization/VCPersonalizationStrategy";
+import { DefaultValidationStrategy } from "./src/strategies/validation/DefaultValidationStrategy";
+import { DefaultSendingStrategy } from "./src/strategies/sending/DefaultSendingStrategy";
 
 // Create pipeline
 const pipeline = new OutreachPipeline({
-  type: 'vc',
+  type: "vc",
   config: {},
-  dryRun: true
+  dryRun: true,
 });
 
 // Register strategies
-pipeline.registerStrategy('discover', new VCDiscoveryStrategy());
-pipeline.registerStrategy('validate', new DefaultValidationStrategy());
-pipeline.registerStrategy('research', new VCResearchStrategy());
-pipeline.registerStrategy('personalize', new VCPersonalizationStrategy());
-pipeline.registerStrategy('send', new DefaultSendingStrategy());
+pipeline.registerStrategy("discover", new VCDiscoveryStrategy());
+pipeline.registerStrategy("validate", new DefaultValidationStrategy());
+pipeline.registerStrategy("research", new VCResearchStrategy());
+pipeline.registerStrategy("personalize", new VCPersonalizationStrategy());
+pipeline.registerStrategy("send", new DefaultSendingStrategy());
 
 // Discover
-const { entities } = await pipeline.discover('AI safety investors', { limit: 10 });
+const { entities } = await pipeline.discover("AI safety investors", {
+  limit: 10,
+});
 console.log(`Discovered ${entities.length} VCs`);
 
 // Run full pipeline
 const result = await pipeline.run(entities[0]);
-console.log(result.success ? 'Pipeline complete' : `Failed at ${result.failedAt}`);
+console.log(
+  result.success ? "Pipeline complete" : `Failed at ${result.failedAt}`,
+);
 ```
 
 ### Public Exports from `src/index.ts`
 
 ```typescript
 // Entities
-export { OutreachEntity } from './entities/OutreachEntity.js';
-export { VCEntity } from './entities/VCEntity.js';
-export { MunicipalEntity } from './entities/MunicipalEntity.js';
+export { OutreachEntity } from "./entities/OutreachEntity";
+export { VCEntity } from "./entities/VCEntity";
+export { MunicipalEntity } from "./entities/MunicipalEntity";
 
 // Types
-export * from './entities/types.js';
+export * from "./entities/types";
 
 // Core
-export { OutreachPipeline } from './core/OutreachPipeline.js';
+export { OutreachPipeline } from "./core/OutreachPipeline";
 
 // Strategies
-export { DiscoveryStrategy } from './strategies/discovery/DiscoveryStrategy.js';
-export { VCDiscoveryStrategy } from './strategies/discovery/VCDiscoveryStrategy.js';
-export { MunicipalDiscoveryStrategy } from './strategies/discovery/MunicipalDiscoveryStrategy.js';
-export { PersonalizationStrategy } from './strategies/personalization/PersonalizationStrategy.js';
-export { VCPersonalizationStrategy } from './strategies/personalization/VCPersonalizationStrategy.js';
-export { MunicipalPersonalizationStrategy } from './strategies/personalization/MunicipalPersonalizationStrategy.js';
-export { ResearchStrategy } from './strategies/research/ResearchStrategy.js';
-export { VCResearchStrategy } from './strategies/research/VCResearchStrategy.js';
-export { MunicipalResearchStrategy } from './strategies/research/MunicipalResearchStrategy.js';
-export { SendingStrategy } from './strategies/sending/SendingStrategy.js';
-export { DefaultSendingStrategy } from './strategies/sending/DefaultSendingStrategy.js';
-export { StrategyRegistry } from './strategies/StrategyRegistry.js';
+export { DiscoveryStrategy } from "./strategies/discovery/DiscoveryStrategy";
+export { VCDiscoveryStrategy } from "./strategies/discovery/VCDiscoveryStrategy";
+export { MunicipalDiscoveryStrategy } from "./strategies/discovery/MunicipalDiscoveryStrategy";
+export { PersonalizationStrategy } from "./strategies/personalization/PersonalizationStrategy";
+export { VCPersonalizationStrategy } from "./strategies/personalization/VCPersonalizationStrategy";
+export { MunicipalPersonalizationStrategy } from "./strategies/personalization/MunicipalPersonalizationStrategy";
+export { ResearchStrategy } from "./strategies/research/ResearchStrategy";
+export { VCResearchStrategy } from "./strategies/research/VCResearchStrategy";
+export { MunicipalResearchStrategy } from "./strategies/research/MunicipalResearchStrategy";
+export { SendingStrategy } from "./strategies/sending/SendingStrategy";
+export { DefaultSendingStrategy } from "./strategies/sending/DefaultSendingStrategy";
+export { StrategyRegistry } from "./strategies/StrategyRegistry";
 ```

@@ -30,6 +30,7 @@ Pipeline
 ```
 
 **Rule of thumb:**
+
 - If behavior differs significantly between VC and Municipal → create type-specific subclasses
 - If behavior is the same for both types → use a single shared strategy registered as `'default'`
 
@@ -51,13 +52,13 @@ src/strategies/{category}/
 **Base class:** `src/strategies/discovery/DiscoveryStrategy.ts`
 
 ```typescript
-import { DiscoveryStrategy } from './DiscoveryStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { DiscoveryStrategy } from "./DiscoveryStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class MyDiscoveryStrategy extends DiscoveryStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
-    this.name = 'my-discovery';
+    this.name = "my-discovery";
   }
 
   /**
@@ -67,7 +68,7 @@ export class MyDiscoveryStrategy extends DiscoveryStrategy {
    */
   async discover(
     query: string,
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {},
   ): Promise<OutreachEntity[]> {
     // Your implementation here
     const entities: OutreachEntity[] = [];
@@ -76,27 +77,34 @@ export class MyDiscoveryStrategy extends DiscoveryStrategy {
     const results = await this.fetchFromAPI(query, options);
 
     for (const item of results) {
-      entities.push(new OutreachEntity({
-        id: this.generateId(),
-        type: this.type, // 'vc' or 'municipal'
-        name: item.name,
-        email: item.email ?? null,
-        website: item.website ?? null,
-        phone: null,
-        location: { city: item.city, state: null, country: item.country, region: null },
-        status: 'discovered',
-        priority: 'medium',
-        discoveredAt: new Date(),
-        lastUpdatedAt: new Date(),
-        outreachCount: 0,
-        researchNotes: null,
-        personalizationContext: null,
-        typeData: {},
-        emailValidation: null,
-        sentEmailId: null,
-        sentAt: null,
-        draftStatus: 'Not drafted'
-      }));
+      entities.push(
+        new OutreachEntity({
+          id: this.generateId(),
+          type: this.type, // 'vc' or 'municipal'
+          name: item.name,
+          email: item.email ?? null,
+          website: item.website ?? null,
+          phone: null,
+          location: {
+            city: item.city,
+            state: null,
+            country: item.country,
+            region: null,
+          },
+          status: "discovered",
+          priority: "medium",
+          discoveredAt: new Date(),
+          lastUpdatedAt: new Date(),
+          outreachCount: 0,
+          researchNotes: null,
+          personalizationContext: null,
+          typeData: {},
+          emailValidation: null,
+          sentEmailId: null,
+          sentAt: null,
+          draftStatus: "Not drafted",
+        }),
+      );
     }
 
     return entities;
@@ -109,17 +117,15 @@ export class MyDiscoveryStrategy extends DiscoveryStrategy {
 **Base class:** `src/strategies/validation/ValidationStrategy.ts`
 
 ```typescript
-import { ValidationStrategy } from './ValidationStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { ValidationStrategy } from "./ValidationStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class MyValidationStrategy extends ValidationStrategy {
-  async validate(
-    entity: OutreachEntity
-  ): Promise<Record<string, unknown>> {
+  async validate(entity: OutreachEntity): Promise<Record<string, unknown>> {
     const email = entity.email;
 
     if (!email) {
-      return { result: 'invalid', confidence: 0, reason: 'no_email' };
+      return { result: "invalid", confidence: 0, reason: "no_email" };
     }
 
     // Call your validation API
@@ -130,9 +136,9 @@ export class MyValidationStrategy extends ValidationStrategy {
       confidence: validation.score, // 0-1
       details: {
         reason: validation.reason,
-        message: validation.message
+        message: validation.message,
       },
-      validator: 'my-validator'
+      validator: "my-validator",
     };
   }
 }
@@ -143,18 +149,16 @@ export class MyValidationStrategy extends ValidationStrategy {
 **Base class:** `src/strategies/research/ResearchStrategy.ts`
 
 ```typescript
-import { ResearchStrategy } from './ResearchStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { ResearchStrategy } from "./ResearchStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class MyResearchStrategy extends ResearchStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
-    this.name = 'my-research';
+    this.name = "my-research";
   }
 
-  async research(
-    entity: OutreachEntity
-  ): Promise<{
+  async research(entity: OutreachEntity): Promise<{
     success: boolean;
     research?: Record<string, unknown>;
     entity?: OutreachEntity;
@@ -176,9 +180,7 @@ export class MyResearchStrategy extends ResearchStrategy {
   }
 
   // Optional: dry run variant
-  async researchDryRun(
-    entity: OutreachEntity
-  ): Promise<{
+  async researchDryRun(entity: OutreachEntity): Promise<{
     success: boolean;
     research?: Record<string, unknown>;
     entity?: OutreachEntity;
@@ -188,7 +190,7 @@ export class MyResearchStrategy extends ResearchStrategy {
     return {
       success: true,
       research: { dryRun: true, wouldResearch: entity.name },
-      entity
+      entity,
     };
   }
 }
@@ -199,18 +201,16 @@ export class MyResearchStrategy extends ResearchStrategy {
 **Base class:** `src/strategies/personalization/PersonalizationStrategy.ts`
 
 ```typescript
-import { PersonalizationStrategy } from './PersonalizationStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { PersonalizationStrategy } from "./PersonalizationStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class MyPersonalizationStrategy extends PersonalizationStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
-    this.name = 'my-personalization';
+    this.name = "my-personalization";
   }
 
-  async personalize(
-    entity: OutreachEntity
-  ): Promise<Record<string, unknown>> {
+  async personalize(entity: OutreachEntity): Promise<Record<string, unknown>> {
     // Generate personalized email content
     const subject = this.generateSubject(entity);
     const html = this.generateEmailHTML(entity);
@@ -222,19 +222,19 @@ export class MyPersonalizationStrategy extends PersonalizationStrategy {
       body: html,
       text,
       entity,
-      variant: 'governance'
+      variant: "governance",
     };
   }
 
   // Optional: dry run variant
   async personalizeDryRun(
-    entity: OutreachEntity
+    entity: OutreachEntity,
   ): Promise<Record<string, unknown>> {
     return {
       success: true,
       subject: `[DRY RUN] Would personalize for ${entity.name}`,
       entity,
-      dryRun: true
+      dryRun: true,
     };
   }
 }
@@ -245,23 +245,27 @@ export class MyPersonalizationStrategy extends PersonalizationStrategy {
 **Base class:** `src/strategies/sending/SendingStrategy.ts`
 
 ```typescript
-import { SendingStrategy } from './SendingStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { SendingStrategy } from "./SendingStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class MySendingStrategy extends SendingStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
-    this.name = 'my-sending';
+    this.name = "my-sending";
   }
 
   async send(
     entity: OutreachEntity,
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {},
   ): Promise<Record<string, unknown>> {
-    const { dryRun = false, draftStatus = 'Approved', sendToList = [] } = options;
+    const {
+      dryRun = false,
+      draftStatus = "Approved",
+      sendToList = [],
+    } = options;
 
     if (!entity.email) {
-      return { success: false, error: 'no_email', skipped: true };
+      return { success: false, error: "no_email", skipped: true };
     }
 
     if (dryRun) {
@@ -270,14 +274,14 @@ export class MySendingStrategy extends SendingStrategy {
         testMode: true,
         originalTo: entity.email,
         wouldSend: true,
-        skipped: false
+        skipped: false,
       };
     }
 
     // Actually send
     const messageId = await this.sendEmail(entity);
 
-    return { success: true, messageId, provider: 'my-provider' };
+    return { success: true, messageId, provider: "my-provider" };
   }
 }
 ```
@@ -292,21 +296,25 @@ After creating a strategy, you must register it in `Pipeline.ts`.
 
 ```typescript
 // In src/core/Pipeline.ts
-import { MyDiscoveryStrategy } from '../strategies/discovery/MyDiscoveryStrategy.js';
+import { MyDiscoveryStrategy } from "../strategies/discovery/MyDiscoveryStrategy";
 ```
 
 ### Step 2: Register in `initializeStrategies()`
 
 ```typescript
 // In initializeStrategies() method
-this.registry.register('mytype', 'discover', new MyDiscoveryStrategy(this.config.discovery as Record<string, unknown>));
+this.registry.register(
+  "mytype",
+  "discover",
+  new MyDiscoveryStrategy(this.config.discovery as Record<string, unknown>),
+);
 ```
 
 ### Step 3: Support the new type in `createEntityFromData()`
 
 ```typescript
 // In createEntityFromData() method
-if (entityType === 'mytype') {
+if (entityType === "mytype") {
   return MyEntity.fromJSON(data);
 }
 ```
@@ -327,19 +335,19 @@ Here's a complete walkthrough: building a **Crunchbase-based VC discovery strate
 
 ```typescript
 // src/strategies/discovery/CrunchbaseDiscoveryStrategy.ts
-import { DiscoveryStrategy } from './DiscoveryStrategy.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
+import { DiscoveryStrategy } from "./DiscoveryStrategy";
+import type { OutreachEntity } from "../../entities/OutreachEntity";
 
 export class CrunchbaseDiscoveryStrategy extends DiscoveryStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
-    this.name = 'crunchbase-discovery';
+    this.name = "crunchbase-discovery";
     this.apiKey = config.crunchbaseApiKey as string | undefined;
   }
 
   async discover(
     query: string,
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {},
   ): Promise<OutreachEntity[]> {
     const { limit = 20 } = options;
     const entities: OutreachEntity[] = [];
@@ -347,40 +355,42 @@ export class CrunchbaseDiscoveryStrategy extends DiscoveryStrategy {
     // Fetch from Crunchbase API
     const organizations = await this.fetchCrunchbaseOrgs({
       query,
-      limit
+      limit,
     });
 
     for (const org of organizations) {
-      entities.push(new OutreachEntity({
-        id: `crunchbase-${org.uuid}`,
-        type: 'vc',
-        name: org.name,
-        email: null,
-        website: org.domain,
-        phone: null,
-        location: {
-          city: org.city,
-          state: org.region,
-          country: org.country,
-          region: null
-        },
-        status: 'discovered',
-        priority: 'medium',
-        discoveredAt: new Date(),
-        lastUpdatedAt: new Date(),
-        outreachCount: 0,
-        researchNotes: null,
-        personalizationContext: { crunchbaseUuid: org.uuid },
-        typeData: {
-          firmType: 'vc',
-          stageFocus: [],
-          sectorFocus: org.industry
-        },
-        emailValidation: null,
-        sentEmailId: null,
-        sentAt: null,
-        draftStatus: 'Not drafted'
-      }));
+      entities.push(
+        new OutreachEntity({
+          id: `crunchbase-${org.uuid}`,
+          type: "vc",
+          name: org.name,
+          email: null,
+          website: org.domain,
+          phone: null,
+          location: {
+            city: org.city,
+            state: org.region,
+            country: org.country,
+            region: null,
+          },
+          status: "discovered",
+          priority: "medium",
+          discoveredAt: new Date(),
+          lastUpdatedAt: new Date(),
+          outreachCount: 0,
+          researchNotes: null,
+          personalizationContext: { crunchbaseUuid: org.uuid },
+          typeData: {
+            firmType: "vc",
+            stageFocus: [],
+            sectorFocus: org.industry,
+          },
+          emailValidation: null,
+          sentEmailId: null,
+          sentAt: null,
+          draftStatus: "Not drafted",
+        }),
+      );
     }
 
     return entities;
@@ -402,10 +412,16 @@ export class CrunchbaseDiscoveryStrategy extends DiscoveryStrategy {
 In `Pipeline.ts`:
 
 ```typescript
-import { CrunchbaseDiscoveryStrategy } from '../strategies/discovery/CrunchbaseDiscoveryStrategy.js';
+import { CrunchbaseDiscoveryStrategy } from "../strategies/discovery/CrunchbaseDiscoveryStrategy";
 
 // In initializeStrategies():
-this.registry.register('vc', 'discover', new CrunchbaseDiscoveryStrategy(this.config.discovery as Record<string, unknown>));
+this.registry.register(
+  "vc",
+  "discover",
+  new CrunchbaseDiscoveryStrategy(
+    this.config.discovery as Record<string, unknown>,
+  ),
+);
 ```
 
 ### 3. Test it
@@ -422,25 +438,25 @@ bun bin/alygn-outreach.ts --type=vc --action=discover --limit=5 --dry-run
 
 ```typescript
 // src/strategies/discovery/__tests__/CrunchbaseDiscoveryStrategy.test.ts
-import { describe, test, expect } from 'bun:test';
-import { CrunchbaseDiscoveryStrategy } from '../CrunchbaseDiscoveryStrategy.js';
+import { describe, test, expect } from "bun:test";
+import { CrunchbaseDiscoveryStrategy } from "../CrunchbaseDiscoveryStrategy";
 
-describe('CrunchbaseDiscoveryStrategy', () => {
-  test('discovers VC firms from query', async () => {
+describe("CrunchbaseDiscoveryStrategy", () => {
+  test("discovers VC firms from query", async () => {
     const strategy = new CrunchbaseDiscoveryStrategy({
-      crunchbaseApiKey: process.env.CRUNCHBASE_API_KEY
+      crunchbaseApiKey: process.env.CRUNCHBASE_API_KEY,
     });
 
-    const entities = await strategy.discover('AI safety', { limit: 3 });
+    const entities = await strategy.discover("AI safety", { limit: 3 });
 
     expect(entities.length).toBeGreaterThan(0);
-    expect(entities[0].type).toBe('vc');
+    expect(entities[0].type).toBe("vc");
     expect(entities[0].name).toBeTruthy();
   });
 
-  test('respects limit option', async () => {
+  test("respects limit option", async () => {
     const strategy = new CrunchbaseDiscoveryStrategy({});
-    const entities = await strategy.discover('AI', { limit: 2 });
+    const entities = await strategy.discover("AI", { limit: 2 });
     expect(entities.length).toBeLessThanOrEqual(2);
   });
 });
@@ -463,7 +479,7 @@ bun bin/alygn-outreach.ts --type=vc --action=discover --limit=3 --dry-run
 
 # Test only research (with state file)
 bun bin/alygn-outreach.ts --type=vc --action=research \
-  --input=/tmp/alygn-vc-discovered-2026-03-26.json \
+  --input=$HOME/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-2026-03-26.json \
   --limit=3 --dry-run
 ```
 
@@ -499,7 +515,7 @@ export interface IDiscoveryConfig {
 }
 
 export interface IValidationConfig {
-  validatorType?: 'regex-mx' | 'zerobounce' | 'my-validator';
+  validatorType?: "regex-mx" | "zerobounce" | "my-validator";
   checkMxRecords?: boolean;
   minConfidenceScore?: number;
   // Add your config fields:

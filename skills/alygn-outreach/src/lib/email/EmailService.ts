@@ -2,73 +2,121 @@
  * EmailService
  * Orchestrates email sending with validation and error handling
  */
-import { EmailProviderFactory } from './EmailProviderFactory.js';
+import type { IEmailPayload, ISendResult } from './providers/EmailProvider';
+
+interface BatchEmailPayload {
+  to: string;
+  from?: string;
+  subject: string;
+  html: string;
+  text?: string;
+  cc?: string;
+}
+
+interface BatchResult {
+  sent: number;
+  failed: number;
+  total: number;
+  campaigns: Array<{
+    status: string;
+    to?: string;
+    subject?: string;
+    wouldSend?: boolean;
+    success?: boolean;
+    messageId?: string;
+    error?: string;
+  }>;
+}
+
+interface EmailProvider {
+  send(payload: IEmailPayload): Promise<ISendResult>;
+  validateConfig(): Promise<boolean>;
+  getName(): string;
+}
+
+interface EmailProviderFactory {
+  create(type: string, config: Record<string, unknown>): EmailProvider;
+}
 
 export class EmailService {
-  provider: ReturnType<typeof EmailProviderFactory.create>;
-  testEmail: string | null;
+  provider: EmailProvider | null = null;
+  testEmail: string | null = null;
+  private providerType: string;
+  private providerConfig: Record<string, unknown>;
 
   constructor(providerType: string, config: Record<string, unknown>) {
-    this.provider = EmailProviderFactory.create(providerType, config);
-    this.testEmail = null;
+    this.providerType = providerType;
+    this.providerConfig = config;
+  }
+
+  /**
+   * Initialize the email provider
+   */
+  private async initialize(): Promise<void> {
+    if (this.provider) return;
+    
+    try {
+      // Dynamic imports to avoid bundling issues
+      const { EmailProviderFactory } = await import('./EmailProviderFactory') as { EmailProviderFactory: EmailProviderFactory };
+      this.provider = EmailProviderFactory.create(this.providerType, this.providerConfig);
+    } catch (error) {
+      console.error('Failed to initialize email provider:', error);
+      throw error;
+    }
   }
 
   /**
    * Set test email override
    * All emails will be sent to this address instead
-   * @param {string} email - Test email address
    */
-  setTestEmail(email) {
+  setTestEmail(email: string): void {
     this.testEmail = email;
   }
 
   /**
    * Validate provider configuration
    */
-  async validateConfig() {
-    return await this.provider.validateConfig();
+  async validateConfig(): Promise<boolean> {
+    await this.initialize();
+    return await this.provider!.validateConfig();
   }
 
   /**
    * Send a single email
-   * @param {Object} payload - Email payload
-   * @param {string} payload.to - Recipient email
-   * @param {string} payload.from - Sender email
-   * @param {string} payload.subject - Email subject
-   * @param {string} payload.html - HTML content
-   * @param {string} payload.text - Plain text content
-   * @param {string} [payload.cc] - CC recipient (optional)
-   * @returns {Promise<Object>}
    */
-  async sendEmail(payload) {
-    const { to, from, subject, html, text, cc } = payload;
-
+  async sendEmail(payload: IEmailPayload): Promise<ISendResult> {
+    await this.initialize();
+    
     // Apply test email override if set
-    const actualPayload = this.testEmail
-      ? { to: this.testEmail, from, subject, html, text, cc }
+    const actualPayload: IEmailPayload = this.testEmail
+      ? { ...payload, to: this.testEmail }
       : payload;
 
-    const result = await this.provider.send(actualPayload);
+    const result = await this.provider!.send(actualPayload);
 
     return {
       ...result,
-      testMode: !!this.testEmail,
-      originalTo: this.testEmail ? payload.to : null
+      success: result.success,
+      messageId: result.messageId,
+      provider: result.provider,
+      to: this.testEmail ? payload.to : result.to,
+      subject: result.subject,
+      error: result.error
     };
   }
 
   /**
    * Send multiple emails with rate limiting
-   * @param {Array<Object>} emails - Array of email payloads
-   * @param {Object} options - Send options
-   * @param {number} options.rateLimitMs - Milliseconds between sends (default: 3000)
-   * @param {boolean} options.dryRun - If true, don't actually send
-   * @returns {Promise<Object>} - Batch results
    */
-  async sendBatch(emails, options = {}) {
+  async sendBatch(
+    emails: BatchEmailPayload[], 
+    options: { rateLimitMs?: number; dryRun?: boolean } = {}
+  ): Promise<BatchResult> {
     const { rateLimitMs = 3000, dryRun = false } = options;
 
-    const results = {
+    await this.initialize();
+
+    const results: BatchResult = {
       sent: 0,
       failed: 0,
       total: emails.length,
@@ -90,19 +138,32 @@ export class EmailService {
       }
 
       try {
-        const result = await this.sendEmail(email);
+        const result = await this.sendEmail({
+          to: email.to,
+          from: email.from,
+          subject: email.subject,
+          html: email.html,
+          text: email.text,
+          cc: email.cc
+        });
 
         if (result.success) {
           results.sent++;
           results.campaigns.push({
             status: 'sent',
-            ...result
+            to: result.to,
+            subject: result.subject,
+            success: true,
+            messageId: result.messageId
           });
         } else {
           results.failed++;
           results.campaigns.push({
             status: 'failed',
-            ...result
+            to: email.to,
+            subject: email.subject,
+            success: false,
+            error: result.error
           });
         }
 
@@ -116,7 +177,7 @@ export class EmailService {
           status: 'error',
           to: email.to,
           subject: email.subject,
-          error: error.message
+          error: (error as Error).message
         });
       }
     }
@@ -126,10 +187,9 @@ export class EmailService {
 
   /**
    * Get current provider name
-   * @returns {string}
    */
-  getProviderName() {
-    return this.provider.getName();
+  getProviderName(): string {
+    return this.provider?.getName() || 'unknown';
   }
 }
 

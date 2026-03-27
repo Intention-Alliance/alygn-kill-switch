@@ -4,18 +4,55 @@ metadata:
   project: alygn
   type: muni-outreach
   region: costa-rica
-  wave: 1
+  wave: wave: {{ LATEST_WAVE_NUMBER + 1 }}
   total_municipalities: 82
   skill: alygn-outreach
 
 # Wave State File Schema
-# Path: /tmp/alygn-muni-wave-state.json
+# Path: $HOME/.openclaw/workspace/reports/alygn/alygn-muni-wave-state.json
 # {
 #   "wave": { "number": 1, "date": "2026-03-26", "nextDate": "2026-04-02", "status": "idle" },
 #   "entities": {},
 #   "lastRun": "2026-03-26T14:00:00Z",
 #   "phaseCompleted": null
 # }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MODE A vs MODE B EXECUTION
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# MODE A (Dry Run - Default):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Uses MOCK data for all API calls (Perplexity, email validation, etc.)
+#   → Simulated Supabase database responses
+#   → Safe for testing workflow logic without external API calls
+#
+# MODE B (Real API + Dry Run):
+#   USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Real Perplexity/web_search API calls for mayor research
+#   → Real email validation via ZeroBounce
+#   → Simulated Supabase database responses
+#   → Use when you need real research data but don't want to write to database
+#
+# MODE C (Production - No Flags):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts
+#   → Real API calls + real Supabase database writes
+#   → ACTUAL EMAIL SENDING via Smartlead
+#   → Requires explicit approval gates
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# IMPORTANT: All database operations use Bun TypeScript utilities via supabase-utils.ts!
+# ❌ DO NOT use raw SQL commands - they will FAIL against remote Supabase
+# ✅ USE: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=<action>
+
+# Key changes from VC:
+#   - 5 emails/run, 60-180s delay, 5/day cap
+#   - Email validation: generic=Fail, personal=Pass, mayor name research required
+#   - Draft status workflow: INSERT to outreach_emails → status='draft' → status='sent' (no draft_status column)
+#   - Supabase for all status tracking (no supabase_table/supabase_columns/supabase_filter syntax - use SQL)
+#   - Spanish localization with TRAIGA Act personalization
+#   - Tone: supportive, trust-building (not salesy)
 
 steps:
   # ============================================================
@@ -51,7 +88,7 @@ steps:
   # PHASE 1: Discover (82 Costa Rica cantones)
   # ============================================================
   - id: phase1-discover
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
     description: "Discover all 82 Costa Rican cantones"
     after: wave-check
     output:
@@ -70,7 +107,7 @@ steps:
   # PHASE 2: Research Mayor Names (BEFORE validation)
   # ============================================================
   - id: phase2-research-mayors
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=research --region=costa-rica --input=/tmp/alygn-muni-discovered.json --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=research --region=costa-rica --input=/tmp/alygn-muni-discovered.json --dry-run
     description: "Research actual mayor names for each canton"
     after: phase1-discover
     output:
@@ -89,7 +126,7 @@ steps:
   # PHASE 2.5: Validate Emails (with mayor name context)
   # ============================================================
   - id: phase2-5-validate-emails
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=validate --region=costa-rica --input=/tmp/alygn-muni-mayors.json --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=validate --region=costa-rica --input=/tmp/alygn-muni-mayors.json --dry-run
     description: "Validate emails using mayor name context (generic=Fail, personal=Pass)"
     after: phase2-research-mayors
     output:
@@ -126,7 +163,7 @@ steps:
   # PHASE 4: Personalize (Spanish, TRAIGA variant)
   # ============================================================
   - id: phase4-personalize
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=personalize --region=costa-rica --input=/tmp/alygn-muni-validated.json --variant=traiga --language=es --dry-run
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=personalize --region=costa-rica --input=/tmp/alygn-muni-validated.json --variant=traiga --language=es --dry-run
     description: "Generate personalized Spanish emails with TRAIGA Act context"
     after: phase3-update-supabase
     output:
@@ -182,7 +219,7 @@ steps:
   # ============================================================
   - id: phase6-send
     command: |
-      node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach \
+      bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts \
         --type=municipal \
         --action=send \
         --region=costa-rica \
@@ -214,12 +251,12 @@ steps:
   # PHASE 7: Verify Sends
   # ============================================================
   - id: phase7-verify
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=verify --region=costa-rica
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=verify --region=costa-rica
     description: "Verify sends completed, update Supabase status"
     after: phase6-send
     output:
       channel: discord
-      target: "1466532145257255004"
+      target: "1486784946134712500"
     on_complete:
       script: |
         const fs = require('fs');
@@ -244,7 +281,7 @@ resume:
 # ============================================================
 on_error:
   notify: discord
-  channel: "1466532145257255004"
+  channel: "1486784946134712500"
   include_log: true
   halt_on_critical: true
   script: |
@@ -265,19 +302,19 @@ critical_errors:
 notifications:
   on_start:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "🏛️ Starting Wave {{wave.number}} Municipal Outreach (Costa Rica - 82 cantones)..."
   on_phase_complete:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "✅ Phase {{phase}} completed. Proceeding to next."
   on_complete:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "✅ Wave {{wave.number}} Municipal Outreach COMPLETE. Next wave: {{wave.nextDate}}"
   on_error:
     channel: discord
-    target: "1466532145257255004"
+    target: "1486784946134712500"
     message: "❌ Wave {{wave.number}} Municipal failed at {{phase}}: {{error}}"
 
 # ============================================================

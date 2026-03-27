@@ -1,37 +1,52 @@
 /**
  * EmailProvider Interface
- * Base class for all email providers
+ * Abstract base class for all email providers
  */
-export class EmailProvider {
+export interface IEmailPayload {
+  to: string;
+  subject: string;
+  html?: string;
+  text?: string;
+  from?: string;
+  cc?: string | string[];
+  headers?: Record<string, string>;
+}
+
+export interface ISendResult {
+  success: boolean;
+  messageId?: string;
+  provider?: string;
+  to?: string;
+  subject?: string;
+  campaignId?: string;
+  cc?: string | null;
+  error?: string;
+}
+
+export abstract class EmailProvider {
+  protected config: Record<string, unknown>;
+  protected apiKey?: string;
+  protected baseUrl: string;
+
+  constructor() {
+    this.config = {};
+    this.baseUrl = '';
+  }
+
   /**
    * Send an email
-   * @param {Object} payload - Email payload
-   * @param {string} payload.to - Recipient email
-   * @param {string} payload.subject - Email subject
-   * @param {string} payload.html - HTML body
-   * @param {string} [payload.text] - Plain text body
-   * @param {string} [payload.from] - Sender address
-   * @param {string} [payload.cc] - CC recipients
-   * @param {Object} [payload.headers] - Additional headers
-   * @returns {Promise<Object>} - { success, messageId, error }
    */
-  async send(payload) {
-    throw new Error('Not implemented');
-  }
+  abstract send(payload: IEmailPayload): Promise<ISendResult>;
 
   /**
    * Validate provider configuration
-   * @returns {Promise<boolean>}
    */
-  async validateConfig() {
-    throw new Error('Not implemented');
-  }
+  abstract validateConfig(): Promise<boolean>;
 
   /**
    * Get provider name
-   * @returns {string}
    */
-  getName() {
-    throw new Error('Not implemented');
-  }
+  abstract getName(): string;
 }
+
+export default EmailProvider;

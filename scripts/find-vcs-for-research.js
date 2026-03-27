@@ -195,7 +195,7 @@ async function main() {
 
   // Save results
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const outputFile = `/tmp/alygn-vc-analysis-${timestamp}.json`;
+  const outputFile = `${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-analyze/alygn-vc-analysis-${timestamp}.json`;
   const fs = await import('fs');
   fs.writeFileSync(outputFile, JSON.stringify({
     timestamp: new Date().toISOString(),

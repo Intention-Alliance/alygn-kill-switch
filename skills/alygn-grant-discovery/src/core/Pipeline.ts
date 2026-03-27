@@ -9,19 +9,19 @@
  * 4. sync - Sync to Notion and notify stakeholders
  */
 
-import { GrantEntity } from '../entities/GrantEntity';
-import { GrantDiscoveryStrategy } from '../strategies/discovery/GrantDiscoveryStrategy';
-import { GrantResearchStrategy } from '../strategies/research/GrantResearchStrategy';
-import { ALYGNAlignmentValidator } from '../strategies/alignment/ALYGNAlignmentValidator';
-import { NotionGrantSync } from '../notion/NotionSync';
-import { GrantDiscoveryEmailService } from '../email/EmailService';
-import type { 
-  PipelineConfig, 
-  PipelineResult, 
-  GrantChange 
-} from '../types/index';
 import fs from 'fs';
 import path from 'path';
+import { GrantDiscoveryEmailService } from '../email/EmailService';
+import { GrantEntity } from '../entities/GrantEntity';
+import { NotionGrantSync } from '../notion/NotionSync';
+import { ALYGNAlignmentValidator } from '../strategies/alignment/ALYGNAlignmentValidator';
+import { GrantDiscoveryStrategy } from '../strategies/discovery/GrantDiscoveryStrategy';
+import { GrantResearchStrategy } from '../strategies/research/GrantResearchStrategy';
+import type {
+  GrantChange,
+  PipelineConfig,
+  PipelineResult
+} from '../types/index';
 
 interface RunOptions {
   dryRun?: boolean;
@@ -377,7 +377,7 @@ export class GrantDiscoveryPipeline {
    */
   private saveState(phase: string, grants: GrantEntity[], changes?: GrantChange[]): string {
     const timestamp = new Date().toISOString().split('T')[0];
-    const filePath = `/tmp/alygn-grant-${phase}-${timestamp}.json`;
+    const filePath = `${process.env.HOME}/.openclaw/workspace/reports/alygn/grants/alygn-grant-${phase}-${timestamp}.json`;
     
     fs.writeFileSync(filePath, JSON.stringify({
       timestamp: new Date().toISOString(),
@@ -424,15 +424,15 @@ export class GrantDiscoveryPipeline {
    */
   private loadLatestState(phase: string): { grants: GrantEntity[]; changes?: GrantChange[] } | null {
     const pattern = new RegExp(`alygn-grant-${phase}-.*\\.json$`);
-    const tmpDir = '/tmp';
+    const reportsDir = `${process.env.HOME}/.openclaw/workspace/reports/alygn/grants`;
     
-    if (!fs.existsSync(tmpDir)) {
+    if (!fs.existsSync(reportsDir)) {
       return null;
     }
 
-    const files = fs.readdirSync(tmpDir)
+    const files = fs.readdirSync(reportsDir)
       .filter(f => pattern.test(f))
-      .map(f => path.join(tmpDir, f))
+      .map(f => path.join(reportsDir, f))
       .sort((a, b) => fs.statSync(b).mtime.getTime() - fs.statSync(a).mtime.getTime());
     
     if (files.length === 0) {

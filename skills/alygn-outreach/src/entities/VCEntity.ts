@@ -6,10 +6,10 @@
  * - Or via separate vc_outreach table (if exists)
  * - Links to local_governments for municipal VC relationships
  */
-import { OutreachEntity } from './OutreachEntity.js';
-import type { IVCTypeData, IVCPartner, IRecentInvestment } from './types.js';
+import { OutreachEntity } from './OutreachEntity';
+import type { IRecentInvestment, IVCPartner, IVCTypeData } from './types';
 
-export type { IVCTypeData, IVCPartner, IRecentInvestment };
+export type { IRecentInvestment, IVCPartner, IVCTypeData };
 
 export class VCEntity extends OutreachEntity {
   typeData: IVCTypeData;
@@ -46,7 +46,7 @@ export class VCEntity extends OutreachEntity {
     const governanceKeywords = ['AI', 'safety', 'governance', 'alignment', 'ethics', 'policy'];
     const governancePartner = this.typeData.partners.find(p => 
       governanceKeywords.some(kw => 
-        (p.focus || p.title || '').toLowerCase().includes(kw.toLowerCase())
+        ((p.focus || p.title) as string || '').toLowerCase().includes(kw.toLowerCase())
       )
     );
     
@@ -63,14 +63,14 @@ export class VCEntity extends OutreachEntity {
     checkSizeMax?: number;
   }): boolean {
     if (criteria.stages && criteria.stages.length > 0) {
-      const hasMatchingStage = this.typeData.stageFocus.some(
+      const hasMatchingStage = (this.typeData.stageFocus || []).some(
         stage => criteria.stages!.includes(stage.toLowerCase())
       );
       if (!hasMatchingStage) return false;
     }
     
     if (criteria.sectors && criteria.sectors.length > 0) {
-      const hasMatchingSector = this.typeData.sectorFocus.some(
+      const hasMatchingSector = (this.typeData.sectorFocus || []).some(
         sector => criteria.sectors!.some(cs => sector.toLowerCase().includes(cs.toLowerCase()))
       );
       if (!hasMatchingSector) return false;

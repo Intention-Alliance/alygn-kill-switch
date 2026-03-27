@@ -475,7 +475,7 @@ async function main() {
       },
       operations: dryRunOperations,
       files: {
-        wouldCreate: stats.drafted > 0 ? [`/tmp/alygn-vc-approved-${timestamp}.json`] : []
+        wouldCreate: stats.drafted > 0 ? [`${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-approve/alygn-vc-approved-${timestamp}.json`] : []
       }
     };
     

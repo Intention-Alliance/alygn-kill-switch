@@ -1,7 +1,8 @@
 /**
  * ValidationStrategy - Email validation using existing validators
  */
-import type { OutreachEntity } from '../entities/OutreachEntity.js';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
+import type { EmailValidator, IEmailValidationResult } from '../../lib/email/validators/EmailValidator';
 
 interface ValidationResult {
   result: 'valid' | 'invalid' | 'risky' | 'unknown' | 'error';
@@ -17,33 +18,24 @@ interface ValidationResult {
 
 export class ValidationStrategy {
   protected config: Record<string, unknown>;
-  protected validator: unknown;
+  protected validatorType: string;
 
   constructor(config: Record<string, unknown> = {}) {
     this.config = config;
-    this.validator = null;
+    this.validatorType = (config.validatorType as string) || 'regex-mx';
   }
-  
+
   /**
    * Initialize validator
    */
   initialize(): void {
-    const validatorType = this.config.validatorType || 'regex-mx';
-    
-    // For TypeScript, we'll handle this dynamically
-    this.validator = { type: validatorType };
+    // No-op: validator is created dynamically in validate()
   }
-  
+
   /**
    * Validate entity email
-   * @param entity - Entity to validate
-   * @returns Promise<Object> Validation result
    */
   async validate(entity: OutreachEntity): Promise<ValidationResult> {
-    if (!this.validator) {
-      this.initialize();
-    }
-    
     if (!entity.email) {
       return {
         result: 'unknown',
@@ -57,15 +49,14 @@ export class ValidationStrategy {
     
     try {
       // Use local validator factory
-      const { EmailValidatorFactory } = await import('../../lib/email/validators/EmailValidatorFactory.js');
+      const { EmailValidatorFactory } = await import('../../lib/email/validators/EmailValidatorFactory');
       
-      const validatorType = this.config.validatorType || 'regex-mx';
-      const validatorConfig = validatorType === 'zerobounce' 
+      const validatorConfig = this.validatorType === 'zerobounce' 
         ? { apiKey: process.env.ZEROBOUNCE_API_KEY }
         : {};
       
-      const validator = EmailValidatorFactory.create(validatorType as string, validatorConfig);
-      const result = await validator.validate(entity.email);
+      const validator: EmailValidator = EmailValidatorFactory.create(this.validatorType, validatorConfig);
+      const result: IEmailValidationResult = await validator.validate(entity.email);
       
       // Attach to entity
       entity.setEmailValidation(result);
@@ -80,20 +71,24 @@ export class ValidationStrategy {
       return result;
       
     } catch (error) {
-      console.error(`   ❌ Validation failed: ${(error as Error).message}`);
+      const err = error as Error;
+      console.error(`   ❌ Validation failed: ${err.message}`);
       return {
         result: 'error',
         confidence: 0,
-        details: { error: (error as Error).message },
-        validator: (this.validator as { type: string })?.type || 'unknown'
+        details: { error: err.message },
+        validator: this.validatorType
       };
     }
   }
-  
+
   /**
    * Batch validate multiple entities
    */
-  async validateBatch(entities: OutreachEntity[], options: { rateLimitMs?: number } = {}): Promise<Array<{ entity: string; result: ValidationResult }>> {
+  async validateBatch(
+    entities: OutreachEntity[], 
+    options: { rateLimitMs?: number } = {}
+  ): Promise<Array<{ entity: string; result: ValidationResult }>> {
     const results: Array<{ entity: string; result: ValidationResult }> = [];
     
     for (const entity of entities) {

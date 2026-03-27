@@ -1,22 +1,39 @@
 /**
  * EmailValidator Interface
- * Base class for email validators
+ * Abstract base class for email validators
  */
-export class EmailValidator {
-  /**
-   * Validate an email address
-   * @param {string} email - Email to validate
-   * @returns {Promise<Object>} - { result: 'valid'|'invalid'|'risky'|'unknown', details: {}, confidence: number }
-   */
-  async validate(email) {
-    throw new Error('Not implemented');
+export interface IEmailValidationResult {
+  result: 'valid' | 'invalid' | 'risky' | 'unknown';
+  confidence: number;
+  details: {
+    reason?: string;
+    message?: string;
+    error?: string;
+    domain?: string;
+    prefix?: string;
+    format?: string;
+    [key: string]: unknown;
+  };
+  validator: string;
+  raw?: Record<string, unknown>;
+}
+
+export abstract class EmailValidator {
+  protected config: Record<string, unknown>;
+
+  constructor(config: Record<string, unknown> = {}) {
+    this.config = config;
   }
 
   /**
-   * Get validator name
-   * @returns {string}
+   * Validate an email address
    */
-  getName() {
-    throw new Error('Not implemented');
-  }
+  abstract validate(email: string): Promise<IEmailValidationResult>;
+
+  /**
+   * Get validator name
+   */
+  abstract getName(): string;
 }
+
+export default EmailValidator;

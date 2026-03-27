@@ -1,21 +1,9 @@
 /**
  * MunicipalPersonalizationStrategy - Personalizes emails for municipal outreach
  */
-import { PersonalizationStrategy } from './PersonalizationStrategy.js';
-import type { MunicipalEntity } from '../../entities/MunicipalEntity.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
-
-interface PersonalizationResult {
-  success: boolean;
-  email?: {
-    subject: string;
-    html: string;
-    text?: string;
-  };
-  subject?: string;
-  entity?: MunicipalEntity;
-  error?: string;
-}
+import type { MunicipalEntity } from '../../entities/MunicipalEntity';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
+import { PersonalizationStrategy, type IPersonalizationResult } from './PersonalizationStrategy';
 
 interface Initiative {
   name: string;
@@ -29,7 +17,7 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
     super(config);
     this.name = 'municipal-personalization';
   }
-  
+
   /**
    * Personalize municipal email
    * 
@@ -38,14 +26,14 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
    * - Links to local_governments.municipality_id
    * - Stores personalization context for audit trail
    */
-  async personalize(entity: OutreachEntity): Promise<PersonalizationResult> {
+  async personalize(entity: OutreachEntity): Promise<IPersonalizationResult> {
     console.log(`✨ Personalizing email for municipality: ${entity.name}...`);
     
     const municipalEntity = entity as MunicipalEntity;
     const contact = municipalEntity.getPrimaryContact();
     // Use contact name or default to appropriate Spanish honorific
     const recipientName = contact?.name || 'Tania';
-    const companyName = entity.name.replace('Municipalidad de ', '').replace('Municipalidad de ', '');
+    const companyName = entity.name.replace('Municipalidad de ', '');
     
     // Get pain points from personalization context or typeData (Supabase: municipalities.pain_points)
     const painPoints = (municipalEntity.personalizationContext?.painPoints as string[]) || 
@@ -58,7 +46,7 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
     // Dynamic import email template from local lib
     let emailHtml = `<!-- Email template for ${entity.name} -->`;
     try {
-      const { generateEmail } = await import('../../lib/email/outreach-email-template.js');
+      const { generateEmail } = await import('../../lib/email/outreach-email-template');
       emailHtml = generateEmail({
         recipientName,
         companyName,
@@ -72,7 +60,7 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
       console.log('   ⚠️  Could not load email template, using placeholder');
     }
     
-    // Update entity with personalization (Supabase: outreach_emails，政治_context)
+    // Update entity with personalization (Supabase: outreach_emails.personalization_context)
     municipalEntity.personalizationContext = {
       ...municipalEntity.personalizationContext,
       customSubject: subject,
@@ -97,11 +85,11 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
       entity: municipalEntity
     };
   }
-  
+
   /**
    * Generate subject line
    */
-  generateSubject(entity: MunicipalEntity, companyName: string): string {
+  private generateSubject(entity: MunicipalEntity, companyName: string): string {
     const topInitiative = entity.getTopInitiative();
     
     if (topInitiative) {
@@ -110,21 +98,21 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
     
     return `Apoyo en gobernanza de IA - ${companyName}`;
   }
-  
+
   /**
    * Generate value proposition
    */
-  generateValueProposition(entity: MunicipalEntity): string {
-    const population = entity.typeData?.population || 50000;
-    const province = entity.typeData?.province || 'su provincia';
+  private generateValueProposition(entity: MunicipalEntity): string {
+    const population = (entity.typeData?.population as number) || 50000;
+    const province = (entity.typeData?.province as string) || 'su provincia';
     
     return `Alygn apoya a municipios como el suyo (${population.toLocaleString()} habitantes) en ${province} con la implementación práctica de gobernanza de IA.`;
   }
-  
+
   /**
    * Dry-run personalization
    */
-  async personalizeDryRun(entity: OutreachEntity): Promise<PersonalizationResult> {
+  async personalizeDryRun(entity: OutreachEntity): Promise<IPersonalizationResult> {
     console.log(`✨ [DRY RUN] Personalizing email for municipality: ${entity.name}...`);
     
     const municipalEntity = entity as MunicipalEntity;

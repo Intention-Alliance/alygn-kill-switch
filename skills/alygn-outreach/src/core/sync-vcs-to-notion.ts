@@ -4,10 +4,9 @@
  * Self-contained: uses local notion-client from skill's lib/external
  */
 import fs from 'fs';
-import path from 'path';
 
 // Self-contained: use local notion-client
-import { getClient } from '../lib/external/notion-client.js';
+import { getClient } from '../lib/external/notion-client';
 
 // Rate limiting: 3 requests per second = 333ms between requests
 const RATE_LIMIT_DELAY = 350;
@@ -139,7 +138,7 @@ async function main(): Promise<void> {
   const dryRun = args.includes('--dry-run');
   const inputArg = args.find(a => a.startsWith('--input='));
   
-  const DEFAULT_INPUT = '/tmp/alygn-vc-complete-100.json';
+  const DEFAULT_INPUT = `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-vc-complete-${new Date().toISOString().split('T')[0]}.json`;
   const inputPath = inputArg ? inputArg.split('=')[1] : DEFAULT_INPUT;
   
   console.log('🚀 ALYGN VC Sync to Notion\n');
@@ -203,4 +202,4 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { vcExistsInNotion, createVCInNotion, loadVCsFromFile };
+export { createVCInNotion, loadVCsFromFile, vcExistsInNotion };

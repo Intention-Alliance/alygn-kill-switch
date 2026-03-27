@@ -3,50 +3,87 @@ description: Alygn VC outreach campaign with personalization - using alygn-outre
 metadata:
   project: alygn
   type: vc-outreach
-  wave: 1
+  wave: {{ LATEST_WAVE_NUMBER + 1 }}
+  skill: alygn-outreach
+
+# Wave State File Schema
+# Path: $HOME/.openclaw/workspace/reports/alygn/vc-wave-state.json
+# {
+#   "wave": { "number": 1, "date": "2026-03-26", "nextDate": "2026-04-02", "status": "idle" },
+#   "entities": {},
+#   "lastRun": "2026-03-26T14:00:00Z",
+#   "phaseCompleted": null
+# }
 
 # VC Outreach Campaign Workflow
-# Uses: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach
+# Uses: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# MODE A vs MODE B EXECUTION
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# MODE A (Dry Run - Default):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Uses MOCK data for all API calls (Perplexity, email validation, etc.)
+#   → Simulated database responses
+#   → Safe for testing workflow logic without external API calls
+#
+# MODE B (Real API + Dry Run):
+#   USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --dry-run
+#   → Real Perplexity/web_search API calls for research
+#   → Real email validation via ZeroBounce
+#   → Simulated database responses
+#   → Use when you need real research data but don't want to send emails
+#
+# MODE C (Production - No Flags):
+#   bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts
+#   → Real API calls + real database writes
+#   → ACTUAL EMAIL SENDING
+#   → Requires explicit approval gates
+#
+# ═══════════════════════════════════════════════════════════════════════════════
 
 steps:
   # Phase 0: Sync existing VCs to Notion (ensures database is up to date)
   - id: phase0-sync
-    command: node $HOME/.openclaw/workspace/scripts/alygn/vc-outreach/core/sync-vcs-to-notion.js
+    command: bun $HOME/.agents/skills/alygn-outreach/src/core/sync-vcs-to-notion.ts
     description: "Sync existing VCs from JSON to Notion database"
     output:
-      file: /tmp/alygn-vc-sync-result.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-sync-result.json
 
   # Phase 1: Discovery (find new VCs)
+  # MODE B: USE_DIRECT_API=true enables real Perplexity research instead of mocks
   - id: phase1-discover
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=discover --limit=5 --dry-run
-    description: "Discover new VC targets (dry run)"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=discover --limit=5 --dry-run
+    description: "Discover new VC targets (Mode B: real API calls, simulated DB)"
     after: phase0-sync
     output:
-      file: /tmp/alygn-vc-discovered-2026-03-19.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-{timestamp}.json
 
   # Phase 2: Validate (validate emails)
   - id: phase2-validate
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=validate --limit=5
-    description: "Validate discovered VC emails"
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=validate --limit=5 --dry-run
+    description: "Validate discovered VC emails (Mode A: mock validation)"
     after: phase1-discover
     output:
-      file: /tmp/alygn-vc-validated-2026-03-19.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-validate/alygn-vc-validated-{timestamp}.json
 
   # Phase 3: Research (find emails, pain points)
+  # MODE B: USE_DIRECT_API=true enables real Perplexity research for thesis/pain points
   - id: phase3-research
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=research --limit=5
-    description: "Research validated VCs (find thesis, pain points)"
+    command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=research --limit=5 --dry-run
+    description: "Research validated VCs (Mode B: real Perplexity calls for thesis/pain points)"
     after: phase2-validate
     output:
-      file: /tmp/alygn-vc-research-2026-03-19.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-research/alygn-vc-researched-{timestamp}.json
 
   # Phase 4: Personalize (generate personalized content)
   - id: phase4-personalize
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=personalize --limit=5
-    description: "Generate personalized drafts; Sets Draft Status = 'Drafted' in Notion"
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=personalize --limit=5 --dry-run
+    description: "Generate personalized drafts (Mode A: mock Groq responses)"
     after: phase3-research
     output:
-      file: /tmp/alygn-vc-personalized-{timestamp}.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-personalize/alygn-vc-personalized-{timestamp}.json
       # IMPORTANT: Capture entity IDs from this output for Phase 6
 
   # Phase 5: Review (Human approval required)
@@ -64,8 +101,9 @@ steps:
   #   --cc=tania@domain.com: CC Tania on all sends
   #   --rate-limit=3: Max 3 emails per run
   #   --dedup=true: Check SentEmailTracker before sending
+  # MODE: Production (no --dry-run = real sends)
   - id: phase6-send
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=send --draft-status=Approved --email-send-to={approved_ids_from_phase5} --cc=tanialeaidm@gmail.com --rate-limit=3 --dedup=true
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=send --draft-status=Approved --email-send-to={approved_ids_from_phase5} --cc=tanialeaidm@gmail.com --rate-limit=3 --dedup=true
     description: "Send ONLY to approved VCs with explicit IDs (two-filter system + CC + rate limit + dedup)"
     after: phase5-review
     approval: required
@@ -80,21 +118,22 @@ steps:
     cc:
       - tanialeaidm@gmail.com
     output:
-      file: /tmp/alygn-vc-sent-{timestamp}.json
+      file: $HOME/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-{timestamp}.json
 
   # Phase 7: Verify (confirm sends completed)
   - id: phase7-verify
-    command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=verify
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=verify
     description: "Verify sends completed, update Notion status, report results"
     after: phase6-send
     output:
       channel: discord
       target: "1466532145257255004"
 
-# Alternative: Full Pipeline (runs all phases 1-4 in one command)
-# - id: phase1-pipeline
-#   command: node $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=vc --action=pipeline --limit=5 --dry-run
-#   description: "Run full pipeline (discover→validate→research→personalize)"
+  # Alternative: Full Pipeline (runs all phases 1-4 in one command)
+  # MODE B: Real API calls for discovery and research
+  # - id: phase1-pipeline
+  #   command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=pipeline --limit=5 --dry-run
+  #   description: "Run full pipeline (discover→validate→research→personalize) with real API"
 
 # Error handling
 on_error:
@@ -152,7 +191,7 @@ error_handling:
 # Resumability
 resume:
   enabled: true
-  token_file: /tmp/vc-campaign-resume-token.json
+  token_file: $HOME/.openclaw/workspace/reports/alygn/vc-campaign-resume-token.json
   skip_completed_steps: true
 
 # Notifications
@@ -173,6 +212,12 @@ notifications:
 # Personalization Specifications
 personalization:
   language: en
+  rate_limit: 5 per run and day
+  cc: tanialeaidm@gmail.com (all sends)
+  dedup: true (SentEmailTracker check)
+  two_filter_system:
+    - "--draft-status=Approved" (Notion Draft Status = 'Approved')
+    - "--email-send-to=id1,id2,id3" (explicit approved entity IDs)
   body_text:
     enabled: true
     required: true
@@ -220,6 +265,16 @@ personalization:
 #   Phase 3 (Research): Validate email pattern firstname@domain.com
 #   Phase 4 (Personalize): Only proceed if personal email confirmed
 #   On Validation Failure: Mark "Not Sent", add research note with partner names to find
+
+# VALIDATION INSIGHTS (from production)
+validation_insights:
+  pass_patterns:
+    - "firstname@domain.com (personal partner email)"
+    - "firstname.lastname@domain.com"
+  fail_patterns:
+    - "hello@, invest@, contact@ (generic)"
+    - "role-based catch-alls"
+  lesson: "Always research partner names on LinkedIn before adding to database"  
 
 # Validation Failure Protocol (VC)
 validation_failure_protocol:

@@ -1,23 +1,54 @@
 /**
  * MunicipalDiscoveryStrategy - Discovers municipalities/governments for outreach
+ * 
+ * Mode B (dry-run + USE_DIRECT_API=true):
+ *   - For Costa Rica: Use embedded real data
+ *   - For other regions: Call Firecrawl API
+ *   - Write results to data/dry-run/
+ *   - Simulate Supabase writes
  */
-import { MunicipalEntity, COSTA_RICA_CANTONES } from '../../entities/MunicipalEntity.js';
-import type { ICostaRicaCanton } from '../../entities/MunicipalEntity.js';
-import { DiscoveryStrategy } from './DiscoveryStrategy.js';
+import fs from 'fs';
+import path from 'path';
+import { MunicipalEntity } from '../../entities/MunicipalEntity';
+import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
+import type { ICostaRicaCanton } from '../../entities/types';
+import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
+import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
+import { getDiscordReporter } from '../../lib/reporting/DiscordReporter';
 
 export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
     this.name = 'municipal-discovery';
   }
-  
+
   /**
    * Discover municipalities
    * Supports regions: costa-rica, or generic query search
+   * 
+   * Modes:
+   * - dryRun=true, USE_DIRECT_API=false: Return mock data (legacy behavior)
+   * - dryRun=true, USE_DIRECT_API=true, Costa Rica: Use embedded data + simulate DB (Mode B)
+   * - dryRun=true, USE_DIRECT_API=true, other regions: Call Firecrawl API + simulate DB (Mode B)
    */
-  async discover(query: string, options: Record<string, unknown> = {}): Promise<MunicipalEntity[]> {
-    const limit = (options.limit as number) || 20;
-    const region = (options.region as string) || null;
+  async discover(query: string, options: IDiscoveryOptions = {}): Promise<MunicipalEntity[]> {
+    const limit = options.limit || 20;
+    const region = options.region || null;
+    const dryRun = options.dryRun || false;
+    const useDirectApi = process.env.USE_DIRECT_API === 'true';
+    
+    // Mode B: Dry-run with Direct API
+    if (dryRun && useDirectApi) {
+      console.log(`   🌐 Mode B: Dry-run + Direct API enabled`);
+      
+      // Costa Rica uses embedded data
+      if (region === 'costa-rica' || query === 'costa-rica-cantones') {
+        return this.discoverCostaRicaModeB(limit);
+      }
+      
+      // Other regions: call Firecrawl API
+      return await this.discoverViaFirecrawlModeB(query, limit, options);
+    }
     
     // Handle Costa Rica cantones discovery
     if (region === 'costa-rica' || query === 'costa-rica-cantones') {
@@ -26,8 +57,8 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     
     console.log(`🔍 Municipal Discovery: Searching "${query}"...`);
     
-    // For dry-run, return mock data
-    if (options.dryRun) {
+    // For dry-run (legacy), return mock data
+    if (dryRun) {
       return this.generateMockMunicipals(query, limit);
     }
     
@@ -36,12 +67,243 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     console.log(`   ⚠️  Municipal discovery not yet implemented for non-CR regions`);
     return [];
   }
-  
+
+  /**
+   * Mode B for Costa Rica: Use embedded data + simulate DB writes
+   */
+  private discoverCostaRicaModeB(limit: number): MunicipalEntity[] {
+    console.log(`\n   ═══════════════════════════════════════════`);
+    console.log(`   🚀 MODE B: Costa Rica Municipal Discovery`);
+    console.log(`   ═══════════════════════════════════════════`);
+    
+    // Create simulators and reporter
+    const supabaseSim = getSupabaseSimulator({
+      outputDir: path.join(process.cwd(), 'data', 'dry-run', 'supabase'),
+      dryRunId: `municipal-cr-${Date.now()}`
+    });
+    
+    const reporter = getDiscordReporter({
+      outputDir: path.join(process.cwd(), 'data', 'dry-run', 'reports')
+    });
+    
+    // Use the embedded Costa Rica data (real data)
+    console.log(`\n   📊 Using embedded Costa Rica municipal data`);
+    const cantones = COSTA_RICA_CANTONES.slice(0, limit);
+    
+    const entities = cantones.map((canton: ICostaRicaCanton) => {
+      return MunicipalEntity.fromCanton(canton);
+    });
+    
+    console.log(`   ✅ Created ${entities.length} municipal entities from embedded data`);
+    
+    // Save to data/dry-run/
+    const dryRunDir = path.join(process.cwd(), 'data', 'dry-run');
+    if (!fs.existsSync(dryRunDir)) {
+      fs.mkdirSync(dryRunDir, { recursive: true });
+    }
+    
+    const dataFile = path.join(dryRunDir, `municipal-cr-embedded-${Date.now()}.json`);
+    fs.writeFileSync(dataFile, JSON.stringify({
+      region: 'costa-rica',
+      source: 'embedded',
+      timestamp: new Date().toISOString(),
+      mode: 'dry-run-direct-api',
+      cantones: cantones.map(c => c.name),
+      count: cantones.length
+    }, null, 2));
+    console.log(`   💾 Embedded data reference saved: ${dataFile}`);
+    
+    // Simulate Supabase writes
+    console.log(`\n   📊 Simulating database writes...`);
+    for (const entity of entities) {
+      supabaseSim.upsertMunicipality(entity);
+      supabaseSim.upsertLocalGovernment(entity);
+    }
+    supabaseSim.save();
+    
+    // Send Discord report
+    console.log(`\n   📤 Sending Discord report...`);
+    reporter.report('municipal', 'discover', {
+      discovered: entities.length
+    }, entities.map(e => ({ name: e.name, email: e.email, website: e.website })), {
+      sendToDiscord: true,
+      supabaseSim
+    });
+    
+    console.log(`\n   ═══════════════════════════════════════════`);
+    console.log(`   ✅ MODE B COMPLETE (Costa Rica)`);
+    console.log(`   ═══════════════════════════════════════════\n`);
+    
+    return entities;
+  }
+
+  /**
+   * Mode B for other regions: Call Firecrawl API
+   */
+  private async discoverViaFirecrawlModeB(query: string, limit: number, options: IDiscoveryOptions): Promise<MunicipalEntity[]> {
+    console.log(`\n   ═══════════════════════════════════════════`);
+    console.log(`   🚀 MODE B: Municipal Discovery via Firecrawl`);
+    console.log(`   ═══════════════════════════════════════════`);
+    
+    // Create simulators and reporter
+    const supabaseSim = getSupabaseSimulator({
+      outputDir: path.join(process.cwd(), 'data', 'dry-run', 'supabase'),
+      dryRunId: `municipal-${Date.now()}`
+    });
+    
+    const reporter = getDiscordReporter({
+      outputDir: path.join(process.cwd(), 'data', 'dry-run', 'reports')
+    });
+    
+    // Call Firecrawl API
+    console.log(`\n   📡 Calling Firecrawl API for: "${query}"...`);
+    let entities: MunicipalEntity[] = [];
+    
+    try {
+      entities = await this.fetchMunicipalitiesFromFirecrawl(query, limit);
+    } catch (error) {
+      console.error(`   ❌ Firecrawl API failed: ${(error as Error).message}`);
+      console.log(`   📝 Falling back to mock data`);
+      entities = this.generateMockMunicipals(query, limit);
+      
+      await reporter.report('municipal', 'discover', {
+        discovered: entities.length,
+        reason: `Firecrawl failed: ${(error as Error).message}`
+      }, entities.map(e => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      
+      return entities;
+    }
+    
+    if (entities.length === 0) {
+      console.log(`   ⚠️  No results from Firecrawl, using mock data`);
+      entities = this.generateMockMunicipals(query, limit);
+      
+      await reporter.report('municipal', 'discover', {
+        discovered: entities.length,
+        reason: 'No Firecrawl results'
+      }, entities.map(e => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      
+      return entities;
+    }
+    
+    console.log(`   ✅ Firecrawl returned ${entities.length} municipalities`);
+    
+    // Save to data/dry-run/
+    const dryRunDir = path.join(process.cwd(), 'data', 'dry-run');
+    if (!fs.existsSync(dryRunDir)) {
+      fs.mkdirSync(dryRunDir, { recursive: true });
+    }
+    
+    const dataFile = path.join(dryRunDir, `municipal-firecrawl-${Date.now()}.json`);
+    fs.writeFileSync(dataFile, JSON.stringify({
+      query,
+      source: 'firecrawl',
+      timestamp: new Date().toISOString(),
+      mode: 'dry-run-direct-api',
+      entities: entities.map(e => ({ name: e.name, website: e.website, country: e.location.country })),
+      count: entities.length
+    }, null, 2));
+    console.log(`   💾 Firecrawl results saved: ${dataFile}`);
+    
+    // Simulate Supabase writes
+    console.log(`\n   📊 Simulating database writes...`);
+    for (const entity of entities) {
+      supabaseSim.upsertMunicipality(entity);
+      supabaseSim.upsertLocalGovernment(entity);
+    }
+    supabaseSim.save();
+    
+    // Send Discord report
+    console.log(`\n   📤 Sending Discord report...`);
+    await reporter.report('municipal', 'discover', {
+      discovered: entities.length
+    }, entities.map(e => ({ name: e.name, email: e.email, website: e.website })), {
+      sendToDiscord: true,
+      supabaseSim
+    });
+    
+    console.log(`\n   ═══════════════════════════════════════════`);
+    console.log(`   ✅ MODE B COMPLETE (Firecrawl)`);
+    console.log(`   ═══════════════════════════════════════════\n`);
+    
+    return entities;
+  }
+
+  /**
+   * Fetch municipalities from Firecrawl API
+   */
+  private async fetchMunicipalitiesFromFirecrawl(query: string, limit: number): Promise<MunicipalEntity[]> {
+    // Load credentials
+    const credentialsPath = path.resolve(__dirname, '../../../config/credentials.json');
+    let credentials: { firecrawl?: { apiKey?: string } } = {};
+    
+    if (fs.existsSync(credentialsPath)) {
+      credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+    } else {
+      const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      if (fs.existsSync(legacyPath)) {
+        credentials = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
+      }
+    }
+    
+    const apiKey = credentials?.firecrawl?.apiKey;
+    
+    if (!apiKey) {
+      throw new Error('No Firecrawl API key found in credentials');
+    }
+    
+    // Firecrawl API for web scraping
+    const response = await fetch('https://api.firecrawl.dev/v0/search', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `${query} municipal government website`,
+        limit,
+        scrapeOptions: {
+          formats: ['metadata'],
+          onlyMainContent: true
+        }
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Firecrawl API error: ${response.status}`);
+    }
+    
+    const data = await response.json() as { data?: Array<{ url?: string; title?: string; description?: string }> };
+    const results = data.data || [];
+    
+    // Convert to MunicipalEntity
+    return results.map((r, i) => new MunicipalEntity({
+      name: r.title || `${query} Municipality ${i + 1}`,
+      website: r.url,
+      location: {
+        country: 'Unknown',
+        region: 'Unknown'
+      },
+      typeData: {
+        governmentType: 'city',
+        province: 'Unknown',
+        painPoints: ['Digital transformation', 'Citizen services'],
+        trAigaRelevant: true
+      }
+    }));
+  }
+
   /**
    * Discover Costa Rican cantones
    * Returns all 82 cantones with metadata
    */
-  discoverCostaRicaCantones(limit: number): MunicipalEntity[] {
+  private discoverCostaRicaCantones(limit: number): MunicipalEntity[] {
     console.log(`🔍 Costa Rica Discovery: Loading ${Math.min(limit, COSTA_RICA_CANTONES.length)} cantones...`);
     
     const cantones = COSTA_RICA_CANTONES.slice(0, limit);
@@ -53,7 +315,7 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     console.log(`   ✅ Created ${entities.length} municipal entities`);
     return entities;
   }
-  
+
   /**
    * Research a municipality
    */
@@ -69,11 +331,11 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     // Generic municipality research
     return null;
   }
-  
+
   /**
    * Research Costa Rica municipality
    */
-  async researchCostaRicaMunicipality(name: string, location: { country: string }): Promise<MunicipalEntity | null> {
+  private async researchCostaRicaMunicipality(name: string, location: { country: string }): Promise<MunicipalEntity | null> {
     const cantonName = name.replace('Municipalidad de ', '');
     const canton = COSTA_RICA_CANTONES.find(c => c.name === cantonName);
     
@@ -119,11 +381,11 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
       }
     });
   }
-  
+
   /**
-   * Generate mock municipalities for dry-run
+   * Generate mock municipalities for dry-run (legacy mode)
    */
-  generateMockMunicipals(query: string, limit: number): MunicipalEntity[] {
+  private generateMockMunicipals(query: string, limit: number): MunicipalEntity[] {
     const provinces = ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste', 'Puntarenas', 'Limón'];
     const mockMunicipals: MunicipalEntity[] = [];
     

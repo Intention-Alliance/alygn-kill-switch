@@ -1,23 +1,9 @@
 /**
  * VCPersonalizationStrategy - Personalizes emails for VC outreach
  */
-import { PersonalizationStrategy } from './PersonalizationStrategy.js';
-import type { VCEntity } from '../../entities/VCEntity.js';
-import type { OutreachEntity } from '../../entities/OutreachEntity.js';
-
-interface PersonalizationResult {
-  success: boolean;
-  email?: {
-    subject: string;
-    html: string;
-    text?: string;
-  };
-  subject?: string;
-  draftId?: string;
-  draftStatus?: string;
-  entity?: VCEntity;
-  error?: string;
-}
+import type { OutreachEntity } from '../../entities/OutreachEntity';
+import type { VCEntity } from '../../entities/VCEntity';
+import { PersonalizationStrategy, type IPersonalizationResult } from './PersonalizationStrategy';
 
 interface VCPartner {
   name: string;
@@ -46,16 +32,16 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Personalize VC email with strict requirements
    */
-  async personalize(entity: OutreachEntity): Promise<PersonalizationResult> {
+  async personalize(entity: OutreachEntity): Promise<IPersonalizationResult> {
     console.log(`✨ Personalizing email for VC: ${entity.name}...`);
     
     const vcEntity = entity as VCEntity;
     const partner = vcEntity.typeData?.partners?.[0] as VCPartner | undefined;
     const recipientName = this.extractPartnerName(partner);
     
-    const portfolioCompanies = vcEntity.typeData?.portfolioCompanies || [];
-    const recentInvestments = vcEntity.typeData?.recentInvestments || [];
-    const sectorFocus = vcEntity.typeData?.sectorFocus || ['AI safety', 'governance'];
+    const portfolioCompanies = (vcEntity.typeData?.portfolioCompanies as string[]) || [];
+    const recentInvestments = (vcEntity.typeData?.recentInvestments as Array<{ company: string; date: string; stage: string }>) || [];
+    const sectorFocus = (vcEntity.typeData?.sectorFocus as string[]) || ['AI safety', 'governance'];
     
     // Generate VC-specific content
     const hook = this.generateVCSpecificHook(vcEntity, portfolioCompanies, sectorFocus);
@@ -66,7 +52,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
     // Dynamic import email template from local lib
     let emailHtml = `<!-- Email template for ${entity.name} -->`;
     try {
-      const { generateEmailHTML } = await import('../../lib/email/outreach-email-template.js');
+      const { generateEmailHTML } = await import('../../lib/email/outreach-email-template');
       emailHtml = generateEmailHTML({
         recipientName: recipientName || 'there',
         companyName: entity.name,
@@ -121,7 +107,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Extract specific partner name (not generic)
    */
-  extractPartnerName(partner?: VCPartner): string | null {
+  private extractPartnerName(partner?: VCPartner): string | null {
     if (!partner || !partner.name) {
       return null;
     }
@@ -136,7 +122,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Generate VC-specific hook based on their investment thesis
    */
-  generateVCSpecificHook(entity: VCEntity, portfolioCompanies: string[], sectorFocus: string[]): string {
+  private generateVCSpecificHook(entity: VCEntity, portfolioCompanies: string[], sectorFocus: string[]): string {
     const firmName = entity.name;
     const sectors = sectorFocus.join(' and ');
     
@@ -162,7 +148,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Generate unique pain points based on portfolio research
    */
-  generateUniquePainPoints(entity: VCEntity, portfolioCompanies: string[]): string[] {
+  private generateUniquePainPoints(entity: VCEntity, portfolioCompanies: string[]): string[] {
     const firmName = entity.name;
     
     if (portfolioCompanies.length > 0) {
@@ -200,7 +186,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Generate personalized PS section
    */
-  generatePersonalizedPS(entity: VCEntity, partner: VCPartner | undefined, portfolioCompanies: string[]): string {
+  private generatePersonalizedPS(entity: VCEntity, partner: VCPartner | undefined, portfolioCompanies: string[]): string {
     const psOptions: string[] = [];
     
     if (partner?.title) {
@@ -212,7 +198,7 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
       psOptions.push(`P.S.: Your investment in ${company} shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.`);
     }
     
-    const sectorFocus = entity.typeData?.sectorFocus?.[0] || 'AI governance';
+    const sectorFocus = (entity.typeData?.sectorFocus as string[])?.[0] || 'AI governance';
     psOptions.push(`P.S.: Your thesis on ${sectorFocus} resonates with our view that governance infrastructure must be built before it's urgently needed.`);
     
     return psOptions[Math.floor(Math.random() * psOptions.length)];
@@ -221,21 +207,21 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Generate subject line with portfolio reference
    */
-  generateSubject(entity: VCEntity, portfolioCompanies: string[]): string {
+  private generateSubject(entity: VCEntity, portfolioCompanies: string[]): string {
     if (portfolioCompanies.length > 0) {
       return `Alygn - ${portfolioCompanies[0]} and AI Governance`;
     }
     
-    const sectorFocus = entity.typeData?.sectorFocus?.[0] || 'AI Safety';
+    const sectorFocus = (entity.typeData?.sectorFocus as string[])?.[0] || 'AI Safety';
     return `Alygn - ${sectorFocus} Governance Infrastructure`;
   }
   
   /**
    * Generate value proposition
    */
-  generateValueProposition(entity: VCEntity): string {
-    const stage = entity.typeData?.stageFocus?.[0] || 'early-stage';
-    const sectors = entity.typeData?.sectorFocus?.slice(0, 2) || ['AI', 'governance'];
+  private generateValueProposition(entity: VCEntity): string {
+    const stage = (entity.typeData?.stageFocus as string[])?.[0] || 'early-stage';
+    const sectors = ((entity.typeData?.sectorFocus as string[]) || ['AI', 'governance']).slice(0, 2);
     
     return `Alygn provides the governance infrastructure needed for ${stage} ${sectors.join('/')} investments.`;
   }
@@ -243,13 +229,14 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Perform quality checks on personalization
    */
-  performQualityCheck(entity: VCEntity): boolean {
+  private performQualityCheck(entity: VCEntity): boolean {
+    const personalizationContext = entity.personalizationContext as Record<string, unknown> || {};
     const checks = {
-      hasSpecificGreeting: entity.personalizationContext?.partnerName !== null,
-      hasVCSpecificHook: !((entity.personalizationContext?.tailoredHook as string) || '').includes('AI safety standards'),
-      hasUniquePainPoints: (entity.personalizationContext?.painPoints as string[])?.length > 0,
-      hasPortfolioReference: ((entity.personalizationContext?.portfolioReferences as string[]) || []).length > 0,
-      hasPersonalizedPS: ((entity.personalizationContext?.personalizedPS as string) || '').length > 0
+      hasSpecificGreeting: (personalizationContext.partnerName as string | null) !== null,
+      hasVCSpecificHook: !((personalizationContext.tailoredHook as string) || '').includes('AI safety standards'),
+      hasUniquePainPoints: ((personalizationContext.painPoints as string[]) || []).length > 0,
+      hasPortfolioReference: ((personalizationContext.portfolioReferences as string[]) || []).length > 0,
+      hasPersonalizedPS: ((personalizationContext.personalizedPS as string) || '').length > 0
     };
     
     const passed = Object.values(checks).every(check => check);
@@ -266,12 +253,13 @@ export class VCPersonalizationStrategy extends PersonalizationStrategy {
   /**
    * Dry-run personalization
    */
-  async personalizeDryRun(entity: OutreachEntity): Promise<PersonalizationResult> {
+  async personalizeDryRun(entity: OutreachEntity): Promise<IPersonalizationResult> {
     console.log(`✨ [DRY RUN] Personalizing email for VC: ${entity.name}...`);
     
     const vcEntity = entity as VCEntity;
-    const subject = this.generateSubject(vcEntity, vcEntity.typeData?.portfolioCompanies || []);
-    const painPoints = this.generateUniquePainPoints(vcEntity, vcEntity.typeData?.portfolioCompanies || []);
+    const portfolioCompanies = (vcEntity.typeData?.portfolioCompanies as string[]) || [];
+    const subject = this.generateSubject(vcEntity, portfolioCompanies);
+    const painPoints = this.generateUniquePainPoints(vcEntity, portfolioCompanies);
     
     const mockEmail = {
       subject,

@@ -1,24 +1,20 @@
 /**
  * OutreachEntity - Base class for all outreach entities (VCs, Municipalities)
  */
-import type { 
-  IOutreachEntity, 
-  Location, 
-  EntityStatus, 
-  Priority, 
+import type {
   DraftStatus,
+  EntityStatus,
   IEmailValidation,
-  INotionPageUpdate 
-} from './types.js';
-
-export type {
+  INotionPageUpdate,
   IOutreachEntity,
   Location,
-  EntityStatus,
-  Priority,
-  DraftStatus,
-  IEmailValidation,
-  INotionPageUpdate
+  Priority
+} from './types';
+
+export type {
+  DraftStatus, EntityStatus, IEmailValidation,
+  INotionPageUpdate, IOutreachEntity,
+  Location, Priority
 };
 
 /**

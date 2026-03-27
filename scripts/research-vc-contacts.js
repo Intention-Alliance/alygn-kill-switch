@@ -164,7 +164,7 @@ async function main() {
 
   // Save research data
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const outputFile = `/tmp/alygn-vc-research-${timestamp}.json`;
+  const outputFile = `/home/andlersrv/.openclaw/workspace/reports/alygn/vc-research/alygn-vc-research-${timestamp}.json`;
   const fs = await import('fs');
   fs.writeFileSync(outputFile, JSON.stringify(researchData, null, 2));
   console.log(`💾 Research data saved to: ${outputFile}\n`);

@@ -1,9 +1,9 @@
 /**
- * PersonalizationStrategy - Base interface for personalization strategies
+ * PersonalizationStrategy - Abstract base class for personalization strategies
  */
-import type { OutreachEntity } from '../entities/OutreachEntity.js';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
 
-interface PersonalizationResult {
+export interface IPersonalizationResult {
   success: boolean;
   email?: {
     subject: string;
@@ -17,7 +17,7 @@ interface PersonalizationResult {
   error?: string;
 }
 
-export class PersonalizationStrategy {
+export abstract class PersonalizationStrategy {
   protected config: Record<string, unknown>;
   protected name: string;
 
@@ -25,16 +25,12 @@ export class PersonalizationStrategy {
     this.config = config;
     this.name = 'base-personalization';
   }
-  
+
   /**
    * Personalize entity
-   * @param entity - Entity to personalize
-   * @returns Promise<Object> Personalization result with email content
    */
-  async personalize(entity: OutreachEntity): Promise<PersonalizationResult> {
-    throw new Error('Not implemented');
-  }
-  
+  abstract personalize(entity: OutreachEntity): Promise<IPersonalizationResult>;
+
   /**
    * Get strategy name
    */

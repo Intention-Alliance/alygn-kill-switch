@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "3",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 6",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-03-27T05-52-45 | 3/26/2026, 11:52:48 PM"
+      },
+      "timestamp": "2026-03-27T05:52:48.211Z"
+    },
+    {
+      "title": "VC Firms (3)",
+      "color": 1096065,
+      "description": "**Menlo Ventures**\n   🌐 https://menlovc.com\n\n**Spark Capital**\n   🌐 https://www.sparkcapital.com\n\n**Lightspeed Venture Partners**\n   🌐 https://lsvp.com",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-03-27T05-52-45",
+  "timestamp": "2026-03-27T05-52-45"
+}

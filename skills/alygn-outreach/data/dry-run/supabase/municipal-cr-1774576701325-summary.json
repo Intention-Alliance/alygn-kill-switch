@@ -1,0 +1,11 @@
+{
+  "dryRunId": "municipal-cr-1774576701325",
+  "timestamp": "2026-03-27T01-58-21",
+  "tables": {
+    "municipalities": 10,
+    "local_governments": 1,
+    "outreach_emails": 0,
+    "political_figures": 0
+  },
+  "outputDir": "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/data/dry-run/supabase"
+}

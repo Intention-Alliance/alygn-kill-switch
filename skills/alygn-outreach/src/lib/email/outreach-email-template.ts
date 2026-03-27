@@ -4,10 +4,9 @@
  * - Institutional restraint and neutral tone
  * - No product claims, no hype
  * - Focus: coordination, legitimacy, preparedness
- * - Updated: Mar 18, 2026 (removed bodyHtml parameter - template now generates ALL HTML internally)
  * 
  * Usage:
- *   import template from "./outreach-email-template.js";
+ *   import template from "./outreach-email-template";
  *   
  *   // For Municipalities (Spanish)
  *   const email = template.generateEmail({
@@ -31,26 +30,44 @@
  */
 
 import fs from "fs";
-import path from "path";
 
 // Logo embedding - Fallback to hosted URL if base64 fails
 const hostedLogoUrl = 'https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png';
 
+interface EmailParams {
+  recipientName?: string;
+  companyName?: string;
+  painPoints?: string[];
+  variant?: 'governance' | 'institutional' | 'traiga';
+  language?: 'es' | 'en';
+  subject?: string;
+  ctaText?: string | null;
+  customPS?: string | null;
+  customHook?: string | null;
+}
+
+interface EmailResult {
+  subject: string;
+  html: string;
+  text: string;
+}
+
+type TemplateCopy = {
+  intro: string;
+  closing: string;
+  cta: string;
+  painPointsIntro: string;
+  customPS: string;
+};
+
+type TemplateVariant = {
+  [key: string]: TemplateCopy;
+};
+
 /**
  * Generate email for Municipalities (Spanish)
- * @param {Object} params - Email parameters
- * @param {string} params.recipientName - Recipient name (e.g., "Diego Miranda")
- * @param {string} params.companyName - Municipality/canton name (e.g., "San José")
- * @param {string[]} params.painPoints - Array of pain points (e.g., ['AI accountability', 'coordinación'])
- * @param {string} params.variant - Email variant (governance|institutional|traiga)
- * @param {string} params.language - Language code ('es' for Spanish)
- * @param {string} params.subject - Email subject (used for mailto links)
- * @param {string} [params.ctaText] - Optional custom CTA button text
- * @param {string} [params.customPS] - Optional custom footer note
- * 
- * @returns {Object} { subject, html, text }
  */
-export function generateEmail(params) {
+export function generateEmail(params: EmailParams): EmailResult {
   const {
     recipientName = 'there',
     companyName = '',
@@ -62,12 +79,11 @@ export function generateEmail(params) {
     customPS = 'P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.'
   } = params;
 
-  const firstName = recipientName.split(' ')[0];
   // Self-contained: use hosted URL for logo (no external file dependency)
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
 
   // Template copy for municipalities (Spanish)
-  const templates = {
+  const templates: Record<string, TemplateVariant> = {
     governance: {
       es: {
         intro: `Alygn es una institución independiente de gobernanza de IA enfocada en hacer que la rendición de cuentas, la supervisión y la coordinación sean viables para sistemas de IA avanzados que operan a escala global.<br><br>
@@ -77,7 +93,7 @@ A medida que los sistemas de IA superan a los actores individuales, la gobernanz
         painPointsIntro: companyName 
           ? `Entendemos que ${companyName} enfrenta desafíos como:`
           : 'Entendemos que su organización enfrenta desafíos como:',
-        customPS
+        customPS: customPS || ''
       }
     },
     institutional: {
@@ -89,7 +105,7 @@ Alygn es una institución independiente enfocada en hacer que la rendición de c
         painPointsIntro: companyName
           ? `Entendemos que ${companyName} enfrenta desafíos como:`
           : 'Entendemos que su organización enfrenta desafíos como:',
-        customPS
+        customPS: customPS || ''
       }
     },
     traiga: {
@@ -101,7 +117,7 @@ Como institución independiente de gobernanza de IA, Alygn puede apoyar a los mu
         painPointsIntro: companyName
           ? `Entendemos que ${companyName} enfrenta desafíos como:`
           : 'Entendemos que su organización enfrenta desafíos como:',
-        customPS,
+        customPS: customPS || ''
       }
     }
   };
@@ -119,7 +135,7 @@ Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : '
   const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0
     ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map(p => `<li>${typeof p === 'string' ? p.trim() : p}</li>`).join('')}
+  ${painPoints.slice(0, 3).map((p: string) => `<li>${p.trim()}</li>`).join('')}
 </ul>`
     : '';
 
@@ -161,19 +177,8 @@ Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : '
 
 /**
  * Generate email for VC Outreach (English)
- * @param {Object} params - Email parameters
- * @param {string} params.recipientName - Recipient name (e.g., "Partner Name")
- * @param {string} params.companyName - Company name (e.g., "Khosla Ventures")
- * @param {string[]} params.painPoints - Array of pain points (e.g., ['AI safety', 'alignment'])
- * @param {string} params.variant - Email variant (governance|institutional)
- * @param {string} params.language - Language code ('en' for English)
- * @param {string} params.subject - Email subject (used for mailto links)
- * @param {string} [params.customHook] - Custom hook text personalization to insert after intro
- * @param {string} [params.ctaText] - Optional custom CTA button text
- * @param {string} [params.customPS] - Optional custom footer note (Must include `"P.S.: "` prefix and suffix `". This message was AI-generated and verified by humans. Total transparency in our processes."` if provided)
- * @returns {Object} { subject, html, text }
  */
-export function generateEmailHTML(params) {
+export function generateEmailHTML(params: EmailParams): EmailResult {
   const {
     recipientName = 'there',
     companyName = '',
@@ -191,7 +196,7 @@ export function generateEmailHTML(params) {
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
 
   // Template copy for VCs (English)
-  const templates = {
+  const templates: Record<string, TemplateVariant> = {
     governance: {
       en: {
         intro: `Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>
@@ -201,7 +206,7 @@ As AI systems outgrow individual actors, governance can't be retrofitted. We exi
         painPointsIntro: companyName
           ? `We understand ${companyName} faces challenges such as:`
           : 'We understand your organization faces challenges such as:',
-        customPS,
+        customPS: customPS || ''
       }
     },
     institutional: {
@@ -213,7 +218,7 @@ Alygn is an independent institution focused on making accountability, emergency 
         painPointsIntro: companyName
           ? `We understand ${companyName} faces challenges such as:`
           : 'We understand your organization faces challenges such as:',
-        customPS,
+        customPS: customPS || ''
       }
     }
   };
@@ -234,7 +239,7 @@ I am interested in exploring how we can support ${companyName || 'your organizat
   const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0
     ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map(p => `<li>${typeof p === 'string' ? p.trim() : p}</li>`).join('')}
+  ${painPoints.slice(0, 3).map((p: string) => `<li>${p.trim()}</li>`).join('')}
 </ul>`
     : '';
 
@@ -276,18 +281,18 @@ I am interested in exploring how we can support ${companyName || 'your organizat
 }
 
 // Helper functions
-function getBase64Image(imagePath) {
+function getBase64Image(imagePath: string): string {
   try {
     if (fs.existsSync(imagePath)) {
       return fs.readFileSync(imagePath, 'base64').toString();
     }
   } catch (err) {
-    console.error(`Failed to read image: ${imagePath}`, err.message);
+    console.error(`Failed to read image: ${imagePath}`, (err as Error).message);
   }
   return '';
 }
 
-function buildHeader(logoImg) {
+function buildHeader(logoImg: string): string {
   return `<div class="header">
   <div class="header-brand">
     <h2 class="brand-name">ALYGN</h2>
@@ -296,7 +301,7 @@ function buildHeader(logoImg) {
 </div>`;
 }
 
-function buildFooter(variant) {
+function buildFooter(variant: string): string {
   const year = new Date().getFullYear();
   return `<div class="footer">
   <p style="margin: 0 0 12px 0;">
@@ -310,7 +315,7 @@ function buildFooter(variant) {
 </div>`;
 }
 
-function generatePlainText(html) {
+function generatePlainText(html: string): string {
   return html
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')

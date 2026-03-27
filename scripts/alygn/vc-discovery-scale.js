@@ -373,7 +373,7 @@ class VCScaleDiscovery {
     console.log(`\n✅ Final count: ${highQualityVCs.length} high-quality VCs`);
     
     // Save results
-    const outputPath = '/tmp/alygn-vc-discovery-scale.json';
+    const outputPath = `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-vc-discovery-scale.json`;
     fs.writeFileSync(outputPath, JSON.stringify({
       timestamp: new Date().toISOString(),
       totalDiscovered: this.discoveredVCs.size,

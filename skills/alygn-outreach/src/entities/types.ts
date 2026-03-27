@@ -5,19 +5,6 @@
  * Self-contained: No external imports from scripts/alygn
  */
 
-// Re-export shared types
-export type {
-  OutreachEntity,
-  VCEntity,
-  MunicipalEntity
-} from './OutreachEntity.js';
-
-export {
-  EntityStatus,
-  DraftStatus,
-  Priority
-} from './OutreachEntity.js';
-
 // Base location interface
 export interface Location {
   city: string | null;
@@ -34,6 +21,19 @@ export type Priority = 'high' | 'medium' | 'low';
 
 // Draft status for approval workflow
 export type DraftStatus = 'Not drafted' | 'Drafted' | 'Approved' | 'Rejected' | 'Sent';
+
+// Email validation result
+export interface IEmailValidation {
+  result: 'valid' | 'invalid' | 'risky' | 'unknown' | 'error';
+  confidence: number;
+  details?: {
+    reason?: string;
+    message?: string;
+    error?: string;
+    rawStatus?: string;
+  };
+  validator?: string;
+}
 
 // Base outreach entity interface
 export interface IOutreachEntity {
@@ -61,33 +61,20 @@ export interface IOutreachEntity {
   pageId?: string;
 }
 
-// Email validation result
-export interface IEmailValidation {
-  result: 'valid' | 'invalid' | 'risky' | 'unknown' | 'error';
-  confidence: number;
-  details?: {
-    reason?: string;
-    message?: string;
-    error?: string;
-    rawStatus?: string;
-  };
-  validator?: string;
-}
-
 // VC-specific type data
-export interface IVCTypeData {
-  firmType: 'vc' | 'angel' | 'corporate' | 'accelerator';
-  stageFocus: string[];
-  sectorFocus: string[];
-  checkSizeMin: number | null;
-  checkSizeMax: number | null;
-  aum: number | null;
-  partners: IVCPartner[];
-  portfolioCompanies: string[];
-  recentInvestments: IRecentInvestment[];
-  linkedInUrl: string | null;
-  crunchbaseUrl: string | null;
-  relevanceScore: number | null;
+export interface IVCTypeData extends Record<string, unknown> {
+  firmType?: 'vc' | 'angel' | 'corporate' | 'accelerator';
+  stageFocus?: string[];
+  sectorFocus?: string[];
+  checkSizeMin?: number | null;
+  checkSizeMax?: number | null;
+  aum?: number | null;
+  partners?: IVCPartner[];
+  portfolioCompanies?: string[];
+  recentInvestments?: IRecentInvestment[];
+  linkedInUrl?: string | null;
+  crunchbaseUrl?: string | null;
+  relevanceScore?: number | null;
 }
 
 // VC partner
@@ -105,19 +92,19 @@ export interface IRecentInvestment {
 }
 
 // Municipal-specific type data
-export interface IMunicipalTypeData {
-  governmentType: 'city' | 'county' | 'state' | 'regional';
-  population: number | null;
-  budget: number | null;
-  departments: IDepartment[];
-  keyContacts: IKeyContact[];
-  initiatives: IInitiative[];
-  painPoints: string[];
-  currentVendors: string[];
-  procurementProcess: string | null;
-  decisionMakers: IDecisionMaker[];
-  province: string | null;
-  trAigaRelevant: boolean;
+export interface IMunicipalTypeData extends Record<string, unknown> {
+  governmentType?: 'city' | 'county' | 'state' | 'regional';
+  population?: number | null;
+  budget?: number | null;
+  departments?: IDepartment[];
+  keyContacts?: IKeyContact[];
+  initiatives?: IInitiative[];
+  painPoints?: string[];
+  currentVendors?: string[];
+  procurementProcess?: string | null;
+  decisionMakers?: IDecisionMaker[];
+  province?: string | null;
+  trAigaRelevant?: boolean;
 }
 
 // Department
@@ -148,18 +135,6 @@ export interface IDecisionMaker {
   name: string;
   title: string;
   influence: 'high' | 'medium' | 'low';
-}
-
-// VC Entity
-export interface IVC extends IOutreachEntity {
-  type: 'vc';
-  typeData: IVCTypeData;
-}
-
-// Municipal Entity
-export interface IMunicipality extends IOutreachEntity {
-  type: 'municipal';
-  typeData: IMunicipalTypeData;
 }
 
 // Costa Rica Canton data

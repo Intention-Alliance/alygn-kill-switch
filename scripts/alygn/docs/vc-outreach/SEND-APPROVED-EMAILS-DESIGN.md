@@ -5,6 +5,7 @@
 **Purpose:** Final phase of ALYGN VC outreach workflow - send approved emails with full tracking and governance.
 
 **Scope:**
+
 - Load human-approved email drafts
 - Validate recipients and content
 - Send via SMTP (or configured service)
@@ -69,18 +70,21 @@ node send-approved-emails.js --limit=10 --rate-limit=500
 ### Common Workflows
 
 **Workflow 1: Send Single VC**
+
 ```bash
 node send-approved-emails.js --vc-name="Khosla" --dry-run   # Preview first
 node send-approved-emails.js --vc-name="Khosla"             # Actually send
 ```
 
 **Workflow 2: Send Batch of 5**
+
 ```bash
 node send-approved-emails.js --limit=5 --dry-run            # Preview
 node send-approved-emails.js --limit=5                      # Send (with 3s delay between)
 ```
 
 **Workflow 3: Retry Failed Sends**
+
 ```bash
 node send-approved-emails.js --resend-failed --limit=5      # Retry up to 5 failures
 ```
@@ -90,6 +94,7 @@ node send-approved-emails.js --resend-failed --limit=5      # Retry up to 5 fail
 ### 1. Draft Approval Flow
 
 **Before Sending:**
+
 ```
 draft-{pageId}.json created by draft-outreach-emails.js
   └─ status: "draft"
@@ -97,6 +102,7 @@ draft-{pageId}.json created by draft-outreach-emails.js
 ```
 
 **Approval Process:**
+
 - Andler reviews draft in Discord #annotations
 - Approves or edits via commands:
   - `APPROVE [VC]` → updates status to "approved"
@@ -104,6 +110,7 @@ draft-{pageId}.json created by draft-outreach-emails.js
   - `SKIP [VC]` → marks status "skipped"
 
 **During Sending:**
+
 - Script loads only "approved" status drafts
 - Validates recipient email + content
 - Sends via SMTP
@@ -112,20 +119,22 @@ draft-{pageId}.json created by draft-outreach-emails.js
 ### 2. Email Delivery
 
 **Current Status:** MVP with logging (no actual SMTP yet)
+
 - Script validates email format
 - Logs what would be sent
 - Returns mock message ID
 - Ready for SMTP implementation
 
 **TODO: Production Implementation**
+
 ```javascript
 // Use nodemailer for SMTP sending
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
   secure: true,
-  auth: { user: FROM_EMAIL, pass: PASSWORD }
+  auth: { user: FROM_EMAIL, pass: PASSWORD },
 });
 
 await transporter.sendMail({
@@ -134,15 +143,16 @@ await transporter.sendMail({
   subject: subject,
   html: htmlBody,
   headers: {
-    'X-Message-ID': messageId,
-    'X-VC-Name': vcName
-  }
+    "X-Message-ID": messageId,
+    "X-VC-Name": vcName,
+  },
 });
 ```
 
 ### 3. Notion Tracking
 
 **Before Send:**
+
 ```
 Status: "Ready for outreach"
 Sent Date: (empty)
@@ -150,6 +160,7 @@ Notes: [Summary + Conversation Logs]
 ```
 
 **After Send:**
+
 ```
 Status: "Sent" ✅
 Sent Date: 2026-02-13
@@ -161,11 +172,13 @@ Notes: (updated with message ID)
 ### 4. Rate Limiting
 
 **Default:** 3000ms (3 seconds) between sends
+
 - Respects email provider rate limits
 - Reduces ISP spam flags
 - Allows infrastructure to log each send
 
 **Override:**
+
 ```bash
 # Fast batch (500ms delays - use with caution)
 node send-approved-emails.js --rate-limit=500 --limit=5
@@ -203,29 +216,22 @@ node send-approved-emails.js --rate-limit=10000 --limit=3
    → Update Notion engagement metrics
 ```
 
-### Cron Integration
-
-**TODO: Add to cron jobs**
-
-```bash
-# Daily sending (after approval)
-0 10 * * * cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && \
-  node send-approved-emails.js --limit=5 >> /tmp/alygn-sending.log 2>&1
-```
-
 ## Error Handling
 
 ### Email Validation
+
 - ✅ Checks email format (RFC 5322 basic)
 - ✅ Validates subject + body present
 - ❌ Bounces invalid emails (returns error)
 
 ### SMTP Errors (TODO)
+
 - Transient (4xx): Retry later
 - Permanent (5xx): Mark failed + log
 - Rate limit (429): Backoff + resume
 
 ### Notion Errors
+
 - If update fails: Log warning, continue
 - Don't fail sending if tracking fails
 - Report as separate failure in summary
@@ -233,6 +239,7 @@ node send-approved-emails.js --rate-limit=10000 --limit=3
 ## Monitoring & Troubleshooting
 
 ### Success Indicators
+
 ```
 📬 Email Sending Report
 - Loaded: 5 approved emails
@@ -258,18 +265,21 @@ A: Use `--dry-run` flag to see what would be sent
 ## Future Enhancements
 
 ### Priority 1 (MVP Complete)
+
 - [ ] Actual SMTP implementation (nodemailer)
 - [ ] Approval workflow in Discord (#annotations)
 - [ ] Cron job scheduling
 - [ ] Batch size recommendations (max 5-10 per day)
 
 ### Priority 2 (V1.1)
+
 - [ ] Email open/click tracking (pixel + links)
 - [ ] Reply detection + auto-logging to Notion
 - [ ] Retry failed sends automatically
 - [ ] A/B testing support (track subject line variants)
 
 ### Priority 3 (V2.0)
+
 - [ ] Multi-email sequence (follow-ups)
 - [ ] Personalized reply detection
 - [ ] Calendar integration (optimal send times)

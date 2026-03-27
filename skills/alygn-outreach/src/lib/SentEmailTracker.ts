@@ -10,8 +10,35 @@ import path from 'path';
 const SKILL_DATA_DIR = path.resolve(__dirname, '../../data');
 const SENT_LOG_FILE = path.resolve(SKILL_DATA_DIR, 'sent-emails.json');
 
+interface SentEmailEntry {
+  email: string;
+  name: string;
+  partnerName: string | null;
+  vcName: string;
+  subject: string;
+  sentAt: string;
+  messageId: string;
+}
+
+interface SentEmails {
+  vcs: SentEmailEntry[];
+  municipalities: SentEmailEntry[];
+  lastUpdated: string | null;
+}
+
+interface RecordSentParams {
+  email: string;
+  name: string;
+  partnerName?: string;
+  vcName?: string;
+  type: 'vc' | 'municipal';
+  subject: string;
+  sentAt?: string;
+  messageId?: string;
+}
+
 export class SentEmailTracker {
-  sentEmails: { vcs: unknown[]; municipalities: unknown[]; lastUpdated: string | null };
+  sentEmails: SentEmails;
 
   constructor() {
     // Ensure data directory exists
@@ -21,33 +48,31 @@ export class SentEmailTracker {
     this.sentEmails = this.loadSentLog();
   }
 
-  loadSentLog() {
+  private loadSentLog(): SentEmails {
     try {
       if (fs.existsSync(SENT_LOG_FILE)) {
-        return JSON.parse(fs.readFileSync(SENT_LOG_FILE, 'utf8'));
+        return JSON.parse(fs.readFileSync(SENT_LOG_FILE, 'utf8')) as SentEmails;
       }
     } catch (e) {
-      console.error('Error loading sent log:', e.message);
+      const err = e as Error;
+      console.error('Error loading sent log:', err.message);
     }
     return { vcs: [], municipalities: [], lastUpdated: null };
   }
 
-  saveSentLog() {
+  private saveSentLog(): void {
     try {
       fs.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
     } catch (e) {
-      console.error('Error saving sent log:', e.message);
+      const err = e as Error;
+      console.error('Error saving sent log:', err.message);
     }
   }
 
   /**
    * Check if email was already sent
-   * @param {string} email - Email address
-   * @param {string} partnerName - Partner name (optional, for VC-level tracking)
-   * @param {string} type - 'vc' or 'municipal'
-   * @returns {boolean}
    */
-  wasAlreadySent(email, partnerName, type) {
+  wasAlreadySent(email: string, partnerName?: string, type: 'vc' | 'municipal' = 'vc'): boolean {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
     
     if (!email) return false;
@@ -68,17 +93,8 @@ export class SentEmailTracker {
 
   /**
    * Record sent email
-   * @param {Object} params
-   * @param {string} params.email
-   * @param {string} params.name - VC or municipality name
-   * @param {string} params.partnerName - Partner name (for VC-level tracking)
-   * @param {string} params.vcName - VC firm name (for partner-level tracking)
-   * @param {string} params.type - 'vc' or 'municipal'
-   * @param {string} params.subject
-   * @param {string} params.sentAt
-   * @param {string} params.messageId
    */
-  recordSent(params) {
+  recordSent(params: RecordSentParams): void {
     const { email, name, partnerName, vcName, type, subject, sentAt, messageId } = params;
     const key = type === 'vc' ? 'vcs' : 'municipalities';
     
@@ -100,7 +116,7 @@ export class SentEmailTracker {
       );
     }
     
-    const entry = {
+    const entry: SentEmailEntry = {
       email,
       name,
       partnerName: partnerName || null,
@@ -126,29 +142,24 @@ export class SentEmailTracker {
 
   /**
    * Get sent emails list
-   * @param {string} type - 'vc' or 'municipal'
-   * @returns {Array}
    */
-  getSent(type) {
+  getSent(type: 'vc' | 'municipal'): SentEmailEntry[] {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
     return this.sentEmails[key];
   }
 
   /**
    * Get count
-   * @param {string} type - 'vc' or 'municipal'
-   * @returns {number}
    */
-  getCount(type) {
+  getCount(type: 'vc' | 'municipal'): number {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
     return this.sentEmails[key].length;
   }
 
   /**
    * Get full stats
-   * @returns {Object}
    */
-  getStats() {
+  getStats(): { vcs: number; municipalities: number; total: number; lastUpdated: string | null } {
     return {
       vcs: this.getCount('vc'),
       municipalities: this.getCount('municipal'),
@@ -159,12 +170,8 @@ export class SentEmailTracker {
 
   /**
    * Get last sent entry for an email
-   * @param {string} email
-   * @param {string} partnerName
-   * @param {string} type
-   * @returns {Object|null}
    */
-  getSentEntry(email, partnerName, type) {
+  getSentEntry(email: string, partnerName?: string, type: 'vc' | 'municipal' = 'vc'): SentEmailEntry | null {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
     
     if (!email) return null;
@@ -183,11 +190,8 @@ export class SentEmailTracker {
 
   /**
    * Check if specific partner was already emailed at a VC
-   * @param {string} email
-   * @param {string} partnerName
-   * @returns {boolean}
    */
-  wasPartnerEmailed(email, partnerName) {
+  wasPartnerEmailed(email: string, partnerName: string): boolean {
     if (!email || !partnerName) return false;
     
     return this.sentEmails.vcs.some(entry => 
@@ -198,22 +202,20 @@ export class SentEmailTracker {
 
   /**
    * Get partners already emailed at a specific VC
-   * @param {string} email
-   * @returns {Array}
    */
-  getEmailedPartners(email) {
+  getEmailedPartners(email: string): string[] {
     if (!email) return [];
     
     return this.sentEmails.vcs
       .filter(entry => entry.email.toLowerCase() === email.toLowerCase())
       .map(entry => entry.partnerName)
-      .filter(Boolean);
+      .filter((p): p is string => p !== null);
   }
 
   /**
    * Clear all sent records (use with caution)
    */
-  clearAll() {
+  clearAll(): void {
     this.sentEmails = { vcs: [], municipalities: [], lastUpdated: null };
     this.saveSentLog();
   }

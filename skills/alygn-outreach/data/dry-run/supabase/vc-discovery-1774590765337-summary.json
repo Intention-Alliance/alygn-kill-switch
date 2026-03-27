@@ -1,0 +1,11 @@
+{
+  "dryRunId": "vc-discovery-1774590765337",
+  "timestamp": "2026-03-27T05-52-45",
+  "tables": {
+    "municipalities": 0,
+    "local_governments": 0,
+    "outreach_emails": 0,
+    "political_figures": 6
+  },
+  "outputDir": "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/data/dry-run/supabase"
+}

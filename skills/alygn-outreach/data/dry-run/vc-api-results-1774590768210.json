@@ -1,0 +1,71 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 3,
+  "timestamp": "2026-03-27T05:52:48.210Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Menlo Ventures",
+      "website": "https://menlovc.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Early Stage",
+        "Growth Stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "AI Safety",
+        "Enterprise Software",
+        "Cybersecurity",
+        "Healthcare"
+      ],
+      "partners": [
+        {
+          "name": "Not specified",
+          "title": "Managing Director"
+        }
+      ]
+    },
+    {
+      "name": "Spark Capital",
+      "website": "https://www.sparkcapital.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Growth Stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "AI Safety"
+      ],
+      "partners": [
+        {
+          "name": "Not specified",
+          "title": "Partner"
+        }
+      ]
+    },
+    {
+      "name": "Lightspeed Venture Partners",
+      "website": "https://lsvp.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Series A",
+        "Multi-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "AI Safety",
+        "AI Infrastructure",
+        "Enterprise AI"
+      ],
+      "partners": [
+        {
+          "name": "Not specified",
+          "title": "Partner"
+        }
+      ]
+    }
+  ]
+}

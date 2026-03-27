@@ -2,11 +2,18 @@
  * Smartlead Email Provider
  * Sends emails via Smartlead API
  */
-import { EmailProvider } from './EmailProvider.js';
+import { EmailProvider, type IEmailPayload, type ISendResult } from './EmailProvider';
+
+interface SmartleadConfig {
+  apiKey?: string;
+  baseUrl?: string;
+  [key: string]: unknown;
+}
 
 export class SmartleadProvider extends EmailProvider {
-  constructor(config) {
+  constructor(config: SmartleadConfig = {}) {
     super();
+    this.config = config;
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl || 'https://api.smartlead.ai/v1';
   }
@@ -14,7 +21,7 @@ export class SmartleadProvider extends EmailProvider {
   /**
    * Send email via Smartlead API
    */
-  async send(payload) {
+  async send(payload: IEmailPayload): Promise<ISendResult> {
     const { to, subject, html, text, from, cc, headers = {} } = payload;
 
     try {
@@ -22,7 +29,7 @@ export class SmartleadProvider extends EmailProvider {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': this.apiKey
+          'X-API-Key': this.apiKey!
         },
         body: JSON.stringify({
           to: to,
@@ -41,7 +48,7 @@ export class SmartleadProvider extends EmailProvider {
         throw new Error(`Smartlead API error: ${response.status} - ${errorData}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as { message_id?: string; id?: string; campaign_id?: string };
 
       return {
         success: true,
@@ -52,9 +59,10 @@ export class SmartleadProvider extends EmailProvider {
         campaignId: data.campaign_id
       };
     } catch (error) {
+      const err = error as Error;
       return {
         success: false,
-        error: error.message,
+        error: err.message,
         provider: this.getName(),
         to: to,
         subject: subject
@@ -65,18 +73,19 @@ export class SmartleadProvider extends EmailProvider {
   /**
    * Validate Smartlead API configuration
    */
-  async validateConfig() {
+  async validateConfig(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/account/verify`, {
         method: 'GET',
         headers: {
-          'X-API-Key': this.apiKey
+          'X-API-Key': this.apiKey!
         }
       });
 
       return response.ok;
     } catch (error) {
-      console.error('Smartlead config validation failed:', error.message);
+      const err = error as Error;
+      console.error('Smartlead config validation failed:', err.message);
       return false;
     }
   }
@@ -84,7 +93,7 @@ export class SmartleadProvider extends EmailProvider {
   /**
    * Get provider name
    */
-  getName() {
+  getName(): string {
     return 'smartlead';
   }
 }

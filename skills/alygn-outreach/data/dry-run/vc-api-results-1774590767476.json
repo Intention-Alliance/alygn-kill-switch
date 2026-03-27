@@ -1,0 +1,52 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 3,
+  "timestamp": "2026-03-27T05:52:47.476Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Glasswing Ventures",
+      "website": "http://www.glasswing.vc/",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early Stage Venture"
+      ],
+      "sectorFocus": [
+        "Artificial Intelligence (AI)",
+        "Enterprise",
+        "Security",
+        "Software"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Okta Ventures",
+      "website": "https://www.okta.com/okta-ventures/",
+      "firmType": "vc",
+      "stageFocus": [
+        "Venture"
+      ],
+      "sectorFocus": [
+        "Identity",
+        "Privacy",
+        "Security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Zetta Venture Partners",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed"
+      ],
+      "sectorFocus": [
+        "AI",
+        "AI Safety",
+        "AI Reliability"
+      ],
+      "partners": []
+    }
+  ]
+}

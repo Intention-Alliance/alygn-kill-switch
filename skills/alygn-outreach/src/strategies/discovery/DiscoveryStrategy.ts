@@ -1,9 +1,16 @@
 /**
- * DiscoveryStrategy - Base interface for discovery strategies
+ * DiscoveryStrategy - Abstract base class for discovery strategies
  */
-import type { OutreachEntity } from '../entities/OutreachEntity.js';
+import type { OutreachEntity } from '../../entities/OutreachEntity';
 
-export class DiscoveryStrategy {
+export interface IDiscoveryOptions {
+  limit?: number;
+  dryRun?: boolean;
+  region?: string;
+  [key: string]: unknown;
+}
+
+export abstract class DiscoveryStrategy {
   protected config: Record<string, unknown>;
   protected name: string;
 
@@ -11,17 +18,12 @@ export class DiscoveryStrategy {
     this.config = config;
     this.name = 'base-discovery';
   }
-  
+
   /**
    * Discover entities
-   * @param query - Search query
-   * @param options - Discovery options
-   * @returns Promise<OutreachEntity[]> Array of discovered entities
    */
-  async discover(query: string, options: Record<string, unknown> = {}): Promise<OutreachEntity[]> {
-    throw new Error('Not implemented');
-  }
-  
+  abstract discover(query: string, options?: IDiscoveryOptions): Promise<OutreachEntity[]>;
+
   /**
    * Get strategy name
    */

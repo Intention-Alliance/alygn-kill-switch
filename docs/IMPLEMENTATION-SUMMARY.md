@@ -8,6 +8,7 @@
 ## Files Created
 
 ### Email Provider Infrastructure
+
 1. **`/scripts/alygn/lib/email/providers/EmailProvider.js`**
    - Base interface class for all email providers
    - Defines `send()`, `validateConfig()`, `getName()` methods
@@ -30,16 +31,17 @@
    - Test email override support
 
 ### Email Validation Infrastructure
-6. **`/scripts/alygn/lib/email/validators/EmailValidator.js`**
+
+1. **`/scripts/alygn/lib/email/validators/EmailValidator.js`**
    - Base interface for email validators
 
-7. **`/scripts/alygn/lib/email/validators/RegexMXValidator.js`**
+2. **`/scripts/alygn/lib/email/validators/RegexMXValidator.js`**
    - Regex + MX lookup validation (free, no API key)
 
-8. **`/scripts/alygn/lib/email/validators/ZeroBounceValidator.js`**
+3. **`/scripts/alygn/lib/email/validators/ZeroBounceValidator.js`**
    - ZeroBounce API integration for high-confidence validation
 
-9. **`/scripts/alygn/lib/email/validators/EmailValidatorFactory.js`**
+4. **`/scripts/alygn/lib/email/validators/EmailValidatorFactory.js`**
    - Factory for validator selection
 
 ---
@@ -47,7 +49,9 @@
 ## Files Modified
 
 ### 1. Template Refactor
+
 **`/scripts/alygn/lib/outreach-email-template.js`**
+
 - ✅ REMOVED `bodyHtml` parameter entirely
 - ✅ Simplified interface: `{ recipientName, companyName, painPoints, variant, language, subject, ctaText?, footerNote? }`
 - ✅ Template now generates ALL HTML internally
@@ -58,14 +62,18 @@
 - ✅ Backwards compatibility exports preserved
 
 ### 2. Email Sender (Refactored)
+
 **`/scripts/alygn/lib/email-sender.js`**
+
 - ✅ Now uses new EmailService with dependency injection
 - ✅ Exports `createEmailService()` for modern usage
 - ✅ Maintains backwards compatibility with legacy `sendEmail()` and `sendEmailsBatch()`
 - ✅ CLI support for `--provider=smtp|smartlead` and `--test-email=address`
 
 ### 3. VC Discovery Script
+
 **`/scripts/alygn/vc-outreach/core/automated-vc-discovery.js`**
+
 - ✅ Added email validation before `addVCToNotion()`
 - ✅ Uses `EmailValidatorFactory` with ZeroBounce (or regex-mx fallback)
 - ✅ Changed file output to `/tmp/alygn-vc-discovered-{timestamp}.json`
@@ -75,7 +83,9 @@
 - ✅ Tracks email validation stats
 
 ### 4. Draft Outreach Emails Script
+
 **`/scripts/alygn/vc-outreach/email/draft-outreach-emails.js`**
+
 - ✅ Updated to use new template interface (no bodyHtml)
 - ✅ Changed file output to `/tmp/alygn-vc-approved-{timestamp}.json`
 - ✅ Added `--dry-run` flag with JSON output
@@ -83,13 +93,15 @@
 - ✅ painPoints passed as array instead of comma-separated string
 
 ### 5. Send Approved Emails Script (NEW)
+
 **`/scripts/alygn/vc-outreach/email/send-approved-emails.js`**
+
 - ✅ Uses new EmailService with provider selection
 - ✅ Supports `--provider=smtp|smartlead` flag
 - ✅ Supports `--test-email=address` flag (redirects all sends)
 - ✅ Supports `--dry-run` flag with JSON output
 - ✅ Updates Notion status after sending
-- ✅ Saves results to `/tmp/alygn-vc-sent-{timestamp}.json`
+- ✅ Saves results to `$HOME/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-{timestamp}.json`
 
 ---
 
@@ -151,15 +163,15 @@ node scripts/alygn/vc-outreach/email/send-approved-emails.js --limit=1 --test-em
 
 ## Acceptance Criteria Status
 
-| Criteria | Status |
-|----------|--------|
-| Template has NO `bodyHtml` parameter | ✅ |
-| EmailProvider interface with SMTP and Smartlead implementations | ✅ |
-| EmailValidator interface with RegexMX and ZeroBounce implementations | ✅ |
-| `automated-vc-discovery.js` validates emails before adding to Notion | ✅ |
-| All scripts use `/tmp/alygn-{type}-{phase}-{timestamp}.json` pattern | ✅ |
-| `--dry-run` outputs valid JSON to stdout | ✅ |
-| `--test-email` flag works (redirects all sends to test address) | ✅ |
+| Criteria                                                             | Status |
+| -------------------------------------------------------------------- | ------ |
+| Template has NO `bodyHtml` parameter                                 | ✅     |
+| EmailProvider interface with SMTP and Smartlead implementations      | ✅     |
+| EmailValidator interface with RegexMX and ZeroBounce implementations | ✅     |
+| `automated-vc-discovery.js` validates emails before adding to Notion | ✅     |
+| All scripts use `/tmp/alygn-{type}-{phase}-{timestamp}.json` pattern | ✅     |
+| `--dry-run` outputs valid JSON to stdout                             | ✅     |
+| `--test-email` flag works (redirects all sends to test address)      | ✅     |
 
 ---
 

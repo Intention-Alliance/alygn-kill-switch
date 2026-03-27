@@ -3,7 +3,7 @@
  * Alygn Outreach CLI Entry Point
  * TypeScript version
  */
-import { parseArgs, main } from '../src/index.js';
+import { main, parseArgs } from '../dist/index';
 
 // Parse and run
 const args = parseArgs(process.argv.slice(2));

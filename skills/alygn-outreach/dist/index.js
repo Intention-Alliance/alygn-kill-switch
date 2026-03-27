@@ -48,26 +48,20 @@ var __require = import.meta.require;
 
 // src/lib/email/validators/EmailValidator.ts
 class EmailValidator {
-  async validate(email) {
-    throw new Error("Not implemented");
-  }
-  getName() {
-    throw new Error("Not implemented");
+  config;
+  constructor(config = {}) {
+    this.config = config;
   }
 }
+var init_EmailValidator = () => {};
 
 // src/lib/email/validators/RegexMXValidator.ts
-var exports_RegexMXValidator = {};
-__export(exports_RegexMXValidator, {
-  default: () => RegexMXValidator_default,
-  RegexMXValidator: () => RegexMXValidator
-});
-var RegexMXValidator, RegexMXValidator_default;
+var RegexMXValidator;
 var init_RegexMXValidator = __esm(() => {
+  init_EmailValidator();
   RegexMXValidator = class RegexMXValidator extends EmailValidator {
     constructor(config = {}) {
-      super();
-      this.config = config;
+      super(config);
     }
     async validate(email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,46 +76,51 @@ var init_RegexMXValidator = __esm(() => {
         };
       }
       const domain = email.split("@")[1];
-      const disposableDomains = [
-        "tempmail.com",
-        "throwaway.com",
-        "mailinator.com",
-        "guerrillamail.com",
-        "10minutemail.com"
-      ];
-      if (disposableDomains.includes(domain.toLowerCase())) {
-        return {
-          result: "risky",
-          confidence: 0.9,
-          details: {
-            reason: "Disposable email domain",
-            domain
-          },
-          validator: this.getName()
-        };
+      const config = this.config;
+      if (config.checkDisposable !== false) {
+        const disposableDomains = [
+          "tempmail.com",
+          "throwaway.com",
+          "mailinator.com",
+          "guerrillamail.com",
+          "10minutemail.com"
+        ];
+        if (disposableDomains.includes(domain.toLowerCase())) {
+          return {
+            result: "risky",
+            confidence: 0.9,
+            details: {
+              reason: "Disposable email domain",
+              domain
+            },
+            validator: this.getName()
+          };
+        }
       }
-      const roleBasedPrefixes = [
-        "admin",
-        "support",
-        "info",
-        "contact",
-        "sales",
-        "marketing",
-        "help",
-        "webmaster",
-        "postmaster"
-      ];
-      const prefix = email.split("@")[0].toLowerCase();
-      if (roleBasedPrefixes.some((role) => prefix.includes(role))) {
-        return {
-          result: "risky",
-          confidence: 0.7,
-          details: {
-            reason: "Role-based email",
-            prefix
-          },
-          validator: this.getName()
-        };
+      if (config.checkRoleBased !== false) {
+        const roleBasedPrefixes = [
+          "admin",
+          "support",
+          "info",
+          "contact",
+          "sales",
+          "marketing",
+          "help",
+          "webmaster",
+          "postmaster"
+        ];
+        const prefix = email.split("@")[0].toLowerCase();
+        if (roleBasedPrefixes.some((role) => prefix.includes(role))) {
+          return {
+            result: "risky",
+            confidence: 0.7,
+            details: {
+              reason: "Role-based email",
+              prefix
+            },
+            validator: this.getName()
+          };
+        }
       }
       return {
         result: "valid",
@@ -137,7 +136,6 @@ var init_RegexMXValidator = __esm(() => {
       return "regex-mx";
     }
   };
-  RegexMXValidator_default = RegexMXValidator;
 });
 
 // src/lib/email/outreach-email-template.ts
@@ -160,7 +158,6 @@ function generateEmail(params) {
     ctaText = null,
     customPS = "P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos."
   } = params;
-  const firstName = recipientName.split(" ")[0];
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
   const templates = {
     governance: {
@@ -170,7 +167,7 @@ A medida que los sistemas de IA superan a los actores individuales, la gobernanz
         closing: "Esperando explorar esto con usted.",
         cta: ctaText || "Conozca m\xE1s sobre Alygn",
         painPointsIntro: companyName ? `Entendemos que ${companyName} enfrenta desaf\xEDos como:` : "Entendemos que su organizaci\xF3n enfrenta desaf\xEDos como:",
-        customPS
+        customPS: customPS || ""
       }
     },
     institutional: {
@@ -180,7 +177,7 @@ Alygn es una instituci\xF3n independiente enfocada en hacer que la rendici\xF3n 
         closing: "Esperando explorar esto con usted.",
         cta: ctaText || "Discutir coordinaci\xF3n institucional",
         painPointsIntro: companyName ? `Entendemos que ${companyName} enfrenta desaf\xEDos como:` : "Entendemos que su organizaci\xF3n enfrenta desaf\xEDos como:",
-        customPS
+        customPS: customPS || ""
       }
     },
     traiga: {
@@ -190,7 +187,7 @@ Como instituci\xF3n independiente de gobernanza de IA, Alygn puede apoyar a los 
         closing: "Esperando explorar esto con usted.",
         cta: ctaText || "Conozca c\xF3mo podemos ayudar",
         painPointsIntro: companyName ? `Entendemos que ${companyName} enfrenta desaf\xEDos como:` : "Entendemos que su organizaci\xF3n enfrenta desaf\xEDos como:",
-        customPS
+        customPS: customPS || ""
       }
     }
   };
@@ -202,7 +199,7 @@ Me interesa explorar c\xF3mo podemos apoyar${companyName ? ` a ${companyName}` :
   const mailtoLink = `mailto:tanialeaidm@gmail.com?subject=${encodeURIComponent(mailtoSubject)}&body=${encodeURIComponent(mailtoBody)}&Bcc=outreach@alyygn.com`;
   const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0 ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p) => `<li>${typeof p === "string" ? p.trim() : p}</li>`).join("")}
+  ${painPoints.slice(0, 3).map((p) => `<li>${p.trim()}</li>`).join("")}
 </ul>` : "";
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -258,7 +255,7 @@ As AI systems outgrow individual actors, governance can't be retrofitted. We exi
         closing: "We're interested in exploring how governance infrastructure can support your organization's work.",
         cta: ctaText || "Learn more about Alygn",
         painPointsIntro: companyName ? `We understand ${companyName} faces challenges such as:` : "We understand your organization faces challenges such as:",
-        customPS
+        customPS: customPS || ""
       }
     },
     institutional: {
@@ -268,7 +265,7 @@ Alygn is an independent institution focused on making accountability, emergency 
         closing: "Looking forward to exploring this with you.",
         cta: ctaText || "Discuss institutional coordination",
         painPointsIntro: companyName ? `We understand ${companyName} faces challenges such as:` : "We understand your organization faces challenges such as:",
-        customPS
+        customPS: customPS || ""
       }
     }
   };
@@ -281,7 +278,7 @@ I am interested in exploring how we can support ${companyName || "your organizat
   const hookHtml = customHook ? `<p style="margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;">${customHook}</p>` : "";
   const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0 ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p) => `<li>${typeof p === "string" ? p.trim() : p}</li>`).join("")}
+  ${painPoints.slice(0, 3).map((p) => `<li>${p.trim()}</li>`).join("")}
 </ul>` : "";
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -457,7 +454,7 @@ var init_outreach_email_template = __esm(() => {
   outreach_email_template_default = { generateEmail, generateEmailHTML };
 });
 
-// ../../node_modules/nodemailer/lib/fetch/cookies.js
+// node_modules/nodemailer/lib/fetch/cookies.js
 var require_cookies = __commonJS((exports, module) => {
   var urllib = __require("url");
   var SESSION_TIMEOUT = 1800;
@@ -468,8 +465,8 @@ var require_cookies = __commonJS((exports, module) => {
       this.cookies = [];
     }
     set(cookieStr, url) {
-      let urlparts = urllib.parse(url || "");
-      let cookie = this.parse(cookieStr);
+      const urlparts = urllib.parse(url || "");
+      const cookie = this.parse(cookieStr);
       let domain;
       if (cookie.domain) {
         domain = cookie.domain.replace(/^\./, "");
@@ -491,13 +488,11 @@ var require_cookies = __commonJS((exports, module) => {
       return this.list(url).map((cookie) => cookie.name + "=" + cookie.value).join("; ");
     }
     list(url) {
-      let result = [];
-      let i;
-      let cookie;
-      for (i = this.cookies.length - 1;i >= 0; i--) {
-        cookie = this.cookies[i];
+      const result = [];
+      for (let i = this.cookies.length - 1;i >= 0; i--) {
+        const cookie = this.cookies[i];
         if (this.isExpired(cookie)) {
-          this.cookies.splice(i, i);
+          this.cookies.splice(i, 1);
           continue;
         }
         if (this.match(cookie, url)) {
@@ -507,10 +502,10 @@ var require_cookies = __commonJS((exports, module) => {
       return result;
     }
     parse(cookieStr) {
-      let cookie = {};
+      const cookie = {};
       (cookieStr || "").toString().split(";").forEach((cookiePart) => {
-        let valueParts = cookiePart.split("=");
-        let key = valueParts.shift().trim().toLowerCase();
+        const valueParts = cookiePart.split("=");
+        const key = valueParts.shift().trim().toLowerCase();
         let value = valueParts.join("=").trim();
         let domain;
         if (!key) {
@@ -552,12 +547,12 @@ var require_cookies = __commonJS((exports, module) => {
       return cookie;
     }
     match(cookie, url) {
-      let urlparts = urllib.parse(url || "");
+      const urlparts = urllib.parse(url || "");
       if (urlparts.hostname !== cookie.domain && (cookie.domain.charAt(0) !== "." || ("." + urlparts.hostname).substr(-cookie.domain.length) !== cookie.domain)) {
         return false;
       }
-      let path3 = this.getPath(urlparts.pathname);
-      if (path3.substr(0, cookie.path.length) !== cookie.path) {
+      const path6 = this.getPath(urlparts.pathname);
+      if (path6.substr(0, cookie.path.length) !== cookie.path) {
         return false;
       }
       if (cookie.secure && urlparts.protocol !== "https:") {
@@ -566,12 +561,10 @@ var require_cookies = __commonJS((exports, module) => {
       return true;
     }
     add(cookie) {
-      let i;
-      let len;
       if (!cookie || !cookie.name) {
         return false;
       }
-      for (i = 0, len = this.cookies.length;i < len; i++) {
+      for (let i = 0, len = this.cookies.length;i < len; i++) {
         if (this.compare(this.cookies[i], cookie)) {
           if (this.isExpired(cookie)) {
             this.cookies.splice(i, 1);
@@ -587,32 +580,32 @@ var require_cookies = __commonJS((exports, module) => {
       return true;
     }
     compare(a, b) {
-      return a.name === b.name && a.path === b.path && a.domain === b.domain && a.secure === b.secure && a.httponly === a.httponly;
+      return a.name === b.name && a.path === b.path && a.domain === b.domain && a.secure === b.secure && a.httponly === b.httponly;
     }
     isExpired(cookie) {
       return cookie.expires && cookie.expires < new Date || !cookie.value;
     }
     getPath(pathname) {
-      let path3 = (pathname || "/").split("/");
-      path3.pop();
-      path3 = path3.join("/").trim();
-      if (path3.charAt(0) !== "/") {
-        path3 = "/" + path3;
+      let path6 = (pathname || "/").split("/");
+      path6.pop();
+      path6 = path6.join("/").trim();
+      if (path6.charAt(0) !== "/") {
+        path6 = "/" + path6;
       }
-      if (path3.substr(-1) !== "/") {
-        path3 += "/";
+      if (path6.substr(-1) !== "/") {
+        path6 += "/";
       }
-      return path3;
+      return path6;
     }
   }
   module.exports = Cookies;
 });
 
-// ../../node_modules/nodemailer/package.json
+// node_modules/nodemailer/package.json
 var require_package = __commonJS((exports, module) => {
   module.exports = {
     name: "nodemailer",
-    version: "8.0.2",
+    version: "8.0.4",
     description: "Easy as cake e-mail sending from your Node.js applications",
     main: "lib/nodemailer.js",
     scripts: {
@@ -622,7 +615,8 @@ var require_package = __commonJS((exports, module) => {
       "format:check": 'prettier --check "**/*.{js,json,md}"',
       lint: "eslint .",
       "lint:fix": "eslint . --fix",
-      update: "rm -rf node_modules/ package-lock.json && ncu -u && npm install"
+      update: "rm -rf node_modules/ package-lock.json && ncu -u && npm install",
+      "test:syntax": 'docker run --rm -v "$PWD:/app:ro" -w /app node:6-alpine node test/syntax-compat.js'
     },
     repository: {
       type: "git",
@@ -638,7 +632,7 @@ var require_package = __commonJS((exports, module) => {
     },
     homepage: "https://nodemailer.com/",
     devDependencies: {
-      "@aws-sdk/client-sesv2": "3.1004.0",
+      "@aws-sdk/client-sesv2": "3.1011.0",
       bunyan: "1.8.15",
       c8: "11.0.0",
       eslint: "10.0.3",
@@ -659,7 +653,7 @@ var require_package = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/errors.js
+// node_modules/nodemailer/lib/errors.js
 var require_errors = __commonJS((exports, module) => {
   var ERROR_CODES = {
     ECONNECTION: "Connection closed unexpectedly",
@@ -684,19 +678,19 @@ var require_errors = __commonJS((exports, module) => {
     EURLACCESS: "URL access rejected (disableUrlAccess is set)",
     EFETCH: "HTTP fetch error"
   };
-  module.exports = Object.keys(ERROR_CODES).reduce((exports2, code) => {
-    exports2[code] = code;
-    return exports2;
-  }, { ERROR_CODES });
+  module.exports = { ERROR_CODES };
+  for (const code of Object.keys(ERROR_CODES)) {
+    module.exports[code] = code;
+  }
 });
 
-// ../../node_modules/nodemailer/lib/fetch/index.js
+// node_modules/nodemailer/lib/fetch/index.js
 var require_fetch = __commonJS((exports, module) => {
   var http = __require("http");
   var https = __require("https");
   var urllib = __require("url");
   var zlib = __require("zlib");
-  var PassThrough = __require("stream").PassThrough;
+  var { PassThrough } = __require("stream");
   var Cookies = require_cookies();
   var packageData = require_package();
   var net = __require("net");
@@ -718,14 +712,14 @@ var require_fetch = __commonJS((exports, module) => {
       });
       options.cookie = false;
     }
-    let fetchRes = options.fetchRes;
-    let parsed = urllib.parse(url);
+    const fetchRes = options.fetchRes;
+    const parsed = urllib.parse(url);
     let method = (options.method || "").toString().trim().toUpperCase() || "GET";
     let finished = false;
     let cookies;
     let body;
-    let handler = parsed.protocol === "https:" ? https : http;
-    let headers = {
+    const handler = parsed.protocol === "https:" ? https : http;
+    const headers = {
       "accept-encoding": "gzip,deflate",
       "user-agent": "nodemailer/" + packageData.version
     };
@@ -763,7 +757,7 @@ var require_fetch = __commonJS((exports, module) => {
         } else if (typeof options.body === "object") {
           try {
             body = Buffer.from(Object.keys(options.body).map((key) => {
-              let value = options.body[key].toString().trim();
+              const value = options.body[key].toString().trim();
               return encodeURIComponent(key) + "=" + encodeURIComponent(value);
             }).join("&"));
           } catch (E) {
@@ -785,7 +779,7 @@ var require_fetch = __commonJS((exports, module) => {
       method = (options.method || "").toString().trim().toUpperCase() || "POST";
     }
     let req;
-    let reqOptions = {
+    const reqOptions = {
       method,
       host: parsed.hostname,
       path: parsed.path,
@@ -795,9 +789,7 @@ var require_fetch = __commonJS((exports, module) => {
       agent: false
     };
     if (options.tls) {
-      Object.keys(options.tls).forEach((key) => {
-        reqOptions[key] = options.tls[key];
-      });
+      Object.assign(reqOptions, options.tls);
     }
     if (parsed.protocol === "https:" && parsed.hostname && parsed.hostname !== reqOptions.host && !net.isIP(parsed.hostname) && !reqOptions.servername) {
       reqOptions.servername = parsed.hostname;
@@ -820,7 +812,7 @@ var require_fetch = __commonJS((exports, module) => {
         }
         finished = true;
         req.abort();
-        let err = new Error("Request Timeout");
+        const err = new Error("Request Timeout");
         err.code = errors.EFETCH;
         err.sourceUrl = url;
         fetchRes.emit("error", err);
@@ -855,7 +847,7 @@ var require_fetch = __commonJS((exports, module) => {
         options.redirects++;
         if (options.redirects > options.maxRedirects) {
           finished = true;
-          let err = new Error("Maximum redirect count exceeded");
+          const err = new Error("Maximum redirect count exceeded");
           err.code = errors.EFETCH;
           err.sourceUrl = url;
           fetchRes.emit("error", err);
@@ -870,7 +862,7 @@ var require_fetch = __commonJS((exports, module) => {
       fetchRes.headers = res.headers;
       if (res.statusCode >= 300 && !options.allowErrorResponse) {
         finished = true;
-        let err = new Error("Invalid status code " + res.statusCode);
+        const err = new Error("Invalid status code " + res.statusCode);
         err.code = errors.EFETCH;
         err.sourceUrl = url;
         fetchRes.emit("error", err);
@@ -908,9 +900,8 @@ var require_fetch = __commonJS((exports, module) => {
         try {
           if (typeof body.pipe === "function") {
             return body.pipe(req);
-          } else {
-            req.write(body);
           }
+          req.write(body);
         } catch (err) {
           finished = true;
           err.code = errors.EFETCH;
@@ -925,11 +916,11 @@ var require_fetch = __commonJS((exports, module) => {
   }
 });
 
-// ../../node_modules/nodemailer/lib/shared/index.js
+// node_modules/nodemailer/lib/shared/index.js
 var require_shared = __commonJS((exports, module) => {
   var urllib = __require("url");
   var util = __require("util");
-  var fs3 = __require("fs");
+  var fs6 = __require("fs");
   var nmfetch = require_fetch();
   var dns = __require("dns");
   var net = __require("net");
@@ -948,21 +939,19 @@ var require_shared = __commonJS((exports, module) => {
   } catch (_err) {}
   exports.networkInterfaces = networkInterfaces;
   var isFamilySupported = (family, allowInternal) => {
-    let networkInterfaces2 = exports.networkInterfaces;
-    if (!networkInterfaces2) {
+    const ifaces = exports.networkInterfaces;
+    if (!ifaces) {
       return true;
     }
-    const familySupported = Object.keys(networkInterfaces2).map((key) => networkInterfaces2[key]).reduce((acc, val) => acc.concat(val), []).filter((i) => !i.internal || allowInternal).filter((i) => i.family === "IPv" + family || i.family === family).length > 0;
-    return familySupported;
+    return Object.keys(ifaces).map((key) => ifaces[key]).reduce((acc, val) => acc.concat(val), []).filter((i) => !i.internal || allowInternal).some((i) => i.family === "IPv" + family || i.family === family);
   };
-  var resolver = (family, hostname, options, callback) => {
+  var resolve = (family, hostname, options, callback) => {
     options = options || {};
-    const familySupported = isFamilySupported(family, options.allowInternalNetworkInterfaces);
-    if (!familySupported) {
+    if (!isFamilySupported(family, options.allowInternalNetworkInterfaces)) {
       return callback(null, []);
     }
-    const resolver2 = dns.Resolver ? new dns.Resolver(options) : dns;
-    resolver2["resolve" + family](hostname, (err, addresses) => {
+    const dnsResolver = dns.Resolver ? new dns.Resolver(options) : dns;
+    dnsResolver["resolve" + family](hostname, (err, addresses) => {
       if (err) {
         switch (err.code) {
           case dns.NODATA:
@@ -984,13 +973,8 @@ var require_shared = __commonJS((exports, module) => {
     if (!value) {
       return Object.assign({}, extra || {});
     }
-    let addresses = value.addresses || [];
-    let host = null;
-    if (addresses.length === 1) {
-      host = addresses[0];
-    } else if (addresses.length > 1) {
-      host = addresses[Math.floor(Math.random() * addresses.length)];
-    }
+    const addresses = value.addresses || [];
+    const host = addresses.length > 0 ? addresses[Math.floor(Math.random() * addresses.length)] : null;
     return Object.assign({
       servername: value.servername,
       host,
@@ -1003,7 +987,7 @@ var require_shared = __commonJS((exports, module) => {
       options.host = options.servername;
     }
     if (!options.host || net.isIP(options.host)) {
-      let value = {
+      const value = {
         addresses: [options.host],
         servername: options.servername || false
       };
@@ -1038,21 +1022,21 @@ var require_shared = __commonJS((exports, module) => {
     let ipv6Addresses = [];
     let ipv4Error = null;
     let ipv6Error = null;
-    resolver(4, options.host, options, (err, addresses) => {
+    resolve(4, options.host, options, (err, addresses) => {
       if (err) {
         ipv4Error = err;
       } else {
         ipv4Addresses = addresses || [];
       }
-      resolver(6, options.host, options, (err2, addresses2) => {
+      resolve(6, options.host, options, (err2, addresses2) => {
         if (err2) {
           ipv6Error = err2;
         } else {
           ipv6Addresses = addresses2 || [];
         }
-        let allAddresses = ipv4Addresses.concat(ipv6Addresses);
+        const allAddresses = ipv4Addresses.concat(ipv6Addresses);
         if (allAddresses.length) {
-          let value = {
+          const value = {
             addresses: allAddresses,
             servername: options.servername || options.host
           };
@@ -1091,7 +1075,7 @@ var require_shared = __commonJS((exports, module) => {
               }
               return callback(err3);
             }
-            let supportedAddresses = addresses3 ? addresses3.filter((addr) => isFamilySupported(addr.family)).map((addr) => addr.address) : [];
+            const supportedAddresses = addresses3 ? addresses3.filter((addr) => isFamilySupported(addr.family)).map((addr) => addr.address) : [];
             if (addresses3 && addresses3.length && !supportedAddresses.length) {
               console.warn(`Failed to resolve IPv${addresses3[0].family} addresses with current network`);
             }
@@ -1100,7 +1084,7 @@ var require_shared = __commonJS((exports, module) => {
                 cached: true
               }));
             }
-            let value = {
+            const value = {
               addresses: supportedAddresses.length ? supportedAddresses : [options.host],
               servername: options.servername || options.host
             };
@@ -1130,93 +1114,78 @@ var require_shared = __commonJS((exports, module) => {
   };
   exports.parseConnectionUrl = (str) => {
     str = str || "";
-    let options = {};
-    [urllib.parse(str, true)].forEach((url) => {
-      let auth;
-      switch (url.protocol) {
-        case "smtp:":
-          options.secure = false;
+    const options = {};
+    const url = urllib.parse(str, true);
+    switch (url.protocol) {
+      case "smtp:":
+        options.secure = false;
+        break;
+      case "smtps:":
+        options.secure = true;
+        break;
+      case "direct:":
+        options.direct = true;
+        break;
+    }
+    if (!isNaN(url.port) && Number(url.port)) {
+      options.port = Number(url.port);
+    }
+    if (url.hostname) {
+      options.host = url.hostname;
+    }
+    if (url.auth) {
+      const auth = url.auth.split(":");
+      options.auth = {
+        user: auth.shift(),
+        pass: auth.join(":")
+      };
+    }
+    Object.keys(url.query || {}).forEach((key) => {
+      let obj = options;
+      let lKey = key;
+      let value = url.query[key];
+      if (!isNaN(value)) {
+        value = Number(value);
+      }
+      switch (value) {
+        case "true":
+          value = true;
           break;
-        case "smtps:":
-          options.secure = true;
-          break;
-        case "direct:":
-          options.direct = true;
+        case "false":
+          value = false;
           break;
       }
-      if (!isNaN(url.port) && Number(url.port)) {
-        options.port = Number(url.port);
+      if (key.indexOf("tls.") === 0) {
+        lKey = key.substr(4);
+        if (!options.tls) {
+          options.tls = {};
+        }
+        obj = options.tls;
+      } else if (key.indexOf(".") >= 0) {
+        return;
       }
-      if (url.hostname) {
-        options.host = url.hostname;
+      if (!(lKey in obj)) {
+        obj[lKey] = value;
       }
-      if (url.auth) {
-        auth = url.auth.split(":");
-        if (!options.auth) {
-          options.auth = {};
-        }
-        options.auth.user = auth.shift();
-        options.auth.pass = auth.join(":");
-      }
-      Object.keys(url.query || {}).forEach((key) => {
-        let obj = options;
-        let lKey = key;
-        let value = url.query[key];
-        if (!isNaN(value)) {
-          value = Number(value);
-        }
-        switch (value) {
-          case "true":
-            value = true;
-            break;
-          case "false":
-            value = false;
-            break;
-        }
-        if (key.indexOf("tls.") === 0) {
-          lKey = key.substr(4);
-          if (!options.tls) {
-            options.tls = {};
-          }
-          obj = options.tls;
-        } else if (key.indexOf(".") >= 0) {
-          return;
-        }
-        if (!(lKey in obj)) {
-          obj[lKey] = value;
-        }
-      });
     });
     return options;
   };
   exports._logFunc = (logger, level, defaults, data, message, ...args) => {
-    let entry = {};
-    Object.keys(defaults || {}).forEach((key) => {
-      if (key !== "level") {
-        entry[key] = defaults[key];
-      }
-    });
-    Object.keys(data || {}).forEach((key) => {
-      if (key !== "level") {
-        entry[key] = data[key];
-      }
-    });
+    const entry = Object.assign({}, defaults || {}, data || {});
+    delete entry.level;
     logger[level](entry, message, ...args);
   };
   exports.getLogger = (options, defaults) => {
     options = options || {};
-    let response = {};
-    let levels = ["trace", "debug", "info", "warn", "error", "fatal"];
+    const response = {};
+    const levels = ["trace", "debug", "info", "warn", "error", "fatal"];
     if (!options.logger) {
       levels.forEach((level) => {
         response[level] = () => false;
       });
       return response;
     }
-    let logger = options.logger;
-    if (options.logger === true) {
-      logger = createDefaultLogger(levels);
-    }
+    const logger = options.logger === true ? createDefaultLogger(levels) : options.logger;
     levels.forEach((level) => {
       response[level] = (data, message, ...args) => {
         exports._logFunc(logger, level, defaults, data, message, ...args);
@@ -1224,13 +1193,13 @@ var require_shared = __commonJS((exports, module) => {
     });
     return response;
   };
-  exports.callbackPromise = (resolve, reject) => function() {
-    let args = Array.from(arguments);
-    let err = args.shift();
+  exports.callbackPromise = (resolve2, reject) => function() {
+    const args = Array.from(arguments);
+    const err = args.shift();
     if (err) {
       reject(err);
     } else {
-      resolve(...args);
+      resolve2(...args);
     }
   };
   exports.parseDataURI = (uri) => {
@@ -1292,13 +1261,12 @@ var require_shared = __commonJS((exports, module) => {
   exports.resolveContent = (data, key, callback) => {
     let promise;
     if (!callback) {
-      promise = new Promise((resolve, reject) => {
-        callback = exports.callbackPromise(resolve, reject);
+      promise = new Promise((resolve2, reject) => {
+        callback = exports.callbackPromise(resolve2, reject);
       });
     }
     let content = data && data[key] && data[key].content || data[key];
-    let contentStream;
-    let encoding = (typeof data[key] === "object" && data[key].encoding || "utf8").toString().toLowerCase().replace(/[-_\s]/g, "");
+    const encoding = (typeof data[key] === "object" && data[key].encoding || "utf8").toString().toLowerCase().replace(/[-_\s]/g, "");
     if (!content) {
       return callback(null, content);
     }
@@ -1316,16 +1284,15 @@ var require_shared = __commonJS((exports, module) => {
           callback(null, value);
         });
       } else if (/^https?:\/\//i.test(content.path || content.href)) {
-        contentStream = nmfetch(content.path || content.href);
-        return resolveStream(contentStream, callback);
+        return resolveStream(nmfetch(content.path || content.href), callback);
       } else if (/^data:/i.test(content.path || content.href)) {
-        let parsedDataUri = exports.parseDataURI(content.path || content.href);
+        const parsedDataUri = exports.parseDataURI(content.path || content.href);
         if (!parsedDataUri || !parsedDataUri.data) {
           return callback(null, Buffer.from(0));
         }
         return callback(null, parsedDataUri.data);
       } else if (content.path) {
-        return resolveStream(fs3.createReadStream(content.path), callback);
+        return resolveStream(fs6.createReadStream(content.path), callback);
       }
     }
     if (typeof data[key].content === "string" && !["utf8", "usascii", "ascii"].includes(encoding)) {
@@ -1335,17 +1302,12 @@ var require_shared = __commonJS((exports, module) => {
     return promise;
   };
   exports.assign = function() {
-    let args = Array.from(arguments);
-    let target = args.shift() || {};
+    const args = Array.from(arguments);
+    const target = args.shift() || {};
     args.forEach((source) => {
       Object.keys(source || {}).forEach((key) => {
         if (["tls", "auth"].includes(key) && source[key] && typeof source[key] === "object") {
-          if (!target[key]) {
-            target[key] = {};
-          }
-          Object.keys(source[key]).forEach((subKey) => {
-            target[key][subKey] = source[key][subKey];
-          });
+          target[key] = Object.assign(target[key] || {}, source[key]);
         } else {
           target[key] = source[key];
         }
@@ -1357,10 +1319,10 @@ var require_shared = __commonJS((exports, module) => {
     if (!/[^\x21-\x2A\x2C-\x3C\x3E-\x7E]/.test(str)) {
       return str;
     }
-    let buf = Buffer.from(str);
+    const buf = Buffer.from(str);
     let result = "";
     for (let i = 0, len = buf.length;i < len; i++) {
-      let c = buf[i];
+      const c = buf[i];
       if (c < 33 || c > 126 || c === 43 || c === 61) {
         result += "+" + (c < 16 ? "0" : "") + c.toString(16).toUpperCase();
       } else {
@@ -1371,7 +1333,7 @@ var require_shared = __commonJS((exports, module) => {
   };
   function resolveStream(stream, callback) {
     let responded = false;
-    let chunks = [];
+    const chunks = [];
     let chunklen = 0;
     stream.on("error", (err) => {
       if (responded) {
@@ -1402,13 +1364,8 @@ var require_shared = __commonJS((exports, module) => {
     });
   }
   function createDefaultLogger(levels) {
-    let levelMaxLen = 0;
-    let levelNames = new Map;
-    levels.forEach((level) => {
-      if (level.length > levelMaxLen) {
-        levelMaxLen = level.length;
-      }
-    });
+    const levelMaxLen = levels.reduce((max, level) => Math.max(max, level.length), 0);
+    const levelNames = new Map;
     levels.forEach((level) => {
       let levelName = level.toUpperCase();
       if (levelName.length < levelMaxLen) {
@@ -1416,7 +1373,7 @@ var require_shared = __commonJS((exports, module) => {
       }
       levelNames.set(level, levelName);
     });
-    let print = (level, entry, message, ...args) => {
+    const print = (level, entry, message, ...args) => {
       let prefix = "";
       if (entry) {
         if (entry.tnx === "server") {
@@ -1436,7 +1393,7 @@ var require_shared = __commonJS((exports, module) => {
         console.log("[%s] %s %s", new Date().toISOString().substr(0, 19).replace(/T/, " "), levelNames.get(level), prefix + line);
       });
     };
-    let logger = {};
+    const logger = {};
     levels.forEach((level) => {
       logger[level] = print.bind(null, level);
     });
@@ -1444,9 +1401,9 @@ var require_shared = __commonJS((exports, module) => {
   }
 });
 
-// ../../node_modules/nodemailer/lib/mime-funcs/mime-types.js
+// node_modules/nodemailer/lib/mime-funcs/mime-types.js
 var require_mime_types = __commonJS((exports, module) => {
-  var path3 = __require("path");
+  var path6 = __require("path");
   var defaultMimeType = "application/octet-stream";
   var defaultExtension = "bin";
   var mimeTypes = new Map([
@@ -3513,12 +3470,9 @@ var require_mime_types = __commonJS((exports, module) => {
       if (!filename) {
         return defaultMimeType;
       }
-      let parsed = path3.parse(filename);
-      let extension = (parsed.ext.substr(1) || parsed.name || "").split("?").shift().trim().toLowerCase();
-      let value = defaultMimeType;
-      if (extensions.has(extension)) {
-        value = extensions.get(extension);
-      }
+      const parsed = path6.parse(filename);
+      const extension = (parsed.ext.substr(1) || parsed.name || "").split("?").shift().trim().toLowerCase();
+      const value = extensions.has(extension) ? extensions.get(extension) : defaultMimeType;
       if (Array.isArray(value)) {
         return value[0];
       }
@@ -3528,11 +3482,11 @@ var require_mime_types = __commonJS((exports, module) => {
       if (!mimeType) {
         return defaultExtension;
       }
-      let parts = (mimeType || "").toLowerCase().trim().split("/");
-      let rootType = parts.shift().trim();
-      let subType = parts.join("/").trim();
+      const parts = (mimeType || "").toLowerCase().trim().split("/");
+      const rootType = parts.shift().trim();
+      const subType = parts.join("/").trim();
       if (mimeTypes.has(rootType + "/" + subType)) {
-        let value = mimeTypes.get(rootType + "/" + subType);
+        const value = mimeTypes.get(rootType + "/" + subType);
         if (Array.isArray(value)) {
           return value[0];
         }
@@ -3548,7 +3502,7 @@ var require_mime_types = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/punycode/index.js
+// node_modules/nodemailer/lib/punycode/index.js
 var require_punycode = __commonJS((exports, module) => {
   var maxInt = 2147483647;
   var base = 36;
@@ -3770,9 +3724,9 @@ var require_punycode = __commonJS((exports, module) => {
   module.exports = punycode;
 });
 
-// ../../node_modules/nodemailer/lib/base64/index.js
+// node_modules/nodemailer/lib/base64/index.js
 var require_base64 = __commonJS((exports, module) => {
-  var Transform = __require("stream").Transform;
+  var { Transform } = __require("stream");
   function encode(buffer) {
     if (typeof buffer === "string") {
       buffer = Buffer.from(buffer, "utf-8");
@@ -3785,11 +3739,12 @@ var require_base64 = __commonJS((exports, module) => {
     if (str.length <= lineLength) {
       return str;
     }
-    let result = [];
+    const result = [];
     let pos = 0;
-    let chunkLength = lineLength * 1024;
+    const chunkLength = lineLength * 1024;
+    const wrapRegex = new RegExp(".{" + lineLength + "}", "g");
     while (pos < str.length) {
-      let wrappedLines = str.substr(pos, chunkLength).replace(new RegExp(".{" + lineLength + "}", "g"), `$&\r
+      const wrappedLines = str.substr(pos, chunkLength).replace(wrapRegex, `$&\r
 `);
       result.push(wrappedLines);
       pos += chunkLength;
@@ -3830,7 +3785,7 @@ var require_base64 = __commonJS((exports, module) => {
       let b64 = this._curLine + encode(chunk);
       if (this.options.lineLength) {
         b64 = wrap(b64, this.options.lineLength);
-        let lastLF = b64.lastIndexOf(`
+        const lastLF = b64.lastIndexOf(`
 `);
         if (lastLF < 0) {
           this._curLine = b64;
@@ -3872,25 +3827,25 @@ var require_base64 = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/qp/index.js
+// node_modules/nodemailer/lib/qp/index.js
 var require_qp = __commonJS((exports, module) => {
-  var Transform = __require("stream").Transform;
+  var { Transform } = __require("stream");
+  var QP_RANGES = [
+    [9],
+    [10],
+    [13],
+    [32, 60],
+    [62, 126]
+  ];
   function encode(buffer) {
     if (typeof buffer === "string") {
       buffer = Buffer.from(buffer, "utf-8");
     }
-    let ranges = [
-      [9],
-      [10],
-      [13],
-      [32, 60],
-      [62, 126]
-    ];
     let result = "";
     let ord;
     for (let i = 0, len = buffer.length;i < len; i++) {
       ord = buffer[i];
-      if (checkRanges(ord, ranges) && !((ord === 32 || ord === 9) && (i === len - 1 || buffer[i + 1] === 10 || buffer[i + 1] === 13))) {
+      if (checkRanges(ord, QP_RANGES) && !((ord === 32 || ord === 9) && (i === len - 1 || buffer[i + 1] === 10 || buffer[i + 1] === 13))) {
         result += String.fromCharCode(ord);
         continue;
       }
@@ -3905,9 +3860,9 @@ var require_qp = __commonJS((exports, module) => {
       return str;
     }
     let pos = 0;
-    let len = str.length;
+    const len = str.length;
     let match, code, line;
-    let lineMargin = Math.floor(lineLength / 3);
+    const lineMargin = Math.floor(lineLength / 3);
     let result = "";
     while (pos < len) {
       line = str.substr(pos, lineLength);
@@ -3922,12 +3877,14 @@ var require_qp = __commonJS((exports, module) => {
         result += line;
         pos += line.length;
         continue;
-      } else if (match = line.substr(-lineMargin).match(/\n.*?$/)) {
+      }
+      if (match = line.substr(-lineMargin).match(/\n.*?$/)) {
         line = line.substr(0, line.length - (match[0].length - 1));
         result += line;
         pos += line.length;
         continue;
-      } else if (line.length > lineLength - lineMargin && (match = line.substr(-lineMargin).match(/[ \t.,!?][^ \t.,!?]*$/))) {
+      }
+      if (line.length > lineLength - lineMargin && (match = line.substr(-lineMargin).match(/[ \t.,!?][^ \t.,!?]*$/))) {
         line = line.substr(0, line.length - (match[0].length - 1));
       } else if (line.match(/[=][\da-f]{0,2}$/i)) {
         if (match = line.match(/[=][\da-f]{0,1}$/i)) {
@@ -3963,13 +3920,14 @@ var require_qp = __commonJS((exports, module) => {
   }
   function checkRanges(nr, ranges) {
     for (let i = ranges.length - 1;i >= 0; i--) {
-      if (!ranges[i].length) {
+      const range = ranges[i];
+      if (!range.length) {
         continue;
       }
-      if (ranges[i].length === 1 && nr === ranges[i][0]) {
+      if (range.length === 1 && nr === range[0]) {
         return true;
       }
-      if (ranges[i].length === 2 && nr >= ranges[i][0] && nr <= ranges[i][1]) {
+      if (range.length === 2 && nr >= range[0] && nr <= range[1]) {
         return true;
       }
     }
@@ -4029,7 +3987,7 @@ var require_qp = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/mime-funcs/index.js
+// node_modules/nodemailer/lib/mime-funcs/index.js
 var require_mime_funcs = __commonJS((exports, module) => {
   var base64 = require_base64();
   var qp = require_qp();
@@ -4037,11 +3995,7 @@ var require_mime_funcs = __commonJS((exports, module) => {
   module.exports = {
     isPlainText(value, isParam) {
       const re = isParam ? /[\x00-\x08\x0b\x0c\x0e-\x1f"\u0080-\uFFFF]/ : /[\x00-\x08\x0b\x0c\x0e-\x1f\u0080-\uFFFF]/;
-      if (typeof value !== "string" || re.test(value)) {
-        return false;
-      } else {
-        return true;
-      }
+      return typeof value === "string" && !re.test(value);
     },
     hasLongerLines(str, lineLength) {
       if (str.length > 128 * 1024) {
@@ -4053,18 +4007,17 @@ var require_mime_funcs = __commonJS((exports, module) => {
       mimeWordEncoding = (mimeWordEncoding || "Q").toString().toUpperCase().trim().charAt(0);
       maxLength = maxLength || 0;
       let encodedStr;
-      let toCharset = "UTF-8";
+      const toCharset = "UTF-8";
       if (maxLength && maxLength > 7 + toCharset.length) {
         maxLength -= 7 + toCharset.length;
       }
       if (mimeWordEncoding === "Q") {
         encodedStr = qp.encode(data).replace(/[^a-z0-9!*+\-/=]/gi, (chr) => {
-          let ord = chr.charCodeAt(0).toString(16).toUpperCase();
+          const ord = chr.charCodeAt(0).toString(16).toUpperCase();
           if (chr === " ") {
             return "_";
-          } else {
-            return "=" + (ord.length === 1 ? "0" + ord : ord);
           }
+          return "=" + (ord.length === 1 ? "0" + ord : ord);
         });
       } else if (mimeWordEncoding === "B") {
         encodedStr = typeof data === "string" ? data : base64.encode(data);
@@ -4074,7 +4027,7 @@ var require_mime_funcs = __commonJS((exports, module) => {
         if (mimeWordEncoding === "Q") {
           encodedStr = this.splitMimeEncodedString(encodedStr, maxLength).join("?= =?" + toCharset + "?" + mimeWordEncoding + "?");
         } else {
-          let parts = [];
+          const parts = [];
           let lpart = "";
           for (let i = 0, len = encodedStr.length;i < len; i++) {
             let chr = encodedStr.charAt(i);
@@ -4104,29 +4057,27 @@ var require_mime_funcs = __commonJS((exports, module) => {
     },
     encodeWords(value, mimeWordEncoding, maxLength, encodeAll) {
       maxLength = maxLength || 0;
-      let encodedValue;
-      let firstMatch = value.match(/(?:^|\s)([^\s]*["\u0080-\uFFFF])/);
+      const firstMatch = value.match(/(?:^|\s)([^\s]*["\u0080-\uFFFF])/);
       if (!firstMatch) {
         return value;
       }
       if (encodeAll) {
         return this.encodeWord(value, mimeWordEncoding, maxLength);
       }
-      let lastMatch = value.match(/(["\u0080-\uFFFF][^\s]*)[^"\u0080-\uFFFF]*$/);
+      const lastMatch = value.match(/(["\u0080-\uFFFF][^\s]*)[^"\u0080-\uFFFF]*$/);
       if (!lastMatch) {
         return value;
       }
-      let startIndex = firstMatch.index + (firstMatch[0].match(/[^\s]/) || {
+      const startIndex = firstMatch.index + (firstMatch[0].match(/[^\s]/) || {
         index: 0
       }).index;
-      let endIndex = lastMatch.index + (lastMatch[1] || "").length;
-      encodedValue = (startIndex ? value.substr(0, startIndex) : "") + this.encodeWord(value.substring(startIndex, endIndex), mimeWordEncoding || "Q", maxLength) + (endIndex < value.length ? value.substr(endIndex) : "");
-      return encodedValue;
+      const endIndex = lastMatch.index + (lastMatch[1] || "").length;
+      return (startIndex ? value.substr(0, startIndex) : "") + this.encodeWord(value.substring(startIndex, endIndex), mimeWordEncoding || "Q", maxLength) + (endIndex < value.length ? value.substr(endIndex) : "");
     },
     buildHeaderValue(structured) {
-      let paramsArray = [];
+      const paramsArray = [];
       Object.keys(structured.params || {}).forEach((param) => {
-        let value = structured.params[param];
+        const value = structured.params[param];
         if (!this.isPlainText(value, true) || value.length >= 75) {
           this.buildHeaderParam(param, value, 50).forEach((encodedParam) => {
             if (!/[\s"\\;:/=(),<>@[\]?]|^[-']|'$/.test(encodedParam.value) || encodedParam.key.substr(-1) === "*") {
@@ -4144,9 +4095,8 @@ var require_mime_funcs = __commonJS((exports, module) => {
       return structured.value + (paramsArray.length ? "; " + paramsArray.join("; ") : "");
     },
     buildHeaderParam(key, data, maxLength) {
-      let list = [];
+      const list = [];
       let encodedStr = typeof data === "string" ? data : (data || "").toString();
-      let encodedStrArr;
       let chr, ord;
       let line;
       let startPos = 0;
@@ -4174,7 +4124,7 @@ var require_mime_funcs = __commonJS((exports, module) => {
         }
       } else {
         if (/[\uD800-\uDBFF]/.test(encodedStr)) {
-          encodedStrArr = [];
+          const encodedStrArr = [];
           for (i = 0, len = encodedStr.length;i < len; i++) {
             chr = encodedStr.charAt(i);
             ord = chr.charCodeAt(0);
@@ -4242,7 +4192,7 @@ var require_mime_funcs = __commonJS((exports, module) => {
       }));
     },
     parseHeaderValue(str) {
-      let response = {
+      const response = {
         value: false,
         params: {}
       };
@@ -4321,12 +4271,11 @@ var require_mime_funcs = __commonJS((exports, module) => {
           value2 = response.params[key2].values.map((val) => val || "").join("");
           if (response.params[key2].charset) {
             response.params[key2] = "=?" + response.params[key2].charset + "?Q?" + value2.replace(/[=?_\s]/g, (s) => {
-              let c = s.charCodeAt(0).toString(16);
+              const c = s.charCodeAt(0).toString(16);
               if (s === " ") {
                 return "_";
-              } else {
-                return "%" + (c.length < 2 ? "0" : "") + c;
               }
+              return "%" + (c.length < 2 ? "0" : "") + c;
             }).replace(/%/g, "=") + "?=";
           } else {
             response.params[key2] = value2;
@@ -4340,7 +4289,10 @@ var require_mime_funcs = __commonJS((exports, module) => {
     foldLines(str, lineLength, afterSpace) {
       str = (str || "").toString();
       lineLength = lineLength || 76;
-      let pos = 0, len = str.length, result = "", line, match;
+      let pos = 0;
+      const len = str.length;
+      let result = "";
+      let line, match;
       while (pos < len) {
         line = str.substr(pos, lineLength);
         if (line.length < lineLength) {
@@ -4367,7 +4319,8 @@ var require_mime_funcs = __commonJS((exports, module) => {
       return result;
     },
     splitMimeEncodedString: (str, maxlen) => {
-      let curLine, match, chr, done, lines = [];
+      const lines = [];
+      let curLine, match, chr, done;
       maxlen = Math.max(maxlen || 0, 12);
       while (str.length) {
         curLine = str.substr(0, maxlen);
@@ -4419,26 +4372,23 @@ var require_mime_funcs = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/addressparser/index.js
+// node_modules/nodemailer/lib/addressparser/index.js
 var require_addressparser = __commonJS((exports, module) => {
   function _handleAddress(tokens, depth) {
     let isGroup = false;
     let state = "text";
-    let address;
-    let addresses = [];
-    let data = {
+    const addresses = [];
+    const data = {
       address: [],
       comment: [],
       group: [],
       text: [],
       textWasQuoted: []
     };
-    let i;
-    let len;
     let insideQuotes = false;
-    for (i = 0, len = tokens.length;i < len; i++) {
-      let token = tokens[i];
-      let prevToken = i ? tokens[i - 1] : null;
+    for (let i = 0, len = tokens.length;i < len; i++) {
+      const token = tokens[i];
+      const prevToken = i ? tokens[i - 1] : null;
       if (token.type === "operator") {
         switch (token.value) {
           case "<":
@@ -4488,7 +4438,7 @@ var require_addressparser = __commonJS((exports, module) => {
       data.text = data.text.join(" ");
       let groupMembers = [];
       if (data.group.length) {
-        let parsedGroup = addressparser(data.group.join(","), { _depth: depth + 1 });
+        const parsedGroup = addressparser(data.group.join(","), { _depth: depth + 1 });
         parsedGroup.forEach((member) => {
           if (member.group) {
             groupMembers = groupMembers.concat(member.group);
@@ -4498,31 +4448,31 @@ var require_addressparser = __commonJS((exports, module) => {
         });
       }
       addresses.push({
-        name: data.text || address && address.name,
+        name: data.text || "",
         group: groupMembers
       });
     } else {
       if (!data.address.length && data.text.length) {
-        for (i = data.text.length - 1;i >= 0; i--) {
-          if (!data.textWasQuoted[i] && data.text[i].match(/^[^@\s]+@[^@\s]+$/)) {
+        for (let i = data.text.length - 1;i >= 0; i--) {
+          if (!data.textWasQuoted[i] && /^[^@\s]+@[^@\s]+$/.test(data.text[i])) {
             data.address = data.text.splice(i, 1);
             data.textWasQuoted.splice(i, 1);
             break;
           }
         }
-        let _regexHandler = function(address2) {
-          if (!data.address.length) {
-            data.address = [address2.trim()];
-            return " ";
-          } else {
-            return address2;
-          }
-        };
         if (!data.address.length) {
-          for (i = data.text.length - 1;i >= 0; i--) {
+          let extracted = false;
+          for (let i = data.text.length - 1;i >= 0; i--) {
             if (!data.textWasQuoted[i]) {
-              data.text[i] = data.text[i].replace(/\s*\b[^@\s]+@[^\s]+\b\s*/, _regexHandler).trim();
-              if (data.address.length) {
+              data.text[i] = data.text[i].replace(/\s*\b[^@\s]+@[^\s]+\b\s*/, (match) => {
+                if (!extracted) {
+                  data.address = [match.trim()];
+                  extracted = true;
+                  return " ";
+                }
+                return match;
+              }).trim();
+              if (extracted) {
                 break;
               }
             }
@@ -4538,22 +4488,18 @@ var require_addressparser = __commonJS((exports, module) => {
       }
       data.text = data.text.join(" ");
       data.address = data.address.join(" ");
-      if (!data.address && isGroup) {
-        return [];
-      } else {
-        address = {
-          address: data.address || data.text || "",
-          name: data.text || data.address || ""
-        };
-        if (address.address === address.name) {
-          if ((address.address || "").match(/@/)) {
-            address.name = "";
-          } else {
-            address.address = "";
-          }
+      const address = {
+        address: data.address || data.text || "",
+        name: data.text || data.address || ""
+      };
+      if (address.address === address.name) {
+        if (/@/.test(address.address || "")) {
+          address.name = "";
+        } else {
+          address.address = "";
         }
-        addresses.push(address);
       }
+      addresses.push(address);
     }
     return addresses;
   }
@@ -4576,10 +4522,10 @@ var require_addressparser = __commonJS((exports, module) => {
       };
     }
     tokenize() {
-      let list = [];
+      const list = [];
       for (let i = 0, len = this.str.length;i < len; i++) {
-        let chr = this.str.charAt(i);
-        let nextChr = i < len - 1 ? this.str.charAt(i + 1) : null;
+        const chr = this.str.charAt(i);
+        const nextChr = i < len - 1 ? this.str.charAt(i + 1) : null;
         this.checkChar(chr, nextChr);
       }
       this.list.forEach((node) => {
@@ -4639,13 +4585,13 @@ var require_addressparser = __commonJS((exports, module) => {
   var MAX_NESTED_GROUP_DEPTH = 50;
   function addressparser(str, options) {
     options = options || {};
-    let depth = options._depth || 0;
+    const depth = options._depth || 0;
     if (depth > MAX_NESTED_GROUP_DEPTH) {
       return [];
     }
-    let tokenizer = new Tokenizer(str);
-    let tokens = tokenizer.tokenize();
-    let addresses = [];
+    const tokenizer = new Tokenizer(str);
+    const tokens = tokenizer.tokenize();
+    const addresses = [];
     let address = [];
     let parsedAddresses = [];
     tokens.forEach((token) => {
@@ -4661,42 +4607,41 @@ var require_addressparser = __commonJS((exports, module) => {
     if (address.length) {
       addresses.push(address);
     }
-    addresses.forEach((address2) => {
-      address2 = _handleAddress(address2, depth);
-      if (address2.length) {
-        parsedAddresses = parsedAddresses.concat(address2);
+    addresses.forEach((addr) => {
+      const handled = _handleAddress(addr, depth);
+      if (handled.length) {
+        parsedAddresses = parsedAddresses.concat(handled);
       }
     });
     for (let i = parsedAddresses.length - 2;i >= 0; i--) {
-      let current = parsedAddresses[i];
-      let next = parsedAddresses[i + 1];
-      if (current.address === "" && current.name && !current.group && next.address && next.name && !next.group) {
+      const current = parsedAddresses[i];
+      const next = parsedAddresses[i + 1];
+      if (current.address === "" && current.name && !current.group && next.address && next.name) {
         next.name = current.name + ", " + next.name;
         parsedAddresses.splice(i, 1);
       }
     }
     if (options.flatten) {
-      let addresses2 = [];
-      let walkAddressList = (list) => {
-        list.forEach((address2) => {
-          if (address2.group) {
-            return walkAddressList(address2.group);
-          } else {
-            addresses2.push(address2);
+      const flatAddresses = [];
+      const walkAddressList = (list) => {
+        list.forEach((entry) => {
+          if (entry.group) {
+            return walkAddressList(entry.group);
           }
+          flatAddresses.push(entry);
         });
       };
       walkAddressList(parsedAddresses);
-      return addresses2;
+      return flatAddresses;
     }
     return parsedAddresses;
   }
   module.exports = addressparser;
 });
 
-// ../../node_modules/nodemailer/lib/mime-node/last-newline.js
+// node_modules/nodemailer/lib/mime-node/last-newline.js
 var require_last_newline = __commonJS((exports, module) => {
-  var Transform = __require("stream").Transform;
+  var { Transform } = __require("stream");
 
   class LastNewline extends Transform {
     constructor() {
@@ -4727,15 +4672,13 @@ var require_last_newline = __commonJS((exports, module) => {
   module.exports = LastNewline;
 });
 
-// ../../node_modules/nodemailer/lib/mime-node/le-windows.js
+// node_modules/nodemailer/lib/mime-node/le-windows.js
 var require_le_windows = __commonJS((exports, module) => {
-  var stream = __require("stream");
-  var Transform = stream.Transform;
+  var { Transform } = __require("stream");
 
   class LeWindows extends Transform {
     constructor(options) {
       super(options);
-      this.options = options || {};
       this.lastByte = false;
     }
     _transform(chunk, encoding, done) {
@@ -4767,15 +4710,13 @@ var require_le_windows = __commonJS((exports, module) => {
   module.exports = LeWindows;
 });
 
-// ../../node_modules/nodemailer/lib/mime-node/le-unix.js
+// node_modules/nodemailer/lib/mime-node/le-unix.js
 var require_le_unix = __commonJS((exports, module) => {
-  var stream = __require("stream");
-  var Transform = stream.Transform;
+  var { Transform } = __require("stream");
 
-  class LeWindows extends Transform {
+  class LeUnix extends Transform {
     constructor(options) {
       super(options);
-      this.options = options || {};
     }
     _transform(chunk, encoding, done) {
       let buf;
@@ -4796,15 +4737,15 @@ var require_le_unix = __commonJS((exports, module) => {
       done();
     }
   }
-  module.exports = LeWindows;
+  module.exports = LeUnix;
 });
 
-// ../../node_modules/nodemailer/lib/mime-node/index.js
+// node_modules/nodemailer/lib/mime-node/index.js
 var require_mime_node = __commonJS((exports, module) => {
   var crypto = __require("crypto");
-  var fs3 = __require("fs");
+  var fs6 = __require("fs");
   var punycode = require_punycode();
-  var PassThrough = __require("stream").PassThrough;
+  var { PassThrough } = __require("stream");
   var shared = require_shared();
   var mimeFuncs = require_mime_funcs();
   var qp = require_qp();
@@ -4815,6 +4756,7 @@ var require_mime_node = __commonJS((exports, module) => {
   var LastNewline = require_last_newline();
   var LeWindows = require_le_windows();
   var LeUnix = require_le_unix();
+  var FORMATTED_HEADERS = ["From", "Sender", "To", "Cc", "Bcc", "Reply-To", "Date", "References"];
 
   class MimeNode {
     constructor(contentType, options) {
@@ -4825,7 +4767,7 @@ var require_mime_node = __commonJS((exports, module) => {
       this.disableFileAccess = !!options.disableFileAccess;
       this.disableUrlAccess = !!options.disableUrlAccess;
       this.normalizeHeaderKey = options.normalizeHeaderKey;
-      this.date = new Date;
+      this.date = options.parentNode ? null : new Date;
       this.rootNode = options.rootNode || this;
       this.keepBcc = !!options.keepBcc;
       if (options.filename) {
@@ -4856,7 +4798,7 @@ var require_mime_node = __commonJS((exports, module) => {
         options = contentType;
         contentType = undefined;
       }
-      let node = new MimeNode(contentType, options);
+      const node = new MimeNode(contentType, options);
       this.appendChild(node);
       return node;
     }
@@ -4899,7 +4841,7 @@ var require_mime_node = __commonJS((exports, module) => {
       }
     }
     setHeader(key, value) {
-      let added = false, headerValue;
+      let added = false;
       if (!value && key && typeof key === "object") {
         if (key.key && "value" in key) {
           this.setHeader(key.key, key.value);
@@ -4915,7 +4857,7 @@ var require_mime_node = __commonJS((exports, module) => {
         return this;
       }
       key = this._normalizeHeaderKey(key);
-      headerValue = {
+      const headerValue = {
         key,
         value
       };
@@ -4993,8 +4935,8 @@ var require_mime_node = __commonJS((exports, module) => {
           callback = shared.callbackPromise(resolve, reject);
         });
       }
-      let stream = this.createReadStream();
-      let buf = [];
+      const stream = this.createReadStream();
+      const buf = [];
       let buflen = 0;
       let returned = false;
       stream.on("readable", () => {
@@ -5026,7 +4968,7 @@ var require_mime_node = __commonJS((exports, module) => {
     }
     getTransferEncoding() {
       let transferEncoding = false;
-      let contentType = (this.getHeader("Content-Type") || "").toString().toLowerCase().trim();
+      const contentType = (this.getHeader("Content-Type") || "").toString().toLowerCase().trim();
       if (this.content) {
         transferEncoding = (this.getHeader("Content-Transfer-Encoding") || "").toString().toLowerCase().trim();
         if (!transferEncoding || !["base64", "quoted-printable"].includes(transferEncoding)) {
@@ -5046,8 +4988,8 @@ var require_mime_node = __commonJS((exports, module) => {
       return transferEncoding;
     }
     buildHeaders() {
-      let transferEncoding = this.getTransferEncoding();
-      let headers = [];
+      const transferEncoding = this.getTransferEncoding();
+      const headers = [];
       if (transferEncoding) {
         this.setHeader("Content-Transfer-Encoding", transferEncoding);
       }
@@ -5063,7 +5005,7 @@ var require_mime_node = __commonJS((exports, module) => {
           this.setHeader("MIME-Version", "1.0");
         }
         for (let i = this._headers.length - 2;i >= 0; i--) {
-          let header = this._headers[i];
+          const header = this._headers[i];
           if (header.key === "Content-Type") {
             this._headers.splice(i, 1);
             this._headers.push(header);
@@ -5075,8 +5017,8 @@ var require_mime_node = __commonJS((exports, module) => {
         let value = header.value;
         let structured;
         let param;
-        let options = {};
-        let formattedHeaders = ["From", "Sender", "To", "Cc", "Bcc", "Reply-To", "Date", "References"];
+        const options = {};
+        const formattedHeaders = FORMATTED_HEADERS;
         if (value && typeof value === "object" && !formattedHeaders.includes(key)) {
           Object.keys(value).forEach((key2) => {
             if (key2 !== "value") {
@@ -5130,7 +5072,7 @@ var require_mime_node = __commonJS((exports, module) => {
           return;
         }
         if (typeof this.normalizeHeaderKey === "function") {
-          let normalized = this.normalizeHeaderKey(key, value);
+          const normalized = this.normalizeHeaderKey(key, value);
           if (normalized && typeof normalized === "string" && normalized.length) {
             key = normalized;
           }
@@ -5142,7 +5084,7 @@ var require_mime_node = __commonJS((exports, module) => {
     }
     createReadStream(options) {
       options = options || {};
-      let stream = new PassThrough(options);
+      const stream = new PassThrough(options);
       let outputStream = stream;
       let transform;
       this.stream(stream, options, (err) => {
@@ -5185,27 +5127,27 @@ var require_mime_node = __commonJS((exports, module) => {
       this._processFuncs.push(processFunc);
     }
     stream(outputStream, options, done) {
-      let transferEncoding = this.getTransferEncoding();
+      const transferEncoding = this.getTransferEncoding();
       let contentStream;
       let localStream;
       let returned = false;
-      let callback = (err) => {
+      const callback = (err) => {
         if (returned) {
           return;
         }
         returned = true;
         done(err);
       };
-      let finalize = () => {
+      const finalize = () => {
         let childId = 0;
-        let processChildNode = () => {
+        const processChildNode = () => {
           if (childId >= this.childNodes.length) {
             outputStream.write(`\r
 --` + this.boundary + `--\r
 `);
             return callback();
           }
-          let child = this.childNodes[childId++];
+          const child = this.childNodes[childId++];
           outputStream.write((childId > 1 ? `\r
 ` : "") + "--" + this.boundary + `\r
 `);
@@ -5222,7 +5164,7 @@ var require_mime_node = __commonJS((exports, module) => {
           return callback();
         }
       };
-      let sendContent = () => {
+      const sendContent = () => {
         if (this.content) {
           if (Object.prototype.toString.call(this.content) === "[object Error]") {
             return callback(this.content);
@@ -5232,7 +5174,7 @@ var require_mime_node = __commonJS((exports, module) => {
             this._contentErrorHandler = (err) => callback(err);
             this.content.once("error", this._contentErrorHandler);
           }
-          let createStream = () => {
+          const createStream = () => {
             if (["quoted-printable", "base64"].includes(transferEncoding)) {
               contentStream = new (transferEncoding === "base64" ? base64 : qp).Encoder(options);
               contentStream.pipe(outputStream, {
@@ -5252,10 +5194,10 @@ var require_mime_node = __commonJS((exports, module) => {
             localStream.once("error", (err) => callback(err));
           };
           if (this.content._resolve) {
-            let chunks = [];
+            const chunks = [];
             let chunklen = 0;
             let returned2 = false;
-            let sourceStream = this._getStream(this.content);
+            const sourceStream = this._getStream(this.content);
             sourceStream.on("error", (err) => {
               if (returned2) {
                 return;
@@ -5283,9 +5225,8 @@ var require_mime_node = __commonJS((exports, module) => {
             setImmediate(createStream);
           }
           return;
-        } else {
-          return setImmediate(finalize);
         }
+        return setImmediate(finalize);
       };
       if (this._raw) {
         setImmediate(() => {
@@ -5295,7 +5236,7 @@ var require_mime_node = __commonJS((exports, module) => {
           if (typeof this._raw.pipe === "function") {
             this._raw.removeListener("error", this._contentErrorHandler);
           }
-          let raw = this._getStream(this._raw);
+          const raw = this._getStream(this._raw);
           raw.pipe(outputStream, {
             end: false
           });
@@ -5329,7 +5270,7 @@ var require_mime_node = __commonJS((exports, module) => {
         }
       });
       this._envelope.to = this._envelope.to.map((to) => to.address).filter((address) => address);
-      let standardFields = ["to", "cc", "bcc", "from"];
+      const standardFields = ["to", "cc", "bcc", "from"];
       Object.keys(envelope).forEach((key) => {
         if (!standardFields.includes(key)) {
           this._envelope[key] = envelope[key];
@@ -5338,9 +5279,9 @@ var require_mime_node = __commonJS((exports, module) => {
       return this;
     }
     getAddresses() {
-      let addresses = {};
+      const addresses = {};
       this._headers.forEach((header) => {
-        let key = header.key.toLowerCase();
+        const key = header.key.toLowerCase();
         if (["from", "sender", "reply-to", "to", "cc", "bcc"].includes(key)) {
           if (!Array.isArray(addresses[key])) {
             addresses[key] = [];
@@ -5354,12 +5295,12 @@ var require_mime_node = __commonJS((exports, module) => {
       if (this._envelope) {
         return this._envelope;
       }
-      let envelope = {
+      const envelope = {
         from: false,
         to: []
       };
       this._headers.forEach((header) => {
-        let list = [];
+        const list = [];
         if (header.key === "From" || !envelope.from && ["Reply-To", "Sender"].includes(header.key)) {
           this._convertAddresses(this._parseAddresses(header.value), list);
           if (list.length && list[0]) {
@@ -5403,41 +5344,43 @@ var require_mime_node = __commonJS((exports, module) => {
           }
         });
         return contentStream;
-      } else if (typeof content.pipe === "function") {
+      }
+      if (typeof content.pipe === "function") {
         return content;
-      } else if (content && typeof content.path === "string" && !content.href) {
+      }
+      if (content && typeof content.path === "string" && !content.href) {
         if (this.disableFileAccess) {
           contentStream = new PassThrough;
           setImmediate(() => {
-            let err = new Error("File access rejected for " + content.path);
+            const err = new Error("File access rejected for " + content.path);
             err.code = errors.EFILEACCESS;
             contentStream.emit("error", err);
           });
           return contentStream;
         }
-        return fs3.createReadStream(content.path);
-      } else if (content && typeof content.href === "string") {
+        return fs6.createReadStream(content.path);
+      }
+      if (content && typeof content.href === "string") {
         if (this.disableUrlAccess) {
           contentStream = new PassThrough;
           setImmediate(() => {
-            let err = new Error("Url access rejected for " + content.href);
+            const err = new Error("Url access rejected for " + content.href);
             err.code = errors.EURLACCESS;
             contentStream.emit("error", err);
           });
           return contentStream;
         }
         return nmfetch(content.href, { headers: content.httpHeaders });
-      } else {
-        contentStream = new PassThrough;
-        setImmediate(() => {
-          try {
-            contentStream.end(content || "");
-          } catch (_err) {
-            contentStream.emit("error", _err);
-          }
-        });
-        return contentStream;
       }
+      contentStream = new PassThrough;
+      setImmediate(() => {
+        try {
+          contentStream.end(content || "");
+        } catch (_err) {
+          contentStream.emit("error", _err);
+        }
+      });
+      return contentStream;
     }
     _parseAddresses(addresses) {
       return [].concat.apply([], [].concat(addresses).map((address) => {
@@ -5515,23 +5458,21 @@ var require_mime_node = __commonJS((exports, module) => {
       }
     }
     _convertAddresses(addresses, uniqueList) {
-      let values = [];
+      const values = [];
       uniqueList = uniqueList || [];
       [].concat(addresses || []).forEach((address) => {
         if (address.address) {
           address.address = this._normalizeAddress(address.address);
           if (!address.name) {
             values.push(address.address.indexOf(" ") >= 0 ? `<${address.address}>` : `${address.address}`);
-          } else if (address.name) {
+          } else {
             values.push(`${this._encodeAddressName(address.name)} <${address.address}>`);
           }
-          if (address.address) {
-            if (!uniqueList.filter((a) => a.address === address.address).length) {
-              uniqueList.push(address);
-            }
+          if (!uniqueList.some((a) => a.address === address.address)) {
+            uniqueList.push(address);
           }
         } else if (address.group) {
-          let groupListAddresses = (address.group.length ? this._convertAddresses(address.group, uniqueList) : "").trim();
+          const groupListAddresses = (address.group.length ? this._convertAddresses(address.group, uniqueList) : "").trim();
           values.push(`${this._encodeAddressName(address.name)}:${groupListAddresses};`);
         }
       });
@@ -5539,12 +5480,12 @@ var require_mime_node = __commonJS((exports, module) => {
     }
     _normalizeAddress(address) {
       address = (address || "").toString().replace(/[\x00-\x1F<>]+/g, " ").trim();
-      let lastAt = address.lastIndexOf("@");
+      const lastAt = address.lastIndexOf("@");
       if (lastAt < 0) {
         return address;
       }
       let user = address.substr(0, lastAt);
-      let domain = address.substr(lastAt + 1);
+      const domain = address.substr(lastAt + 1);
       let encodedDomain;
       try {
         encodedDomain = punycode.toASCII(domain.toLowerCase());
@@ -5574,15 +5515,20 @@ var require_mime_node = __commonJS((exports, module) => {
     }
     _getTextEncoding(value) {
       value = (value || "").toString();
-      let encoding = this.textEncoding;
-      let latinLen;
-      let nonLatinLen;
-      if (!encoding) {
-        nonLatinLen = (value.match(/[\x00-\x08\x0B\x0C\x0E-\x1F\u0080-\uFFFF]/g) || []).length;
-        latinLen = (value.match(/[a-z]/gi) || []).length;
-        encoding = nonLatinLen < latinLen ? "Q" : "B";
+      if (this.textEncoding) {
+        return this.textEncoding;
       }
-      return encoding;
+      let nonLatinLen = 0;
+      let latinLen = 0;
+      for (let i = 0, len = value.length;i < len; i++) {
+        const code = value.charCodeAt(i);
+        if (code >= 0 && code <= 8 || code === 11 || code === 12 || code >= 14 && code <= 31 || code >= 128) {
+          nonLatinLen++;
+        } else if (code >= 65 && code <= 90 || code >= 97 && code <= 122) {
+          latinLen++;
+        }
+      }
+      return nonLatinLen < latinLen ? "Q" : "B";
     }
     _generateMessageId() {
       return "<" + [2, 2, 2, 6].reduce((prev, len) => prev + "-" + crypto.randomBytes(len).toString("hex"), crypto.randomBytes(4).toString("hex")) + "@" + (this.getEnvelope().from || this.hostname || "localhost").split("@").pop() + ">";
@@ -5591,11 +5537,11 @@ var require_mime_node = __commonJS((exports, module) => {
   module.exports = MimeNode;
 });
 
-// ../../node_modules/nodemailer/lib/mail-composer/index.js
+// node_modules/nodemailer/lib/mail-composer/index.js
 var require_mail_composer = __commonJS((exports, module) => {
   var MimeNode = require_mime_node();
   var mimeFuncs = require_mime_funcs();
-  var parseDataURI = require_shared().parseDataURI;
+  var { parseDataURI } = require_shared();
 
   class MailComposer {
     constructor(mail) {
@@ -5627,7 +5573,7 @@ var require_mail_composer = __commonJS((exports, module) => {
         this.message.addHeader(this.mail.headers);
       }
       ["from", "sender", "to", "cc", "bcc", "reply-to", "in-reply-to", "references", "subject", "message-id", "date"].forEach((header) => {
-        let key = header.replace(/-(\w)/g, (o, c) => c.toUpperCase());
+        const key = header.replace(/-(\w)/g, (o, c) => c.toUpperCase());
         if (this.mail[key]) {
           this.message.setHeader(header, this.mail[key]);
         }
@@ -5640,15 +5586,14 @@ var require_mail_composer = __commonJS((exports, module) => {
     }
     getAttachments(findRelated) {
       let icalEvent, eventObject;
-      let attachments = [].concat(this.mail.attachments || []).map((attachment, i) => {
-        let data;
+      const attachments = [].concat(this.mail.attachments || []).map((attachment, i) => {
         if (/^data:/i.test(attachment.path || attachment.href)) {
           attachment = this._processDataUrl(attachment);
         }
-        let contentType = attachment.contentType || mimeFuncs.detectMimeType(attachment.filename || attachment.path || attachment.href || "bin");
-        let isImage = /^image\//i.test(contentType);
-        let isMessageNode = /^message\//i.test(contentType);
-        let contentDisposition = attachment.contentDisposition || (isMessageNode || isImage && attachment.cid ? "inline" : "attachment");
+        const contentType = attachment.contentType || mimeFuncs.detectMimeType(attachment.filename || attachment.path || attachment.href || "bin");
+        const isImage = /^image\//i.test(contentType);
+        const isMessageNode = /^message\//i.test(contentType);
+        const contentDisposition = attachment.contentDisposition || (isMessageNode || isImage && attachment.cid ? "inline" : "attachment");
         let contentTransferEncoding;
         if ("contentTransferEncoding" in attachment) {
           contentTransferEncoding = attachment.contentTransferEncoding;
@@ -5657,7 +5602,7 @@ var require_mail_composer = __commonJS((exports, module) => {
         } else {
           contentTransferEncoding = "base64";
         }
-        data = {
+        const data = {
           contentType,
           contentDisposition,
           contentTransferEncoding
@@ -5707,10 +5652,7 @@ var require_mail_composer = __commonJS((exports, module) => {
             content: this.mail.icalEvent
           };
         }
-        eventObject = {};
-        Object.keys(icalEvent).forEach((key) => {
-          eventObject[key] = icalEvent[key];
-        });
+        eventObject = Object.assign({}, icalEvent);
         eventObject.contentType = "application/ics";
         if (!eventObject.headers) {
           eventObject.headers = {};
@@ -5724,15 +5666,15 @@ var require_mail_composer = __commonJS((exports, module) => {
           attached: attachments.concat(eventObject || []),
           related: []
         };
-      } else {
-        return {
-          attached: attachments.filter((attachment) => !attachment.cid).concat(eventObject || []),
-          related: attachments.filter((attachment) => !!attachment.cid)
-        };
       }
+      return {
+        attached: attachments.filter((attachment) => !attachment.cid).concat(eventObject || []),
+        related: attachments.filter((attachment) => !!attachment.cid)
+      };
     }
     getAlternatives() {
-      let alternatives = [], text, html, watchHtml, amp, icalEvent, eventObject;
+      const alternatives = [];
+      let text, html, watchHtml, amp, icalEvent, eventObject;
       if (this.mail.text) {
         if (typeof this.mail.text === "object" && (this.mail.text.content || this.mail.text.path || this.mail.text.href || this.mail.text.raw)) {
           text = this.mail.text;
@@ -5771,10 +5713,7 @@ var require_mail_composer = __commonJS((exports, module) => {
             content: this.mail.icalEvent
           };
         }
-        eventObject = {};
-        Object.keys(icalEvent).forEach((key) => {
-          eventObject[key] = icalEvent[key];
-        });
+        eventObject = Object.assign({}, icalEvent);
         if (eventObject.content && typeof eventObject.content === "object") {
           eventObject.content._resolve = true;
         }
@@ -5795,11 +5734,10 @@ var require_mail_composer = __commonJS((exports, module) => {
         html.contentType = "text/html; charset=utf-8";
       }
       [].concat(text || []).concat(watchHtml || []).concat(amp || []).concat(html || []).concat(eventObject || []).concat(this.mail.alternatives || []).forEach((alternative) => {
-        let data;
         if (/^data:/i.test(alternative.path || alternative.href)) {
           alternative = this._processDataUrl(alternative);
         }
-        data = {
+        const data = {
           contentType: alternative.contentType || mimeFuncs.detectMimeType(alternative.filename || alternative.path || alternative.href || "txt"),
           contentTransferEncoding: alternative.contentTransferEncoding
         };
@@ -5834,25 +5772,20 @@ var require_mail_composer = __commonJS((exports, module) => {
       return alternatives;
     }
     _createMixed(parentNode) {
-      let node;
-      if (!parentNode) {
-        node = new MimeNode("multipart/mixed", {
-          baseBoundary: this.mail.baseBoundary,
-          textEncoding: this.mail.textEncoding,
-          boundaryPrefix: this.mail.boundaryPrefix,
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      } else {
-        node = parentNode.createChild("multipart/mixed", {
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      }
+      const node = parentNode ? parentNode.createChild("multipart/mixed", {
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      }) : new MimeNode("multipart/mixed", {
+        baseBoundary: this.mail.baseBoundary,
+        textEncoding: this.mail.textEncoding,
+        boundaryPrefix: this.mail.boundaryPrefix,
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      });
       if (this._useAlternative) {
         this._createAlternative(node);
       } else if (this._useRelated) {
@@ -5866,25 +5799,20 @@ var require_mail_composer = __commonJS((exports, module) => {
       return node;
     }
     _createAlternative(parentNode) {
-      let node;
-      if (!parentNode) {
-        node = new MimeNode("multipart/alternative", {
-          baseBoundary: this.mail.baseBoundary,
-          textEncoding: this.mail.textEncoding,
-          boundaryPrefix: this.mail.boundaryPrefix,
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      } else {
-        node = parentNode.createChild("multipart/alternative", {
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      }
+      const node = parentNode ? parentNode.createChild("multipart/alternative", {
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      }) : new MimeNode("multipart/alternative", {
+        baseBoundary: this.mail.baseBoundary,
+        textEncoding: this.mail.textEncoding,
+        boundaryPrefix: this.mail.boundaryPrefix,
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      });
       this._alternatives.forEach((alternative) => {
         if (this._useRelated && this._htmlNode === alternative) {
           this._createRelated(node);
@@ -5895,25 +5823,20 @@ var require_mail_composer = __commonJS((exports, module) => {
       return node;
     }
     _createRelated(parentNode) {
-      let node;
-      if (!parentNode) {
-        node = new MimeNode('multipart/related; type="text/html"', {
-          baseBoundary: this.mail.baseBoundary,
-          textEncoding: this.mail.textEncoding,
-          boundaryPrefix: this.mail.boundaryPrefix,
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      } else {
-        node = parentNode.createChild('multipart/related; type="text/html"', {
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      }
+      const node = parentNode ? parentNode.createChild('multipart/related; type="text/html"', {
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      }) : new MimeNode('multipart/related; type="text/html"', {
+        baseBoundary: this.mail.baseBoundary,
+        textEncoding: this.mail.textEncoding,
+        boundaryPrefix: this.mail.boundaryPrefix,
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      });
       this._createContentNode(node, this._htmlNode);
       this._attachments.related.forEach((alternative) => this._createContentNode(node, alternative));
       return node;
@@ -5921,29 +5844,24 @@ var require_mail_composer = __commonJS((exports, module) => {
     _createContentNode(parentNode, element) {
       element = element || {};
       element.content = element.content || "";
-      let node;
-      let encoding = (element.encoding || "utf8").toString().toLowerCase().replace(/[-_\s]/g, "");
-      if (!parentNode) {
-        node = new MimeNode(element.contentType, {
-          filename: element.filename,
-          baseBoundary: this.mail.baseBoundary,
-          textEncoding: this.mail.textEncoding,
-          boundaryPrefix: this.mail.boundaryPrefix,
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      } else {
-        node = parentNode.createChild(element.contentType, {
-          filename: element.filename,
-          textEncoding: this.mail.textEncoding,
-          disableUrlAccess: this.mail.disableUrlAccess,
-          disableFileAccess: this.mail.disableFileAccess,
-          normalizeHeaderKey: this.mail.normalizeHeaderKey,
-          newline: this.mail.newline
-        });
-      }
+      const encoding = (element.encoding || "utf8").toString().toLowerCase().replace(/[-_\s]/g, "");
+      const node = parentNode ? parentNode.createChild(element.contentType, {
+        filename: element.filename,
+        textEncoding: this.mail.textEncoding,
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      }) : new MimeNode(element.contentType, {
+        filename: element.filename,
+        baseBoundary: this.mail.baseBoundary,
+        textEncoding: this.mail.textEncoding,
+        boundaryPrefix: this.mail.boundaryPrefix,
+        disableUrlAccess: this.mail.disableUrlAccess,
+        disableFileAccess: this.mail.disableFileAccess,
+        normalizeHeaderKey: this.mail.normalizeHeaderKey,
+        newline: this.mail.newline
+      });
       if (element.headers) {
         node.addHeader(element.headers);
       }
@@ -6016,9 +5934,9 @@ var require_mail_composer = __commonJS((exports, module) => {
   module.exports = MailComposer;
 });
 
-// ../../node_modules/nodemailer/lib/dkim/message-parser.js
+// node_modules/nodemailer/lib/dkim/message-parser.js
 var require_message_parser = __commonJS((exports, module) => {
-  var Transform = __require("stream").Transform;
+  var { Transform } = __require("stream");
 
   class MessageParser extends Transform {
     constructor(options) {
@@ -6031,8 +5949,8 @@ var require_message_parser = __commonJS((exports, module) => {
       this.bodySize = 0;
     }
     updateLastBytes(data) {
-      let lblen = this.lastBytes.length;
-      let nblen = Math.min(data.length, lblen);
+      const lblen = this.lastBytes.length;
+      const nblen = Math.min(data.length, lblen);
       for (let i = 0, len = lblen - nblen;i < len; i++) {
         this.lastBytes[i] = this.lastBytes[i + nblen];
       }
@@ -6044,9 +5962,8 @@ var require_message_parser = __commonJS((exports, module) => {
       if (this.headersParsed) {
         return true;
       }
-      let lblen = this.lastBytes.length;
+      const lblen = this.lastBytes.length;
       let headerPos = 0;
-      this.curLinePos = 0;
       for (let i = 0, len = this.lastBytes.length + data.length;i < len; i++) {
         let chr;
         if (i < lblen) {
@@ -6055,8 +5972,8 @@ var require_message_parser = __commonJS((exports, module) => {
           chr = data[i - lblen];
         }
         if (chr === 10 && i) {
-          let pr1 = i - 1 < lblen ? this.lastBytes[i - 1] : data[i - 1 - lblen];
-          let pr2 = i > 1 ? i - 2 < lblen ? this.lastBytes[i - 2] : data[i - 2 - lblen] : false;
+          const pr1 = i - 1 < lblen ? this.lastBytes[i - 1] : data[i - 1 - lblen];
+          const pr2 = i > 1 ? i - 2 < lblen ? this.lastBytes[i - 2] : data[i - 2 - lblen] : false;
           if (pr1 === 10) {
             this.headersParsed = true;
             headerPos = i - lblen + 1;
@@ -6076,15 +5993,14 @@ var require_message_parser = __commonJS((exports, module) => {
         this.headerChunks = null;
         this.emit("headers", this.parseHeaders());
         if (data.length - 1 > headerPos) {
-          let chunk = data.slice(headerPos);
+          const chunk = data.slice(headerPos);
           this.bodySize += chunk.length;
           setImmediate(() => this.push(chunk));
         }
         return false;
-      } else {
-        this.headerBytes += data.length;
-        this.headerChunks.push(data);
       }
+      this.headerBytes += data.length;
+      this.headerChunks.push(data);
       this.updateLastBytes(data);
       return false;
     }
@@ -6109,7 +6025,7 @@ var require_message_parser = __commonJS((exports, module) => {
     }
     _flush(callback) {
       if (this.headerChunks) {
-        let chunk = Buffer.concat(this.headerChunks, this.headerBytes);
+        const chunk = Buffer.concat(this.headerChunks, this.headerBytes);
         this.bodySize += chunk.length;
         this.push(chunk);
         this.headerChunks = null;
@@ -6117,7 +6033,7 @@ var require_message_parser = __commonJS((exports, module) => {
       callback();
     }
     parseHeaders() {
-      let lines = (this.rawHeaders || "").toString().split(/\r?\n/);
+      const lines = (this.rawHeaders || "").toString().split(/\r?\n/);
       for (let i = lines.length - 1;i > 0; i--) {
         if (/^\s/.test(lines[i])) {
           lines[i - 1] += `
@@ -6134,9 +6050,9 @@ var require_message_parser = __commonJS((exports, module) => {
   module.exports = MessageParser;
 });
 
-// ../../node_modules/nodemailer/lib/dkim/relaxed-body.js
+// node_modules/nodemailer/lib/dkim/relaxed-body.js
 var require_relaxed_body = __commonJS((exports, module) => {
-  var Transform = __require("stream").Transform;
+  var { Transform } = __require("stream");
   var crypto = __require("crypto");
 
   class RelaxedBody extends Transform {
@@ -6156,7 +6072,7 @@ var require_relaxed_body = __commonJS((exports, module) => {
       let nextRemainder = "";
       let state = "file";
       for (let i = chunk.length - 1;i >= 0; i--) {
-        let c = chunk[i];
+        const c = chunk[i];
         if (state === "file" && (c === 10 || c === 13)) {} else if (state === "file" && (c === 9 || c === 32)) {
           state = "line";
         } else if (state === "line" && (c === 9 || c === 32)) {} else if (state === "file" || state === "line") {
@@ -6243,21 +6159,21 @@ var require_relaxed_body = __commonJS((exports, module) => {
   module.exports = RelaxedBody;
 });
 
-// ../../node_modules/nodemailer/lib/dkim/sign.js
+// node_modules/nodemailer/lib/dkim/sign.js
 var require_sign = __commonJS((exports, module) => {
   var punycode = require_punycode();
   var mimeFuncs = require_mime_funcs();
   var crypto = __require("crypto");
   module.exports = (headers, hashAlgo, bodyHash, options) => {
     options = options || {};
-    let defaultFieldNames = "From:Sender:Reply-To:Subject:Date:Message-ID:To:" + "Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:" + "Content-Description:Resent-Date:Resent-From:Resent-Sender:" + "Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:" + "List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:" + "List-Owner:List-Archive";
-    let fieldNames = options.headerFieldNames || defaultFieldNames;
-    let canonicalizedHeaderData = relaxedHeaders(headers, fieldNames, options.skipFields);
-    let dkimHeader = generateDKIMHeader(options.domainName, options.keySelector, canonicalizedHeaderData.fieldNames, hashAlgo, bodyHash);
-    let signer, signature;
+    const defaultFieldNames = "From:Sender:Reply-To:Subject:Date:Message-ID:To:" + "Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:" + "Content-Description:Resent-Date:Resent-From:Resent-Sender:" + "Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:" + "List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:" + "List-Owner:List-Archive";
+    const fieldNames = options.headerFieldNames || defaultFieldNames;
+    const canonicalizedHeaderData = relaxedHeaders(headers, fieldNames, options.skipFields);
+    const dkimHeader = generateDKIMHeader(options.domainName, options.keySelector, canonicalizedHeaderData.fieldNames, hashAlgo, bodyHash);
     canonicalizedHeaderData.headers += "dkim-signature:" + relaxedHeaderLine(dkimHeader);
-    signer = crypto.createSign(("rsa-" + hashAlgo).toUpperCase());
+    const signer = crypto.createSign(("rsa-" + hashAlgo).toUpperCase());
     signer.update(canonicalizedHeaderData.headers);
+    let signature;
     try {
       signature = signer.sign(options.privateKey, "base64");
     } catch (_E) {
@@ -6268,7 +6184,7 @@ var require_sign = __commonJS((exports, module) => {
   };
   module.exports.relaxedHeaders = relaxedHeaders;
   function generateDKIMHeader(domainName, keySelector, fieldNames, hashAlgo, bodyHash) {
-    let dkim = [
+    const dkim = [
       "v=1",
       "a=rsa-" + hashAlgo,
       "c=relaxed/relaxed",
@@ -6282,9 +6198,9 @@ var require_sign = __commonJS((exports, module) => {
  b=`;
   }
   function relaxedHeaders(headers, fieldNames, skipFields) {
-    let includedFields = new Set;
-    let skip = new Set;
-    let headerFields = new Map;
+    const includedFields = new Set;
+    const skip = new Set;
+    const headerFields = new Map;
     (skipFields || "").toLowerCase().split(":").forEach((field) => {
       skip.add(field.trim());
     });
@@ -6292,13 +6208,13 @@ var require_sign = __commonJS((exports, module) => {
       includedFields.add(field.trim());
     });
     for (let i = headers.length - 1;i >= 0; i--) {
-      let line = headers[i];
+      const line = headers[i];
       if (includedFields.has(line.key) && !headerFields.has(line.key)) {
         headerFields.set(line.key, relaxedHeaderLine(line.line));
       }
     }
-    let headersList = [];
-    let fields = [];
+    const headersList = [];
+    const fields = [];
     includedFields.forEach((field) => {
       if (headerFields.has(field)) {
         fields.push(field);
@@ -6317,14 +6233,14 @@ var require_sign = __commonJS((exports, module) => {
   }
 });
 
-// ../../node_modules/nodemailer/lib/dkim/index.js
+// node_modules/nodemailer/lib/dkim/index.js
 var require_dkim = __commonJS((exports, module) => {
   var MessageParser = require_message_parser();
   var RelaxedBody = require_relaxed_body();
   var sign = require_sign();
-  var PassThrough = __require("stream").PassThrough;
-  var fs3 = __require("fs");
-  var path3 = __require("path");
+  var { PassThrough } = __require("stream");
+  var fs6 = __require("fs");
+  var path6 = __require("path");
   var crypto = __require("crypto");
   var DKIM_ALGO = "sha256";
   var MAX_MESSAGE_SIZE = 2 * 1024 * 1024;
@@ -6339,7 +6255,7 @@ var require_dkim = __commonJS((exports, module) => {
       this.chunks = [];
       this.chunklen = 0;
       this.readPos = 0;
-      this.cachePath = this.cacheDir ? path3.join(this.cacheDir, "message." + Date.now() + "-" + crypto.randomBytes(14).toString("hex")) : false;
+      this.cachePath = this.cacheDir ? path6.join(this.cacheDir, "message." + Date.now() + "-" + crypto.randomBytes(14).toString("hex")) : false;
       this.cache = false;
       this.headers = false;
       this.bodyHash = false;
@@ -6359,10 +6275,10 @@ var require_dkim = __commonJS((exports, module) => {
       if (!this.cache || !this.cachePath) {
         return;
       }
-      fs3.unlink(this.cachePath, () => false);
+      fs6.unlink(this.cachePath, () => false);
     }
     createReadCache() {
-      this.cache = fs3.createReadStream(this.cachePath);
+      this.cache = fs6.createReadStream(this.cachePath);
       this.cache.once("error", (err) => {
         this.cleanup();
         this.output.emit("error", err);
@@ -6382,7 +6298,7 @@ var require_dkim = __commonJS((exports, module) => {
         }
         return this.createReadCache();
       }
-      let chunk = this.chunks[this.readPos++];
+      const chunk = this.chunks[this.readPos++];
       if (this.output.write(chunk) === false) {
         return this.output.once("drain", () => {
           this.sendNextChunk();
@@ -6392,13 +6308,13 @@ var require_dkim = __commonJS((exports, module) => {
     }
     sendSignedOutput() {
       let keyPos = 0;
-      let signNextKey = () => {
+      const signNextKey = () => {
         if (keyPos >= this.keys.length) {
           this.output.write(this.parser.rawHeaders);
           return setImmediate(() => this.sendNextChunk());
         }
-        let key = this.keys[keyPos++];
-        let dkimField = sign(this.headers, this.hashAlgo, this.bodyHash, {
+        const key = this.keys[keyPos++];
+        const dkimField = sign(this.headers, this.hashAlgo, this.bodyHash, {
           domainName: key.domainName,
           keySelector: key.keySelector,
           privateKey: key.privateKey,
@@ -6419,7 +6335,7 @@ var require_dkim = __commonJS((exports, module) => {
     }
     createWriteCache() {
       this.output.usingCache = true;
-      this.cache = fs3.createWriteStream(this.cachePath);
+      this.cache = fs6.createWriteStream(this.cachePath);
       this.cache.once("error", (err) => {
         this.cleanup();
         this.relaxedBody.unpipe(this.cache);
@@ -6480,7 +6396,7 @@ var require_dkim = __commonJS((exports, module) => {
       });
     }
     sign(input, extraOptions) {
-      let output = new PassThrough;
+      const output = new PassThrough;
       let inputStream = input;
       let writeValue = false;
       if (Buffer.isBuffer(input)) {
@@ -6492,17 +6408,9 @@ var require_dkim = __commonJS((exports, module) => {
       }
       let options = this.options;
       if (extraOptions && Object.keys(extraOptions).length) {
-        options = {};
-        Object.keys(this.options || {}).forEach((key) => {
-          options[key] = this.options[key];
-        });
-        Object.keys(extraOptions || {}).forEach((key) => {
-          if (!(key in options)) {
-            options[key] = extraOptions[key];
-          }
-        });
+        options = Object.assign({}, extraOptions, this.options);
       }
-      let signer = new DKIMSigner(options, this.keys, inputStream, output);
+      const signer = new DKIMSigner(options, this.keys, inputStream, output);
       setImmediate(() => {
         signer.signStream();
         if (writeValue) {
@@ -6517,29 +6425,28 @@ var require_dkim = __commonJS((exports, module) => {
   module.exports = DKIM;
 });
 
-// ../../node_modules/nodemailer/lib/smtp-connection/http-proxy-client.js
+// node_modules/nodemailer/lib/smtp-connection/http-proxy-client.js
 var require_http_proxy_client = __commonJS((exports, module) => {
   var net = __require("net");
   var tls = __require("tls");
   var urllib = __require("url");
   var errors = require_errors();
   function httpProxyClient(proxyUrl, destinationPort, destinationHost, callback) {
-    let proxy = urllib.parse(proxyUrl);
-    let options;
-    let connect;
-    let socket;
-    options = {
+    const proxy = urllib.parse(proxyUrl);
+    const options = {
       host: proxy.hostname,
       port: Number(proxy.port) ? Number(proxy.port) : proxy.protocol === "https:" ? 443 : 80
     };
+    let connect;
     if (proxy.protocol === "https:") {
       options.rejectUnauthorized = false;
       connect = tls.connect.bind(tls);
     } else {
       connect = net.connect.bind(net);
     }
+    let socket;
     let finished = false;
-    let tempSocketErr = (err) => {
+    const tempSocketErr = (err) => {
       if (finished) {
         return;
       }
@@ -6549,8 +6456,8 @@ var require_http_proxy_client = __commonJS((exports, module) => {
       } catch (_E) {}
       callback(err);
     };
-    let timeoutErr = () => {
-      let err = new Error("Proxy socket timed out");
+    const timeoutErr = () => {
+      const err = new Error("Proxy socket timed out");
       err.code = "ETIMEDOUT";
       tempSocketErr(err);
     };
@@ -6558,7 +6465,7 @@ var require_http_proxy_client = __commonJS((exports, module) => {
       if (finished) {
         return;
       }
-      let reqHeaders = {
+      const reqHeaders = {
         Host: destinationHost + ":" + destinationPort,
         Connection: "close"
       };
@@ -6571,7 +6478,7 @@ var require_http_proxy_client = __commonJS((exports, module) => {
 \r
 `);
       let headers = "";
-      let onSocketData = (chunk) => {
+      const onSocketData = (chunk) => {
         let match;
         let remainder;
         if (finished) {
@@ -6591,7 +6498,7 @@ var require_http_proxy_client = __commonJS((exports, module) => {
             try {
               socket.destroy();
             } catch (_E) {}
-            let err = new Error("Invalid response from proxy" + (match && ": " + match[1] || ""));
+            const err = new Error("Invalid response from proxy" + (match && ": " + match[1] || ""));
             err.code = errors.EPROXY;
             return callback(err);
           }
@@ -6610,7 +6517,7 @@ var require_http_proxy_client = __commonJS((exports, module) => {
   module.exports = httpProxyClient;
 });
 
-// ../../node_modules/nodemailer/lib/mailer/mail-message.js
+// node_modules/nodemailer/lib/mailer/mail-message.js
 var require_mail_message = __commonJS((exports, module) => {
   var shared = require_shared();
   var MimeNode = require_mime_node();
@@ -6622,11 +6529,9 @@ var require_mail_message = __commonJS((exports, module) => {
       this.data = {};
       this.message = null;
       data = data || {};
-      let options = mailer.options || {};
-      let defaults = mailer._defaults || {};
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key];
-      });
+      const options = mailer.options || {};
+      const defaults = mailer._defaults || {};
+      Object.assign(this.data, data);
       this.data.headers = this.data.headers || {};
       Object.keys(defaults).forEach((key) => {
         if (!(key in this.data)) {
@@ -6649,7 +6554,7 @@ var require_mail_message = __commonJS((exports, module) => {
       return shared.resolveContent(...args);
     }
     resolveAll(callback) {
-      let keys = [
+      const keys = [
         [this.data, "html"],
         [this.data, "text"],
         [this.data, "watchHtml"],
@@ -6675,8 +6580,8 @@ var require_mail_message = __commonJS((exports, module) => {
           keys.push([this.data.attachments, i]);
         });
       }
-      let mimeNode = new MimeNode;
-      let addressKeys = ["from", "to", "cc", "bcc", "sender", "replyTo"];
+      const mimeNode = new MimeNode;
+      const addressKeys = ["from", "to", "cc", "bcc", "sender", "replyTo"];
       addressKeys.forEach((address) => {
         let value;
         if (this.message) {
@@ -6690,18 +6595,18 @@ var require_mail_message = __commonJS((exports, module) => {
           this.data[address] = null;
         }
       });
-      let singleKeys = ["from", "sender"];
+      const singleKeys = ["from", "sender"];
       singleKeys.forEach((address) => {
         if (this.data[address]) {
           this.data[address] = this.data[address].shift();
         }
       });
       let pos = 0;
-      let resolveNext = () => {
+      const resolveNext = () => {
         if (pos >= keys.length) {
           return callback(null, this.data);
         }
-        let args = keys[pos++];
+        const args = keys[pos++];
         if (!args[0] || !args[0][args[1]]) {
           return resolveNext();
         }
@@ -6709,7 +6614,7 @@ var require_mail_message = __commonJS((exports, module) => {
           if (err) {
             return callback(err);
           }
-          let node = {
+          const node = {
             content: value
           };
           if (args[0][args[1]] && typeof args[0][args[1]] === "object" && !Buffer.isBuffer(args[0][args[1]])) {
@@ -6726,8 +6631,8 @@ var require_mail_message = __commonJS((exports, module) => {
       setImmediate(() => resolveNext());
     }
     normalize(callback) {
-      let envelope = this.data.envelope || this.message.getEnvelope();
-      let messageId = this.message.messageId();
+      const envelope = this.data.envelope || this.message.getEnvelope();
+      const messageId = this.message.messageId();
       this.resolveAll((err, data) => {
         if (err) {
           return callback(err);
@@ -6775,7 +6680,7 @@ var require_mail_message = __commonJS((exports, module) => {
           }
         });
         if (data.list && typeof data.list === "object") {
-          let listHeaders = this._getListHeaders(data.list);
+          const listHeaders = this._getListHeaders(data.list);
           listHeaders.forEach((entry) => {
             data.normalizedHeaders[entry.key] = entry.value.map((val) => val && val.value || val).join(", ");
           });
@@ -6817,13 +6722,11 @@ var require_mail_message = __commonJS((exports, module) => {
       if (!this.message || !this.data.list || typeof this.data.list !== "object") {
         return;
       }
-      if (this.data.list && typeof this.data.list === "object") {
-        this._getListHeaders(this.data.list).forEach((listHeader) => {
-          listHeader.value.forEach((value) => {
-            this.message.addHeader(listHeader.key, value);
-          });
+      this._getListHeaders(this.data.list).forEach((listHeader) => {
+        listHeader.value.forEach((value) => {
+          this.message.addHeader(listHeader.key, value);
         });
-      }
+      });
     }
     _getListHeaders(listData) {
       return Object.keys(listData).map((key) => ({
@@ -6872,7 +6775,7 @@ var require_mail_message = __commonJS((exports, module) => {
   module.exports = MailMessage;
 });
 
-// ../../node_modules/nodemailer/lib/mailer/index.js
+// node_modules/nodemailer/lib/mailer/index.js
 var require_mailer = __commonJS((exports, module) => {
   var EventEmitter = __require("events");
   var shared = require_shared();
@@ -6940,13 +6843,12 @@ var require_mailer = __commonJS((exports, module) => {
               this.getSocket = false;
             }
             return this.transporter[method](...args);
-          } else {
-            this.logger.warn({
-              tnx: "transport",
-              methodName: method
-            }, "Non existing method %s called for transport", method);
-            return false;
           }
+          this.logger.warn({
+            tnx: "transport",
+            methodName: method
+          }, "Non existing method %s called for transport", method);
+          return false;
         };
       });
       if (this.options.proxy && typeof this.options.proxy === "string") {
@@ -6973,7 +6875,7 @@ var require_mailer = __commonJS((exports, module) => {
         this.transporter.getSocket = this.getSocket;
         this.getSocket = false;
       }
-      let mail = new MailMessage(this, data);
+      const mail = new MailMessage(this, data);
       this.logger.debug({
         tnx: "transport",
         name: this.transporter.name,
@@ -7004,7 +6906,7 @@ var require_mailer = __commonJS((exports, module) => {
           }
           if (mail.data.dkim || this.dkim) {
             mail.message.processFunc((input) => {
-              let dkim = mail.data.dkim ? new DKIM(mail.data.dkim) : this.dkim;
+              const dkim = mail.data.dkim ? new DKIM(mail.data.dkim) : this.dkim;
               this.logger.debug({
                 tnx: "DKIM",
                 messageId: mail.message.messageId(),
@@ -7035,8 +6937,8 @@ var require_mailer = __commonJS((exports, module) => {
       if (!this._userPlugins.hasOwnProperty(step)) {
         return callback();
       }
-      let userPlugins = this._userPlugins[step] || [];
-      let defaultPlugins = this._defaultPlugins[step] || [];
+      const userPlugins = this._userPlugins[step] || [];
+      const defaultPlugins = this._defaultPlugins[step] || [];
       if (userPlugins.length) {
         this.logger.debug({
           tnx: "transaction",
@@ -7049,7 +6951,7 @@ var require_mailer = __commonJS((exports, module) => {
       }
       let pos = 0;
       let block = "default";
-      let processPlugins = () => {
+      const processPlugins = () => {
         let curplugins = block === "default" ? defaultPlugins : userPlugins;
         if (pos >= curplugins.length) {
           if (block === "default" && userPlugins.length) {
@@ -7060,7 +6962,7 @@ var require_mailer = __commonJS((exports, module) => {
             return callback();
           }
         }
-        let plugin = curplugins[pos++];
+        const plugin = curplugins[pos++];
         plugin(mail, (err) => {
           if (err) {
             return callback(err);
@@ -7071,9 +6973,9 @@ var require_mailer = __commonJS((exports, module) => {
       processPlugins();
     }
     setupProxy(proxyUrl) {
-      let proxy = urllib.parse(proxyUrl);
+      const proxy = urllib.parse(proxyUrl);
       this.getSocket = (options, callback) => {
-        let protocol = proxy.protocol.replace(/:$/, "").toLowerCase();
+        const protocol = proxy.protocol.replace(/:$/, "").toLowerCase();
         if (this.meta.has("proxy_handler_" + protocol)) {
           return this.meta.get("proxy_handler_" + protocol)(proxy, options, callback);
         }
@@ -7098,11 +7000,11 @@ var require_mailer = __commonJS((exports, module) => {
               err2.code = errors.EPROXY;
               return callback(err2);
             }
-            let connect = (ipaddress) => {
-              let proxyV2 = !!this.meta.get("proxy_socks_module").SocksClient;
-              let socksClient = proxyV2 ? this.meta.get("proxy_socks_module").SocksClient : this.meta.get("proxy_socks_module");
-              let proxyType = Number(proxy.protocol.replace(/\D/g, "")) || 5;
-              let connectionOpts = {
+            const connect = (ipaddress) => {
+              const proxyV2 = !!this.meta.get("proxy_socks_module").SocksClient;
+              const socksClient = proxyV2 ? this.meta.get("proxy_socks_module").SocksClient : this.meta.get("proxy_socks_module");
+              const proxyType = Number(proxy.protocol.replace(/\D/g, "")) || 5;
+              const connectionOpts = {
                 proxy: {
                   ipaddress,
                   port: Number(proxy.port),
@@ -7115,8 +7017,8 @@ var require_mailer = __commonJS((exports, module) => {
                 command: "connect"
               };
               if (proxy.auth) {
-                let username = decodeURIComponent(proxy.auth.split(":").shift());
-                let password = decodeURIComponent(proxy.auth.split(":").pop());
+                const username = decodeURIComponent(proxy.auth.split(":").shift());
+                const password = decodeURIComponent(proxy.auth.split(":").pop());
                 if (proxyV2) {
                   connectionOpts.proxy.userId = username;
                   connectionOpts.proxy.password = password;
@@ -7164,7 +7066,7 @@ var require_mailer = __commonJS((exports, module) => {
         }
         let cidCounter = 0;
         html = (html || "").toString().replace(/(<img\b[^<>]{0,1024} src\s{0,20}=[\s"']{0,20})(data:([^;]+);[^"'>\s]+)/gi, (match, prefix, dataUri, mimeType) => {
-          let cid = crypto.randomBytes(10).toString("hex") + "@localhost";
+          const cid = crypto.randomBytes(10).toString("hex") + "@localhost";
           if (!mail.data.attachments) {
             mail.data.attachments = [];
           }
@@ -7192,22 +7094,20 @@ var require_mailer = __commonJS((exports, module) => {
   module.exports = Mail;
 });
 
-// ../../node_modules/nodemailer/lib/smtp-connection/data-stream.js
+// node_modules/nodemailer/lib/smtp-connection/data-stream.js
 var require_data_stream = __commonJS((exports, module) => {
-  var stream = __require("stream");
-  var Transform = stream.Transform;
+  var { Transform } = __require("stream");
 
   class DataStream extends Transform {
     constructor(options) {
       super(options);
       this.options = options || {};
-      this._curLine = "";
       this.inByteCount = 0;
       this.outByteCount = 0;
       this.lastByte = false;
     }
     _transform(chunk, encoding, done) {
-      let chunks = [];
+      const chunks = [];
       let chunklen = 0;
       let i, len, lastPos = 0;
       let buf;
@@ -7279,16 +7179,16 @@ var require_data_stream = __commonJS((exports, module) => {
   module.exports = DataStream;
 });
 
-// ../../node_modules/nodemailer/lib/smtp-connection/index.js
+// node_modules/nodemailer/lib/smtp-connection/index.js
 var require_smtp_connection = __commonJS((exports, module) => {
   var packageInfo = require_package();
-  var EventEmitter = __require("events").EventEmitter;
+  var { EventEmitter } = __require("events");
   var net = __require("net");
   var tls = __require("tls");
   var os = __require("os");
   var crypto = __require("crypto");
   var DataStream = require_data_stream();
-  var PassThrough = __require("stream").PassThrough;
+  var { PassThrough } = __require("stream");
   var shared = require_shared();
   var CONNECTION_TIMEOUT = 2 * 60 * 1000;
   var SOCKET_TIMEOUT = 10 * 60 * 1000;
@@ -7317,13 +7217,12 @@ var require_smtp_connection = __commonJS((exports, module) => {
         sid: this.id
       });
       this.customAuth = new Map;
-      Object.keys(this.options.customAuth || {}).forEach((key) => {
-        let mapKey = (key || "").toString().trim().toUpperCase();
-        if (!mapKey) {
-          return;
+      for (const key of Object.keys(this.options.customAuth || {})) {
+        const mapKey = (key || "").toString().trim().toUpperCase();
+        if (mapKey) {
+          this.customAuth.set(mapKey, this.options.customAuth[key]);
         }
-        this.customAuth.set(mapKey, this.options.customAuth[key]);
-      });
+      }
       this.version = packageInfo.version;
       this.authenticated = false;
       this.destroyed = false;
@@ -7390,21 +7289,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
         return;
       } else if (this.options.socket) {
         this._socket = this.options.socket;
-        return shared.resolveHostname(opts, (err, resolved) => {
-          if (err) {
-            return setImmediate(() => this._onError(err, "EDNS", false, "CONN"));
-          }
-          this.logger.debug({
-            tnx: "dns",
-            source: opts.host,
-            resolved: resolved.host,
-            cached: !!resolved.cached
-          }, "Resolved %s as %s [cache %s]", opts.host, resolved.host, resolved.cached ? "hit" : "miss");
-          Object.keys(resolved).forEach((key) => {
-            if (key.charAt(0) !== "_" && resolved[key]) {
-              opts[key] = resolved[key];
-            }
-          });
+        return this._resolveAndConnect(opts, (_resolved) => {
           try {
             this._socket.connect(this.port, this.host, () => {
               this._socket.setKeepAlive(true);
@@ -7415,60 +7300,43 @@ var require_smtp_connection = __commonJS((exports, module) => {
             return setImmediate(() => this._onError(E, "ECONNECTION", false, "CONN"));
           }
         });
-      } else if (this.secureConnection) {
-        if (this.options.tls) {
-          Object.keys(this.options.tls).forEach((key) => {
-            opts[key] = this.options.tls[key];
-          });
-        }
-        if (this.servername && !opts.servername) {
-          opts.servername = this.servername;
-        }
-        return shared.resolveHostname(opts, (err, resolved) => {
-          if (err) {
-            return setImmediate(() => this._onError(err, "EDNS", false, "CONN"));
-          }
-          this.logger.debug({
-            tnx: "dns",
-            source: opts.host,
-            resolved: resolved.host,
-            cached: !!resolved.cached
-          }, "Resolved %s as %s [cache %s]", opts.host, resolved.host, resolved.cached ? "hit" : "miss");
-          Object.keys(resolved).forEach((key) => {
-            if (key.charAt(0) !== "_" && resolved[key]) {
-              opts[key] = resolved[key];
-            }
-          });
-          this._fallbackAddresses = (resolved._addresses || []).filter((addr) => addr !== opts.host);
-          this._connectOpts = Object.assign({}, opts);
-          this._connectToHost(opts, true);
-        });
       } else {
-        return shared.resolveHostname(opts, (err, resolved) => {
-          if (err) {
-            return setImmediate(() => this._onError(err, "EDNS", false, "CONN"));
+        if (this.secureConnection) {
+          Object.assign(opts, this.options.tls || {});
+          if (this.servername && !opts.servername) {
+            opts.servername = this.servername;
           }
-          this.logger.debug({
-            tnx: "dns",
-            source: opts.host,
-            resolved: resolved.host,
-            cached: !!resolved.cached
-          }, "Resolved %s as %s [cache %s]", opts.host, resolved.host, resolved.cached ? "hit" : "miss");
-          Object.keys(resolved).forEach((key) => {
-            if (key.charAt(0) !== "_" && resolved[key]) {
-              opts[key] = resolved[key];
-            }
-          });
+        }
+        return this._resolveAndConnect(opts, (resolved) => {
           this._fallbackAddresses = (resolved._addresses || []).filter((addr) => addr !== opts.host);
           this._connectOpts = Object.assign({}, opts);
-          this._connectToHost(opts, false);
+          this._connectToHost(opts, this.secureConnection);
         });
       }
+    }
+    _resolveAndConnect(opts, callback) {
+      return shared.resolveHostname(opts, (err, resolved) => {
+        if (err) {
+          return setImmediate(() => this._onError(err, "EDNS", false, "CONN"));
+        }
+        this.logger.debug({
+          tnx: "dns",
+          source: opts.host,
+          resolved: resolved.host,
+          cached: !!resolved.cached
+        }, "Resolved %s as %s [cache %s]", opts.host, resolved.host, resolved.cached ? "hit" : "miss");
+        for (const key of Object.keys(resolved)) {
+          if (key.charAt(0) !== "_" && resolved[key]) {
+            opts[key] = resolved[key];
+          }
+        }
+        callback(resolved);
+      });
     }
     _connectToHost(opts, secure) {
       this._connectionAttemptId++;
       const currentAttemptId = this._connectionAttemptId;
-      let connectFn = secure ? tls.connect : net.connect;
+      const connectFn = secure ? tls.connect : net.connect;
       try {
         this._socket = connectFn(opts, () => {
           if (this._connectionAttemptId !== currentAttemptId) {
@@ -7490,12 +7358,12 @@ var require_smtp_connection = __commonJS((exports, module) => {
     }
     _onConnectionError(err, code) {
       clearTimeout(this._connectionTimeout);
-      let canFallback = this._fallbackAddresses && this._fallbackAddresses.length && this.stage === "init" && !this._destroyed;
+      const canFallback = this._fallbackAddresses && this._fallbackAddresses.length && this.stage === "init" && !this._destroyed;
       if (!canFallback) {
         this._onError(err, code, false, "CONN");
         return;
       }
-      let nextHost = this._fallbackAddresses.shift();
+      const nextHost = this._fallbackAddresses.shift();
       this.logger.info({
         tnx: "network",
         failedHost: this._connectOpts.host,
@@ -7524,14 +7392,11 @@ var require_smtp_connection = __commonJS((exports, module) => {
         return;
       }
       this._closing = true;
-      let closeMethod = "end";
-      if (this.stage === "init") {
-        closeMethod = "destroy";
-      }
+      const closeMethod = this.stage === "init" ? "destroy" : "end";
       this.logger.debug({
         tnx: "smtp"
       }, 'Closing connection to the server using "%s"', closeMethod);
-      let socket = this._socket && this._socket.socket || this._socket;
+      const socket = this._socket && this._socket.socket || this._socket;
       if (socket && !socket.destroyed) {
         try {
           socket.setTimeout(0);
@@ -7571,10 +7436,10 @@ var require_smtp_connection = __commonJS((exports, module) => {
         }
       }
       if (this.customAuth.has(this._authMethod)) {
-        let handler = this.customAuth.get(this._authMethod);
+        const handler = this.customAuth.get(this._authMethod);
         let lastResponse;
         let returned = false;
-        let resolve = () => {
+        const resolve = () => {
           if (returned) {
             return;
           }
@@ -7588,14 +7453,14 @@ var require_smtp_connection = __commonJS((exports, module) => {
           this.authenticated = true;
           callback(null, true);
         };
-        let reject = (err) => {
+        const reject = (err) => {
           if (returned) {
             return;
           }
           returned = true;
           callback(this._formatError(err, "EAUTH", lastResponse, "AUTH " + this._authMethod));
         };
-        let handlerResponse = handler({
+        const handlerResponse = handler({
           auth: this._auth,
           method: this._authMethod,
           extensions: [].concat(this._supportedExtensions),
@@ -7677,7 +7542,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
         });
       }
       let returned = false;
-      let callback = function() {
+      const callback = function() {
         if (returned) {
           return;
         }
@@ -7687,10 +7552,10 @@ var require_smtp_connection = __commonJS((exports, module) => {
       if (typeof message.on === "function") {
         message.on("error", (err) => callback(this._formatError(err, "ESTREAM", false, "API")));
       }
-      let startTime = Date.now();
+      const startTime = Date.now();
       this._setEnvelope(envelope, (err, info) => {
         if (err) {
-          let stream2 = new PassThrough;
+          const stream2 = new PassThrough;
           if (typeof message.pipe === "function") {
             message.pipe(stream2);
           } else {
@@ -7699,8 +7564,8 @@ var require_smtp_connection = __commonJS((exports, module) => {
           }
           return callback(err);
         }
-        let envelopeTime = Date.now();
-        let stream = this._createSendStream((err2, str) => {
+        const envelopeTime = Date.now();
+        const stream = this._createSendStream((err2, str) => {
           if (err2) {
             return callback(err2);
           }
@@ -7820,7 +7685,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
         err.response = response;
         err.message += ": " + response;
       }
-      let responseCode = typeof response === "string" && Number((response.match(/^\d+/) || [])[0]) || false;
+      const responseCode = typeof response === "string" && Number((response.match(/^\d+/) || [])[0]) || false;
       if (responseCode) {
         err.responseCode = responseCode;
       }
@@ -7869,14 +7734,11 @@ var require_smtp_connection = __commonJS((exports, module) => {
     _upgradeConnection(callback) {
       this._socket.removeListener("data", this._onSocketData);
       this._socket.removeListener("timeout", this._onSocketTimeout);
-      let socketPlain = this._socket;
-      let opts = {
+      const socketPlain = this._socket;
+      const opts = Object.assign({
         socket: this._socket,
         host: this.host
-      };
-      Object.keys(this.options.tls || {}).forEach((key) => {
-        opts[key] = this.options.tls[key];
-      });
+      }, this.options.tls || {});
       if (this.servername && !opts.servername) {
         opts.servername = this.servername;
       }
@@ -7918,7 +7780,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
       if (!str.trim()) {
         setImmediate(() => this._processResponse());
       }
-      let action = this._responseActions.shift();
+      const action = this._responseActions.shift();
       if (typeof action === "function") {
         action.call(this, str);
         setImmediate(() => this._processResponse());
@@ -7942,7 +7804,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
 `, "utf-8"));
     }
     _setEnvelope(envelope, callback) {
-      let args = [];
+      const args = [];
       let useSmtpUtf8 = false;
       this._envelope = envelope || {};
       this._envelope.from = (this._envelope.from && this._envelope.from.address || this._envelope.from || "").toString().trim();
@@ -7964,7 +7826,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
           useSmtpUtf8 = true;
         }
       }
-      this._envelope.rcptQueue = JSON.parse(JSON.stringify(this._envelope.to || []));
+      this._envelope.rcptQueue = [].concat(this._envelope.to || []);
       this._envelope.rejected = [];
       this._envelope.rejectedErrors = [];
       this._envelope.accepted = [];
@@ -7987,7 +7849,10 @@ var require_smtp_connection = __commonJS((exports, module) => {
         this._using8BitMime = true;
       }
       if (this._envelope.size && this._supportedExtensions.includes("SIZE")) {
-        args.push("SIZE=" + this._envelope.size);
+        const sizeValue = Number(this._envelope.size) || 0;
+        if (sizeValue > 0) {
+          args.push("SIZE=" + sizeValue);
+        }
       }
       if (this._envelope.dsn && this._supportedExtensions.includes("DSN")) {
         if (this._envelope.dsn.ret) {
@@ -8025,15 +7890,15 @@ var require_smtp_connection = __commonJS((exports, module) => {
       if (ret && !["FULL", "HDRS"].includes(ret)) {
         throw new Error("ret: " + JSON.stringify(ret));
       }
-      let envid = (params.envid || params.id || "").toString() || null;
+      const envid = (params.envid || params.id || "").toString() || null;
       let notify = params.notify || null;
       if (notify) {
         if (typeof notify === "string") {
           notify = notify.split(",");
         }
         notify = notify.map((n) => n.trim().toUpperCase());
-        let validNotify = ["NEVER", "SUCCESS", "FAILURE", "DELAY"];
-        let invalidNotify = notify.filter((n) => !validNotify.includes(n));
+        const validNotify = ["NEVER", "SUCCESS", "FAILURE", "DELAY"];
+        const invalidNotify = notify.filter((n) => !validNotify.includes(n));
         if (invalidNotify.length || notify.length > 1 && notify.includes("NEVER")) {
           throw new Error("notify: " + JSON.stringify(notify.join(",")));
         }
@@ -8051,7 +7916,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
       };
     }
     _getDsnRcptToArgs() {
-      let args = [];
+      const args = [];
       if (this._envelope.dsn && this._supportedExtensions.includes("DSN")) {
         if (this._envelope.dsn.notify) {
           args.push("NOTIFY=" + shared.encodeXText(this._envelope.dsn.notify));
@@ -8063,11 +7928,10 @@ var require_smtp_connection = __commonJS((exports, module) => {
       return args.length ? " " + args.join(" ") : "";
     }
     _createSendStream(callback) {
-      let dataStream = new DataStream;
-      let logStream;
+      const dataStream = new DataStream;
       if (this.options.lmtp) {
         this._envelope.accepted.forEach((recipient, i) => {
-          let final = i === this._envelope.accepted.length - 1;
+          const final = i === this._envelope.accepted.length - 1;
           this._responseActions.push((str) => {
             this._actionLMTPStream(recipient, final, str, callback);
           });
@@ -8081,7 +7945,7 @@ var require_smtp_connection = __commonJS((exports, module) => {
         end: false
       });
       if (this.options.debug) {
-        logStream = new PassThrough;
+        const logStream = new PassThrough;
         logStream.on("readable", () => {
           let chunk;
           while (chunk = logStream.read()) {
@@ -8230,16 +8094,14 @@ var require_smtp_connection = __commonJS((exports, module) => {
       this._sendCommand(Buffer.from(this._auth.credentials.user + "", "utf-8").toString("base64"));
     }
     _actionAUTH_CRAM_MD5(str, callback) {
-      let challengeMatch = str.match(/^334\s+(.+)$/);
-      let challengeString = "";
+      const challengeMatch = str.match(/^334\s+(.+)$/);
       if (!challengeMatch) {
         return callback(this._formatError("Invalid login sequence while waiting for server challenge string", "EAUTH", str, "AUTH CRAM-MD5"));
-      } else {
-        challengeString = challengeMatch[1];
       }
-      let base64decoded = Buffer.from(challengeString, "base64").toString("ascii"), hmacMD5 = crypto.createHmac("md5", this._auth.credentials.pass);
+      const base64decoded = Buffer.from(challengeMatch[1], "base64").toString("ascii");
+      const hmacMD5 = crypto.createHmac("md5", this._auth.credentials.pass);
       hmacMD5.update(base64decoded);
-      let prepended = this._auth.credentials.user + " " + hmacMD5.digest("hex");
+      const prepended = this._auth.credentials.user + " " + hmacMD5.digest("hex");
       this._responseActions.push((str2) => {
         this._actionAUTH_CRAM_MD5_PASS(str2, callback);
       });
@@ -8302,46 +8164,29 @@ var require_smtp_connection = __commonJS((exports, module) => {
       callback(null, true);
     }
     _actionMAIL(str, callback) {
-      let message, curRecipient;
       if (Number(str.charAt(0)) !== 2) {
-        if (this._usingSmtpUtf8 && /^550 /.test(str) && /[\x80-\uFFFF]/.test(this._envelope.from)) {
-          message = "Internationalized mailbox name not allowed";
-        } else {
-          message = "Mail command failed";
-        }
+        const message = this._usingSmtpUtf8 && /^550 /.test(str) && /[\x80-\uFFFF]/.test(this._envelope.from) ? "Internationalized mailbox name not allowed" : "Mail command failed";
         return callback(this._formatError(message, "EENVELOPE", str, "MAIL FROM"));
       }
       if (!this._envelope.rcptQueue.length) {
         return callback(this._formatError("Can't send mail - no recipients defined", "EENVELOPE", false, "API"));
-      } else {
-        this._recipientQueue = [];
-        if (this._supportedExtensions.includes("PIPELINING")) {
-          while (this._envelope.rcptQueue.length) {
-            curRecipient = this._envelope.rcptQueue.shift();
-            this._recipientQueue.push(curRecipient);
-            this._responseActions.push((str2) => {
-              this._actionRCPT(str2, callback);
-            });
-            this._sendCommand("RCPT TO:<" + curRecipient + ">" + this._getDsnRcptToArgs());
-          }
-        } else {
-          curRecipient = this._envelope.rcptQueue.shift();
-          this._recipientQueue.push(curRecipient);
-          this._responseActions.push((str2) => {
-            this._actionRCPT(str2, callback);
-          });
-          this._sendCommand("RCPT TO:<" + curRecipient + ">" + this._getDsnRcptToArgs());
-        }
       }
+      this._recipientQueue = [];
+      const usePipelining = this._supportedExtensions.includes("PIPELINING");
+      do {
+        const curRecipient = this._envelope.rcptQueue.shift();
+        this._recipientQueue.push(curRecipient);
+        this._responseActions.push((str2) => {
+          this._actionRCPT(str2, callback);
+        });
+        this._sendCommand("RCPT TO:<" + curRecipient + ">" + this._getDsnRcptToArgs());
+      } while (usePipelining && this._envelope.rcptQueue.length);
     }
     _actionRCPT(str, callback) {
-      let message, err, curRecipient = this._recipientQueue.shift();
+      let err;
+      const curRecipient = this._recipientQueue.shift();
       if (Number(str.charAt(0)) !== 2) {
-        if (this._usingSmtpUtf8 && /^553 /.test(str) && /[\x80-\uFFFF]/.test(curRecipient)) {
-          message = "Internationalized mailbox name not allowed";
-        } else {
-          message = "Recipient command failed";
-        }
+        const message = this._usingSmtpUtf8 && /^553 /.test(str) && /[\x80-\uFFFF]/.test(curRecipient) ? "Internationalized mailbox name not allowed" : "Recipient command failed";
         this._envelope.rejected.push(curRecipient);
         err = this._formatError(message, "EENVELOPE", str, "RCPT TO");
         err.recipient = curRecipient;
@@ -8362,19 +8207,19 @@ var require_smtp_connection = __commonJS((exports, module) => {
           return callback(err);
         }
       } else if (this._envelope.rcptQueue.length) {
-        curRecipient = this._envelope.rcptQueue.shift();
-        this._recipientQueue.push(curRecipient);
+        const nextRecipient = this._envelope.rcptQueue.shift();
+        this._recipientQueue.push(nextRecipient);
         this._responseActions.push((str2) => {
           this._actionRCPT(str2, callback);
         });
-        this._sendCommand("RCPT TO:<" + curRecipient + ">" + this._getDsnRcptToArgs());
+        this._sendCommand("RCPT TO:<" + nextRecipient + ">" + this._getDsnRcptToArgs());
       }
     }
     _actionDATA(str, callback) {
       if (!/^[23]/.test(str)) {
         return callback(this._formatError("Data command failed", "EENVELOPE", str, "DATA"));
       }
-      let response = {
+      const response = {
         accepted: this._envelope.accepted,
         rejected: this._envelope.rejected
       };
@@ -8389,9 +8234,8 @@ var require_smtp_connection = __commonJS((exports, module) => {
     _actionSMTPStream(str, callback) {
       if (Number(str.charAt(0)) !== 2) {
         return callback(this._formatError("Message failed", "EMESSAGE", str, "DATA"));
-      } else {
-        return callback(null, str);
       }
+      return callback(null, str);
     }
     _actionLMTPStream(recipient, final, str, callback) {
       let err;
@@ -8459,9 +8303,9 @@ var require_smtp_connection = __commonJS((exports, module) => {
   module.exports = SMTPConnection;
 });
 
-// ../../node_modules/nodemailer/lib/xoauth2/index.js
+// node_modules/nodemailer/lib/xoauth2/index.js
 var require_xoauth2 = __commonJS((exports, module) => {
-  var Stream = __require("stream").Stream;
+  var { Stream } = __require("stream");
   var nmfetch = require_fetch();
   var crypto = __require("crypto");
   var shared = require_shared();
@@ -8473,12 +8317,12 @@ var require_xoauth2 = __commonJS((exports, module) => {
       this.options = options || {};
       if (options && options.serviceClient) {
         if (!options.privateKey || !options.user) {
-          let err = new Error('Options "privateKey" and "user" are required for service account!');
+          const err = new Error('Options "privateKey" and "user" are required for service account!');
           err.code = errors.EOAUTH2;
           setImmediate(() => this.emit("error", err));
           return;
         }
-        let serviceRequestTimeout = Math.min(Math.max(Number(this.options.serviceRequestTimeout) || 0, 0), 3600);
+        const serviceRequestTimeout = Math.min(Math.max(Number(this.options.serviceRequestTimeout) || 0, 0), 3600);
         this.options.serviceRequestTimeout = serviceRequestTimeout || 5 * 60;
       }
       this.logger = shared.getLogger({
@@ -8494,7 +8338,7 @@ var require_xoauth2 = __commonJS((exports, module) => {
       if (this.options.expires && Number(this.options.expires)) {
         this.expires = this.options.expires;
       } else {
-        let timeout = Math.max(Number(this.options.timeout) || 0, 0);
+        const timeout = Math.max(Number(this.options.timeout) || 0, 0);
         this.expires = timeout && Date.now() + timeout * 1000 || 0;
       }
       this.renewing = false;
@@ -8523,7 +8367,7 @@ var require_xoauth2 = __commonJS((exports, module) => {
           user: this.options.user,
           action: "renew"
         }, "Cannot renew access token for %s: No refresh mechanism available", this.options.user);
-        let err = new Error("Can't create new access token for user");
+        const err = new Error("Can't create new access token for user");
         err.code = errors.EOAUTH2;
         return callback(err);
       }
@@ -8577,8 +8421,8 @@ var require_xoauth2 = __commonJS((exports, module) => {
       let urlOptions;
       let loggedUrlOptions;
       if (this.options.serviceClient) {
-        let iat = Math.floor(Date.now() / 1000);
-        let tokenData = {
+        const iat = Math.floor(Date.now() / 1000);
+        const tokenData = {
           iss: this.options.serviceClient,
           scope: this.options.scope || "https://mail.google.com/",
           sub: this.options.user,
@@ -8590,7 +8434,7 @@ var require_xoauth2 = __commonJS((exports, module) => {
         try {
           token = this.jwtSignRS256(tokenData);
         } catch (_err) {
-          let err = new Error("Can't generate token. Check your auth options");
+          const err = new Error("Can't generate token. Check your auth options");
           err.code = errors.EOAUTH2;
           return callback(err);
         }
@@ -8604,7 +8448,7 @@ var require_xoauth2 = __commonJS((exports, module) => {
         };
       } else {
         if (!this.options.refreshToken) {
-          let err = new Error("Can't create new access token for user");
+          const err = new Error("Can't create new access token for user");
           err.code = errors.EOAUTH2;
           return callback(err);
         }
@@ -8621,10 +8465,8 @@ var require_xoauth2 = __commonJS((exports, module) => {
           grant_type: "refresh_token"
         };
       }
-      Object.keys(this.options.customParams).forEach((key) => {
-        urlOptions[key] = this.options.customParams[key];
-        loggedUrlOptions[key] = this.options.customParams[key];
-      });
+      Object.assign(urlOptions, this.options.customParams);
+      Object.assign(loggedUrlOptions, this.options.customParams);
       this.logger.debug({
         tnx: "OAUTH2",
         user: this.options.user,
@@ -8646,18 +8488,14 @@ var require_xoauth2 = __commonJS((exports, module) => {
             user: this.options.user,
             action: "post"
           }, "Response: %s", (body || "").toString());
-          let err2 = new Error("Invalid authentication response");
+          const err2 = new Error("Invalid authentication response");
           err2.code = errors.EOAUTH2;
           return callback(err2);
         }
-        let logData = {};
-        Object.keys(data).forEach((key) => {
-          if (key !== "access_token") {
-            logData[key] = data[key];
-          } else {
-            logData[key] = (data[key] || "").toString().substr(0, 6) + "...";
-          }
-        });
+        const logData = Object.assign({}, data);
+        if (logData.access_token) {
+          logData.access_token = (logData.access_token || "").toString().substr(0, 6) + "...";
+        }
         this.logger.debug({
           tnx: "OAUTH2",
           user: this.options.user,
@@ -8671,7 +8509,7 @@ var require_xoauth2 = __commonJS((exports, module) => {
           if (data.error_uri) {
             errorMessage += " (" + data.error_uri + ")";
           }
-          let err2 = new Error(errorMessage);
+          const err2 = new Error(errorMessage);
           err2.code = errors.EOAUTH2;
           return callback(err2);
         }
@@ -8679,20 +8517,20 @@ var require_xoauth2 = __commonJS((exports, module) => {
           this.updateToken(data.access_token, data.expires_in);
           return callback(null, this.accessToken);
         }
-        let err = new Error("No access token");
+        const err = new Error("No access token");
         err.code = errors.EOAUTH2;
         return callback(err);
       });
     }
     buildXOAuth2Token(accessToken) {
-      let authData = ["user=" + (this.options.user || ""), "auth=Bearer " + (accessToken || this.accessToken), "", ""];
+      const authData = ["user=" + (this.options.user || ""), "auth=Bearer " + (accessToken || this.accessToken), "", ""];
       return Buffer.from(authData.join("\x01"), "utf-8").toString("base64");
     }
     postRequest(url, payload, params, callback) {
       let returned = false;
-      let chunks = [];
+      const chunks = [];
       let chunklen = 0;
-      let req = nmfetch(url, {
+      const req = nmfetch(url, {
         method: "post",
         headers: params.customHeaders,
         body: payload,
@@ -8728,14 +8566,14 @@ var require_xoauth2 = __commonJS((exports, module) => {
     }
     jwtSignRS256(payload) {
       payload = ['{"alg":"RS256","typ":"JWT"}', JSON.stringify(payload)].map((val) => this.toBase64URL(val)).join(".");
-      let signature = crypto.createSign("RSA-SHA256").update(payload).sign(this.options.privateKey);
+      const signature = crypto.createSign("RSA-SHA256").update(payload).sign(this.options.privateKey);
       return payload + "." + this.toBase64URL(signature);
     }
   }
   module.exports = XOAuth2;
 });
 
-// ../../node_modules/nodemailer/lib/smtp-pool/pool-resource.js
+// node_modules/nodemailer/lib/smtp-pool/pool-resource.js
 var require_pool_resource = __commonJS((exports, module) => {
   var SMTPConnection = require_smtp_connection();
   var assign = require_shared().assign;
@@ -8752,7 +8590,7 @@ var require_pool_resource = __commonJS((exports, module) => {
       if (this.options.auth) {
         switch ((this.options.auth.type || "").toString().toUpperCase()) {
           case "OAUTH2": {
-            let oauth2 = new XOAuth2(this.options.auth, this.logger);
+            const oauth2 = new XOAuth2(this.options.auth, this.logger);
             oauth2.provisionCallback = this.pool.mailer && this.pool.mailer.get("oauth2_provision_cb") || oauth2.provisionCallback;
             this.auth = {
               type: "OAUTH2",
@@ -8801,10 +8639,7 @@ var require_pool_resource = __commonJS((exports, module) => {
             destPort: options.port || "",
             action: "connected"
           }, "Using proxied socket from %s:%s to %s:%s", socketOptions.connection.remoteAddress, socketOptions.connection.remotePort, options.host || "", options.port || "");
-          options = assign(false, options);
-          Object.keys(socketOptions).forEach((key) => {
-            options[key] = socketOptions[key];
-          });
+          options = Object.assign(assign(false, options), socketOptions);
         }
         this.connection = new SMTPConnection(options);
         this.connection.once("error", (err2) => {
@@ -8821,11 +8656,11 @@ var require_pool_resource = __commonJS((exports, module) => {
             return;
           }
           returned = true;
-          let timer = setTimeout(() => {
+          const timer = setTimeout(() => {
             if (returned) {
               return;
             }
-            let err2 = new Error("Unexpected socket close");
+            const err2 = new Error("Unexpected socket close");
             if (this.connection && this.connection._socket && this.connection._socket.upgrading) {
               err2.code = errors.ETLS;
             }
@@ -8870,9 +8705,9 @@ var require_pool_resource = __commonJS((exports, module) => {
           return this.send(mail, callback);
         });
       }
-      let envelope = mail.message.getEnvelope();
-      let messageId = mail.message.messageId();
-      let recipients = [].concat(envelope.to || []);
+      const envelope = mail.message.getEnvelope();
+      const messageId = mail.message.messageId();
+      const recipients = [].concat(envelope.to || []);
       if (recipients.length > 3) {
         recipients.push("...and " + recipients.splice(2).length + " more");
       }
@@ -8900,9 +8735,8 @@ var require_pool_resource = __commonJS((exports, module) => {
         };
         info.messageId = messageId;
         setImmediate(() => {
-          let err2;
           if (this.messages >= this.options.maxMessages) {
-            err2 = new Error("Resource exhausted");
+            const err2 = new Error("Resource exhausted");
             err2.code = errors.EMAXLIMIT;
             this.connection.close();
             this.emit("error", err2);
@@ -8930,7 +8764,7 @@ var require_pool_resource = __commonJS((exports, module) => {
   module.exports = PoolResource;
 });
 
-// ../../node_modules/nodemailer/lib/well-known/services.json
+// node_modules/nodemailer/lib/well-known/services.json
 var require_services = __commonJS((exports, module) => {
   module.exports = {
     "1und1": {
@@ -9468,28 +9302,28 @@ var require_services = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/well-known/index.js
+// node_modules/nodemailer/lib/well-known/index.js
 var require_well_known = __commonJS((exports, module) => {
   var services = require_services();
   var normalized = {};
   Object.keys(services).forEach((key) => {
-    let service = services[key];
-    normalized[normalizeKey(key)] = normalizeService(service);
+    const service = services[key];
+    const normalizedService = normalizeService(service);
+    normalized[normalizeKey(key)] = normalizedService;
     [].concat(service.aliases || []).forEach((alias) => {
-      normalized[normalizeKey(alias)] = normalizeService(service);
+      normalized[normalizeKey(alias)] = normalizedService;
     });
     [].concat(service.domains || []).forEach((domain) => {
-      normalized[normalizeKey(domain)] = normalizeService(service);
+      normalized[normalizeKey(domain)] = normalizedService;
     });
   });
   function normalizeKey(key) {
     return key.replace(/[^a-zA-Z0-9.-]/g, "").toLowerCase();
   }
   function normalizeService(service) {
-    let filter = ["domains", "aliases"];
-    let response = {};
+    const response = {};
     Object.keys(service).forEach((key) => {
-      if (filter.indexOf(key) < 0) {
+      if (!["domains", "aliases"].includes(key)) {
         response[key] = service[key];
       }
     });
@@ -9501,7 +9335,7 @@ var require_well_known = __commonJS((exports, module) => {
   };
 });
 
-// ../../node_modules/nodemailer/lib/smtp-pool/index.js
+// node_modules/nodemailer/lib/smtp-pool/index.js
 var require_smtp_pool = __commonJS((exports, module) => {
   var EventEmitter = __require("events");
   var PoolResource = require_pool_resource();
@@ -9535,9 +9369,8 @@ var require_smtp_pool = __commonJS((exports, module) => {
       this.logger = shared.getLogger(this.options, {
         component: this.options.component || "smtp-pool"
       });
-      let connection = new SMTPConnection(this.options);
       this.name = "SMTP (pool)";
-      this.version = packageData.version + "[client:" + connection.version + "]";
+      this.version = packageData.version + "[client:" + packageData.version + "]";
       this._rateLimit = {
         counter: 0,
         timeout: null,
@@ -9577,7 +9410,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
     }
     close() {
       let connection;
-      let len = this._connections.length;
+      const len = this._connections.length;
       this._closed = true;
       clearTimeout(this._rateLimit.timeout);
       if (!len && !this._queue.length) {
@@ -9602,14 +9435,14 @@ var require_smtp_pool = __commonJS((exports, module) => {
       if (!this._queue.length) {
         return;
       }
-      let invokeCallbacks = () => {
+      const invokeCallbacks = () => {
         if (!this._queue.length) {
           this.logger.debug({
             tnx: "connection"
           }, "Pending queue entries cleared");
           return;
         }
-        let entry = this._queue.shift();
+        const entry = this._queue.shift();
         if (entry && typeof entry.callback === "function") {
           try {
             entry.callback(new Error("Connection pool was closed"));
@@ -9626,8 +9459,6 @@ var require_smtp_pool = __commonJS((exports, module) => {
       setImmediate(invokeCallbacks);
     }
     _processMessages() {
-      let connection;
-      let i, len;
       if (this._closed) {
         return;
       }
@@ -9638,12 +9469,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
         }
         return;
       }
-      for (i = 0, len = this._connections.length;i < len; i++) {
-        if (this._connections[i].available) {
-          connection = this._connections[i];
-          break;
-        }
-      }
+      let connection = this._connections.find((c) => c.available);
       if (!connection && this._connections.length < this.options.maxConnections) {
         connection = this._createConnection();
       }
@@ -9655,7 +9481,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
         this.idling = true;
         this.emit("idle");
       }
-      let entry = connection.queueEntry = this._queue.shift();
+      const entry = connection.queueEntry = this._queue.shift();
       entry.messageId = (connection.queueEntry.mail.message.getHeader("message-id") || "").replace(/[<>\s]/g, "");
       connection.available = false;
       this.logger.debug({
@@ -9686,7 +9512,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
       });
     }
     _createConnection() {
-      let connection = new PoolResource(this);
+      const connection = new PoolResource(this);
       connection.id = ++this._connectionCounter;
       this.logger.info({
         tnx: "pool",
@@ -9706,7 +9532,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
         }
       });
       connection.once("error", (err) => {
-        if (err.code !== "EMAXLIMIT") {
+        if (err.code !== errors.EMAXLIMIT) {
           this.logger.warn({
             err,
             tnx: "pool",
@@ -9784,7 +9610,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
       }
     }
     _requeueEntryOnConnectionClose(connection) {
-      connection.queueEntry.requeueAttempts = connection.queueEntry.requeueAttempts + 1;
+      connection.queueEntry.requeueAttempts += 1;
       this.logger.debug({
         tnx: "pool",
         cid: connection.id,
@@ -9802,7 +9628,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
       }
     }
     _removeConnection(connection) {
-      let index = this._connections.indexOf(connection);
+      const index = this._connections.indexOf(connection);
       if (index !== -1) {
         this._connections.splice(index, 1);
       }
@@ -9811,14 +9637,15 @@ var require_smtp_pool = __commonJS((exports, module) => {
       if (!this._rateLimit.limit) {
         return callback();
       }
-      let now = Date.now();
+      const now = Date.now();
       if (this._rateLimit.counter < this._rateLimit.limit) {
         return callback();
       }
       this._rateLimit.waiting.push(callback);
       if (this._rateLimit.checkpoint <= now - this._rateLimit.delta) {
         return this._clearRateLimit();
-      } else if (!this._rateLimit.timeout) {
+      }
+      if (!this._rateLimit.timeout) {
         this._rateLimit.timeout = setTimeout(() => this._clearRateLimit(), this._rateLimit.delta - (now - this._rateLimit.checkpoint));
         this._rateLimit.checkpoint = now;
       }
@@ -9829,7 +9656,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
       this._rateLimit.counter = 0;
       this._rateLimit.checkpoint = false;
       while (this._rateLimit.waiting.length) {
-        let cb = this._rateLimit.waiting.shift();
+        const cb = this._rateLimit.waiting.shift();
         setImmediate(cb);
       }
     }
@@ -9843,7 +9670,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
           callback = shared.callbackPromise(resolve, reject);
         });
       }
-      let auth = new PoolResource(this).auth;
+      const auth = new PoolResource(this).auth;
       this.getSocket(this.options, (err, socketOptions) => {
         if (err) {
           return callback(err);
@@ -9858,12 +9685,9 @@ var require_smtp_pool = __commonJS((exports, module) => {
             destPort: options.port || "",
             action: "connected"
           }, "Using proxied socket from %s:%s to %s:%s", socketOptions.connection.remoteAddress, socketOptions.connection.remotePort, options.host || "", options.port || "");
-          options = shared.assign(false, options);
-          Object.keys(socketOptions).forEach((key) => {
-            options[key] = socketOptions[key];
-          });
+          options = Object.assign(shared.assign(false, options), socketOptions);
         }
-        let connection = new SMTPConnection(options);
+        const connection = new SMTPConnection(options);
         let returned = false;
         connection.once("error", (err2) => {
           if (returned) {
@@ -9880,7 +9704,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
           returned = true;
           return callback(new Error("Connection closed"));
         });
-        let finalize = () => {
+        const finalize = () => {
           if (returned) {
             return;
           }
@@ -9905,7 +9729,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
               finalize();
             });
           } else if (!auth && connection.allowsAuth && options.forceAuth) {
-            let err2 = new Error("Authentication info was not provided");
+            const err2 = new Error("Authentication info was not provided");
             err2.code = errors.ENOAUTH;
             returned = true;
             connection.close();
@@ -9921,7 +9745,7 @@ var require_smtp_pool = __commonJS((exports, module) => {
   module.exports = SMTPPool;
 });
 
-// ../../node_modules/nodemailer/lib/smtp-transport/index.js
+// node_modules/nodemailer/lib/smtp-transport/index.js
 var require_smtp_transport = __commonJS((exports, module) => {
   var EventEmitter = __require("events");
   var SMTPConnection = require_smtp_connection();
@@ -9953,9 +9777,8 @@ var require_smtp_transport = __commonJS((exports, module) => {
       this.logger = shared.getLogger(this.options, {
         component: this.options.component || "smtp-transport"
       });
-      let connection = new SMTPConnection(this.options);
       this.name = "SMTP";
-      this.version = packageData.version + "[client:" + connection.version + "]";
+      this.version = packageData.version + "[client:" + packageData.version + "]";
       if (this.options.auth) {
         this.auth = this.getAuth({});
       }
@@ -9967,21 +9790,8 @@ var require_smtp_transport = __commonJS((exports, module) => {
       if (!authOpts) {
         return this.auth;
       }
-      let hasAuth = false;
-      let authData = {};
-      if (this.options.auth && typeof this.options.auth === "object") {
-        Object.keys(this.options.auth).forEach((key) => {
-          hasAuth = true;
-          authData[key] = this.options.auth[key];
-        });
-      }
-      if (authOpts && typeof authOpts === "object") {
-        Object.keys(authOpts).forEach((key) => {
-          hasAuth = true;
-          authData[key] = authOpts[key];
-        });
-      }
-      if (!hasAuth) {
+      const authData = Object.assign({}, this.options.auth && typeof this.options.auth === "object" ? this.options.auth : {}, authOpts && typeof authOpts === "object" ? authOpts : {});
+      if (Object.keys(authData).length === 0) {
         return false;
       }
       switch ((authData.type || "").toString().toUpperCase()) {
@@ -9989,7 +9799,7 @@ var require_smtp_transport = __commonJS((exports, module) => {
           if (!authData.service && !authData.user) {
             return false;
           }
-          let oauth2 = new XOAuth2(authData, this.logger);
+          const oauth2 = new XOAuth2(authData, this.logger);
           oauth2.provisionCallback = this.mailer && this.mailer.get("oauth2_provision_cb") || oauth2.provisionCallback;
           oauth2.on("token", (token) => this.mailer.emit("token", token));
           oauth2.on("error", (err) => this.emit("error", err));
@@ -10029,12 +9839,9 @@ var require_smtp_transport = __commonJS((exports, module) => {
             destPort: options.port || "",
             action: "connected"
           }, "Using proxied socket from %s:%s to %s:%s", socketOptions.connection.remoteAddress, socketOptions.connection.remotePort, options.host || "", options.port || "");
-          options = shared.assign(false, options);
-          Object.keys(socketOptions).forEach((key) => {
-            options[key] = socketOptions[key];
-          });
+          options = Object.assign(shared.assign(false, options), socketOptions);
         }
-        let connection = new SMTPConnection(options);
+        const connection = new SMTPConnection(options);
         connection.once("error", (err2) => {
           if (returned) {
             return;
@@ -10047,12 +9854,12 @@ var require_smtp_transport = __commonJS((exports, module) => {
           if (returned) {
             return;
           }
-          let timer = setTimeout(() => {
+          const timer = setTimeout(() => {
             if (returned) {
               return;
             }
             returned = true;
-            let err2 = new Error("Unexpected socket close");
+            const err2 = new Error("Unexpected socket close");
             if (connection && connection._socket && connection._socket.upgrading) {
               err2.code = errors.ETLS;
             }
@@ -10062,10 +9869,10 @@ var require_smtp_transport = __commonJS((exports, module) => {
             timer.unref();
           } catch (_E) {}
         });
-        let sendMessage = () => {
-          let envelope = mail.message.getEnvelope();
-          let messageId = mail.message.messageId();
-          let recipients = [].concat(envelope.to || []);
+        const sendMessage = () => {
+          const envelope = mail.message.getEnvelope();
+          const messageId = mail.message.messageId();
+          const recipients = [].concat(envelope.to || []);
           if (recipients.length > 3) {
             recipients.push("...and " + recipients.splice(2).length + " more");
           }
@@ -10108,7 +9915,7 @@ var require_smtp_transport = __commonJS((exports, module) => {
           if (returned) {
             return;
           }
-          let auth = this.getAuth(mail.data.auth);
+          const auth = this.getAuth(mail.data.auth);
           if (auth && (connection.allowsAuth || options.forceAuth)) {
             connection.login(auth, (err2) => {
               if (auth && auth !== this.auth && auth.oauth2) {
@@ -10151,12 +9958,9 @@ var require_smtp_transport = __commonJS((exports, module) => {
             destPort: options.port || "",
             action: "connected"
           }, "Using proxied socket from %s:%s to %s:%s", socketOptions.connection.remoteAddress, socketOptions.connection.remotePort, options.host || "", options.port || "");
-          options = shared.assign(false, options);
-          Object.keys(socketOptions).forEach((key) => {
-            options[key] = socketOptions[key];
-          });
+          options = Object.assign(shared.assign(false, options), socketOptions);
         }
-        let connection = new SMTPConnection(options);
+        const connection = new SMTPConnection(options);
         let returned = false;
         connection.once("error", (err2) => {
           if (returned) {
@@ -10173,7 +9977,7 @@ var require_smtp_transport = __commonJS((exports, module) => {
           returned = true;
           return callback(new Error("Connection closed"));
         });
-        let finalize = () => {
+        const finalize = () => {
           if (returned) {
             return;
           }
@@ -10185,7 +9989,7 @@ var require_smtp_transport = __commonJS((exports, module) => {
           if (returned) {
             return;
           }
-          let authData = this.getAuth({});
+          const authData = this.getAuth({});
           if (authData && (connection.allowsAuth || options.forceAuth)) {
             connection.login(authData, (err2) => {
               if (returned) {
@@ -10199,7 +10003,7 @@ var require_smtp_transport = __commonJS((exports, module) => {
               finalize();
             });
           } else if (!authData && connection.allowsAuth && options.forceAuth) {
-            let err2 = new Error("Authentication info was not provided");
+            const err2 = new Error("Authentication info was not provided");
             err2.code = errors.ENOAUTH;
             returned = true;
             connection.close();
@@ -10221,9 +10025,9 @@ var require_smtp_transport = __commonJS((exports, module) => {
   module.exports = SMTPTransport;
 });
 
-// ../../node_modules/nodemailer/lib/sendmail-transport/index.js
+// node_modules/nodemailer/lib/sendmail-transport/index.js
 var require_sendmail_transport = __commonJS((exports, module) => {
-  var spawn = __require("child_process").spawn;
+  var { spawn } = __require("child_process");
   var packageData = require_package();
   var shared = require_shared();
   var errors = require_errors();
@@ -10232,49 +10036,38 @@ var require_sendmail_transport = __commonJS((exports, module) => {
     constructor(options) {
       options = options || {};
       this._spawn = spawn;
-      this.options = options || {};
+      this.options = options;
       this.name = "Sendmail";
       this.version = packageData.version;
       this.path = "sendmail";
       this.args = false;
-      this.winbreak = false;
       this.logger = shared.getLogger(this.options, {
         component: this.options.component || "sendmail"
       });
-      if (options) {
-        if (typeof options === "string") {
-          this.path = options;
-        } else if (typeof options === "object") {
-          if (options.path) {
-            this.path = options.path;
-          }
-          if (Array.isArray(options.args)) {
-            this.args = options.args;
-          }
-          this.winbreak = ["win", "windows", "dos", `\r
-`].includes((options.newline || "").toString().toLowerCase());
+      if (typeof options === "string") {
+        this.path = options;
+      } else if (typeof options === "object") {
+        if (options.path) {
+          this.path = options.path;
+        }
+        if (Array.isArray(options.args)) {
+          this.args = options.args;
         }
       }
     }
     send(mail, done) {
       mail.message.keepBcc = true;
-      let envelope = mail.data.envelope || mail.message.getEnvelope();
-      let messageId = mail.message.messageId();
-      let args;
-      let sendmail;
+      const envelope = mail.data.envelope || mail.message.getEnvelope();
+      const messageId = mail.message.messageId();
       let returned;
       const hasInvalidAddresses = [].concat(envelope.from || []).concat(envelope.to || []).some((addr) => /^-/.test(addr));
       if (hasInvalidAddresses) {
-        let err = new Error("Can not send mail. Invalid envelope addresses.");
+        const err = new Error("Can not send mail. Invalid envelope addresses.");
         err.code = errors.ESENDMAIL;
         return done(err);
       }
-      if (this.args) {
-        args = ["-i"].concat(this.args).concat(envelope.to);
-      } else {
-        args = ["-i"].concat(envelope.from ? ["-f", envelope.from] : []).concat(envelope.to);
-      }
-      let callback = (err) => {
+      const args = this.args ? ["-i"].concat(this.args).concat(envelope.to) : ["-i"].concat(envelope.from ? ["-f", envelope.from] : []).concat(envelope.to);
+      const callback = (err) => {
         if (returned) {
           return;
         }
@@ -10282,15 +10075,15 @@ var require_sendmail_transport = __commonJS((exports, module) => {
         if (typeof done === "function") {
           if (err) {
             return done(err);
-          } else {
-            return done(null, {
-              envelope: mail.data.envelope || mail.message.getEnvelope(),
-              messageId,
-              response: "Messages queued for delivery"
-            });
           }
+          return done(null, {
+            envelope,
+            messageId,
+            response: "Messages queued for delivery"
+          });
         }
       };
+      let sendmail;
       try {
         sendmail = this._spawn(this.path, args);
       } catch (E) {
@@ -10314,12 +10107,7 @@ var require_sendmail_transport = __commonJS((exports, module) => {
           if (!code) {
             return callback();
           }
-          let err;
-          if (code === 127) {
-            err = new Error("Sendmail command not found, process exited with code " + code);
-          } else {
-            err = new Error("Sendmail exited with code " + code);
-          }
+          const err = new Error(code === 127 ? "Sendmail command not found, process exited with code " + code : "Sendmail exited with code " + code);
           err.code = errors.ESENDMAIL;
           this.logger.error({
             err,
@@ -10337,7 +10125,7 @@ var require_sendmail_transport = __commonJS((exports, module) => {
           }, "Error occurred when piping message %s to sendmail. %s", messageId, err.message);
           callback(err);
         });
-        let recipients = [].concat(envelope.to || []);
+        const recipients = [].concat(envelope.to || []);
         if (recipients.length > 3) {
           recipients.push("...and " + recipients.splice(2).length + " more");
         }
@@ -10345,7 +10133,7 @@ var require_sendmail_transport = __commonJS((exports, module) => {
           tnx: "send",
           messageId
         }, "Sending message %s to <%s>", messageId, recipients.join(", "));
-        let sourceStream = mail.message.createReadStream();
+        const sourceStream = mail.message.createReadStream();
         sourceStream.once("error", (err) => {
           this.logger.error({
             err,
@@ -10357,7 +10145,7 @@ var require_sendmail_transport = __commonJS((exports, module) => {
         });
         sourceStream.pipe(sendmail.stdin);
       } else {
-        let err = new Error("sendmail was not found");
+        const err = new Error("sendmail was not found");
         err.code = errors.ESENDMAIL;
         return callback(err);
       }
@@ -10366,7 +10154,7 @@ var require_sendmail_transport = __commonJS((exports, module) => {
   module.exports = SendmailTransport;
 });
 
-// ../../node_modules/nodemailer/lib/stream-transport/index.js
+// node_modules/nodemailer/lib/stream-transport/index.js
 var require_stream_transport = __commonJS((exports, module) => {
   var packageData = require_package();
   var shared = require_shared();
@@ -10374,7 +10162,7 @@ var require_stream_transport = __commonJS((exports, module) => {
   class StreamTransport {
     constructor(options) {
       options = options || {};
-      this.options = options || {};
+      this.options = options;
       this.name = "StreamTransport";
       this.version = packageData.version;
       this.logger = shared.getLogger(this.options, {
@@ -10385,9 +10173,9 @@ var require_stream_transport = __commonJS((exports, module) => {
     }
     send(mail, done) {
       mail.message.keepBcc = true;
-      let envelope = mail.data.envelope || mail.message.getEnvelope();
-      let messageId = mail.message.messageId();
-      let recipients = [].concat(envelope.to || []);
+      const envelope = mail.data.envelope || mail.message.getEnvelope();
+      const messageId = mail.message.messageId();
+      const recipients = [].concat(envelope.to || []);
       if (recipients.length > 3) {
         recipients.push("...and " + recipients.splice(2).length + " more");
       }
@@ -10416,12 +10204,12 @@ var require_stream_transport = __commonJS((exports, module) => {
             }, "Failed creating message for %s. %s", messageId, err.message);
           });
           return done(null, {
-            envelope: mail.data.envelope || mail.message.getEnvelope(),
+            envelope,
             messageId,
             message: stream
           });
         }
-        let chunks = [];
+        const chunks = [];
         let chunklen = 0;
         stream.on("readable", () => {
           let chunk;
@@ -10439,7 +10227,7 @@ var require_stream_transport = __commonJS((exports, module) => {
           return done(err);
         });
         stream.on("end", () => done(null, {
-          envelope: mail.data.envelope || mail.message.getEnvelope(),
+          envelope,
           messageId,
           message: Buffer.concat(chunks, chunklen)
         }));
@@ -10449,7 +10237,7 @@ var require_stream_transport = __commonJS((exports, module) => {
   module.exports = StreamTransport;
 });
 
-// ../../node_modules/nodemailer/lib/json-transport/index.js
+// node_modules/nodemailer/lib/json-transport/index.js
 var require_json_transport = __commonJS((exports, module) => {
   var packageData = require_package();
   var shared = require_shared();
@@ -10457,7 +10245,7 @@ var require_json_transport = __commonJS((exports, module) => {
   class JSONTransport {
     constructor(options) {
       options = options || {};
-      this.options = options || {};
+      this.options = options;
       this.name = "JSONTransport";
       this.version = packageData.version;
       this.logger = shared.getLogger(this.options, {
@@ -10466,9 +10254,9 @@ var require_json_transport = __commonJS((exports, module) => {
     }
     send(mail, done) {
       mail.message.keepBcc = true;
-      let envelope = mail.data.envelope || mail.message.getEnvelope();
-      let messageId = mail.message.messageId();
-      let recipients = [].concat(envelope.to || []);
+      const envelope = mail.data.envelope || mail.message.getEnvelope();
+      const messageId = mail.message.messageId();
+      const recipients = [].concat(envelope.to || []);
       if (recipients.length > 3) {
         recipients.push("...and " + recipients.splice(2).length + " more");
       }
@@ -10500,7 +10288,7 @@ var require_json_transport = __commonJS((exports, module) => {
   module.exports = JSONTransport;
 });
 
-// ../../node_modules/nodemailer/lib/ses-transport/index.js
+// node_modules/nodemailer/lib/ses-transport/index.js
 var require_ses_transport = __commonJS((exports, module) => {
   var EventEmitter = __require("events");
   var packageData = require_package();
@@ -10512,7 +10300,7 @@ var require_ses_transport = __commonJS((exports, module) => {
     constructor(options) {
       super();
       options = options || {};
-      this.options = options || {};
+      this.options = options;
       this.ses = this.options.SES;
       this.name = "SESTransport";
       this.version = packageData.version;
@@ -10527,18 +10315,14 @@ var require_ses_transport = __commonJS((exports, module) => {
       return cb(null, false);
     }
     send(mail, callback) {
-      let statObject = {
-        ts: Date.now(),
-        pending: true
-      };
       let fromHeader = mail.message._headers.find((header) => /^from$/i.test(header.key));
       if (fromHeader) {
-        let mimeNode = new MimeNode("text/plain");
+        const mimeNode = new MimeNode("text/plain");
         fromHeader = mimeNode._convertAddresses(mimeNode._parseAddresses(fromHeader.value));
       }
-      let envelope = mail.data.envelope || mail.message.getEnvelope();
-      let messageId = mail.message.messageId();
-      let recipients = [].concat(envelope.to || []);
+      const envelope = mail.data.envelope || mail.message.getEnvelope();
+      const messageId = mail.message.messageId();
+      const recipients = [].concat(envelope.to || []);
       if (recipients.length > 3) {
         recipients.push("...and " + recipients.splice(2).length + " more");
       }
@@ -10546,7 +10330,7 @@ var require_ses_transport = __commonJS((exports, module) => {
         tnx: "send",
         messageId
       }, "Sending message %s to <%s>", messageId, recipients.join(", "));
-      let getRawMessage = (next) => {
+      const getRawMessage = (next) => {
         if (!mail.data._dkim) {
           mail.data._dkim = {};
         }
@@ -10555,9 +10339,9 @@ var require_ses_transport = __commonJS((exports, module) => {
         } else {
           mail.data._dkim.skipFields = "date:message-id";
         }
-        let sourceStream = mail.message.createReadStream();
-        let stream = sourceStream.pipe(new LeWindows);
-        let chunks = [];
+        const sourceStream = mail.message.createReadStream();
+        const stream = sourceStream.pipe(new LeWindows);
+        const chunks = [];
         let chunklen = 0;
         stream.on("readable", () => {
           let chunk;
@@ -10567,9 +10351,7 @@ var require_ses_transport = __commonJS((exports, module) => {
           }
         });
         sourceStream.once("error", (err) => stream.emit("error", err));
-        stream.once("error", (err) => {
-          next(err);
-        });
+        stream.once("error", (err) => next(err));
         stream.once("end", () => next(null, Buffer.concat(chunks, chunklen)));
       };
       setImmediate(() => getRawMessage((err, raw) => {
@@ -10579,23 +10361,19 @@ var require_ses_transport = __commonJS((exports, module) => {
             tnx: "send",
             messageId
           }, "Failed creating message for %s. %s", messageId, err.message);
-          statObject.pending = false;
           return callback(err);
         }
-        let sesMessage = {
+        const sesMessage = Object.assign({
           Content: {
             Raw: {
               Data: raw
             }
           },
-          FromEmailAddress: fromHeader ? fromHeader : envelope.from,
+          FromEmailAddress: fromHeader || envelope.from,
           Destination: {
             ToAddresses: envelope.to
           }
-        };
-        Object.keys(mail.data.ses || {}).forEach((key) => {
-          sesMessage[key] = mail.data.ses[key];
-        });
+        }, mail.data.ses || {});
         this.getRegion((err2, region) => {
           if (err2 || !region) {
             region = "us-east-1";
@@ -10606,7 +10384,6 @@ var require_ses_transport = __commonJS((exports, module) => {
             if (region === "us-east-1") {
               region = "email";
             }
-            statObject.pending = true;
             callback(null, {
               envelope: {
                 from: envelope.from,
@@ -10621,7 +10398,6 @@ var require_ses_transport = __commonJS((exports, module) => {
               err: err3,
               tnx: "send"
             }, "Send error for %s: %s", messageId, err3.message);
-            statObject.pending = false;
             callback(err3);
           });
         });
@@ -10669,7 +10445,7 @@ Invalid`)
   module.exports = SESTransport;
 });
 
-// ../../node_modules/nodemailer/lib/nodemailer.js
+// node_modules/nodemailer/lib/nodemailer.js
 var require_nodemailer = __commonJS((exports, module) => {
   var Mailer = require_mailer();
   var shared = require_shared();
@@ -10688,11 +10464,10 @@ var require_nodemailer = __commonJS((exports, module) => {
   var ETHEREAL_CACHE = ["true", "yes", "y", "1"].includes((process.env.ETHEREAL_CACHE || "yes").toString().trim().toLowerCase());
   var testAccount = false;
   exports.createTransport = function(transporter, defaults) {
-    let urlConfig;
     let options;
-    let mailer;
     if (typeof transporter === "object" && typeof transporter.send !== "function" || typeof transporter === "string" && /^(smtps?|direct):/i.test(transporter)) {
-      if (urlConfig = typeof transporter === "string" ? transporter : transporter.url) {
+      const urlConfig = typeof transporter === "string" ? transporter : transporter.url;
+      if (urlConfig) {
         options = shared.parseConnectionUrl(urlConfig);
       } else {
         options = transporter;
@@ -10707,7 +10482,7 @@ var require_nodemailer = __commonJS((exports, module) => {
         transporter = new JSONTransport(options);
       } else if (options.SES) {
         if (options.SES.ses && options.SES.aws) {
-          let error = new Error("Using legacy SES configuration, expecting @aws-sdk/client-sesv2, see https://nodemailer.com/transports/ses/");
+          const error = new Error("Using legacy SES configuration, expecting @aws-sdk/client-sesv2, see https://nodemailer.com/transports/ses/");
           error.code = errors.ECONFIG;
           throw error;
         }
@@ -10716,8 +10491,7 @@ var require_nodemailer = __commonJS((exports, module) => {
         transporter = new SMTPTransport(options);
       }
     }
-    mailer = new Mailer(transporter, options, defaults);
-    return mailer;
+    return new Mailer(transporter, options, defaults);
   };
   exports.createTestAccount = function(apiUrl, callback) {
     let promise;
@@ -10735,17 +10509,17 @@ var require_nodemailer = __commonJS((exports, module) => {
       return promise;
     }
     apiUrl = apiUrl || ETHEREAL_API;
-    let chunks = [];
+    const chunks = [];
     let chunklen = 0;
-    let requestHeaders = {};
-    let requestBody = {
+    const requestHeaders = {};
+    const requestBody = {
       requestor: packageData.name,
       version: packageData.version
     };
     if (ETHEREAL_API_KEY) {
       requestHeaders.Authorization = "Bearer " + ETHEREAL_API_KEY;
     }
-    let req = nmfetch(apiUrl + "/user", {
+    const req = nmfetch(apiUrl + "/user", {
       contentType: "application/json",
       method: "POST",
       headers: requestHeaders,
@@ -10760,16 +10534,12 @@ var require_nodemailer = __commonJS((exports, module) => {
     });
     req.once("error", (err) => callback(err));
     req.once("end", () => {
-      let res = Buffer.concat(chunks, chunklen);
+      const res = Buffer.concat(chunks, chunklen);
       let data;
-      let err;
       try {
         data = JSON.parse(res.toString());
       } catch (E) {
-        err = E;
-      }
-      if (err) {
-        return callback(err);
+        return callback(E);
       }
       if (data.status !== "success" || data.error) {
         return callback(new Error(data.error || "Request failed"));
@@ -10784,7 +10554,7 @@ var require_nodemailer = __commonJS((exports, module) => {
     if (!info || !info.response) {
       return false;
     }
-    let infoProps = new Map;
+    const infoProps = new Map;
     info.response.replace(/\[([^\]]+)\]$/, (m, props) => {
       props.replace(/\b([A-Z0-9]+)=([^\s]+)/g, (m2, key, value) => {
         infoProps.set(key, value);
@@ -10797,34 +10567,33 @@ var require_nodemailer = __commonJS((exports, module) => {
   };
 });
 
-// src/lib/email/providers/EmailProvider.ts
-class EmailProvider {
-  async send(payload) {
-    throw new Error("Not implemented");
-  }
-  async validateConfig() {
-    throw new Error("Not implemented");
-  }
-  getName() {
-    throw new Error("Not implemented");
-  }
-}
-
 // src/lib/email/providers/SMTPProvider.ts
-var import_nodemailer, SMTPProvider;
+var exports_SMTPProvider = {};
+__export(exports_SMTPProvider, {
+  default: () => SMTPProvider_default,
+  SMTPProvider: () => SMTPProvider
+});
+async function getNodemailer() {
+  if (!nodemailer) {
+    nodemailer = await Promise.resolve().then(() => __toESM(require_nodemailer(), 1));
+  }
+  return nodemailer;
+}
+var nodemailer = null, SMTPProvider, SMTPProvider_default;
 var init_SMTPProvider = __esm(() => {
-  import_nodemailer = __toESM(require_nodemailer(), 1);
   SMTPProvider = class SMTPProvider extends EmailProvider {
-    constructor(config) {
+    transporter = null;
+    constructor(config = {}) {
       super();
       this.config = config;
-      this.transporter = null;
     }
     async initialize() {
       if (this.transporter)
         return;
-      const { server, port, user, password, secure = false } = this.config;
-      this.transporter = import_nodemailer.default.createTransport({
+      const config = this.config;
+      const { server, port, user, password, secure = false } = config;
+      const nm = await getNodemailer();
+      this.transporter = nm.createTransport({
         host: server,
         port,
         secure,
@@ -10838,15 +10607,18 @@ var init_SMTPProvider = __esm(() => {
       await this.initialize();
       const { to, subject, html, text, from, cc, headers = {} } = payload;
       try {
+        const nm = await getNodemailer();
         const mailOptions = {
           from: from || `Alygn R&D <${this.config.user}>`,
           to,
           subject,
-          text: text || html?.replace(/<[^>]*>/g, ""),
+          text: text || (html ? html.replace(/<[^>]*>/g, "") : undefined),
           html,
-          headers,
-          ...cc && { cc }
+          headers
         };
+        if (cc) {
+          mailOptions.cc = Array.isArray(cc) ? cc.join(", ") : cc;
+        }
         const info = await this.transporter.sendMail(mailOptions);
         return {
           success: true,
@@ -10854,12 +10626,13 @@ var init_SMTPProvider = __esm(() => {
           provider: this.getName(),
           to,
           subject,
-          cc: cc || null
+          cc: cc ? Array.isArray(cc) ? cc[0] : cc : null
         };
       } catch (error) {
+        const err = error;
         return {
           success: false,
-          error: error.message,
+          error: err.message,
           provider: this.getName(),
           to,
           subject
@@ -10869,10 +10642,11 @@ var init_SMTPProvider = __esm(() => {
     async validateConfig() {
       try {
         await this.initialize();
-        await this.transporter.verify();
-        return true;
+        const verified = await this.transporter.verify();
+        return verified === true;
       } catch (error) {
-        console.error("SMTP config validation failed:", error.message);
+        const err = error;
+        console.error("SMTP config validation failed:", err.message);
         return false;
       }
     }
@@ -10880,14 +10654,34 @@ var init_SMTPProvider = __esm(() => {
       return "smtp";
     }
   };
+  SMTPProvider_default = SMTPProvider;
 });
 
+// src/lib/email/providers/EmailProvider.ts
+class EmailProvider2 {
+  config;
+  apiKey;
+  baseUrl;
+  constructor() {
+    this.config = {};
+    this.baseUrl = "";
+  }
+}
+var init_EmailProvider = () => {};
+
 // src/lib/email/providers/SmartleadProvider.ts
-var SmartleadProvider;
+var exports_SmartleadProvider = {};
+__export(exports_SmartleadProvider, {
+  default: () => SmartleadProvider_default,
+  SmartleadProvider: () => SmartleadProvider
+});
+var SmartleadProvider, SmartleadProvider_default;
 var init_SmartleadProvider = __esm(() => {
-  SmartleadProvider = class SmartleadProvider extends EmailProvider {
-    constructor(config) {
+  init_EmailProvider();
+  SmartleadProvider = class SmartleadProvider extends EmailProvider2 {
+    constructor(config = {}) {
       super();
+      this.config = config;
       this.apiKey = config.apiKey;
       this.baseUrl = config.baseUrl || "https://api.smartlead.ai/v1";
     }
@@ -10925,9 +10719,10 @@ var init_SmartleadProvider = __esm(() => {
           campaignId: data.campaign_id
         };
       } catch (error) {
+        const err = error;
         return {
           success: false,
-          error: error.message,
+          error: err.message,
           provider: this.getName(),
           to,
           subject
@@ -10944,7 +10739,8 @@ var init_SmartleadProvider = __esm(() => {
         });
         return response.ok;
       } catch (error) {
-        console.error("Smartlead config validation failed:", error.message);
+        const err = error;
+        console.error("Smartlead config validation failed:", err.message);
         return false;
       }
     }
@@ -10952,16 +10748,27 @@ var init_SmartleadProvider = __esm(() => {
       return "smartlead";
     }
   };
+  SmartleadProvider_default = SmartleadProvider;
 });
 
 // src/lib/email/EmailProviderFactory.ts
+var exports_EmailProviderFactory = {};
+__export(exports_EmailProviderFactory, {
+  default: () => EmailProviderFactory_default,
+  EmailProviderFactory: () => EmailProviderFactory
+});
+
 class EmailProviderFactory {
-  static create(type, config) {
+  static async create(type, config = {}) {
     switch (type.toLowerCase()) {
-      case "smtp":
-        return new SMTPProvider(config);
-      case "smartlead":
-        return new SmartleadProvider(config);
+      case "smtp": {
+        const { SMTPProvider: SMTPProvider2 } = await Promise.resolve().then(() => (init_SMTPProvider(), exports_SMTPProvider));
+        return new SMTPProvider2(config);
+      }
+      case "smartlead": {
+        const { SmartleadProvider: SmartleadProvider2 } = await Promise.resolve().then(() => (init_SmartleadProvider(), exports_SmartleadProvider));
+        return new SmartleadProvider2(config);
+      }
       default:
         throw new Error(`Unknown email provider type: ${type}`);
     }
@@ -10970,9 +10777,9 @@ class EmailProviderFactory {
     return ["smtp", "smartlead"];
   }
 }
+var EmailProviderFactory_default;
 var init_EmailProviderFactory = __esm(() => {
-  init_SMTPProvider();
-  init_SmartleadProvider();
+  EmailProviderFactory_default = EmailProviderFactory;
 });
 
 // src/lib/email/EmailService.ts
@@ -10983,30 +10790,49 @@ __export(exports_EmailService, {
 });
 
 class EmailService {
-  provider;
-  testEmail;
+  provider = null;
+  testEmail = null;
+  providerType;
+  providerConfig;
   constructor(providerType, config) {
-    this.provider = EmailProviderFactory.create(providerType, config);
-    this.testEmail = null;
+    this.providerType = providerType;
+    this.providerConfig = config;
+  }
+  async initialize() {
+    if (this.provider)
+      return;
+    try {
+      const { EmailProviderFactory: EmailProviderFactory2 } = await Promise.resolve().then(() => (init_EmailProviderFactory(), exports_EmailProviderFactory));
+      this.provider = EmailProviderFactory2.create(this.providerType, this.providerConfig);
+    } catch (error) {
+      console.error("Failed to initialize email provider:", error);
+      throw error;
+    }
   }
   setTestEmail(email) {
     this.testEmail = email;
   }
   async validateConfig() {
+    await this.initialize();
     return await this.provider.validateConfig();
   }
   async sendEmail(payload) {
-    const { to, from, subject, html, text, cc } = payload;
-    const actualPayload = this.testEmail ? { to: this.testEmail, from, subject, html, text, cc } : payload;
+    await this.initialize();
+    const actualPayload = this.testEmail ? { ...payload, to: this.testEmail } : payload;
     const result = await this.provider.send(actualPayload);
     return {
       ...result,
-      testMode: !!this.testEmail,
-      originalTo: this.testEmail ? payload.to : null
+      success: result.success,
+      messageId: result.messageId,
+      provider: result.provider,
+      to: this.testEmail ? payload.to : result.to,
+      subject: result.subject,
+      error: result.error
     };
   }
   async sendBatch(emails, options = {}) {
     const { rateLimitMs = 3000, dryRun = false } = options;
+    await this.initialize();
     const results = {
       sent: 0,
       failed: 0,
@@ -11026,18 +10852,31 @@ class EmailService {
         continue;
       }
       try {
-        const result = await this.sendEmail(email);
+        const result = await this.sendEmail({
+          to: email.to,
+          from: email.from,
+          subject: email.subject,
+          html: email.html,
+          text: email.text,
+          cc: email.cc
+        });
         if (result.success) {
           results.sent++;
           results.campaigns.push({
             status: "sent",
-            ...result
+            to: result.to,
+            subject: result.subject,
+            success: true,
+            messageId: result.messageId
           });
         } else {
           results.failed++;
           results.campaigns.push({
             status: "failed",
-            ...result
+            to: email.to,
+            subject: email.subject,
+            success: false,
+            error: result.error
           });
         }
         if (i < emails.length - 1 && rateLimitMs > 0) {
@@ -11056,12 +10895,11 @@ class EmailService {
     return results;
   }
   getProviderName() {
-    return this.provider.getName();
+    return this.provider?.getName() || "unknown";
   }
 }
 var EmailService_default;
 var init_EmailService = __esm(() => {
-  init_EmailProviderFactory();
   EmailService_default = EmailService;
 });
 
@@ -11071,35 +10909,37 @@ __export(exports_SentEmailTracker, {
   default: () => SentEmailTracker_default,
   SentEmailTracker: () => SentEmailTracker
 });
-import fs3 from "fs";
-import path3 from "path";
+import fs6 from "fs";
+import path6 from "path";
 
 class SentEmailTracker {
   sentEmails;
   constructor() {
-    if (!fs3.existsSync(SKILL_DATA_DIR)) {
-      fs3.mkdirSync(SKILL_DATA_DIR, { recursive: true });
+    if (!fs6.existsSync(SKILL_DATA_DIR)) {
+      fs6.mkdirSync(SKILL_DATA_DIR, { recursive: true });
     }
     this.sentEmails = this.loadSentLog();
   }
   loadSentLog() {
     try {
-      if (fs3.existsSync(SENT_LOG_FILE)) {
-        return JSON.parse(fs3.readFileSync(SENT_LOG_FILE, "utf8"));
+      if (fs6.existsSync(SENT_LOG_FILE)) {
+        return JSON.parse(fs6.readFileSync(SENT_LOG_FILE, "utf8"));
       }
     } catch (e) {
-      console.error("Error loading sent log:", e.message);
+      const err = e;
+      console.error("Error loading sent log:", err.message);
     }
     return { vcs: [], municipalities: [], lastUpdated: null };
   }
   saveSentLog() {
     try {
-      fs3.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
+      fs6.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
     } catch (e) {
-      console.error("Error saving sent log:", e.message);
+      const err = e;
+      console.error("Error saving sent log:", err.message);
     }
   }
-  wasAlreadySent(email, partnerName, type) {
+  wasAlreadySent(email, partnerName, type = "vc") {
     const key = type === "vc" ? "vcs" : "municipalities";
     if (!email)
       return false;
@@ -11156,7 +10996,7 @@ class SentEmailTracker {
       lastUpdated: this.sentEmails.lastUpdated
     };
   }
-  getSentEntry(email, partnerName, type) {
+  getSentEntry(email, partnerName, type = "vc") {
     const key = type === "vc" ? "vcs" : "municipalities";
     if (!email)
       return null;
@@ -11173,7 +11013,7 @@ class SentEmailTracker {
   getEmailedPartners(email) {
     if (!email)
       return [];
-    return this.sentEmails.vcs.filter((entry) => entry.email.toLowerCase() === email.toLowerCase()).map((entry) => entry.partnerName).filter(Boolean);
+    return this.sentEmails.vcs.filter((entry) => entry.email.toLowerCase() === email.toLowerCase()).map((entry) => entry.partnerName).filter((p) => p !== null);
   }
   clearAll() {
     this.sentEmails = { vcs: [], municipalities: [], lastUpdated: null };
@@ -11182,23 +11022,25 @@ class SentEmailTracker {
 }
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib", SKILL_DATA_DIR, SENT_LOG_FILE, SentEmailTracker_default;
 var init_SentEmailTracker = __esm(() => {
-  SKILL_DATA_DIR = path3.resolve(__dirname, "../../data");
-  SENT_LOG_FILE = path3.resolve(SKILL_DATA_DIR, "sent-emails.json");
+  SKILL_DATA_DIR = path6.resolve(__dirname, "../../data");
+  SENT_LOG_FILE = path6.resolve(SKILL_DATA_DIR, "sent-emails.json");
   SentEmailTracker_default = SentEmailTracker;
 });
 
 // src/lib/email/validators/ZeroBounceValidator.ts
 var ZeroBounceValidator;
 var init_ZeroBounceValidator = __esm(() => {
+  init_EmailValidator();
   ZeroBounceValidator = class ZeroBounceValidator extends EmailValidator {
+    apiKey;
     constructor(config) {
-      super();
-      this.apiKey = config.apiKey;
-      this.baseUrl = "https://api.zerobounce.net/v2";
+      super(config);
+      this.apiKey = config.apiKey || "";
     }
     async validate(email) {
+      const baseUrl = "https://api.zerobounce.net/v2";
       try {
-        const response = await fetch(`${this.baseUrl}/validate?api_key=${this.apiKey}&email=${encodeURIComponent(email)}&ip_address=`, {
+        const response = await fetch(`${baseUrl}/validate?api_key=${this.apiKey}&email=${encodeURIComponent(email)}&ip_address=`, {
           method: "GET",
           headers: {
             Accept: "application/json"
@@ -11224,11 +11066,12 @@ var init_ZeroBounceValidator = __esm(() => {
           raw: data
         };
       } catch (error) {
+        const err = error;
         return {
           result: "unknown",
           confidence: 0,
           details: {
-            error: error.message
+            error: err.message
           },
           validator: this.getName()
         };
@@ -11282,8 +11125,8 @@ var init_EmailValidatorFactory = __esm(() => {
 });
 
 // src/core/Pipeline.ts
-import fs5 from "fs";
-import path5 from "path";
+import fs8 from "fs";
+import path8 from "path";
 
 // src/entities/OutreachEntity.ts
 class OutreachEntity {
@@ -11395,7 +11238,7 @@ class OutreachEntity {
   }
 }
 
-// src/entities/MunicipalEntity.ts
+// src/entities/municipal-data.ts
 var COSTA_RICA_CANTONES = [
   { name: "San Jos\xE9", province: "San Jos\xE9", population: 288054, budget: 150000000 },
   { name: "Escaz\xFA", province: "San Jos\xE9", population: 91117, budget: 45000000 },
@@ -11482,6 +11325,7 @@ var COSTA_RICA_CANTONES = [
   { name: "Gu\xE1cimo", province: "Lim\xF3n", population: 41266, budget: 30000000 }
 ];
 
+// src/entities/MunicipalEntity.ts
 class MunicipalEntity extends OutreachEntity {
   typeData;
   waveNumber;
@@ -11573,7 +11417,7 @@ class MunicipalEntity extends OutreachEntity {
         return false;
     }
     if (criteria.governmentTypes && criteria.governmentTypes.length > 0) {
-      if (!criteria.governmentTypes.includes(this.typeData.governmentType))
+      if (!criteria.governmentTypes.includes(this.typeData.governmentType || ""))
         return false;
     }
     if (criteria.regions && criteria.regions.length > 0) {
@@ -11675,12 +11519,12 @@ class VCEntity extends OutreachEntity {
   }
   matchesCriteria(criteria) {
     if (criteria.stages && criteria.stages.length > 0) {
-      const hasMatchingStage = this.typeData.stageFocus.some((stage) => criteria.stages.includes(stage.toLowerCase()));
+      const hasMatchingStage = (this.typeData.stageFocus || []).some((stage) => criteria.stages.includes(stage.toLowerCase()));
       if (!hasMatchingStage)
         return false;
     }
     if (criteria.sectors && criteria.sectors.length > 0) {
-      const hasMatchingSector = this.typeData.sectorFocus.some((sector) => criteria.sectors.some((cs) => sector.toLowerCase().includes(cs.toLowerCase())));
+      const hasMatchingSector = (this.typeData.sectorFocus || []).some((sector) => criteria.sectors.some((cs) => sector.toLowerCase().includes(cs.toLowerCase())));
       if (!hasMatchingSector)
         return false;
     }
@@ -11752,6 +11596,10 @@ class StrategyRegistry {
   }
 }
 
+// src/strategies/discovery/MunicipalDiscoveryStrategy.ts
+import fs3 from "fs";
+import path3 from "path";
+
 // src/strategies/discovery/DiscoveryStrategy.ts
 class DiscoveryStrategy {
   config;
@@ -11760,15 +11608,524 @@ class DiscoveryStrategy {
     this.config = config;
     this.name = "base-discovery";
   }
-  async discover(query, options = {}) {
-    throw new Error("Not implemented");
-  }
   getName() {
     return this.name;
   }
 }
 
+// src/lib/simulation/SupabaseSimulator.ts
+import fs from "fs";
+import path from "path";
+class SupabaseSimulator {
+  outputDir;
+  timestamp;
+  dryRunId;
+  municipalities = [];
+  localGovernments = [];
+  outreachEmails = [];
+  politicalFigures = [];
+  constructor(options = {}) {
+    const now = new Date;
+    this.timestamp = now.toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    this.dryRunId = options.dryRunId || this.timestamp;
+    this.outputDir = options.outputDir || path.join(process.cwd(), "data", "dry-run", "supabase");
+    this.ensureOutputDir();
+  }
+  ensureOutputDir() {
+    if (!fs.existsSync(this.outputDir)) {
+      fs.mkdirSync(this.outputDir, { recursive: true });
+    }
+  }
+  toMunicipalityRow(entity) {
+    return {
+      _simulated: true,
+      _entityId: entity.id,
+      _createdAt: new Date().toISOString(),
+      name: entity.name,
+      country: entity.location.country || "Costa Rica",
+      id: entity.municipalityId || entity.id,
+      website_url: entity.website,
+      phone: entity.phone,
+      email: entity.email,
+      region: entity.location.region,
+      province: entity.typeData.province || entity.location.state,
+      population: entity.typeData.population || null,
+      government_type: entity.typeData.governmentType || null,
+      mayor_name: entity.typeData.keyContacts?.[0]?.name,
+      mayor_email: entity.email,
+      general_email: entity.email,
+      pain_points: entity.typeData.painPoints || null,
+      verified_at: entity.verifiedAt ? new Date(entity.verifiedAt).toISOString() : null,
+      researched_at: entity.researchedAt ? new Date(entity.researchedAt).toISOString() : null,
+      outreach_sent_at: entity.outreachSentAt || null,
+      outreach_variant: entity.outreachVariant || null,
+      replied_at: entity.repliedAt || null,
+      reply_sentiment: entity.replySentiment || null,
+      wave_number: entity.waveNumber || null,
+      wave_date: entity.waveDate || null,
+      batch_status: entity.batchStatus || null,
+      x_handle: entity.xHandle,
+      x_url: entity.xUrl,
+      x_warmup_phase1_at: entity.xWarmupPhase1At ? new Date(entity.xWarmupPhase1At).toISOString() : null,
+      x_warmup_phase2_at: entity.xWarmupPhase2At ? new Date(entity.xWarmupPhase2At).toISOString() : null,
+      x_engagement_count: entity.xEngagementCount || null,
+      x_last_engagement_at: entity.xLastEngagementAt ? new Date(entity.xLastEngagementAt).toISOString() : null,
+      priority_score: entity.priority === "high" ? 100 : entity.priority === "medium" ? 50 : 25,
+      discovered_at: entity.discoveredAt instanceof Date ? entity.discoveredAt.toISOString() : new Date(entity.discoveredAt).toISOString(),
+      updated_at: entity.lastUpdatedAt instanceof Date ? entity.lastUpdatedAt.toISOString() : new Date(entity.lastUpdatedAt).toISOString()
+    };
+  }
+  toLocalGovernmentRow(entity) {
+    const keyContacts = entity.typeData.keyContacts;
+    return {
+      _simulated: true,
+      _entityId: entity.id,
+      id: entity.localGovernmentId,
+      municipality_id: entity.municipalityId || entity.id,
+      name: entity.name,
+      government_type: entity.typeData.governmentType || null,
+      email: entity.email,
+      phone: entity.phone,
+      website_url: entity.website,
+      head_name: keyContacts?.[0]?.name,
+      head_title: keyContacts?.[0]?.title,
+      city: entity.location.city,
+      province: entity.typeData.province || null,
+      country: entity.location.country,
+      is_active: true,
+      wave_number: entity.waveNumber || null,
+      notes: null,
+      address_line1: null,
+      address_line2: null,
+      postal_code: null
+    };
+  }
+  toPoliticalFigureRow(entity) {
+    return {
+      _simulated: true,
+      _entityId: entity.id,
+      _createdAt: new Date().toISOString(),
+      full_name: entity.name,
+      municipality_id: null,
+      local_government_id: null,
+      email: entity.email,
+      phone: entity.phone,
+      title: entity.typeData.firmType || "vc",
+      department: entity.typeData.sectorFocus?.join(", ") || null,
+      role_description: `VC firm: ${(entity.typeData.stageFocus || []).join(", ")}`,
+      ai_governance_interest: entity.typeData.sectorFocus?.join(", ") || null,
+      is_decision_maker: true,
+      influence_level: 5,
+      wave_number: null,
+      linkedin_url: entity.typeData.linkedInUrl || null,
+      x_handle: null,
+      last_contacted_at: entity.sentAt instanceof Date ? entity.sentAt.toISOString() : entity.sentAt ? new Date(entity.sentAt).toISOString() : null,
+      created_at: entity.discoveredAt instanceof Date ? entity.discoveredAt.toISOString() : new Date(entity.discoveredAt).toISOString(),
+      updated_at: entity.lastUpdatedAt instanceof Date ? entity.lastUpdatedAt.toISOString() : new Date(entity.lastUpdatedAt).toISOString()
+    };
+  }
+  upsertMunicipality(entity) {
+    const row = this.toMunicipalityRow(entity);
+    const existingIndex = this.municipalities.findIndex((m) => m.id === row.id);
+    if (existingIndex >= 0) {
+      this.municipalities[existingIndex] = { ...this.municipalities[existingIndex], ...row };
+      console.log(`   \uD83D\uDCDD [SIMULATED] Supabase municipalities upsert: ${entity.name} (updated)`);
+    } else {
+      this.municipalities.push(row);
+      console.log(`   \uD83D\uDCDD [SIMULATED] Supabase municipalities upsert: ${entity.name} (inserted)`);
+    }
+    return row;
+  }
+  upsertLocalGovernment(entity) {
+    const row = this.toLocalGovernmentRow(entity);
+    const existingIndex = this.localGovernments.findIndex((lg) => lg.id === row.id);
+    if (existingIndex >= 0) {
+      this.localGovernments[existingIndex] = { ...this.localGovernments[existingIndex], ...row };
+      console.log(`   \uD83D\uDCDD [SIMULATED] Supabase local_governments upsert: ${entity.name} (updated)`);
+    } else {
+      this.localGovernments.push(row);
+      console.log(`   \uD83D\uDCDD [SIMULATED] Supabase local_governments upsert: ${entity.name} (inserted)`);
+    }
+    return row;
+  }
+  insertOutreachEmail(entity, emailData) {
+    const isMunicipal = entity instanceof MunicipalEntity;
+    const row = {
+      _simulated: true,
+      _entityId: entity.id,
+      _createdAt: new Date().toISOString(),
+      subject: emailData.subject,
+      body: emailData.body,
+      recipient_email: emailData.recipientEmail,
+      recipient_name: emailData.recipientName,
+      local_government_id: isMunicipal ? entity.localGovernmentId : null,
+      municipality_id: isMunicipal ? entity.municipalityId || entity.id : null,
+      political_figure_id: !isMunicipal ? entity.id : null,
+      variant: isMunicipal ? entity.outreachVariant : null,
+      wave_number: isMunicipal ? entity.waveNumber : null,
+      wave_date: isMunicipal ? entity.waveDate : null,
+      status: "draft",
+      political_context: isMunicipal ? entity.personalizationContext || null : null
+    };
+    this.outreachEmails.push(row);
+    console.log(`   \uD83D\uDCDD [SIMULATED] Supabase outreach_emails insert: ${entity.name} \u2192 ${emailData.recipientEmail}`);
+    return row;
+  }
+  insertPoliticalFigure(entity) {
+    const row = this.toPoliticalFigureRow(entity);
+    this.politicalFigures.push(row);
+    console.log(`   \uD83D\uDCDD [SIMULATED] Supabase political_figures insert: ${entity.name}`);
+    return row;
+  }
+  save() {
+    const data = {
+      municipalities: this.municipalities,
+      local_governments: this.localGovernments,
+      outreach_emails: this.outreachEmails,
+      political_figures: this.politicalFigures
+    };
+    const dataFile = path.join(this.outputDir, `${this.dryRunId}-data.json`);
+    fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+    const summary = {
+      dryRunId: this.dryRunId,
+      timestamp: this.timestamp,
+      tables: {
+        municipalities: this.municipalities.length,
+        local_governments: this.localGovernments.length,
+        outreach_emails: this.outreachEmails.length,
+        political_figures: this.politicalFigures.length
+      },
+      outputDir: this.outputDir
+    };
+    const summaryFile = path.join(this.outputDir, `${this.dryRunId}-summary.json`);
+    fs.writeFileSync(summaryFile, JSON.stringify(summary, null, 2));
+    console.log(`
+   \uD83D\uDCBE [SIMULATED] Supabase data saved:`);
+    console.log(`      Data: ${dataFile}`);
+    console.log(`      Summary: ${summaryFile}`);
+    return { dataFile, summaryFile };
+  }
+  getMunicipalityCount() {
+    return this.municipalities.length;
+  }
+  getLocalGovernmentCount() {
+    return this.localGovernments.length;
+  }
+  getOutreachEmailCount() {
+    return this.outreachEmails.length;
+  }
+  getPoliticalFigureCount() {
+    return this.politicalFigures.length;
+  }
+  getData() {
+    return {
+      municipalities: this.municipalities,
+      local_governments: this.localGovernments,
+      outreach_emails: this.outreachEmails,
+      political_figures: this.politicalFigures
+    };
+  }
+}
+var simulatorInstance = null;
+function getSupabaseSimulator(options) {
+  if (!simulatorInstance) {
+    simulatorInstance = new SupabaseSimulator(options);
+  }
+  return simulatorInstance;
+}
+
+// src/lib/reporting/DiscordReporter.ts
+import fs2 from "fs";
+import path2 from "path";
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib/reporting";
+
+class DiscordReporter {
+  webhookUrl;
+  outputDir;
+  dryRunId;
+  timestamp;
+  constructor(options = {}) {
+    this.webhookUrl = options.webhookUrl || process.env.DISCORD_WEBHOOK_URL || null;
+    this.outputDir = options.outputDir || path2.join(process.cwd(), "data", "dry-run", "reports");
+    this.timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    this.dryRunId = `dry-run-${this.timestamp}`;
+    this.ensureOutputDir();
+  }
+  ensureOutputDir() {
+    if (!fs2.existsSync(this.outputDir)) {
+      fs2.mkdirSync(this.outputDir, { recursive: true });
+    }
+  }
+  loadWebhookUrl() {
+    if (this.webhookUrl)
+      return this.webhookUrl;
+    const credentialsPath = path2.resolve(__dirname, "../../../config/credentials.json");
+    try {
+      if (fs2.existsSync(credentialsPath)) {
+        const creds = JSON.parse(fs2.readFileSync(credentialsPath, "utf8"));
+        if (creds?.discord?.webhookUrl) {
+          return creds.discord.webhookUrl;
+        }
+      }
+    } catch {}
+    const legacyPath = path2.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+    try {
+      if (fs2.existsSync(legacyPath)) {
+        const creds = JSON.parse(fs2.readFileSync(legacyPath, "utf8"));
+        if (creds?.discord?.webhookUrl) {
+          return creds.discord.webhookUrl;
+        }
+      }
+    } catch {}
+    return null;
+  }
+  formatNumber(num) {
+    return num.toLocaleString();
+  }
+  generateSummaryEmbed(type, action, stats, notionSim, supabaseSim) {
+    const fields = [];
+    fields.push({ name: "Type", value: type === "vc" ? "Venture Capital" : "Municipal Government", inline: true });
+    fields.push({ name: "Action", value: action, inline: true });
+    fields.push({ name: "Mode", value: "Dry Run + Direct API", inline: true });
+    if (stats.discovered !== undefined) {
+      fields.push({ name: "\uD83D\uDD0D Discovered", value: this.formatNumber(stats.discovered), inline: true });
+    }
+    if (stats.validated !== undefined) {
+      fields.push({ name: "\u2713 Validated", value: this.formatNumber(stats.validated), inline: true });
+    }
+    if (stats.researched !== undefined) {
+      fields.push({ name: "\uD83D\uDCDA Researched", value: this.formatNumber(stats.researched), inline: true });
+    }
+    if (stats.personalized !== undefined) {
+      fields.push({ name: "\u2709\uFE0F Personalized", value: this.formatNumber(stats.personalized), inline: true });
+    }
+    if (stats.sent !== undefined) {
+      fields.push({ name: "\uD83D\uDE80 Sent", value: this.formatNumber(stats.sent), inline: true });
+    }
+    if (stats.failed !== undefined && stats.failed > 0) {
+      fields.push({ name: "\u274C Failed", value: this.formatNumber(stats.failed), inline: true });
+    }
+    if (stats.skipped !== undefined && stats.skipped > 0) {
+      fields.push({ name: "\u23ED\uFE0F Skipped", value: `${this.formatNumber(stats.skipped)}${stats.reason ? `
+${stats.reason}` : ""}`, inline: false });
+    }
+    if (notionSim) {
+      fields.push({ name: "\uD83D\uDCDD Notion Pages (sim)", value: this.formatNumber(notionSim.getCount()), inline: true });
+    }
+    if (supabaseSim) {
+      const muniCount = supabaseSim.getMunicipalityCount();
+      const vcCount = supabaseSim.getPoliticalFigureCount();
+      fields.push({ name: "\uD83D\uDCBE DB Records (sim)", value: `Muni: ${muniCount}, VC: ${vcCount}`, inline: true });
+    }
+    return {
+      title: `\uD83E\uDD16 Alygn Outreach Dry Run Report`,
+      color: 8141549,
+      fields,
+      footer: {
+        text: `Dry Run ID: ${this.dryRunId} | ${new Date().toLocaleString()}`
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+  generateEntityListEmbed(entities, title) {
+    if (entities.length === 0) {
+      return {
+        title,
+        color: 7041664,
+        description: "No entities"
+      };
+    }
+    const displayEntities = entities.slice(0, 10);
+    const hasMore = entities.length > 10;
+    const lines = displayEntities.map((e) => {
+      const emailStr = e.email ? `
+   \uD83D\uDCE7 ${e.email}` : "";
+      const websiteStr = e.website ? `
+   \uD83C\uDF10 ${e.website}` : "";
+      return `**${e.name}**${emailStr}${websiteStr}`;
+    });
+    if (hasMore) {
+      lines.push(`
+*... and ${entities.length - 10} more*`);
+    }
+    return {
+      title: `${title} (${entities.length})`,
+      color: 1096065,
+      description: lines.join(`
+
+`),
+      footer: {
+        text: "Dry Run - No actual emails sent"
+      }
+    };
+  }
+  generateReport(type, action, stats, entities, notionSim, supabaseSim) {
+    const embeds = [];
+    embeds.push(this.generateSummaryEmbed(type, action, stats, notionSim, supabaseSim));
+    if (entities.length > 0) {
+      embeds.push(this.generateEntityListEmbed(entities, type === "vc" ? "VC Firms" : "Municipalities"));
+    }
+    const markdown = this.generateMarkdownReport(type, action, stats, entities, notionSim, supabaseSim);
+    return { embeds, markdown };
+  }
+  generateMarkdownReport(type, action, stats, entities, notionSim, supabaseSim) {
+    let md = `# Alygn Outreach Dry Run Report
+
+`;
+    md += `**Date:** ${new Date().toLocaleString()}
+`;
+    md += `**Type:** ${type === "vc" ? "Venture Capital" : "Municipal Government"}
+`;
+    md += `**Action:** ${action}
+`;
+    md += `**Mode:** Dry Run + Direct API
+`;
+    md += `**Dry Run ID:** ${this.dryRunId}
+
+`;
+    md += `## \uD83D\uDCCA Statistics
+
+`;
+    if (stats.discovered !== undefined)
+      md += `- **Discovered:** ${stats.discovered}
+`;
+    if (stats.validated !== undefined)
+      md += `- **Validated:** ${stats.validated}
+`;
+    if (stats.researched !== undefined)
+      md += `- **Researched:** ${stats.researched}
+`;
+    if (stats.personalized !== undefined)
+      md += `- **Personalized:** ${stats.personalized}
+`;
+    if (stats.sent !== undefined)
+      md += `- **Sent:** ${stats.sent}
+`;
+    if (stats.failed !== undefined)
+      md += `- **Failed:** ${stats.failed}
+`;
+    if (stats.skipped !== undefined)
+      md += `- **Skipped:** ${stats.skipped}${stats.reason ? ` (${stats.reason})` : ""}
+`;
+    if (notionSim || supabaseSim) {
+      md += `
+## \uD83E\uDDEA Simulation Layer
+
+`;
+      if (notionSim) {
+        md += `- **Notion Pages Created:** ${notionSim.getCount()}
+`;
+      }
+      if (supabaseSim) {
+        md += `- **Supabase Records:**
+`;
+        md += `  - Municipalities: ${supabaseSim.getMunicipalityCount()}
+`;
+        md += `  - Local Governments: ${supabaseSim.getLocalGovernmentCount()}
+`;
+        md += `  - Outreach Emails: ${supabaseSim.getOutreachEmailCount()}
+`;
+        md += `  - Political Figures: ${supabaseSim.getPoliticalFigureCount()}
+`;
+      }
+    }
+    md += `
+## \uD83D\uDCCB Entities (${entities.length})
+
+`;
+    for (const entity of entities.slice(0, 20)) {
+      md += `### ${entity.name}
+`;
+      if (entity.email)
+        md += `- Email: ${entity.email}
+`;
+      if (entity.website)
+        md += `- Website: ${entity.website}
+`;
+      md += `
+`;
+    }
+    if (entities.length > 20) {
+      md += `*... and ${entities.length - 20} more*
+`;
+    }
+    return md;
+  }
+  saveReport(type, action, stats, entities, notionSim, supabaseSim) {
+    const { embeds, markdown } = this.generateReport(type, action, stats, entities, notionSim, supabaseSim);
+    const jsonFile = path2.join(this.outputDir, `${this.dryRunId}-report.json`);
+    fs2.writeFileSync(jsonFile, JSON.stringify({ embeds, dryRunId: this.dryRunId, timestamp: this.timestamp }, null, 2));
+    const mdFile = path2.join(this.outputDir, `${this.dryRunId}-report.md`);
+    fs2.writeFileSync(mdFile, markdown);
+    console.log(`
+   \uD83D\uDCBE Report saved:`);
+    console.log(`      JSON: ${jsonFile}`);
+    console.log(`      Markdown: ${mdFile}`);
+    return { jsonFile, mdFile };
+  }
+  async sendToDiscord(type, action, stats, entities, notionSim, supabaseSim) {
+    const webhookUrl = this.loadWebhookUrl();
+    if (!webhookUrl) {
+      console.log("   \u26A0\uFE0F  No Discord webhook URL configured - skipping Discord notification");
+      console.log("   \uD83D\uDCDD Save the report locally instead:");
+      this.saveReport(type, action, stats, entities, notionSim, supabaseSim);
+      return false;
+    }
+    const { embeds } = this.generateReport(type, action, stats, entities, notionSim, supabaseSim);
+    const chunks = [];
+    for (let i = 0;i < embeds.length; i += 10) {
+      chunks.push(embeds.slice(i, i + 10));
+    }
+    try {
+      for (const chunk of chunks) {
+        const response = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "Alygn Outreach",
+            avatar_url: "https://alygn.org/logo.png",
+            embeds: chunk
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Discord API error: ${response.status}`);
+        }
+      }
+      console.log(`   \u2705 Discord report sent successfully (${chunks.length} message(s))`);
+      return true;
+    } catch (error) {
+      console.error(`   \u274C Failed to send Discord report: ${error.message}`);
+      console.log("   \uD83D\uDCDD Saving report locally instead:");
+      this.saveReport(type, action, stats, entities, notionSim, supabaseSim);
+      return false;
+    }
+  }
+  async report(type, action, stats, entities, options = {}) {
+    const { sendToDiscord = true, notionSim, supabaseSim } = options;
+    console.log(`
+\uD83D\uDCCA Generating dry-run report...`);
+    const { jsonFile, mdFile } = this.saveReport(type, action, stats, entities, notionSim, supabaseSim);
+    let sentToDiscord = false;
+    if (sendToDiscord) {
+      sentToDiscord = await this.sendToDiscord(type, action, stats, entities, notionSim, supabaseSim);
+    }
+    return { jsonFile, mdFile, sentToDiscord };
+  }
+  getDryRunId() {
+    return this.dryRunId;
+  }
+}
+var reporterInstance = null;
+function getDiscordReporter(options) {
+  if (!reporterInstance) {
+    reporterInstance = new DiscordReporter(options);
+  }
+  return reporterInstance;
+}
+
 // src/strategies/discovery/MunicipalDiscoveryStrategy.ts
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/discovery";
+
 class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
   constructor(config = {}) {
     super(config);
@@ -11777,15 +12134,208 @@ class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
   async discover(query, options = {}) {
     const limit = options.limit || 20;
     const region = options.region || null;
+    const dryRun = options.dryRun || false;
+    const useDirectApi = process.env.USE_DIRECT_API === "true";
+    if (dryRun && useDirectApi) {
+      console.log(`   \uD83C\uDF10 Mode B: Dry-run + Direct API enabled`);
+      if (region === "costa-rica" || query === "costa-rica-cantones") {
+        return this.discoverCostaRicaModeB(limit);
+      }
+      return await this.discoverViaFirecrawlModeB(query, limit, options);
+    }
     if (region === "costa-rica" || query === "costa-rica-cantones") {
       return this.discoverCostaRicaCantones(limit);
     }
     console.log(`\uD83D\uDD0D Municipal Discovery: Searching "${query}"...`);
-    if (options.dryRun) {
+    if (dryRun) {
       return this.generateMockMunicipals(query, limit);
     }
     console.log(`   \u26A0\uFE0F  Municipal discovery not yet implemented for non-CR regions`);
     return [];
+  }
+  discoverCostaRicaModeB(limit) {
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \uD83D\uDE80 MODE B: Costa Rica Municipal Discovery`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    const supabaseSim = getSupabaseSimulator({
+      outputDir: path3.join(process.cwd(), "data", "dry-run", "supabase"),
+      dryRunId: `municipal-cr-${Date.now()}`
+    });
+    const reporter = getDiscordReporter({
+      outputDir: path3.join(process.cwd(), "data", "dry-run", "reports")
+    });
+    console.log(`
+   \uD83D\uDCCA Using embedded Costa Rica municipal data`);
+    const cantones = COSTA_RICA_CANTONES.slice(0, limit);
+    const entities = cantones.map((canton) => {
+      return MunicipalEntity.fromCanton(canton);
+    });
+    console.log(`   \u2705 Created ${entities.length} municipal entities from embedded data`);
+    const dryRunDir = path3.join(process.cwd(), "data", "dry-run");
+    if (!fs3.existsSync(dryRunDir)) {
+      fs3.mkdirSync(dryRunDir, { recursive: true });
+    }
+    const dataFile = path3.join(dryRunDir, `municipal-cr-embedded-${Date.now()}.json`);
+    fs3.writeFileSync(dataFile, JSON.stringify({
+      region: "costa-rica",
+      source: "embedded",
+      timestamp: new Date().toISOString(),
+      mode: "dry-run-direct-api",
+      cantones: cantones.map((c) => c.name),
+      count: cantones.length
+    }, null, 2));
+    console.log(`   \uD83D\uDCBE Embedded data reference saved: ${dataFile}`);
+    console.log(`
+   \uD83D\uDCCA Simulating database writes...`);
+    for (const entity of entities) {
+      supabaseSim.upsertMunicipality(entity);
+      supabaseSim.upsertLocalGovernment(entity);
+    }
+    supabaseSim.save();
+    console.log(`
+   \uD83D\uDCE4 Sending Discord report...`);
+    reporter.report("municipal", "discover", {
+      discovered: entities.length
+    }, entities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+      sendToDiscord: true,
+      supabaseSim
+    });
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \u2705 MODE B COMPLETE (Costa Rica)`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+`);
+    return entities;
+  }
+  async discoverViaFirecrawlModeB(query, limit, options) {
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \uD83D\uDE80 MODE B: Municipal Discovery via Firecrawl`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    const supabaseSim = getSupabaseSimulator({
+      outputDir: path3.join(process.cwd(), "data", "dry-run", "supabase"),
+      dryRunId: `municipal-${Date.now()}`
+    });
+    const reporter = getDiscordReporter({
+      outputDir: path3.join(process.cwd(), "data", "dry-run", "reports")
+    });
+    console.log(`
+   \uD83D\uDCE1 Calling Firecrawl API for: "${query}"...`);
+    let entities = [];
+    try {
+      entities = await this.fetchMunicipalitiesFromFirecrawl(query, limit);
+    } catch (error) {
+      console.error(`   \u274C Firecrawl API failed: ${error.message}`);
+      console.log(`   \uD83D\uDCDD Falling back to mock data`);
+      entities = this.generateMockMunicipals(query, limit);
+      await reporter.report("municipal", "discover", {
+        discovered: entities.length,
+        reason: `Firecrawl failed: ${error.message}`
+      }, entities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      return entities;
+    }
+    if (entities.length === 0) {
+      console.log(`   \u26A0\uFE0F  No results from Firecrawl, using mock data`);
+      entities = this.generateMockMunicipals(query, limit);
+      await reporter.report("municipal", "discover", {
+        discovered: entities.length,
+        reason: "No Firecrawl results"
+      }, entities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      return entities;
+    }
+    console.log(`   \u2705 Firecrawl returned ${entities.length} municipalities`);
+    const dryRunDir = path3.join(process.cwd(), "data", "dry-run");
+    if (!fs3.existsSync(dryRunDir)) {
+      fs3.mkdirSync(dryRunDir, { recursive: true });
+    }
+    const dataFile = path3.join(dryRunDir, `municipal-firecrawl-${Date.now()}.json`);
+    fs3.writeFileSync(dataFile, JSON.stringify({
+      query,
+      source: "firecrawl",
+      timestamp: new Date().toISOString(),
+      mode: "dry-run-direct-api",
+      entities: entities.map((e) => ({ name: e.name, website: e.website, country: e.location.country })),
+      count: entities.length
+    }, null, 2));
+    console.log(`   \uD83D\uDCBE Firecrawl results saved: ${dataFile}`);
+    console.log(`
+   \uD83D\uDCCA Simulating database writes...`);
+    for (const entity of entities) {
+      supabaseSim.upsertMunicipality(entity);
+      supabaseSim.upsertLocalGovernment(entity);
+    }
+    supabaseSim.save();
+    console.log(`
+   \uD83D\uDCE4 Sending Discord report...`);
+    await reporter.report("municipal", "discover", {
+      discovered: entities.length
+    }, entities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+      sendToDiscord: true,
+      supabaseSim
+    });
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \u2705 MODE B COMPLETE (Firecrawl)`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+`);
+    return entities;
+  }
+  async fetchMunicipalitiesFromFirecrawl(query, limit) {
+    const credentialsPath = path3.resolve(__dirname, "../../../config/credentials.json");
+    let credentials = {};
+    if (fs3.existsSync(credentialsPath)) {
+      credentials = JSON.parse(fs3.readFileSync(credentialsPath, "utf8"));
+    } else {
+      const legacyPath = path3.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+      if (fs3.existsSync(legacyPath)) {
+        credentials = JSON.parse(fs3.readFileSync(legacyPath, "utf8"));
+      }
+    }
+    const apiKey = credentials?.firecrawl?.apiKey;
+    if (!apiKey) {
+      throw new Error("No Firecrawl API key found in credentials");
+    }
+    const response = await fetch("https://api.firecrawl.dev/v0/search", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        query: `${query} municipal government website`,
+        limit,
+        scrapeOptions: {
+          formats: ["metadata"],
+          onlyMainContent: true
+        }
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Firecrawl API error: ${response.status}`);
+    }
+    const data = await response.json();
+    const results = data.data || [];
+    return results.map((r, i) => new MunicipalEntity({
+      name: r.title || `${query} Municipality ${i + 1}`,
+      website: r.url,
+      location: {
+        country: "Unknown",
+        region: "Unknown"
+      },
+      typeData: {
+        governmentType: "city",
+        province: "Unknown",
+        painPoints: ["Digital transformation", "Citizen services"],
+        trAigaRelevant: true
+      }
+    }));
   }
   discoverCostaRicaCantones(limit) {
     console.log(`\uD83D\uDD0D Costa Rica Discovery: Loading ${Math.min(limit, COSTA_RICA_CANTONES.length)} cantones...`);
@@ -11883,8 +12433,9 @@ class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
 }
 
 // src/strategies/discovery/VCDiscoveryStrategy.ts
-import fs from "fs";
-import path2 from "path";
+import fs4 from "fs";
+import path4 from "path";
+init_RegexMXValidator();
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/discovery";
 var RELEVANCE_KEYWORDS = {
   high: ["AI safety", "AI alignment", "existential risk", "AGI governance", "AI oversight"],
@@ -11908,112 +12459,271 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
   async discover(query, options = {}) {
     const limit = options.limit || 20;
     const dryRun = options.dryRun || false;
+    const useDirectApi = process.env.USE_DIRECT_API === "true";
     console.log(`\uD83D\uDD0D VC Discovery: Searching "${query}"...`);
+    if (dryRun && useDirectApi) {
+      console.log(`   \uD83C\uDF10 Mode B: Dry-run + Direct API enabled`);
+      return await this.discoverModeB(query, limit, options);
+    }
     if (dryRun) {
+      console.log(`   \uD83D\uDCDD Dry-run mode (legacy): Returning mock data`);
       return this.generateMockVCs(query, limit);
     }
     const cacheFile = `/tmp/vc-discovery-${this.sanitizeQuery(query)}-result.json`;
-    if (fs.existsSync(cacheFile)) {
+    if (fs4.existsSync(cacheFile)) {
       console.log(`   \uD83D\uDCC1 Found cached discovery results`);
-      const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+      const cached = JSON.parse(fs4.readFileSync(cacheFile, "utf8"));
       if (cached.results && cached.results.length > 0) {
         console.log(`   \u2705 Using ${cached.results.length} cached VCs`);
-        fs.unlinkSync(cacheFile);
+        fs4.unlinkSync(cacheFile);
         return this.convertResultsToEntities(cached.results, limit);
       }
     }
-    if (process.env.USE_DIRECT_API === "true") {
+    if (useDirectApi) {
       console.log(`   \uD83C\uDF10 Direct API mode enabled - calling Perplexity...`);
-      return await this.discoverViaAPI(query, limit, cacheFile);
+      try {
+        const results = await this.fetchVCsFromAPI(query, limit);
+        fs4.writeFileSync(cacheFile, JSON.stringify({ results, timestamp: new Date().toISOString() }, null, 2));
+        console.log(`   \u2705 API returned ${results.length} VCs`);
+        return this.convertResultsToEntities(results, limit);
+      } catch (error) {
+        const errorMessage = error.message;
+        console.error(`   \u274C API failed: ${errorMessage}`);
+        if (errorMessage.includes("402") || errorMessage.includes("API error: 4")) {
+          console.log(`   \uD83D\uDCB3 Perplexity credits issue, trying web_search...`);
+        } else {
+          console.log(`   \u26A0\uFE0F  API error, trying web_search...`);
+        }
+      }
     }
-    const requestFile = `/tmp/vc-discovery-${this.sanitizeQuery(query)}-request.json`;
-    const request = {
-      type: "vc-discovery",
+    console.log(`   \uD83D\uDD0D Attempting web_search fallback...`);
+    return await this.discoverViaWebSearch(query, limit, cacheFile);
+  }
+  async discoverModeB(query, limit, options) {
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \uD83D\uDE80 MODE B: DRY-RUN + DIRECT API`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    const supabaseSim = getSupabaseSimulator({
+      outputDir: path4.join(process.cwd(), "data", "dry-run", "supabase"),
+      dryRunId: `vc-discovery-${Date.now()}`
+    });
+    const reporter = getDiscordReporter({
+      outputDir: path4.join(process.cwd(), "data", "dry-run", "reports")
+    });
+    console.log(`
+   \uD83D\uDCE1 Calling Perplexity API for real data...`);
+    let results = [];
+    try {
+      results = await this.fetchVCsFromAPI(query, limit);
+    } catch (error) {
+      console.error(`   \u274C API call failed: ${error.message}`);
+      const errorMessage = error.message;
+      if (errorMessage.includes("402") || errorMessage.includes("API error: 4")) {
+        console.log(`   \uD83D\uDCB3 API credits issue, trying web_search fallback...`);
+        const webSearchCache = `/tmp/vc-discovery-${this.sanitizeQuery(query)}-result.json`;
+        try {
+          const webSearchResults = await this.discoverViaWebSearch(query, limit, webSearchCache);
+          if (webSearchResults.length > 0) {
+            await reporter.report("vc", "discover", {
+              discovered: webSearchResults.length,
+              source: "web_search_fallback",
+              reason: `API failed: ${errorMessage}`
+            }, webSearchResults.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+              sendToDiscord: true,
+              supabaseSim
+            });
+            return webSearchResults;
+          }
+        } catch (webSearchError) {
+          console.log(`   \u26A0\uFE0F  web_search fallback also failed: ${webSearchError.message}`);
+        }
+      }
+      console.log(`   \uD83D\uDCDD Falling back to mock data`);
+      const mockEntities = this.generateMockVCs(query, limit);
+      await reporter.report("vc", "discover", {
+        discovered: mockEntities.length,
+        reason: `API failed: ${error.message}`
+      }, mockEntities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      return mockEntities;
+    }
+    if (results.length === 0) {
+      console.log(`   \u26A0\uFE0F  No results from API, using mock data`);
+      const mockEntities = this.generateMockVCs(query, limit);
+      await reporter.report("vc", "discover", {
+        discovered: mockEntities.length,
+        reason: "No API results"
+      }, mockEntities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+        sendToDiscord: true,
+        supabaseSim
+      });
+      return mockEntities;
+    }
+    console.log(`   \u2705 API returned ${results.length} VC firms`);
+    const entities = await this.convertResultsToEntities(results, limit);
+    const dryRunDir = path4.join(process.cwd(), "data", "dry-run");
+    if (!fs4.existsSync(dryRunDir)) {
+      fs4.mkdirSync(dryRunDir, { recursive: true });
+    }
+    const apiResultsFile = path4.join(dryRunDir, `vc-api-results-${Date.now()}.json`);
+    fs4.writeFileSync(apiResultsFile, JSON.stringify({
       query,
-      searchQuery: `${query} venture capital firm website contact email`,
+      limit,
+      timestamp: new Date().toISOString(),
+      mode: "dry-run-direct-api",
+      results
+    }, null, 2));
+    console.log(`   \uD83D\uDCBE Raw API results saved: ${apiResultsFile}`);
+    console.log(`
+   \uD83D\uDCCA Simulating database writes...`);
+    for (const entity of entities) {
+      supabaseSim.insertPoliticalFigure(entity);
+    }
+    supabaseSim.save();
+    console.log(`
+   \uD83D\uDCE4 Sending Discord report...`);
+    await reporter.report("vc", "discover", {
+      discovered: entities.length
+    }, entities.map((e) => ({ name: e.name, email: e.email, website: e.website })), {
+      sendToDiscord: true,
+      supabaseSim
+    });
+    console.log(`
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550`);
+    console.log(`   \u2705 MODE B COMPLETE`);
+    console.log(`   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+`);
+    return entities;
+  }
+  async fetchVCsFromAPI(query, limit) {
+    const credentialsPath = path4.resolve(__dirname, "../../../config/credentials.json");
+    let credentials = {};
+    if (fs4.existsSync(credentialsPath)) {
+      credentials = JSON.parse(fs4.readFileSync(credentialsPath, "utf8"));
+    } else {
+      const legacyPath = path4.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+      if (fs4.existsSync(legacyPath)) {
+        credentials = JSON.parse(fs4.readFileSync(legacyPath, "utf8"));
+      }
+    }
+    const apiKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
+    if (!apiKey) {
+      throw new Error("No API key found in credentials");
+    }
+    const searchQuery = `${query} venture capital firm website contact email partners`;
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://alygn.org",
+        "X-Title": "Alygn VC Discovery"
+      },
+      body: JSON.stringify({
+        model: "perplexity/sonar-pro",
+        messages: [
+          {
+            role: "system",
+            content: 'You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string, default "vc"), stageFocus (array of strings), sectorFocus (array of strings), partners (array of objects with name and title).'
+          },
+          {
+            role: "user",
+            content: `Find venture capital firms matching: "${searchQuery}". Return up to ${limit} results as JSON array.`
+          }
+        ],
+        max_tokens: 4000
+      })
+    });
+    if (!response.ok) {
+      const status = response.status;
+      if (status === 402) {
+        throw new Error("402: Perplexity credits exhausted - payment required");
+      }
+      throw new Error(`API error: ${status}`);
+    }
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content || "[]";
+    let results;
+    try {
+      const jsonMatch = content.match(/\[[\s\S]*\]/);
+      results = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
+    } catch {
+      throw new Error("Failed to parse API response");
+    }
+    if (!Array.isArray(results)) {
+      throw new Error("API returned non-array");
+    }
+    return results;
+  }
+  async discoverViaWebSearch(query, limit, cacheFile) {
+    const requestFile = `/tmp/vc-websearch-${this.sanitizeQuery(query)}-${Date.now()}.json`;
+    const searchQuery = `${query} venture capital firm AI safety governance investors`;
+    const request = {
+      type: "vc-discovery-via-websearch",
+      query,
+      searchQuery,
       limit,
       outputFile: cacheFile,
       timestamp: new Date().toISOString(),
-      requiredTools: ["web_search"],
-      instructions: `Use web_search to find VCs matching "${query} venture capital firm website contact email". Extract: firm names, websites, contact emails. Return JSON array with: name, website, email (optional), firmType, stageFocus, sectorFocus, partners. Save to ${cacheFile}`
+      requiredTools: ["web_search", "web_fetch"],
+      instructions: `Use web_search to find VCs matching "${searchQuery}". Extract firm names, websites, contact emails when available. Return JSON array with: name, website, email (optional), firmType ("vc"), stageFocus (array), sectorFocus (array with AI safety/governance focus), partners (array with name/title). Save full results to ${cacheFile} as { results: [...], timestamp: "..." }.`,
+      fallbackResponse: this.generateMockVCsData(query, limit)
     };
-    fs.writeFileSync(requestFile, JSON.stringify(request, null, 2));
-    console.log(`   \u23F3 No cached results found`);
-    console.log(`   \uD83D\uDCDD Wrote request file: ${requestFile}`);
-    console.log(`   \uD83D\uDCE4 To execute research:`);
-    console.log(`      Option A: Post to Discord #annotations: "Process VC discovery request: ${requestFile}"`);
-    console.log(`      Option B: Cronjob spawns sub-agent to process request file`);
-    console.log(`      Option C: Set USE_DIRECT_API=true to use Perplexity API directly`);
-    return [];
-  }
-  async discoverViaAPI(query, limit, cacheFile) {
-    try {
-      const credentialsPath = path2.resolve(__dirname, "../../../config/credentials.json");
-      let credentials = {};
-      if (fs.existsSync(credentialsPath)) {
-        credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
-      } else {
-        const legacyPath = path2.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-        if (fs.existsSync(legacyPath)) {
-          credentials = JSON.parse(fs.readFileSync(legacyPath, "utf8"));
-        }
-      }
-      const apiKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
-      if (!apiKey) {
-        throw new Error("No API key found");
-      }
-      const searchQuery = `${query} venture capital firm website contact email partners`;
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://alygn.org",
-          "X-Title": "Alygn VC Discovery"
-        },
-        body: JSON.stringify({
-          model: "perplexity/sonar-pro",
-          messages: [
-            {
-              role: "system",
-              content: "You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string), stageFocus (array), sectorFocus (array), partners (array of objects with name and title)."
-            },
-            {
-              role: "user",
-              content: `Find venture capital firms matching: "${searchQuery}". Return up to ${limit} results as JSON array.`
-            }
-          ],
-          max_tokens: 4000
-        })
-      });
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || "[]";
-      let results;
+    fs4.writeFileSync(requestFile, JSON.stringify(request, null, 2));
+    console.log(`   \uD83D\uDCDD Wrote web_search request file: ${requestFile}`);
+    if (fs4.existsSync(cacheFile)) {
       try {
-        const jsonMatch = content.match(/\[[\s\S]*\]/);
-        results = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
-      } catch {
-        throw new Error("Failed to parse API response");
-      }
-      if (!Array.isArray(results)) {
-        throw new Error("API returned non-array");
-      }
-      fs.writeFileSync(cacheFile, JSON.stringify({ results, timestamp: new Date().toISOString() }, null, 2));
-      console.log(`   \u2705 API returned ${results.length} VCs`);
-      return this.convertResultsToEntities(results, limit);
-    } catch (error) {
-      console.error(`   \u274C API failed: ${error.message}`);
-      console.log(`   \uD83D\uDCE4 Falling back to request file pattern`);
-      return [];
+        const cached = JSON.parse(fs4.readFileSync(cacheFile, "utf8"));
+        if (cached.results && cached.results.length > 0) {
+          console.log(`   \u2705 Found cached web_search results (${cached.results.length} VCs)`);
+          fs4.unlinkSync(cacheFile);
+          return this.convertResultsToEntities(cached.results, limit);
+        }
+      } catch {}
     }
+    console.log(`   \u26A0\uFE0F  No cached web_search results found`);
+    console.log(`   \uD83D\uDCCB Request file ready for main agent processing`);
+    console.log(`   \uD83D\uDCE4 Returning mock data (main agent can update cache)`);
+    return this.generateMockVCs(query, limit);
+  }
+  generateMockVCsData(query, limit) {
+    const mockVCs = [
+      {
+        name: "AI Safety Ventures",
+        website: "https://aisafetyvc.com",
+        email: "contact@aisafetyvc.com",
+        firmType: "vc",
+        stageFocus: ["seed", "series-a"],
+        sectorFocus: ["AI safety", "AI governance", "AI alignment"],
+        partners: [{ name: "Dr. Sarah Chen", title: "Managing Partner" }]
+      },
+      {
+        name: "Frontier Capital",
+        website: "https://frontiercap.com",
+        email: "investors@frontiercap.com",
+        firmType: "vc",
+        stageFocus: ["series-a", "series-b"],
+        sectorFocus: ["frontier tech", "AI", "existential risk"],
+        partners: [{ name: "James Miller", title: "Partner" }]
+      },
+      {
+        name: "Governance Fund",
+        website: "https://govfund.vc",
+        email: "hello@govfund.vc",
+        firmType: "vc",
+        stageFocus: ["pre-seed", "seed"],
+        sectorFocus: ["AI policy", "AI ethics", "governance"],
+        partners: [{ name: "Maria Rodriguez", title: "Founding Partner" }]
+      }
+    ];
+    return mockVCs.slice(0, limit);
   }
   async convertResultsToEntities(results, limit) {
     const entities = [];
-    const { RegexMXValidator: RegexMXValidator2 } = await Promise.resolve().then(() => (init_RegexMXValidator(), exports_RegexMXValidator));
-    const validator = new RegexMXValidator2;
+    const validator = new RegexMXValidator;
     for (const result of results.slice(0, limit)) {
       const email = result.email || result.contactEmail;
       if (email) {
@@ -12027,8 +12737,8 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
       }
       const entity = new VCEntity({
         name: result.name || result.firmName || "Unknown VC",
-        website: result.website || result.url || undefined,
-        email: email ?? undefined,
+        website: result.website || result.url,
+        email: email || undefined,
         location: {
           city: result.city || null,
           state: result.state || null,
@@ -12038,9 +12748,11 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
           firmType: result.firmType || "vc",
           stageFocus: result.stageFocus || [],
           sectorFocus: result.sectorFocus || [],
-          partners: result.partners || []
+          partners: result.partners || [],
+          portfolioCompanies: result.portfolio || [],
+          recentInvestments: result.recentInvestments || []
         },
-        status: "Ready for outreach"
+        status: "discovered"
       });
       entities.push(entity);
     }
@@ -12082,7 +12794,8 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
         stageFocus: ["seed", "series-a"],
         sectorFocus: ["AI safety", "AI governance", "AI alignment"],
         partners: [{ name: "Dr. Sarah Chen", title: "Managing Partner" }],
-        recentInvestments: ["SafeAI Systems", "Alignment Labs"],
+        recentInvestments: [{ company: "SafeAI Systems", date: "2024-01", stage: "Seed" }, { company: "Alignment Labs", date: "2024-03", stage: "Seed" }],
+        portfolioCompanies: ["SafeAI Systems", "Alignment Labs"],
         painPoints: ["AI governance frameworks", "technical safety standards"],
         governanceSignals: ["Active in AI safety community", "Published governance research"]
       },
@@ -12094,7 +12807,8 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
         stageFocus: ["series-a", "series-b"],
         sectorFocus: ["frontier tech", "AI", "existential risk"],
         partners: [{ name: "James Miller", title: "Partner" }],
-        recentInvestments: ["Guardian AI", "Future Systems"],
+        recentInvestments: [{ company: "Guardian AI", date: "2024-02", stage: "Series A" }, { company: "Future Systems", date: "2024-04", stage: "Series B" }],
+        portfolioCompanies: ["Guardian AI", "Future Systems"],
         painPoints: ["scalable oversight", "risk assessment"],
         governanceSignals: ["Focus on responsible innovation"]
       },
@@ -12106,7 +12820,8 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
         stageFocus: ["pre-seed", "seed"],
         sectorFocus: ["AI policy", "AI ethics", "governance"],
         partners: [{ name: "Maria Rodriguez", title: "Founding Partner" }],
-        recentInvestments: ["PolicyAI", "EthicalAI"],
+        recentInvestments: [{ company: "PolicyAI", date: "2024-01", stage: "Seed" }, { company: "EthicalAI", date: "2024-03", stage: "Pre-seed" }],
+        portfolioCompanies: ["PolicyAI", "EthicalAI"],
         painPoints: ["regulatory compliance", "ethical frameworks"],
         governanceSignals: ["Policy-focused thesis"]
       }
@@ -12117,12 +12832,12 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
       email: data.email,
       location: { city: "San Francisco", state: "CA", country: "US" },
       typeData: {
-        firmType: data.firmType,
+        firmType: data.firmType || "vc",
         stageFocus: data.stageFocus,
         sectorFocus: data.sectorFocus,
         partners: data.partners,
-        portfolioCompanies: data.recentInvestments,
-        recentInvestments: data.recentInvestments.map((c) => ({ company: c, date: "2024-01", stage: "Seed" }))
+        portfolioCompanies: data.portfolioCompanies,
+        recentInvestments: data.recentInvestments
       },
       personalizationContext: {
         painPoints: data.painPoints,
@@ -12140,9 +12855,6 @@ class PersonalizationStrategy {
     this.config = config;
     this.name = "base-personalization";
   }
-  async personalize(entity) {
-    throw new Error("Not implemented");
-  }
   getName() {
     return this.name;
   }
@@ -12159,7 +12871,7 @@ class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
     const municipalEntity = entity;
     const contact = municipalEntity.getPrimaryContact();
     const recipientName = contact?.name || "Tania";
-    const companyName = entity.name.replace("Municipalidad de ", "").replace("Municipalidad de ", "");
+    const companyName = entity.name.replace("Municipalidad de ", "");
     const painPoints = municipalEntity.personalizationContext?.painPoints || municipalEntity.typeData?.painPoints || ["gobernanza de IA", "transformaci\xF3n digital"];
     const subject = this.generateSubject(municipalEntity, companyName);
     let emailHtml = `<!-- Email template for ${entity.name} -->`;
@@ -12384,16 +13096,17 @@ class VCPersonalizationStrategy extends PersonalizationStrategy {
   }
   generateValueProposition(entity) {
     const stage = entity.typeData?.stageFocus?.[0] || "early-stage";
-    const sectors = entity.typeData?.sectorFocus?.slice(0, 2) || ["AI", "governance"];
+    const sectors = (entity.typeData?.sectorFocus || ["AI", "governance"]).slice(0, 2);
     return `Alygn provides the governance infrastructure needed for ${stage} ${sectors.join("/")} investments.`;
   }
   performQualityCheck(entity) {
+    const personalizationContext = entity.personalizationContext || {};
     const checks = {
-      hasSpecificGreeting: entity.personalizationContext?.partnerName !== null,
-      hasVCSpecificHook: !(entity.personalizationContext?.tailoredHook || "").includes("AI safety standards"),
-      hasUniquePainPoints: entity.personalizationContext?.painPoints?.length > 0,
-      hasPortfolioReference: (entity.personalizationContext?.portfolioReferences || []).length > 0,
-      hasPersonalizedPS: (entity.personalizationContext?.personalizedPS || "").length > 0
+      hasSpecificGreeting: personalizationContext.partnerName !== null,
+      hasVCSpecificHook: !(personalizationContext.tailoredHook || "").includes("AI safety standards"),
+      hasUniquePainPoints: (personalizationContext.painPoints || []).length > 0,
+      hasPortfolioReference: (personalizationContext.portfolioReferences || []).length > 0,
+      hasPersonalizedPS: (personalizationContext.personalizedPS || "").length > 0
     };
     const passed = Object.values(checks).every((check) => check);
     if (!passed) {
@@ -12406,8 +13119,9 @@ class VCPersonalizationStrategy extends PersonalizationStrategy {
   async personalizeDryRun(entity) {
     console.log(`\u2728 [DRY RUN] Personalizing email for VC: ${entity.name}...`);
     const vcEntity = entity;
-    const subject = this.generateSubject(vcEntity, vcEntity.typeData?.portfolioCompanies || []);
-    const painPoints = this.generateUniquePainPoints(vcEntity, vcEntity.typeData?.portfolioCompanies || []);
+    const portfolioCompanies = vcEntity.typeData?.portfolioCompanies || [];
+    const subject = this.generateSubject(vcEntity, portfolioCompanies);
+    const painPoints = this.generateUniquePainPoints(vcEntity, portfolioCompanies);
     const mockEmail = {
       subject,
       html: `<!-- HTML email would be generated here -->`,
@@ -12438,9 +13152,6 @@ class ResearchStrategy {
   constructor(config = {}) {
     this.config = config;
     this.name = "base-research";
-  }
-  async research(entity) {
-    throw new Error("Not implemented");
   }
   getName() {
     return this.name;
@@ -12580,7 +13291,8 @@ class MunicipalResearchStrategy extends ResearchStrategy {
 }
 
 // src/strategies/research/VCResearchStrategy.ts
-import fs2 from "fs";
+import fs5 from "fs";
+import path5 from "path";
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/research";
 
 class VCResearchStrategy extends ResearchStrategy {
@@ -12591,12 +13303,12 @@ class VCResearchStrategy extends ResearchStrategy {
   async research(entity) {
     console.log(`\uD83D\uDCDA Researching VC: ${entity.name}...`);
     const cacheFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-result.json`;
-    if (fs2.existsSync(cacheFile)) {
+    if (fs5.existsSync(cacheFile)) {
       console.log(`   \uD83D\uDCC1 Found cached research results`);
-      const cached = JSON.parse(fs2.readFileSync(cacheFile, "utf8"));
+      const cached = JSON.parse(fs5.readFileSync(cacheFile, "utf8"));
       if (cached.research) {
         console.log(`   \u2705 Using cached research`);
-        fs2.unlinkSync(cacheFile);
+        fs5.unlinkSync(cacheFile);
         return this.applyResearch(entity, cached.research);
       }
     }
@@ -12614,7 +13326,7 @@ class VCResearchStrategy extends ResearchStrategy {
       requiredTools: ["web_search", "web_fetch"],
       instructions: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ""}. Use web_search to find: investment thesis, portfolio companies, key partners, recent investments, pain points, governance signals. Return JSON with: thesis, portfolio, partners, recentInvestments, painPoints, governanceSignals, whyAlygn. Save to ${cacheFile}`
     };
-    fs2.writeFileSync(requestFile, JSON.stringify(request, null, 2));
+    fs5.writeFileSync(requestFile, JSON.stringify(request, null, 2));
     console.log(`   \u23F3 No cached research found`);
     console.log(`   \uD83D\uDCDD Wrote request file: ${requestFile}`);
     console.log(`   \uD83D\uDCE4 To execute research:`);
@@ -12700,14 +13412,14 @@ class VCResearchStrategy extends ResearchStrategy {
   }
   async researchViaAPI(entity, cacheFile) {
     try {
-      const configPath = path.resolve(__dirname, "../../../config/credentials.json");
+      const configPath = path5.resolve(__dirname, "../../../config/credentials.json");
       let credentials = {};
-      if (fs2.existsSync(configPath)) {
-        credentials = JSON.parse(fs2.readFileSync(configPath, "utf8"));
+      if (fs5.existsSync(configPath)) {
+        credentials = JSON.parse(fs5.readFileSync(configPath, "utf8"));
       } else {
-        const legacyPath = path.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-        if (fs2.existsSync(legacyPath)) {
-          credentials = JSON.parse(fs2.readFileSync(legacyPath, "utf8"));
+        const legacyPath = path5.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+        if (fs5.existsSync(legacyPath)) {
+          credentials = JSON.parse(fs5.readFileSync(legacyPath, "utf8"));
         }
       }
       const apiKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
@@ -12749,11 +13461,12 @@ class VCResearchStrategy extends ResearchStrategy {
       } catch {
         throw new Error("Failed to parse API response");
       }
-      fs2.writeFileSync(cacheFile, JSON.stringify({ research, timestamp: new Date().toISOString() }, null, 2));
+      fs5.writeFileSync(cacheFile, JSON.stringify({ research, timestamp: new Date().toISOString() }, null, 2));
       console.log(`   \u2705 API research complete`);
       return this.applyResearch(entity, research);
     } catch (error) {
-      console.error(`   \u274C API failed: ${error.message}`);
+      const err = error;
+      console.error(`   \u274C API failed: ${err.message}`);
       console.log(`   \uD83D\uDCE4 Falling back to request file pattern`);
       return this.fallbackResearch(entity);
     }
@@ -12761,8 +13474,8 @@ class VCResearchStrategy extends ResearchStrategy {
 }
 
 // src/strategies/sending/SendingStrategy.ts
-import fs4 from "fs";
-import path4 from "path";
+import fs7 from "fs";
+import path7 from "path";
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/sending";
 
 class SendingStrategy {
@@ -12792,21 +13505,22 @@ class SendingStrategy {
       const { EmailService: EmailService2 } = await Promise.resolve().then(() => (init_EmailService(), exports_EmailService));
       this.emailService = new EmailService2(providerType, providerConfig);
     } catch (err) {
-      console.warn("   \u26A0\uFE0F  Could not load EmailService:", err.message);
+      const error = err;
+      console.warn("   \u26A0\uFE0F  Could not load EmailService:", error.message);
     }
     if (this.config.testEmail && this.emailService) {
-      this.emailService?.setTestEmail?.(this.config.testEmail);
+      this.emailService.setTestEmail(this.config.testEmail);
     }
   }
   loadCredentials() {
     try {
-      const configPath = path4.resolve(__dirname, "../../../config/credentials.json");
-      if (fs4.existsSync(configPath)) {
-        return JSON.parse(fs4.readFileSync(configPath, "utf8"));
+      const configPath = path7.resolve(__dirname, "../../../config/credentials.json");
+      if (fs7.existsSync(configPath)) {
+        return JSON.parse(fs7.readFileSync(configPath, "utf8"));
       }
-      const legacyPath = path4.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-      if (fs4.existsSync(legacyPath)) {
-        return JSON.parse(fs4.readFileSync(legacyPath, "utf8"));
+      const legacyPath = path7.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+      if (fs7.existsSync(legacyPath)) {
+        return JSON.parse(fs7.readFileSync(legacyPath, "utf8"));
       }
     } catch (error) {
       console.error("\u26A0\uFE0F  Failed to load credentials:", error.message);
@@ -12882,7 +13596,7 @@ class SendingStrategy {
     }
     console.log(`\uD83D\uDCE7 Sending email to ${entity.name} (${entity.email})...`);
     try {
-      const result = await this.emailService?.sendEmail?.(payload) || { success: false, error: "Email service not initialized" };
+      const result = await this.emailService?.sendEmail(payload) || { success: false, error: "Email service not initialized" };
       if (result.success) {
         entity.status = "sent";
         console.log(`   \u2705 Email sent (ID: ${result.messageId})`);
@@ -12896,10 +13610,11 @@ class SendingStrategy {
         provider: result.provider
       };
     } catch (error) {
-      console.error(`   \u274C Send error: ${error.message}`);
+      const err = error;
+      console.error(`   \u274C Send error: ${err.message}`);
       return {
         success: false,
-        error: error.message
+        error: err.message
       };
     }
   }
@@ -12919,19 +13634,13 @@ class SendingStrategy {
 // src/strategies/validation/ValidationStrategy.ts
 class ValidationStrategy {
   config;
-  validator;
+  validatorType;
   constructor(config = {}) {
     this.config = config;
-    this.validator = null;
+    this.validatorType = config.validatorType || "regex-mx";
   }
-  initialize() {
-    const validatorType = this.config.validatorType || "regex-mx";
-    this.validator = { type: validatorType };
-  }
+  initialize() {}
   async validate(entity) {
-    if (!this.validator) {
-      this.initialize();
-    }
     if (!entity.email) {
       return {
         result: "unknown",
@@ -12943,9 +13652,8 @@ class ValidationStrategy {
     console.log(`\uD83D\uDD0D Validating email: ${entity.email}`);
     try {
       const { EmailValidatorFactory: EmailValidatorFactory2 } = await Promise.resolve().then(() => (init_EmailValidatorFactory(), exports_EmailValidatorFactory));
-      const validatorType = this.config.validatorType || "regex-mx";
-      const validatorConfig = validatorType === "zerobounce" ? { apiKey: process.env.ZEROBOUNCE_API_KEY } : {};
-      const validator = EmailValidatorFactory2.create(validatorType, validatorConfig);
+      const validatorConfig = this.validatorType === "zerobounce" ? { apiKey: process.env.ZEROBOUNCE_API_KEY } : {};
+      const validator = EmailValidatorFactory2.create(this.validatorType, validatorConfig);
       const result = await validator.validate(entity.email);
       entity.setEmailValidation(result);
       if (result.result === "valid") {
@@ -12956,12 +13664,13 @@ class ValidationStrategy {
       }
       return result;
     } catch (error) {
-      console.error(`   \u274C Validation failed: ${error.message}`);
+      const err = error;
+      console.error(`   \u274C Validation failed: ${err.message}`);
       return {
         result: "error",
         confidence: 0,
-        details: { error: error.message },
-        validator: this.validator?.type || "unknown"
+        details: { error: err.message },
+        validator: this.validatorType
       };
     }
   }
@@ -13005,11 +13714,30 @@ class Pipeline {
   }
   getStateFilePath(phase) {
     const timestamp = new Date().toISOString().split("T")[0];
-    return `/tmp/alygn-${this.type}-${phase}-${timestamp}.json`;
+    const stateSubFolder = this.getStateSubFolder(phase);
+    return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${stateSubFolder}/alygn-${this.type}-${phase}-${timestamp}.json`;
+  }
+  getStateSubFolder(phase) {
+    const subFolderType = this.type === "vc" ? "vc" : "muni";
+    switch (phase) {
+      case "discovered":
+        return `${subFolderType}-discover`;
+      case "validated":
+        return `${subFolderType}-validate`;
+      case "researched":
+        return `${subFolderType}-research`;
+      case "personalized":
+        return `${subFolderType}-personalize`;
+      case "sent":
+        return `${subFolderType}-sent`;
+      default:
+        console.warn("   \u26A0\uFE0F  Unknown phase for state file naming, using generic format [NOTE: This may not match DEPLOYMENT.md structure and may fail to load in later stages]");
+        return `${subFolderType}-${phase}`;
+    }
   }
   saveState(phase, data) {
     const filePath = this.getStateFilePath(phase);
-    fs5.writeFileSync(filePath, JSON.stringify({
+    fs8.writeFileSync(filePath, JSON.stringify({
       timestamp: new Date().toISOString(),
       type: this.type,
       phase,
@@ -13018,11 +13746,11 @@ class Pipeline {
     return filePath;
   }
   loadState(filePath) {
-    if (!fs5.existsSync(filePath)) {
+    if (!fs8.existsSync(filePath)) {
       return null;
     }
     try {
-      const content = fs5.readFileSync(filePath, "utf8");
+      const content = fs8.readFileSync(filePath, "utf8");
       return JSON.parse(content);
     } catch (error) {
       console.error(`Failed to load state: ${error.message}`);
@@ -13032,7 +13760,10 @@ class Pipeline {
   loadLatestState(phase) {
     const pattern = new RegExp(`alygn-${this.type}-${phase}-.*\\.json$`);
     const tmpDir = "/tmp";
-    const files = fs5.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path5.join(tmpDir, f)).sort((a, b) => fs5.statSync(b).mtime - fs5.statSync(a).mtime);
+    let files = [];
+    try {
+      files = fs8.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path8.join(tmpDir, f)).sort((a, b) => fs8.statSync(b).mtimeMs - fs8.statSync(a).mtimeMs);
+    } catch {}
     if (files.length === 0) {
       return null;
     }
@@ -13104,12 +13835,12 @@ class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e) => this.createEntityFromData(e)).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     } else if (entities.length === 0) {
-      const state = this.loadLatestState("discovered");
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e) => this.createEntityFromData(e)).filter(Boolean);
-      }
+      const state = this.loadLatestState("validated");
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     }
     entities = entities.slice(0, limit);
     if (dryRun) {
@@ -13162,12 +13893,12 @@ class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e) => this.createEntityFromData(e)).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState("validated");
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e) => this.createEntityFromData(e)).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     }
     entities = entities.slice(0, limit);
     const strategy = this.registry.get(this.type, "research");
@@ -13217,12 +13948,12 @@ class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e) => this.createEntityFromData(e)).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState("researched");
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e) => this.createEntityFromData(e)).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     }
     entities = entities.slice(0, limit);
     entities = await this.filterAlreadySent(entities);
@@ -13286,12 +14017,12 @@ class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e) => this.createEntityFromData(e)).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState("personalized");
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e) => this.createEntityFromData(e)).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities;
+      entities = stateEntities?.map((e) => this.createEntityFromData(e)).filter((e) => e !== null) || [];
     }
     entities = await this.filterAlreadySent(entities);
     entities = entities.slice(0, limit);
@@ -13329,12 +14060,16 @@ class Pipeline {
   }
   async runFullPipeline(options) {
     const { dryRun, limit, region, input } = options;
+    const useDirectApi = process.env.USE_DIRECT_API === "true";
+    const isModeB = dryRun && useDirectApi;
     console.log(`
-\uD83D\uDD04 Running full pipeline (${this.type})
+\uD83D\uDD04 Running full pipeline (${this.type})`);
+    console.log(`   Mode: ${isModeB ? "\uD83D\uDE80 MODE B (Dry-Run + Direct API)" : dryRun ? "\uD83D\uDCDD Dry-Run" : "\u26A1 Production"}
 `);
     const results = {
       dryRun,
       type: this.type,
+      mode: isModeB ? "dry-run-direct-api" : dryRun ? "dry-run" : "production",
       stages: {},
       summary: {
         discovered: 0,
@@ -13344,6 +14079,12 @@ class Pipeline {
         sent: 0
       }
     };
+    if (isModeB) {
+      console.log("   \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557");
+      console.log("   \u2551  MODE B: API calls + DB simulation + Discord reporting   \u2551");
+      console.log(`   \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
+`);
+    }
     const discoverResult = await this.runDiscover({ dryRun, limit, region });
     results.stages.discover = discoverResult;
     results.summary.discovered = discoverResult.discovered || 0;

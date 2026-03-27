@@ -1,19 +1,20 @@
 /**
  * MunicipalResearchStrategy - Research municipalities for personalization
  */
-import { MunicipalEntity, COSTA_RICA_CANTONES } from '../../entities/MunicipalEntity.js';
-import { ResearchStrategy } from './ResearchStrategy.js';
+import { MunicipalEntity } from '../../entities/MunicipalEntity';
+import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
+import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
 
 export class MunicipalResearchStrategy extends ResearchStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
     this.name = 'municipal-research';
   }
-  
+
   /**
    * Research municipality
    */
-  async research(entity: MunicipalEntity): Promise<{ success: boolean; research: Record<string, unknown>; entity: MunicipalEntity }> {
+  async research(entity: MunicipalEntity): Promise<IResearchResult> {
     console.log(`📚 Researching municipality: ${entity.name}...`);
     
     // For Costa Rica, use known data
@@ -24,11 +25,11 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
     // Generic research
     return this.researchGeneric(entity);
   }
-  
+
   /**
    * Research Costa Rica municipality
    */
-  researchCostaRica(entity: MunicipalEntity): { success: boolean; research: Record<string, unknown>; entity: MunicipalEntity } {
+  private researchCostaRica(entity: MunicipalEntity): IResearchResult {
     const cantonName = entity.name.replace('Municipalidad de ', '');
     const canton = COSTA_RICA_CANTONES.find(c => c.name === cantonName);
     
@@ -84,11 +85,11 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
       entity
     };
   }
-  
+
   /**
    * Generic municipality research
    */
-  researchGeneric(entity: MunicipalEntity): { success: boolean; research: Record<string, unknown>; entity: MunicipalEntity } {
+  private researchGeneric(entity: MunicipalEntity): IResearchResult {
     const research = {
       initiatives: [
         { name: 'Digital Transformation', description: 'Modernizing municipal services', status: 'active' },
@@ -120,11 +121,11 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
       entity
     };
   }
-  
+
   /**
    * Dry-run research
    */
-  async researchDryRun(entity: MunicipalEntity): Promise<{ success: boolean; research: Record<string, unknown>; entity: MunicipalEntity }> {
+  async researchDryRun(entity: MunicipalEntity): Promise<IResearchResult> {
     console.log(`📚 [DRY RUN] Researching municipality: ${entity.name}...`);
     
     const mockResearch = {
@@ -152,11 +153,11 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
       entity
     };
   }
-  
+
   /**
    * Generate key contacts
    */
-  generateKeyContacts(municipalityName: string): Array<{ name: string; title: string; department: string; isDecisionMaker: boolean; focusAreas: string[] }> {
+  private generateKeyContacts(municipalityName: string): Array<{ name: string; title: string; department: string; isDecisionMaker: boolean; focusAreas: string[] }> {
     return [
       {
         name: 'Municipal Manager',

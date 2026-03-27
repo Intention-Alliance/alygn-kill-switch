@@ -3,7 +3,7 @@ description: Wave-based VC outreach with state tracking and phase management
 metadata:
   project: alygn
   type: vc-outreach
-  wave: 1
+  wave: {{ LATEST_WAVE_NUMBER + 1 }}
   skill: alygn-outreach
 
 # Wave State File Schema

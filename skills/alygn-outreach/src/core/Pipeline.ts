@@ -4,18 +4,18 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { MunicipalEntity } from '../entities/MunicipalEntity.js';
-import { VCEntity } from '../entities/VCEntity.js';
-import { OutreachEntity } from '../entities/OutreachEntity.js';
-import { StrategyRegistry } from '../strategies/StrategyRegistry.js';
-import { MunicipalDiscoveryStrategy } from '../strategies/discovery/MunicipalDiscoveryStrategy.js';
-import { VCDiscoveryStrategy } from '../strategies/discovery/VCDiscoveryStrategy.js';
-import { MunicipalPersonalizationStrategy } from '../strategies/personalization/MunicipalPersonalizationStrategy.js';
-import { VCPersonalizationStrategy } from '../strategies/personalization/VCPersonalizationStrategy.js';
-import { MunicipalResearchStrategy } from '../strategies/research/MunicipalResearchStrategy.js';
-import { VCResearchStrategy } from '../strategies/research/VCResearchStrategy.js';
-import { SendingStrategy } from '../strategies/sending/SendingStrategy.js';
-import { ValidationStrategy } from '../strategies/validation/ValidationStrategy.js';
+import { MunicipalEntity } from '../entities/MunicipalEntity';
+import { OutreachEntity } from '../entities/OutreachEntity';
+import { VCEntity } from '../entities/VCEntity';
+import { StrategyRegistry } from '../strategies/StrategyRegistry';
+import { MunicipalDiscoveryStrategy } from '../strategies/discovery/MunicipalDiscoveryStrategy';
+import { VCDiscoveryStrategy } from '../strategies/discovery/VCDiscoveryStrategy';
+import { MunicipalPersonalizationStrategy } from '../strategies/personalization/MunicipalPersonalizationStrategy';
+import { VCPersonalizationStrategy } from '../strategies/personalization/VCPersonalizationStrategy';
+import { MunicipalResearchStrategy } from '../strategies/research/MunicipalResearchStrategy';
+import { VCResearchStrategy } from '../strategies/research/VCResearchStrategy';
+import { SendingStrategy } from '../strategies/sending/SendingStrategy';
+import { ValidationStrategy } from '../strategies/validation/ValidationStrategy';
 
 interface PipelineOptions {
   dryRun?: boolean;
@@ -39,6 +39,11 @@ interface StageResult {
   stateFile?: string;
   skipped?: boolean;
   reason?: string;
+}
+
+interface EntityData {
+  type?: string;
+  [key: string]: unknown;
 }
 
 export class Pipeline {
@@ -86,7 +91,30 @@ export class Pipeline {
    */
   getStateFilePath(phase: string): string {
     const timestamp = new Date().toISOString().split('T')[0];
-    return `/tmp/alygn-${this.type}-${phase}-${timestamp}.json`;
+    const stateSubFolder = this.getStateSubFolder(phase);
+    return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${stateSubFolder}/alygn-${this.type}-${phase}-${timestamp}.json`;
+  }
+
+  /**
+   * Get the state sub-folder according to the DEPLOYMENT.md
+   */
+  getStateSubFolder(phase: string): string {
+    const subFolderType = this.type === 'vc' ? 'vc' : 'muni';
+    switch (phase) {
+      case 'discovered':
+        return  `${subFolderType}-discover`;
+      case 'validated':
+        return `${subFolderType}-validate`;
+      case 'researched':
+        return `${subFolderType}-research`;
+      case 'personalized':
+        return `${subFolderType}-personalize`;
+      case 'sent':
+        return `${subFolderType}-sent`;
+      default:
+        console.warn('   ⚠️  Unknown phase for state file naming, using generic format [NOTE: This may not match DEPLOYMENT.md structure and may fail to load in later stages]');
+        return `${subFolderType}-${phase}`;
+    }
   }
   
   /**
@@ -127,10 +155,15 @@ export class Pipeline {
     const pattern = new RegExp(`alygn-${this.type}-${phase}-.*\\.json$`);
     const tmpDir = '/tmp';
     
-    const files = fs.readdirSync(tmpDir)
-      .filter(f => pattern.test(f))
-      .map(f => path.join(tmpDir, f))
-      .sort((a, b) => fs.statSync(b).mtime - fs.statSync(a).mtime);
+    let files: string[] = [];
+    try {
+      files = fs.readdirSync(tmpDir)
+        .filter(f => pattern.test(f))
+        .map(f => path.join(tmpDir, f))
+        .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+    } catch {
+      // Directory may not exist or be readable
+    }
     
     if (files.length === 0) {
       return null;
@@ -211,7 +244,7 @@ export class Pipeline {
   /**
    * Create proper entity instance from plain data
    */
-  createEntityFromData(data: Record<string, unknown>): OutreachEntity | null {
+  createEntityFromData(data: EntityData): OutreachEntity | null {
     if (!data) return null;
     
     const entityType = (data.type as string) || this.type;
@@ -234,12 +267,12 @@ export class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     } else if (entities.length === 0) {
-      const state = this.loadLatestState('discovered');
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean);
-      }
+      const state = this.loadLatestState('validated');
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     }
     
     entities = entities.slice(0, limit);
@@ -307,21 +340,24 @@ export class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState('validated');
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     }
     
     entities = entities.slice(0, limit);
     
-    const strategy = this.registry.get(this.type, 'research') as { research: (entity: OutreachEntity) => Promise<Record<string, unknown>>; researchDryRun?: (entity: OutreachEntity) => Promise<Record<string, unknown>> };
+    const strategy = this.registry.get(this.type, 'research') as { 
+      research: (entity: OutreachEntity) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }>; 
+      researchDryRun?: (entity: OutreachEntity) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }> 
+    };
     const results: Array<Record<string, unknown>> = [];
     
     for (const entity of entities) {
-      let result: Record<string, unknown>;
+      let result: { success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string };
       if (dryRun && strategy.researchDryRun) {
         result = await strategy.researchDryRun(entity);
       } else {
@@ -358,7 +394,7 @@ export class Pipeline {
     
     try {
       // Use local SentEmailTracker
-      const { SentEmailTracker } = await import('../lib/SentEmailTracker.js');
+      const { SentEmailTracker } = await import('../lib/SentEmailTracker');
       const tracker = new SentEmailTracker();
       const existing = tracker.getSentEntry(entity.email, '', entity.type);
       if (existing) {
@@ -379,12 +415,12 @@ export class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState('researched');
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     }
     
     entities = entities.slice(0, limit);
@@ -405,11 +441,14 @@ export class Pipeline {
       };
     }
     
-    const strategy = this.registry.get(this.type, 'personalize') as { personalize: (entity: OutreachEntity) => Promise<Record<string, unknown>>; personalizeDryRun?: (entity: OutreachEntity) => Promise<Record<string, unknown>> };
+    const strategy = this.registry.get(this.type, 'personalize') as { 
+      personalize: (entity: OutreachEntity) => Promise<{ success: boolean; subject?: string; entity?: OutreachEntity; error?: string }>; 
+      personalizeDryRun?: (entity: OutreachEntity) => Promise<{ success: boolean; subject?: string; entity?: OutreachEntity; error?: string }> 
+    };
     const results: Array<Record<string, unknown>> = [];
     
     for (const entity of entities) {
-      let result: Record<string, unknown>;
+      let result: { success: boolean; subject?: string; entity?: OutreachEntity; error?: string };
       if (dryRun && strategy.personalizeDryRun) {
         result = await strategy.personalizeDryRun(entity);
       } else {
@@ -469,12 +508,12 @@ export class Pipeline {
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
-      entities = state?.data?.entities?.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean) || [];
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     } else if (entities.length === 0) {
       const state = this.loadLatestState('personalized');
-      if (state?.data?.entities) {
-        entities = state.data.entities.map((e: Record<string, unknown>) => this.createEntityFromData(e)!).filter(Boolean);
-      }
+      const stateEntities = state?.data?.entities as EntityData[] | undefined;
+      entities = stateEntities?.map((e: EntityData) => this.createEntityFromData(e)).filter((e): e is OutreachEntity => e !== null) || [];
     }
     
     // Filter out already-sent entities
@@ -523,12 +562,16 @@ export class Pipeline {
    */
   async runFullPipeline(options: { dryRun: boolean; limit: number; region?: string | null; input?: string | null }): Promise<Record<string, unknown>> {
     const { dryRun, limit, region, input } = options;
+    const useDirectApi = process.env.USE_DIRECT_API === 'true';
+    const isModeB = dryRun && useDirectApi;
     
-    console.log(`\n🔄 Running full pipeline (${this.type})\n`);
+    console.log(`\n🔄 Running full pipeline (${this.type})`);
+    console.log(`   Mode: ${isModeB ? '🚀 MODE B (Dry-Run + Direct API)' : (dryRun ? '📝 Dry-Run' : '⚡ Production')}\n`);
     
     const results: Record<string, unknown> = {
       dryRun,
       type: this.type,
+      mode: isModeB ? 'dry-run-direct-api' : (dryRun ? 'dry-run' : 'production'),
       stages: {},
       summary: {
         discovered: 0,
@@ -538,6 +581,13 @@ export class Pipeline {
         sent: 0
       }
     };
+    
+    // Mode B: Show enhanced header
+    if (isModeB) {
+      console.log('   ╔══════════════════════════════════════════════════════════╗');
+      console.log('   ║  MODE B: API calls + DB simulation + Discord reporting   ║');
+      console.log('   ╚══════════════════════════════════════════════════════════╝\n');
+    }
     
     // 1. Discover
     const discoverResult = await this.runDiscover({ dryRun, limit, region });
