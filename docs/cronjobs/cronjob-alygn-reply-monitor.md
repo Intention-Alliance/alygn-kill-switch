@@ -9,7 +9,7 @@
 ### Phase 1: Check Gmail
 
 - Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --action=check-replies --since={last_check}
-- Scan: alygn@andler.dev inbox for new replies
+- Scan: <alygn@andler.dev> inbox for new replies
 - Filter: Replies to outbound outreach emails only
 
 ### Phase 2: Categorize Replies

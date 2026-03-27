@@ -12,8 +12,9 @@
 The Wave Date Tracking System provides batch-level tracking for outreach campaigns, enabling precise scheduling, state management, and recovery workflows for both Venture Capital (VC) and Municipal outreach operations.
 
 **⚠️ CRITICAL:** VC and Municipal workflows are **completely isolated**. Each type has:
+
 - Separate cronjob schedules (no overlap)
-- Separate wave files in dedicated directories (`/tmp/waves/vc/` vs `/tmp/waves/municipal/`)
+- Separate wave files in dedicated directories (`$HOME/.openclaw/workspace/reports/alygn/vc-waves/` vs `$HOME/.openclaw/workspace/reports/alygn/muni-waves/`)
 - Separate databases (Notion for VC, Supabase for Municipal)
 - Separate job functions (vcSendJob vs municipalSendJob)
 
@@ -26,8 +27,9 @@ The Wave Date Tracking System provides batch-level tracking for outreach campaig
 ### 1.1 Wave File Schema
 
 **File Locations:**
-- VC waves: `/tmp/waves/vc/wave-{date}-vc.json`
-- Municipal waves: `/tmp/waves/municipal/wave-{date}-municipal.json`
+
+- VC waves: `$HOME/.openclaw/workspace/reports/alygn/vc-waves/wave-{date}-vc.json`
+- Municipal waves: `$HOME/.openclaw/workspace/reports/alygn/muni-waves/wave-{date}-municipal.json`
 
 ```json
 {
@@ -62,7 +64,14 @@ The Wave Date Tracking System provides batch-level tracking for outreach campaig
     },
     "status": {
       "type": "string",
-      "enum": ["researched", "drafted", "approved", "sent", "failed", "partial"],
+      "enum": [
+        "researched",
+        "drafted",
+        "approved",
+        "sent",
+        "failed",
+        "partial"
+      ],
       "description": "Current state of the wave"
     },
     "sentAt": {
@@ -174,7 +183,16 @@ The Wave Date Tracking System provides batch-level tracking for outreach campaig
         },
         "status": {
           "type": "string",
-          "enum": ["pending", "drafted", "queued", "sent", "delivered", "failed", "bounced", "replied"],
+          "enum": [
+            "pending",
+            "drafted",
+            "queued",
+            "sent",
+            "delivered",
+            "failed",
+            "bounced",
+            "replied"
+          ],
           "description": "Individual entry status"
         },
         "sentAt": {
@@ -301,15 +319,15 @@ The Wave Date Tracking System provides batch-level tracking for outreach campaig
 
 ### 2.2 State Definitions
 
-| State | Description | Entry Trigger | Exit Actions |
-|-------|-------------|---------------|--------------|
-| **researched** | Initial state after discovery | EOD Research job creates wave file with targets | Batch created, ready for drafting |
-| **drafted** | Emails personalized and generated | Morning Draft job processes wave | HTML emails written to disk |
-| **approved** | Final review complete | Manual approval or auto-approve after validation | Queue for sending |
-| **sent** | All emails dispatched successfully | Hourly send job completes batch | Update Notion/Supabase records |
-| **partial** | Some emails sent, some failed | Send job encounters soft failures | Queue for recovery |
-| **failed** | Critical error, no emails sent | Send job encounters hard failure | Manual intervention required |
-| **recovered** | Failed entries reprocessed | Afternoon Recovery job | Retry failed sends |
+| State          | Description                        | Entry Trigger                                    | Exit Actions                      |
+| -------------- | ---------------------------------- | ------------------------------------------------ | --------------------------------- |
+| **researched** | Initial state after discovery      | EOD Research job creates wave file with targets  | Batch created, ready for drafting |
+| **drafted**    | Emails personalized and generated  | Morning Draft job processes wave                 | HTML emails written to disk       |
+| **approved**   | Final review complete              | Manual approval or auto-approve after validation | Queue for sending                 |
+| **sent**       | All emails dispatched successfully | Hourly send job completes batch                  | Update Notion/Supabase records    |
+| **partial**    | Some emails sent, some failed      | Send job encounters soft failures                | Queue for recovery                |
+| **failed**     | Critical error, no emails sent     | Send job encounters hard failure                 | Manual intervention required      |
+| **recovered**  | Failed entries reprocessed         | Afternoon Recovery job                           | Retry failed sends                |
 
 ### 2.3 Entry State Transitions
 
@@ -338,14 +356,15 @@ Any state can transition to:
 
 **Pattern:** `wave-{date}-{type}.json`
 
-| Component | Format | Example |
-|-----------|--------|---------|
-| Prefix | `wave-` | Fixed |
-| Date | `YYYY-MM-DD` | `2026-03-27` |
-| Type | `vc` or `municipal` | Campaign type |
-| Extension | `.json` | JSON format |
+| Component | Format              | Example       |
+| --------- | ------------------- | ------------- |
+| Prefix    | `wave-`             | Fixed         |
+| Date      | `YYYY-MM-DD`        | `2026-03-27`  |
+| Type      | `vc` or `municipal` | Campaign type |
+| Extension | `.json`             | JSON format   |
 
 **Examples:**
+
 - `wave-2026-03-27-vc.json` — VC outreach for March 27, 2026
 - `wave-2026-03-28-municipal.json` — Municipal outreach for March 28, 2026
 
@@ -398,55 +417,55 @@ Any state can transition to:
 
 #### New Properties to Add
 
-| Property | Type | Options/Format | Purpose |
-|----------|------|----------------|---------|
-| **Wave Date** | Date | ISO date | Scheduled send date |
-| **Wave ID** | Text | `wave-YYYY-MM-DD-vc` | Reference to wave file |
-| **Batch Status** | Select | `pending`, `queued`, `sent`, `replied`, `failed` | Individual entry status |
-| **Wave Status** | Select | `researched`, `drafted`, `approved`, `sent`, `failed` | Aggregate wave status |
+| Property         | Type   | Options/Format                                        | Purpose                 |
+| ---------------- | ------ | ----------------------------------------------------- | ----------------------- |
+| **Wave Date**    | Date   | ISO date                                              | Scheduled send date     |
+| **Wave ID**      | Text   | `wave-YYYY-MM-DD-vc`                                  | Reference to wave file  |
+| **Batch Status** | Select | `pending`, `queued`, `sent`, `replied`, `failed`      | Individual entry status |
+| **Wave Status**  | Select | `researched`, `drafted`, `approved`, `sent`, `failed` | Aggregate wave status   |
 
 #### Migration Script
 
 ```javascript
 // notion-wave-migration.js
-const { Client } = require('@notionhq/client');
+const { Client } = require("@notionhq/client");
 
 async function addWaveDateColumn() {
   const notion = new Client({ auth: process.env.NOTION_API_KEY });
-  const databaseId = '2fc33487-4af6-8182-9013-d127ce6778b6';
-  
+  const databaseId = "2fc33487-4af6-8182-9013-d127ce6778b6";
+
   await notion.databases.update({
     database_id: databaseId,
     properties: {
-      'Wave Date': {
-        date: {}
+      "Wave Date": {
+        date: {},
       },
-      'Wave ID': {
-        rich_text: {}
+      "Wave ID": {
+        rich_text: {},
       },
-      'Batch Status': {
+      "Batch Status": {
         select: {
           options: [
-            { name: 'pending', color: 'gray' },
-            { name: 'queued', color: 'yellow' },
-            { name: 'sent', color: 'blue' },
-            { name: 'replied', color: 'green' },
-            { name: 'failed', color: 'red' }
-          ]
-        }
+            { name: "pending", color: "gray" },
+            { name: "queued", color: "yellow" },
+            { name: "sent", color: "blue" },
+            { name: "replied", color: "green" },
+            { name: "failed", color: "red" },
+          ],
+        },
       },
-      'Wave Status': {
+      "Wave Status": {
         select: {
           options: [
-            { name: 'researched', color: 'gray' },
-            { name: 'drafted', color: 'yellow' },
-            { name: 'approved', color: 'purple' },
-            { name: 'sent', color: 'green' },
-            { name: 'failed', color: 'red' }
-          ]
-        }
-      }
-    }
+            { name: "researched", color: "gray" },
+            { name: "drafted", color: "yellow" },
+            { name: "approved", color: "purple" },
+            { name: "sent", color: "green" },
+            { name: "failed", color: "red" },
+          ],
+        },
+      },
+    },
   });
 }
 ```
@@ -475,12 +494,12 @@ CREATE INDEX IF NOT EXISTS idx_batch_status ON municipal_outreach(batch_status);
 
 -- Add constraint for valid batch statuses
 ALTER TABLE municipal_outreach
-ADD CONSTRAINT chk_batch_status 
+ADD CONSTRAINT chk_batch_status
 CHECK (batch_status IN ('pending', 'queued', 'sent', 'replied', 'failed'));
 
 -- Add constraint for valid wave statuses
 ALTER TABLE municipal_outreach
-ADD CONSTRAINT chk_wave_status 
+ADD CONSTRAINT chk_wave_status
 CHECK (wave_status IN ('researched', 'drafted', 'approved', 'sent', 'failed'));
 
 -- Add trigger to auto-populate wave_id from wave_date
@@ -506,28 +525,31 @@ EXECUTE FUNCTION generate_wave_id();
 // verify-migrations.js
 async function verifyMigrations() {
   // Check Notion
-  const notionDb = await notion.databases.retrieve({ 
-    database_id: '2fc33487-4af6-8182-9013-d127ce6778b6' 
+  const notionDb = await notion.databases.retrieve({
+    database_id: "2fc33487-4af6-8182-9013-d127ce6778b6",
   });
-  
-  const requiredProps = ['Wave Date', 'Wave ID', 'Batch Status', 'Wave Status'];
+
+  const requiredProps = ["Wave Date", "Wave ID", "Batch Status", "Wave Status"];
   const existingProps = Object.keys(notionDb.properties);
-  
-  const missingNotion = requiredProps.filter(p => !existingProps.includes(p));
-  
+
+  const missingNotion = requiredProps.filter((p) => !existingProps.includes(p));
+
   // Check Supabase
   const { data, error } = await supabase
-    .from('municipal_outreach')
-    .select('wave_date, wave_id, batch_status, wave_status')
+    .from("municipal_outreach")
+    .select("wave_date, wave_id, batch_status, wave_status")
     .limit(1);
-    
+
   if (error) {
-    console.error('Supabase columns missing:', error);
+    console.error("Supabase columns missing:", error);
   }
-  
+
   return {
-    notion: missingNotion.length === 0 ? 'OK' : `Missing: ${missingNotion.join(', ')}`,
-    supabase: error ? 'FAILED' : 'OK'
+    notion:
+      missingNotion.length === 0
+        ? "OK"
+        : `Missing: ${missingNotion.join(", ")}`,
+    supabase: error ? "FAILED" : "OK",
   };
 }
 ```
@@ -552,32 +574,32 @@ async function vcResearchJob() {
   const tomorrow = getNextBusinessDay();
   const waveId = `wave-${tomorrow}-vc`;
   const waveFile = `/tmp/waves/${waveId}.json`;
-  
+
   // Query Notion for high-priority pending VCs
   const targets = await notion.databases.query({
-    database_id: VC_DB_ID,  // 2fc33487-4af6-8182-9013-d127ce6778b6
+    database_id: VC_DB_ID, // 2fc33487-4af6-8182-9013-d127ce6778b6
     filter: {
       and: [
-        { property: 'Status', select: { equals: 'Pending' } },
-        { property: 'Priority', select: { equals: 'High' } }
-      ]
-    }
+        { property: "Status", select: { equals: "Pending" } },
+        { property: "Priority", select: { equals: "High" } },
+      ],
+    },
   });
-  
+
   const wave = {
     waveId,
     waveDate: tomorrow,
     createdAt: new Date().toISOString(),
-    type: 'vc',
-    status: 'researched',
-    batch: targets.results.map(vc => ({
+    type: "vc",
+    status: "researched",
+    batch: targets.results.map((vc) => ({
       entityId: vc.id,
-      name: vc.properties['Contact Person'].title[0].text.content,
-      email: vc.properties['Contact Email'].email,
-      status: 'pending'
-    }))
+      name: vc.properties["Contact Person"].title[0].text.content,
+      email: vc.properties["Contact Email"].email,
+      status: "pending",
+    })),
   };
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -593,51 +615,52 @@ async function vcResearchJob() {
 async function vcSendJob() {
   const today = getToday();
   const waveFile = `/tmp/waves/wave-${today}-vc.json`;
-  
+
   // Check if wave file exists (may not exist on weekends/holidays)
   if (!fs.existsSync(waveFile)) {
     console.log(`No VC wave for ${today}`);
     return;
   }
-  
-  const wave = JSON.parse(await fs.readFile(waveFile, 'utf8'));
-  
+
+  const wave = JSON.parse(await fs.readFile(waveFile, "utf8"));
+
   // Only process if in correct state
-  if (wave.status !== 'researched' && wave.status !== 'drafted') {
+  if (wave.status !== "researched" && wave.status !== "drafted") {
     console.log(`VC wave already processed: ${wave.status}`);
     return;
   }
-  
+
   for (const entry of wave.batch) {
-    if (entry.status !== 'pending' && entry.status !== 'drafted') continue;
-    
+    if (entry.status !== "pending" && entry.status !== "drafted") continue;
+
     try {
       // Generate personalization if not already done
       if (!entry.personalization) {
         entry.personalization = await generateVcPersonalization(entry.entityId);
       }
-      
+
       // Send email
       await sendVcEmail(entry);
-      entry.status = 'sent';
+      entry.status = "sent";
       entry.sentAt = new Date().toISOString();
-      
     } catch (err) {
-      entry.status = 'failed';
+      entry.status = "failed";
       entry.error = {
         code: err.code,
         message: err.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
+
   // Update aggregate status
-  const failedCount = wave.batch.filter(e => e.status === 'failed').length;
-  wave.status = failedCount === 0 ? 'sent' : 'partial';
-  wave.metadata.successCount = wave.batch.filter(e => e.status === 'sent').length;
+  const failedCount = wave.batch.filter((e) => e.status === "failed").length;
+  wave.status = failedCount === 0 ? "sent" : "partial";
+  wave.metadata.successCount = wave.batch.filter(
+    (e) => e.status === "sent",
+  ).length;
   wave.metadata.failCount = failedCount;
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -653,39 +676,43 @@ async function vcSendJob() {
 async function vcRecoveryJob() {
   const today = getToday();
   const waveFile = `/tmp/waves/wave-${today}-vc.json`;
-  
+
   if (!fs.existsSync(waveFile)) return;
-  
-  const wave = JSON.parse(await fs.readFile(waveFile, 'utf8'));
-  
-  if (wave.status !== 'partial') {
+
+  const wave = JSON.parse(await fs.readFile(waveFile, "utf8"));
+
+  if (wave.status !== "partial") {
     console.log(`No VC recovery needed: ${wave.status}`);
     return;
   }
-  
-  const failedEntries = wave.batch.filter(e => e.status === 'failed');
-  
+
+  const failedEntries = wave.batch.filter((e) => e.status === "failed");
+
   for (const entry of failedEntries) {
     try {
       await resendVcEmail(entry);
-      entry.status = 'sent';
+      entry.status = "sent";
       entry.sentAt = new Date().toISOString();
       entry.error = null;
     } catch (err) {
       entry.error = {
         code: err.code,
         message: err.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
+
   // Update wave status
-  const remainingFailed = wave.batch.filter(e => e.status === 'failed').length;
-  wave.status = remainingFailed === 0 ? 'sent' : 'partial';
-  wave.metadata.successCount = wave.batch.filter(e => e.status === 'sent').length;
+  const remainingFailed = wave.batch.filter(
+    (e) => e.status === "failed",
+  ).length;
+  wave.status = remainingFailed === 0 ? "sent" : "partial";
+  wave.metadata.successCount = wave.batch.filter(
+    (e) => e.status === "sent",
+  ).length;
   wave.metadata.failCount = remainingFailed;
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -706,31 +733,31 @@ async function municipalResearchJob() {
   const tomorrow = getNextBusinessDay();
   const waveId = `wave-${tomorrow}-municipal`;
   const waveFile = `/tmp/waves/${waveId}.json`;
-  
+
   // Query Supabase for pending municipal targets
   const { data: targets, error } = await supabase
-    .from('municipal_outreach')
-    .select('*')
-    .eq('status', 'pending')
-    .eq('priority', 'high')
-    .limit(12);  // Max batch size
-    
+    .from("municipal_outreach")
+    .select("*")
+    .eq("status", "pending")
+    .eq("priority", "high")
+    .limit(12); // Max batch size
+
   if (error) throw error;
-  
+
   const wave = {
     waveId,
     waveDate: tomorrow,
     createdAt: new Date().toISOString(),
-    type: 'municipal',
-    status: 'researched',
-    batch: targets.map(muni => ({
+    type: "municipal",
+    status: "researched",
+    batch: targets.map((muni) => ({
       entityId: muni.id,
       name: muni.contact_name,
       email: muni.contact_email,
-      status: 'pending'
-    }))
+      status: "pending",
+    })),
   };
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -746,49 +773,52 @@ async function municipalResearchJob() {
 async function municipalSendJob() {
   const today = getToday();
   const waveFile = `/tmp/waves/wave-${today}-municipal.json`;
-  
+
   // Check if wave file exists
   if (!fs.existsSync(waveFile)) {
     console.log(`No municipal wave for ${today}`);
     return;
   }
-  
-  const wave = JSON.parse(await fs.readFile(waveFile, 'utf8'));
-  
-  if (wave.status !== 'researched' && wave.status !== 'drafted') {
+
+  const wave = JSON.parse(await fs.readFile(waveFile, "utf8"));
+
+  if (wave.status !== "researched" && wave.status !== "drafted") {
     console.log(`Municipal wave already processed: ${wave.status}`);
     return;
   }
-  
+
   for (const entry of wave.batch) {
-    if (entry.status !== 'pending' && entry.status !== 'drafted') continue;
-    
+    if (entry.status !== "pending" && entry.status !== "drafted") continue;
+
     try {
       // Generate personalization
       if (!entry.personalization) {
-        entry.personalization = await generateMuniPersonalization(entry.entityId);
+        entry.personalization = await generateMuniPersonalization(
+          entry.entityId,
+        );
       }
-      
+
       // Send email
       await sendMunicipalEmail(entry);
-      entry.status = 'sent';
+      entry.status = "sent";
       entry.sentAt = new Date().toISOString();
-      
     } catch (err) {
-      entry.status = 'failed';
+      entry.status = "failed";
       entry.error = {
         code: err.code,
         message: err.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
-  const failedCount = wave.batch.filter(e => e.status === 'failed').length;
-  wave.status = failedCount === 0 ? 'sent' : 'partial';
-  wave.metadata.successCount = wave.batch.filter(e => e.status === 'sent').length;
+
+  const failedCount = wave.batch.filter((e) => e.status === "failed").length;
+  wave.status = failedCount === 0 ? "sent" : "partial";
+  wave.metadata.successCount = wave.batch.filter(
+    (e) => e.status === "sent",
+  ).length;
   wave.metadata.failCount = failedCount;
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -797,45 +827,49 @@ async function municipalSendJob() {
 
 **Schedule:** Daily 3:00 PM CST  
 **Action:** Retries failed Municipal sends  
-**Updates:** Failed entries in `wave-{today}-municipal.json`
+**Updates:** Failed entries in `muni-waves/wave-{today}.json`
 
 ```javascript
 // Processes: wave-{today}-municipal.json - Municipal only
 async function municipalRecoveryJob() {
   const today = getToday();
-  const waveFile = `/tmp/waves/wave-${today}-municipal.json`;
-  
+  const waveFile = `${process.env.HOME}/.openclaw/workspace/reports/alygn/muni-waves/wave-${today}.json`;
+
   if (!fs.existsSync(waveFile)) return;
-  
-  const wave = JSON.parse(await fs.readFile(waveFile, 'utf8'));
-  
-  if (wave.status !== 'partial') {
+
+  const wave = JSON.parse(await fs.readFile(waveFile, "utf8"));
+
+  if (wave.status !== "partial") {
     console.log(`No municipal recovery needed: ${wave.status}`);
     return;
   }
-  
-  const failedEntries = wave.batch.filter(e => e.status === 'failed');
-  
+
+  const failedEntries = wave.batch.filter((e) => e.status === "failed");
+
   for (const entry of failedEntries) {
     try {
       await resendMunicipalEmail(entry);
-      entry.status = 'sent';
+      entry.status = "sent";
       entry.sentAt = new Date().toISOString();
       entry.error = null;
     } catch (err) {
       entry.error = {
         code: err.code,
         message: err.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
-  
-  const remainingFailed = wave.batch.filter(e => e.status === 'failed').length;
-  wave.status = remainingFailed === 0 ? 'sent' : 'partial';
-  wave.metadata.successCount = wave.batch.filter(e => e.status === 'sent').length;
+
+  const remainingFailed = wave.batch.filter(
+    (e) => e.status === "failed",
+  ).length;
+  wave.status = remainingFailed === 0 ? "sent" : "partial";
+  wave.metadata.successCount = wave.batch.filter(
+    (e) => e.status === "sent",
+  ).length;
   wave.metadata.failCount = remainingFailed;
-  
+
   await fs.writeFile(waveFile, JSON.stringify(wave, null, 2));
 }
 ```
@@ -885,11 +919,11 @@ PATCH  /api/waves/{waveId}/entries/{entryId}  # Update entry status
 
 ### 7.1 Health Checks
 
-| Check | Frequency | Action on Failure |
-|-------|-----------|-------------------|
-| Wave file exists | Hourly | Alert if missing for active date |
-| Status consistency | Hourly | Alert if Notion/Supabase out of sync |
-| Failed entry threshold | Real-time | Alert if >20% failure rate |
+| Check                  | Frequency | Action on Failure                    |
+| ---------------------- | --------- | ------------------------------------ |
+| Wave file exists       | Hourly    | Alert if missing for active date     |
+| Status consistency     | Hourly    | Alert if Notion/Supabase out of sync |
+| Failed entry threshold | Real-time | Alert if >20% failure rate           |
 
 ### 7.2 Alert Channels
 
@@ -904,19 +938,19 @@ PATCH  /api/waves/{waveId}/entries/{entryId}  # Update entry status
 
 **VC Campaign (isolated - Notion database):**
 
-| Job | Schedule | File | Action | Status |
-|-----|----------|------|--------|--------|
-| VC Research | 6:00 PM CST | Creates `wave-{tomorrow}-vc.json` | Query Notion high-priority pending VCs | `researched` |
-| VC Send | 9:00 AM CST | Processes `wave-{today}-vc.json` | Generate/send emails, personalization | `sent` / `partial` |
-| VC Recovery | 2:00 PM CST | Updates `wave-{today}-vc.json` | Retry failed VC sends | `sent` / `partial` |
+| Job         | Schedule    | File                              | Action                                 | Status             |
+| ----------- | ----------- | --------------------------------- | -------------------------------------- | ------------------ |
+| VC Research | 6:00 PM CST | Creates `wave-{tomorrow}-vc.json` | Query Notion high-priority pending VCs | `researched`       |
+| VC Send     | 9:00 AM CST | Processes `wave-{today}-vc.json`  | Generate/send emails, personalization  | `sent` / `partial` |
+| VC Recovery | 2:00 PM CST | Updates `wave-{today}-vc.json`    | Retry failed VC sends                  | `sent` / `partial` |
 
 **Municipal Campaign (isolated - Supabase database):**
 
-| Job | Schedule | File | Action | Status |
-|-----|----------|------|--------|--------|
-| Muni Research | 7:00 PM CST | Creates `wave-{tomorrow}-municipal.json` | Query Supabase high-priority pending | `researched` |
-| Muni Send | 10:00 AM CST | Processes `wave-{today}-municipal.json` | Generate/send emails, personalization | `sent` / `partial` |
-| Muni Recovery | 3:00 PM CST | Updates `wave-{today}-municipal.json` | Retry failed Municipal sends | `sent` / `partial` |
+| Job           | Schedule     | File                                     | Action                                | Status             |
+| ------------- | ------------ | ---------------------------------------- | ------------------------------------- | ------------------ |
+| Muni Research | 7:00 PM CST  | Creates `wave-{tomorrow}-municipal.json` | Query Supabase high-priority pending  | `researched`       |
+| Muni Send     | 10:00 AM CST | Processes `wave-{today}-municipal.json`  | Generate/send emails, personalization | `sent` / `partial` |
+| Muni Recovery | 3:00 PM CST  | Updates `wave-{today}-municipal.json`    | Retry failed Municipal sends          | `sent` / `partial` |
 
 **⚠️ ISOLATION RULE:** VC and Municipal workflows are completely separate. Each job only touches its own wave file type. No cross-type queries or updates.
 

@@ -12,7 +12,8 @@ metadata:
   script: `cd $HOME/.openclaw/workspace && lobster run .lobster/alygn-vc-outreach.lobster`
 ```
 
-## Important:
+## Important
+
 - Revise the researched VC if email is already sent.
   - Only research VCs that hasn't been contacted yet.
 - Follow each step as it is. **No shortcuts allowed**.
@@ -25,12 +26,15 @@ metadata:
   - Verifying database schema is a must if required to.
 
 ## Schedule
+
 **Time:** 6:00 PM daily (Mon-Fri)
 **Purpose:** Research next batch of VCs for tomorrow's wave
 **Discord Thread:** 1486784711928975460
 
 ## Execution
+
 This cronjob runs the `discover` and `research` phases to populate tomorrow's wave.
 
 ## Test Mode
+
 Add `--dry-run` flag for testing without using API credits.

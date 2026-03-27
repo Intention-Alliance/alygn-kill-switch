@@ -12,7 +12,8 @@ metadata:
   script: `cd $HOME/.openclaw/workspace && lobster run .lobster/alygn-muni-outreach.lobster`
 ```
 
-## Important:
+## Important
+
 - Revise the researched municipalities if email is already sent.
   - Only research municipalities that hasn't been contacted yet.
 - Follow each step as it is. **No shortcuts allowed**.
@@ -25,12 +26,15 @@ metadata:
   - Verifying database schema is a must if required to.
 
 ## Schedule
+
 **Time:** 10:00 AM daily (Mon-Fri)
 **Purpose:** Generate and send municipal outreach emails for today's wave
 **Discord Thread:** 1486784946134712500
 
 ## Execution
+
 This cronjob runs the `personalize` and `send` phases for approved drafts.
 
 ## Test Mode
+
 Add `--dry-run` flag for testing without sending emails.

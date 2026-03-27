@@ -294,6 +294,20 @@ alygn-outreach/
         ├── vc-sync-result.json
         ├── vc-wave-state.json
         ├── muni-wave-state.json
+        ├── ai-wave-state.json
+        ├── x-growth/
+        │   ├── wave-state.json
+        │   ├── wave-check.json
+        │   ├── phase1-result.json
+        │   ├── phase2-markdown.md
+        │   ├── phase3-result.json
+        │   ├── phase3-workflow.json
+        │   ├── phase4-validated.json
+        │   ├── phase5-formatted.json
+        │   ├── phase6-results.json
+        │   ├── phase7-trends.json
+        │   ├── phase8-decisions.json
+        │   └── phase9-results.json
         ├── vc-discover/
         │   └── alygn-vc-discovered-2026-03-26.json
         ├── vc-personalize/
@@ -306,6 +320,8 @@ alygn-outreach/
         │   └── alygn-vc-validated-2026-03-26.json
         ├── vc-sent/
         │    └── alygn-vc-sent-2026-03-26.json
+        ├── vc-waves/
+        │    └── alygn-vc-wave-2026-03-26.json
         ├── muni-pipeline/
         │   └── alygn-muni-cr-pipeline-2026-03-26.json
         ├── muni-research/
@@ -326,6 +342,8 @@ alygn-outreach/
         │   └── alygn-muni-cr-reviewed-2026-03-26.json
         └── muni-sent/
             └── alygn-muni-cr-sent-2026-03-26.json
+        └── muni-wave/
+            └── alygn-muni-cr-wave-2026-03-26.json
 ```
 
 **Examples:**

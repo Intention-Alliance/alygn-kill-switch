@@ -8,24 +8,24 @@
 
 ### Phase 1: Load Configuration
 
-- Read: ~/.openclaw/workspace/skills/alygn-outreach/config/research-config.json
+- Read: `$HOME/.agents/skills/alygn-outreach/config/research-config.json`
 - Check: target_fund_types, geographic_focus, check_size_range
 
 ### Phase 2: Discover New VCs
 
-- Command: USE_DIRECT_API=true bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=discover --source=crunchbase,gmail,cal --limit=10
+- Command: `USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=discover --source=crunchbase,gmail,cal --limit=10`
 - Output: Raw VC lead data
 
 ### Phase 3: Enrich Leads
 
-- Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=research --input=/tmp/discoveries/vc-{today}.json
+- Command: `bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=research --input=/tmp/discoveries/vc-{today}.json`
 - Gather: Recent investments, thesis alignment, partner info, intro paths
 
 ### Phase 4: Score and Filter
 
 - Score leads based on: Alygn fit, recent activity, warm intro potential
 - Filter: Minimum score threshold 0.6
-- Output: /tmp/waves/wave-{today}-vc.json with status "researched"
+- Output: `$HOME/.openclaw/workspace/reports/alygn/vc-waves/wave-{today}-vc.json` with status "researched"
 
 ## Success Criteria
 

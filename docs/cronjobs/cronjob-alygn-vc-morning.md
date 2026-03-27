@@ -12,7 +12,8 @@ metadata:
   script: `cd $HOME/.openclaw/workspace && lobster run .lobster/alygn-vc-outreach.lobster`
 ```
 
-## Important:
+## Important
+
 - Revise the researched VC if email is already sent.
   - Only research VCs that hasn't been contacted yet.
 - Follow each step as it is. **No shortcuts allowed**.
@@ -25,12 +26,15 @@ metadata:
   - Verifying database schema is a must if required to.
 
 ## Schedule
+
 **Time:** 9:00 AM daily (Mon-Fri)
 **Purpose:** Generate and send VC outreach emails for today's wave
 **Discord Thread:** 1486784711928975460
 
 ## Execution
+
 This cronjob runs the `personalize` and `send` phases for approved drafts.
 
 ## Test Mode
+
 Add `--dry-run` flag for testing without sending emails.
