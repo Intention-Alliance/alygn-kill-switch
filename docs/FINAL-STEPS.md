@@ -52,17 +52,17 @@ Ejecutando script de verificación para confirmar:
 
 ```bash
 # 1. Crear backup final
-tar -czf ~/alygn-automation-backup-$(date +%Y%m%d-%H%M).tar.gz \
-  ~/.openclaw/workspace/alygn-automation/
+tar -czf $HOME/alygn-automation-backup-$(date +%Y%m%d-%H%M).tar.gz \
+  $HOME/.openclaw/workspace/alygn-automation/
 
 # 2. Verificar backup existe
-ls -lh ~/alygn-automation-backup-*.tar.gz
+ls -lh $HOME/alygn-automation-backup-*.tar.gz
 
 # 3. Eliminar directorio legacy
-rm -rf ~/.openclaw/workspace/alygn-automation/
+rm -rf $HOME/.openclaw/workspace/alygn-automation/
 
 # 4. Confirmar eliminación
-ls ~/.openclaw/workspace/ | grep automation
+ls $HOME/.openclaw/workspace/ | grep automation
 # (No debería mostrar nada)
 ```
 

@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-17T17:00:53.865Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Nitrogen achieves ISO 42001 certification for AI governance, first in wealth management. Neutral standards like this build legitimacy for regulated AI use.",
+      "replyText": "ISO 42001 provides audited proof of responsible AI, fostering trust and coordination across sectors. Aligns with Alygn's principles by ensuring impartial oversight without hindering innovation.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 155,
+      "replyLength": 193,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "OpenAI urges unified US AI strategy for global safety amid China plans. AISIs enable coordination to keep governance ahead of rapid AI advances.",
+      "replyText": "Emphasizes prevention-first federal framework and international institutes for legitimate, neutral standards. Supports Alygn's coordination to shape democratic AI safety globally.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 144,
+      "replyLength": 179,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Indonesia's Draft AI Ethics Regulation introduces risk-based safeguards, oversight. Promotes neutral, proportionate governance in Asia's AI landscape.",
+      "replyText": "Risk classification ensures legitimacy through tailored requirements, aiding stakeholder coordination. Echoes Alygn's neutrality principle for balanced, human-centered AI rules.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 150,
+      "replyLength": 177,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "EDM Council AI Forum today discusses data foundations for ethical generative AI. Industry forums drive coordinated best practices in governance.",
+      "replyText": "Member-led collaboration builds consensus on transparency, accountability. Bolsters Alygn's legitimacy via neutral, experience-based standards for AI.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 144,
+      "replyLength": 150,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Optro launches AI-powered GRC with governance, cyber risk tools. Enables unified, neutral oversight for enterprise AI deployment.",
+      "replyText": "Integrates policies, tech, human oversight for proactive risks. Advances Alygn's coordination and legitimacy by making AI compliance visible and impartial.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 129,
+      "replyLength": 155,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

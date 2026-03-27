@@ -6,7 +6,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const SCRIPTS_DIR = '/home/andlersrv/.openclaw/workspace/scripts';
+const SCRIPTS_DIR = '$HOME/.openclaw/workspace/scripts';
 
 async function convertFile(filePath) {
   let content = await fs.readFile(filePath, 'utf8');

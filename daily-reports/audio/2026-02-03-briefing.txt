@@ -6,7 +6,7 @@ Good morning, Andler! Wobblus here with your daily briefing!
 📱 SESSION ACTIVITY:
   Total sessions: 5
   Recent activity:
-    Session store: /home/andlersrv/.openclaw/agents/main/sessions/sessions.json
+    Session store: $HOME/.openclaw/agents/main/sessions/sessions.json
     direct agent:main:main            just now  claude-sonnet-4.5 68k/128k (53%)       system id:dc884557-75e9-48b9-ba2b-5708d64a0654
     group  agent:main:disco...392714  8h ago    claude-sonnet-4.5 -                    id:22b87e07-ac24-4e10-b37c-e2b0fb90fc5f
     direct agent:main:cron:...f0700e  16h ago   claude-sonnet-4.5 124k/128k (97%)      system id:c9999e30-e33a-4ff1-b154-5af260501e28

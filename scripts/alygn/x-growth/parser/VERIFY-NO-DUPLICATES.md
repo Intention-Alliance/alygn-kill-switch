@@ -6,13 +6,15 @@
 ## Current Status
 
 **Active Parser:** `twitter-content-parser.js` ✅
-- Location: `/home/andlersrv/.openclaw/workspace/scripts/alygn/x-growth/parser/`
+
+- Location: `$HOME/.openclaw/workspace/scripts/alygn/x-growth/parser/`
 - Version: v5 with debug logging
 - Status: UPDATED IN PLACE (no duplicates)
 
 ## Cron Job Configuration
 
 **Job:** `ALYGN: Twitter Master Automation v7`
+
 - ID: `d0bc0111-9982-4153-9adf-5b4668254bc5`
 - Points to: `scripts/alygn/x-growth/twitter-automation.js`
 - Which imports: `./parser/twitter-content-parser.js` ✅
@@ -21,6 +23,7 @@
 ## Files That Import Parser
 
 All import from the SAME file:
+
 1. `test-parser-debug.js` → `./twitter-content-parser.js` ✅
 2. `test-dry-run.js` → `../../twitter-content-parser.js` ✅
 3. `test-manual.js` → Inline copy (for testing) ⚠️
@@ -30,6 +33,7 @@ All import from the SAME file:
 ## Cleanup Needed
 
 **Test files to remove (not duplicates, just test artifacts):**
+
 - `test-parser-debug.js` (created today)
 - `test-dry-run.js` (old test)
 - `test-manual.js` (old test)
@@ -37,6 +41,7 @@ All import from the SAME file:
 - `test-parser-v3.js` (old test)
 
 **Documentation files (keep for reference):**
+
 - `DEBUG-PARSER.md` ✅ Keep
 - `PARSER-V5-FIXED.md` ✅ Keep
 - `FIX-PARSER-URGENT.md` ✅ Keep
@@ -44,15 +49,17 @@ All import from the SAME file:
 ## Verification Command
 
 ```bash
-find /home/andlersrv/.openclaw/workspace -name "*content-parser*" -type f
+find $HOME/.openclaw/workspace -name "*content-parser*" -type f
 ```
 
 **Expected output:**
+
 ```
-/home/andlersrv/.openclaw/workspace/scripts/alygn/x-growth/parser/twitter-content-parser.js
+$HOME/.openclaw/workspace/scripts/alygn/x-growth/parser/twitter-content-parser.js
 ```
 
 **Should NOT see:**
+
 - `twitter-content-parser-v2.js` ❌
 - `twitter-content-parser-v3.js` ❌
 - `twitter-content-parser-v4.js` ❌

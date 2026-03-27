@@ -26,6 +26,33 @@ const GROK_MODEL = getGrokModel();
 const TWITTER_PROMPTS_PAGE_ID = getNotionPage('twitter_prompts');
 const notion = getClient(getNotionKey());
 
+/**
+ * Validate URL by making HTTP HEAD request
+ * Returns true if URL is valid (200 OK), false otherwise
+ */
+async function validateUrl(url) {
+  try {
+    if (!url || !url.startsWith('http')) {
+      return false;
+    }
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      redirect: 'follow'
+    });
+    
+    clearTimeout(timeout);
+    return response.status === 200;
+  } catch (err) {
+    console.log(`⚠️  URL validation failed for ${url?.substring(0, 50)}...: ${err.message}`);
+    return false;
+  }
+}
+
 // Configure xAI with API key
 process.env.XAI_API_KEY = GROK_API_KEY;
 
@@ -215,8 +242,15 @@ async function executePrompt(promptNumber, useSearch = false, skipInjection = fa
     if ([1, 13].includes(promptNumber) && response.content.includes('<responses>')) {
       const { extractTag } = await import('./parser/twitter-content-parser.js');
       
+      // Use local validateUrl function (defined at top of file)
+      
       const contentBlocks = extractTag(response.content, 'content');
-      const posts = contentBlocks.map((block, idx) => {
+      const posts = [];
+      let validUrlCount = 0;
+      let invalidUrlCount = 0;
+      
+      for (let idx = 0; idx < contentBlocks.length; idx++) {
+        const block = contentBlocks[idx];
         const texts = extractTag(block, 'text');
         const angles = extractTag(block, 'governance_angle');
         const sourcesBlocks = extractTag(block, 'sources');
@@ -225,11 +259,20 @@ async function executePrompt(promptNumber, useSearch = false, skipInjection = fa
         const sources = sourcesBlocks.length > 0 ? extractTag(sourcesBlocks[0], 'url') : [];
         const sourceUrl = sources[0] || null;
         
-        // Each <content> block = THREAD PAIR (main + reply)
-        // Main tweet: <text> field only (~200 chars)
-        // Reply tweet: <governance_angle> field (~250 chars)
-        // Hashtags added dynamically by formatTweet() in executor
+        // Validate source URL before adding post
+        const isUrlValid = sourceUrl ? await validateUrl(sourceUrl) : false;
         
+        if (!isUrlValid && sourceUrl) {
+          console.log(`❌ Skipping post ${idx + 1}: Invalid URL ${sourceUrl.substring(0, 50)}...`);
+          invalidUrlCount++;
+          continue; // Skip this post
+        }
+        
+        if (isUrlValid) {
+          validUrlCount++;
+        }
+        
+        // Each <content> block = THREAD PAIR (main + reply)
         const mainText = text.trim();
         const replyText = angle.trim();
         
@@ -238,8 +281,8 @@ async function executePrompt(promptNumber, useSearch = false, skipInjection = fa
         if (mainText.length > 280) issues.push('Main exceeds 280 chars');
         if (replyText.length > 280) issues.push('Reply exceeds 280 chars');
         
-        return {
-          id: idx + 1,
+        posts.push({
+          id: posts.length + 1, // Sequential ID after filtering
           mainText: mainText,
           replyText: replyText,
           sourceUrl: sourceUrl,
@@ -250,14 +293,18 @@ async function executePrompt(promptNumber, useSearch = false, skipInjection = fa
           tweetId: null,
           url: null,
           issues
-        };
-      });
+        });
+      }
+      
+      console.log(`✅ Workflow generated: ${posts.length} posts (${validUrlCount} valid URLs, ${invalidUrlCount} invalid URLs skipped)`);
       
       const workflow = {
         generatedAt: new Date().toISOString(),
         source: `Grok Search - Prompt #${promptNumber}`,
         totalPosts: posts.length,
         totalThreads: posts.filter(p => p.isThread).length,
+        validUrls: validUrlCount,
+        invalidUrls: invalidUrlCount,
         postedAt: null,
         posts,
         executed: 0,

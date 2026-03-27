@@ -46,15 +46,15 @@ paru -S piper-tts
 
 ```bash
 # Create Python virtual environment
-python -m venv ~/.local/share/piper-tts-env
-source ~/.local/share/piper-tts-env/bin/activate
+python -m venv $HOME/.local/share/piper-tts-env
+source $HOME/.local/share/piper-tts-env/bin/activate
 
 # Install piper-tts
 pip install piper-tts
 
 # Download voice models
-mkdir -p ~/.local/share/piper-voices
-cd ~/.local/share/piper-voices
+mkdir -p $HOME/.local/share/piper-voices
+cd $HOME/.local/share/piper-voices
 
 # English (US) - High quality
 wget https://github.com/rhasspy/piper/releases/download/v1.2.0/voice-en-us-lessac-high.tar.gz
@@ -73,8 +73,8 @@ docker pull rhasspy/piper:latest
 
 # Run piper via Docker
 docker run -it --rm \
-  -v ~/.local/share/piper-voices:/voices \
-  -v /home/andlersrv/.openclaw/workspace/daily-reports:/data \
+  -v $HOME/.local/share/piper-voices:/voices \
+  -v $HOME/.openclaw/workspace/daily-reports:/data \
   rhasspy/piper:latest \
   --model /voices/en-us-lessac-high.onnx \
   --output_file /data/audio/test.wav \
@@ -111,7 +111,7 @@ docker run -it --rm \
 ```bash
 # Using piper directly
 echo "Hello, this is a test." | piper \
-  --model ~/.local/share/piper-voices/en-us-lessac-high.onnx \
+  --model $HOME/.local/share/piper-voices/en-us-lessac-high.onnx \
   --output_file output.wav
 
 # Convert to OGG (WhatsApp-compatible)
@@ -123,7 +123,7 @@ ffmpeg -i output.wav -c:a libvorbis -q:a 4 output.ogg
 ```bash
 # Read daily report and generate audio
 piper \
-  --model ~/.local/share/piper-voices/en-us-lessac-high.onnx \
+  --model $HOME/.local/share/piper-voices/en-us-lessac-high.onnx \
   --output_file daily-reports/audio/alygn-daily-$(date +%Y-%m-%d).wav \
   < daily-reports/$(date +%Y-%m-%d)/alygn-daily-$(date +%Y-%m-%d).md
 
@@ -262,7 +262,7 @@ openclaw cron add \
 ```bash
 # Test basic TTS
 echo "Hello Andler, this is Wobblus speaking." | piper \
-  --model ~/.local/share/piper-voices/en-us-lessac-high.onnx \
+  --model $HOME/.local/share/piper-voices/en-us-lessac-high.onnx \
   --output_file test.wav
 
 # Play audio (if speaker available)
@@ -313,8 +313,8 @@ ls -lh daily-reports/audio/
 **Fix:** Download voice models:
 
 ```bash
-mkdir -p ~/.local/share/piper-voices
-cd ~/.local/share/piper-voices
+mkdir -p $HOME/.local/share/piper-voices
+cd $HOME/.local/share/piper-voices
 wget https://github.com/rhasspy/piper/releases/download/v1.2.0/voice-en-us-lessac-high.tar.gz
 tar -xzf voice-en-us-lessac-high.tar.gz
 ```
@@ -337,7 +337,7 @@ wget https://github.com/rhasspy/piper/releases/download/v1.2.0/voice-en-us-lessa
 tar -xzf voice-en-us-lessac-high.tar.gz
 
 # Use in script
-piper --model ~/.local/share/piper-voices/en-us-lessac-high.onnx ...
+piper --model $HOME/.local/share/piper-voices/en-us-lessac-high.onnx ...
 ```
 
 ---

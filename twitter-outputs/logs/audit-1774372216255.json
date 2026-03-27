@@ -1,0 +1,95 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-24T17:07:29.633Z",
+  "workflow": {
+    "generatedAt": "2026-03-24T17:01:58.038Z",
+    "source": "Grok Search - Prompt #1",
+    "totalPosts": 3,
+    "totalThreads": 3,
+    "validUrls": 0,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "US NIST released updated AI risk framework Oct 9. Stresses coordination between govt, industry for safe AI. Aligns with Alygn's coordination principle for legitimate oversight.",
+        "replyText": "Emphasizes multi-stakeholder coordination to build legitimacy in AI standards, preventing fragmented regulation and ensuring neutral, enforceable governance.",
+        "sourceUrl": "https://www.nist.gov/itl/ai-risk-management-framework",
+        "isThread": true,
+        "mainLength": 176,
+        "replyLength": 157,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "EU AI Act enforcement taskforce launched Oct 10. Focuses on neutral compliance checks. Reinforces Alygn's neutrality principle for trustworthy AI institutions.",
+        "replyText": "Establishes impartial oversight mechanisms, vital for legitimacy in global AI governance and coordination across borders without bias toward any actor.",
+        "sourceUrl": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+        "isThread": true,
+        "mainLength": 159,
+        "replyLength": 151,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "UK AI Safety Institute report Oct 8 warns of frontier model risks, calls for intl coordination. Mirrors Alygn's push for coordinated, legitimate safety protocols.",
+        "replyText": "Highlights need for neutral institutions to coordinate risk assessments, fostering global legitimacy and preventing rogue AI development.",
+        "sourceUrl": "https://www.aisi.gov.uk/",
+        "isThread": true,
+        "mainLength": 162,
+        "replyLength": 137,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2036490096711487611",
+      "content": "US NIST released updated AI risk framework Oct 9. Stresses coordination between govt, industry for safe AI. Aligns with Alygn's coordination principle for legitimate oversight.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2036490114591822312",
+      "content": "Emphasizes multi-stakeholder coordination to build legitimacy in AI standards, preventing fragmented regulation and ensuring neutral, enforceable governance.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2036490096711487611"
+    },
+    {
+      "id": "2036490321085784244",
+      "content": "EU AI Act enforcement taskforce launched Oct 10. Focuses on neutral compliance checks. Reinforces Alygn's neutrality principle for trustworthy AI institutions.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2036490343143682536",
+      "content": "Establishes impartial oversight mechanisms, vital for legitimacy in global AI governance and coordination across borders without bias toward any actor.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2036490321085784244"
+    },
+    {
+      "id": "2036490578964230499",
+      "content": "UK AI Safety Institute report Oct 8 warns of frontier model risks, calls for intl coordination. Mirrors Alygn's push for coordinated, legitimate safety protocols.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2036490601001038092",
+      "content": "Highlights need for neutral institutions to coordinate risk assessments, fostering global legitimacy and preventing rogue AI development.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2036490578964230499"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 6,
+  "failed": 0
+}

@@ -1,6 +1,10 @@
 {
   "name": "wobblus-workspace-brain",
   "type": "module",
+  "workspaces": [
+    "scripts",
+    "skills"
+  ],
   "dependencies": {
     "@ai-sdk/xai": "^3.0.67",
     "@notionhq/client": "^5.12.0",

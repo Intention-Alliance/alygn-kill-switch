@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-03-19T17:03:18.585Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "totalThreads": 4,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "ARTICLE 19 intervened at UN Informal Stakeholder Consultation on Global AI Governance on March 18, calling for multi-stakeholder coherence in fragmented landscape and human rights safeguards across AI lifecycle.",
+      "replyText": "Fosters international coordination for legitimate, holistic AI frameworks compliant with intl law, human rights, and SDGs, bridging fragmentation across orgs.",
+      "sourceUrl": "https://www.article19.org/resources/un-the-global-dialogue-on-ai-governance",
+      "isThread": true,
+      "mainLength": 211,
+      "replyLength": 158,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Simons Institute hosted event on March 18 exploring alignment problems in AI governance, noting technical challenges like unreliable auditing hinder effective regulation.",
+      "replyText": "Highlights need for adaptable regulatory systems amid evolving AI understanding, aiding institutional coordination between policy and technical safety efforts.",
+      "sourceUrl": "https://simons.berkeley.edu/news/alignment-problems-ai-governance",
+      "isThread": true,
+      "mainLength": 170,
+      "replyLength": 159,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Pennsylvania Governor Shapiro hosted AI safety discussion with AG, focusing on protecting kids online and holding bad actors accountable for harmful AI.",
+      "replyText": "Strengthens state-level enforcement coordination, enhancing legitimacy of AI safety measures against misuse and building public trust.",
+      "sourceUrl": "https://www.publicnow.com/view/6AFA3DA6EF36B5946F3057D3765C59D64D345622",
+      "isThread": true,
+      "mainLength": 152,
+      "replyLength": 134,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Center for Water Policy released AI-Data Center Legislative Model for Great Lakes governance, emphasizing transparency, impact assessment, and public engagement.",
+      "replyText": "Enables cross-sector coordination between policy, environment, and AI infrastructure, legitimizing regional efforts via inclusive governance tools.",
+      "sourceUrl": "https://uwm.edu/centerforwaterpolicy/emilie-washer-featured-in-circle-of-blue-article-on-ai-governance",
+      "isThread": true,
+      "mainLength": 161,
+      "replyLength": 147,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

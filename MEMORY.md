@@ -51,6 +51,12 @@
 8. **Don't simulate work** — actually execute tools, don't create placeholder workflows
 9. **Check documentation first** — don't reinvent OpenClaw built-ins (tools are session-level, not CLI-level)
 10. **Cache-first architecture** — check for existing results before re-executing work
+11. **📖 READ → UNDERSTAND → EXECUTE** — Never shortcut this chain (learned 2026-03-24)
+    - Read SKILL.md, lobster files, source code FIRST
+    - Analyze how things work BEFORE execution
+    - Verify args/flags exist before using them
+    - No assumptions, no "probably works like this"
+    - Going in circles is worse than going slow
 
 ## Key Projects (Professional Tone Required)
 
@@ -179,9 +185,9 @@ Any technical systems exist only in service of governance and coordination.
 
 **References:**
 
-- `~/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
-- `~/Documents/alygn-context-update/01 Alygn - Boiler Plate.pdf`
-- `~/Documents/alygn-context-update/02 Alygn Pre Approved Posts.pdf`
+- `$HOME/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
+- `$HOME/Documents/alygn-context-update/01 Alygn - Boiler Plate.pdf`
+- `$HOME/Documents/alygn-context-update/02 Alygn Pre Approved Posts.pdf`
 
 ---
 
@@ -696,14 +702,14 @@ more at @aialygn
 ### Cookie Extraction for Bird CLI (Future)
 
 - **Plan:** Create script to extract X.com cookies from Chrome Alygn profile
-- **Location:** `~/.config/google-chrome/Profile*/Cookies` (SQLite)
+- **Location:** `$HOME/.config/google-chrome/Profile*/Cookies` (SQLite)
 - **Usage:** Pass to Bird CLI for faster replies/follows when browser relay slows down
 - **Status:** Pending implementation
 
 ### Key Details
 
 - **Handle:** @aialygn
-- **Output Dir:** `~/.openclaw/workspace/twitter-outputs/`
+- **Output Dir:** `$HOME/.openclaw/workspace/twitter-outputs/`
 - **Browser profile:** `alygn` (must use `profile="alygn"` in browser tool)
 - **Typo auto-fix:** @aialyygn → @aialygn
 - **Workflow file:** `workflow-{timestamp}.json` (posts, replies, profiles)
@@ -1050,7 +1056,7 @@ _Wobblus ALYGN Automation v1: SHIPPING QUALITY ✅_
 - ✅ All 5 reply targets identified with tweet URLs
 - ✅ All reply texts drafted and optimized
 - ✅ All 5 profiles identified for following
-- ✅ Workflow data in `~/.openclaw/workspace/twitter-outputs/workflow-1770484855297.json`
+- ✅ Workflow data in `$HOME/.openclaw/workspace/twitter-outputs/workflow-1770484855297.json`
 
 **Discovered limitations:**
 

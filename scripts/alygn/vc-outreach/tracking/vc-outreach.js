@@ -10,8 +10,8 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { getNotionDatabase } from "../../../shared/load-credentials.js";
-import { getClient, queryDatabase, retrievePage, updatePage } from "../../../shared/notion-client.js";
+import { getNotionDatabase } from path.join(process.env.HOME, '.openclaw/workspace/scripts/shared/load-credentials.js');
+import { getClient, queryDatabase, retrievePage, updatePage } from path.join(process.env.HOME, '.openclaw/workspace/scripts/shared/notion-client.js');
 
 const notion = getClient();
 const VC_TRACKER_DB_ID = process.env.VC_TRACKER_DB_ID || getNotionDatabase('vc_outreach');

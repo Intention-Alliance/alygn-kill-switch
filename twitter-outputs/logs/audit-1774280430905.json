@@ -1,0 +1,109 @@
+{
+  "mode": "dry-run",
+  "executedAt": "2026-03-23T15:40:30.905Z",
+  "workflow": {
+    "timestamp": "2026-03-23T15:35:00Z",
+    "source": "alygn-x-growth-daily",
+    "daily_limits": {
+      "main_posts_max": 3,
+      "reply_posts_max": 3,
+      "pre_approved_max": 1
+    },
+    "hashtag_sets": [
+      [
+        "#AIGovernance",
+        "#InstitutionalAI"
+      ],
+      [
+        "#AIAlignment",
+        "#Alygn"
+      ],
+      [
+        "#AISafety",
+        "#AIPolicy"
+      ],
+      [
+        "#AIEthics",
+        "#AITransparency"
+      ],
+      [
+        "#AIRisk",
+        "#AIGovernance"
+      ],
+      [
+        "#AGI",
+        "#AIRegulation"
+      ],
+      [
+        "#AICoordination",
+        "#Alygn"
+      ],
+      [
+        "#AILegitimacy",
+        "#AIGovernance"
+      ],
+      [
+        "#InstitutionalAI",
+        "#AIPolicy"
+      ],
+      [
+        "#AIGovernance",
+        "#AISafety"
+      ]
+    ],
+    "pre_approved": {
+      "id": 28,
+      "text": "Governance without auditability becomes symbolic.",
+      "hashtags": [
+        "#AITransparency",
+        "#AIGovernance"
+      ],
+      "source_url": "https://tinyurl.com/2bajb7x4",
+      "source_title": "NIST AI Risk Management Framework"
+    },
+    "threads": [
+      {
+        "id": 1,
+        "mainText": "AI governance legitimacy is not a byproduct of technical progress—it's the precondition for effective coordination across labs, operators, and jurisdictions.",
+        "replyText": "Without legitimacy, systemic risks persist. Operators need credible, neutral infrastructure for coordination, not reactive regulation.",
+        "hashtags": [
+          "#AIGovernance",
+          "#InstitutionalAI"
+        ],
+        "sourceUrl": null,
+        "status": "ready"
+      },
+      {
+        "id": 2,
+        "mainText": "EU AI Act high-risk requirements take full effect August 2026. This shifts governance from guidance to enforcement.",
+        "replyText": "The gap between policy and preparedness is closing. Enterprises now need auditable systems, not just intent. 📚 Source: https://tinyurl.com/2ayk6ydw",
+        "hashtags": [
+          "#AIRegulation",
+          "#AIPolicy"
+        ],
+        "sourceUrl": "https://tinyurl.com/2ayk6ydw",
+        "source_title": "EU AI Act High-Risk Requirements Guide",
+        "status": "ready"
+      },
+      {
+        "id": 3,
+        "mainText": "NIST AI RMF provides the backbone, ISO 42001 offers certification paths. Together they form a layered governance model.",
+        "replyText": "2026 marks the transition from voluntary frameworks to auditable compliance. Governance maturity is now competitive advantage. 📚 Source: https://tinyurl.com/2bajb7x4",
+        "hashtags": [
+          "#AISafety",
+          "#AITransparency"
+        ],
+        "sourceUrl": "https://tinyurl.com/2bajb7x4",
+        "source_title": "NIST AI Risk Management Framework",
+        "status": "ready"
+      }
+    ],
+    "replies": [],
+    "profiles": []
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 0
+}

@@ -18,7 +18,7 @@
  * 4. Generate workflow JSON with posts/replies/profiles
  */
 
-import fs from "fs".promises;
+import { promises as fs } from "fs";
 import path from "path";
 import { xai } from "@ai-sdk/xai";
 import { generateText } from "ai";

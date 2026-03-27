@@ -171,7 +171,7 @@ export AUTH_TOKEN="xxxxxxxxxxxxxxxxxx"
 export CT0="xxxxxxxxxxxxxxxxxx"
 
 # 2. Run the script (2 min to completion)
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/twitter-phase2-bird-node.js
 
 # Done! Check @aialygn timeline 🎉

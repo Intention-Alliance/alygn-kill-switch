@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-25T17:01:49.567Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 3,
+  "invalidUrls": 2,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "White House released National AI Policy Framework urging federal preemption of state laws for unified coordination on child safety and innovation.",
+      "replyText": "This promotes coordination by centralizing AI policy, enhances legitimacy via clear legislative recommendations, and ensures neutrality by protecting interstate commerce without stifling development.",
+      "sourceUrl": "https://www.whitehouse.gov/wp-content/uploads/2026/03/03.20.26-National-Policy-Framework-for-Artificial-Intelligence-Legislative-Recommendations.pdf",
+      "isThread": true,
+      "mainLength": 151,
+      "replyLength": 188,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "US judge calls Pentagon's blacklisting of Anthropic troubling, hinting at punishment for AI safety views, challenging procurement neutrality.",
+      "replyText": "Highlights need for neutral, legitimate government processes in AI adoption; fosters coordination between defense and industry to align safety with national security imperatives.",
+      "sourceUrl": "https://www.cbsnews.com/tag/artificial-intelligence",
+      "isThread": true,
+      "mainLength": 159,
+      "replyLength": 186,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "OpenAI discontinues Sora AI video app amid rising scrutiny, demonstrating proactive content governance and self-regulation.",
+      "replyText": "Reinforces legitimacy through voluntary compliance; supports coordination with regulators on generative AI risks, maintaining neutrality in innovation while addressing societal harms.",
+      "sourceUrl": "https://www.cbsnews.com/tag/artificial-intelligence",
+      "isThread": true,
+      "mainLength": 138,
+      "replyLength": 195,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "EU antitrust chief meets Google, Meta, OpenAI, Amazon CEOs on AI practices, advancing transatlantic regulatory coordination.",
+      "replyText": "Drives global coordination on AI competition; upholds legitimacy via stakeholder dialogue, ensuring neutral enforcement that balances innovation with fair market practices.",
+      "sourceUrl": "https://www.reuters.com/technology/artificial-intelligence",
+      "isThread": true,
+      "mainLength": 138,
+      "replyLength": 180,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Maryland General Assembly pauses AI chatbot regulations, paving way for deliberate policy coordination and balanced governance.",
+      "replyText": "Emphasizes legitimate, measured approaches; aids coordination between states and feds, preserving neutrality by avoiding hasty rules that could hinder AI deployment.",
+      "sourceUrl": "https://conduitstreet.mdcounties.org/2026/03/25/ai-chatbot-regulations-pause-setting-stage-for-future-policy-discussions",
+      "isThread": true,
+      "mainLength": 149,
+      "replyLength": 190,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

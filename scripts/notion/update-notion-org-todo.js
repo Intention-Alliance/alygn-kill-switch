@@ -181,7 +181,7 @@ async function updateOrgTodo() {
         paragraph: {
           rich_text: [{
             text: {
-              content: "Location: ~/.openclaw/workspace/alygn-automation/\n\n"
+              content: "Location: $HOME/.openclaw/workspace/alygn-automation/\n\n"
             }
           }]
         }

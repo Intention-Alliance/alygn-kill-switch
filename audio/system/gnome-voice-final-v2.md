@@ -10,7 +10,7 @@
 
 ## Reference Samples (Stored)
 
-Located in: `~/wooblus-voice-refs/`
+Located in: `$HOME/wooblus-voice-refs/`
 
 1. **woohoo-en.ogg** - "Woohoo!" (English exclamation)
 2. **salutacion-es.ogg** - "Salutación" (Spanish greeting)

@@ -1,0 +1,41 @@
+{
+  "grok": {
+    "enabled": true,
+    "queries": [
+      "AI safety research grants 2026",
+      "AGI governance funding opportunities",
+      "frontier AI oversight grants",
+      "responsible AI development funding",
+      "AI alignment research grants non-profits",
+      "NSF AI safety funding opportunities",
+      "trustworthy AI research grants",
+      "AI ethics and governance funding 2026"
+    ]
+  },
+  "perplexity": {
+    "enabled": true,
+    "queries": [
+      "NSF AI safety funding opportunities 2026",
+      "DARPA AI governance grants",
+      "Open Philanthro AI safety grants",
+      "foundation AI alignment grants",
+      "corporate responsible AI grants",
+      "EA community AI safety funding"
+    ]
+  },
+  "firecrawl": {
+    "enabled": true,
+    "targetDomains": [
+      "nsf.gov/funding",
+      "darpa.gov/workitems",
+      "responsible.ai",
+      "foundationalventures.org",
+      "openphilanthropy.org",
+      "ea-foundation.org",
+      "hrf.org",
+      "aiisafety.info",
+      "nist.gov"
+    ],
+    "maxPagesPerDomain": 10
+  }
+}

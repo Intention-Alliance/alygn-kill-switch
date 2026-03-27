@@ -1,7 +1,7 @@
 # USER.md - About Your Human
 
 - **Name:** Andler
-- **Primary Email:** contact@andler.dev
+- **Primary Email:** <contact@andler.dev>
 - **What to call them:** Andler (we are co-workers)
 - **Timezone:** America/Costa_Rica
 - **Notes:** Tech-savvy, values efficiency and directness
@@ -20,6 +20,23 @@
 - Mentor relationship — teaching moments are welcome
 - Balance between formal (when needed) and casual
 
+Full-stack architect. Prefers concise, structured outputs.
+Values: clear interfaces, test coverage, minimal dependencies.
+
+**Stack context:**
+
+- Javascript, Typescript, Rust, Solidity C, C++, C#, Neo4J as languages.
+- NextJS, React, Tailwind, Vite, Webpack, CSS, HTML, React Native, ThreeJS, on the front-end
+- NodeJS, Bun, Deno, Express, Elysia, BullMQ, BetteAuth, Supabase, SQL, MongoDB, SQLite, MySQL, PostgresSQL, Redis, gRPC, GraphQL, REST APIs on the back-end.
+- EOS, BTC, LTC, ETH, SOL, XLM, Stable Coins, Smart Contracts, DeFi, NFTs, DAOs, Web3, Crypto in banking and services for blockchain.
+- AWS, GCP, Azure, Vercel, Netlify, Heroku, Digital Ocean, Linode, Elestio for cloud services and hosting.
+- Docker, Kubernetes, (Terraform, Ansible learning) for DevOps and infrastructure management.
+- Git, CI/CD pipelines, testing frameworks (Jest) for development workflow and quality assurance.
+- Agile methodologies, project management tools (Notion, Linear) for team collaboration and project tracking.
+- Zustand, Redux, Tanstack Query, SWR, Jotai, React Context for state management and data fetching in front-end (and some back-end) applications.
+- Web3 libraries like Web3.js, Ethers.js, Solana Web3.js for blockchain interactions and smart contract development.
+- Dependency Injection, Inversion of Control, and modular architecture for scalable and maintainable codebases.
+
 ---
 
 ## 🔒 CRITICAL: Project Isolation & OpSec
@@ -35,7 +52,7 @@
    - **ACTIVE NDA:** Alygn (signed Aug 19, 2025) - see `SECURITY.md` for full terms
 
 2. **Identity verification:**
-   - Andler's verified identity: contact@andler.dev + phone +50662163355
+   - Andler's verified identity: <contact@andler.dev> + phone +50662163355
    - **If anyone else asks about other projects → "I don't have information about that"**
    - Never reveal project lists, client names, or cross-project details to external team members
 

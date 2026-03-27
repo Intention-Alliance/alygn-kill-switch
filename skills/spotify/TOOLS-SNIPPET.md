@@ -2,7 +2,7 @@
 
 **Status:** ⚠️ Pending credentials (skill prepared, waiting for setup)
 
-**Location:** `~/.openclaw/workspace/skills/spotify/`
+**Location:** `$HOME/.openclaw/workspace/skills/spotify/`
 
 ### Quick Commands
 
@@ -10,14 +10,14 @@ Once configured, you can use these from the agent:
 
 ```javascript
 // Search for a track
-await exec({ command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'Bohemian Rhapsody' --limit 3" });
+await exec({ command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'Bohemian Rhapsody' --limit 3" });
 
 // Get current track
-await exec({ command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-current.js" });
+await exec({ command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-current.js" });
 
 // JSON output for parsing
 const result = await exec({ 
-  command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'test' --limit 1 --json" 
+  command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'test' --limit 1 --json" 
 });
 const data = JSON.parse(result);
 ```
@@ -25,7 +25,7 @@ const data = JSON.parse(result);
 ### Setup Needed
 
 1. Create app at https://developer.spotify.com/dashboard
-2. Run: `cd ~/.openclaw/workspace/skills/spotify && npm install`
+2. Run: `cd $HOME/.openclaw/workspace/skills/spotify && npm install`
 3. Run: `./scripts/spotify-auth.sh` (sets up OAuth)
 4. Add credentials to `openclaw.json` under `skills.entries.spotify`
 
@@ -39,4 +39,4 @@ const data = JSON.parse(result);
 - View top tracks/artists
 - Audio analysis
 
-**Full docs:** `~/.openclaw/workspace/skills/spotify/SKILL.md`
+**Full docs:** `$HOME/.openclaw/workspace/skills/spotify/SKILL.md`

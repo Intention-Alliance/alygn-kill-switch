@@ -31,6 +31,7 @@ FFmpeg Pitch Shift
 ## 🎚️ Technical Audio Characteristics
 
 ### Current Output (Antoni + Pitch Shift)
+
 - **Sample Rate:** 44.1kHz (professional audio standard)
 - **Channels:** Mono (optimal for voice)
 - **Codec:** Vorbis (OGG) - efficient, high quality
@@ -40,6 +41,7 @@ FFmpeg Pitch Shift
 - **Dynamic Range:** Good headroom, no clipping
 
 ### Reference (WoW Gnome Source)
+
 - **Sample Rate:** 22.05kHz (game audio standard)
 - **Channels:** Mono
 - **Codec:** Vorbis (OGG)
@@ -53,6 +55,7 @@ FFmpeg Pitch Shift
 ## 🔬 Spectral Analysis & Recommendations
 
 ### Current Strengths ✅
+
 1. **Pitch shift maintains formant relationships** - Natural gnome voice
 2. **High sample rate (44.1kHz)** - Preserves harmonics up to 20kHz
 3. **Good dynamic range** - Expressive without distortion
@@ -62,23 +65,29 @@ FFmpeg Pitch Shift
 ### Potential Optimizations 🎯
 
 #### 1. **Sample Rate Optimization**
+
 **Current:** 44.1kHz → 44.1kHz (no change)  
 **Issue:** Unnecessary processing overhead for voice  
 **Recommendation:**
+
 ```bash
 # Downsample to 24kHz after pitch shift (voice band is 80Hz-8kHz)
 ffmpeg -i input.mp3 -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2" output.ogg
 ```
+
 **Benefits:**
+
 - 45% smaller file sizes
 - Faster encoding/decoding
 - Still exceeds voice bandwidth (Nyquist @ 12kHz vs 8kHz needed)
 - Matches WhatsApp/Telegram voice message specs (16-24kHz typical)
 
 #### 2. **Formant Preservation Enhancement**
+
 **Current:** Basic pitch shift (moves all frequencies equally)  
 **Issue:** Subtle unnatural quality vs real high-pitched voice  
 **Recommendation:**
+
 ```bash
 # Add formant filter to simulate smaller vocal tract
 ffmpeg -i input.mp3 -af "\
@@ -88,14 +97,18 @@ ffmpeg -i input.mp3 -af "\
   equalizer=f=2500:t=h:w=1000:g=3,\
   equalizer=f=4000:t=h:w=1500:g=2" output.ogg
 ```
+
 **Benefits:**
+
 - Boost 2.5kHz (gnome "nasality" zone)
 - Boost 4kHz (clarity/presence for small creatures)
 - More authentic gnome character
 
 #### 3. **Dynamic Range Compression**
+
 **Current:** -14.4dB mean (good but could be punchier)  
 **Recommendation:**
+
 ```bash
 # Add gentle compression for consistency
 ffmpeg -i input.mp3 -af "\
@@ -105,14 +118,18 @@ ffmpeg -i input.mp3 -af "\
   acompressor=threshold=-18dB:ratio=3:attack=5:release=50,\
   volume=2dB" output.ogg
 ```
+
 **Benefits:**
+
 - More consistent energy (excited gnome should be punchy!)
 - Better intelligibility on phone speakers
 - Reduces quiet passages that get lost in noise
 
 #### 4. **Subtle Saturation/Harmonic Enhancement**
+
 **Current:** Clean digital signal (maybe TOO clean)  
 **Recommendation:**
+
 ```bash
 # Add gentle harmonic excitement
 ffmpeg -i input.mp3 -af "\
@@ -122,7 +139,9 @@ ffmpeg -i input.mp3 -af "\
   aphaser=in_gain=0.5:out_gain=0.9:delay=1:decay=0.3:speed=0.3,\
   highpass=f=80" output.ogg
 ```
+
 **Benefits:**
+
 - Adds "analog warmth" (less clinical)
 - Subtle chorus effect = more creature-like
 - Highpass removes sub-bass rumble
@@ -132,6 +151,7 @@ ffmpeg -i input.mp3 -af "\
 ## 🎛️ Optimized Pipeline Proposal
 
 ### **Version A: Balanced (Recommended)**
+
 Best quality/size balance, maintains naturalness:
 
 ```bash
@@ -161,6 +181,7 @@ ffmpeg -i /tmp/speech.mp3 -af "\
 ---
 
 ### **Version B: Maximum Character**
+
 More aggressive gnome personality:
 
 ```bash
@@ -180,11 +201,12 @@ ffmpeg -i /tmp/speech.mp3 -af "\
 **Character:** MORE GNOME! Quirky, nasal, energetic  
 **Pitch Shift:** +25% (vs current +20%)  
 **Nasality:** +4dB boost @ 2.5kHz (vs current none)  
-**Risk:** Might be *too* cartoonish for some contexts
+**Risk:** Might be _too_ cartoonish for some contexts
 
 ---
 
 ### **Version C: Minimal/Fast**
+
 Quick processing, smaller files (mobile-friendly):
 
 ```bash
@@ -206,18 +228,21 @@ ffmpeg -i /tmp/speech.mp3 -af "\
 ## 📱 Platform-Specific Considerations
 
 ### WhatsApp
+
 - **Preferred:** Opus codec in OGG container
 - **Sample Rate:** 48kHz → 16kHz (WhatsApp resamples anyway)
 - **Bitrate:** 64-128kbps (higher = unnecessary bandwidth)
 - **Recommendation:** Version C or Version A @ 16kHz
 
 ### Discord
+
 - **Preferred:** Opus codec
 - **Sample Rate:** 48kHz native
 - **Bitrate:** Up to 128kbps
 - **Recommendation:** Version A @ 48kHz for best quality
 
 ### Signal
+
 - **Preferred:** AAC or Opus
 - **Sample Rate:** Flexible (16-48kHz)
 - **Recommendation:** Version A @ 24kHz (universal compatibility)
@@ -226,34 +251,37 @@ ffmpeg -i /tmp/speech.mp3 -af "\
 
 ## 🎯 Side-by-Side Comparison
 
-| Metric | Current | Version A | Version B | Version C |
-|--------|---------|-----------|-----------|-----------|
-| **Pitch Shift** | +20% | +20% | +25% | +20% |
-| **Sample Rate** | 44.1kHz | 24kHz | 24kHz | 16kHz |
-| **Formant EQ** | None | +2.5dB | +4dB | None |
-| **Compression** | None | Gentle | Moderate | None |
-| **File Size** | 100% | ~50% | ~55% | ~35% |
-| **Processing Time** | Fast | Fast | Medium | Very Fast |
-| **Gnome Factor** | 7/10 | 8/10 | 9.5/10 | 6.5/10 |
-| **Naturalness** | 9/10 | 9/10 | 7/10 | 8.5/10 |
+| Metric              | Current | Version A | Version B | Version C |
+| ------------------- | ------- | --------- | --------- | --------- |
+| **Pitch Shift**     | +20%    | +20%      | +25%      | +20%      |
+| **Sample Rate**     | 44.1kHz | 24kHz     | 24kHz     | 16kHz     |
+| **Formant EQ**      | None    | +2.5dB    | +4dB      | None      |
+| **Compression**     | None    | Gentle    | Moderate  | None      |
+| **File Size**       | 100%    | ~50%      | ~55%      | ~35%      |
+| **Processing Time** | Fast    | Fast      | Medium    | Very Fast |
+| **Gnome Factor**    | 7/10    | 8/10      | 9.5/10    | 6.5/10    |
+| **Naturalness**     | 9/10    | 9/10      | 7/10      | 8.5/10    |
 
 ---
 
 ## 🔧 Implementation Strategy
 
 ### Phase 1: A/B Testing (Recommended First Step)
+
 1. Generate 5-10 test phrases with current pipeline
 2. Generate same phrases with **Version A** (balanced)
 3. Compare on multiple devices (phone, desktop, headphones)
 4. Choose winner or iterate
 
 ### Phase 2: Platform Optimization
+
 1. Create platform-specific encoding profiles:
    - `wobblus-whatsapp.sh` (Version C @ 16kHz Opus)
    - `wobblus-discord.sh` (Version A @ 48kHz Opus)
    - `wobblus-default.sh` (Version A @ 24kHz Vorbis)
 
 ### Phase 3: Advanced Tuning
+
 1. If Version A sounds good, experiment with Version B for "storytime" mode
 2. Create emotional presets:
    - **Excited:** +3dB compression, +25% pitch
@@ -266,13 +294,13 @@ ffmpeg -i /tmp/speech.mp3 -af "\
 
 ### Current Settings Review
 
-| Parameter | Current | Analysis | Recommendation |
-|-----------|---------|----------|----------------|
-| **Speed** | 1.35x | Good for gnome energy | ✅ Keep (or try 1.4x for MORE energy) |
-| **Stability** | 0 | Maximum expressiveness | ✅ Keep (creative mode perfect) |
-| **Style** | 0.9 | High character | ✅ Keep (matches gnome personality) |
-| **Similarity** | (default) | Not specified | ⚠️ Try 0.7-0.8 (allow more variation) |
-| **Speaker Boost** | (default) | Not enabled | 🎯 Try enabling (clarity boost) |
+| Parameter         | Current   | Analysis               | Recommendation                        |
+| ----------------- | --------- | ---------------------- | ------------------------------------- |
+| **Speed**         | 1.35x     | Good for gnome energy  | ✅ Keep (or try 1.4x for MORE energy) |
+| **Stability**     | 0         | Maximum expressiveness | ✅ Keep (creative mode perfect)       |
+| **Style**         | 0.9       | High character         | ✅ Keep (matches gnome personality)   |
+| **Similarity**    | (default) | Not specified          | ⚠️ Try 0.7-0.8 (allow more variation) |
+| **Speaker Boost** | (default) | Not enabled            | 🎯 Try enabling (clarity boost)       |
 
 ### Suggested ElevenLabs Adjustments
 
@@ -288,6 +316,7 @@ sag -v ErXwobaYiN019PkySvjV \
 ```
 
 **Why?**
+
 - **Similarity 0.75:** Allows more creative interpretation while staying in character
 - **Speaker Boost:** Enhances clarity (important for pitch-shifted voice)
 
@@ -318,12 +347,14 @@ sag "[laughs] That's quite clever!"
 ## 📈 Quality Metrics & Monitoring
 
 ### Key Indicators to Track
+
 1. **File Size Trend:** Target <50KB per 10s of audio
 2. **Intelligibility:** Can users understand at 1.5x playback?
 3. **Character Consistency:** Does it always sound like Wobblus?
 4. **Platform Compatibility:** Works on all channels without transcoding?
 
 ### Tools for Analysis
+
 ```bash
 # Quick quality check
 ffprobe -show_entries format=duration,size,bit_rate \
@@ -357,7 +388,7 @@ ffmpeg -i output.ogg -lavfi showspectrumpic=s=1280x720 spectrum.png
 
 ## 📝 Implementation Script
 
-Create `/home/andlersrv/.openclaw/workspace/generate-wobblus-voice.sh`:
+Create `$HOME/.openclaw/workspace/generate-wobblus-voice.sh`:
 
 ```bash
 #!/bin/bash
@@ -425,6 +456,7 @@ ls -lh "$OUTPUT"
 ```
 
 **Usage:**
+
 ```bash
 # Balanced (default)
 ./generate-wobblus-voice.sh "Hello there!" output.ogg

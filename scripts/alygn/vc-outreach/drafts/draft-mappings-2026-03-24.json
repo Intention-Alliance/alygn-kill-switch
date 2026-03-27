@@ -1,0 +1,28 @@
+{
+  "draftMappings": [
+    {
+      "draftId": "_RTVXA",
+      "vcName": "Index Ventures",
+      "partnerName": "Neil Rimer",
+      "partnerTitle": "General Partner, Founder",
+      "email": "neil@indexventures.com",
+      "notionPageId": "PENDING-UPDATE",
+      "draftStatus": "Drafted",
+      "createdAt": "2026-03-24T20:05:00.000Z",
+      "notes": "European AI governance focus. Draft ready for review."
+    },
+    {
+      "draftId": "FQKiiw",
+      "vcName": "Andreessen Horowitz",
+      "partnerName": "Marc Andreessen",
+      "partnerTitle": "Co-Founder, General Partner",
+      "email": "marc.andreessen@a16z.com",
+      "notionPageId": "PENDING-UPDATE",
+      "draftStatus": "Drafted",
+      "createdAt": "2026-03-24T20:05:00.000Z",
+      "notes": "Institutional AI infrastructure focus. Draft ready for review."
+    }
+  ],
+  "lastUpdated": "2026-03-24T20:05:00.000Z",
+  "pendingNotionSync": true
+}

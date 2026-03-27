@@ -38,6 +38,7 @@ scripts/
 - `system/` — System-wide scripts (backups, health checks, briefings)
 
 **Why?**
+
 - Prevents context leakage between projects
 - Makes it easy to find scripts by project
 - Supports security compartmentalization (NDA compliance)
@@ -46,12 +47,12 @@ scripts/
 
 **Scripts should output to their respective directories:**
 
-| Script Location | Output Location |
-|----------------|-----------------|
-| `scripts/alygn/x-twitter/` | `twitter-outputs/alygn/` |
-| `scripts/bitcash/` | `daily-reports/`, `logs/YYYY-MM-DD/` |
-| `scripts/alygn/` | `logs/YYYY-MM-DD/`, `audio/alygn/` |
-| `scripts/system/` | `logs/YYYY-MM-DD/`, `backups/` |
+| Script Location            | Output Location                      |
+| -------------------------- | ------------------------------------ |
+| `scripts/alygn/x-twitter/` | `twitter-outputs/alygn/`             |
+| `scripts/bitcash/`         | `daily-reports/`, `logs/YYYY-MM-DD/` |
+| `scripts/alygn/`           | `logs/YYYY-MM-DD/`, `audio/alygn/`   |
+| `scripts/system/`          | `logs/YYYY-MM-DD/`, `backups/`       |
 
 ### 3. Credential Usage
 
@@ -59,7 +60,7 @@ scripts/
 
 ```javascript
 // ✅ Correct
-const { getNotionKey, getGrokKey } = require('../shared/load-credentials');
+const { getNotionKey, getGrokKey } = require("../shared/load-credentials");
 const notionKey = getNotionKey();
 
 // ❌ Wrong
@@ -133,15 +134,15 @@ const notionKey = "ntn_hardcoded_key"; // NEVER DO THIS
 **Usage:**
 
 ```javascript
-const { 
-  loadCredentials, 
-  getNotionKey, 
-  getGrokKey, 
+const {
+  loadCredentials,
+  getNotionKey,
+  getGrokKey,
   getJacoboPhone,
   getNotionPage,
   hasCredential,
-  getMissingCredentials
-} = require('./shared/load-credentials');
+  getMissingCredentials,
+} = require("./shared/load-credentials");
 
 // Load all credentials
 const creds = loadCredentials();
@@ -149,17 +150,17 @@ const creds = loadCredentials();
 // Get specific credentials
 const notionKey = getNotionKey();
 const grokKey = getGrokKey();
-const automationLogPageId = getNotionPage('automation_logs');
+const automationLogPageId = getNotionPage("automation_logs");
 
 // Check if credential exists
-if (hasCredential('twitter.apiKey')) {
+if (hasCredential("twitter.apiKey")) {
   // Use Twitter API
 }
 
 // List missing credentials
 const missing = getMissingCredentials();
 if (missing.length > 0) {
-  console.error('Missing credentials:', missing);
+  console.error("Missing credentials:", missing);
 }
 ```
 
@@ -234,35 +235,50 @@ openclaw cron runs <jobId>
 **Always load credentials via the shared helper:**
 
 ```javascript
-const { getNotionKey, getGrokKey, getCredential } = require('../shared/load-credentials');
+const {
+  getNotionKey,
+  getGrokKey,
+  getCredential,
+} = require("../shared/load-credentials");
 
 // Get predefined credentials
 const notion = getNotionKey();
 const grok = getGrokKey();
 
 // Get custom credentials
-const customKey = getCredential('custom.service.apiKey');
+const customKey = getCredential("custom.service.apiKey");
 ```
 
 ### 2. Output to Project-Specific Directories
 
 ```javascript
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // ✅ Correct: Project-specific output
-const outputPath = path.join(__dirname, '../../twitter-outputs/alygn/workflow.json');
+const outputPath = path.join(
+  __dirname,
+  "../../twitter-outputs/alygn/workflow.json",
+);
 fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
 
 // ❌ Wrong: Generic output location
-fs.writeFileSync('output.json', JSON.stringify(data));
+fs.writeFileSync("output.json", JSON.stringify(data));
 ```
 
 ### 3. Log Execution Results
 
 ```javascript
-const logPath = path.join(__dirname, '../../logs', new Date().toISOString().split('T')[0], 'script-name.log');
-fs.appendFileSync(logPath, `[${new Date().toISOString()}] Script executed successfully\n`);
+const logPath = path.join(
+  __dirname,
+  "../../logs",
+  new Date().toISOString().split("T")[0],
+  "script-name.log",
+);
+fs.appendFileSync(
+  logPath,
+  `[${new Date().toISOString()}] Script executed successfully\n`,
+);
 ```
 
 ### 4. Handle Errors Gracefully
@@ -270,9 +286,9 @@ fs.appendFileSync(logPath, `[${new Date().toISOString()}] Script executed succes
 ```javascript
 try {
   // Script logic
-  console.log('✅ Success');
+  console.log("✅ Success");
 } catch (error) {
-  console.error('❌ Error:', error.message);
+  console.error("❌ Error:", error.message);
   process.exit(1);
 }
 ```
@@ -281,11 +297,11 @@ try {
 
 ```javascript
 // ✅ Correct: Relative to script location
-const workspaceRoot = path.join(__dirname, '../..');
-const configPath = path.join(workspaceRoot, 'config/credentials.json');
+const workspaceRoot = path.join(__dirname, "../..");
+const configPath = path.join(workspaceRoot, "config/credentials.json");
 
 // ❌ Wrong: Hardcoded absolute paths
-const configPath = '/home/andlersrv/.openclaw/workspace/config/credentials.json';
+const configPath = "$HOME/.openclaw/workspace/config/credentials.json";
 ```
 
 ---
@@ -320,13 +336,13 @@ const configPath = '/home/andlersrv/.openclaw/workspace/config/credentials.json'
 
 ```javascript
 // From scripts/alygn/
-require('../shared/load-credentials');
+require("../shared/load-credentials");
 
 // From scripts/alygn/x-twitter/
-require('../../shared/load-credentials');
+require("../../shared/load-credentials");
 
 // From scripts/bitcash/
-require('../shared/load-credentials');
+require("../shared/load-credentials");
 ```
 
 ### "Missing credentials: notion.apiKey"
@@ -342,10 +358,10 @@ node scripts/shared/load-credentials.js check
 **Fix:** Ensure output directories exist or create them dynamically:
 
 ```javascript
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const outputDir = path.join(__dirname, '../../twitter-outputs/alygn');
+const outputDir = path.join(__dirname, "../../twitter-outputs/alygn");
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }

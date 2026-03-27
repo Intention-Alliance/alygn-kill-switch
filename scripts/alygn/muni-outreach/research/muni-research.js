@@ -8,6 +8,11 @@
  */
 
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
@@ -25,26 +30,6 @@ function researchMunicipalities(municipalities, mock = false) {
   // Always use pre-verified data because Firecrawl is unreliable (408/500 errors)
   console.log('ℹ️  Using pre-verified research data (Firecrawl unreliable)');
   return generateMockResearch(municipalities);
-}
-  
-  const researched = [];
-  
-  for (const muni of municipalities) {
-    try {
-      const research = await researchSingleMunicipality(muni);
-      researched.push({ ...muni, ...research });
-    } catch (error) {
-      console.error(`Error researching ${muni.name}:`, error.message);
-      researched.push({
-        ...muni,
-        research_status: 'error',
-        research_error: error.message
-      });
-    }
-  }
-  
-  console.log(`✅ Researched ${researched.length} municipalities`);
-  return researched;
 }
 
 /**
@@ -185,9 +170,6 @@ async function findXHandle(name, country) {
  * Generates research data from pre-verified source (NOT mock - REAL data)
  */
 function generateMockResearch(municipalities) {
-  import path from "path";
-  import fs from "fs";
-  
   // Load real data from verified source
   const realDataPath = path.join(__dirname, '../discovery/costa-rica-real-municipalities.json');
   
@@ -201,7 +183,7 @@ function generateMockResearch(municipalities) {
   }
   
   // Map municipalities to real data
-  return municipalities.map(muni => {
+  const results = municipalities.map(muni => {
     const realMuni = realData.municipalities.find(r => r.name === muni.name);
     
     if (!realMuni) {
@@ -235,6 +217,8 @@ function generateMockResearch(municipalities) {
       source: 'costa-rica-real-municipalities.json'
     };
   });
+  
+  return Promise.resolve(results);
 }
 
 /**

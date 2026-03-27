@@ -17,7 +17,7 @@
 set -e
 
 WORKSPACE="$HOME/.openclaw/workspace"
-MEDIA_DIR="/home/andlersrv/.local/share/mise/installs/node/24.11.1/lib/node_modules/openclaw/skills/nano-banana-pro"
+MEDIA_DIR="$HOME/.local/share/mise/installs/node/24.11.1/lib/node_modules/openclaw/skills/nano-banana-pro"
 
 echo ""
 echo "╔════════════════════════════════════════════════════════════╗"

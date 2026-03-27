@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-03-25T18:12:52.759Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 3,
+  "totalThreads": 3,
+  "validUrls": 3,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Sen. Bernie Sanders announced the Artificial Intelligence Data Center Moratorium Act on March 25, halting construction of AI data centers until safeguards address climate, privacy, and safety risks.",
+      "replyText": "Drives legislative coordination on AI infrastructure impacts, legitimizing calls for equitable safety measures amid rapid expansion.",
+      "sourceUrl": "https://www.wired.com/story/new-bernie-sanders-ai-safety-bill-would-halt-data-center-construction",
+      "isThread": true,
+      "mainLength": 198,
+      "replyLength": 132,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Meta, NVIDIA, Oracle, and Google joined President-elect Trump's AI Advisory Council to counsel on policy and regulation, marking a shift to industry-government partnership.",
+      "replyText": "Enhances coordination between tech leaders and executive, but risks legitimacy via perceived capture, sidelining safety advocates.",
+      "sourceUrl": "https://www.aibusinessreview.org/2026/03/25/tech-giants-trump-ai-advisory-council",
+      "isThread": true,
+      "mainLength": 172,
+      "replyLength": 130,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "White House released National AI Legislative Framework on March 20, proposing federal preemption of state laws and oversight by existing agencies for unified governance.",
+      "replyText": "Prevents regulatory patchwork, promoting cross-sector coordination and legitimacy through principles-based, non-bureaucratic approach.",
+      "sourceUrl": "https://natlawreview.com/article/white-house-releases-national-ai-legislative-framework-debate-over-federal-vs-state",
+      "isThread": true,
+      "mainLength": 169,
+      "replyLength": 134,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

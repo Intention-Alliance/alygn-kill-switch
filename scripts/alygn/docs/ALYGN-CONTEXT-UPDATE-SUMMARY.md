@@ -208,9 +208,9 @@ node decision-engine.js
 
 **Source Materials:**
 
-- `~/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
-- `~/Documents/alygn-context-update/01 Alygn - Boiler Plate.pdf`
-- `~/Documents/alygn-context-update/02 Alygn Pre Approved Posts.pdf`
+- `$HOME/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
+- `$HOME/Documents/alygn-context-update/01 Alygn - Boiler Plate.pdf`
+- `$HOME/Documents/alygn-context-update/02 Alygn Pre Approved Posts.pdf`
 
 **Implementation Docs:**
 

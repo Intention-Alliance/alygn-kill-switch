@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-20T17:00:59.594Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Singapore launched a new model AI governance framework for agentic AI, prioritizing coordinated standards across stakeholders. This upholds legitimacy and neutrality in autonomous systems.",
+      "replyText": "Highlights need for institutional coordination to manage agentic risks, ensuring legitimate processes build public trust and neutral frameworks prevent bias in AI decision-making.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 188,
+      "replyLength": 179,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Colorado proposes overhaul of AI Act, replacing broad mandates with targeted, business-friendly rules. Demonstrates coordination between regulators and industry for legitimate AI governance.",
+      "replyText": "Shifts toward pragmatic governance balancing innovation and safety, enhancing legitimacy via stakeholder input and neutrality by focusing on high-impact risks without overreach.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 190,
+      "replyLength": 177,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Idaho advances SB 1227 on GenAI use in public education, establishing coordinated safeguards. Ensures neutral, legitimate integration benefiting students equitably.",
+      "replyText": "Promotes state-level coordination for AI in sensitive sectors like education, legitimacy through legislative process, neutrality to avoid discriminatory outcomes in learning tools.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 164,
+      "replyLength": 180,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Future Food-Tech SF (Mar 19-20) spotlights AI policy in sustainable food tech, urging coordinated governance. Neutral frameworks key to legitimate industry growth.",
+      "replyText": "Fosters cross-sector coordination on AI regs, legitimacy via global dialogue, neutrality ensuring fair access to AI-driven innovations in food production and sustainability.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 163,
+      "replyLength": 173,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "US Senators propose federal AI commission amid firm-government tensions, seeking coordinated national strategy. Builds legitimacy and neutrality in oversight.",
+      "replyText": "Addresses coordination gaps in federal AI policy, legitimacy through bipartisan commission, neutrality by independent study of risks across defense and commerce.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 158,
+      "replyLength": 161,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

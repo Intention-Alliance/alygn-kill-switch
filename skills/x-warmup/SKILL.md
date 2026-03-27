@@ -56,11 +56,85 @@ All engagement data written to Supabase:
 
 ---
 
+## 🔍 Discovery Phase (Pre-Execution)
+
+Before x-warmup execution, run the **x-growth discovery phase**:
+
+```yaml
+- id: prelude-discovery
+  command: openclaw invoke --tool x-growth --action daily-growth --args-json '{"project":"alygn","context":"municipal-outreach"}'
+  description: "Run x-growth daily discovery for municipal engagement context"
+  output:
+    file: /tmp/x-growth-discovery.json
+  env:
+    X_GROWTH_MODE: discovery_only
+```
+
+### Discovery Phase Details
+
+| Attribute | Value |
+|-----------|-------|
+| **Purpose** | Identify municipal officials on X before engagement |
+| **Mode** | `discovery_only` - Finds accounts without engaging |
+| **Output** | `/tmp/x-growth-discovery.json` |
+| **Next Step** | Discovery output feeds into x-scout.js for targeting |
+| **Schedule** | Runs before x-warmup Phase 1 (daily cron) |
+
+### Discovery Only Mode
+
+When `X_GROWTH_MODE=discovery_only`:
+- ✅ Scans for municipal official accounts
+- ✅ Analyzes account activity and legitimacy
+- ✅ Outputs structured discovery data
+- ❌ Does NOT follow, like, or reply
+- ❌ Does NOT engage (engagement happens in x-warmup phases)
+
+### Updated Workflow with Discovery
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      X-WARMUP WORKFLOW                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Phase 0: Discovery (x-growth skill)                                │
+│  ├── Mode: discovery_only                                           │
+│  ├── Output: /tmp/x-growth-discovery.json                           │
+│  └── Identifies: municipal official X accounts                      │
+│                              │                                      │
+│                              ▼                                      │
+│  Phase 1: X Scout (x-scout.js)                                    │
+│  ├── Load discovery output from /tmp/x-growth-discovery.json        │
+│  ├── Validate accounts found in discovery                         │
+│  ├── Extract recent topics/hashtags                                 │
+│  └── Store: X handle, user ID, recent activity                    │
+│                              │                                      │
+│                              ▼                                      │
+│  Phase 1: Follow + Like (x-warmup-engage.js)                      │
+│  ├── Target: Accounts from discovery                              │
+│  ├── Follow municipality account                                    │
+│  ├── Like 2-3 recent tweets                                         │
+│  └── Wait 24-48 hours                                               │
+│                                                                     │
+│  Phase 2: Quote + Reply (x-warmup-engage.js)                        │
+│  ├── Quote tweet with Alygn perspective                           │
+│  ├── Reply to relevant conversations                              │
+│  └── NO selling (value-add only)                                  │
+│                                                                     │
+│  Phase 3: Warmth Tracking (x-warmup-tracker.js)                     │
+│  ├── Calculate warmth score per municipality                      │
+│  └── Mark ready for email outreach                                │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## Core Capabilities
 
 ### 1. ✅ X Account Discovery (x-scout.js)
-- Uses Grok API to find official municipal X accounts
-- Validates account authenticity
+**Inputs:** Discovery data from x-growth (`/tmp/x-growth-discovery.json`)
+- Uses Grok API to validate official municipal X accounts found by discovery
+- Cross-references discovery output with live X data
 - Extracts recent topics/hashtags
 - Outputs: X handle, user ID, recent activity
 
@@ -92,8 +166,14 @@ All engagement data written to Supabase:
 ## Architecture
 
 ### Workflow
+
+#### Full Pipeline with Discovery Phase
 ```
-x-scout.js (Grok discovery)
+x-growth discovery (discovery_only mode)
+  ↓
+Output: /tmp/x-growth-discovery.json
+  ↓
+x-scout.js (Load discovery, validate accounts)
   ↓
 Supabase: municipalities.x_handle, x_user_id
   ↓

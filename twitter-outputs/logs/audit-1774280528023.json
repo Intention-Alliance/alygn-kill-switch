@@ -1,0 +1,54 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-23T15:42:06.953Z",
+  "workflow": {
+    "timestamp": "2026-03-23T15:35:00Z",
+    "source": "alygn-x-growth-daily-replies",
+    "posts": [],
+    "replies": [
+      {
+        "id": 1,
+        "targetHandle": "@aialygn",
+        "targetUrl": "https://x.com/aialygn/status/2036106126710722801",
+        "content": "Without legitimacy, systemic risks persist. Operators need credible, neutral infrastructure for coordination, not reactive regulation.\n\nmore at @aialygn #AIGovernance",
+        "mention": "@aialygn"
+      },
+      {
+        "id": 2,
+        "targetHandle": "@aialygn",
+        "targetUrl": "https://x.com/aialygn/status/2036106127931285587",
+        "content": "The gap between policy and preparedness is closing. Enterprises now need auditable systems, not just intent.\n\n📚 Source: https://tinyurl.com/2ayk6ydw\n\n#AIRegulation #AIPolicy more at @aialygn",
+        "mention": "@aialygn"
+      },
+      {
+        "id": 3,
+        "targetHandle": "@aialygn",
+        "targetUrl": "https://x.com/aialygn/status/2036106128967204969",
+        "content": "2026 marks the transition from voluntary frameworks to auditable compliance. Governance maturity is now competitive advantage.\n\n📚 Source: https://tinyurl.com/2bajb7x4\n\n#AISafety #AITransparency more at @aialygn",
+        "mention": "@aialygn"
+      }
+    ],
+    "profiles": []
+  },
+  "posts": [],
+  "replies": [
+    {
+      "id": "2036106223028719997",
+      "content": "Without legitimacy, systemic risks persist. Operators need credible, neutral infrastructure for coordination, not reactive regulation.\n\nmore at @aialygn #AIGovernance",
+      "target": "@aialygn"
+    },
+    {
+      "id": "2036106224215703896",
+      "content": "The gap between policy and preparedness is closing. Enterprises now need auditable systems, not just intent.\n\n📚 Source: https://tinyurl.com/2ayk6ydw\n\n#AIRegulation #AIPolicy more at @aialygn",
+      "target": "@aialygn"
+    },
+    {
+      "id": "2036106225461383679",
+      "content": "2026 marks the transition from voluntary frameworks to auditable compliance. Governance maturity is now competitive advantage.\n\n📚 Source: https://tinyurl.com/2bajb7x4\n\n#AISafety #AITransparency more at @aialygn",
+      "target": "@aialygn"
+    }
+  ],
+  "quotes": [],
+  "executed": 3,
+  "failed": 0
+}

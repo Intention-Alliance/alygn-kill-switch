@@ -1,9 +1,3 @@
----
-name: alygn-vc-outreach
-description: Automated VC discovery, personalized outreach, reply tracking, and pipeline management for Alygn's fundraising. Uses Grok for research and personalization.
-metadata: {"openclaw":{"emoji":"💼","requires":{"bins":["node","bash"],"env":["NOTION_API_KEY","GROK_API_KEY","SMTP_PASSWORD"],"os":["linux","darwin"]}}}
----
-
 # ALYGN VC Outreach Automation Skill
 
 **Purpose:** Automated VC discovery, personalized outreach, reply tracking, and pipeline management for ALYGN's fundraising efforts.
@@ -48,7 +42,7 @@ You are an expert capital outreach strategist with an IQ of 140 and exceptionall
 
 ```bash
 # Check system status
-cd ~/.openclaw/workspace/scripts/alygn/vc-outreach
+cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach
 node vc-outreach.js list
 
 # Run VC discovery (find new VCs)
@@ -351,7 +345,7 @@ node weekly-report.js
 node weekly-report.js --start=2026-02-10 --end=2026-02-16
 
 # Export to CSV
-node weekly-report.js --export=csv --output=~/Downloads/vc-report.csv
+node weekly-report.js --export=csv --output=$HOME/Downloads/vc-report.csv
 ```
 
 ---
@@ -427,7 +421,7 @@ Do this:
 
 **IMAP Configuration:**
 ```javascript
-// ~/.openclaw/workspace/config/credentials.json
+// $HOME/.openclaw/workspace/config/credentials.json
 {
   "gmail": {
     "staging": {
@@ -463,7 +457,7 @@ Do this:
   },
   payload: {
     kind: "systemEvent",
-    text: "Run ALYGN VC reply tracker: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node reply-tracker.js"
+    text: "Run ALYGN VC reply tracker: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node reply-tracker.js"
   },
   sessionTarget: "main",
   enabled: true
@@ -479,7 +473,7 @@ Do this:
   },
   payload: {
     kind: "systemEvent",
-    text: "Run ALYGN VC outreach: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node outreach-orchestrator.js --send-next"
+    text: "Run ALYGN VC outreach: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node outreach-orchestrator.js --send-next"
   },
   sessionTarget: "main",
   enabled: true
@@ -495,7 +489,7 @@ Do this:
   },
   payload: {
     kind: "systemEvent",
-    text: "Run ALYGN VC discovery: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node vc-discovery.js --source=crunchbase --limit=30"
+    text: "Run ALYGN VC discovery: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node vc-discovery.js --source=crunchbase --limit=30"
   },
   sessionTarget: "main",
   enabled: true
@@ -511,7 +505,7 @@ Do this:
   },
   payload: {
     kind: "systemEvent",
-    text: "Generate ALYGN VC weekly report: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node weekly-report.js"
+    text: "Generate ALYGN VC weekly report: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node weekly-report.js"
   },
   sessionTarget: "main",
   enabled: true
@@ -527,7 +521,7 @@ Do this:
   },
   payload: {
     kind: "systemEvent",
-    text: "Run ALYGN VC database maintenance: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node database-maintenance.js"
+    text: "Run ALYGN VC database maintenance: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node database-maintenance.js"
   },
   sessionTarget: "main",
   enabled: true
@@ -540,7 +534,7 @@ Do this:
 
 ### Credentials Management
 - **Never hardcode** API keys, SMTP passwords, OAuth tokens
-- Use `~/.openclaw/workspace/config/credentials.json` exclusively
+- Use `$HOME/.openclaw/workspace/config/credentials.json` exclusively
 - Rotate Gmail app password quarterly
 - Use read-only Notion tokens where possible
 
@@ -602,7 +596,7 @@ node tests/test-cron-jobs.js --job=reply-tracker --dry-run
 **1. Gmail IMAP connection fails:**
 ```bash
 # Check credentials
-cat ~/.openclaw/workspace/config/credentials.json | jq '.gmail.staging'
+cat $HOME/.openclaw/workspace/config/credentials.json | jq '.gmail.staging'
 
 # Test IMAP manually
 node -e "const imap = require('imap-simple'); ..."
@@ -697,6 +691,33 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
 - `utils/gmail-api.js` - Gmail/IMAP helpers
 - `utils/logger.js` - Structured logging
 - `utils/rate-limiter.js` - API throttling
+
+---
+
+## Production Deployment
+
+### Cron Schedule
+- **Daily at 10:00 AM** (Mon-Fri)
+- **Command:** `lobster run .lobster/alygn-campaign.lobster`
+
+### Before First Production Run
+1. Verify 100 VCs in Notion
+2. Ensure all have Draft Status = "Not drafted"
+3. Test with --limit=1 --dry-run first
+4. Monitor Discord #annotations for approval
+
+### Daily Workflow
+1. Cron triggers lobster workflow
+2. Phase 1-4: Discovery → Research → Personalize → Review
+3. Human approves drafts in Notion
+4. Phase 6: Send with both filters
+5. Phase 7: Verify and report
+
+### Monitoring
+- Check Discord #annotations daily
+- Review SentEmailTracker for duplicates
+- Monitor bounce rates
+- Weekly report: sends, replies, meetings scheduled
 
 ---
 

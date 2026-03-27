@@ -139,7 +139,7 @@ Alygn is an independent AI governance institution focused on making accountabili
 
 #### Boilerplate / Mission Statement
 **Current:** Unknown (check page)  
-**Replace with content from:** `~/Documents/alygn-context-update/01 Alygn - Boiler Plate.txt`
+**Replace with content from:** `$HOME/Documents/alygn-context-update/01 Alygn - Boiler Plate.txt`
 
 ---
 
@@ -190,7 +190,7 @@ When logging ALYGN work, use governance-first framing:
 
 ### Communications Guardrails
 Create a dedicated page with content from:  
-`~/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
+`$HOME/Documents/alygn-context-update/00 Alygn - Public Institutional Overview & Communications Guardrails.pdf`
 
 **Key sections:**
 - What Alygn Is / Is Not

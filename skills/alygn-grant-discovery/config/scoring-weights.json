@@ -1,0 +1,13 @@
+{
+  "alygnFit": {
+    "aiSafetyExplicit": 3.0,
+    "governanceRelevant": 2.0,
+    "alignmentResearch": 2.0,
+    "nonprofitEligible": 1.0
+  },
+  "priority": {
+    "deadlineWeight": 0.4,
+    "amountWeight": 0.3,
+    "confidenceWeight": 0.3
+  }
+}

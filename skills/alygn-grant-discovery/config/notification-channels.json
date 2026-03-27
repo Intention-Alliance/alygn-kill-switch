@@ -1,0 +1,23 @@
+{
+  "email": {
+    "tania": {
+      "address": "tania@alygn.com",
+      "enabled": true
+    },
+    "andler": {
+      "address": "andler@alygn.com",
+      "enabled": true
+    }
+  },
+  "discord": {
+    "alygn-grants": {
+      "webhook": "DISCORD_WEBHOOK_URL",
+      "channelId": "CHANNEL_ID",
+      "enabled": true
+    }
+  },
+  "whatsapp": {
+    "enabled": true,
+    "recipients": ["andler", "tania"]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "vc": {
+    "name": "Andreessen Horowitz",
+    "email": "marc.andreessen@a16z.com",
+    "partnerName": "Marc",
+    "partnerTitle": "Co-Founder, General Partner",
+    "id": "PENDING-NOTION-ID"
+  },
+  "subjects": {
+    "optionA": "Institutional AI Infrastructure",
+    "optionB": "Governance for Frontier Technology",
+    "optionC": "The Real AI Risk is Coordination",
+    "recommended": "A (a16z builds infrastructure focus)"
+  },
+  "variant": "institutional",
+  "variantReason": "a16z focuses on infrastructure and long-term technology bets, aligns with governance infrastructure",
+  "customHook": "Given a16z's history of backing transformative infrastructure companies and your thesis on technology's long-term impact, you understand that governance must be built alongside capability, not retrofitted after the fact.",
+  "painPoints": [
+    "Portfolio AI companies navigating regulatory uncertainty",
+    "Cross-border AI compliance for global startups",
+    "Institutional coordination for frontier AI investments"
+  ],
+  "customPS": "P.S.: a16z's investments in infrastructure—from crypto to AI—show the kind of forward-thinking approach that recognizes governance infrastructure must scale alongside technological capability."
+}

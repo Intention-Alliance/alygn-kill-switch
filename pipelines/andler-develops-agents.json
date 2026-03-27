@@ -1,0 +1,297 @@
+{
+  "version": "2.0",
+  "name": "andler-develops-agents",
+  "description": "Graceful orchestration of Andler's development agent team",
+  "metadata": {
+    "author": "Wobblus 🔧",
+    "created": "2026-03-16",
+    "team": [
+      { "id": "wobblus", "role": "lead-orchestrator", "emoji": "🔧" },
+      { "id": "hugrukal", "role": "architect", "emoji": "📐" },
+      { "id": "chanshuk", "role": "dev-lead", "emoji": "🎯" },
+      { "id": "gimglich", "role": "fe-coder", "emoji": "🎨" },
+      { "id": "keridz", "role": "be-coder", "emoji": "⚙️" },
+      { "id": "talanara", "role": "docs-writer", "emoji": "📝" },
+      { "id": "nikaya", "role": "reviewer", "emoji": "🔍" }
+    ]
+  },
+  "globals": {
+    "projectPath": "/home/andler/.openclaw/workspace/repos/local/nextjs/andler-landing-v3",
+    "workspacePath": "/home/andler/.openclaw/workspace",
+    "maxReviewCycles": 3,
+    "reviewPassThreshold": 85,
+    "defaultTimeout": 1800
+  },
+  "stages": [
+    {
+      "id": "architecture",
+      "name": "Architecture Design",
+      "description": "Hugrukal designs system architecture",
+      "agent": "architect",
+      "label": "architect:hugrukal-{feature}",
+      "triggers": ["new-feature", "design-change", "technical-debt"],
+      "outputs": [
+        "docs/architecture/{feature}.md",
+        "docs/architecture/adr-{n}.md"
+      ],
+      "nextStage": "documentation",
+      "timeout": 3600
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation & Content",
+      "description": "Talanara documents architecture and extracts content",
+      "agent": "docs-writer",
+      "label": "docs-writer:talanara-{feature}",
+      "triggers": ["architecture-complete"],
+      "inputs": ["docs/architecture/{feature}.md"],
+      "outputs": [
+        "docs/api/*.md",
+        "docs/content/*.md",
+        "src/i18n/dictionaries/*.json"
+      ],
+      "nextStage": "implementation",
+      "timeout": 2700
+    },
+    {
+      "id": "implementation",
+      "name": "Implementation",
+      "description": "Gimglich (FE) or Keridz (BE) implements the feature",
+      "parallel": false,
+      "agents": [
+        {
+          "id": "fe-coder",
+          "label": "fe-coder:gimglich-{task}",
+          "condition": "task.scope == 'frontend' || task.scope == 'fullstack'"
+        },
+        {
+          "id": "be-coder",
+          "label": "be-coder:keridz-{task}",
+          "condition": "task.scope == 'backend' || task.scope == 'fullstack'"
+        }
+      ],
+      "triggers": ["documentation-complete", "architecture-complete"],
+      "inputs": [
+        "docs/architecture/{feature}.md",
+        "docs/content/*.md"
+      ],
+      "outputs": [
+        "src/**/*.{ts,tsx}",
+        "tests/**/*.{ts,tsx}"
+      ],
+      "nextStage": "code-quality-review",
+      "timeout": 5400
+    },
+    {
+      "id": "code-quality-review",
+      "name": "Code Quality Review (Stage 1)",
+      "description": "Chanshuk reviews code quality and functionality",
+      "agent": "dev-lead",
+      "label": "dev-lead:chanshuk-quality-review-{task}",
+      "triggers": ["implementation-complete"],
+      "checklist": [
+        "Code patterns match project conventions",
+        "No obvious anti-patterns",
+        "TypeScript strict compliance",
+        "Proper error handling",
+        "Resource disposal (no leaks)",
+        "Functionality matches requirements",
+        "Integration points correct",
+        "Conventional commits"
+      ],
+      "outputs": [
+        "docs/CODE_QUALITY_REPORT.md"
+      ],
+      "nextStage": "full-review",
+      "onFail": "implementation-fixes",
+      "timeout": 1800
+    },
+    {
+      "id": "implementation-fixes",
+      "name": "Implementation Fixes (Stage 1)",
+      "description": "Gimglich/Keridz fixes issues from Chanshuk review",
+      "agent": "fe-coder",
+      "label": "fe-coder:gimglich-fixes-{task}",
+      "condition": "review.cycle < maxReviewCycles",
+      "triggers": ["code-quality-fail"],
+      "inputs": ["docs/CODE_QUALITY_REPORT.md"],
+      "nextStage": "code-quality-review",
+      "maxCycles": 3,
+      "timeout": 1800
+    },
+    {
+      "id": "full-review",
+      "name": "Full Review (Stage 2)",
+      "description": "Nikaya performs comprehensive quality review",
+      "agent": "reviewer",
+      "label": "reviewer:nikaya-full-review-{task}",
+      "triggers": ["code-quality-pass"],
+      "checklist": [
+        "UI/UX quality (visuals, interactions, animations)",
+        "Performance (no memory leaks, efficient rendering)",
+        "Security (no vulnerabilities, proper validation)",
+        "Accessibility standards",
+        "Plan adherence (architecture, spec)",
+        "CODE_REVIEW_PHASE5.md compliance"
+      ],
+      "scoring": {
+        "max": 100,
+        "passThreshold": 85,
+        "categories": [
+          { "name": "Code Quality", "weight": 20 },
+          { "name": "Performance", "weight": 20 },
+          { "name": "Security", "weight": 20 },
+          { "name": "UI/UX", "weight": 20 },
+          { "name": "Plan Adherence", "weight": 20 }
+        ]
+      },
+      "outputs": [
+        "docs/GATE_{n}_REVIEW_REPORT.md"
+      ],
+      "nextStage": "complete",
+      "onFail": "full-review-fixes",
+      "timeout": 2700
+    },
+    {
+      "id": "full-review-fixes",
+      "name": "Full Review Fixes (Stage 2)",
+      "description": "Gimglich/Keridz fixes issues from Nikaya review",
+      "agent": "fe-coder",
+      "label": "fe-coder:gimglich-nikaya-fixes-{task}",
+      "condition": "review.cycle < maxReviewCycles",
+      "triggers": ["full-review-fail"],
+      "inputs": ["docs/GATE_{n}_REVIEW_REPORT.md"],
+      "nextStage": "full-review",
+      "maxCycles": 3,
+      "timeout": 2700
+    },
+    {
+      "id": "complete",
+      "name": "Task Complete",
+      "description": "All reviews passed, task approved",
+      "triggers": ["full-review-pass"],
+      "outputs": [
+        "git-commit-ready",
+        "docs/TASK_{n}_COMPLETE.md"
+      ],
+      "nextStage": null
+    }
+  ],
+  "workflows": [
+    {
+      "id": "frontend-task",
+      "name": "Frontend-Only Task",
+      "description": "Pure frontend implementation (components, UI, animations)",
+      "stages": [
+        { "stage": "documentation", "skipIf": "content.exists" },
+        { "stage": "implementation", "agent": "fe-coder" },
+        { "stage": "code-quality-review" },
+        { "stage": "full-review" },
+        { "stage": "complete" }
+      ]
+    },
+    {
+      "id": "backend-task",
+      "name": "Backend-Only Task",
+      "description": "Pure backend implementation (APIs, workers, DB)",
+      "stages": [
+        { "stage": "architecture", "skipIf": "api.contract.exists" },
+        { "stage": "documentation", "skipIf": "docs.exist" },
+        { "stage": "implementation", "agent": "be-coder" },
+        { "stage": "code-quality-review" },
+        { "stage": "full-review" },
+        { "stage": "complete" }
+      ]
+    },
+    {
+      "id": "fullstack-task",
+      "name": "Full-Stack Task",
+      "description": "Tasks requiring both frontend and backend",
+      "stages": [
+        { "stage": "architecture" },
+        { "stage": "documentation" },
+        {
+          "stage": "implementation",
+          "parallel": [
+            { "agent": "fe-coder", "label": "fe-coder:gimglich-{task}" },
+            { "agent": "be-coder", "label": "be-coder:keridz-{task}" }
+          ],
+          "coordination": "dev-lead"
+        },
+        { "stage": "code-quality-review" },
+        { "stage": "full-review" },
+        { "stage": "complete" }
+      ]
+    },
+    {
+      "id": "new-feature",
+      "name": "New Feature Development",
+      "description": "Complete feature from design to implementation",
+      "stages": [
+        { "stage": "architecture" },
+        { "stage": "documentation" },
+        { "stage": "implementation" },
+        { "stage": "code-quality-review" },
+        { "stage": "full-review" },
+        { "stage": "complete" }
+      ]
+    }
+  ],
+  "coordination": {
+    "heartbeat": {
+      "enabled": true,
+      "interval": 1800,
+      "checklist": [
+        "Check active subagents",
+        "Check git status for uncommitted work",
+        "Check for stalled tasks (>30 min idle)",
+        "Surface blockers to user",
+        "Provide next steps to idle agents"
+      ]
+    },
+    "handoffs": {
+      "rules": [
+        "Always acknowledge agent completion",
+        "Always provide explicit next steps",
+        "Never leave agent idle waiting",
+        "Spawn follow-up tasks immediately",
+        "Report status to user on significant milestones"
+      ]
+    },
+    "escalation": {
+      "conditions": [
+        "Agent asks user for next steps",
+        "Task exceeds max review cycles (3)",
+        "Blocker cannot be resolved by team",
+        "Architecture conflict with requirements",
+        "Security vulnerability found"
+      ],
+      "action": "Report to user with context and options"
+    }
+  },
+  "notifications": {
+    "channels": ["webchat"],
+    "events": [
+      { "type": "task-started", "message": "{agent} started {task}" },
+      { "type": "stage-complete", "message": "{stage} complete for {task}" },
+      { "type": "review-pass", "message": "{reviewer} approved {task} (Score: {score}/100)" },
+      { "type": "review-fail", "message": "{reviewer} rejected {task} (Score: {score}/100). Fixes required." },
+      { "type": "blocker", "message": "🚨 Blocker in {task}: {description}" },
+      { "type": "task-complete", "message": "✅ {task} complete and approved for merge" }
+    ]
+  },
+  "errorHandling": {
+    "agentTimeout": {
+      "action": "spawn-checkin",
+      "message": "Agent {agent} timed out. Spawning check-in task."
+    },
+    "agentFailure": {
+      "action": "escalate",
+      "message": "Agent {agent} failed. Escalating to user."
+    },
+    "maxCyclesReached": {
+      "action": "escalate",
+      "message": "Task {task} exceeded max review cycles. Manual intervention required."
+    }
+  }
+}

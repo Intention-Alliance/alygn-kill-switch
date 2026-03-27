@@ -148,14 +148,14 @@ Lobster is an orchestration tool that can:
 **Current:**
 
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
 ```
 
 **Updated:**
 
 ```bash
 # Enable search for Grok prompts
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 
 # Phase 1: Browser discovery (if Lobster available)
 # lobster run twitter-discovery.yml || echo "Skipping browser discovery"

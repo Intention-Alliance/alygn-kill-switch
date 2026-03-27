@@ -1,0 +1,118 @@
+{
+  "vcs": [
+    {
+      "email": "guru@lsvp.com",
+      "name": "Lightspeed Venture Partners",
+      "partnerName": "Guru Chahal (Partner) - Enterprise AI specialist",
+      "vcName": "Lightspeed Venture Partners",
+      "subject": "The Real AI Risk is Coordination Failure",
+      "sentAt": "2026-03-19T23:00:54.410Z",
+      "messageId": "<5ff1c165-c090-e3d2-6dbb-4fef1b6d217d@alyygn.com>"
+    },
+    {
+      "email": "albert@usv.com",
+      "name": "Union Square Ventures",
+      "partnerName": "Albert Wenger (Managing Partner) - AI infrastructure thesis",
+      "vcName": "Union Square Ventures",
+      "subject": "AI Governance Infrastructure",
+      "sentAt": "2026-03-19T23:00:54.410Z",
+      "messageId": "<a923f42d-a111-626a-4b11-9eca336dc81e@alyygn.com>"
+    },
+    {
+      "email": "josh@luxcapital.com",
+      "name": "Lux Capital",
+      "partnerName": "Josh Wolfe (Partner & Co-Founder) - Frontier tech thought leader",
+      "vcName": "Lux Capital",
+      "subject": "AI Safety Governance Infrastructure",
+      "sentAt": "2026-03-20T02:52:54.083Z",
+      "messageId": "<83a7cf59-4a18-8aea-cad4-95532030bc33@alyygn.com>"
+    },
+    {
+      "email": "nathan@airstreet.com",
+      "name": "Air Street Capital",
+      "partnerName": "Nathan Benaich (Founder & General Partner)",
+      "vcName": "Air Street Capital",
+      "subject": "AI Safety Governance Infrastructure",
+      "sentAt": "2026-03-20T02:52:54.083Z",
+      "messageId": "<ec7bb471-84b7-54fc-1c9b-a6186a7eb172@alyygn.com>"
+    },
+    {
+      "email": "aaron.brindle@radical.vc",
+      "name": "Radical Ventures",
+      "partnerName": "Aaron Brindle",
+      "vcName": "Radical Ventures",
+      "subject": "Alygn - AI Governance: The Coordination Challenge Ahead",
+      "sentAt": "2026-03-20T18:17:41.658Z",
+      "messageId": "<8188e004-abdf-249d-96f0-72268c8ffb88@alygn.com>",
+      "status": "needs_resent",
+      "note": "First send lacked customHook/customPS personalization. Resending with full personalization."
+    },
+    {
+      "email": "contact@aisafety.ventures",
+      "name": "AI Safety Ventures",
+      "partnerName": "Daniel and Nathan",
+      "vcName": "AI Safety Ventures",
+      "subject": "Alygn - From OpenAI Governance to Institutional Infrastructure",
+      "sentAt": "2026-03-20T18:17:46.290Z",
+      "messageId": "<8f627611-04fc-920e-c477-6d837d48faa7@alygn.com>",
+      "status": "needs_resent",
+      "note": "First send lacked customHook/customPS personalization. Resending with full personalization."
+    },
+    {
+      "email": "guru@lsvp.com",
+      "name": "Lightspeed Venture Partners",
+      "partnerName": "guru",
+      "vcName": "Lightspeed Venture Partners",
+      "subject": "The Real AI Risk is Coordination Failure",
+      "sentAt": "2026-03-23T19:21:52.683Z",
+      "messageId": "<26a119de-7369-94f0-46b5-9ba9c4489bf8@alygn.com>"
+    },
+    {
+      "email": "albert@usv.com",
+      "name": "Union Square Ventures",
+      "partnerName": "albert",
+      "vcName": "Union Square Ventures",
+      "subject": "Coordination Failure: The Real AI Risk",
+      "sentAt": "2026-03-23T19:21:58.081Z",
+      "messageId": "<2b81e2c2-2574-921a-f551-ce948ba0e231@alygn.com>"
+    },
+    {
+      "email": "bilal@redglass.vc",
+      "name": "Red Glass Ventures",
+      "partnerName": "bilal",
+      "vcName": "Red Glass Ventures",
+      "subject": "Critical Industry AI Governance",
+      "sentAt": "2026-03-23T19:22:05.144Z",
+      "messageId": "<9411b4d9-ca68-e54a-f1f6-c80a42ba21b2@alygn.com>"
+    },
+    {
+      "email": "matt@dcvc.com",
+      "name": "Data Collective (DCVC)",
+      "partnerName": "matt",
+      "vcName": "Data Collective (DCVC)",
+      "subject": "Dual-Use AI Governance Infrastructure",
+      "sentAt": "2026-03-23T19:22:15.597Z",
+      "messageId": "<c1702d15-ed2a-2229-c83a-2eab9a864100@alygn.com>"
+    },
+    {
+      "email": "harpi@innovationendeavors.com",
+      "name": "Innovation Endeavors",
+      "partnerName": "harpi",
+      "vcName": "Innovation Endeavors",
+      "subject": "Alygn - AI Governance",
+      "sentAt": "2026-03-17T00:00:00.000Z",
+      "messageId": "manual-send-1774373567029"
+    },
+    {
+      "email": "ramtin@abstract.vc",
+      "name": "Abstract Ventures",
+      "partnerName": "ramtin",
+      "vcName": "Abstract Ventures",
+      "subject": "Alygn - AI Governance",
+      "sentAt": "2026-03-17T00:00:00.000Z",
+      "messageId": "manual-send-1774373567029"
+    }
+  ],
+  "municipalities": [],
+  "lastUpdated": "2026-03-24T17:32:47.029Z"
+}

@@ -29,7 +29,7 @@ export CT0="paste_ct0_here"
 **Step 3: Run Script (1 min)**
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/twitter-phase2-bird-node.js
 ```
 

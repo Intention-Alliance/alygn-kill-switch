@@ -9,24 +9,24 @@ echo "🎵 Spotify Authentication Setup"
 echo ""
 
 # Check if credentials exist
-if [[ -z "$SPOTIFY_CLIENT_ID" ]] && [[ ! -f ~/.openclaw/openclaw.json ]]; then
+if [[ -z "$SPOTIFY_CLIENT_ID" ]] && [[ ! -f $HOME/.openclaw/openclaw.json ]]; then
   echo "❌ Missing SPOTIFY_CLIENT_ID"
   echo ""
-  echo "Please set environment variables or add to ~/.openclaw/openclaw.json:"
+  echo "Please set environment variables or add to $HOME/.openclaw/openclaw.json:"
   echo "  SPOTIFY_CLIENT_ID"
   echo "  SPOTIFY_CLIENT_SECRET"
   exit 1
 fi
 
-if [[ -z "$SPOTIFY_CLIENT_SECRET" ]] && [[ ! -f ~/.openclaw/openclaw.json ]]; then
+if [[ -z "$SPOTIFY_CLIENT_SECRET" ]] && [[ ! -f $HOME/.openclaw/openclaw.json ]]; then
   echo "❌ Missing SPOTIFY_CLIENT_SECRET"
   exit 1
 fi
 
 # Load from config if not in env
 if [[ -z "$SPOTIFY_CLIENT_ID" ]]; then
-  SPOTIFY_CLIENT_ID=$(jq -r '.skills.entries.spotify.clientId // empty' ~/.openclaw/openclaw.json)
-  SPOTIFY_CLIENT_SECRET=$(jq -r '.skills.entries.spotify.clientSecret // empty' ~/.openclaw/openclaw.json)
+  SPOTIFY_CLIENT_ID=$(jq -r '.skills.entries.spotify.clientId // empty' $HOME/.openclaw/openclaw.json)
+  SPOTIFY_CLIENT_SECRET=$(jq -r '.skills.entries.spotify.clientSecret // empty' $HOME/.openclaw/openclaw.json)
 fi
 
 if [[ -z "$SPOTIFY_CLIENT_ID" ]] || [[ -z "$SPOTIFY_CLIENT_SECRET" ]]; then

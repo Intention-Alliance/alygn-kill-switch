@@ -34,7 +34,7 @@ import { getClient, queryDatabase } from "../../../shared/notion-client.js";
 const execAsync = promisify(exec);
 
 const notion = getClient();
-const DB_ID = '30533487-4af6-81ef-983d-f57c7f70de33';
+const DB_ID = '30533487-4af6-81e7-ad64-000bbd4829ff';
 const BATCH_SIZE = 5;
 const RESEARCH_TIMEOUT_MS = 30000; // 30 seconds per VC
 

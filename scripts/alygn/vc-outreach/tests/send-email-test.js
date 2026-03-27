@@ -54,8 +54,8 @@ def send_email(recipient, variant):
         import base64
         import os
         
-        logo_path = os.path.expanduser('~/Downloads/avatar_400x400.jpg')
-        banner_path = os.path.expanduser('~/Downloads/banner-1500x500.jpeg')
+        logo_path = os.path.expanduser('$HOME/Downloads/avatar_400x400.jpg')
+        banner_path = os.path.expanduser('$HOME/Downloads/banner-1500x500.jpeg')
         
         logo_b64 = ''
         banner_b64 = ''

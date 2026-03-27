@@ -151,8 +151,8 @@ REPOSITORY HEALTH:
 🔧 SYSTEM NOTES
 ───────────────────────────────────────────────────────────────
 
-• Tracker script location: ~/.openclaw/workspace/scripts/bitcash/
-• Report directory: ~/.openclaw/workspace/daily-reports/
+• Tracker script location: $HOME/.openclaw/workspace/scripts/bitcash/
+• Report directory: $HOME/.openclaw/workspace/daily-reports/
 • Credentials: Configured via shared/load-credentials.js
 • GitHub API: Using gh cli via OpenClaw automation
 

@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-03-25T17:05:00.000Z",
+  "executionSummary": {
+    "phase1": {
+      "name": "Pre-Approved Post Generation (Prompt #1)",
+      "status": "success",
+      "postsGenerated": 5,
+      "validUrls": 3,
+      "invalidUrls": 2,
+      "sourceUrls": [
+        "https://www.whitehouse.gov/wp-content/uploads/2026/03/03.20.26-National-Policy-Framework-for-Artificial-Intelligence-Legislative-Recommendations.pdf",
+        "https://www.cbsnews.com/tag/artificial-intelligence",
+        "https://www.reuters.com/technology/artificial-intelligence",
+        "https://conduitstreet.mdcounties.org/2026/03/25/ai-chatbot-regulations-pause-setting-stage-for-future-policy-discussions"
+      ],
+      "hashtagVariety": "✅ ROTATED - 5 different hashtag sets"
+    },
+    "phase2": {
+      "name": "Trend Monitoring (Prompt #13)",
+      "status": "success",
+      "postsGenerated": 3,
+      "validUrls": 3,
+      "invalidUrls": 0,
+      "sourceUrls": [
+        "https://www.cbsnews.com/news/pentagon-anthropic-hearing-judge-troubling",
+        "https://www.whitehouse.gov/wp-content/uploads/2026/03/03.20.26-National-Policy-Framework-for-Artificial-Intelligence-Legislative-Recommendations.pdf",
+        "https://orfamerica.org/orf-america-comments/ai-deployment-cities-benefits-safeguards"
+      ],
+      "hashtagVariety": "✅ ROTATED - 3 different hashtag sets"
+    },
+    "phase4": {
+      "name": "Municipal Discovery",
+      "status": "completed_via_cron",
+      "note": "Discovery phase runs independently via x-warmup pipeline"
+    },
+    "dailyLimits": {
+      "mainPosts": {
+        "generated": 8,
+        "limit": 3,
+        "action": "Daily limit reached - posting 3 main threads only"
+      },
+      "replyPosts": {
+        "generated": 8,
+        "limit": 3,
+        "action": "Daily limit reached - posting 3 replies only"
+      },
+      "preApproved": {
+        "generated": 5,
+        "limit": 1,
+        "action": "Daily limit reached - posting 1 pre-approved only"
+      }
+    },
+    "sourceUrlValidation": {
+      "totalUrls": 6,
+      "valid200": 6,
+      "invalid": 0,
+      "skipCount": 2
+    },
+    "hashtagSetsUsed": [
+      "#AIGovernance #InstitutionalAI",
+      "#AIAlignment #Alygn",
+      "#AISafety #AIPolicy"
+    ]
+  },
+  "readyForPosting": {
+    "threads": [
+      {
+        "id": 1,
+        "main": "White House released National AI Policy Framework urging federal preemption of state laws for unified coordination on child safety and innovation.",
+        "reply": "This promotes coordination by centralizing AI policy, enhances legitimacy via clear legislative recommendations...",
+        "source": "whitehouse.gov",
+        "hashtags": "#AIGovernance #InstitutionalAI"
+      },
+      {
+        "id": 2,
+        "main": "US judge calls Pentagon's blacklisting of Anthropic troubling, hinting at punishment for AI safety views, challenging procurement neutrality.",
+        "reply": "Highlights need for neutral, legitimate government processes in AI adoption...",
+        "source": "cbsnews.com",
+        "hashtags": "#AIAlignment #Alygn"
+      },
+      {
+        "id": 3,
+        "main": "Federal judge labeled Pentagon's blacklisting of Anthropic as supply chain risk \"troubling\" and an attempt to cripple the firm after it refused to lift AI safety limits...",
+        "reply": "Exposes tensions in institutional coordination between AI safety enforcers and military...",
+        "source": "cbsnews.com",
+        "hashtags": "#AISafety #AIPolicy"
+      }
+    ]
+  },
+  "nextSteps": [
+    "Execute x-api-executor.js with --live flag to post 3 thread pairs",
+    "Wait 45-60s delay between threads",
+    "Phase 4 (Municipal Discovery) runs independently",
+    "Daily limit tracking: 3/7 posts consumed"
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-21T17:03:16.578Z",
+  "workflow": {
+    "generatedAt": "2026-03-21T17:01:47.111Z",
+    "source": "Grok Search - Prompt #1",
+    "totalPosts": 5,
+    "totalThreads": 5,
+    "validUrls": 0,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "White House released national AI policy framework on March 20, urging Congress for uniform federal rules over state patchwork. Boosts coordinated US AI leadership.",
+        "replyText": "This fosters coordination by aligning federal-state efforts, ensuring legitimate, neutral frameworks that prevent regulatory fragmentation and sustain innovation.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 163,
+        "replyLength": 162,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "Beyer, Matsui, Lieu introduce bipartisan bill yesterday to repeal White House AI moratorium, seeking balanced regulation amid new framework.",
+        "replyText": "Highlights legitimacy in governance: Congressional pushback ensures accountable, neutral policies, coordinating checks on executive overreach for robust AI oversight.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 140,
+        "replyLength": 166,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Alygn notes 24h ago: Federal AI policy bolsters institutional coordination, mitigating regulatory patchwork risks to US leadership.",
+        "replyText": "Emphasizes coordination principle: Tech-neutral federal frameworks legitimize AI governance, neutralizing state divergences for holistic, effective oversight.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 131,
+        "replyLength": 158,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "Trump admin's March 20 AI framework aims to preempt state laws with national safety standards, prioritizing competitiveness.",
+        "replyText": "Advances neutrality by establishing uniform, legitimate rules across jurisdictions, enabling coordinated innovation without biased local hurdles.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 124,
+        "replyLength": 145,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 5,
+        "mainText": "GSA AI clause comments closed March 20 amid White House framework, shaping federal procurement governance for AI tools.",
+        "replyText": "Reinforces legitimacy through timely stakeholder input, coordinating neutral standards for safe AI deployment in government, aligning with institutional principles.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 119,
+        "replyLength": 164,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2035401871855178043",
+      "content": "White House released national AI policy framework on March 20, urging Congress for uniform federal rules over state patchwork. Boosts coordinated US AI leadership.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2035401894588191001",
+      "content": "This fosters coordination by aligning federal-state efforts, ensuring legitimate, neutral frameworks that prevent regulatory fragmentation and sustain innovation.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2035401871855178043"
+    },
+    {
+      "id": "2035402114386505895",
+      "content": "Beyer, Matsui, Lieu introduce bipartisan bill yesterday to repeal White House AI moratorium, seeking balanced regulation amid new framework.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2035402137128063101",
+      "content": "Highlights legitimacy in governance: Congressional pushback ensures accountable, neutral policies, coordinating checks on executive overreach for robust AI oversight.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2035402114386505895"
+    },
+    {
+      "id": "2035402386504618221",
+      "content": "Alygn notes 24h ago: Federal AI policy bolsters institutional coordination, mitigating regulatory patchwork risks to US leadership.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2035402405001544018",
+      "content": "Emphasizes coordination principle: Tech-neutral federal frameworks legitimize AI governance, neutralizing state divergences for holistic, effective oversight.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2035402386504618221"
+    },
+    {
+      "id": "2035402624657187219",
+      "content": "Trump admin's March 20 AI framework aims to preempt state laws with national safety standards, prioritizing competitiveness.\n\n#AISafety #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2035402638271901930",
+      "content": "Advances neutrality by establishing uniform, legitimate rules across jurisdictions, enabling coordinated innovation without biased local hurdles.\n\n#AIRisk #AIGovernance",
+      "type": "reply",
+      "parentId": "2035402624657187219"
+    },
+    {
+      "id": "2035402878928498882",
+      "content": "GSA AI clause comments closed March 20 amid White House framework, shaping federal procurement governance for AI tools.\n\n#AICoordination #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2035402897496617394",
+      "content": "Reinforces legitimacy through timely stakeholder input, coordinating neutral standards for safe AI deployment in government, aligning with institutional principles.\n\n#InstitutionalAI #AIPolicy",
+      "type": "reply",
+      "parentId": "2035402878928498882"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 10,
+  "failed": 0
+}

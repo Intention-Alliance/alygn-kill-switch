@@ -65,7 +65,7 @@ Automated, AI-driven Twitter engagement system for @aialyygn:
 
 **Execution:**
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/twitter-browser-automation.js
 ```
 
@@ -94,7 +94,7 @@ node scripts/alygn/twitter-browser-automation.js
 ## File Structure
 
 ```
-~/.openclaw/workspace/
+$HOME/.openclaw/workspace/
 ├── scripts/alygn/
 │   └── twitter-browser-automation.js    # Main automation script
 ├── twitter-outputs/
@@ -145,7 +145,7 @@ Access via: `openclaw cron list` → Search for "ALYGN: Automated Twitter Browse
 ### Posts Not Posting
 1. Check cron job status: `openclaw cron list | grep "ALYGN"`
 2. Verify Chrome extension is attached
-3. Check browser automation logs: `~/.openclaw/workspace/logs/`
+3. Check browser automation logs: `$HOME/.openclaw/workspace/logs/`
 4. Ensure account is still logged in
 
 ### Replies Not Posting
@@ -164,7 +164,7 @@ Access via: `openclaw cron list` → Search for "ALYGN: Automated Twitter Browse
 
 ### Post a One-off Tweet
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 # Just go to x.com and post manually via compose box
 ```
 

@@ -209,7 +209,7 @@ node send-approved-emails.js --rate-limit=10000 --limit=3
 
 ```bash
 # Daily sending (after approval)
-0 10 * * * cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && \
+0 10 * * * cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && \
   node send-approved-emails.js --limit=5 >> /tmp/alygn-sending.log 2>&1
 ```
 

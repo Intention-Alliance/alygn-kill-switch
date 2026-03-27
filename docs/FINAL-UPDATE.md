@@ -92,7 +92,7 @@
 ## 📂 **Updated File Structure**
 
 ```
-~/.openclaw/workspace/
+$HOME/.openclaw/workspace/
 ├── scripts/
 │   ├── shared/
 │   │   ├── logger.js (CommonJS - works with Bun)

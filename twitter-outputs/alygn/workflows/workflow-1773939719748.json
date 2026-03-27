@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-19T17:01:59.747Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "UL Solutions' new UL 3115 standard certifies AI products for safety, robustness, and governance with human oversight. Fills regulatory gaps, enhancing legitimacy and coordination.",
+      "replyText": "This initiative demonstrates private-sector coordination via certification, builds legitimacy through trusted safety marks, and ensures neutral risk evaluation amid fragmented state laws—core to institutional AI governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 179,
+      "replyLength": 223,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "UK launches £40m AI Safety Lab, convening researchers, engineers, policymakers to advance safe frontier AI and inform global standards. Exemplifies multi-stakeholder coordination.",
+      "replyText": "Promotes coordination among diverse stakeholders for AI safety research, legitimizes policy via expert input, and maintains neutrality in advising regulations—vital for robust institutional frameworks.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 179,
+      "replyLength": 201,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "US draft AI Act targets deepfakes, bias, copyright; UK u-turns on text/data mining exceptions for fair creator rewards. Advances legitimate, neutral AI policies.",
+      "replyText": "Highlights evolving coordination on transatlantic AI rules, bolsters legitimacy by protecting rights and addressing biases, ensuring neutral application across sectors for sustainable governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 161,
+      "replyLength": 195,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Illinois AFSCME bill requires human oversight on AI to prevent worker displacement in public services. Upholds legitimacy and human-centric coordination.",
+      "replyText": "Ensures worker legitimacy in AI deployment, fosters coordination between labor and tech, maintains neutrality by prioritizing oversight—essential for equitable institutional AI governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 153,
+      "replyLength": 188,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "EU consultation on AI Act implementation mandates API access, safeguards for providers. Singapore launches agentic AI governance framework. Boosts global coordination.",
+      "replyText": "Drives international coordination on enforcement, enhances legitimacy through transparent compliance, upholds neutrality in regulating advanced AI—key institutional truths for scalable governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 167,
+      "replyLength": 196,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

@@ -46,7 +46,7 @@ Cron total:  3,600,000ms (1h) - overall job timeout
 ### Phase 1: Content Generation
 
 ```bash
-cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js
+cd $HOME/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js
 ```
 
 **Output:**
@@ -59,7 +59,7 @@ cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js
 ### Phase 2: Browser Automation
 
 ```bash
-cd ~/.openclaw/workspace && bun scripts/alygn/twitter-browser-executor.ts
+cd $HOME/.openclaw/workspace && bun scripts/alygn/twitter-browser-executor.ts
 ```
 
 **Critical rules:**
@@ -171,7 +171,7 @@ Summarizes to WhatsApp:
 
 ```bash
 # Generate workflow
-cd ~/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js
+cd $HOME/.openclaw/workspace && bun scripts/alygn/twitter-automation-v2.js
 
 # Check workflow file
 ls -lah twitter-outputs/ | tail -1

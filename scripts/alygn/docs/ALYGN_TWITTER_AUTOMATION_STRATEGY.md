@@ -206,7 +206,7 @@ Executes browser automation
 
 ### To Run Immediately
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 bun scripts/alygn/twitter-automation-v2.js exec 1  # Generate posts
 bun scripts/alygn/twitter-automation-v2.js exec 13 # Generate replies
 bun scripts/alygn/twitter-browser-automation-v3.js # Orchestrate
@@ -289,7 +289,7 @@ openclaw cron run --jobId 7b614a9f-ef56-4c74-8bc8-e6f4e37c3f18
 ## Contact & Support
 
 **Job ID:** `7b614a9f-ef56-4c74-8bc8-e6f4e37c3f18`  
-**Logs:** `~/.openclaw/workspace/twitter-outputs/`  
+**Logs:** `$HOME/.openclaw/workspace/twitter-outputs/`  
 **Status:** Active since 2026-02-05  
 **Next Run:** 2026-02-06 11:00 AM CST
 

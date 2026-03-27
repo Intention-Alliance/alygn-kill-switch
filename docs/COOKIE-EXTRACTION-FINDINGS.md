@@ -13,7 +13,7 @@
 **Status:** Readable but values are encrypted
 
 ```bash
-sqlite3 ~/.config/google-chrome/Default/Cookies \
+sqlite3 $HOME/.config/google-chrome/Default/Cookies \
   "SELECT name, value FROM cookies WHERE host_key = '.x.com'"
 ```
 
@@ -34,7 +34,7 @@ sqlite3 ~/.config/google-chrome/Default/Cookies \
 
 ```typescript
 // Works:
-const db = new Database("~/.config/google-chrome/Default/Cookies", { readonly: true });
+const db = new Database("$HOME/.config/google-chrome/Default/Cookies", { readonly: true });
 const cookies = db.query("SELECT * FROM cookies...").all();
 
 // Problem:
@@ -82,7 +82,7 @@ browser --profile="alygn" --action=[navigate|snapshot|act] ...
 ## Why Cookies Are Encrypted
 
 **Linux Chrome Security:**
-1. Cookies stored in SQLite database: `~/.config/google-chrome/Default/Cookies`
+1. Cookies stored in SQLite database: `$HOME/.config/google-chrome/Default/Cookies`
 2. Each cookie's `value` field is encrypted using Chromium's encryption key
 3. Encryption key is stored in system keyring (via `secret-tool` on Linux)
 4. To decrypt: need keyring password OR Chrome process running (has key in memory)

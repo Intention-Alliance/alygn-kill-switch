@@ -2,7 +2,7 @@
 
 ## Configuration
 
-**API Key:** Stored in `~/.config/notion/api_key`  
+**API Key:** Stored in `$HOME/.config/notion/api_key`  
 **Integration Name:** Wobblus  
 **Connection Status:** ✅ Connected
 

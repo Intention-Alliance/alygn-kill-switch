@@ -188,7 +188,7 @@ git clone --depth 1 https://github.com/Intention-Alliance/align-core-infra.git
 
 1. **Clone repo externally** (outside workspace):
    ```bash
-   cd ~/projects/
+   cd $HOME/projects/
    git clone https://github.com/Intention-Alliance/align-core-infra.git
    cd align-core-infra/
    ```

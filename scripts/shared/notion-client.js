@@ -78,22 +78,22 @@ export async function getParagraphBlocks(notion, blockId, pageSize = 100) {
 }
 
 /**
- * Query a Notion database (supports both legacy and new data sources API)
+ * Query a Notion database
  * @param {Client} notion - Notion client
  * @param {string} databaseId - Database ID
  * @param {Object} body - Query parameters (filter, sorts, page_size, etc.)
  */
 export async function queryDatabase(notion, databaseId, body) {
-  // First, retrieve the database to get the data source ID
-  const db = await notion.databases.retrieve({ database_id: databaseId });
-  
-  // New API uses data_sources.query instead of databases.query
-  const dataSourceId = db.data_source_id || databaseId;
-  
-  return notion.dataSources.query({
-    data_source_id: dataSourceId,
-    ...body
-  });
+  try {
+    // Use databases.query API for standard Notion databases
+    return await notion.databases.query({
+      database_id: databaseId,
+      ...body
+    });
+  } catch (error) {
+    console.error('❌ Notion query failed:', error.message);
+    throw error;
+  }
 }
 
 export async function updatePage(notion, pageId, properties) {

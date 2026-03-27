@@ -1,0 +1,141 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-18T17:01:58.972Z",
+  "workflow": {
+    "generatedAt": "2026-03-18T17:00:38.952Z",
+    "source": "Grok Search - Prompt #1",
+    "totalPosts": 5,
+    "totalThreads": 5,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "Berkeley City Council passes \"The Berkeley Rule,\" a pioneering AI governance framework for ethical municipal AI use. Promotes coordinated, legitimate, neutral local oversight.",
+        "replyText": "Local precedents like Berkeley's Rule build legitimacy through community-driven standards, enabling neutral coordination across government functions for scalable AI governance.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 175,
+        "replyLength": 176,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "Anthropic sues DoD over limits on Claude AI for military use; OpenAI, DeepMind support. Spotlights clashes in AI deployment needing neutral governance coordination.",
+        "replyText": "This case tests AI firms' legitimacy in setting safety boundaries vs. state needs. Neutral coordination frameworks are vital to resolve dual-use tensions without eroding trust.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 164,
+        "replyLength": 176,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Colorado task force reaches AI legislation framework amid uncertainties. Advances state-level coordination for legitimate, neutral AI policy implementation.",
+        "replyText": "State frameworks like Colorado's foster legitimacy via inclusive processes, enabling neutral rules that coordinate with federal efforts for coherent national governance.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 156,
+        "replyLength": 169,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "Partnership on AI teams with NIST to shape transparency processes. Stresses integrated, collaborative governance for dynamic, neutral AI oversight.",
+        "replyText": "NIST collaborations enhance legitimacy through shared standards, promoting neutral coordination across stakeholders to adapt governance to rapid AI advancements.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 147,
+        "replyLength": 161,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 5,
+        "mainText": "Report: OpenAI safety team at 373, despite safety rhetoric. Reveals gaps in commitment, urging coordinated legitimacy in AI governance investments.",
+        "replyText": "Disparities in safety staffing undermine neutrality claims. Legitimate governance demands proportional coordination on safety resources for credible risk management.",
+        "sourceUrl": null,
+        "isThread": true,
+        "mainLength": 147,
+        "replyLength": 165,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2034314382788710905",
+      "content": "Berkeley City Council passes \"The Berkeley Rule,\" a pioneering AI governance framework for ethical municipal AI use. Promotes coordinated, legitimate, neutral local oversight.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2034314396608983184",
+      "content": "Local precedents like Berkeley's Rule build legitimacy through community-driven standards, enabling neutral coordination across government functions for scalable AI governance.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2034314382788710905"
+    },
+    {
+      "id": "2034314641631777001",
+      "content": "Anthropic sues DoD over limits on Claude AI for military use; OpenAI, DeepMind support. Spotlights clashes in AI deployment needing neutral governance coordination.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2034314655426896363",
+      "content": "This case tests AI firms' legitimacy in setting safety boundaries vs. state needs. Neutral coordination frameworks are vital to resolve dual-use tensions without eroding trust.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2034314641631777001"
+    },
+    {
+      "id": "2034314883680915553",
+      "content": "Colorado task force reaches AI legislation framework amid uncertainties. Advances state-level coordination for legitimate, neutral AI policy implementation.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2034314897400406489",
+      "content": "State frameworks like Colorado's foster legitimacy via inclusive processes, enabling neutral rules that coordinate with federal efforts for coherent national governance.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2034314883680915553"
+    },
+    {
+      "id": "2034315121321730444",
+      "content": "Partnership on AI teams with NIST to shape transparency processes. Stresses integrated, collaborative governance for dynamic, neutral AI oversight.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2034315139810255089",
+      "content": "NIST collaborations enhance legitimacy through shared standards, promoting neutral coordination across stakeholders to adapt governance to rapid AI advancements.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2034315121321730444"
+    },
+    {
+      "id": "2034315356190265604",
+      "content": "Report: OpenAI safety team at 373, despite safety rhetoric. Reveals gaps in commitment, urging coordinated legitimacy in AI governance investments.\n\n#AIGovernance #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2034315369876185503",
+      "content": "Disparities in safety staffing undermine neutrality claims. Legitimate governance demands proportional coordination on safety resources for credible risk management.\n\n#AIGovernance #Alygn",
+      "type": "reply",
+      "parentId": "2034315356190265604"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 10,
+  "failed": 0
+}

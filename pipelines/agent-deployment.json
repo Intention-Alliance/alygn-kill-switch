@@ -1,0 +1,259 @@
+{
+  "version": "1.0",
+  "name": "agent-deployment-pipeline",
+  "description": "Graceful deployment and iteration of development team agents",
+  "steps": [
+    {
+      "id": "check-active-agents",
+      "name": "Check Active Agents",
+      "description": "Verify no conflicting agents are running",
+      "action": "subagents.list",
+      "params": {
+        "recentMinutes": 60
+      },
+      "output": "active_agents",
+      "onError": "abort"
+    },
+    {
+      "id": "verify-git-state",
+      "name": "Verify Git State",
+      "description": "Check for uncommitted work before spawning",
+      "action": "exec",
+      "params": {
+        "command": "cd /home/andler/.openclaw/workspace/repos/local/nextjs/andler-landing-v3 && git status --short",
+        "timeout": 10000
+      },
+      "output": "git_status",
+      "onError": "continue"
+    },
+    {
+      "id": "spawn-coder",
+      "name": "Spawn Coder Agent",
+      "description": "Deploy Gimglich for frontend implementation",
+      "action": "sessions.spawn",
+      "params": {
+        "agentId": "fe-coder",
+        "label": "fe-coder:gimglich-task-{task_number}",
+        "mode": "run",
+        "cleanup": "delete",
+        "runTimeoutSeconds": 2700
+      },
+      "requires": ["check-active-agents"],
+      "output": "coder_session",
+      "onError": "abort"
+    },
+    {
+      "id": "wait-coder-completion",
+      "name": "Wait for Coder Completion",
+      "description": "Poll for coder task completion",
+      "action": "subagents.poll",
+      "params": {
+        "sessionKey": "{coder_session.sessionKey}",
+        "timeoutMs": 2700000,
+        "pollIntervalMs": 30000
+      },
+      "output": "coder_result",
+      "onError": "abort"
+    },
+    {
+      "id": "acknowledge-coder",
+      "name": "Acknowledge Coder Completion",
+      "description": "Send acknowledgment and next steps to coder",
+      "action": "sessions.send",
+      "params": {
+        "sessionKey": "{coder_session.sessionKey}",
+        "message": "Task complete acknowledged. Proceeding to review pipeline."
+      },
+      "requires": ["wait-coder-completion"],
+      "onError": "continue"
+    },
+    {
+      "id": "spawn-dev-lead-review",
+      "name": "Spawn Dev Lead Review",
+      "description": "Deploy Chanshuk for code quality review (Stage 1)",
+      "action": "sessions.spawn",
+      "params": {
+        "agentId": "dev-lead",
+        "label": "dev-lead:chanshuk-quality-review-{task_number}",
+        "mode": "run",
+        "cleanup": "delete",
+        "runTimeoutSeconds": 1800
+      },
+      "requires": ["wait-coder-completion"],
+      "output": "dev_lead_session",
+      "onError": "abort"
+    },
+    {
+      "id": "wait-dev-lead-completion",
+      "name": "Wait for Dev Lead Review",
+      "description": "Poll for Chanshuk's quality review",
+      "action": "subagents.poll",
+      "params": {
+        "sessionKey": "{dev_lead_session.sessionKey}",
+        "timeoutMs": 1800000,
+        "pollIntervalMs": 30000
+      },
+      "output": "dev_lead_result",
+      "onError": "abort"
+    },
+    {
+      "id": "check-dev-lead-pass",
+      "name": "Check Dev Lead Result",
+      "description": "Determine if code quality review passed",
+      "action": "condition",
+      "params": {
+        "condition": "{dev_lead_result.status} == 'pass'",
+        "trueBranch": "spawn-reviewer",
+        "falseBranch": "route-back-to-coder"
+      },
+      "requires": ["wait-dev-lead-completion"]
+    },
+    {
+      "id": "route-back-to-coder",
+      "name": "Route Back to Coder",
+      "description": "Chanshuk failed - send back to coder for fixes",
+      "action": "sessions.spawn",
+      "params": {
+        "agentId": "fe-coder",
+        "label": "fe-coder:gimglich-fixes-{task_number}",
+        "mode": "run",
+        "cleanup": "delete",
+        "runTimeoutSeconds": 1800
+      },
+      "output": "fix_session",
+      "onError": "abort"
+    },
+    {
+      "id": "wait-fix-completion",
+      "name": "Wait for Fix Completion",
+      "description": "Poll for coder's fixes",
+      "action": "subagents.poll",
+      "params": {
+        "sessionKey": "{fix_session.sessionKey}",
+        "timeoutMs": 1800000,
+        "pollIntervalMs": 30000
+      },
+      "output": "fix_result",
+      "onError": "abort"
+    },
+    {
+      "id": "loop-back-to-dev-lead",
+      "name": "Loop Back to Dev Lead",
+      "description": "Re-run Chanshuk review after fixes",
+      "action": "goto",
+      "params": {
+        "target": "spawn-dev-lead-review"
+      },
+      "requires": ["wait-fix-completion"],
+      "maxIterations": 3
+    },
+    {
+      "id": "spawn-reviewer",
+      "name": "Spawn Full Reviewer",
+      "description": "Deploy Nikaya for full review (Stage 2)",
+      "action": "sessions.spawn",
+      "params": {
+        "agentId": "reviewer",
+        "label": "reviewer:nikaya-full-review-{task_number}",
+        "mode": "run",
+        "cleanup": "delete",
+        "runTimeoutSeconds": 2700
+      },
+      "requires": ["check-dev-lead-pass"],
+      "output": "reviewer_session",
+      "onError": "abort"
+    },
+    {
+      "id": "wait-reviewer-completion",
+      "name": "Wait for Reviewer Completion",
+      "description": "Poll for Nikaya's full review",
+      "action": "subagents.poll",
+      "params": {
+        "sessionKey": "{reviewer_session.sessionKey}",
+        "timeoutMs": 2700000,
+        "pollIntervalMs": 30000
+      },
+      "output": "reviewer_result",
+      "onError": "abort"
+    },
+    {
+      "id": "check-reviewer-pass",
+      "name": "Check Reviewer Result",
+      "description": "Determine if full review passed (85+/100)",
+      "action": "condition",
+      "params": {
+        "condition": "{reviewer_result.score} >= 85",
+        "trueBranch": "task-complete",
+        "falseBranch": "route-to-coder-for-fixes"
+      },
+      "requires": ["wait-reviewer-completion"]
+    },
+    {
+      "id": "route-to-coder-for-fixes",
+      "name": "Route to Coder for Fixes",
+      "description": "Nikaya failed - send back to coder",
+      "action": "sessions.spawn",
+      "params": {
+        "agentId": "fe-coder",
+        "label": "fe-coder:gimglich-nikaya-fixes-{task_number}",
+        "mode": "run",
+        "cleanup": "delete",
+        "runTimeoutSeconds": 2700
+      },
+      "output": "nikaya_fix_session",
+      "onError": "abort"
+    },
+    {
+      "id": "wait-nikaya-fix-completion",
+      "name": "Wait for Nikaya Fix Completion",
+      "description": "Poll for coder's fixes after Nikaya review",
+      "action": "subagents.poll",
+      "params": {
+        "sessionKey": "{nikaya_fix_session.sessionKey}",
+        "timeoutMs": 2700000,
+        "pollIntervalMs": 30000
+      },
+      "output": "nikaya_fix_result",
+      "onError": "abort"
+    },
+    {
+      "id": "loop-back-to-reviewer",
+      "name": "Loop Back to Reviewer",
+      "description": "Re-run Nikaya review after fixes",
+      "action": "goto",
+      "params": {
+        "target": "spawn-reviewer"
+      },
+      "requires": ["wait-nikaya-fix-completion"],
+      "maxIterations": 3
+    },
+    {
+      "id": "task-complete",
+      "name": "Task Complete",
+      "description": "All reviews passed - task approved for merge",
+      "action": "notify",
+      "params": {
+        "message": "Task {task_number} complete. Score: {reviewer_result.score}/100. Approved for merge.",
+        "severity": "success"
+      },
+      "requires": ["check-reviewer-pass"]
+    },
+    {
+      "id": "max-cycles-reached",
+      "name": "Max Cycles Reached",
+      "description": "Too many review cycles - escalate to user",
+      "action": "notify",
+      "params": {
+        "message": "Task {task_number} exceeded max review cycles (3). Manual intervention required.",
+        "severity": "warning"
+      },
+      "trigger": "onMaxIterations"
+    }
+  ],
+  "config": {
+    "maxConcurrentAgents": 3,
+    "defaultTimeoutSeconds": 3600,
+    "retryAttempts": 2,
+    "notificationChannel": "webchat"
+  }
+}

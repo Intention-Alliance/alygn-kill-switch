@@ -163,7 +163,7 @@ bun scripts/alygn/twitter-poster.js status
 
 ### 1. Generate content with dynamic injection
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 bun scripts/alygn/twitter-automation-v2.js exec 1
 ```
 Check output: `cat twitter-outputs/prompt-1-*.md | tail -20`

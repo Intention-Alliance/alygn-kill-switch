@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-03-20T17:01:54.414Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Federal agencies tasked via executive order to review state AI laws conflicting with federal innovation priorities, advancing unified national AI governance.",
+      "replyText": "Bolsters federal-state institutional coordination, mitigating risks of regulatory patchwork undermining AI leadership and competitiveness.",
+      "sourceUrl": "https://www.nspe.org/nspe-advocacy/latest-news/federal-ai-policy-signals-greater-coordination-scrutiny-state-laws",
+      "isThread": true,
+      "mainLength": 157,
+      "replyLength": 138,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "GSA's proposed AI clause demands contractors use only American AI systems, segregate government data, report incidents in 72 hours, and disclose full AI supply chains.",
+      "replyText": "Transforms federal procurement into a governance lever, mandating coordinated safety practices across government contractors for enhanced legitimacy.",
+      "sourceUrl": "https://www.jdsupra.com/legalnews/comments-on-gsa-s-proposed-ai-clause-9851281",
+      "isThread": true,
+      "mainLength": 167,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Senator Blackburn released draft TRUMP AMERICA AI Act March 18, imposing duty of care on AI developers, ending Section 230 immunity for harms, protecting minors.",
+      "replyText": "Seeks to establish authoritative federal AI regulation, coordinating institutional efforts and legitimizing oversight amid state-level fragmentation.",
+      "sourceUrl": "https://techieray.substack.com/p/ctrlaireg-20-march-2026",
+      "isThread": true,
+      "mainLength": 161,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "New analysis on AI agents highlights cascading risks requiring coordinated action: holistic standards, observability, and international collaboration for system-level safety.",
+      "replyText": "Drives cross-organization AI safety initiatives, addressing legitimacy gaps in current model-focused governance unable to handle interconnected threats.",
+      "sourceUrl": "https://www.aigl.blog/governing-ai-agents-cascading-risks-coordinated-action",
+      "isThread": true,
+      "mainLength": 174,
+      "replyLength": 152,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Policymakers warned of 'evidence dilemma' in AI governance: delaying action for 'smoking gun' proof risks irreversible harm from rapid AI advances.",
+      "replyText": "Underscores need for proactive institutional coordination and legitimacy through anticipatory regulation, not just reactive evidence-based responses.",
+      "sourceUrl": "https://www.linkedin.com/posts/kyle-david_the-evidence-dilemma-in-ai-governance-activity-7440336683419631616-zsp4",
+      "isThread": true,
+      "mainLength": 147,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-23T17:02:32.980Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "US State Dept launched AI governance diplomacy initiative Oct 10, emphasizing multilateral coordination. Aligns with Alygn's neutrality principle for legitimate global AI standards.",
+      "replyText": "This fosters coordination among nations via neutral forums, building legitimacy to avert AI arms races and ensure equitable institutional frameworks.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 181,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "EU AI Office warned tech firms Oct 11 on compliance ahead of AI Act. Reinforces Alygn's legitimacy focus: transparent rules build trust in AI institutions.",
+      "replyText": "Highlights need for legitimate enforcement mechanisms, coordinating industry with regulators neutrally to prevent governance vacuums in high-risk AI.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 155,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Singapore's AI Verify Summit Oct 10 stressed neutral testing frameworks. Echoes Alygn's coordination principle for verifiable, legitimate AI governance.",
+      "replyText": "Enables neutral coordination on safety benchmarks, enhancing institutional legitimacy by standardizing evaluations across borders without bias.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 152,
+      "replyLength": 143,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Anthropic's Oct 11 update on Constitutional AI governance shows self-regulation limits. Alygn's neutrality key to broader coordination and legitimacy.",
+      "replyText": "Reveals need for neutral third-party oversight to coordinate firm efforts, ensuring legitimate, unbiased AI alignment beyond internal principles.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 150,
+      "replyLength": 145,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "UN AI Advisory Body met Oct 10, calling for global coordination. Upholds Alygn's principles: neutrality ensures legitimate institutional progress.",
+      "replyText": "Promotes multi-stakeholder coordination via neutral bodies, vital for legitimate global norms addressing AI risks like misalignment.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 146,
+      "replyLength": 132,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

@@ -31,24 +31,19 @@ Alygn funciona como una capa de gobernanza y coordinación neutral—similar a c
 
 Nuestra alianza no es una contratación de servicios, sino un acto de defensa institucional que permite a {municipality}:
 
-• Alineación Pre-Crisis: Adoptar protocolos de seguridad antes del despliegue de sistemas
-• Interoperabilidad de Gobernanza: Supervisión bajo estándar único y neutral
-• Protocolos de Emergencia 24/7: Canales de escalabilidad con Frontier Labs
-• Mitigación de Riesgo de Responsabilidad: Diligencia debida demostrada
+  • Alineación Pre-Crisis: Adoptar protocolos de seguridad antes del despliegue de sistemas.
+  • Interoperabilidad de Gobernanza: Supervisión bajo estándar único y neutral.
+  • Protocolos de Emergencia 24/7: Canales de escalabilidad con Frontier Labs.
+  • Mitigación de Riesgo de Responsabilidad: Diligencia debida demostrada.
 
 {personalized_pain_point}
 
 La gobernanza legítima, no la tecnología, es la infraestructura que escala.
 
-¿Estaría abierto/a a una conversación de 30 minutos sobre cómo Alygn convierte riesgos externos impredecibles en certidumbre institucional predecible para {municipality}?
+¿Estaría abierto/a a una conversación de 15 minutos sobre cómo Alygn convierte riesgos externos impredecibles en certidumbre institucional predecible para {municipality}?
 
 Saludos cordiales,
-{name}
-Coordinación de Gobernanza de Alygn
-
---
-Alygn: Infraestructura neutral de gobernanza de IA | Constituida en Texas, EE.UU.
-@aialygn | Coordinación antes de crisis`
+{name}`
   },
   institutional: {
     subject: 'La Gobernanza no Puede Ser Improvisada Durante una Crisis',
@@ -62,9 +57,9 @@ Alygn es una institución independiente de gobernanza de IA, constituida en Texa
 
 Tres pilares que ofrecemos a {municipality}:
 
-1. Neutralidad Estructural: No construimos modelos de IA ni operamos sistemas
-2. Revisión Independiente: Vías de auditoría sin conflictos de interés
-3. Coordinación de Emergencia Proactiva: Preparación antes de que las condiciones de fallo fuerzen resultados fragmentados
+  1. Neutralidad Estructural: No construimos modelos de IA ni operamos sistemas.
+  2. Revisión Independiente: Vías de auditoría sin conflictos de interés.
+  3. Coordinación de Emergencia Proactiva: Preparación antes de que las condiciones de fallo fuerzen resultados fragmentados.
 
 {personalized_local_context}
 
@@ -75,12 +70,7 @@ Como adoptante temprano, {municipality} tendrá la oportunidad de definir el est
 La legitimidad institucional es la infraestructura que perdura.
 
 Saludos cordiales,
-{name}
-Coordinación Institucional de Alygn
-
---
-Alygn: Soporta coordinación, habilita rendición de cuentas | Texas, EE.UU.
-@aialygn | Permanencia institucional, no ciclos de lucro`
+{name}`
   }
 };
 
@@ -103,11 +93,16 @@ async function personalizeOutreach(municipalities, mock = false) {
   for (const muni of municipalities) {
     try {
       const email = await generatePersonalizedEmail(muni);
-      personalized.push({ ...muni, outreach: email });
+      personalized.push({
+        ...muni,
+        painPoints: muni.pain_points || [], // Ensure camelCase for template compatibility
+        outreach: email
+      });
     } catch (error) {
       console.error(`Error personalizing for ${muni.name}:`, error.message);
       personalized.push({
         ...muni,
+        painPoints: muni.pain_points || [],
         outreach_status: 'error',
         outreach_error: error.message
       });
@@ -154,15 +149,15 @@ async function generatePersonalizedEmail(municipality) {
   const data = await response.json();
   const personalization = data.choices[0].message.content;
   
-  // Fill template
+  // Fill template - replace ALL occurrences using regex with /g flag
   const body = template.body
-    .replace('{mayor_name}', municipality.contacts?.mayor_name || 'Mayor')
-    .replace('{municipality}', municipality.name)
-    .replace('{personalized_pain_point}', personalization)
-    .replace('{personalized_local_context}', personalization)
-    .replace('{area}', 'technology governance')
-    .replace('{name}', 'Alygn Team')
-    .replace('{unsubscribe_link}', 'Click here to unsubscribe');
+    .replace(/{mayor_name}/g, municipality.contacts?.mayor_name || 'Mayor')
+    .replace(/{municipality}/g, municipality.name)
+    .replace(/{personalized_pain_point}/g, personalization)
+    .replace(/{personalized_local_context}/g, personalization)
+    .replace(/{area}/g, 'technology governance')
+    .replace(/{name}/g, 'Alygn Team')
+    .replace(/{unsubscribe_link}/g, 'Click here to unsubscribe');
   
   return {
     variant,
@@ -213,7 +208,7 @@ Write 2-3 sentences that:
 2. Connect to AI governance challenges using proposal language
 3. Position Alygn as neutral coordination infrastructure (NOT consulting/tech provider)
 
-**TONE:** Professional, institutional, non-promotional. Spanish or English based on country.`;
+**TONE:** Professional, institutional, non-promotional. Spanish or English based on country. Currently is Costa Rica.`;
 }
 
 /**
@@ -229,15 +224,16 @@ function generateMockPersonalization(municipalities) {
     
     const body = template.body
       .replace('{mayor_name}', muni.contacts?.mayor_name || 'Mayor')
-      .replace('{municipality}', muni.name)
-      .replace('{personalized_pain_point}', personalizedText)
-      .replace('{personalized_local_context}', personalizedText)
-      .replace('{area}', 'public service innovation')
-      .replace('{name}', 'Alygn Team')
-      .replace('{unsubscribe_link}', 'Click here to unsubscribe');
+      .replace(/{municipality}/g, muni.name)
+      .replace(/{personalized_pain_point}/g, personalizedText)
+      .replace(/{personalized_local_context}/g, personalizedText)
+      .replace(/{area}/g, 'public service innovation')
+      .replace(/{name}/g, 'Alygn Team')
+      .replace(/{unsubscribe_link}/g, 'Click here to unsubscribe');
     
     return {
       ...muni,
+      painPoints: muni.pain_points || [], // Ensure camelCase for template compatibility
       outreach: {
         variant,
         subject: template.subject.replace('{municipality}', muni.name),
@@ -308,7 +304,6 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
 }
 
 export {
-  personalizeOutreach,
-  generatePersonalizedEmail,
-  TEMPLATES
+  generatePersonalizedEmail, personalizeOutreach, TEMPLATES
 };
+

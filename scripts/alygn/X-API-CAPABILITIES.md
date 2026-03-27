@@ -166,7 +166,7 @@ more at @aialygn
     {
       "id": 1,
       "content": "Visual representation of coordination failure risks.",
-      "mediaPath": "/home/andlersrv/.openclaw/workspace/assets/coordination-diagram.png"
+      "mediaPath": "$HOME/.openclaw/workspace/assets/coordination-diagram.png"
     }
   ]
 }
@@ -289,7 +289,7 @@ more at @aialygn
 **Execution:**
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/shared/x-growth/x-api-executor.js
 ```
 

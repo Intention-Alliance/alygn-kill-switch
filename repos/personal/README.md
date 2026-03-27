@@ -170,7 +170,7 @@ git clone --depth 1 https://github.com/AndlerRL/[repo-name].git
 
 1. **Clone repo externally** (outside workspace):
    ```bash
-   cd ~/projects/personal/
+   cd $HOME/projects/personal/
    git clone https://github.com/AndlerRL/[repo-name].git
    cd [repo-name]/
    ```

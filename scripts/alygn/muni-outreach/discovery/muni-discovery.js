@@ -9,7 +9,11 @@
 
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration
 const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;

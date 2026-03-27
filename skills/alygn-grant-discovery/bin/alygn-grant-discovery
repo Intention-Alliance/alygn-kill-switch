@@ -1,0 +1,13 @@
+#!/bin/bash
+# ALYGN Grant Discovery Skill CLI Wrapper
+# Usage: alygn-grant-discovery <phase> [options]
+#
+# Examples:
+#   alygn-grant-discovery discover --limit=20 --dry-run
+#   alygn-grant-discovery pipeline --limit=50
+#   alygn-grant-discovery sync
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec bun run "$SCRIPT_DIR/../src/index.ts" "$@"

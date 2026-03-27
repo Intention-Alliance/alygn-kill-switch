@@ -35,7 +35,7 @@ Deletions: -1,000
 ```
 - Replace 'node' with 'bun' for all script executions (faster runtime)
 - Simplify all --message commands (remove verbose Grok prompt descriptions)
-- Use consistent path format: cd ~/.openclaw/workspace && bun scripts/...
+- Use consistent path format: cd $HOME/.openclaw/workspace && bun scripts/...
 - Add VC Contact Discovery job (new automated search feature)
 - Update morning briefing to use morning-briefing-v2.js
 - Add --search flag to trend monitoring for real-time X search
@@ -225,7 +225,7 @@ async function apiCall() {
 ## 📂 **Final Directory Structure**
 
 ```
-~/.openclaw/workspace/
+$HOME/.openclaw/workspace/
 ├── .git/ (clean history)
 ├── config/
 │   └── credentials.json

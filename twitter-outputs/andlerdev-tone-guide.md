@@ -11,26 +11,31 @@
 ## 🎯 Core Voice Principles
 
 ### 1. Concise & Efficient
+
 - Cut 10-15% more words than typical drafts
 - Use tech-savvy abbreviations: "Corps" (Corporations), "infra" (infrastructure), "gov" (governance), "recs" (recommendations)
 - Example: "Governance legitimacy > technology speed" not "Governance legitimacy is more important than technology speed"
 
 ### 2. Direct Urgency
+
 - Use exclamation points for emphasis on critical points
 - "This isn't hypothetical. The capability exists now!" vs "This isn't hypothetical."
 - Present tense, active voice
 
 ### 3. Gnomish Personality (Subtle)
+
 - 2-4 emojis per thread (not per tweet)
 - Strategic placement: hook (👀), reaction (🙃 🫠), close (😁)
 - Professional but warm — not corporate drone, not meme account
 
 ### 4. Hashtag Integration
+
 - Weave hashtags INTO sentences, not appended at end
 - Example: "what many of us in #AISafety have been saying" not "we've been saying. #AISafety"
 - Saves characters, feels natural, improves readability
 
 ### 5. Personal Touch (PD Pattern)
+
 - Add "PD:" (Post Data / Personal Thought) bonus tweet when relevant
 - Share personal recs, behind-the-scenes, or humanizing content
 - Example: "PD: I recommend watching #WestWorld series (not last season)..."
@@ -41,11 +46,13 @@
 ## 📐 Structural Elements
 
 ### Character Target
+
 - **Aim:** 240-260 characters per tweet
 - **Buffer:** Leave 20-40 chars for rendering variance
 - **Max:** 280 (hard limit)
 
 ### Bullet Style
+
 - Use "- " (dash + space) for lists, not "•"
 - Cleaner, saves chars, Twitter-native
 - Example:
@@ -56,6 +63,7 @@
   ```
 
 ### Action Arrows
+
 - Use "→" for recommendations/call-to-action
 - Example:
   ```
@@ -66,10 +74,12 @@
   ```
 
 ### Comparison Symbol
+
 - Use ">" for "greater than" comparisons
 - Example: "Governance legitimacy > tech speed"
 
 ### Links
+
 - Use shortened URLs (youtu.be, not https://youtu.com/...)
 - Twitter auto-shortens, but short anchors look cleaner
 - Place at end of final tweet
@@ -79,20 +89,24 @@
 ## 🏷️ Hashtag Strategy
 
 ### Integration Patterns
-| Pattern | Example |
-|---------|---------|
-| Mid-sentence | "what many of us in #AISafety have been saying" |
-| Subject replacement | "It's #AIGovernance" |
-| Equation style | "No #AIInterpretability = no #AISafety" |
-| End cap (sparingly) | "#ResponsibleAI #AIFuture #TechEthics" |
+
+| Pattern             | Example                                         |
+| ------------------- | ----------------------------------------------- |
+| Mid-sentence        | "what many of us in #AISafety have been saying" |
+| Subject replacement | "It's #AIGovernance"                            |
+| Equation style      | "No #AIInterpretability = no #AISafety"         |
+| End cap (sparingly) | "#ResponsibleAI #AIFuture #TechEthics"          |
 
 ### Hashtag Count Per Tweet
+
 - **1-2 hashtags** for content tweets (woven in)
 - **2-3 hashtags** for hook/close tweets (can be appended)
 - **Max 3** per tweet (avoid spam appearance)
 
 ### Topic-Aligned Tags
+
 Match hashtags to tweet content:
+
 - Technical tweets → #AIAlignment #MachineLearning #AIInterpretability
 - Risk tweets → #AIRisk #CyberSecurity #Biosecurity
 - Policy tweets → #AIGovernance #TechPolicy #GlobalGovernance
@@ -103,18 +117,21 @@ Match hashtags to tweet content:
 ## 😊 Emoji Usage
 
 ### Placement Strategy
-| Position | Purpose | Examples |
-|----------|---------|----------|
-| Hook (Tweet 1) | Attention grabber | 👀 🚨 ⚠️ |
+
+| Position           | Purpose           | Examples |
+| ------------------ | ----------------- | -------- |
+| Hook (Tweet 1)     | Attention grabber | 👀 🚨 ⚠️ |
 | Middle (Tweet 2-4) | Reaction/emphasis | 🙃 🫠 💡 |
-| Close (Final) | Humanizing/warm | 😁 🤔 ✨ |
+| Close (Final)      | Humanizing/warm   | 😁 🤔 ✨ |
 
 ### Count Guidelines
+
 - **Thread total:** 2-4 emojis (not per tweet)
 - **Per tweet:** 0-2 max (most tweets have 0)
 - **Never:** Replace critical words with emojis (accessibility)
 
 ### Emoji Meaning Match
+
 - 👀 = "look at this" / "pay attention"
 - 🙃 = "ironic situation" / "here's the twist"
 - 🫠 = "melting" / "overwhelmed" / "existential dread"
@@ -127,6 +144,7 @@ Match hashtags to tweet content:
 ## 📝 Thread Structure Template
 
 ### Standard 6-Tweet Thread
+
 ```
 Tweet 1/6 (Hook):
 [Attention emoji] + [Topic intro with woven hashtag] + [Why it matters] + [Thread preview]
@@ -151,6 +169,7 @@ Tweet 6/6 (Close):
 ```
 
 ### Engagement Boosters
+
 - End with question (invites replies)
 - PD tweet shows personality (not just broadcasting)
 - Reply to your own thread 24h later with follow-up thought
@@ -161,6 +180,7 @@ Tweet 6/6 (Close):
 ## ✅ Do's & Don'ts
 
 ### DO ✅
+
 - Cut filler words ("here's why" → "let me share")
 - Weave hashtags into sentence structure
 - Use 2-4 emojis per thread (strategic placement)
@@ -171,6 +191,7 @@ Tweet 6/6 (Close):
 - End with question or thought-provoking close
 
 ### DON'T ❌
+
 - Append 5+ hashtags at end (looks spammy)
 - Use "•" bullets (use "- " instead)
 - Write full words when abbreviations work ("Corps" not "Corporations")
@@ -184,6 +205,7 @@ Tweet 6/6 (Close):
 ## 📊 Live Example Analysis (2026-03-11 Thread)
 
 ### Tweet 1 (Hook) - 258 chars
+
 ```
 Just watched "AI Is A Massive Problem. Here's Why." It crystallizes what many of us in #AISafety have been saying.
 
@@ -195,12 +217,14 @@ Let me share why the current trajectory is not stable, and what we need to do ab
 ```
 
 **What works:**
+
 - Hashtags woven mid-sentence (#AISafety, #AIGovernance)
 - 👀 at end (not start) — subtle hook
 - "not stable" vs "unsustainable" (conversational)
 - Clean line breaks for readability
 
 ### Tweet 2 (Context) - 267 chars
+
 ```
 AI has shifted from academia to economic centerpiece. Corps pouring resources into data centers and energy infra.
 
@@ -210,12 +234,14 @@ We're deploying black boxes at global scale. 🙃 🫠 🫠
 ```
 
 **What works:**
+
 - "Corps" / "infra" abbreviations
 - 🙃 🫠 🫠 conveys "ironic + existential dread"
 - Direct quote-style reference (Dario Amodei)
 - Short sentences punchy
 
 ### Tweet 3 (Evidence) - 251 chars
+
 ```
 The dual-use danger is real:
 - AI can generate 40,000 novel toxins in hours (some VX-lethal).
@@ -228,12 +254,14 @@ This isn't hypothetical. The capability exists now!
 ```
 
 **What works:**
+
 - "- " bullet style
 - Ellipsis (...) creates tension
 - Exclamation on urgency
 - Hashtags appended (acceptable for list tweets)
 
 ### Tweet 4 (Mechanism) - 248 chars
+
 ```
 👀 Misalignment risks compound when:
 - Models trained on insecure code cause unintended harms.
@@ -245,12 +273,14 @@ And we can't audit their system.
 ```
 
 **What works:**
+
 - 👀 hook at start (visual marker)
 - Equation-style hashtag integration
 - "And we can't audit" — standalone line for emphasis
 - Technical hashtags woven into equation
 
 ### Tweet 5 (Solution) - 246 chars
+
 ```
 This draws parallels to Thomas Midgley: initial benefits, later catastrophe.
 
@@ -263,12 +293,14 @@ We need:
 ```
 
 **What works:**
+
 - "→" for action items
 - Historical parallel (Thomas Midgley)
 - Hashtag as subject: "#GlobalGovernance legitimacy"
 - ">" comparison symbol
 
 ### Tweet 6 (Close) - 263 chars
+
 ```
 No need for autonomous general AI to solve all problems. Safer paths exist. But they require restraint.
 
@@ -282,17 +314,20 @@ youtu.be/A3HjNYDIhGU?si
 ```
 
 **What works:**
+
 - Rhetorical question (invites engagement)
 - "governance infra" abbreviation
 - Shortened link (clean)
 - 3 hashtags at end (acceptable for close tweet)
 
 ### Tweet 7 (PD Bonus) - 189 chars
+
 ```
 PD: I recommend watching #WestWorld series (not the last season), it is a sci-fi that has an autonomous general AI and where AI and humans are seamlessly together... 😁
 ```
 
 **What works:**
+
 - "PD:" prefix (personal thought marker)
 - Personal rec (humanizing)
 - Parenthetical "(not last season)" — honest opinion
@@ -316,6 +351,7 @@ PD: I recommend watching #WestWorld series (not the last season), it is a sci-fi
 ### Project Context Isolation (OpSec):
 
 ⚠️ **CRITICAL:** While tone is consistent across projects, CONTENT must stay isolated:
+
 - Alygn posts → Only Alygn context, governance framing
 - Bitcash posts → Only Bitcash context, technical framing
 - Personal @andlerdev → Can reference multiple projects BUT never in external team contexts
@@ -327,6 +363,7 @@ PD: I recommend watching #WestWorld series (not the last season), it is a sci-fi
 ## 📈 Engagement Metrics to Track
 
 For future threads, monitor:
+
 - **Views per tweet** (baseline: 50-500 for niche AI safety audience)
 - **Reply rate** (questions boost replies)
 - **Bookmark rate** (high bookmarks = expert audience engagement)
@@ -355,7 +392,7 @@ OPSEC: Project content isolation mandatory
 
 **File Purpose:** This is the canonical tone reference for @andlerdev X/Twitter posts. Update when new patterns emerge from live posts.
 
-**Location:** `/home/andlersrv/.openclaw/workspace/twitter-outputs/andlerdev-tone-guide.md`
+**Location:** `$HOME/.openclaw/workspace/twitter-outputs/andlerdev-tone-guide.md`
 
 **Related:** x-growth skill, AGENTS.md (group chat context), MEMORY.md (OpSec rules)
 

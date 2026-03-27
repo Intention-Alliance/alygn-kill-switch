@@ -12,6 +12,7 @@
 **Issue:** Script was creating a new Notion database instead of using existing one.
 
 **Fix:**
+
 - Updated `setup-vc-notion-tracker.js` to use existing database ID: `2fc334874af681829013d127ce6778b6`
 - Changed workflow: Now adds VCs to existing database (no creation)
 - Imports all 20 seed VCs (previously only 5)
@@ -26,6 +27,7 @@
 **New Script:** `automated-vc-discovery.js`
 
 **Features:**
+
 - Web search for AI safety/governance VCs (5 configurable queries)
 - Automated research: portfolio, thesis, partners, pain points
 - Relevance scoring (1-10, threshold: 7)
@@ -34,6 +36,7 @@
 - Dry-run mode for testing
 
 **Cron Setup Script:** `setup-vc-discovery-cron.sh`
+
 - Schedule: Daily at 10 AM
 - Notifications: Discord (#Alygn: VC Outreach Plan & Implementation)
 
@@ -42,10 +45,12 @@
 ### 3. Documentation ✅
 
 **Created:**
+
 - `VC-DISCOVERY-AUTOMATION.md` - Full workflow documentation
 - `TASK-2-COMPLETE.md` - This summary
 
 **Updated:**
+
 - `seed-vc-list.json` - 20 VCs ready (targeting 100)
 - All scripts made executable
 
@@ -56,11 +61,12 @@
 ### Step 1: Create VC Tracker Database & Add Seed VCs
 
 ```bash
-cd ~/.openclaw/workspace/scripts/alygn/vc-outreach
+cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach
 node setup-vc-notion-tracker.js
 ```
 
 **Expected output:**
+
 ```
 🔧 ALYGN VC Outreach Tracker - Notion Setup
 
@@ -95,12 +101,14 @@ node automated-vc-discovery.js --dry-run --limit=5
 ```
 
 **What it does:**
+
 - Searches for 5 VCs per query (2 queries = 10 VCs total)
 - Researches each VC using Grok
 - Scores relevance (shows what would be added)
 - **No actual Notion writes** (dry run mode)
 
 **Expected output:**
+
 ```
 🚀 ALYGN Automated VC Discovery
 
@@ -141,6 +149,7 @@ bash setup-vc-discovery-cron.sh
 ```
 
 **Expected output:**
+
 ```
 🔧 Setting up ALYGN VC Discovery cron job...
 ✅ Made script executable
@@ -151,11 +160,12 @@ bash setup-vc-discovery-cron.sh
 📋 Job details:
    Name: ALYGN Daily VC Discovery
    Schedule: Daily at 10 AM (0 10 * * *)
-   Script: /home/andlersrv/.openclaw/workspace/scripts/alygn/vc-outreach/automated-vc-discovery.js
+   Script: $HOME/.openclaw/workspace/scripts/alygn/vc-outreach/automated-vc-discovery.js
    Notifications: Discord (#Alygn: VC Outreach Plan & Implementation)
 ```
 
 **Verify:**
+
 ```bash
 openclaw cron list
 ```
@@ -183,18 +193,21 @@ scripts/alygn/vc-outreach/
 After confirming Option A and Option B work:
 
 **Phase 1: Deep Research on Top 20 VCs**
+
 - Portfolio analysis (AI safety companies)
 - Partner background research (LinkedIn, blog posts)
 - Governance interest signals (quotes, investments)
 - Pain point extraction (Grok-based analysis)
 
 **Phase 2: Personalized Email Drafting**
+
 - Subject line generation (3 options per VC)
 - Body personalization (research insights, pain points)
 - Variant selection (Governance vs Institutional)
 - Review workflow (human approval before send)
 
 **Phase 3: Outreach Automation**
+
 - Email sending pipeline (Gmail API)
 - Reply tracking (sentiment analysis)
 - Follow-up automation (intelligent timing)
@@ -209,19 +222,19 @@ Edit `automated-vc-discovery.js` (lines 30-36):
 
 ```javascript
 searchQueries: [
-  'AI safety seed stage investors',
-  'AI governance venture capital',
-  'AI alignment funding',
-  'existential risk investors',
-  'AGI preparedness venture capital'
-]
+  "AI safety seed stage investors",
+  "AI governance venture capital",
+  "AI alignment funding",
+  "existential risk investors",
+  "AGI preparedness venture capital",
+];
 ```
 
 **To adjust relevance threshold:**
 Edit `automated-vc-discovery.js` (line 29):
 
 ```javascript
-minRelevanceScore: 7  // Only add VCs with score ≥ 7
+minRelevanceScore: 7; // Only add VCs with score ≥ 7
 ```
 
 **To change cron schedule:**
@@ -236,6 +249,7 @@ Edit `setup-vc-discovery-cron.sh` (line 18):
 ## Support
 
 **Questions?**
+
 - Documentation: `VC-DISCOVERY-AUTOMATION.md`
 - Workflow definitions: `workflow.json`
 - Discord: [#Alygn: VC Outreach Plan & Implementation](https://discord.com/channels/1117841083351711785/1471206314435809431)

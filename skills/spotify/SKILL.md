@@ -20,7 +20,7 @@ Interact with Spotify API for search, playback control, and playlist management.
 
 ## Configuration
 
-Add to `~/.openclaw/openclaw.json`:
+Add to `$HOME/.openclaw/openclaw.json`:
 
 ```json
 {
@@ -321,17 +321,17 @@ When using from the agent, call scripts via `exec` tool:
 ```javascript
 // Search for a track
 const result = await exec({
-  command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'Bohemian Rhapsody' --limit 3"
+  command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-search.js track 'Bohemian Rhapsody' --limit 3"
 });
 
 // Play a track
 await exec({
-  command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-play.js spotify:track:3n3Ppam7vgaVa1iaRUc9Lp"
+  command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-play.js spotify:track:3n3Ppam7vgaVa1iaRUc9Lp"
 });
 
 // Get current track
 const current = await exec({
-  command: "node ~/.openclaw/workspace/skills/spotify/scripts/spotify-current.js --json"
+  command: "node $HOME/.openclaw/workspace/skills/spotify/scripts/spotify-current.js --json"
 });
 const data = JSON.parse(current);
 ```

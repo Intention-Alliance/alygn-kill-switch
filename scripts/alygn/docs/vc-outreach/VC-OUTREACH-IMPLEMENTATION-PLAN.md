@@ -108,7 +108,7 @@ Tania's Gmail (tanialeaidm@gmail.com)
 **Cron Job:**
 ```bash
 # Add to OpenClaw cron
-0 7,9,11,15,17,19 * * 1-5 cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node tracking/reply-tracker.js >> logs/reply-tracker.log 2>&1
+0 7,9,11,15,17,19 * * 1-5 cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node tracking/reply-tracker.js >> logs/reply-tracker.log 2>&1
 ```
 
 ### 2.3 Notion Database Updates
@@ -476,7 +476,7 @@ await cron({
     },
     payload: {
       kind: "systemEvent",
-      text: "Run ALYGN VC reply tracker: cd ~/.openclaw/workspace/scripts/alygn/vc-outreach && node reply-tracker.js"
+      text: "Run ALYGN VC reply tracker: cd $HOME/.openclaw/workspace/scripts/alygn/vc-outreach && node reply-tracker.js"
     },
     sessionTarget: "main",
     enabled: true
@@ -710,7 +710,7 @@ scripts/alygn/vc-outreach/
 
 ### Credentials Management
 - **Never hardcode** API keys, SMTP credentials, or OAuth tokens
-- Use `~/.openclaw/workspace/config/credentials.json` for all secrets
+- Use `$HOME/.openclaw/workspace/config/credentials.json` for all secrets
 - Rotate Gmail app password quarterly
 - Use read-only Notion tokens where possible
 

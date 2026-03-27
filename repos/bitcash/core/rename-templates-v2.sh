@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-SOURCE_DIR="/home/andlersrv/.openclaw/workspace/repos/bitcash/core/mb-pro-workspace-media-templates/MB Pro Workspace Media Templates"
-TARGET_DIR="/home/andlersrv/.openclaw/workspace/repos/bitcash/read-only/masterbots/apps/pro-web/public/templates"
+SOURCE_DIR="$HOME/.openclaw/workspace/repos/bitcash/core/mb-pro-workspace-media-templates/MB Pro Workspace Media Templates"
+TARGET_DIR="$HOME/.openclaw/workspace/repos/bitcash/read-only/masterbots/apps/pro-web/public/templates"
 
 mkdir -p "$TARGET_DIR"
 

@@ -44,7 +44,7 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ### 1. Check if Grok Output Files Exist
 
 ```bash
-ls -lt /home/andlersrv/.openclaw/workspace/twitter-outputs/*.md | head -5
+ls -lt $HOME/.openclaw/workspace/twitter-outputs/*.md | head -5
 ```
 
 ### 2. Check if Parser Extracted Posts

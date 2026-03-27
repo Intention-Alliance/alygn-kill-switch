@@ -66,7 +66,7 @@ execSync(ttsCmd, { stdio: 'inherit' });
 
 To test manually:
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/system/morning-briefing.js
 ```
 

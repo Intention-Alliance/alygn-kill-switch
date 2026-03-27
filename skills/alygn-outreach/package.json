@@ -1,0 +1,40 @@
+{
+  "name": "alygn-outreach-skill",
+  "version": "1.0.0",
+  "description": "Unified VC and Municipal outreach skill",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "alygn-outreach": "bin/alygn-outreach"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir=dist --target=bun",
+    "typecheck": "bun run build && echo 'Type check passed'",
+    "test": "bun run test:vc && bun run test:municipal",
+    "test:vc": "node bin/alygn-outreach --type=vc --action=discover --limit=1 --dry-run",
+    "test:municipal": "node bin/alygn-outreach --type=municipal --action=discover --limit=1 --dry-run",
+    "db:pull": "supabase db pull --local",
+    "db:push": "supabase db push --local",
+    "gen": "bun run types && bun run schemas",
+    "gen:remote": "bun run types:remote && bun run schemas",
+    "gen:remote:script": "./data/supabase/scripts/generate-types.sh",
+    "migrate": "supabase migration up",
+    "reset": "supabase db reset",
+    "schemas": "supabase-to-zod --input data/supabase/src/database.types.ts --output data/supabase/src/database.schemas.ts",
+    "start": "supabase start",
+    "status": "supabase status",
+    "stop": "supabase stop",
+    "types": "supabase gen types typescript --local > ./data/supabase/src/database.types.ts",
+    "types:remote": "supabase gen types typescript > ./data/supabase/src/database.types.ts"
+  },
+  "author": "ALYGN R&D",
+  "license": "Private",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "supabase": "^2.84.4",
+    "supabase-to-zod": "1.0.5"
+  }
+}

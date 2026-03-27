@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 /**
  * Get currently playing track

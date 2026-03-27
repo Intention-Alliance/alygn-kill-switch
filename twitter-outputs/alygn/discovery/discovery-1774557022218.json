@@ -1,0 +1,140 @@
+{
+  "timestamp": "2026-03-26T20:30:22.218Z",
+  "source": "explore_feed",
+  "snapshotPath": "/tmp/x-explore-snapshot.txt",
+  "discovered": [
+    {
+      "postId": "trending_1774557022214_jrouubi53",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "OpenAI Shuts Down Sora Video Tool, Ends Disney Partnership",
+      "engagement": {
+        "likes": 773,
+        "retweets": 231,
+        "replies": 77
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "Trending now",
+      "keywords": [
+        "AI",
+        "OpenAI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774557022214_7pwpwgcmg",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Geoffrey Hinton Warns AI Threatens All Jobs, But Trades Like Plumbing May Last Longer",
+      "engagement": {
+        "likes": 385,
+        "retweets": 115,
+        "replies": 38
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "5 hours ago",
+      "keywords": [
+        "AI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774557022214_0e3ixq769",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Senate Democrats Block DHS Funding Vote as Shutdown Hits Sixth Week",
+      "engagement": {
+        "likes": 550000,
+        "retweets": 165000,
+        "replies": 55000
+      },
+      "url": "https://x.com/explore",
+      "category": "Other",
+      "age": "2 days ago",
+      "keywords": [],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774557022214_eoxmpgxo7",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Federación",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774557022218_p12b3mu00",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Tibás",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774557022218_11hfckphv",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: fuera oriana",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774557022218_ifgqrwvyn",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Lonnis",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774557022218_rc3hq97xk",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Bojorges",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    }
+  ]
+}

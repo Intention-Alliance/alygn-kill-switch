@@ -2,7 +2,7 @@
 # Batch convert CommonJS require() to ES modules import
 # Usage: ./convert-cjs-to-esm.sh [directory]
 
-SCRIPT_DIR="/home/andlersrv/.openclaw/workspace/scripts"
+SCRIPT_DIR="$HOME/.openclaw/workspace/scripts"
 
 find "$SCRIPT_DIR" -name "*.js" -type f ! -path "*/__legacy/*" | while read file; do
   # Skip if already uses ES modules (has 'import' statement)

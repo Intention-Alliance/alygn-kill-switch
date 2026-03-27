@@ -3,7 +3,7 @@
     "total_posts": 100,
     "source": "Alygn Pre-Approved Posts (Feb 2026)",
     "strategy": "One post per day, sequential order",
-    "last_updated": "2026-03-16T17:01:17.602Z"
+    "last_updated": "2026-03-26T17:21:08.175Z"
   },
   "posts": [
     {
@@ -170,58 +170,58 @@
     {
       "id": 24,
       "text": "Institutions fail quietly before they fail publicly.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-17T17:01:47.486Z",
+      "tweet_id": "2033951944973205515"
     },
     {
       "id": 25,
       "text": "Systems rarely collapse from a single error, they collapse from unmanaged interfaces.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-18T17:01:31.480Z",
+      "tweet_id": "2034314265725686110"
     },
     {
       "id": 26,
       "text": "Accountability requires structure, not just intent.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-19T17:03:32.781Z",
+      "tweet_id": "2034677162364600561"
     },
     {
       "id": 27,
       "text": "Emergency response is a systems problem, not a permissions problem.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-21T17:02:47.544Z",
+      "tweet_id": "2035401748299272664"
     },
     {
       "id": 28,
       "text": "Governance without auditability becomes symbolic.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-23T15:41:35.919Z",
+      "tweet_id": "2036106090996179202"
     },
     {
       "id": 29,
       "text": "Complexity doesn't remove responsibility, it redistributes it.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-24T17:01:38.774Z",
+      "tweet_id": "2036488623520964719"
     },
     {
       "id": 30,
       "text": "Durable institutions are designed for stress, not optimism.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-25T18:12:56.119Z",
+      "tweet_id": "2036868951905276282"
     },
     {
       "id": 31,
       "text": "Neutral governance is hardest where stakes are highest.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-26T17:21:08.175Z",
+      "tweet_id": "2037218303962144829"
     },
     {
       "id": 32,

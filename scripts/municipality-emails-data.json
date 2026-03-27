@@ -1,0 +1,735 @@
+{
+  "scraped_at": "2026-03-19T06:00:00Z",
+  "source": "web_search",
+  "municipalities": [
+    {
+      "name": "Flores",
+      "province": "Heredia",
+      "mayor_email": "eramirez@flores.go.cr",
+      "planning_email": "oalvarez@flores.go.cr",
+      "it_email": "jcbrenes@flores.go.cr",
+      "general_email": "info@flores.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Heredia",
+      "province": "Heredia",
+      "mayor_email": "aaguilar@heredia.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Liberia",
+      "province": "Guanacaste",
+      "mayor_email": "calvodj@muniliberia.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "alcaldia@muniliberia.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Cartago",
+      "province": "Cartago",
+      "mayor_email": "alcaldia@muni-carta.go.cr",
+      "planning_email": null,
+      "it_email": "tic@muni-carta.go.cr",
+      "general_email": "portal@muni-carta.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "San José",
+      "province": "San José",
+      "mayor_email": "jvasquez@msj.go.cr",
+      "planning_email": null,
+      "it_email": "cgarita@msj.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Escazú",
+      "province": "San José",
+      "mayor_email": "despachoalcalde@escazu.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "comunicacion@escazu.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Desamparados",
+      "province": "San José",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "acambro@desamparados.go.cr",
+      "general_email": "comunicacion@desamparados.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Alajuela",
+      "province": "Alajuela",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "jorge.cubero@munialajuela.go.cr",
+      "general_email": "administracion@munialajuela.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "San Ramón",
+      "province": "Alajuela",
+      "mayor_email": "kperez@sanramon.go.cr",
+      "planning_email": null,
+      "it_email": "oscarmario@sanramon.go.cr",
+      "general_email": "municipalidad@sanramon.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Grecia",
+      "province": "Alajuela",
+      "mayor_email": "alcaldia@grecia.go.cr",
+      "planning_email": null,
+      "it_email": "marisol.alvarez@grecia.go.cr",
+      "general_email": "notificaciones.grecia@grecia.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Nicoya",
+      "province": "Guanacaste",
+      "mayor_email": "armandomartinez@municoya.go.cr",
+      "planning_email": null,
+      "it_email": "alonsomolina@municoya.go.cr",
+      "general_email": "alcaldia@municoya.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Puntarenas",
+      "province": "Puntarenas",
+      "mayor_email": "randall.chavarria@munipuntarenas.go.cr",
+      "planning_email": null,
+      "it_email": "gerardo.gomez@munipuntarenas.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Limón",
+      "province": "Limón",
+      "mayor_email": "alcaldia@municlimon.go.cr",
+      "planning_email": null,
+      "it_email": "carlos.solano@municlimon.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Santa Cruz",
+      "province": "Guanacaste",
+      "mayor_email": "alcaldia@santacruz.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "plataforma@santacruz.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Turrialba",
+      "province": "Cartago",
+      "mayor_email": "chidalgo@muniturrialba.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "ibrenes@muniturrialba.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Paraíso",
+      "province": "Cartago",
+      "mayor_email": "alcaldia@muniparaiso.go.cr",
+      "planning_email": null,
+      "it_email": "abarquero@muniparaiso.go.cr",
+      "general_email": "info@muniparaiso.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Barva",
+      "province": "Heredia",
+      "mayor_email": "alcaldia@munibarva.go.cr",
+      "planning_email": null,
+      "it_email": "cesar.veran@munibarva.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Santo Domingo",
+      "province": "Heredia",
+      "mayor_email": "alcaldia@munisantodomingo.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@munisantodomingo.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "La Unión",
+      "province": "Cartago",
+      "mayor_email": "alcaldia@munilaunion.go.cr",
+      "planning_email": null,
+      "it_email": "informatica@munilaunion.go.cr",
+      "general_email": "consultasytramites@munilaunion.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Oreamuno",
+      "province": "Cartago",
+      "mayor_email": "erick.jimenez@oreamuno.go.cr",
+      "planning_email": "diego.ramirez@oreamuno.go.cr",
+      "it_email": "alonso.gomez@oreamuno.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Cañas",
+      "province": "Guanacaste",
+      "mayor_email": "alexander.elizondo@municanas.go.cr",
+      "planning_email": null,
+      "it_email": "msalazar@municanas.go.cr",
+      "general_email": "info@municanas.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Bagaces",
+      "province": "Guanacaste",
+      "mayor_email": "alcaldia@bagaces.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@bagaces.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Carrillo",
+      "province": "Guanacaste",
+      "mayor_email": "d_mendez@municarrillo.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "alcaldia@municarrillo.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Pococí",
+      "province": "Limón",
+      "mayor_email": "manuel.hernandez@munipococi.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Siquirres",
+      "province": "Limón",
+      "mayor_email": "alcaldia@siquirres.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "consultas@siquirres.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Talamanca",
+      "province": "Limón",
+      "mayor_email": "alcaldia@municipalidadtalamanca.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@municipalidadtalamanca.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Osa",
+      "province": "Puntarenas",
+      "mayor_email": "manchia@munideosa.go.cr",
+      "planning_email": null,
+      "it_email": "jgomez@munideosa.go.cr",
+      "general_email": "info@munideosa.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Golfito",
+      "province": "Puntarenas",
+      "mayor_email": "f.lara@munidegolfito.go.cr",
+      "planning_email": null,
+      "it_email": "victor.reyes@munigolfito.go.cr",
+      "general_email": "plataforma@munidegolfito.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Buenos Aires",
+      "province": "Puntarenas",
+      "mayor_email": "alcaldia@mba.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "informacion@mba.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Esparza",
+      "province": "Puntarenas",
+      "mayor_email": "bvenegas@muniesparza.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@muniesparza.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Garabito",
+      "province": "Puntarenas",
+      "mayor_email": "secretariaalcaldia@munigarabito.go.cr",
+      "planning_email": null,
+      "it_email": "razofeifa@munigarabito.go.cr",
+      "general_email": "serviciociudadanos@munigarabito.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Coto Brus",
+      "province": "Puntarenas",
+      "mayor_email": "AlcaldiaMunicipal@MuniCotoBrus.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@municotobrus.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Abangares",
+      "province": "Guanacaste",
+      "mayor_email": "javier.bogantes@abangares.go.cr",
+      "planning_email": null,
+      "it_email": "luis.nunez@abangares.go.cr",
+      "general_email": "alcaldia@abangares.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Tilarán",
+      "province": "Guanacaste",
+      "mayor_email": "kalfaro@tilaran.go.cr",
+      "planning_email": null,
+      "it_email": "alopez@tilaran.go.cr",
+      "general_email": "infotramites@tilaran.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Nandayure",
+      "province": "Guanacaste",
+      "mayor_email": "tzuniga@nandayure.go.cr",
+      "planning_email": null,
+      "it_email": "jhernandez@nandayure.go.cr",
+      "general_email": "info@nandayure.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "La Cruz",
+      "province": "Guanacaste",
+      "mayor_email": "alonso.alan@munilacruz.go.cr",
+      "planning_email": null,
+      "it_email": "eladio.bonilla@munilacruz.go.cr",
+      "general_email": "info@munilacruz.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Hojancha",
+      "province": "Guanacaste",
+      "mayor_email": null,
+      "planning_email": "planificacion@munihojancha.com",
+      "it_email": null,
+      "general_email": "info@munihojancha.com",
+      "x_handle": null
+    },
+    {
+      "name": "Puriscal",
+      "province": "San José",
+      "mayor_email": "iris.arroyo@munipuriscal.go.cr",
+      "planning_email": null,
+      "it_email": "francisco.cespedes@munipuriscal.go.cr",
+      "general_email": "informacion@puriscal.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Tarrazú",
+      "province": "San José",
+      "mayor_email": "alcaldia@munitarrazu.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Aserrí",
+      "province": "San José",
+      "mayor_email": "ogarcia@aserri.go.cr",
+      "planning_email": null,
+      "it_email": "gfallas@aserri.go.cr",
+      "general_email": "servicioalusuario@aserri.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Mora",
+      "province": "San José",
+      "mayor_email": "ksanchez@mora.go.cr",
+      "planning_email": null,
+      "it_email": "jaleon@mora.go.cr",
+      "general_email": "info@mora.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Goicoechea",
+      "province": "San José",
+      "mayor_email": "alcaldia@munigoechea.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Santa Ana",
+      "province": "San José",
+      "mayor_email": "alcaldia@santaana.go.cr",
+      "planning_email": "kmontes@santaana.go.cr",
+      "it_email": "arojas@santaana.go.cr",
+      "general_email": "info@santaana.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Alajuelita",
+      "province": "San José",
+      "mayor_email": "rsiles@munialajuelita.go.cr",
+      "planning_email": null,
+      "it_email": "fdavid@munialajuelita.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Vázquez de Coronado",
+      "province": "San José",
+      "mayor_email": "abarrantes@vazquezdecoronado.go.cr",
+      "planning_email": "lmonge@vazquezdecoronado.go.cr",
+      "it_email": null,
+      "general_email": "info@vazquezdecoronado.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Acosta",
+      "province": "San José",
+      "mayor_email": "alcaldia@acosta.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Tibás",
+      "province": "San José",
+      "mayor_email": "alcalde@munitibas.go.cr",
+      "planning_email": null,
+      "it_email": "pvillalobos@munitibas.go.cr",
+      "general_email": "info@munitibas.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Moravia",
+      "province": "San José",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Montes de Oca",
+      "province": "San José",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "jsolanor@montesdeoca.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Turrubares",
+      "province": "San José",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@turrubares.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Dota",
+      "province": "San José",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "jbrenes@dota.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Curridabat",
+      "province": "San José",
+      "mayor_email": "errol.solano@curridabat.go.cr",
+      "planning_email": null,
+      "it_email": "federico.sanchez@curridabat.go.cr",
+      "general_email": "servicios.plataforma@curridabat.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Pérez Zeledón",
+      "province": "San José",
+      "mayor_email": "alcaldia@mpz.go.cr",
+      "planning_email": null,
+      "it_email": "pchaves@mpz.go.cr",
+      "general_email": "info@mpz.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "León Cortés Castro",
+      "province": "San José",
+      "mayor_email": "alcalde@munileco.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@munileco.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "San Mateo",
+      "province": "Alajuela",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "jdelgado@sanmateo.go.cr",
+      "general_email": "jguzman@sanmateo.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Atenas",
+      "province": "Alajuela",
+      "mayor_email": "mchaves@atenasmuni.go.cr",
+      "planning_email": null,
+      "it_email": "ealpizar@atenasmuni.go.cr",
+      "general_email": "comunicacion@atenasmuni.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Naranjo",
+      "province": "Alajuela",
+      "mayor_email": "alcaldia@naranjo.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "informacion@naranjo.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Palmares",
+      "province": "Alajuela",
+      "mayor_email": "alcaldia@munipalmares.go.cr",
+      "planning_email": null,
+      "it_email": "mcampos@munipalmares.go.cr",
+      "general_email": "info@munipalmares.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Poás",
+      "province": "Alajuela",
+      "mayor_email": "alcaldia@munipoas.go.cr",
+      "planning_email": null,
+      "it_email": "eduardoinformatica@municipalidadpoas.com",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Orotina",
+      "province": "Alajuela",
+      "mayor_email": "mmontero@muniorotina.go.cr",
+      "planning_email": null,
+      "it_email": "emena@muniorotina.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "San Carlos",
+      "province": "Alajuela",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": "arturohv@munisc.go.cr",
+      "general_email": "info@munisc.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Zarcero",
+      "province": "Alajuela",
+      "mayor_email": "grodriguez@zarcero.go.cr",
+      "planning_email": null,
+      "it_email": "oalvarado@zarcero.go.cr",
+      "general_email": "info@zarcero.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Upala",
+      "province": "Alajuela",
+      "mayor_email": "ylopez@muniupala.go.cr",
+      "planning_email": null,
+      "it_email": "jhernandez@muniupala.go.cr",
+      "general_email": "info@muniupala.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Los Chiles",
+      "province": "Alajuela",
+      "mayor_email": "alcaldia@muniloschiles.go.cr",
+      "planning_email": null,
+      "it_email": "vdelgado@muniloschiles.go.cr",
+      "general_email": "infotramites@muniloschiles.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Guatuso",
+      "province": "Alajuela",
+      "mayor_email": "csequeira@muniguatuso.go.cr",
+      "planning_email": null,
+      "it_email": "rigos@muniguatuso.go.cr",
+      "general_email": "alcaldia@muniguatuso.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Valverde Vega",
+      "province": "Alajuela",
+      "mayor_email": "luis.barrantes@munisarchi.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Río Cuarto",
+      "province": "Alajuela",
+      "mayor_email": "jjimenez@muniriocuarto.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "consultas@muniriocuarto.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Jiménez",
+      "province": "Cartago",
+      "mayor_email": "alcaldia@munijimenez.go.cr",
+      "planning_email": null,
+      "it_email": "lportuguez@munijimenez.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Alvarado",
+      "province": "Cartago",
+      "mayor_email": null,
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "fgranados@munialvarado.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "El Guarco",
+      "province": "Cartago",
+      "mayor_email": "victormt@muniguarco.go.cr",
+      "planning_email": null,
+      "it_email": "manuelgn@muniguarco.go.cr",
+      "general_email": "contacto@muniguarco.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Santa Bárbara",
+      "province": "Heredia",
+      "mayor_email": "secretariaalcaldia@santabarbara.go.cr",
+      "planning_email": null,
+      "it_email": "galfaro@santabarbara.go.cr",
+      "general_email": "informacion@santabarbara.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "San Rafael",
+      "province": "Heredia",
+      "mayor_email": "alcalde@munisrh.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info_recepcion@munisrh.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "San Isidro",
+      "province": "Heredia",
+      "mayor_email": "eddie.ramirez@sanisidro.go.cr",
+      "planning_email": null,
+      "it_email": "informatica@sanisidro.go.cr",
+      "general_email": "info@sanisidro.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Belén",
+      "province": "Heredia",
+      "mayor_email": "alcaldesa@belen.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "San Pablo",
+      "province": "Heredia",
+      "mayor_email": "alcaldia@sanpablo.go.cr",
+      "planning_email": null,
+      "it_email": "informatica@sanpablo.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Sarapiquí",
+      "province": "Heredia",
+      "mayor_email": "vrodriguez@sarapiqui.go.cr",
+      "planning_email": null,
+      "it_email": "aviquez@sarapiqui.go.cr",
+      "general_email": "municipalidad@sarapiqui.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Matina",
+      "province": "Limón",
+      "mayor_email": "walter.cespedes@munimatina.go.cr",
+      "planning_email": null,
+      "it_email": "jorge.bonilla@munimatina.go.cr",
+      "general_email": "info@munimatina.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Guácimo",
+      "province": "Limón",
+      "mayor_email": "beatriz.mora@guacimo.go.cr",
+      "planning_email": null,
+      "it_email": "jjimenez@guacimo.go.cr",
+      "general_email": "info@guacimo.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Parrita",
+      "province": "Puntarenas",
+      "mayor_email": "alcaldia@muniparrita.go.cr",
+      "planning_email": null,
+      "it_email": "informatica@muniparrita.go.cr",
+      "general_email": null,
+      "x_handle": null
+    },
+    {
+      "name": "Corredores",
+      "province": "Puntarenas",
+      "mayor_email": "alcaldia@municipalidadcorredores.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "recepcion@municipalidadcorredores.go.cr",
+      "x_handle": null
+    },
+    {
+      "name": "Monteverde",
+      "province": "Puntarenas",
+      "mayor_email": "intendencia@monteverde.go.cr",
+      "planning_email": null,
+      "it_email": null,
+      "general_email": "info@monteverde.go.cr",
+      "x_handle": null
+    }
+  ]
+}

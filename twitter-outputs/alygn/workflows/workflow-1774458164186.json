@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-03-25T17:02:44.186Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 3,
+  "totalThreads": 3,
+  "validUrls": 3,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Federal judge labeled Pentagon's blacklisting of Anthropic as supply chain risk \"troubling\" and an attempt to cripple the firm after it refused to lift AI safety limits on military uses like surveillance or autonomous weapons.",
+      "replyText": "Exposes tensions in institutional coordination between AI safety enforcers and military, eroding legitimacy of government procurement tactics that punish ethical commitments over dialogue.",
+      "sourceUrl": "https://www.cbsnews.com/news/pentagon-anthropic-hearing-judge-troubling",
+      "isThread": true,
+      "mainLength": 226,
+      "replyLength": 188,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "White House released National AI Policy Framework on March 20, proposing federal preemption of state AI laws for a unified standard, using existing agencies and industry-led rules without new regulators.",
+      "replyText": "Advances cross-jurisdictional coordination by centralizing federal oversight, bolsters legitimacy via sector-expert bodies, averts patchwork regulations hindering safe AI deployment nationwide.",
+      "sourceUrl": "https://www.whitehouse.gov/wp-content/uploads/2026/03/03.20.26-National-Policy-Framework-for-Artificial-Intelligence-Legislative-Recommendations.pdf",
+      "isThread": true,
+      "mainLength": 203,
+      "replyLength": 193,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Cities need strong AI governance frameworks for procurement and oversight, exemplified by San Jose's algorithm register and co-founding GovAI Coalition for sharing local-state-federal best practices.",
+      "replyText": "Fosters multi-level institutional coordination on AI safety, enhancing legitimacy through transparency and shared tools, critical as local govs increasingly adopt vendor AI without expertise.",
+      "sourceUrl": "https://orfamerica.org/orf-america-comments/ai-deployment-cities-benefits-safeguards",
+      "isThread": true,
+      "mainLength": 199,
+      "replyLength": 191,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

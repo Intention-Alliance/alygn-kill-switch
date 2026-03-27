@@ -10,7 +10,7 @@
 ### Reset All Cron Jobs (Recommended)
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 bash scripts/cron/cleanup-and-recreate.sh
 ```
 

@@ -7,7 +7,7 @@
 ## Current Voice Pipeline
 
 ### For Short Responses (< 30 seconds)
-**Use reference samples from `~/wooblus-voice-refs/`:**
+**Use reference samples from `$HOME/wooblus-voice-refs/`:**
 - `woohoo-en.ogg` - "Woohoo!" exclamation
 - `salutacion-es.ogg` - Spanish greeting
 - `greding-es.ogg` - "¡Greding!" gnome greeting
@@ -40,7 +40,7 @@ scripts/system/convert-for-whatsapp.sh /tmp/voice.ogg
 ## Files to Update
 
 If you find ElevenLabs references in docs/memory files, they are **legacy** and should be updated to reference:
-1. Reference samples (`~/wooblus-voice-refs/`)
+1. Reference samples (`$HOME/wooblus-voice-refs/`)
 2. Local Piper TTS (`scripts/system/local-tts.sh`)
 3. Voice generation script (`scripts/system/generate-wobblus-voice.sh`)
 

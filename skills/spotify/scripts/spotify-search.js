@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 /**
  * Search Spotify for tracks, albums, artists, or playlists

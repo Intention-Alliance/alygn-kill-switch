@@ -9,7 +9,7 @@
 ## 📋 Test Command
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace/scripts/alygn/x-twitter
+cd $HOME/.openclaw/workspace/scripts/alygn/x-twitter
 bun x-api-executor.js ../../twitter-outputs/grok-output-ai-governance-2026.md --dry-run
 ```
 
@@ -20,6 +20,7 @@ bun x-api-executor.js ../../twitter-outputs/grok-output-ai-governance-2026.md --
 **Input:** 5 numbered thread ideas about AI governance + coordination (2026 trends)
 
 **Parser Should Extract:**
+
 1. ✅ "Coordination is the real AI governance challenge. With proliferating forums (UN Global Dialogue, India's AI Impact Summit), we need shared baselines for interoperability—not more fragmentation."
 2. ✅ "Emergency response that doesn't exist before crisis rarely works during one. 2026's lesson: institutional infrastructure must be built before deployment scales, not retrofitted after."
 3. ✅ "Trust is harder to scale than technology. The Partnership on AI's 6 governance priorities put coordination at #3 for a reason—alignment on cross-border AI agents requires neutral infrastructure."
@@ -27,17 +28,20 @@ bun x-api-executor.js ../../twitter-outputs/grok-output-ai-governance-2026.md --
 5. ✅ "Progress over perfection. AI inventories, high-risk prioritization, continuous monitoring—2026 trends show balanced oversight beats either deregulation or innovation-stifling control."
 
 **Parser Should Strip:**
+
 - ❌ Code block: `npm install @ai-sdk/xai`, `curl https://...`, `pip install governance-framework`
 - ❌ Inline code: `inline code`, `yarn add twitter-bot`, `apt install ai-tools`
 - ❌ Metadata sections (Tokens Used, Search Results, etc.)
 
 **Validator Should Check:**
+
 - ✅ All posts under 280 chars (ranging ~150-250 chars each)
 - ✅ No install commands in final output (stripped by parser)
 - ✅ No excessive URLs (0 URLs in content)
 - ✅ All posts > 10 chars (substantive content)
 
 **Formatter Should Add:**
+
 ```
 [content]
 
@@ -66,34 +70,37 @@ more at @aialygn
 ## 🚀 How to Run
 
 **Option 1: Direct execution**
+
 ```bash
-bun /home/andlersrv/.openclaw/workspace/scripts/alygn/x-twitter/x-api-executor.js \
-  /home/andlersrv/.openclaw/workspace/twitter-outputs/grok-output-ai-governance-2026.md \
+bun $HOME/.openclaw/workspace/scripts/alygn/x-twitter/x-api-executor.js \
+  $HOME/.openclaw/workspace/twitter-outputs/grok-output-ai-governance-2026.md \
   --dry-run
 ```
 
 **Option 2: Test script**
+
 ```bash
-node /home/andlersrv/.openclaw/workspace/scripts/alygn/x-twitter/test-dry-run.js
+node $HOME/.openclaw/workspace/scripts/alygn/x-twitter/test-dry-run.js
 ```
 
 **Option 3: Shell script**
+
 ```bash
-/home/andlersrv/.openclaw/workspace/scripts/alygn/test-parser-dry-run.sh
+$HOME/.openclaw/workspace/scripts/alygn/test-parser-dry-run.sh
 ```
 
 ---
 
 ## ✅ Files Ready
 
-| File | Purpose |
-|------|---------|
-| `twitter-content-parser.js` | Parser + validator + formatter |
-| `x-twitter/x-api-executor.js` | Execution pipeline |
-| `x-twitter/test-dry-run.js` | Quick test script |
-| `test-parser-dry-run.sh` | Shell wrapper |
-| `twitter-outputs/grok-output-ai-governance-2026.md` | Test input |
-| `TWITTER-PARSER-VALIDATOR-COMPLETE.md` | Full documentation |
+| File                                                | Purpose                        |
+| --------------------------------------------------- | ------------------------------ |
+| `twitter-content-parser.js`                         | Parser + validator + formatter |
+| `x-twitter/x-api-executor.js`                       | Execution pipeline             |
+| `x-twitter/test-dry-run.js`                         | Quick test script              |
+| `test-parser-dry-run.sh`                            | Shell wrapper                  |
+| `twitter-outputs/grok-output-ai-governance-2026.md` | Test input                     |
+| `TWITTER-PARSER-VALIDATOR-COMPLETE.md`              | Full documentation             |
 
 ---
 

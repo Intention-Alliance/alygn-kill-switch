@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-03-17T17:01:44.642Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 3,
+  "totalThreads": 3,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "OpenAI advocates for a US national AI strategy prioritizing federal testing of frontier models and state-federal harmonization to address catastrophic risks.",
+      "replyText": "Fosters institutional coordination between federal and state levels, building legitimacy through prevention-focused standards and global AI Safety Institute networks.",
+      "sourceUrl": "https://openaiglobalaffairs.substack.com/p/ai-governance-keeping-up-with-ai",
+      "isThread": true,
+      "mainLength": 157,
+      "replyLength": 166,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Global AI summits increasingly adopt multistakeholder rhetoric, yet power gaps limit civil society and Global Majority influence in agenda-setting and commitments.",
+      "replyText": "Highlights legitimacy challenges in cross-org efforts, urging structured frameworks for inclusive coordination beyond symbolic participation.",
+      "sourceUrl": "https://www.techpolicy.press/multistakeholder-promises-and-power-gaps-in-global-ai-summits",
+      "isThread": true,
+      "mainLength": 163,
+      "replyLength": 141,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "AI enforcement relies on reactive national coordination like EU's Brussels hub and California's AG oversight, emphasizing self-reporting for high-risk systems.",
+      "replyText": "Reveals institutional capacity gaps, pushing for cross-border networks to ensure even legitimacy and effective safety governance.",
+      "sourceUrl": "https://www.diplomacy.edu/blog/ai-regulation-meets-enforcement-reality-how-the-rules-actually-work",
+      "isThread": true,
+      "mainLength": 159,
+      "replyLength": 129,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

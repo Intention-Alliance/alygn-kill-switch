@@ -1,0 +1,8 @@
+{
+  "$schema": "https://alygn-outreach/schemas/notion-config.json",
+  "notionApiKey": "secret_xxxxxxxxxxxx",
+  "defaultDatabaseId": "305334874af681ef983df57c7f70de33",
+  "vcDatabaseId": "305334874af681ef983df57c7f70de33",
+  "municipalDatabaseId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "rateLimitDelayMs": 350
+}

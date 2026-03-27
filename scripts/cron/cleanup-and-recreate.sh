@@ -67,7 +67,7 @@ openclaw cron add \
   --cron "0 2 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run backup: cd ~/.openclaw/workspace && node scripts/system/backup.js" \
+  --message "Run backup: cd $HOME/.openclaw/workspace && node scripts/system/backup.js" \
   --thinking low \
   --timeout 1800
 
@@ -79,7 +79,7 @@ openclaw cron add \
   --cron "0 8 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Generate morning briefing: cd ~/.openclaw/workspace && node scripts/system/morning-briefing.js" \
+  --message "Generate morning briefing: cd $HOME/.openclaw/workspace && node scripts/system/morning-briefing.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -94,7 +94,7 @@ openclaw cron add \
   --cron "0 21 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Generate end-of-day summary: cd ~/.openclaw/workspace && node scripts/alygn/eod-summary.js" \
+  --message "Generate end-of-day summary: cd $HOME/.openclaw/workspace && node scripts/alygn/eod-summary.js" \
   --thinking low \
   --deliver \
   --to "+50662163355" \
@@ -118,7 +118,7 @@ openclaw cron add \
   --cron "30 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run ALYGN daily tracker: cd ~/.openclaw/workspace && node scripts/alygn/daily-tracker.js" \
+  --message "Run ALYGN daily tracker: cd $HOME/.openclaw/workspace && node scripts/alygn/daily-tracker.js" \
   --thinking low \
   --timeout 1800
 
@@ -141,7 +141,7 @@ Target: 5 original posts + 2-5 reactive engagements per day
 
 ## PHASE 1: CONTENT GENERATION (Existing System)
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/x-twitter/twitter-automation.js
 ```
 Generates workflow JSON:
 - 10 post ideas via Grok Prompt #1
@@ -164,7 +164,7 @@ Discover AI safety posts:
 
 ### Step 2.2: Decision Engine
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/twitter-discovery/decision-engine.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/twitter-discovery/decision-engine.js
 ```
 Grok evaluation:
 - Filter AI-related posts (keywords.length > 0)
@@ -174,7 +174,7 @@ Grok evaluation:
 
 ### Step 2.3: X API Execution
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/twitter-discovery/x-api-executor.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/twitter-discovery/x-api-executor.js
 ```
 Post via X API:
 - Quote tweets (quote_tweet_id)
@@ -184,7 +184,7 @@ Post via X API:
 
 ## PHASE 3: BROWSER POSTING (Original Content)
 ```bash
-cd ~/.openclaw/workspace && bun scripts/alygn/twitter-browser-executor.ts
+cd $HOME/.openclaw/workspace && bun scripts/alygn/twitter-browser-executor.ts
 ```
 Post original content via browser relay:
 - Profile: --profile="alygn" (authenticated X.com)
@@ -233,7 +233,7 @@ openclaw cron add \
   --cron "30 10 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute VC contact discovery: cd ~/.openclaw/workspace && node scripts/alygn/vc-contact-discovery.js" \
+  --message "Execute VC contact discovery: cd $HOME/.openclaw/workspace && node scripts/alygn/vc-contact-discovery.js" \
   --thinking medium \
   --timeout 1800
 
@@ -245,7 +245,7 @@ openclaw cron add \
   --cron "0 11 * * 1" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Execute VC outreach: cd ~/.openclaw/workspace && node scripts/alygn/vc-outreach.js" \
+  --message "Execute VC outreach: cd $HOME/.openclaw/workspace && node scripts/alygn/vc-outreach.js" \
   --thinking high \
   --deliver \
   --to "+50662163355" \
@@ -269,7 +269,7 @@ openclaw cron add \
   --cron "45 3 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run BitcashOrg daily tracker: cd ~/.openclaw/workspace && node scripts/bitcash/daily-tracker.js" \
+  --message "Run BitcashOrg daily tracker: cd $HOME/.openclaw/workspace && node scripts/bitcash/daily-tracker.js" \
   --thinking low \
   --timeout 1800
 
@@ -290,7 +290,7 @@ openclaw cron add \
   --cron "0 4 * * *" \
   --tz "America/Costa_Rica" \
   --session isolated \
-  --message "Run AndlerRL daily tracker: cd ~/.openclaw/workspace && node scripts/personal/daily-tracker.js" \
+  --message "Run AndlerRL daily tracker: cd $HOME/.openclaw/workspace && node scripts/personal/daily-tracker.js" \
   --thinking low \
   --timeout 1800
 

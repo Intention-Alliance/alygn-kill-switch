@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-26T17:01:46.924Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Sen. Warner's March 25 letter to OpenAI CEO Altman demands safeguards for military AI, urging coordination between DoD and firms to ensure ethical, lawful use amid rapid adoption.",
+      "replyText": "This event highlights legitimacy in AI governance: strong oversight builds public trust, coordinates stakeholders like DoD and companies, and upholds neutrality by rejecting unchecked \"any lawful use\" policies.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 179,
+      "replyLength": 210,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Washington state enacted two AI laws on March 25: HB 2225 safeguards minors from companion chatbots; HB 1170 mandates disclosure of AI-generated content to users.",
+      "replyText": "State-level action demonstrates coordination through targeted protections, enhancing legitimacy by prioritizing vulnerable users like children, and neutrality via transparent AI deployment rules.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 162,
+      "replyLength": 195,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "White House published National Policy Framework for AI on March 25, outlining federal rules on child safety, IP, free speech, preempting burdensome state laws for unified governance.",
+      "replyText": "Federal framework fosters coordination across states, bolsters legitimacy via balanced protections and innovation, ensures neutrality by safeguarding free speech against ideological bias in AI.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 182,
+      "replyLength": 193,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "On March 26, White House and Sen. Blackburn unveiled visions for federal AI policy, including TRUMP AMERICA AI Act draft for uniform rules, child protections, and innovation sandboxes.",
+      "replyText": "Bipartisan push for federal AI policy promotes coordination to replace state patchwork, legitimacy through democratic protections like free speech, neutrality via industry standards over bureaucracy.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 184,
+      "replyLength": 199,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Treasury announced conferences on March 25 to discuss reducing AI regulations for banks, convening experts to optimize oversight amid financial AI adoption.",
+      "replyText": "Initiative advances coordination in finance sector, legitimacy by tailoring regs to innovation needs, neutrality ensuring AI benefits economy without undue burdens on institutions.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 156,
+      "replyLength": 180,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

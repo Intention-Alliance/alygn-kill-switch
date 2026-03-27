@@ -1,0 +1,24 @@
+{
+  "vc": {
+    "name": "Index Ventures",
+    "email": "neil@indexventures.com",
+    "partnerName": "Neil",
+    "partnerTitle": "General Partner, Founder",
+    "id": "PENDING-NOTION-ID"
+  },
+  "subjects": {
+    "optionA": "European AI Governance Infrastructure",
+    "optionB": "Cross-Border AI Coordination",
+    "optionC": "Institutional AI Preparedness",
+    "recommended": "A (Index has strong European presence)"
+  },
+  "variant": "institutional",
+  "variantReason": "Index Ventures is a global firm with deep European roots and focus on long-term relationships",
+  "customHook": "Given Index Ventures' leadership in European venture capital and your track record backing transformative companies like Dropbox and Slack, you understand that governance becomes the critical challenge as AI systems scale across national boundaries.",
+  "painPoints": [
+    "Cross-border AI regulatory compliance for portfolio companies",
+    "European AI Act governance requirements",
+    "Multi-jurisdictional AI coordination challenges"
+  ],
+  "customPS": "P.S.: Index Ventures' focus on long-term company building across Europe and the US positions you uniquely to see the governance gap that emerges when frontier AI scales beyond traditional oversight mechanisms."
+}

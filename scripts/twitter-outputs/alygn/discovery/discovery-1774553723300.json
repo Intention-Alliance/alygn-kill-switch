@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-03-26T19:35:23.300Z",
+  "source": "explore_feed",
+  "snapshotPath": "/tmp/x-explore-snapshot.txt",
+  "discovered": [
+    {
+      "postId": "trending_1774553723298_e3leb5nkk",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Tesla Owner Completes 2,700-Mile Coast-to-Coast Drive on FSD Without Interventions",
+      "engagement": {
+        "likes": 1400,
+        "retweets": 420,
+        "replies": 140
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "Trending now",
+      "keywords": []
+    },
+    {
+      "postId": "trending_1774553723298_tu6tkgeu7",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Quantum Physics Video Blends Science and Spirituality in Quick Clip",
+      "engagement": {
+        "likes": 79,
+        "retweets": 23,
+        "replies": 7
+      },
+      "url": "https://x.com/explore",
+      "category": "Other",
+      "age": "Trending now",
+      "keywords": []
+    },
+    {
+      "postId": "trending_1774553723298_owgngf12y",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Geoffrey Hinton Warns AI Threatens All Jobs, But Trades Like Plumbing May Last Longer",
+      "engagement": {
+        "likes": 365,
+        "retweets": 109,
+        "replies": 36
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "4 hours ago",
+      "keywords": [
+        "AI"
+      ]
+    },
+    {
+      "postId": "trending_1774553723298_uenvn0phy",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Business & finance ·",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "$GME More",
+      "age": "Trending",
+      "keywords": []
+    }
+  ]
+}

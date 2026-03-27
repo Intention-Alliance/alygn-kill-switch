@@ -3,7 +3,7 @@
   "generated": "2026-02-04T01:17:51.170Z",
   "sessions": {
     "totalSessions": 22,
-    "summary": "Session store: /home/andlersrv/.openclaw/agents/main/sessions/sessions.json\ndirect agent:main:cron:...da0fda  just now  claude-sonnet-4.5 -                    system id:41865768-ad2a-47b7-927a-13c858fc6619\ndirect agent:main:cron:...bd5872  just now  claude-sonnet-4.5 20k/128k (16%)       system id:722bb8e7-dbe9-40e7-adf0-77ac5336bb6c\ndirect agent:main:cron:...fe4216  2m ago    claude-sonnet-4.5 24k/128k (19%)       system id:fbc012a6-6572-4dc1-afa6-a1cd38218a3e\ndirect agent:main:cron:...5a2bbe  2m ago    claude-sonnet-4.5 21k/128k (16%)       system id:16678550-d06a-46c5-a871-c6e2e41e973a"
+    "summary": "Session store: $HOME/.openclaw/agents/main/sessions/sessions.json\ndirect agent:main:cron:...da0fda  just now  claude-sonnet-4.5 -                    system id:41865768-ad2a-47b7-927a-13c858fc6619\ndirect agent:main:cron:...bd5872  just now  claude-sonnet-4.5 20k/128k (16%)       system id:722bb8e7-dbe9-40e7-adf0-77ac5336bb6c\ndirect agent:main:cron:...fe4216  2m ago    claude-sonnet-4.5 24k/128k (19%)       system id:fbc012a6-6572-4dc1-afa6-a1cd38218a3e\ndirect agent:main:cron:...5a2bbe  2m ago    claude-sonnet-4.5 21k/128k (16%)       system id:16678550-d06a-46c5-a871-c6e2e41e973a"
   },
   "github": [],
   "email": {

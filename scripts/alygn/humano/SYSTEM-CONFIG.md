@@ -654,8 +654,8 @@ Obtén tu `GROK_API_KEY` de [https://console.x.ai](https://console.x.ai).
 **Método 1 — User settings file (persistente, recomendado):**
 
 ```bash
-mkdir -p ~/.grok
-cat > ~/.grok/user-settings.json << 'EOF'
+mkdir -p $HOME/.grok
+cat > $HOME/.grok/user-settings.json << 'EOF'
 {
   "apiKey": "xai-TU_API_KEY_AQUI",
   "baseURL": "https://api.x.ai/v1",
@@ -673,7 +673,7 @@ EOF
 
 ```bash
 export GROK_API_KEY="xai-TU_API_KEY_AQUI"
-# Agregar al ~/.bashrc o ~/.zshrc para persistencia
+# Agregar al $HOME/.bashrc o $HOME/.zshrc para persistencia
 ```
 
 **Método 3 — Via .env del repo (auto-detect):**
@@ -731,7 +731,7 @@ Run: node post.js --project=humano --agent-chain --dry-run
 - Always add --dry-run first to review output before publishing
 ```
 
-> **Nota:** El `.grok/GROK.md` es project-level — solo aplica cuando abres `grok` desde esta carpeta. Puedes tener un `~/.grok/GROK.md` global diferente para otros proyectos.
+> **Nota:** El `.grok/GROK.md` es project-level — solo aplica cuando abres `grok` desde esta carpeta. Puedes tener un `$HOME/.grok/GROK.md` global diferente para otros proyectos.
 
 ---
 
@@ -800,7 +800,7 @@ La automatización de Fase 2 **no depende de Grok CLI**:
 | Error                       | Causa                                          | Solución                                |
 | --------------------------- | ---------------------------------------------- | --------------------------------------- |
 | `command not found: grok`   | CLI no instalada o no en PATH                  | `bun add -g @vibe-kit/grok-cli`         |
-| `Error: unauthorized`       | API key incorrecta o no configurada            | Revisar `~/.grok/user-settings.json`    |
+| `Error: unauthorized`       | API key incorrecta o no configurada            | Revisar `$HOME/.grok/user-settings.json`    |
 | `.grok/GROK.md` no se carga | Ejecutando `grok` desde carpeta incorrecta     | `cd humano && grok`                     |
 | Output en idioma incorrecto | `.grok/GROK.md` no tiene instrucción de idioma | Agregar "Respond in Spanish" al GROK.md |
 | Timeout en headless mode    | Prompt muy complejo                            | Agregar `--max-tool-rounds 20`          |
@@ -1159,8 +1159,8 @@ Ver instrucciones completas en **Sección 4**. Resumen rápido:
 bun add -g @vibe-kit/grok-cli
 
 # Configurar API key
-mkdir -p ~/.grok
-echo '{"apiKey":"xai-TU_KEY","defaultModel":"grok-3-fast"}' > ~/.grok/user-settings.json
+mkdir -p $HOME/.grok
+echo '{"apiKey":"xai-TU_KEY","defaultModel":"grok-3-fast"}' > $HOME/.grok/user-settings.json
 
 # Test
 cd humano

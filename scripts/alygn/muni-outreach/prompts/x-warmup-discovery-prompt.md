@@ -6,6 +6,80 @@
 
 ---
 
+## 🔍 DISCOVERY PHASE (Pre-Execution)
+
+### Discovery Phase Integration
+
+Before running the warmup workflow, a **Discovery Phase** is executed via the `x-growth` skill:
+
+```yaml
+- id: prelude-discovery
+  command: openclaw invoke --tool x-growth --action daily-growth --args-json '{"project":"alygn","context":"municipal-outreach"}'
+  description: "Run x-growth daily discovery for municipal engagement context"
+  output:
+    file: /tmp/x-growth-discovery.json
+  env:
+    X_GROWTH_MODE: discovery_only
+```
+
+### Discovery Phase Details
+
+| Attribute | Value |
+|-----------|-------|
+| **Purpose** | Identify municipal officials on X before engagement |
+| **Mode** | `discovery_only` - Finds accounts without engaging |
+| **Output** | `/tmp/x-growth-discovery.json` |
+| **Next Step** | Feed discovery output into x-warmup scout phase |
+| **Schedule** | Runs before x-warmup Phase 1 (daily cron) |
+
+### Discovery Only Mode
+
+When `X_GROWTH_MODE=discovery_only`:
+- ✅ Scans for municipal official accounts
+- ✅ Analyzes account activity and legitimacy
+- ✅ Outputs structured discovery data
+- ❌ Does NOT follow, like, or reply
+- ❌ Does NOT engage (engagement happens in x-warmup phases)
+
+### Discovery Output Format
+
+The discovery phase outputs a JSON file consumed by x-warmup:
+
+```json
+{
+  "discoveryTimestamp": "2026-03-23T08:00:00Z",
+  "mode": "discovery_only",
+  "context": "municipal-outreach",
+  "findings": [
+    {
+      "municipality": "Escazú",
+      "officialHandle": "@MEscazu",
+      "discoveryMethod": "hashtag_search",
+      "legitimacyScore": 0.95,
+      "recentActivity": {
+        "lastPost": "2026-03-22",
+        "topic": "ICC 2024 results"
+      }
+    }
+  ]
+}
+```
+
+### Workflow Pipeline
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ Discovery Phase │────▶│   Scout Phase   │────▶│ Engagement      │
+│ (x-growth skill)│     │ (x-warmup init) │     │ (Phases 1-2)    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+        │                       │                       │
+        ▼                       ▼                       ▼
+/tmp/x-growth-          Load targets from      Follow + Like
+discovery.json          discovery output       Quote + Reply
+```
+
+---
+
 ## ⚠️ CRITICAL: X DISCOVERY METHODOLOGY
 
 ### **DO NOT guess handles with patterns like `Muni[municipality]`**

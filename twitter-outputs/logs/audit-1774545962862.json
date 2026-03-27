@@ -1,0 +1,143 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-26T17:21:29.312Z",
+  "workflow": {
+    "generatedAt": "2026-03-26T17:02:57.802Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 5,
+    "totalThreads": 5,
+    "validUrls": 5,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "White House released National AI Legislative Framework on March 20, 2026, urging Congress to enact federal AI laws preempting state regulations on frontier models and child safety.",
+        "replyText": "Promotes unified federal coordination over fragmented state efforts but challenges state legitimacy and innovation in AI safety rules.",
+        "sourceUrl": "https://natlawreview.com/article/white-house-releases-national-ai-legislative-framework-debate-over-federal-vs-state",
+        "isThread": true,
+        "mainLength": 180,
+        "replyLength": 134,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "New Jersey Assembly passed bill requiring large data centers, including AI facilities, to fund their grid upgrades amid surging electricity demands.",
+        "replyText": "Strengthens institutional coordination between utilities and AI infrastructure, enhancing legitimacy by addressing public energy cost concerns tied to AI growth.",
+        "sourceUrl": "https://whyy.org/articles/new-jersey-general-assembly-data-center-grid-upgrades-cost-legislation",
+        "isThread": true,
+        "mainLength": 148,
+        "replyLength": 161,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Reps. Ocasio-Cortez and Sanders introduced federal bill for moratorium on new AI data centers to curb grid strain and rising energy costs.",
+        "replyText": "Pushes cross-party federal oversight on AI infrastructure, fostering coordination on safety externalities like energy security and public legitimacy.",
+        "sourceUrl": "https://www.pbs.org/newshour/politics/ocasio-cortez-and-sanders-push-bill-to-impose-ai-data-center-moratorium",
+        "isThread": true,
+        "mainLength": 138,
+        "replyLength": 149,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "East China Normal University study warns AI revives ideological competition, reshaping political legitimacy through liberal vs authoritarian algorithmic governance models.",
+        "replyText": "Highlights need for global coordination on AI's impact on national power and trust, urging legitimacy via oversight like algorithmic constitutionalism.",
+        "sourceUrl": "https://www.thebrighterside.news/post/ai-is-forcing-a-complete-reimagining-and-reconfiguration-of-education",
+        "isThread": true,
+        "mainLength": 171,
+        "replyLength": 151,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 5,
+        "mainText": "Analyses praise California's Q1 laws: SB 53 mandates frontier AI risk disclosures; SB 243 sets chatbot safety rules; AB 2013 requires training data transparency.",
+        "replyText": "State-level advances fill federal gaps, boosting developer accountability and coordination for AI safety amid national framework debates.",
+        "sourceUrl": "https://aigovernancelead.substack.com/p/i-found-seven-things-ai-governance",
+        "isThread": true,
+        "mainLength": 161,
+        "replyLength": 137,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2037218394185806222",
+      "content": "White House released National AI Legislative Framework on March 20, 2026, urging Congress to enact federal AI laws preempting state regulations on frontier models and child safety.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2037218416210174099",
+      "content": "Promotes unified federal coordination over fragmented state efforts but challenges state legitimacy and innovation in AI safety rules.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2037218394185806222"
+    },
+    {
+      "id": "2037218626856526245",
+      "content": "New Jersey Assembly passed bill requiring large data centers, including AI facilities, to fund their grid upgrades amid surging electricity demands.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2037218648851407149",
+      "content": "Strengthens institutional coordination between utilities and AI infrastructure, enhancing legitimacy by addressing public energy cost concerns tied to AI growth.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2037218626856526245"
+    },
+    {
+      "id": "2037218842703732997",
+      "content": "Reps. Ocasio-Cortez and Sanders introduced federal bill for moratorium on new AI data centers to curb grid strain and rising energy costs.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2037218856318431276",
+      "content": "Pushes cross-party federal oversight on AI infrastructure, fostering coordination on safety externalities like energy security and public legitimacy.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2037218842703732997"
+    },
+    {
+      "id": "2037219046010011956",
+      "content": "East China Normal University study warns AI revives ideological competition, reshaping political legitimacy through liberal vs authoritarian algorithmic governance models.\n\n#AISafety #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2037219068101439509",
+      "content": "Highlights need for global coordination on AI's impact on national power and trust, urging legitimacy via oversight like algorithmic constitutionalism.\n\n#AIRisk #AIGovernance",
+      "type": "reply",
+      "parentId": "2037219046010011956"
+    },
+    {
+      "id": "2037219270422093898",
+      "content": "Analyses praise California's Q1 laws: SB 53 mandates frontier AI risk disclosures; SB 243 sets chatbot safety rules; AB 2013 requires training data transparency.\n\n#AICoordination #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2037219292454752752",
+      "content": "State-level advances fill federal gaps, boosting developer accountability and coordination for AI safety amid national framework debates.\n\n#InstitutionalAI #AIPolicy",
+      "type": "reply",
+      "parentId": "2037219270422093898"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 10,
+  "failed": 0
+}

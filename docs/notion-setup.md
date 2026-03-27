@@ -36,8 +36,8 @@ Store the API key:
 
 ```bash
 # Option 1: File-based (recommended)
-mkdir -p ~/.config/notion
-echo "secret_YOUR_KEY_HERE" > ~/.config/notion/api_key
+mkdir -p $HOME/.config/notion
+echo "secret_YOUR_KEY_HERE" > $HOME/.config/notion/api_key
 
 # Option 2: Environment variable
 export NOTION_API_KEY="secret_YOUR_KEY_HERE"

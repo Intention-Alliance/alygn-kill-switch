@@ -3,13 +3,17 @@
  * Sends personalized emails via Gmail SMTP using official Alygn template
  * 
  * Usage:
- *   node email-sender-smtp-v2.js --input=/tmp/muni-cr-approved-fixed.json
+ *   node email-sender-smtp-v2.js --input=/tmp/muni-cr-approved-fixed.json [--mock] [--approved]
+ * 
+ * Flags:
+ *   --mock      Simulate sending (dry run)
+ *   --approved  Required for live email sending (safety flag)
  */
 
 import fs from "fs";
-import nodemailer from "nodemailer";
 import path from "path";
 import { fileURLToPath } from "url";
+import { sendEmail, sendEmailsBatch } from "../../lib/email-sender.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,33 +21,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const templatePath = path.join(__dirname, '../../lib/outreach-email-template.js');
 const emailTemplate = await import(templatePath);
 
-// Load credentials
-const credentialsPath = path.join(process.cwd(), 'config', 'credentials.json');
-const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-
-const SMTP_CONFIG = {
-  server: credentials.email.smtp.server,
-  port: credentials.email.smtp.port,
-  user: credentials.email.address,
-  password: credentials.email.smtp.password
-};
-
 const MOCK_MODE = process.argv.includes('--mock');
-
-/**
- * Create SMTP transporter
- */
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: SMTP_CONFIG.server,
-    port: SMTP_CONFIG.port,
-    secure: false,
-    auth: {
-      user: SMTP_CONFIG.user,
-      pass: SMTP_CONFIG.password
-    }
-  });
-}
+const APPROVED = process.argv.includes('--approved');
 
 /**
  * Build email using official Alygn template with dynamic parameters
@@ -59,6 +38,7 @@ function buildEmail(municipality) {
   const email = emailTemplate.generateEmail({
     recipientName: mayorName,
     municipality: municipality.name,
+    painPoints: municipality.painPoints?.join(', ') || '', // Add this
     subject: outreach.subject,
     bodyHtml: bodyHtml,
     bodyText: outreach.body,
@@ -77,70 +57,56 @@ async function sendEmails(municipalities, mock = false) {
   console.log(`📧 Sending emails to ${municipalities.length} municipalities...`);
   console.log(`   Using official Alygn template`);
   
+  // Safety check: require --approved flag for live sends
+  if (!mock && !APPROVED) {
+    console.log('⚠️  Safety: Use --approved flag to send live emails. Running in mock mode.');
+    return simulateSend(municipalities);
+  }
+  
   if (mock) {
     console.log('⚠️  Mock mode - simulating send');
     return simulateSend(municipalities);
   }
   
-  const transporter = createTransporter();
+  // Build email objects for batch sending
+  const emails = municipalities.map(muni => {
+    const email = buildEmail(muni);
+    return {
+      id: muni.name,
+      to: muni.contacts?.mayor_email,
+      subject: email.subject,
+      htmlBody: email.html,
+      textBody: email.text
+    };
+  });
   
-  const results = {
-    sent_at: new Date().toISOString(),
-    total: municipalities.length,
-    sent: 0,
-    failed: 0,
+  // Use shared batch sender
+  const results = await sendEmailsBatch(emails, { rateLimitMs: 0, mock: false });
+  
+  // Transform results to match expected format
+  const transformedResults = {
+    sent_at: results.sent_at,
+    total: results.total,
+    sent: results.sent,
+    failed: results.failed,
     campaigns: {}
   };
   
-  for (const muni of municipalities) {
-    try {
-      const email = buildEmail(muni);
-      const result = await sendSingleEmail(transporter, muni, email);
-      results.sent++;
-      results.campaigns[muni.name] = result;
-      console.log(`✅ Sent to ${muni.name}`);
-    } catch (error) {
-      console.error(`❌ Error sending to ${muni.name}:`, error.message);
-      results.failed++;
-      results.campaigns[muni.name] = {
-        status: 'error',
-        error: error.message
-      };
-    }
+  // Transform campaign results
+  for (const [key, value] of Object.entries(results.campaigns)) {
+    transformedResults.campaigns[key] = {
+      status: value.success ? 'sent' : 'error',
+      message_id: value.messageId,
+      sent_at: results.sent_at,
+      to: value.to,
+      subject: value.subject,
+      template: 'outreach-email-template.js',
+      error: value.error
+    };
   }
   
-  console.log(`\n✅ Sent: ${results.sent}/${results.total}`);
-  return results;
-}
-
-/**
- * Sends single email via SMTP
- */
-async function sendSingleEmail(transporter, municipality, email) {
-  const recipientEmail = municipality.contacts?.mayor_email;
-  
-  if (!recipientEmail) {
-    throw new Error('No email address found');
-  }
-  
-  const mailOptions = {
-    from: `Alygn Governance <${SMTP_CONFIG.user}>`,
-    to: recipientEmail,
-    subject: email.subject,
-    text: email.text,
-    html: email.html
-  };
-  
-  const info = await transporter.sendMail(mailOptions);
-  
-  return {
-    status: 'sent',
-    message_id: info.messageId,
-    sent_at: new Date().toISOString(),
-    to: recipientEmail,
-    subject: email.subject,
-    template: 'outreach-email-template.js'
-  };
+  console.log(`\n✅ Sent: ${transformedResults.sent}/${transformedResults.total}`);
+  return transformedResults;
 }
 
 /**
@@ -185,7 +151,8 @@ async function main() {
   }
   
   const inputFile = inputArg.split('=')[1];
-  const municipalities = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
+  const data = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
+  const municipalities = data.municipalities || data;
   
   const results = await sendEmails(municipalities, MOCK_MODE);
   

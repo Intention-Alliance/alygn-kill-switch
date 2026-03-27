@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-25T18:12:40.874Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Transform Conference 2026 (Mar 23-25) stresses coordination in AI workforce shifts, aligning with Alygn's coordination principle for ethical transitions.",
+      "replyText": "Leaders must coordinate AI adoption across orgs to build legitimacy through transparent governance, preventing job displacement risks and ensuring neutral AI policies.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 153,
+      "replyLength": 167,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "AI Governance Conference Europe (Mar 23-27) advances data and AI governance understanding, embodying Alygn's neutrality in balanced regulation.",
+      "replyText": "Neutral frameworks foster legitimacy by separating tech innovation from biased control, enabling coordinated global standards without overreach.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 143,
+      "replyLength": 144,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "ITU AI for Good events (Mar 24-25) explore AI efficiency and quantum networking, underscoring Alygn's coordination for safe AI deployment.",
+      "replyText": "Coordination via international forums builds legitimacy, ensuring neutral AI tools address global challenges like climate without fragmented efforts.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 138,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Recent Transform talks on AI in HR highlight legitimacy needs, per Alygn's principles, for ethical governance in people decisions.",
+      "replyText": "Legitimate AI governance requires neutral oversight in HR apps, coordinating policies to maintain trust and avoid bias in evaluations.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 130,
+      "replyLength": 134,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "AI+IM Global Summit pathways emphasize AI governance policies, aligning with Alygn's neutrality for compliant info management.",
+      "replyText": "Neutral governance bridges data and AI, coordinating maturity models for legitimacy in enterprise compliance and risk management.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 126,
+      "replyLength": 129,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

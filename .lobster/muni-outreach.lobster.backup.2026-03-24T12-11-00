@@ -1,0 +1,84 @@
+name: cr-pilot
+description: Costa Rica municipal outreach pilot (82 cantones) with personalization
+metadata:
+  project: alygn
+  region: costa-rica
+  wave: 1
+  total_municipalities: 82
+  skill: alygn-municipal-ai-governance-outreach
+
+# Costa Rica Pilot Workflow
+# Tests end-to-end municipal outreach automation with personalization
+
+steps:
+  # Phase 1: Discovery (Firecrawl)
+  - id: phase1-discovery
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
+    description: "Discover all 82 Costa Rican cantones"
+    output:
+      file: /tmp/muni-cr-discovered.json
+
+  # Phase 2: Research (Firecrawl + Perplexity)
+  - id: phase2-research
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=research --region=costa-rica --input=/tmp/muni-cr-discovered.json --dry-run
+    description: "Research contacts, existing AI governance signals"
+    after: phase1-discovery
+    output:
+      file: /tmp/muni-cr-researched.json
+
+  # Phase 3: Email Validation (ZeroBounce)
+  - id: phase3-validate
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=validate --region=costa-rica --input=/tmp/muni-cr-researched.json --dry-run
+    description: "Validate mayor/council emails via ZeroBounce"
+    after: phase2-research
+    output:
+      file: /tmp/muni-cr-validated.json
+
+  # Phase 4: Personalization (Grok) - WITH PERSONALIZATION REQUIREMENTS
+  - id: phase4-personalize
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=personalize --region=costa-rica --input=/tmp/muni-cr-validated.json --dry-run
+    description: "Generate personalized Spanish emails with body personalization and P.D. section"
+    after: phase3-validate
+    output:
+      file: /tmp/muni-cr-personalized.json
+
+  # Phase 5: Full Pipeline Execution (for testing)
+  - id: phase5-pipeline
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=pipeline --region=costa-rica --limit=5 --dry-run
+    description: "Run complete pipeline end-to-end"
+    after: phase4-personalize
+    output:
+      file: /tmp/muni-cr-pipeline.json
+
+  # Phase 6: Email Sending (Smartlead)
+  - id: phase6-send
+    command: $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach --type=municipal --action=send --region=costa-rica --input=/tmp/muni-cr-personalized.json --dry-run
+    description: "Send emails via Smartlead (multi-domain) with personalized content"
+    after: phase5-pipeline
+    output:
+      file: /tmp/muni-cr-sent.json
+
+# Error handling
+on_error:
+  notify: discord
+  channel: "1466532145257255004"
+  include_log: true
+  halt_on_critical: true
+
+# Resumability
+resume:
+  enabled: true
+  token_file: /tmp/muni-cr-resume-token.json
+  skip_completed_steps: true
+
+# Notifications
+notifications:
+  on_start:
+    channel: discord
+    message: "🦞 Starting CR Pilot municipal outreach workflow with personalization..."
+  on_complete:
+    channel: discord
+    message: "✅ CR Pilot workflow completed! Check #annotations for summary."
+  on_error:
+    channel: discord
+    message: "❌ CR Pilot workflow failed at step: {{failed_step}}"

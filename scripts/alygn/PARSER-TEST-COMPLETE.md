@@ -69,7 +69,7 @@
 **Dry-run test command:**
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace/scripts/alygn/x-twitter
+cd $HOME/.openclaw/workspace/scripts/alygn/x-twitter
 bun x-api-executor.js ../../twitter-outputs/grok-output-ai-governance-2026.md --dry-run
 ```
 

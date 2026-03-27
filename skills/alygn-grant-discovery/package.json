@@ -1,0 +1,52 @@
+{
+  "name": "alygn-grant-discovery",
+  "version": "1.0.0",
+  "description": "ALYGN Grant Discovery Skill - Automated grant research, alignment validation, and tracking",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "alygn-grant-discovery": "bin/alygn-grant-discovery"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "discover": "bun run src/index.ts discover",
+    "research": "bun run src/index.ts research",
+    "validate": "bun run src/index.ts validate",
+    "sync": "bun run src/index.ts sync",
+    "pipeline": "bun run src/index.ts pipeline",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
+  },
+  "keywords": [
+    "grants",
+    "funding",
+    "ai-safety",
+    "ai-governance",
+    "research",
+    "notion",
+    "automation"
+  ],
+  "author": "ALYGN R&D",
+  "license": "Private",
+  "dependencies": {
+    "@notionhq/client": "^2.2.0",
+    "nodemailer": "^6.9.0",
+    "imap-simple": "^5.1.0",
+    "date-fns": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/nodemailer": "^6.4.0",
+    "typescript": "^5.3.0",
+    "bun-types": "latest",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

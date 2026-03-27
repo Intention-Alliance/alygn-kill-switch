@@ -146,7 +146,7 @@ node scripts/alygn/twitter-master-automation.js
 
 ### X API Credentials
 
-**Location:** `~/.openclaw/workspace/config/credentials.json`
+**Location:** `$HOME/.openclaw/workspace/config/credentials.json`
 
 ```json
 {
@@ -259,14 +259,14 @@ twitter-outputs/alygn/
 ### Content Generation Only
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/x-twitter/twitter-automation.js
 ```
 
 ### Discovery System Only
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 
 # Phase 1: Browser discovery (via OpenClaw agent)
 # (requires browser access)
@@ -281,7 +281,7 @@ node scripts/alygn/twitter-discovery/x-api-executor.js
 ### Full Master Automation
 
 ```bash
-cd ~/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/twitter-master-automation.js
 ```
 

@@ -80,7 +80,7 @@ async function testVCOutreach() {
   console.log('\n4. Sending test email to ' + TEST_EMAIL + '...');
   
   const mailOptions = {
-    from: `Alygn Governance <${SMTP_CONFIG.user}>`,
+    from: `Alygn R&D <${SMTP_CONFIG.user}>`,
     to: TEST_EMAIL,
     subject: `[TEST] AI Governance Infrastructure - ${vcData.name}`,
     html: emailHTML,
@@ -173,7 +173,7 @@ async function testMuniOutreach() {
   console.log('\n5. Sending test email to ' + TEST_EMAIL + '...');
   
   const mailOptions = {
-    from: `Alygn Governance <${SMTP_CONFIG.user}>`,
+    from: `Alygn R&D <${SMTP_CONFIG.user}>`,
     to: TEST_EMAIL,
     subject: `[TEST] ${email.subject}`,
     html: email.html,

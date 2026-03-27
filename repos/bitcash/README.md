@@ -183,7 +183,7 @@ git clone --depth 1 https://github.com/bitcashorg/bitcash.git
 
 1. **Clone repo externally** (outside workspace):
    ```bash
-   cd ~/projects/
+   cd $HOME/projects/
    git clone https://github.com/bitcashorg/bitcash.git
    cd bitcash/
    ```

@@ -4,7 +4,7 @@
 
 1. **Install dependencies:**
    ```bash
-   cd ~/.openclaw/workspace/skills/spotify
+   cd $HOME/.openclaw/workspace/skills/spotify
    npm install
    ```
 
@@ -22,7 +22,7 @@
    ```
 
 4. **Add refresh token to config:**
-   Edit `~/.openclaw/openclaw.json`:
+   Edit `$HOME/.openclaw/openclaw.json`:
    ```json
    {
      "skills": {

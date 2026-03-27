@@ -217,7 +217,7 @@ scripts/alygn/vc-outreach/
 
 ### 2. IMAP Credentials (Config Required)
 - **Action:** Generate Gmail app password for `alyyygn@gmail.com` (staging)
-- **Storage:** Add to `~/.openclaw/workspace/config/credentials.json`
+- **Storage:** Add to `$HOME/.openclaw/workspace/config/credentials.json`
 - **Security:** Use app-specific password (not main account password)
 
 ### 3. Notion Database (Schema Updates Required)

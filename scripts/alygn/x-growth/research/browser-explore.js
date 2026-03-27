@@ -1,4 +1,3 @@
-
 /**
  * ALYGN Twitter Discovery - Phase 1: Browser Exploration
  * 
@@ -30,11 +29,16 @@
  * }
  */
 
-import fs from "fs".promises;
+import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Output directory
 const OUTPUT_DIR = path.join(__dirname, '../../../twitter-outputs/alygn/discovery');
+const SNAPSHOT_PATH = process.argv[2] || '/tmp/x-explore-snapshot.txt';
 
 // Simple console helpers
 const log = (msg) => console.log(`ℹ️  ${msg}`);
@@ -43,77 +47,124 @@ const error = (msg, err) => console.error(`❌ ${msg}`, err || '');
 const warn = (msg) => console.warn(`⚠️  ${msg}`);
 
 /**
- * Extract post data from browser snapshot
- * Parses aria/role refs to identify tweets, authors, engagement
+ * Parse trending topics from X Explore snapshot
+ * The snapshot contains trending news/links with engagement metrics
+ * Also handles regional trending topics
  */
 function parsePostsFromSnapshot(snapshotText) {
   const posts = [];
-  
-  // Look for tweet-like patterns in snapshot
-  // X.com structure: article role with author, content, engagement buttons
   const lines = snapshotText.split('\n');
+  const processed = new Set(); // Track processed content to avoid duplicates
   
-  let currentPost = null;
+  // Pattern 1: News articles with engagement
+  // Format: link "TITLE TIME · CATEGORY · COUNT posts"
+  const newsPattern = /link\s+"([^"]+)\s+(Trending\s+now|\d+\s+(?:hour|hours|day|days)\s+ago)\s*[·]\s*([^·]*)\s*[·]\s*([^"]+)"\s*\[ref=e\d+\]/;
+  
+  // Pattern 2: Regional trending topics
+  // Format: "Trending in LOCATION TOPIC"
+  const regionPattern = /generic\s+\[ref=e\d+\]:\s*Trending\s+in\s+([^\n]+)/;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
-    // Detect post start (article or tweet container)
-    if (line.includes('article') || line.includes('tweet')) {
-      if (currentPost) {
-        posts.push(currentPost);
+    // === Pattern 1: News articles with engagement ===
+    const newsMatch = line.match(newsPattern);
+    if (newsMatch) {
+      const title = newsMatch[1].trim();
+      const age = newsMatch[2].trim(); // "Trending now" or "4 hours ago"
+      const category = newsMatch[3].trim(); // "News", "Other", etc.
+      const postsMeta = newsMatch[4].trim(); // "1.4K posts", "365 posts"
+      
+      // Skip duplicates
+      if (processed.has(title)) continue;
+      processed.add(title);
+      
+      // Parse engagement from posts count
+      let postsCount = 0;
+      const countMatch = postsMeta.match(/([\d.]+)(K?)\s*posts/);
+      if (countMatch) {
+        postsCount = parseFloat(countMatch[1]);
+        if (countMatch[2] === 'K') postsCount *= 1000;
       }
-      currentPost = {
-        author: null,
-        content: '',
-        engagement: { likes: 0, retweets: 0, replies: 0 },
-        url: null,
-        postId: null,
-        keywords: []
-      };
+      
+      const postId = `trending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      posts.push({
+        postId: postId,
+        author: '@explore',
+        authorName: 'Trending',
+        content: title,
+        engagement: {
+          likes: Math.floor(postsCount),
+          retweets: Math.floor(postsCount * 0.3),
+          replies: Math.floor(postsCount * 0.1)
+        },
+        url: `https://x.com/explore`,
+        category: category,
+        age: age,
+        keywords: extractKeywords(title),
+        type: 'news'
+      });
+      continue;
     }
     
-    // Extract author handle (look for @username patterns)
-    const handleMatch = line.match(/@([a-zA-Z0-9_]+)/);
-    if (handleMatch && currentPost && !currentPost.author) {
-      currentPost.author = handleMatch[0];
-    }
-    
-    // Extract engagement metrics (like/retweet/reply counts)
-    const likeMatch = line.match(/(\d+)\s*(like|heart)/i);
-    const retweetMatch = line.match(/(\d+)\s*(retweet|repost)/i);
-    const replyMatch = line.match(/(\d+)\s*(repl|comment)/i);
-    
-    if (likeMatch && currentPost) {
-      currentPost.engagement.likes = parseInt(likeMatch[1]);
-    }
-    if (retweetMatch && currentPost) {
-      currentPost.engagement.retweets = parseInt(retweetMatch[1]);
-    }
-    if (replyMatch && currentPost) {
-      currentPost.engagement.replies = parseInt(replyMatch[1]);
-    }
-    
-    // Extract post URL/ID
-    const urlMatch = line.match(/x\.com\/[^/]+\/status\/(\d+)/);
-    if (urlMatch && currentPost) {
-      currentPost.postId = urlMatch[1];
-      currentPost.url = `https://x.com${urlMatch[0]}`;
-    }
-    
-    // Collect content (text not matching meta patterns)
-    if (currentPost && !line.match(/@|http|like|retweet|reply|article/i)) {
-      currentPost.content += line + ' ';
+    // === Pattern 2: Regional trending topics ===
+    const regionMatch = line.match(regionPattern);
+    if (regionMatch) {
+      const location = regionMatch[1].trim();
+      
+      // Look ahead for the topic name on next lines
+      let topic = null;
+      for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
+        const nextLine = lines[j].trim();
+        
+        // Find generic text containing the topic
+        const topicMatch = nextLine.match(/generic\s+\[ref=e\d+\]:\s*"?([^"\[\]]+)"?\s*$/);
+        if (topicMatch) {
+          const candidate = topicMatch[1].trim();
+          // Skip button labels and metadata
+          if (!candidate.includes('More') && 
+              !candidate.includes('Trending') && 
+              !candidate.includes('button')) {
+            topic = candidate;
+            break;
+          }
+        }
+        
+        // Also match Korean/Unicode hashtags
+        const hashtagMatch = nextLine.match(/generic\s+\[ref=e\d+\]:\s*"([^"]+)"/);
+        if (hashtagMatch) {
+          const hashtag = hashtagMatch[1].trim();
+          if (!hashtag.includes('More')) {
+            topic = hashtag;
+            break;
+          }
+        }
+      }
+      
+      if (topic && !processed.has(topic)) {
+        processed.add(topic);
+        
+        const postId = `trending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const fullContent = `${location}: ${topic}`;
+        
+        posts.push({
+          postId: postId,
+          author: '@explore',
+          authorName: 'Trending',
+          content: fullContent,
+          engagement: { likes: 0, retweets: 0, replies: 0 },
+          url: `https://x.com/explore`,
+          category: 'Regional',
+          age: 'Trending',
+          keywords: extractKeywords(fullContent),
+          type: 'regional'
+        });
+      }
     }
   }
   
-  // Push last post
-  if (currentPost) {
-    posts.push(currentPost);
-  }
-  
-  // Filter out incomplete posts
-  return posts.filter(p => p.author && p.content.trim().length > 10);
+  return posts.filter(p => p.content && p.content.length > 3);
 }
 
 /**
@@ -124,16 +175,75 @@ function extractKeywords(content) {
   const text = content.toLowerCase();
   
   // AI/AGI/Safety related keywords
-  const aiKeywords = ['agi', 'ai safety', 'alignment', 'grok', 'xai', 'anthropic', 
-                      'openai', 'deepmind', 'mechanistic', 'interpretability'];
+  const aiKeywords = [
+    ['ai', 'AI'],
+    ['agi', 'AGI'],
+    ['safety', 'safety'],
+    ['alignment', 'alignment'],
+    ['grok', 'Grok'],
+    ['xai', 'xAI'],
+    ['anthropic', 'Anthropic'],
+    ['openai', 'OpenAI'],
+    ['deepmind', 'DeepMind'],
+    ['mechanistic', 'mechanistic'],
+    ['interpretability', 'interpretability'],
+    ['llm', 'LLM'],
+    ['model', 'model'],
+    ['training', 'training'],
+    ['neural', 'neural'],
+    ['machine learning', 'machine learning'],
+    ['ml', 'ML'],
+    ['gpt', 'GPT'],
+    ['transformer', 'transformer'],
+    ['automation', 'automation'],
+    ['autonomous', 'autonomous'],
+    ['compute', 'compute'],
+    ['gpu', 'GPU'],
+    ['tpu', 'TPU'],
+    ['cluster', 'cluster'],
+    ['datacenter', 'datacenter'],
+    ['scaling', 'scaling'],
+    ['efficiency', 'efficiency'],
+    ['optimization', 'optimization'],
+    ['benchmark', 'benchmark'],
+    ['evaluation', 'evaluation'],
+    ['reward hacking', 'reward hacking'],
+    ['jailbreak', 'jailbreak'],
+    ['prompt injection', 'prompt injection'],
+    ['adversarial', 'adversarial'],
+    ['robustness', 'robustness'],
+    ['verification', 'verification'],
+    ['oversight', 'oversight'],
+    ['superalignment', 'superalignment'],
+    ['cooperative ai', 'cooperative AI'],
+    ['multi-agent', 'multi-agent'],
+    ['recursive', 'recursive'],
+    ['self-improving', 'self-improving'],
+    ['emergence', 'emergence'],
+    ['capability', 'capability'],
+    ['risk', 'risk'],
+    ['governance', 'governance'],
+    ['policy', 'policy'],
+    ['regulation', 'regulation'],
+    ['ethics', 'ethics'],
+    ['fairness', 'fairness'],
+    ['bias', 'bias'],
+    ['interpretable', 'interpretable'],
+    ['explainable', 'explainable'],
+    ['transparent', 'transparent'],
+    ['audit', 'audit'],
+    ['monitoring', 'monitoring'],
+    ['eval', 'eval']
+  ];
   
-  for (const kw of aiKeywords) {
-    if (text.includes(kw)) {
-      keywords.push(kw);
+  for (const [pattern, keyword] of aiKeywords) {
+    if (text.includes(pattern)) {
+      keywords.push(keyword);
     }
   }
   
-  return keywords;
+  // Remove duplicates
+  return [...new Set(keywords)].slice(0, 5);
 }
 
 /**
@@ -141,67 +251,53 @@ function extractKeywords(content) {
  */
 async function exploreFeed() {
   log('🔍 Starting Twitter/X feed exploration...');
+  log(`📸 Using snapshot: ${SNAPSHOT_PATH}`);
   
   try {
     // Ensure output directory exists
     await fs.mkdir(OUTPUT_DIR, { recursive: true });
     
-    // Step 1: Navigate to /explore
-    log('📍 Navigating to /explore...');
+    // Read snapshot file
+    let snapshotText;
+    try {
+      snapshotText = await fs.readFile(SNAPSHOT_PATH, 'utf-8');
+      success(`📄 Loaded snapshot: ${snapshotText.length} characters`);
+    } catch (err) {
+      error(`Failed to read snapshot file: ${SNAPSHOT_PATH}`, err);
+      throw err;
+    }
     
-    // Note: This is a placeholder for OpenClaw's browser tool
-    // In actual execution, this will be called by the agent with proper browser access
-    console.log('\n⚠️  BROWSER TOOL REQUIRED:');
-    console.log('   This script needs to be executed by OpenClaw agent with browser access.');
-    console.log('   Expected flow:');
-    console.log('   1. browser({ action: "navigate", profile: "alygn", targetUrl: "https://x.com/explore" })');
-    console.log('   2. Wait for feed load (timeoutMs: 30000)');
-    console.log('   3. Scroll down 3-5 times (simulate natural browsing)');
-    console.log('   4. browser({ action: "snapshot", profile: "alygn", refs: "aria" })');
-    console.log('   5. Parse snapshot and extract posts\n');
+    // Parse posts from snapshot
+    log('🔍 Parsing trending topics...');
+    const posts = parsePostsFromSnapshot(snapshotText);
     
-    // For testing: simulate snapshot parsing
-    const mockSnapshot = `
-      article: Tweet by @elonmusk
-      "AGI by 2026 is achievable. xAI's Colossus is the key."
-      456 likes, 123 retweets, 89 replies
-      x.com/elonmusk/status/1234567890
-      
-      article: Tweet by @karpathy
-      "Mechanistic interpretability is the path forward for AI safety."
-      789 likes, 234 retweets, 145 replies
-      x.com/karpathy/status/9876543210
-    `;
+    if (posts.length === 0) {
+      warn('No posts found in snapshot. Check parsing logic or snapshot content.');
+    }
     
-    log('📸 Parsing snapshot...');
-    const posts = parsePostsFromSnapshot(mockSnapshot);
-    
-    // Enrich with keywords
-    posts.forEach(post => {
-      post.keywords = extractKeywords(post.content);
-    });
+    success(`📊 Found ${posts.length} trending topics`);
     
     // Output discovery data
     const timestamp = Date.now();
     const output = {
       timestamp: new Date().toISOString(),
       source: 'explore_feed',
+      snapshotPath: SNAPSHOT_PATH,
       discovered: posts
     };
     
     const outputPath = path.join(OUTPUT_DIR, `discovery-${timestamp}.json`);
     await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
     
-    success(`✅ Discovery complete! Found ${posts.length} posts`);
-    success(`📁 Saved to: ${outputPath}`);
+    success(`💾 Saved discovery data to: ${outputPath}`);
     
     // Print summary
     console.log('\n📊 Discovery Summary:');
     posts.forEach((post, i) => {
-      console.log(`\n${i + 1}. ${post.author}`);
+      console.log(`\n${i + 1}. ${post.content}`);
       console.log(`   Engagement: ${post.engagement.likes}L ${post.engagement.retweets}RT ${post.engagement.replies}R`);
       console.log(`   Keywords: ${post.keywords.join(', ') || 'none'}`);
-      console.log(`   Content: ${post.content.substring(0, 80)}...`);
+      console.log(`   Category: ${post.category || 'N/A'}`);
     });
     
     return output;

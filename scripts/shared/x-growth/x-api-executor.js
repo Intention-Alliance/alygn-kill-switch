@@ -28,7 +28,7 @@
 import { Client, OAuth1 } from "@xdevplatform/xdk";
 import fs from "fs";
 import path from "path";
-import { parseGrokOutput } from '../../alygn/x-growth/parser/twitter-content-parser.js';
+import { parseGrokOutput, shortenUrl } from '../../alygn/x-growth/parser/twitter-content-parser.js';
 
 // Configuration
 const OUTPUT_DIR = path.join(process.env.HOME, '.openclaw/workspace/twitter-outputs');
@@ -102,11 +102,37 @@ function ensureDirectories() {
 }
 
 /**
+ * Select varied hashtags based on content topic
+ * Rotates between 8-10 different hashtag sets to avoid repetition
+ */
+let hashtagRotationIndex = 0;
+const HASHTAG_POOLS = [
+  ["#AIGovernance", "#InstitutionalAI"],
+  ["#AIAlignment", "#Alygn"],
+  ["#AISafety", "#AIPolicy"],
+  ["#AIEthics", "#AITransparency"],
+  ["#AIRisk", "#AIGovernance"],
+  ["#AGI", "#AIRegulation"],
+  ["#AICoordination", "#Alygn"],
+  ["#AILegitimacy", "#AIGovernance"],
+  ["#InstitutionalAI", "#AIPolicy"],
+  ["#AIGovernance", "#AISafety"]
+];
+
+function selectVariedHashtags(content = '') {
+  // Rotate through hashtag pools
+  const hashtags = HASHTAG_POOLS[hashtagRotationIndex % HASHTAG_POOLS.length];
+  hashtagRotationIndex++;
+  return hashtags;
+}
+
+/**
  * Format tweet with hashtags (MANDATORY for Alygn branding)
  * Applies to ALL tweets: posts, replies, quotes
- * Detects existing hashtags to avoid duplication
+ * Uses varied hashtags to avoid repetition
  */
-function formatTweet(content, hashtags = ["#AIGovernance", "#Alygn"]) {
+function formatTweet(content, customHashtags = null) {
+  const hashtags = customHashtags || selectVariedHashtags(content);
   const hashtagStr = hashtags.join(" ");
   
   // Check if content already ends with these hashtags (avoid duplication)
@@ -140,11 +166,26 @@ async function postTweet(client, content, mediaPath = null) {
 }
 
 /**
- * Reply to a post
+ * Reply to a post with optional source URL (shortened via TinyURL)
  */
-async function replyToPost(client, content, targetPostId, mediaPath = null) {
+async function replyToPost(client, content, targetPostId, sourceUrl = null, mediaPath = null) {
   try {
-    const formatted = formatTweet(content);
+    // Add source URL if provided (shorten via TinyURL)
+    let finalContent = content;
+    if (sourceUrl && !content.includes(sourceUrl)) {
+      console.log(`🔗 Attempting to shorten: ${sourceUrl.substring(0, 50)}...`);
+      const shortUrl = await shortenUrl(sourceUrl);
+      if (shortUrl) {
+        finalContent = `${content}\n\n📚 Source: ${shortUrl}`;
+        console.log(`✅ Shortened to: ${shortUrl}`);
+      } else {
+        // Fallback to original URL if shortening fails
+        finalContent = `${content}\n\n📚 Source: ${sourceUrl}`;
+        console.log(`⚠️  Using original URL (shortening failed)`);
+      }
+    }
+    
+    const formatted = formatTweet(finalContent);
     const postData = { 
       text: formatted,
       reply: { in_reply_to_tweet_id: targetPostId }
@@ -255,8 +296,21 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
     const client = createClient();
     success('X API client initialized\n');
     
+    // Engagement limits for discovery mode
+    let engagementToday = 0;
+    const MAX_ENGAGEMENT = 4;
+    const MIN_ENGAGEMENT = 2;
+    
+    // Check if workflow has engagement targets (from decision engine)
+    const isEngagementMode = workflow.source?.includes('Decision Engine') || process.argv.includes('--engagement-mode');
+    
     if (workflow.posts) {
       for (const post of workflow.posts) {
+        // Check engagement limits in discovery mode
+        if (isEngagementMode && engagementToday >= MAX_ENGAGEMENT) {
+          warn(`⚠️  Daily engagement limit reached: ${MAX_ENGAGEMENT}. Skipping remaining posts.`);
+          break;
+        }
         try {
           // Check if this is a thread pair (mainText + replyText)
           if (post.mainText && post.isThread) {
@@ -279,10 +333,15 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
               await new Promise(resolve => setTimeout(resolve, replyDelay * 1000));
               
               const replyFormatted = formatTweet(post.replyText);
-              const replyId = await replyToPost(client, replyFormatted, mainId);
-              results.posts.push({ id: replyId, content: replyFormatted, type: 'reply', parentId: mainId });
+              const replyId = await replyToPost(client, replyFormatted, mainId, post.sourceUrl);
+              results.posts.push({ id: replyId, content: replyFormatted, type: 'reply', parentId: mainId, sourceUrl: post.sourceUrl });
               success(`  ✅ Reply posted (ID: ${replyId})`);
               results.executed++;
+              engagementToday++;
+              
+              if (isEngagementMode) {
+                log(`   📊 Engagement: ${engagementToday}/${MAX_ENGAGEMENT}`);
+              }
               
               if (post.sourceUrl && !post.sourceUrl.includes('twitter.com')) {
                 log(`   🔗 Source: ${post.sourceUrl}`);
@@ -302,6 +361,11 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
             if (post.quoteTweetId) {
               postId = await quotePost(client, post.content, post.quoteTweetId, post.mediaPath);
               results.quotes.push({ id: postId, content: post.content, quoted: post.quoteTweetId });
+              // Count quotes as engagement in discovery mode
+              if (isEngagementMode) {
+                engagementToday++;
+                log(`   📊 Engagement: ${engagementToday}/${MAX_ENGAGEMENT}`);
+              }
             } else {
               postId = await postTweet(client, post.content, post.mediaPath);
               results.posts.push({ id: postId, content: post.content });
@@ -325,6 +389,12 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
     
     if (workflow.replies) {
       for (const reply of workflow.replies) {
+        // Check engagement limits in discovery mode
+        if (isEngagementMode && engagementToday >= MAX_ENGAGEMENT) {
+          warn(`⚠️  Daily engagement limit reached: ${MAX_ENGAGEMENT}. Skipping remaining replies.`);
+          break;
+        }
+        
         try {
           log(`💬 Replying to ${reply.targetHandle}...`);
           
@@ -335,10 +405,15 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
             throw new Error(`Could not extract post ID from URL: ${reply.targetUrl}`);
           }
           
-          const replyId = await replyToPost(client, reply.content, targetPostId, reply.mediaPath);
+          const replyId = await replyToPost(client, reply.content, targetPostId, null, reply.mediaPath);
           results.replies.push({ id: replyId, content: reply.content, target: reply.targetHandle });
           success(`  ✅ Reply posted (ID: ${replyId})`);
           results.executed++;
+          engagementToday++;
+          
+          if (isEngagementMode) {
+            log(`   📊 Engagement: ${engagementToday}/${MAX_ENGAGEMENT}`);
+          }
           
           // Random delay between 10-15 seconds
           const delay = Math.floor(Math.random() * (RATE_LIMITS.max_delay_between_actions - RATE_LIMITS.min_delay_between_actions + 1)) + RATE_LIMITS.min_delay_between_actions;
@@ -415,17 +490,35 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
     });
     
   } else {
-    // Live execution - THREAD PAIRS
+    // Live execution - THREAD PAIRS with daily limits
     const client = createClient();
     success('X API client initialized\n');
     
+    // Daily limits enforcement
+    let mainPostsToday = 0;
+    let replyPostsToday = 0;
+    const MAX_MAIN_POSTS = 3;
+    const MAX_REPLY_POSTS = 3;
+    
     for (const post of workflow.posts) {
+      // Check daily limits
+      if (mainPostsToday >= MAX_MAIN_POSTS) {
+        warn(`⚠️  Daily limit reached: ${MAX_MAIN_POSTS} main posts. Skipping remaining posts.`);
+        break;
+      }
+      
       if (post.status !== 'ready') {
         warn(`⚠️  Skipping blocked post: ${post.issues?.join(', ')}`);
         continue;
       }
       
       try {
+        // Check daily limits BEFORE posting
+        if (mainPostsToday >= MAX_MAIN_POSTS) {
+          warn(`⚠️  Daily main post limit reached: ${MAX_MAIN_POSTS}. Skipping remaining posts.`);
+          break;
+        }
+        
         // Post main tweet
         log(`📝 Main tweet: ${post.mainTweet.substring(0, 60)}...`);
         
@@ -433,6 +526,13 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
         results.posts.push({ id: mainId, content: post.mainTweet, type: 'main' });
         success(`  ✅ Main posted (ID: ${mainId})`);
         results.executed++;
+        mainPostsToday++;
+        
+        // Check reply limit before posting reply
+        if (replyPostsToday >= MAX_REPLY_POSTS) {
+          warn(`⚠️  Daily reply limit reached: ${MAX_REPLY_POSTS} replies. Skipping reply for this thread.`);
+          continue;
+        }
         
         // Post reply with source if thread (with delay to avoid rate limiting)
         if (post.isThread && post.replyTweet) {
@@ -442,9 +542,10 @@ async function executeMarkdownWorkflow(markdownPath, dryRun = true) {
           const replyDelay = Math.floor(Math.random() * 3) + 3;
           await new Promise(resolve => setTimeout(resolve, replyDelay * 1000));
           
-          const replyId = await replyToPost(client, post.replyTweet, mainId);
-          results.posts.push({ id: replyId, content: post.replyTweet, type: 'reply', parentId: mainId });
+          const replyId = await replyToPost(client, post.replyTweet, mainId, post.sourceUrl);
+          results.posts.push({ id: replyId, content: post.replyTweet, type: 'reply', parentId: mainId, sourceUrl: post.sourceUrl });
           success(`  ✅ Reply posted (ID: ${replyId})`);
+          replyPostsToday++;
           results.executed++;
         }
         

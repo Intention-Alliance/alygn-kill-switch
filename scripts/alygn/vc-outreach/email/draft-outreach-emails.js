@@ -5,10 +5,7 @@
  * 
  * Workflow:
  * 1. Load VCs with status "Ready for outreach" from Notion
- * 2. For each VC, generate:
- *    - 3 subject line options (A/B/C testing)
- *    - Personalized email body (using pain points, portfolio insights)
- *    - Variant selection (Governance vs Institutional based on research)
+ * 2. For each VC, generate subject lines and personalized email body
  * 3. Post drafts to Discord thread (#annotations) for approval
  * 4. Save drafts to JSON file for sending workflow
  * 
@@ -21,6 +18,7 @@
  *   node draft-outreach-emails.js --dry-run        # Show drafts without posting
  * 
  * Created: Feb 12, 2026
+ * Updated: Mar 19, 2026 - Unified code paths with absolute paths
  */
 
 import { exec } from "child_process";
@@ -29,15 +27,22 @@ import path from "path";
 import { promisify } from "util";
 const execAsync = promisify(exec);
 
-import { getClient, queryDatabase } from "../../../shared/notion-client.js";
+// ABSOLUTE PATHS using $HOME
+const WORKSPACE_ROOT = path.resolve(process.env.HOME, '.openclaw/workspace');
+const SHARED_DIR = path.resolve(WORKSPACE_ROOT, 'scripts/shared');
+const ALYGN_DIR = path.resolve(WORKSPACE_ROOT, 'scripts/alygn');
 
-// Load template generator
-import { generateEmailHTML } from "./vc-outreach-email-template.js";
+// Dynamic imports with absolute paths
+const notionClient = await import(path.join(SHARED_DIR, 'notion-client.js'));
+const emailTemplateModule = await import(path.join(ALYGN_DIR, 'lib/outreach-email-template.js'));
+
+const { getClient, queryDatabase } = notionClient;
+const { generateEmailHTML } = emailTemplateModule;
 
 // Load database ID from config
 function loadDatabaseId() {
   try {
-    const configPath = path.join(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach/notion-config.json');
+    const configPath = path.resolve(WORKSPACE_ROOT, 'scripts/alygn/vc-outreach/notion-config.json');
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
       return config.databaseId;
@@ -52,14 +57,8 @@ function loadDatabaseId() {
 const CONFIG = {
   databaseId: loadDatabaseId(),
   defaultLimit: 5,
-  discordChannel: '1466532145257255004', // #annotations
-  draftsDir: path.join(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach/drafts'),
+  discordChannel: '1466532145257255004',
 };
-
-// Ensure drafts directory exists
-if (!fs.existsSync(CONFIG.draftsDir)) {
-  fs.mkdirSync(CONFIG.draftsDir, { recursive: true });
-}
 
 const notion = getClient();
 
@@ -70,7 +69,6 @@ async function getReadyVCs(limit = CONFIG.defaultLimit, vcName = null) {
   console.log('📦 Loading VCs ready for outreach...\n');
   
   try {
-    // Build filter
     const filter = {
       and: [
         {
@@ -82,7 +80,6 @@ async function getReadyVCs(limit = CONFIG.defaultLimit, vcName = null) {
       ]
     };
     
-    // Optional: Filter by VC name
     if (vcName) {
       filter.and.push({
         property: 'Name',
@@ -132,46 +129,14 @@ async function getReadyVCs(limit = CONFIG.defaultLimit, vcName = null) {
 }
 
 /**
- * Generate subject lines for VC (3 options)
+ * Generate subject lines for VC
  */
 async function generateSubjectLines(vc) {
-  const prompt = `
-Generate 3 subject line options for VC outreach email to ${vc.name}.
-
-**Context:**
-- VC focus: ${vc.focusAreas.join(', ')}
-- Pain points: ${vc.painPoints.join(', ')}
-- Investment thesis: ${vc.notes?.split('\n')[0] || 'AI safety and governance'}
-
-**Requirements:**
-- Short (5-8 words max)
-- Institutional tone (calm, non-promotional)
-- Governance-first positioning
-- No hype, no urgency tactics
-- Professional, not salesy
-
-**Output format (JSON):**
-{
-  "optionA": "Subject line A",
-  "optionB": "Subject line B",
-  "optionC": "Subject line C",
-  "recommended": "A|B|C (with 1-sentence reason)"
-}
-
-Examples of good subject lines:
-- "AI Governance Infrastructure"
-- "Coordination Before Crisis"
-- "The Real AI Risk is Coordination Failure"
-- "Institutional AI Governance"
-  `.trim();
-  
-  // Use template-based subject lines (faster, more reliable)
   const focusText = vc.focusAreas.join(' ').toLowerCase();
   const painText = vc.painPoints.join(' ').toLowerCase();
   
   let subjectData;
   
-  // Governance-focused templates
   if (focusText.includes('safety') || focusText.includes('alignment') || painText.includes('alignment')) {
     subjectData = {
       optionA: 'AI Safety Governance Infrastructure',
@@ -179,18 +144,14 @@ Examples of good subject lines:
       optionC: 'Alignment Through Institutional Design',
       recommended: 'B (emphasizes preparedness, matches governance-first positioning)'
     };
-  }
-  // Infrastructure/enterprise focused
-  else if (focusText.includes('infrastructure') || focusText.includes('enterprise')) {
+  } else if (focusText.includes('infrastructure') || focusText.includes('enterprise')) {
     subjectData = {
       optionA: 'The Real AI Risk is Coordination Failure',
       optionB: 'Institutional AI Governance',
       optionC: 'Neutral Governance for Advanced AI',
       recommended: 'A (highlights coordination challenge, institutional tone)'
     };
-  }
-  // General governance
-  else {
+  } else {
     subjectData = {
       optionA: 'AI Governance Infrastructure',
       optionB: 'Coordination Before Crisis',
@@ -200,17 +161,12 @@ Examples of good subject lines:
   }
   
   return subjectData;
-  
 }
 
 /**
- * Select email variant (Governance vs Institutional) based on VC research
+ * Select email variant based on VC research
  */
 function selectVariant(vc) {
-  // Institutional variant if:
-  // - Focus on infrastructure, enterprise, technical systems
-  // - Pain points mention coordination, regulatory compliance
-  
   const institutionalKeywords = ['infrastructure', 'enterprise', 'coordination', 'regulatory', 'compliance'];
   const governanceKeywords = ['safety', 'alignment', 'existential', 'AGI', 'oversight'];
   
@@ -235,23 +191,82 @@ function selectVariant(vc) {
 }
 
 /**
- * Personalize email body with VC research data
+ * Generate custom hook based on VC research
  */
-function personalizeEmailBody(vc, variant) {
+function generateCustomHook(vc) {
+  const focusText = vc.focusAreas?.join(' ')?.toLowerCase() || '';
+  const notesText = vc.notes?.toLowerCase() || '';
+  const painText = vc.painPoints?.join(' ')?.toLowerCase() || '';
+  
+  // Check for specific portfolio companies or investments mentioned in notes
+  if (notesText.includes('anthropic') || notesText.includes('$1b')) {
+    return `Given ${vc.name}'s $1B investment in Anthropic and your focus on enterprise AI infrastructure, you understand that governance becomes the bottleneck when frontier AI scales across organizational and national boundaries.`;
+  }
+  
+  if (focusText.includes('decentralized') || focusText.includes('network')) {
+    return `Given ${vc.name}'s thesis on network effects and your work on AI and decentralized systems, you recognize that coordination—not just capability—is what breaks down when AI systems scale beyond individual actors.`;
+  }
+  
+  if (focusText.includes('deep tech') || focusText.includes('manufacturing') || focusText.includes('healthcare')) {
+    return `Given ${vc.name}'s investments in AI across critical industries, you understand that governance infrastructure becomes critical when AI operates in high-stakes environments where failure has real consequences.`;
+  }
+  
+  if (focusText.includes('defense') || notesText.includes('defense')) {
+    return `Given ${vc.name}'s technical leadership and investments in foundational AI technologies, you understand that governance infrastructure must keep pace with capability—especially in dual-use contexts where the stakes are highest.`;
+  }
+  
+  // Default hook
+  return `Given ${vc.name}'s focus on ${vc.focusAreas?.[0] || 'AI'}, you understand that governance becomes the critical challenge as frontier AI systems scale beyond traditional oversight mechanisms.`;
+}
+
+/**
+ * Generate custom PS based on VC research
+ */
+function generateCustomPS(vc) {
+  const focusText = vc.focusAreas?.join(' ')?.toLowerCase() || '';
+  
+  if (focusText.includes('anthropic') || focusText.includes('safety')) {
+    return `P.S.: ${vc.name}'s investments in AI safety show the kind of forward-thinking approach that recognizes governance must evolve alongside capability.`;
+  }
+  
+  if (focusText.includes('network') || focusText.includes('decentralized')) {
+    return `P.S.: ${vc.name}'s thesis on ${vc.focusAreas?.[0] || 'AI'} aligns with our view that governance infrastructure must be built before it's urgently needed.`;
+  }
+  
+  // Default PS
+  return `P.S.: ${vc.name}'s focus on ${vc.focusAreas?.[0] || 'AI infrastructure'} resonates with our institutional approach to governance.`;
+}
+
+/**
+ * Generate email using new template interface (with customHook and footerNote)
+ */
+function generateEmailForVC(vc, variant, subjects) {
   // Extract first partner name for greeting
   const partnerName = vc.partners ? vc.partners.split(',')[0].split('(')[0].trim() : 'there';
   
-  // Generate HTML email
-  const emailHTML = generateEmailHTML(partnerName, variant);
+  // Generate personalized hook and PS
+  const customHook = generateCustomHook(vc);
+  const customPS = generateCustomPS(vc);
   
-  // Note: Template already has pain point placeholders
-  // In production, we would inject specific pain points here
-  // For now, template uses generic institutional messaging
+  // Generate HTML email using new interface with personalization
+  const emailResult = generateEmailHTML({
+    recipientName: partnerName,
+    companyName: vc.name,
+    painPoints: vc.painPoints || [],
+    variant: variant,
+    language: 'en',
+    subject: subjects.optionA,
+    customHook,
+    customPS
+  });
   
   return {
-    html: emailHTML,
+    html: emailResult.html,
+    text: emailResult.text,
     partnerName,
-    variant
+    variant,
+    customHook,
+    customPS
   };
 }
 
@@ -261,7 +276,6 @@ function personalizeEmailBody(vc, variant) {
 async function draftEmail(vc) {
   console.log(`✍️  Drafting email: ${vc.name}...\n`);
   
-  // Generate subject lines
   console.log(`   Generating subject lines...`);
   const subjects = await generateSubjectLines(vc);
   console.log(`   ✅ ${subjects.optionA}`);
@@ -269,12 +283,10 @@ async function draftEmail(vc) {
   console.log(`   ✅ ${subjects.optionC}`);
   console.log(`   Recommended: ${subjects.recommended}\n`);
   
-  // Select variant
   const variantSelection = selectVariant(vc);
   console.log(`   Variant: ${variantSelection.variant} (${variantSelection.reason})\n`);
   
-  // Personalize body
-  const email = personalizeEmailBody(vc, variantSelection.variant);
+  const email = generateEmailForVC(vc, variantSelection.variant, subjects);
   
   console.log(`   ✅ Email drafted\n`);
   
@@ -290,6 +302,7 @@ async function draftEmail(vc) {
     variant: variantSelection.variant,
     variantReason: variantSelection.reason,
     emailHTML: email.html,
+    emailText: email.text,
     partnerName: email.partnerName,
     draftedAt: new Date().toISOString()
   };
@@ -321,8 +334,6 @@ C. ${draft.subjects.optionC}
 **To approve:** Reply with \`APPROVE ${draft.vc.name}\`
 **To edit:** Reply with \`EDIT ${draft.vc.name}: [changes]\`
 **To skip:** Reply with \`SKIP ${draft.vc.name}\`
-
-Draft saved to: \`drafts/draft-${draft.vc.pageId}.json\`
   `.trim();
   
   try {
@@ -338,15 +349,16 @@ Draft saved to: \`drafts/draft-${draft.vc.pageId}.json\`
 }
 
 /**
- * Save draft to JSON file
+ * Save draft to JSON file using new naming convention
  */
 function saveDraft(draft) {
-  const filename = `draft-${draft.vc.pageId}.json`;
-  const filepath = path.join(CONFIG.draftsDir, filename);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filename = `alygn-vc-approved-${timestamp}.json`;
+  const filepath = `/tmp/${filename}`;
   
   fs.writeFileSync(filepath, JSON.stringify(draft, null, 2));
   
-  console.log(`   💾 Saved: ${filename}\n`);
+  console.log(`   💾 Saved: ${filepath}\n`);
   
   return filepath;
 }
@@ -363,7 +375,6 @@ async function main() {
   const limit = limitArg ? parseInt(limitArg.split('=')[1]) : CONFIG.defaultLimit;
   const vcName = vcNameArg ? vcNameArg.split('=')[1].replace(/"/g, '') : null;
   
-  // Check if database ID is loaded
   if (!CONFIG.databaseId) {
     console.error('❌ Error: Notion database ID not found!');
     console.error('\n📋 Run setup first:');
@@ -386,13 +397,12 @@ async function main() {
     failed: 0
   };
   
-  // Get VCs ready for outreach
   const vcs = await getReadyVCs(limit, vcName);
   stats.loaded = vcs.length;
   
   if (vcs.length === 0) {
     console.log('⚠️  No VCs ready for outreach!\n');
-    console.log('💡 Run deep research first:');
+    console.log('💡 Run deep research first:\n');
     console.log('   node deep-research-vcs.js --limit=5\n');
     return;
   }
@@ -406,8 +416,8 @@ async function main() {
   console.log('');
   
   const drafts = [];
+  const dryRunOperations = [];
   
-  // Draft emails for each VC
   for (const vc of vcs) {
     try {
       console.log('='.repeat(60));
@@ -416,18 +426,30 @@ async function main() {
       const draft = await draftEmail(vc);
       stats.drafted++;
       
-      // Save draft
-      if (!dryRun) {
+      if (dryRun) {
+        dryRunOperations.push({
+          type: 'email_draft',
+          entity: {
+            name: draft.vc.name,
+            email: draft.vc.email
+          },
+          payload: {
+            to: draft.vc.email,
+            subject: draft.subjects.optionA,
+            html: draft.emailHTML.substring(0, 500) + '...',
+            text: draft.emailText.substring(0, 200) + '...'
+          },
+          metadata: {
+            variant: draft.variant,
+            partnerName: draft.partnerName
+          }
+        });
+        console.log(`   [DRY RUN] Would post to Discord for approval\n`);
+      } else {
         saveDraft(draft);
         stats.saved++;
-      }
-      
-      // Post to Discord for approval
-      if (!dryRun) {
         await postDraftToDiscord(draft);
         stats.posted++;
-      } else {
-        console.log(`   [DRY RUN] Would post to Discord for approval\n`);
       }
       
       drafts.push(draft);
@@ -438,8 +460,31 @@ async function main() {
     }
   }
   
-  // Generate summary
-  const summary = `
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  
+  if (dryRun) {
+    // Output dry-run JSON to stdout
+    const dryRunReport = {
+      dryRun: true,
+      timestamp: new Date().toISOString(),
+      script: 'draft-outreach-emails.js',
+      summary: {
+        total: stats.loaded,
+        wouldDraft: stats.drafted,
+        wouldFail: stats.failed
+      },
+      operations: dryRunOperations,
+      files: {
+        wouldCreate: stats.drafted > 0 ? [`/tmp/alygn-vc-approved-${timestamp}.json`] : []
+      }
+    };
+    
+    console.log('\n' + '='.repeat(60));
+    console.log('\nDRY RUN OUTPUT:\n');
+    console.log(JSON.stringify(dryRunReport, null, 2));
+    console.log('='.repeat(60) + '\n');
+  } else {
+    const summary = `
 ✍️  **Email Drafting Report** (${new Date().toLocaleDateString()})
 
 **Stats:**
@@ -450,16 +495,15 @@ async function main() {
 - Failed: ${stats.failed}
 
 **Next:** Review drafts in Discord (#annotations) and approve for sending.
-
-Drafts directory: ${CONFIG.draftsDir}
-  `.trim();
-  
-  console.log('\n' + '='.repeat(60));
-  console.log('\n' + summary + '\n');
-  console.log('='.repeat(60) + '\n');
-  
-  console.log('✅ Drafting complete!\n');
-  console.log('📬 Check Discord (#annotations) to review and approve drafts.\n');
+    `.trim();
+    
+    console.log('\n' + '='.repeat(60));
+    console.log('\n' + summary + '\n');
+    console.log('='.repeat(60) + '\n');
+    
+    console.log('✅ Drafting complete!\n');
+    console.log('📬 Check Discord (#annotations) to review and approve drafts.\n');
+  }
 }
 
 // Run
@@ -471,4 +515,3 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
 }
 
 export { draftEmail, generateSubjectLines, getReadyVCs, selectVariant };
-

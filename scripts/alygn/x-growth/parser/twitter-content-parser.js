@@ -137,12 +137,49 @@ function parseXmlContent(content) {
 }
 
 /**
+ * Validate URL by making HTTP HEAD request
+ * Returns true if URL is valid (200 OK), false otherwise
+ */
+async function validateUrl(url) {
+  try {
+    // Skip validation for non-HTTP URLs
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      return false;
+    }
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+    
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      redirect: 'follow'
+    });
+    
+    clearTimeout(timeout);
+    
+    return response.status === 200;
+  } catch (err) {
+    console.log(`⚠️  URL validation failed for ${url.substring(0, 50)}...: ${err.message}`);
+    return false;
+  }
+}
+
+/**
  * Shorten URL using TinyURL API
- * Returns original URL if shortening fails (graceful degradation)
+ * Validates URL before shortening
+ * Returns null if URL is invalid, original URL if shortening fails
  */
 async function shortenUrl(longUrl) {
   if (!longUrl || longUrl.includes('twitter.com')) {
     return longUrl;
+  }
+  
+  // Validate URL first
+  const isValid = await validateUrl(longUrl);
+  if (!isValid) {
+    console.log(`❌ URL invalid or unreachable: ${longUrl.substring(0, 50)}...`);
+    return null; // Return null to skip this post
   }
   
   // Check cache first
@@ -176,7 +213,7 @@ async function shortenUrl(longUrl) {
     console.log(`⚠️  TinyURL failed for ${longUrl.substring(0, 50)}...: ${err.message}`);
   }
   
-  // Graceful degradation - return original
+  // Graceful degradation - return original if shortening fails but URL is valid
   return longUrl;
 }
 
@@ -768,5 +805,5 @@ async function parseGrokOutput(markdownContent) {
   return workflow;
 }
 
-export { enhancedParseMarkdownContent, extractXmlSources, formatPost, parseGrokOutput, parseXmlContent, stripUrlsAndCitations, validateContent };
+export { enhancedParseMarkdownContent, extractXmlSources, formatPost, parseGrokOutput, parseXmlContent, shortenUrl, stripUrlsAndCitations, validateContent };
 

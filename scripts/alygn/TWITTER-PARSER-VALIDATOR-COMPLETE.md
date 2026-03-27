@@ -9,7 +9,7 @@
 
 ### 1. Enhanced Content Parser (`twitter-content-parser.js`)
 
-**Location:** `/home/andlersrv/.openclaw/workspace/scripts/alygn/twitter-content-parser.js`
+**Location:** `$HOME/.openclaw/workspace/scripts/alygn/twitter-content-parser.js`
 
 **Functions:**
 
@@ -62,7 +62,7 @@
 
 ### 2. X API Executor (`x-api-executor.js`)
 
-**Location:** `/home/andlersrv/.openclaw/workspace/scripts/shared/x-growth/x-api-executor.js`
+**Location:** `$HOME/.openclaw/workspace/scripts/shared/x-growth/x-api-executor.js`
 
 **Pipeline:**
 
@@ -97,7 +97,7 @@ bun x-api-executor.js <input.md> --live
 
 ## 🧪 Test File
 
-**Location:** `/home/andlersrv/.openclaw/workspace/twitter-outputs/test-grok-output.md`
+**Location:** `$HOME/.openclaw/workspace/twitter-outputs/test-grok-output.md`
 
 Sample Grok output with:
 

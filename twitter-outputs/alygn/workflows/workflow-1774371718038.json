@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-24T17:01:58.038Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "US NIST released updated AI risk framework Oct 9. Stresses coordination between govt, industry for safe AI. Aligns with Alygn's coordination principle for legitimate oversight.",
+      "replyText": "Emphasizes multi-stakeholder coordination to build legitimacy in AI standards, preventing fragmented regulation and ensuring neutral, enforceable governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 176,
+      "replyLength": 157,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "EU AI Act enforcement taskforce launched Oct 10. Focuses on neutral compliance checks. Reinforces Alygn's neutrality principle for trustworthy AI institutions.",
+      "replyText": "Establishes impartial oversight mechanisms, vital for legitimacy in global AI governance and coordination across borders without bias toward any actor.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 159,
+      "replyLength": 151,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "UK AI Safety Institute report Oct 8 warns of frontier model risks, calls for intl coordination. Mirrors Alygn's push for coordinated, legitimate safety protocols.",
+      "replyText": "Highlights need for neutral institutions to coordinate risk assessments, fostering global legitimacy and preventing rogue AI development.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 162,
+      "replyLength": 137,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "OpenAI partners with US gov on safety evals Oct 9. Builds legitimacy through transparent coordination. Core to Alygn's institutional neutrality vision.",
+      "replyText": "Promotes neutral evaluation standards via public-private coordination, essential for credible AI governance and broad legitimacy.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 151,
+      "replyLength": 129,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Singapore hosts AI governance forum Oct 10, stressing neutral platforms for coordination. Upholds Alygn's principles amid rising geopolitical tensions.",
+      "replyText": "Demonstrates neutral forums as key to legitimate coordination, bridging divides for effective, unbiased AI policy worldwide.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 151,
+      "replyLength": 124,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

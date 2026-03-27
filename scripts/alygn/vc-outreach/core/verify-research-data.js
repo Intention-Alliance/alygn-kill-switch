@@ -21,7 +21,7 @@ import { getClient, queryDatabase } from "../../../shared/notion-client.js";
 // Note: require() for non-JS files not supported in ES modules
 // Using environment variable or placeholder
 const notion = getClient();
-const DB_ID = '30533487-4af6-81ef-983d-f57c7f70de33'; // ALYGN VC Outreach Tracker
+const DB_ID = '30533487-4af6-81e7-ad64-000bbd4829ff'; // ALYGN VC Outreach Tracker
 const REQUIRED_FIELDS = ['Name', 'Email', 'Summary', 'Pain Points'];
 
 /**

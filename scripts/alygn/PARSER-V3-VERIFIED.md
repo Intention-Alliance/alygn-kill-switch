@@ -133,7 +133,7 @@ innovation-stifling control.
 **Updated Payload:**
 
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
 ```
 
 **Schedule:** Daily 11:00 AM Costa Rica Time  

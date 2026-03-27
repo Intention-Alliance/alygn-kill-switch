@@ -27,8 +27,8 @@ const execAsync = promisify(exec);
 
 // Configuration
 const CONFIG = {
-  outputDir: path.join(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach'),
-  seedListPath: path.join(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach/seed-vc-list.json'),
+  outputDir: path.resolve(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach'),
+  seedListPath: path.resolve(process.env.HOME, '.openclaw/workspace/scripts/alygn/vc-outreach/seed-vc-list.json'),
   minRelevanceScore: 7,
   defaultLimit: 20,
   notionDatabaseId: '2fe33487-4af6-8137-868e-e14fd068948c', // Weekly Progress database (placeholder)

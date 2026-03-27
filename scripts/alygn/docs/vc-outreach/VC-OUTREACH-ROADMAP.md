@@ -29,7 +29,7 @@ scripts/alygn/
 ```
 
 ### Key Features
-- **Email Security:** Credentials loaded from `~/.openclaw/workspace/config/credentials.json`
+- **Email Security:** Credentials loaded from `$HOME/.openclaw/workspace/config/credentials.json`
 - **MIME Architecture:** Related multipart messages with inline image embedding (Content-ID)
 - **Copy Strategy:** High-EQ, intelligent positioning (not generic startup fluff)
 - **Variants:**

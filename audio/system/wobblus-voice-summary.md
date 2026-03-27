@@ -20,13 +20,14 @@ Analyzed current Wobblus voice pipeline (ElevenLabs Antoni + pitch shift) from a
 
 ## 📊 Results
 
-| Profile | Pitch | Sample Rate | File Size | Use Case | Gnome Factor |
-|---------|-------|-------------|-----------|----------|--------------|
-| **Balanced** | +20% | 24kHz | Medium | Default (best quality/size) | 8/10 |
-| **Character** | +25% | 24kHz | Medium | Storytelling, high energy | 9.5/10 |
-| **Fast** | +20% | 16kHz | Small (-35%) | WhatsApp, bandwidth-constrained | 6.5/10 |
+| Profile       | Pitch | Sample Rate | File Size    | Use Case                        | Gnome Factor |
+| ------------- | ----- | ----------- | ------------ | ------------------------------- | ------------ |
+| **Balanced**  | +20%  | 24kHz       | Medium       | Default (best quality/size)     | 8/10         |
+| **Character** | +25%  | 24kHz       | Medium       | Storytelling, high energy       | 9.5/10       |
+| **Fast**      | +20%  | 16kHz       | Small (-35%) | WhatsApp, bandwidth-constrained | 6.5/10       |
 
 ### Test Results (2.5s audio clip)
+
 ```
 Current baseline:  19KB (44.1kHz, basic pitch shift)
 Version A (balanced): 21KB (24kHz, EQ + compression) ← RECOMMENDED
@@ -39,19 +40,23 @@ Version C (fast):     17KB (16kHz, minimal processing)
 ## 🔧 Key Optimizations
 
 ### 1. **Formant EQ** (NEW!)
+
 - +2.5dB @ 2.5kHz → Gnome "nasality" zone
 - +1.5dB @ 4kHz → Clarity & presence for small creatures
 - **Result:** More authentic gnome character without sounding artificial
 
 ### 2. **Dynamic Compression** (NEW!)
+
 - Gentle compression (2.5:1 ratio @ -18dB threshold)
 - **Result:** Consistent energy, better mobile intelligibility
 
 ### 3. **Sample Rate Optimization**
+
 - 44.1kHz → 24kHz (voice bandwidth is 80Hz-8kHz, Nyquist @ 12kHz sufficient)
 - **Result:** 40-50% smaller files, faster encoding, still exceeds voice quality needs
 
 ### 4. **Speaker Boost** (ElevenLabs parameter)
+
 - Enables clarity enhancement at synthesis stage
 - **Result:** Cleaner source before pitch processing
 
@@ -60,6 +65,7 @@ Version C (fast):     17KB (16kHz, minimal processing)
 ## 🎛️ Implementation
 
 ### New Workflow
+
 ```bash
 # Generate optimized Wobblus voice
 ./generate-wobblus-voice.sh "Your text here" output.ogg [profile]
@@ -68,12 +74,14 @@ Version C (fast):     17KB (16kHz, minimal processing)
 ```
 
 **Old workflow (legacy):**
+
 ```bash
 sag -v ErXwobaYiN019PkySvjV --speed 1.35 --stability 0 --style 0.9 "Text" -o tmp.mp3
 ffmpeg -i tmp.mp3 -af "asetrate=44100*1.2,aresample=44100,atempo=1/1.2" output.ogg
 ```
 
 **New workflow (optimized):**
+
 ```bash
 sag -v ErXwobaYiN019PkySvjV --speed 1.35 --stability 0 --style 0.9 --speaker-boost "Text" -o tmp.mp3
 ffmpeg -i tmp.mp3 -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2,equalizer=f=2500:t=h:w=1000:g=2.5,equalizer=f=4000:t=h:w=1500:g=1.5,acompressor=threshold=-18dB:ratio=2.5:attack=5:release=50,volume=1.5dB,highpass=f=80" -q:a 4 output.ogg
@@ -84,6 +92,7 @@ ffmpeg -i tmp.mp3 -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2,equalizer
 ## 🎯 Recommendations
 
 ### Immediate Action (Do Now)
+
 1. ✅ **Use "balanced" profile as new default**
    - Better quality, smaller files, enhanced character
    - Script: `generate-wobblus-voice.sh`
@@ -97,6 +106,7 @@ ffmpeg -i tmp.mp3 -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2,equalizer
      - Storytelling/excited → `character`
 
 ### Testing Phase (Next 48h)
+
 1. **A/B test** on multiple devices:
    - Phone speakers (most critical!)
    - Headphones
@@ -114,7 +124,9 @@ ffmpeg -i tmp.mp3 -af "asetrate=44100*1.2,aresample=24000,atempo=1/1.2,equalizer
    - If files too large → use "fast" universally
 
 ### Platform-Specific Tuning (Optional)
+
 Create channel-specific configs in OpenClaw:
+
 ```json
 {
   "channels": {
@@ -139,13 +151,17 @@ Create channel-specific configs in OpenClaw:
 ## 🧪 Advanced Experiments (Future)
 
 ### Emotional Presets
+
 Create variants for different contexts:
+
 - **Excited:** `--speed 1.4`, +25% pitch, +3dB compression
 - **Calm:** `--speed 1.2`, +18% pitch, no compression
 - **Serious:** `--speed 1.0`, +15% pitch (less gnome, more professional)
 
 ### Audio Tags Integration
+
 Test ElevenLabs v3 inline tags:
+
 ```bash
 "Greetings! [excited] This is fascinating! [laughs]"
 "[whispers] I've discovered something amazing!"
@@ -155,7 +171,9 @@ Test ElevenLabs v3 inline tags:
 **Combine tags + pitch shift** for maximum gnome expressiveness!
 
 ### Multi-Voice System
+
 If custom voice cloning becomes available:
+
 - **Primary Wobblus:** Current optimized Antoni + processing
 - **Excited Wobblus:** Custom cloned from WoW samples (60s training data ready!)
 - **Serious Wobblus:** Lower pitch variant for professional contexts
@@ -179,6 +197,7 @@ Track these over time:
 If optimizations cause issues:
 
 1. **Keep `generate-wobblus-voice.sh` script** but add "legacy" profile:
+
    ```bash
    legacy)
      FILTER="asetrate=44100*1.2,aresample=44100,atempo=1/1.2"
@@ -195,9 +214,9 @@ If optimizations cause issues:
 
 **Full Analysis:** `wobblus-voice-analysis.md` (12KB, comprehensive breakdown)  
 **Implementation Script:** `generate-wobblus-voice.sh` (executable, production-ready)  
-**Config Update:** `TOOLS.md` (updated with new workflow)  
+**Config Update:** `TOOLS.md` (updated with new workflow)
 
-**Training Data Ready:** 60.21s of WoW gnome audio in `/home/andlersrv/Downloads/gnome-smaples/wobblus-training-final.ogg` (for future custom voice cloning if you upgrade ElevenLabs)
+**Training Data Ready:** 60.21s of WoW gnome audio in `$HOME/Downloads/gnome-smaples/wobblus-training-final.ogg` (for future custom voice cloning if you upgrade ElevenLabs)
 
 ---
 

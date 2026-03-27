@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-03-26T19:37:08.142Z",
+  "source": "explore_feed",
+  "snapshotPath": "/tmp/x-explore-snapshot.txt",
+  "discovered": [
+    {
+      "postId": "trending_1774553828141_yeolqveus",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Tesla Owner Completes 2,700-Mile Coast-to-Coast Drive on FSD Without Interventions",
+      "engagement": {
+        "likes": 1400,
+        "retweets": 420,
+        "replies": 140
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "Trending now",
+      "keywords": [],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774553828142_23ojb6cfy",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Quantum Physics Video Blends Science and Spirituality in Quick Clip",
+      "engagement": {
+        "likes": 79,
+        "retweets": 23,
+        "replies": 7
+      },
+      "url": "https://x.com/explore",
+      "category": "Other",
+      "age": "Trending now",
+      "keywords": [],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774553828142_p9xuh8of9",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Geoffrey Hinton Warns AI Threatens All Jobs, But Trades Like Plumbing May Last Longer",
+      "engagement": {
+        "likes": 365,
+        "retweets": 109,
+        "replies": 36
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "4 hours ago",
+      "keywords": [
+        "AI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774553828142_2b3d89vkm",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Tibás",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774553828142_egewbuke8",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: #스키즈와_채울_8번째_포토북",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774553828142_66elxuyrv",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: so proud of you jungkook",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    }
+  ]
+}

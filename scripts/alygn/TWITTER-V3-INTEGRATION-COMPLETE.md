@@ -66,7 +66,7 @@ PHASE 3: Discovery System
 **Updated Payload:**
 
 ```bash
-cd ~/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
+cd $HOME/.openclaw/workspace && node scripts/alygn/twitter-master-automation.js
 ```
 
 **Delivery:** Discord thread `1470977688368840928`
@@ -121,7 +121,7 @@ twitter-outputs/
 ### Manual Test (Dry-Run)
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 bun scripts/shared/x-growth/x-api-executor.js \
   twitter-outputs/grok-output-ai-governance-2026.md \
   --dry-run
@@ -130,7 +130,7 @@ bun scripts/shared/x-growth/x-api-executor.js \
 ### Live Test
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 bun scripts/shared/x-growth/x-api-executor.js \
   twitter-outputs/prompt-1-{timestamp}.md \
   --live
@@ -139,7 +139,7 @@ bun scripts/shared/x-growth/x-api-executor.js \
 ### Full Automation
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace
+cd $HOME/.openclaw/workspace
 node scripts/alygn/twitter-master-automation.js
 ```
 
