@@ -1,0 +1,182 @@
+{
+  "entities": [
+    {
+      "id": "vc-test-001",
+      "type": "vc",
+      "name": "Test Ventures Capital",
+      "email": "partner@testventures.com",
+      "website": "https://testventures.com",
+      "phone": "+1-555-0101",
+      "location": {
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "USA",
+        "region": "North America"
+      },
+      "status": "discovered",
+      "priority": "high",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "firmType": "vc",
+        "stageFocus": ["seed", "series-a"],
+        "sectorFocus": ["AI", "fintech", "enterprise"],
+        "checkSizeMin": 500000,
+        "checkSizeMax": 5000000,
+        "aum": 500000000,
+        "partners": [
+          {
+            "name": "Jane Smith",
+            "title": "Managing Partner",
+            "email": "jane@testventures.com",
+            "linkedIn": "https://linkedin.com/in/janesmith",
+            "focus": "AI investments"
+          }
+        ],
+        "portfolioCompanies": ["AI Startup A", "Fintech B"],
+        "recentInvestments": [
+          {
+            "company": "AI Startup A",
+            "round": "Series A",
+            "amount": 10000000,
+            "date": "2025-06-01"
+          }
+        ],
+        "linkedInUrl": "https://linkedin.com/company/testventures",
+        "crunchbaseUrl": "https://crunchbase.com/organization/test-ventures",
+        "relevanceScore": 0.95
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted"
+    },
+    {
+      "id": "vc-test-002",
+      "type": "vc",
+      "name": "AI Safety Fund LP",
+      "email": "info@aisafetyfund.com",
+      "website": "https://aisafetyfund.com",
+      "phone": null,
+      "location": {
+        "city": "London",
+        "state": null,
+        "country": "UK",
+        "region": "Europe"
+      },
+      "status": "discovered",
+      "priority": "high",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "firmType": "vc",
+        "stageFocus": ["seed", "series-a", "series-b"],
+        "sectorFocus": ["AI safety", "alignment", "governance"],
+        "checkSizeMin": 1000000,
+        "checkSizeMax": 10000000,
+        "aum": 250000000,
+        "partners": [
+          {
+            "name": "Dr. Alan Turing",
+            "title": "General Partner",
+            "email": "alan@aisafetyfund.com",
+            "linkedIn": null,
+            "focus": "AI alignment research"
+          }
+        ],
+        "portfolioCompanies": ["Alignment Labs", "SafeAI"],
+        "recentInvestments": [],
+        "linkedInUrl": null,
+        "crunchbaseUrl": "https://crunchbase.com/organization/ai-safety-fund",
+        "relevanceScore": 0.98
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted"
+    },
+    {
+      "id": "vc-test-003",
+      "type": "vc",
+      "name": "Duplicate Test VC",
+      "email": "partner@testventures.com",
+      "website": "https://testventures.com",
+      "phone": "+1-555-0101",
+      "location": {
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "USA",
+        "region": "North America"
+      },
+      "status": "discovered",
+      "priority": "medium",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "firmType": "vc",
+        "stageFocus": ["series-b"],
+        "sectorFocus": ["enterprise"],
+        "checkSizeMin": 5000000,
+        "checkSizeMax": 20000000,
+        "partners": [],
+        "relevanceScore": 0.60
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted"
+    },
+    {
+      "id": "vc-test-004",
+      "type": "vc",
+      "name": "Already Sent VC",
+      "email": "already@sentvc.com",
+      "website": "https://sentvc.com",
+      "phone": null,
+      "location": {
+        "city": "New York",
+        "state": "NY",
+        "country": "USA",
+        "region": "North America"
+      },
+      "status": "sent",
+      "priority": "low",
+      "discoveredAt": "2026-04-01T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-05T00:00:00.000Z",
+      "outreachCount": 1,
+      "researchNotes": "Previously contacted",
+      "personalizationContext": {
+        "customSubject": "Following up on AI governance",
+        "customBody": "<!DOCTYPE html><html><body>Previous email content</body></html>"
+      },
+      "typeData": {
+        "firmType": "vc",
+        "stageFocus": ["series-a"],
+        "sectorFocus": ["fintech"],
+        "relevanceScore": 0.70
+      },
+      "emailValidation": {
+        "valid": true,
+        "confidence": 0.95,
+        "result": "valid"
+      },
+      "sentEmailId": "msg-prev-001",
+      "sentAt": "2026-04-05T12:00:00.000Z",
+      "draftStatus": "Sent"
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2026-04-08T00:00:00.000Z",
+    "version": "1.0.0",
+    "description": "Mock VC data for E2E testing"
+  }
+}

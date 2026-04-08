@@ -1,0 +1,214 @@
+{
+  "entities": [
+    {
+      "id": "muni-test-001",
+      "type": "municipal",
+      "name": "Municipalidad de San José",
+      "email": "alcalde@msj.go.cr",
+      "website": "https://msj.go.cr",
+      "phone": "+506-2222-0001",
+      "location": {
+        "city": "San José",
+        "state": null,
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "discovered",
+      "priority": "high",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 350000,
+        "budget": 150000000,
+        "province": "San José",
+        "departments": [
+          { "name": "Tecnología", "focus": ["digital transformation"] },
+          { "name": "Planificación", "focus": ["smart city"] }
+        ],
+        "keyContacts": [
+          {
+            "name": "María García",
+            "title": "Mayor",
+            "email": "alcalde@msj.go.cr",
+            "isDecisionMaker": true
+          }
+        ],
+        "initiatives": [
+          { "name": "Smart City Initiative", "description": "Digital transformation of city services", "status": "active" }
+        ],
+        "painPoints": ["Complejidad de la transformación digital", "Recursos técnicos limitados"],
+        "trAigaRelevant": true,
+        "decisionMakers": [
+          { "name": "María García", "title": "Mayor", "influence": "high" }
+        ]
+      },
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": "Not drafted",
+      "municipalityId": "muni-sj-001",
+      "xHandle": "@MuniSanJose",
+      "xUrl": "https://x.com/MuniSanJose"
+    },
+    {
+      "id": "muni-test-002",
+      "type": "municipal",
+      "name": "Municipalidad de Cartago",
+      "email": "alcalde@cartago.go.cr",
+      "website": "https://cartago.go.cr",
+      "phone": "+506-2222-0002",
+      "location": {
+        "city": "Cartago",
+        "state": null,
+        "country": "Costa Rica",
+        "region": "Cartago"
+      },
+      "status": "discovered",
+      "priority": "medium",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 150000,
+        "budget": 75000000,
+        "province": "Cartago",
+        "departments": [
+          { "name": "Servicios", "focus": ["citizen services"] }
+        ],
+        "keyContacts": [
+          {
+            "name": "Carlos Rodríguez",
+            "title": "Mayor",
+            "email": "alcalde@cartago.go.cr",
+            "isDecisionMaker": true
+          }
+        ],
+        "initiatives": [],
+        "painPoints": ["Modernización de sistemas", "Eficiencia operativa"],
+        "trAigaRelevant": true,
+        "decisionMakers": [
+          { "name": "Carlos Rodríguez", "title": "Mayor", "influence": "high" }
+        ]
+      },
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": "Not drafted",
+      "municipalityId": "muni-cart-001",
+      "xHandle": null,
+      "xUrl": null
+    },
+    {
+      "id": "muni-test-003",
+      "type": "municipal",
+      "name": "Municipalidad de Heredia",
+      "email": "alcalde@heredia.go.cr",
+      "website": "https://heredia.go.cr",
+      "phone": "+506-2222-0003",
+      "location": {
+        "city": "Heredia",
+        "state": null,
+        "country": "Costa Rica",
+        "region": "Heredia"
+      },
+      "status": "discovered",
+      "priority": "medium",
+      "discoveredAt": "2026-04-08T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-08T00:00:00.000Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 120000,
+        "budget": 60000000,
+        "province": "Heredia",
+        "departments": [],
+        "keyContacts": [
+          {
+            "name": "Ana López",
+            "title": "Mayor",
+            "email": "alcalde@heredia.go.cr",
+            "isDecisionMaker": true
+          }
+        ],
+        "initiatives": [
+          { "name": "Open Data Portal", "description": "Transparency initiative", "status": "planning" }
+        ],
+        "painPoints": ["Transparencia de datos", "Participación ciudadana"],
+        "trAigaRelevant": true,
+        "decisionMakers": [
+          { "name": "Ana López", "title": "Mayor", "influence": "high" }
+        ]
+      },
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": "Not drafted",
+      "municipalityId": "muni-her-001",
+      "xHandle": "@MuniHeredia",
+      "xUrl": "https://x.com/MuniHeredia"
+    },
+    {
+      "id": "muni-test-004",
+      "type": "municipal",
+      "name": "Municipalidad de Alajuela",
+      "email": "alcalde@alajuela.go.cr",
+      "website": "https://alajuela.go.cr",
+      "phone": "+506-2222-0004",
+      "location": {
+        "city": "Alajuela",
+        "state": null,
+        "country": "Costa Rica",
+        "region": "Alajuela"
+      },
+      "status": "sent",
+      "priority": "low",
+      "discoveredAt": "2026-03-15T00:00:00.000Z",
+      "lastUpdatedAt": "2026-04-01T00:00:00.000Z",
+      "outreachCount": 1,
+      "researchNotes": "Previously contacted - no response",
+      "personalizationContext": {
+        "customSubject": "Seguimiento - Gobernanza de IA",
+        "customBody": "<!DOCTYPE html><html><body>Previous email content in Spanish</body></html>"
+      },
+      "typeData": {
+        "governmentType": "city",
+        "population": 280000,
+        "budget": 120000000,
+        "province": "Alajuela",
+        "departments": [],
+        "keyContacts": [
+          {
+            "name": "Roberto Martínez",
+            "title": "Mayor",
+            "email": "alcalde@alajuela.go.cr",
+            "isDecisionMaker": true
+          }
+        ],
+        "initiatives": [],
+        "painPoints": ["Gestión de residuos", "Transporte público"],
+        "trAigaRelevant": false,
+        "decisionMakers": [
+          { "name": "Roberto Martínez", "title": "Mayor", "influence": "high" }
+        ]
+      },
+      "waveNumber": 1,
+      "waveDate": "2026-04-01",
+      "batchStatus": "Sent",
+      "municipalityId": "muni-ala-001",
+      "outreachSentAt": "2026-04-01T10:00:00.000Z",
+      "xHandle": null,
+      "xUrl": null
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2026-04-08T00:00:00.000Z",
+    "version": "1.0.0",
+    "description": "Mock Municipal data for E2E testing - Costa Rica focus"
+  }
+}
