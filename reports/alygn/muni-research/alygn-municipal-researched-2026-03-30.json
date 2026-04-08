@@ -1,0 +1,408 @@
+{
+  "timestamp": "2026-03-30T16:35:58.918Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 2,
+    "entities": [
+      {
+        "id": "entity-mn86dnrb-kv6x99",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": "https://www.sanjosé.go.cr",
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T00:40:48.263Z",
+        "lastUpdatedAt": "2026-03-30T16:35:58.918Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 129075,
+          "budget": 110503448,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [
+            {
+              "name": "Digital Transformation",
+              "description": "Modernizing services",
+              "status": "active"
+            }
+          ],
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mn86dnrb-kv6x99",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mn86dnrb-84las8",
+        "type": "municipal",
+        "name": "Municipalidad de Alajuela",
+        "email": null,
+        "website": "https://www.alajuela.go.cr",
+        "phone": null,
+        "location": {
+          "city": "Alajuela",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T00:40:48.263Z",
+        "lastUpdatedAt": "2026-03-30T16:35:58.918Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 125110,
+          "budget": 32565145,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [
+            {
+              "name": "Digital Transformation",
+              "description": "Modernizing services",
+              "status": "active"
+            }
+          ],
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mn86dnrb-84las8",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Digital Transformation",
+              "description": "Modernizing services",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager",
+              "isDecisionMaker": true
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mn86dnrb-kv6x99",
+          "type": "municipal",
+          "name": "Municipalidad de San José",
+          "email": null,
+          "website": "https://www.sanjosé.go.cr",
+          "phone": null,
+          "location": {
+            "city": "San José",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T00:40:48.263Z",
+          "lastUpdatedAt": "2026-03-30T16:35:58.918Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI accountability",
+              "Digital transformation",
+              "Citizen services"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 129075,
+            "budget": 110503448,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [
+              {
+                "name": "Digital Transformation",
+                "description": "Modernizing services",
+                "status": "active"
+              }
+            ],
+            "painPoints": [
+              "AI accountability",
+              "Digital transformation",
+              "Citizen services"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mn86dnrb-kv6x99",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Digital Transformation",
+              "description": "Modernizing services",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager",
+              "isDecisionMaker": true
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mn86dnrb-84las8",
+          "type": "municipal",
+          "name": "Municipalidad de Alajuela",
+          "email": null,
+          "website": "https://www.alajuela.go.cr",
+          "phone": null,
+          "location": {
+            "city": "Alajuela",
+            "state": "Alajuela",
+            "country": "Costa Rica",
+            "region": "Alajuela"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T00:40:48.263Z",
+          "lastUpdatedAt": "2026-03-30T16:35:58.918Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI accountability",
+              "Digital transformation",
+              "Citizen services"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 125110,
+            "budget": 32565145,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [
+              {
+                "name": "Digital Transformation",
+                "description": "Modernizing services",
+                "status": "active"
+              }
+            ],
+            "painPoints": [
+              "AI accountability",
+              "Digital transformation",
+              "Citizen services"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "Alajuela",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mn86dnrb-84las8",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}

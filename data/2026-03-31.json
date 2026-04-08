@@ -1,0 +1,180 @@
+{
+  "timestamp": "2026-03-31T13:50:00.000Z",
+  "type": "vc",
+  "phase": "discovered",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "vc-bbg-7k2m",
+        "type": "vc",
+        "name": "Bloomberg Beta",
+        "email": "roy@bloombergbeta.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T13:50:00.000Z",
+        "lastUpdatedAt": "2026-03-31T13:50:00.000Z",
+        "outreachCount": 0,
+        "researchNotes": "Contact: Roy Bahat (roy@bloombergbeta.com)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [],
+          "partners": [{"name": "Roy Bahat", "title": "Head"}],
+          "portfolioCompanies": [],
+          "recentInvestments": []
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-8131-a0c5-dabae3fd1950"
+      },
+      {
+        "id": "vc-kv-p8xq",
+        "type": "vc",
+        "name": "Khosla Ventures",
+        "email": "vinod@khoslaventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T13:50:00.000Z",
+        "lastUpdatedAt": "2026-03-31T13:50:00.000Z",
+        "outreachCount": 0,
+        "researchNotes": "Contact: Vinod Khosla (vinod@khoslaventures.com)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [],
+          "partners": [{"name": "Vinod Khosla", "title": "Founder"}],
+          "portfolioCompanies": [],
+          "recentInvestments": []
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-8155-9bb0-f4dcdf818549"
+      },
+      {
+        "id": "vc-seq-4ntw",
+        "type": "vc",
+        "name": "Sequoia Capital",
+        "email": "alfred.lin@sequoiacap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T13:50:00.000Z",
+        "lastUpdatedAt": "2026-03-31T13:50:00.000Z",
+        "outreachCount": 0,
+        "researchNotes": "Contact: Alfred Lin (alfred.lin@sequoiacap.com)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [],
+          "partners": [{"name": "Alfred Lin", "title": "Partner"}],
+          "portfolioCompanies": [],
+          "recentInvestments": []
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-8148-8b1b-ffbdca3aee1b"
+      },
+      {
+        "id": "vc-knd-n9sl",
+        "type": "vc",
+        "name": "Kindred Ventures",
+        "email": "kanyi@kindredventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T13:50:00.000Z",
+        "lastUpdatedAt": "2026-03-31T13:50:00.000Z",
+        "outreachCount": 0,
+        "researchNotes": "Contact: Kanyi Maqubela (kanyi@kindredventures.com)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [],
+          "partners": [{"name": "Kanyi Maqubela", "title": "Partner"}],
+          "portfolioCompanies": [],
+          "recentInvestments": []
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-818d-9411-f3e33434d0ed"
+      },
+      {
+        "id": "vc-cpd-m3rj",
+        "type": "vc",
+        "name": "Compound VC",
+        "email": "jenny@compoundvc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T13:50:00.000Z",
+        "lastUpdatedAt": "2026-03-31T13:50:00.000Z",
+        "outreachCount": 0,
+        "researchNotes": "Contact: Jenny Fielding (jenny@compoundvc.com)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [],
+          "partners": [{"name": "Jenny Fielding", "title": "Managing Director"}],
+          "portfolioCompanies": [],
+          "recentInvestments": []
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-81b6-9fae-fc3d70353de1"
+      }
+    ]
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "timestamp": "2026-03-31T19:13:54.983Z",
+  "type": "municipal",
+  "phase": "validated",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "type": "municipal",
+        "name": "Municipalidad de San Ramón",
+        "email": "kperez@sanramon.go.cr",
+        "website": "https://sanramon.go.cr",
+        "phone": "2445-1000",
+        "location": {
+          "city": "San Ramón",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "validated",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:53.228Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.983Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 80800,
+          "budget": null,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Agricultural transition",
+            "Rural development"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "sanramon.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+        "type": "municipal",
+        "name": "Municipalidad de Grecia",
+        "email": "alcaldia@grecia.go.cr",
+        "website": "https://grecia.go.cr",
+        "phone": "2494-1000",
+        "location": {
+          "city": "Grecia",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "validated",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:53.406Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.983Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 76000,
+          "budget": null,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Industrial park development",
+            "Infrastructure"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "grecia.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+        "type": "municipal",
+        "name": "Municipalidad de Paraíso",
+        "email": "alcaldia@muniparaiso.go.cr",
+        "website": "https://paraiso.go.cr",
+        "phone": "2574-1000",
+        "location": {
+          "city": "Paraíso",
+          "state": "Cartago",
+          "country": "Costa Rica",
+          "region": "Cartago"
+        },
+        "status": "validated",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:56.664Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.983Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 57000,
+          "budget": null,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Tourism infrastructure",
+            "Service delivery"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Cartago",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "muniparaiso.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "name": "Municipalidad de San Ramón",
+        "email": "kperez@sanramon.go.cr",
+        "result": "valid",
+        "confidence": 0.8
+      },
+      {
+        "name": "Municipalidad de Grecia",
+        "email": "alcaldia@grecia.go.cr",
+        "result": "valid",
+        "confidence": 0.8
+      },
+      {
+        "name": "Municipalidad de Paraíso",
+        "email": "alcaldia@muniparaiso.go.cr",
+        "result": "valid",
+        "confidence": 0.8
+      }
+    ]
+  }
+}

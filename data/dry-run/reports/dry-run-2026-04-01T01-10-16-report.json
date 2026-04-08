@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "8",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 12",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-01T01-10-16 | 3/31/2026, 7:10:20 PM"
+      },
+      "timestamp": "2026-04-01T01:10:20.013Z"
+    },
+    {
+      "title": "VC Firms (8)",
+      "color": 1096065,
+      "description": "**Safe AI Fund**\n   🌐 https://www.saif.vc\n\n**Halcyon Futures**\n\n**Glasswing Ventures**\n\n**Menlo Ventures**\n   🌐 https://menlovc.com\n\n**Evolution Equity Partners**\n\n**General Catalyst**\n\n**GV (Google Ventures)**\n\n**M12**",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-01T01-10-16",
+  "timestamp": "2026-04-01T01-10-16"
+}

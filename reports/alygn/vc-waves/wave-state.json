@@ -1,0 +1,85 @@
+{
+  "currentWave": 3,
+  "lastUpdated": "2026-04-01T01:11:17.523Z",
+  "totalWaves": 6,
+  "entities": {
+    "discovered": 8,
+    "researched": 4,
+    "personalized": 0,
+    "sent": 0
+  },
+  "waveDates": {
+    "2026-03-28": "completed",
+    "2026-03-30": "personalized",
+    "2026-03-31": "sent",
+    "2026-04-01": "personalized"
+  },
+  "latestResearch": {
+    "date": "2026-04-01",
+    "count": 4,
+    "entities": [
+      "entity-mnfcmw6j-homdho",
+      "entity-mnfcmw6j-7vuuyv",
+      "entity-mnfcmw6j-umxpk3",
+      "entity-mnfcmw6j-kjbtib"
+    ],
+    "stateFile": "alygn-vc-researched-2026-04-01.json",
+    "note": "Filtered out Menlo Ventures (already contacted today) - NOW PERSONALIZED"
+  },
+  "latestPersonalization": {
+    "date": "2026-04-01",
+    "count": 4,
+    "entities": [
+      "entity-mnfcmw6j-homdho",
+      "entity-mnfcmw6j-7vuuyv",
+      "entity-mnfcmw6j-umxpk3",
+      "entity-mnfcmw6j-kjbtib"
+    ],
+    "draftIds": [
+      "draft-entity-mnfcmw6j-homdho-1775066860700",
+      "draft-entity-mnfcmw6j-7vuuyv-1775066860700",
+      "draft-entity-mnfcmw6j-umxpk3-1775066860700",
+      "draft-entity-mnfcmw6j-kjbtib-1775066860700"
+    ]
+  },
+  "afternoonRetry": {
+    "attempted": "2026-03-30T20:00:00.000Z",
+    "status": "completed",
+    "reason": "CLI flag --retry-failed does not exist in skill; entities require Notion draft approval before send"
+  },
+  "latestPersonalization": {
+    "date": "2026-03-31",
+    "count": 3,
+    "entities": [
+      "entity-mn8hiw5u-dq65f3",
+      "entity-mn8hiw5u-gwnhvq",
+      "entity-mn8hiw5u-gh5m6n"
+    ],
+    "draftIds": [
+      "draft-entity-mn8hiw5u-dq65f3-1774969327329",
+      "draft-entity-mn8hiw5u-gwnhvq-1774969327329",
+      "draft-entity-mn8hiw5u-gh5m6n-1774969327329"
+    ]
+  },
+  "completedEntities": {
+    "entity-mn8hiw5u-dq65f3": {
+      "vcName": "Menlo Ventures",
+      "status": "sent",
+      "sentAt": "2026-03-31T12:00:00.000Z",
+      "note": "Email sent successfully"
+    },
+    "entity-mn8hiw5u-gwnhvq": {
+      "vcName": "Spark Capital",
+      "status": "failed-retryable",
+      "sentAt": "2026-03-30T00:00:00.000Z",
+      "note": "Natalie no longer at firm, email bounced - requires manual re-research for new contact",
+      "lastRetry": "2026-03-31T20:00:00.000Z"
+    },
+    "entity-mn8hiw5u-gh5m6n": {
+      "vcName": "Lightspeed",
+      "status": "sent",
+      "sentAt": "2026-03-23T19:21:52.683Z",
+      "note": "Email sent successfully"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-28T17:02:49.469Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Federal judge temporarily blocks Pentagon from labeling Anthropic a supply chain risk. Upholds neutrality in AI governance, preventing biased federal actions against key innovators.",
+      "replyText": "This ruling advances Alygn's neutrality principle by ensuring government designations remain impartial, fostering trust and coordination among stakeholders without politicized interference.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 181,
+      "replyLength": 189,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Trump urges deadlocked Congress to enact national AI framework as states lead with regulations. Stresses coordination for unified legitimacy over patchwork rules.",
+      "replyText": "Emphasizes Alygn's coordination principle: federal action needed to harmonize state efforts, building legitimate, neutral standards that prevent regulatory fragmentation and ensure broad buy-in.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 162,
+      "replyLength": 194,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "California's pioneering AI safety law SB53 adopted by New York. Demonstrates growing legitimacy through state-level coordination on responsible AI deployment.",
+      "replyText": "Bolsters Alygn's legitimacy and coordination: states proving viable governance models gain stakeholder trust, paving way for neutral federal standards with proven efficacy.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 158,
+      "replyLength": 172,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "AI schism in Washington: tech giants vs labor over policy. Neutral governance essential to balance innovation and worker protections via coordinated dialogue.",
+      "replyText": "Aligns with Alygn's neutrality: mediating tech-labor divides ensures legitimate outcomes, coordinating diverse interests for sustainable AI rules that maintain public trust.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 158,
+      "replyLength": 173,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Bipartisan calls grow for consensus AI regulation principles. Builds legitimacy through neutral, coordinated federal baseline amid global momentum.",
+      "replyText": "Supports Alygn's legitimacy: bipartisan backing creates durable frameworks, coordinating policy with neutrality to preempt extremes and secure broad institutional acceptance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 147,
+      "replyLength": 174,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

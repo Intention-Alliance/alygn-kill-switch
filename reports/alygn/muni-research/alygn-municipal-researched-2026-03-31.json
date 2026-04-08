@@ -1,0 +1,852 @@
+{
+  "timestamp": "2026-03-31T19:13:54.984Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "type": "municipal",
+        "name": "Municipalidad de San Ramón",
+        "email": "kperez@sanramon.go.cr",
+        "website": "https://sanramon.go.cr",
+        "phone": "2445-1000",
+        "location": {
+          "city": "San Ramón",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:53.228Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of Alajuela province. Population: 82985. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support",
+          "valueProposition": "Support municipal AI governance and digital transformation"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 80800,
+          "budget": 45000000,
+          "departments": [],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 900000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "sanramon.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+        "type": "municipal",
+        "name": "Municipalidad de Grecia",
+        "email": "alcaldia@grecia.go.cr",
+        "website": "https://grecia.go.cr",
+        "phone": "2494-1000",
+        "location": {
+          "city": "Grecia",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:53.406Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of Alajuela province. Population: 76902. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support",
+          "valueProposition": "Support municipal AI governance and digital transformation"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 76000,
+          "budget": 40000000,
+          "departments": [],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2000000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 800000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "grecia.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+        "type": "municipal",
+        "name": "Municipalidad de Paraíso",
+        "email": "alcaldia@muniparaiso.go.cr",
+        "website": "https://paraiso.go.cr",
+        "phone": "2574-1000",
+        "location": {
+          "city": "Paraíso",
+          "state": "Cartago",
+          "country": "Costa Rica",
+          "region": "Cartago"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:56.664Z",
+        "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of Cartago province. Population: 57543. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support",
+          "valueProposition": "Support municipal AI governance and digital transformation"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 57000,
+          "budget": 35000000,
+          "departments": [],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1750000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 700000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Cartago",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "muniparaiso.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "population": 82985,
+          "budget": 45000000,
+          "province": "Alajuela",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 900000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+          "type": "municipal",
+          "name": "Municipalidad de San Ramón",
+          "email": "kperez@sanramon.go.cr",
+          "website": "https://sanramon.go.cr",
+          "phone": "2445-1000",
+          "location": {
+            "city": "San Ramón",
+            "state": "Alajuela",
+            "country": "Costa Rica",
+            "region": "Alajuela"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-19T05:25:53.228Z",
+          "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of Alajuela province. Population: 82985. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 80800,
+            "budget": 45000000,
+            "departments": [],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 2250000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 900000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "Alajuela",
+            "trAigaRelevant": true
+          },
+          "emailValidation": {
+            "result": "valid",
+            "confidence": 0.8,
+            "details": {
+              "domain": "sanramon.go.cr",
+              "format": "valid"
+            },
+            "validator": "regex-mx"
+          },
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": 1,
+          "waveDate": null,
+          "batchStatus": "researched",
+          "municipalityId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 76902,
+          "budget": 40000000,
+          "province": "Alajuela",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2000000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 800000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+          "type": "municipal",
+          "name": "Municipalidad de Grecia",
+          "email": "alcaldia@grecia.go.cr",
+          "website": "https://grecia.go.cr",
+          "phone": "2494-1000",
+          "location": {
+            "city": "Grecia",
+            "state": "Alajuela",
+            "country": "Costa Rica",
+            "region": "Alajuela"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-19T05:25:53.406Z",
+          "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of Alajuela province. Population: 76902. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 76000,
+            "budget": 40000000,
+            "departments": [],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 2000000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 800000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "Alajuela",
+            "trAigaRelevant": true
+          },
+          "emailValidation": {
+            "result": "valid",
+            "confidence": 0.8,
+            "details": {
+              "domain": "grecia.go.cr",
+              "format": "valid"
+            },
+            "validator": "regex-mx"
+          },
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": 1,
+          "waveDate": null,
+          "batchStatus": "researched",
+          "municipalityId": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 57543,
+          "budget": 35000000,
+          "province": "Cartago",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1750000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 700000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+          "type": "municipal",
+          "name": "Municipalidad de Paraíso",
+          "email": "alcaldia@muniparaiso.go.cr",
+          "website": "https://paraiso.go.cr",
+          "phone": "2574-1000",
+          "location": {
+            "city": "Paraíso",
+            "state": "Cartago",
+            "country": "Costa Rica",
+            "region": "Cartago"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-19T05:25:56.664Z",
+          "lastUpdatedAt": "2026-03-31T19:13:54.984Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of Cartago province. Population: 57543. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 57000,
+            "budget": 35000000,
+            "departments": [],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 1750000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 700000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "Cartago",
+            "trAigaRelevant": true
+          },
+          "emailValidation": {
+            "result": "valid",
+            "confidence": 0.8,
+            "details": {
+              "domain": "muniparaiso.go.cr",
+              "format": "valid"
+            },
+            "validator": "regex-mx"
+          },
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": 1,
+          "waveDate": null,
+          "batchStatus": "researched",
+          "municipalityId": "585e10d1-8a7e-4f0e-b116-04c22c3f0b2f",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}

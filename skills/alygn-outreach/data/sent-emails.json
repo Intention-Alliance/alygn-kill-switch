@@ -1,6 +1,17 @@
 {
   "vcs": [
     {
+      "email": "natalie.sandman@sparkcapital.com",
+      "name": "Natalie Sandman",
+      "partnerName": "Partner - Spark Capital",
+      "vcName": "Spark Capital",
+      "subject": "Alygn - AI Governance",
+      "sentAt": "2026-03-30T00:00:00.000Z",
+      "messageId": "bounced-email-natalie-spark-capital",
+      "status": "bounced",
+      "note": "Natalie no longer at firm, bounced"
+    },
+    {
       "email": "guru@lsvp.com",
       "name": "Lightspeed Venture Partners",
       "partnerName": "Guru Chahal (Partner) - Enterprise AI specialist",
@@ -113,6 +124,34 @@
       "messageId": "manual-send-1774373567029"
     }
   ],
-  "municipalities": [],
-  "lastUpdated": "2026-03-24T17:32:47.029Z"
+  "municipalities": [
+    {
+      "email": "kperez@sanramon.go.cr",
+      "name": "Alcaldía de San Ramón",
+      "partnerName": null,
+      "vcName": "San Ramón",
+      "subject": "Marco TRAIGA: Coordinación en gobernanza de IA para San Ramón",
+      "sentAt": "2026-03-31T20:27:00.000Z",
+      "messageId": "<f320be86-8db4-5eb8-56eb-dc799ebd1b80@alygn.com>"
+    },
+    {
+      "email": "alcaldia@grecia.go.cr",
+      "name": "Alcaldía de Grecia",
+      "partnerName": null,
+      "vcName": "Grecia",
+      "subject": "Marco TRAIGA: Coordinación en gobernanza de IA para Grecia",
+      "sentAt": "2026-03-31T20:27:00.000Z",
+      "messageId": "<dda5a848-df98-d7e3-5759-e96345b48882@alygn.com>"
+    },
+    {
+      "email": "alcaldia@muniparaiso.go.cr",
+      "name": "Alcaldía de Paraíso",
+      "partnerName": null,
+      "vcName": "Paraíso",
+      "subject": "Marco TRAIGA: Coordinación en gobernanza de IA para Paraíso",
+      "sentAt": "2026-03-31T20:27:00.000Z",
+      "messageId": "<80d0a712-0d1c-1f7d-0f08-3595710cb4e3@alygn.com>"
+    }
+  ],
+  "lastUpdated": "2026-03-31T19:29:38.148Z"
 }

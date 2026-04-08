@@ -1,0 +1,21 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-28T19:13:48.880Z",
+  "workflow": {
+    "source": "manual-reply",
+    "createdAt": "2026-03-28T13:11:00Z",
+    "replies": [
+      {
+        "targetHandle": "@tfoxlaw",
+        "targetUrl": "https://x.com/tfoxlaw/status/2037651362893160687",
+        "content": "Raises essential questions on governance for AI in healthcare. Neutral coordination infrastructure can support legitimacy and accountability across stakeholders.",
+        "mediaPath": null
+      }
+    ]
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 1
+}

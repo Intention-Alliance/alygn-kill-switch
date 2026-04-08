@@ -257,7 +257,6 @@ export class SupabaseSimulator {
       recipient_email: emailData.recipientEmail,
       recipient_name: emailData.recipientName,
       local_government_id: isMunicipal ? (entity as MunicipalEntity).localGovernmentId : null,
-      municipality_id: isMunicipal ? ((entity as MunicipalEntity).municipalityId || entity.id) : null,
       political_figure_id: !isMunicipal ? entity.id : null,
       variant: isMunicipal ? (entity as MunicipalEntity).outreachVariant : null,
       wave_number: isMunicipal ? (entity as MunicipalEntity).waveNumber : null,

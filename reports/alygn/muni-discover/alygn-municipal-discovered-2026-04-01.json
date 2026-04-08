@@ -1,0 +1,448 @@
+{
+  "timestamp": "2026-04-01T01:03:32.591Z",
+  "type": "municipal",
+  "phase": "discovered",
+  "data": {
+    "count": 6,
+    "entities": [
+      {
+        "id": "entity-mnfce5tb-mshc3t",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 288054,
+          "budget": 150000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-ej2g68",
+        "type": "municipal",
+        "name": "Municipalidad de Escazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Escazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 91117,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-nprax7",
+        "type": "municipal",
+        "name": "Municipalidad de Desamparados",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Desamparados",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 208741,
+          "budget": 80000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-2cdis3",
+        "type": "municipal",
+        "name": "Municipalidad de Puriscal",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Puriscal",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 33484,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-8in5ho",
+        "type": "municipal",
+        "name": "Municipalidad de Tarrazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Tarrazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 16260,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-esxlx4",
+        "type": "municipal",
+        "name": "Municipalidad de Aserrí",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Aserrí",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:03:32.591Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 58912,
+          "budget": 35000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Digital transformation",
+            "Citizen services",
+            "Data governance"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ]
+  }
+}

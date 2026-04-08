@@ -76,7 +76,7 @@ async function executeWorkflow() {
       // Navigate to home
       console.log("  → Navigate to compose...");
       execSync(
-        `browser --profile="${BROWSER_PROFILE}" --action=navigate --targetUrl="https://x.com/compose/post" --timeoutMs=${TIMEOUTS.NAVIGATE}`,
+        `browser --profile="${BROWSER_PROFILE}" --action=navigate --targetUrl="https://x.com/compose/post" --timeoutMs=${TIMEOUTS.NAVIGATE} --target host`,
         { encoding: "utf8" }
       );
 
@@ -85,7 +85,7 @@ async function executeWorkflow() {
       // Snapshot to find compose elements
       console.log("  → Taking snapshot...");
       const snapshot = execSync(
-        `browser --profile="${BROWSER_PROFILE}" --action=snapshot --timeoutMs=${TIMEOUTS.SNAPSHOT}`,
+        `browser --profile="${BROWSER_PROFILE}" --action=snapshot --timeoutMs=${TIMEOUTS.SNAPSHOT} --target host`,
         { encoding: "utf8" }
       );
 

@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-03-31T17:27:11.516Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 3,
+  "totalThreads": 3,
+  "validUrls": 3,
+  "invalidUrls": 1,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "White House issued National Policy Framework for AI, urging Congress to enact federal preemption of burdensome state laws while prioritizing child safety, free speech, and innovation.",
+      "replyText": "Advances centralized coordination to resolve regulatory fragmentation, bolstering legitimacy through national over state-level AI governance.",
+      "sourceUrl": "https://www.jdsupra.com/legalnews/white-house-releases-a-national-policy-4937280",
+      "isThread": true,
+      "mainLength": 183,
+      "replyLength": 141,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Federal push seeks to preempt California's 2026 AI rules, including frontier model safety reporting and generative AI watermarking mandates.",
+      "replyText": "Exposes coordination breakdowns between federal innovation priorities and state risk mitigation, affecting cross-jurisdictional legitimacy.",
+      "sourceUrl": "https://www.blockchain-council.org/news/ai-regulation-2026-us-federal-preempt-california",
+      "isThread": true,
+      "mainLength": 140,
+      "replyLength": 139,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Experts challenge the myth that human oversight ensures accountability in government AI, as critical judgments are hardcoded in system design.",
+      "replyText": "Underscores legitimacy gaps in public AI deployment, necessitating upstream institutional governance for democratic control.",
+      "sourceUrl": "https://www.techpolicy.press/where-is-accountability-when-governments-deploy-ai",
+      "isThread": true,
+      "mainLength": 142,
+      "replyLength": 124,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

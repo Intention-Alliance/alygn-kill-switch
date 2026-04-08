@@ -1,0 +1,676 @@
+{
+  "timestamp": "2026-04-01T16:05:35.284Z",
+  "type": "vc",
+  "phase": "sent",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mnfce5tb-ej2g68",
+        "type": "municipal",
+        "name": "Municipalidad de Escazú",
+        "email": "alcaldia@escazu.go.cr",
+        "website": "https://www.escazu.go.cr",
+        "phone": "+506 2208-4600",
+        "location": {
+          "city": "Escazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "sent",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 91,117. Key initiatives: Transformación Digital Municipal, Gobierno Abierto. Affluent municipality with strong tech presence.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI/governance investments.",
+          "customSubject": "Alygn - AI Safety Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI Safety Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI Safety Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi there at Municipalidad de Escazú,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Municipalidad de Escazú faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20Safety%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Municipalidad%20de%20Escaz%C3%BA%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI Safety Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi there at Municipalidad de Escazú,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand Municipalidad de Escazú faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          },
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": null
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 91117,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 900000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mnfce5tb-ej2g68-1775059234023",
+        "draftCreatedAt": "2026-04-01T16:00:34.023Z",
+        "waveNumber": 2,
+        "waveDate": "2026-04-01",
+        "batchStatus": "researched",
+        "municipalityId": "entity-mnfce5tb-ej2g68",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-nprax7",
+        "type": "municipal",
+        "name": "Municipalidad de Desamparados",
+        "email": "alcaldia@desamparados.go.cr",
+        "website": "https://www.desamparados.go.cr",
+        "phone": "+506 2211-6400",
+        "location": {
+          "city": "Desamparados",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "sent",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 208,741. Key initiatives: Transformación Digital Municipal, Gobierno Abierto. Large municipality with significant service delivery needs.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Your focus on AI safety and governance aligns with our work building governance infrastructure for advanced AI systems.",
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI/governance investments.",
+          "customSubject": "Alygn - AI Safety Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI Safety Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI Safety Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi there at Municipalidad de Desamparados,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your focus on AI safety and governance aligns with our work building governance infrastructure for advanced AI systems.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Municipalidad de Desamparados faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20Safety%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Municipalidad%20de%20Desamparados%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI Safety Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi there at Municipalidad de Desamparados,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Your focus on AI safety and governance aligns with our work building governance infrastructure for advanced AI systems.\n\n        We understand Municipalidad de Desamparados faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          },
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": null
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 208741,
+          "budget": 80000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 4000000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 1600000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mnfce5tb-nprax7-1775059234024",
+        "draftCreatedAt": "2026-04-01T16:00:34.024Z",
+        "waveNumber": 2,
+        "waveDate": "2026-04-01",
+        "batchStatus": "researched",
+        "municipalityId": "entity-mnfce5tb-nprax7",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-2cdis3",
+        "type": "municipal",
+        "name": "Municipalidad de Puriscal",
+        "email": "alcaldia@puriscal.go.cr",
+        "website": "https://www.puriscal.go.cr",
+        "phone": "+506 2416-7300",
+        "location": {
+          "city": "Puriscal",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "sent",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 33,484. Key initiatives: Transformación Digital Municipal, Gobierno Abierto. Rural municipality with growing digital needs.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI/governance investments.",
+          "customSubject": "Alygn - AI Safety Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI Safety Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI Safety Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi there at Municipalidad de Puriscal,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Municipalidad de Puriscal faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20Safety%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Municipalidad%20de%20Puriscal%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI Safety Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi there at Municipalidad de Puriscal,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        The AI safety and governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand Municipalidad de Puriscal faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          },
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": null
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 33484,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 500000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mnfce5tb-2cdis3-1775059234024",
+        "draftCreatedAt": "2026-04-01T16:00:34.024Z",
+        "waveNumber": 2,
+        "waveDate": "2026-04-01",
+        "batchStatus": "researched",
+        "municipalityId": "entity-mnfce5tb-2cdis3",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-8in5ho",
+        "type": "municipal",
+        "name": "Municipalidad de Tarrazú",
+        "email": "alcaldia@tarrazu.go.cr",
+        "website": "https://www.tarrazu.go.cr",
+        "phone": "+506 2546-7100",
+        "location": {
+          "city": "Tarrazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 16,260. Key initiatives: Transformación Digital Municipal, Gobierno Abierto. Coffee-growing region with focus on agricultural modernization.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Given Municipalidad de Tarrazú's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.",
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI/governance investments.",
+          "customSubject": "Alygn - AI Safety Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI Safety Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI Safety Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi there at Municipalidad de Tarrazú,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given Municipalidad de Tarrazú's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Municipalidad de Tarrazú faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20Safety%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Municipalidad%20de%20Tarraz%C3%BA%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI Safety Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi there at Municipalidad de Tarrazú,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Given Municipalidad de Tarrazú's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.\n\n        We understand Municipalidad de Tarrazú faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          },
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": null
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 16260,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 900000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 360000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mnfce5tb-8in5ho-1775059234024",
+        "draftCreatedAt": "2026-04-01T16:00:34.024Z",
+        "waveNumber": 2,
+        "waveDate": "2026-04-01",
+        "batchStatus": "researched",
+        "municipalityId": "entity-mnfce5tb-8in5ho",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-esxlx4",
+        "type": "municipal",
+        "name": "Municipalidad de Aserrí",
+        "email": "alcaldia@aserri.go.cr",
+        "website": "https://www.aserri.go.cr",
+        "phone": "+506 2230-9090",
+        "location": {
+          "city": "Aserrí",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "sent",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.041Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 58,912. Key initiatives: Transformación Digital Municipal, Gobierno Abierto. Growing suburban municipality.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Given Municipalidad de Aserrí's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.",
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI/governance investments.",
+          "customSubject": "Alygn - AI Safety Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI Safety Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI Safety Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi there at Municipalidad de Aserrí,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given Municipalidad de Aserrí's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Municipalidad de Aserrí faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20Safety%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Municipalidad%20de%20Aserr%C3%AD%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI Safety Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi there at Municipalidad de Aserrí,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Given Municipalidad de Aserrí's thesis on AI safety and governance, you recognize that technical capability is outpacing institutional coordination.\n\n        We understand Municipalidad de Aserrí faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          },
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": null
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 58912,
+          "budget": 35000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1750000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 700000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mnfce5tb-esxlx4-1775059234024",
+        "draftCreatedAt": "2026-04-01T16:00:34.024Z",
+        "waveNumber": 2,
+        "waveDate": "2026-04-01",
+        "batchStatus": "researched",
+        "municipalityId": "entity-mnfce5tb-esxlx4",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "messageId": "<7248a574-c2c7-9fd6-75ac-7a5ea8ef7495@alygn.com>",
+        "provider": "smtp"
+      },
+      {
+        "success": true,
+        "messageId": "<e4e7817c-93e4-355e-86ca-5385823439b3@alygn.com>",
+        "provider": "smtp"
+      },
+      {
+        "success": true,
+        "messageId": "<9fa99a35-6820-ac32-01b6-9990e571c592@alygn.com>",
+        "provider": "smtp"
+      },
+      {
+        "success": false,
+        "error": "EMAIL_VALIDATION: DNS_NXDOMAIN: No MX records found for domain \"tarrazu.go.cr\" - domain may not exist or email may not be deliverable"
+      },
+      {
+        "success": true,
+        "messageId": "<3c1f4da0-6227-e20e-c638-e6daf4b30d58@alygn.com>",
+        "provider": "smtp"
+      }
+    ]
+  }
+}

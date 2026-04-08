@@ -1,0 +1,21 @@
+{
+  "wave": {
+    "number": 1,
+    "date": "2026-04-06",
+    "nextDate": "2026-04-07",
+    "status": "running"
+  },
+  "entities": {},
+  "lastRun": "2026-04-06T18:44:00.000Z",
+  "phaseCompleted": null,
+  "dailyStats": {
+    "postsCreated": 0,
+    "postsLimit": 7,
+    "engagements": 0,
+    "engagementLimit": 4,
+    "follows": 0,
+    "followLimit": 1,
+    "totalActions": 0,
+    "absoluteMax": 11
+  }
+}

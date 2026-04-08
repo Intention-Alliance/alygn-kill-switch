@@ -1,0 +1,794 @@
+{
+  "timestamp": "2026-03-30T19:43:48.417Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-mn8hiw5u-dq65f3",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "https://menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-30T19:43:40.029Z",
+        "outreachCount": 0,
+        "researchNotes": "Menlo Ventures is a leading early-stage VC firm heavily focused on AI investments across the stack, including a notable emphasis on AI safety through its partnership with Anthropic and the $100M Anthology Fund. While not exclusively centered on safety, governance, and alignment, their portfolio features key players in reliable AI systems alongside broad AI infrastructure and applications.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited explicit focus on AI governance and alignment beyond Anthropic; portfolio skewed toward applications, infrastructure, and healthcare AI rather than pure safety research.",
+            "No mentions of investments in broader AI ethics, policy, or regulatory tech firms.",
+            "Heavy emphasis on commercial AI transformation may dilute dedicated safety signals."
+          ],
+          "tailoredHook": "Menlo Ventures aligns strongly with Alygn's AI safety focus via its flagship Anthropic investment and dedicated Anthology Fund, offering access to a top-tier AI portfolio with safety at its foundation layer, while their early-stage expertise and $6.8B AUM enable high-impact co-investments in alignment-adjacent startups.",
+          "recentNews": "Investment in Anthropic, an AI safety and research company building reliable, interpretable, and steerable AI systems."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Early Stage",
+            "Growth Stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety",
+            "Enterprise Software",
+            "Cybersecurity",
+            "Healthcare"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Derek Xiao",
+              "title": "Principal"
+            },
+            {
+              "name": "Tim",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Anthropic",
+            "Brellium",
+            "Eleos Health",
+            "Heidi",
+            "New Lantern",
+            "Particle Health",
+            "Rivet",
+            "Squad Health",
+            "Function Health",
+            "Solace",
+            "Delfi",
+            "Ophelia",
+            "Cartwheel",
+            "Ash",
+            "Colla Health",
+            "Recursion",
+            "Xaira",
+            "Chai Discovery",
+            "Genesis Therapeutics",
+            "Vilya",
+            "Benchling",
+            "H1",
+            "Bluenote",
+            "Qualio",
+            "Abnormal AI",
+            "Aisera",
+            "Armadin",
+            "Clarifai",
+            "Eve",
+            "Neon",
+            "Unstructured",
+            "Pinecone",
+            "Edge Delta",
+            "JuliaHub",
+            "TruEra",
+            "Mercor",
+            "ShopMy",
+            "Brain Jar Games",
+            "Heidi Health"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Mercor",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "ShopMy",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Brain Jar Games",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Heidi Health",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Eve",
+              "date": "2026",
+              "stage": "Early"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mn8hiw5u-gwnhvq",
+        "type": "vc",
+        "name": "Spark Capital",
+        "email": null,
+        "website": "https://www.sparkcapital.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-30T19:43:44.200Z",
+        "outreachCount": 0,
+        "researchNotes": "Spark Capital focuses on early and growth-stage technology startups with transformative potential, particularly in frontier tech including AI, backing companies that push boundaries in disruptive innovation across sectors like AI, deeptech, fintech, and enterprise software.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited explicit focus on AI safety, governance, or alignment in investment thesis despite investments in foundational AI like Anthropic and Scale AI",
+            "Broad generalist approach across multiple sectors may dilute specialized depth in AI safety"
+          ],
+          "tailoredHook": "Spark Capital's investments in leading AI firms like Anthropic (AI alignment pioneer) and Scale AI align with Alygn's mission, offering potential for governance-focused LPs seeking exposure to frontier AI with transformative impact, despite lacking overt safety branding.",
+          "recentNews": "Investments in AI infrastructure like Crusoe and foundational models via Anthropic indicate indirect support for responsible AI scaling"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Growth Stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Natalie Sandman",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Scale AI",
+            "Anthropic",
+            "Crusoe",
+            "Deel",
+            "Carta"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Piston",
+              "date": "May 29, 2025",
+              "stage": "Unattributed VC"
+            },
+            {
+              "company": "Superblocks",
+              "date": "May 27, 2025",
+              "stage": "Series A - II"
+            },
+            {
+              "company": "Garden Intel",
+              "date": "February 05, 2026",
+              "stage": "Portfolio Exit"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mn8hiw5u-gh5m6n",
+        "type": "vc",
+        "name": "Lightspeed Venture Partners",
+        "email": null,
+        "website": "https://lsvp.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-30T19:43:48.417Z",
+        "outreachCount": 0,
+        "researchNotes": "Lightspeed Venture Partners is a leading AI investor with over $9B raised across six funds in 2025-2026 to back AI-native companies, demonstrating strong focus on AI safety through key investments in Anthropic and Stability AI. Their portfolio emphasizes early-stage AI deployments with explicit nods to safety, trust, and regulatory navigation.",
+        "personalizationContext": {
+          "painPoints": [
+            "Navigating rapid AI company growth from zero to tens of billions in revenue",
+            "Helping with regulatory frameworks and global market chessboard planning",
+            "Evolving VC platform to support AI tech generation beyond just capital"
+          ],
+          "tailoredHook": "Lightspeed's deep AI safety investments in Anthropic and Stability AI, combined with $9B+ commitment to AI and explicit focus on trust/safety technologies and regulatory support, align strongly with Alygn's mission in AI governance and alignment.",
+          "recentNews": "Investments in AI safety-focused Anthropic, emphasizing trust technology and safety as core to mission[2][6]"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Multi-stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety",
+            "AI Infrastructure",
+            "Enterprise AI"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ravi Mhatre",
+              "title": "Founder and Partner"
+            },
+            {
+              "name": "Gaurav Gupta",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Anthropic",
+            "Stability AI",
+            "xAI",
+            "Databricks",
+            "Mistral",
+            "Glean",
+            "Abridge",
+            "SSI",
+            "Skild AI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Anthropic",
+              "date": "2026",
+              "stage": "Series E ($3.5B)"
+            },
+            {
+              "company": "Stability AI",
+              "date": "2022",
+              "stage": "Series A"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "Menlo Ventures is a leading early-stage VC firm heavily focused on AI investments across the stack, including a notable emphasis on AI safety through its partnership with Anthropic and the $100M Anthology Fund. While not exclusively centered on safety, governance, and alignment, their portfolio features key players in reliable AI systems alongside broad AI infrastructure and applications.",
+          "portfolio": [
+            "Anthropic",
+            "Brellium",
+            "Eleos Health",
+            "Heidi",
+            "New Lantern",
+            "Particle Health",
+            "Rivet",
+            "Squad Health",
+            "Function Health",
+            "Solace",
+            "Delfi",
+            "Ophelia",
+            "Cartwheel",
+            "Ash",
+            "Colla Health",
+            "Recursion",
+            "Xaira",
+            "Chai Discovery",
+            "Genesis Therapeutics",
+            "Vilya",
+            "Benchling",
+            "H1",
+            "Bluenote",
+            "Qualio",
+            "Abnormal AI",
+            "Aisera",
+            "Armadin",
+            "Clarifai",
+            "Eve",
+            "Neon",
+            "Unstructured",
+            "Pinecone",
+            "Edge Delta",
+            "JuliaHub",
+            "TruEra",
+            "Mercor",
+            "ShopMy",
+            "Brain Jar Games",
+            "Heidi Health"
+          ],
+          "partners": [
+            {
+              "name": "Derek Xiao",
+              "title": "Principal"
+            },
+            {
+              "name": "Tim",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Mercor",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "ShopMy",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Brain Jar Games",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Heidi Health",
+              "date": "2026",
+              "stage": "Early"
+            },
+            {
+              "company": "Eve",
+              "date": "2026",
+              "stage": "Early"
+            }
+          ],
+          "painPoints": [
+            "Limited explicit focus on AI governance and alignment beyond Anthropic; portfolio skewed toward applications, infrastructure, and healthcare AI rather than pure safety research.",
+            "No mentions of investments in broader AI ethics, policy, or regulatory tech firms.",
+            "Heavy emphasis on commercial AI transformation may dilute dedicated safety signals."
+          ],
+          "governanceSignals": [
+            "Investment in Anthropic, an AI safety and research company building reliable, interpretable, and steerable AI systems.",
+            "Anthology Fund: $100M partnership with Anthropic to fuel next-generation AI startups.",
+            "Hands-on approach with founders in AI, suggesting potential governance involvement."
+          ],
+          "whyAlygn": "Menlo Ventures aligns strongly with Alygn's AI safety focus via its flagship Anthropic investment and dedicated Anthology Fund, offering access to a top-tier AI portfolio with safety at its foundation layer, while their early-stage expertise and $6.8B AUM enable high-impact co-investments in alignment-adjacent startups."
+        },
+        "entity": {
+          "id": "entity-mn8hiw5u-dq65f3",
+          "type": "vc",
+          "name": "Menlo Ventures",
+          "email": null,
+          "website": "https://menlovc.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-30T19:43:40.029Z",
+          "outreachCount": 0,
+          "researchNotes": "Menlo Ventures is a leading early-stage VC firm heavily focused on AI investments across the stack, including a notable emphasis on AI safety through its partnership with Anthropic and the $100M Anthology Fund. While not exclusively centered on safety, governance, and alignment, their portfolio features key players in reliable AI systems alongside broad AI infrastructure and applications.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited explicit focus on AI governance and alignment beyond Anthropic; portfolio skewed toward applications, infrastructure, and healthcare AI rather than pure safety research.",
+              "No mentions of investments in broader AI ethics, policy, or regulatory tech firms.",
+              "Heavy emphasis on commercial AI transformation may dilute dedicated safety signals."
+            ],
+            "tailoredHook": "Menlo Ventures aligns strongly with Alygn's AI safety focus via its flagship Anthropic investment and dedicated Anthology Fund, offering access to a top-tier AI portfolio with safety at its foundation layer, while their early-stage expertise and $6.8B AUM enable high-impact co-investments in alignment-adjacent startups.",
+            "recentNews": "Investment in Anthropic, an AI safety and research company building reliable, interpretable, and steerable AI systems."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Early Stage",
+              "Growth Stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety",
+              "Enterprise Software",
+              "Cybersecurity",
+              "Healthcare"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Derek Xiao",
+                "title": "Principal"
+              },
+              {
+                "name": "Tim",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Anthropic",
+              "Brellium",
+              "Eleos Health",
+              "Heidi",
+              "New Lantern",
+              "Particle Health",
+              "Rivet",
+              "Squad Health",
+              "Function Health",
+              "Solace",
+              "Delfi",
+              "Ophelia",
+              "Cartwheel",
+              "Ash",
+              "Colla Health",
+              "Recursion",
+              "Xaira",
+              "Chai Discovery",
+              "Genesis Therapeutics",
+              "Vilya",
+              "Benchling",
+              "H1",
+              "Bluenote",
+              "Qualio",
+              "Abnormal AI",
+              "Aisera",
+              "Armadin",
+              "Clarifai",
+              "Eve",
+              "Neon",
+              "Unstructured",
+              "Pinecone",
+              "Edge Delta",
+              "JuliaHub",
+              "TruEra",
+              "Mercor",
+              "ShopMy",
+              "Brain Jar Games",
+              "Heidi Health"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Mercor",
+                "date": "2026",
+                "stage": "Early"
+              },
+              {
+                "company": "ShopMy",
+                "date": "2026",
+                "stage": "Early"
+              },
+              {
+                "company": "Brain Jar Games",
+                "date": "2026",
+                "stage": "Early"
+              },
+              {
+                "company": "Heidi Health",
+                "date": "2026",
+                "stage": "Early"
+              },
+              {
+                "company": "Eve",
+                "date": "2026",
+                "stage": "Early"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Spark Capital focuses on early and growth-stage technology startups with transformative potential, particularly in frontier tech including AI, backing companies that push boundaries in disruptive innovation across sectors like AI, deeptech, fintech, and enterprise software.",
+          "portfolio": [
+            "Scale AI",
+            "Anthropic",
+            "Crusoe",
+            "Deel",
+            "Carta"
+          ],
+          "partners": [
+            {
+              "name": "Natalie Sandman",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Piston",
+              "date": "May 29, 2025",
+              "stage": "Unattributed VC"
+            },
+            {
+              "company": "Superblocks",
+              "date": "May 27, 2025",
+              "stage": "Series A - II"
+            },
+            {
+              "company": "Garden Intel",
+              "date": "February 05, 2026",
+              "stage": "Portfolio Exit"
+            }
+          ],
+          "painPoints": [
+            "Limited explicit focus on AI safety, governance, or alignment in investment thesis despite investments in foundational AI like Anthropic and Scale AI",
+            "Broad generalist approach across multiple sectors may dilute specialized depth in AI safety"
+          ],
+          "governanceSignals": [
+            "Investments in AI infrastructure like Crusoe and foundational models via Anthropic indicate indirect support for responsible AI scaling",
+            "Multi-stage, stage-agnostic approach with value-add in product guidance and AI integration"
+          ],
+          "whyAlygn": "Spark Capital's investments in leading AI firms like Anthropic (AI alignment pioneer) and Scale AI align with Alygn's mission, offering potential for governance-focused LPs seeking exposure to frontier AI with transformative impact, despite lacking overt safety branding."
+        },
+        "entity": {
+          "id": "entity-mn8hiw5u-gwnhvq",
+          "type": "vc",
+          "name": "Spark Capital",
+          "email": null,
+          "website": "https://www.sparkcapital.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-30T19:43:44.200Z",
+          "outreachCount": 0,
+          "researchNotes": "Spark Capital focuses on early and growth-stage technology startups with transformative potential, particularly in frontier tech including AI, backing companies that push boundaries in disruptive innovation across sectors like AI, deeptech, fintech, and enterprise software.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited explicit focus on AI safety, governance, or alignment in investment thesis despite investments in foundational AI like Anthropic and Scale AI",
+              "Broad generalist approach across multiple sectors may dilute specialized depth in AI safety"
+            ],
+            "tailoredHook": "Spark Capital's investments in leading AI firms like Anthropic (AI alignment pioneer) and Scale AI align with Alygn's mission, offering potential for governance-focused LPs seeking exposure to frontier AI with transformative impact, despite lacking overt safety branding.",
+            "recentNews": "Investments in AI infrastructure like Crusoe and foundational models via Anthropic indicate indirect support for responsible AI scaling"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Growth Stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Natalie Sandman",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Scale AI",
+              "Anthropic",
+              "Crusoe",
+              "Deel",
+              "Carta"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Piston",
+                "date": "May 29, 2025",
+                "stage": "Unattributed VC"
+              },
+              {
+                "company": "Superblocks",
+                "date": "May 27, 2025",
+                "stage": "Series A - II"
+              },
+              {
+                "company": "Garden Intel",
+                "date": "February 05, 2026",
+                "stage": "Portfolio Exit"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Lightspeed Venture Partners is a leading AI investor with over $9B raised across six funds in 2025-2026 to back AI-native companies, demonstrating strong focus on AI safety through key investments in Anthropic and Stability AI. Their portfolio emphasizes early-stage AI deployments with explicit nods to safety, trust, and regulatory navigation.",
+          "portfolio": [
+            "Anthropic",
+            "Stability AI",
+            "xAI",
+            "Databricks",
+            "Mistral",
+            "Glean",
+            "Abridge",
+            "SSI",
+            "Skild AI"
+          ],
+          "partners": [
+            {
+              "name": "Ravi Mhatre",
+              "title": "Founder and Partner"
+            },
+            {
+              "name": "Gaurav Gupta",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Anthropic",
+              "date": "2026",
+              "stage": "Series E ($3.5B)"
+            },
+            {
+              "company": "Stability AI",
+              "date": "2022",
+              "stage": "Series A"
+            }
+          ],
+          "painPoints": [
+            "Navigating rapid AI company growth from zero to tens of billions in revenue",
+            "Helping with regulatory frameworks and global market chessboard planning",
+            "Evolving VC platform to support AI tech generation beyond just capital"
+          ],
+          "governanceSignals": [
+            "Investments in AI safety-focused Anthropic, emphasizing trust technology and safety as core to mission[2][6]",
+            "Backing of open-source AI pioneer Stability AI[5]",
+            "Proactive portfolio management including regulatory navigation and strategic partnerships[2]"
+          ],
+          "whyAlygn": "Lightspeed's deep AI safety investments in Anthropic and Stability AI, combined with $9B+ commitment to AI and explicit focus on trust/safety technologies and regulatory support, align strongly with Alygn's mission in AI governance and alignment."
+        },
+        "entity": {
+          "id": "entity-mn8hiw5u-gh5m6n",
+          "type": "vc",
+          "name": "Lightspeed Venture Partners",
+          "email": null,
+          "website": "https://lsvp.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-30T19:43:48.417Z",
+          "outreachCount": 0,
+          "researchNotes": "Lightspeed Venture Partners is a leading AI investor with over $9B raised across six funds in 2025-2026 to back AI-native companies, demonstrating strong focus on AI safety through key investments in Anthropic and Stability AI. Their portfolio emphasizes early-stage AI deployments with explicit nods to safety, trust, and regulatory navigation.",
+          "personalizationContext": {
+            "painPoints": [
+              "Navigating rapid AI company growth from zero to tens of billions in revenue",
+              "Helping with regulatory frameworks and global market chessboard planning",
+              "Evolving VC platform to support AI tech generation beyond just capital"
+            ],
+            "tailoredHook": "Lightspeed's deep AI safety investments in Anthropic and Stability AI, combined with $9B+ commitment to AI and explicit focus on trust/safety technologies and regulatory support, align strongly with Alygn's mission in AI governance and alignment.",
+            "recentNews": "Investments in AI safety-focused Anthropic, emphasizing trust technology and safety as core to mission[2][6]"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Multi-stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety",
+              "AI Infrastructure",
+              "Enterprise AI"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Ravi Mhatre",
+                "title": "Founder and Partner"
+              },
+              {
+                "name": "Gaurav Gupta",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Anthropic",
+              "Stability AI",
+              "xAI",
+              "Databricks",
+              "Mistral",
+              "Glean",
+              "Abridge",
+              "SSI",
+              "Skild AI"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Anthropic",
+                "date": "2026",
+                "stage": "Series E ($3.5B)"
+              },
+              {
+                "company": "Stability AI",
+                "date": "2022",
+                "stage": "Series A"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

@@ -417,6 +417,21 @@ Repeat
 - Check git for evidence of work
 - Ping agents who go silent
 
+**6. The "Ping-Pong" Pattern** (learned 2026-04-07)
+
+- After `sessions_yield`, wait for push-based completion events (don't poll aggressively)
+- If agent doesn't report after 2-3 yields, use `sessions_send` to ask for updates
+- Agents often won't report progress proactively — asking is a communication skill
+- Check file changes and git status before assuming no progress was made
+- Always acknowledge completion with specific next steps
+
+**7. Handle Queued Messages**
+
+- When agent is "busy", messages queue up
+- Multiple "Continue where you left off" messages can stack
+- Read ALL queued messages, not just the latest
+- Process in chronological order to maintain context
+
 ### Example Good Coordination
 
 **Gimglich:** "Task 1 complete. SceneContainer.tsx created."

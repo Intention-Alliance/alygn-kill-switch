@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-29T17:04:48.760Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "totalThreads": 4,
+  "validUrls": 4,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "At the 2026 Zhongguancun Forum, Beijing Institute VP Dong Le highlighted China's inclusive solutions to global AI governance, prioritizing broad participation.",
+      "replyText": "Advances cross-national coordination by emphasizing inclusiveness, countering fragmented efforts and enhancing legitimacy of multilateral AI safety frameworks.",
+      "sourceUrl": "https://www.chinadaily.com.cn/a/202603/29/WS69c9048fa310d6866eb407b0.html",
+      "isThread": true,
+      "mainLength": 159,
+      "replyLength": 159,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "AI agents are becoming governance infrastructure that shapes memory, planning, and judgment. Experts warn of control risks without command over underlying substrates.",
+      "replyText": "Underscores need for institutional oversight of AI foundations to prevent centralized power, vital for legitimate, decentralized coordination in safety.",
+      "sourceUrl": "https://nationaltoday.com/us/ca/san-diego/news/2026/03/29/ai-agents-become-governance-infrastructure-raising-concerns-over-control",
+      "isThread": true,
+      "mainLength": 166,
+      "replyLength": 152,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "The Elders urge governments to manage AI via UN-led inclusive global dialogue. They reject self-regulation, prioritizing public safety over profit.",
+      "replyText": "Calls for coordinated international action with diverse stakeholders, building legitimacy by addressing social, political risks beyond technical x-risks.",
+      "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good",
+      "isThread": true,
+      "mainLength": 147,
+      "replyLength": 153,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "UK AI Safety Institute's RepliBench quantifies self-replication risks in agentic AI, creating measurable compliance metrics.",
+      "replyText": "Supports cross-organization safety efforts with standardized tools, enabling better institutional coordination on novel risks like AI replication.",
+      "sourceUrl": "https://elevateconsult.com/insights/state-of-agentic-ai-security-and-governance-in-2026-what-the-data-reveals",
+      "isThread": true,
+      "mainLength": 124,
+      "replyLength": 146,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

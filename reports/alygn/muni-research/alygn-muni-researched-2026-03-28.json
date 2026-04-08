@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-03-28T05:48:02.980Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-muni-tj7k9p3-1",
+        "name": "Municipalidad de San José",
+        "location": "San José, Costa Rica",
+        "population": 288054,
+        "budget": "$150M",
+        "priority": "high",
+        "website": "https://www.munisanjose.go.cr",
+        "contact": "info@msj.go.cr",
+        "phone": "+506 2547-6000",
+        "researchNotes": "Municipalidad de San José - capital municipality with large population and budget. Connected to national AI strategy via MICITT. Focus on public services and governance.",
+        "painPoints": [
+          "Complex coordination with national AI initiatives",
+          "Need for governance alignment with international standards"
+        ],
+        "trAigaRelevant": true
+      },
+      {
+        "id": "entity-muni-tj7k9p3-2",
+        "name": "Municipalidad de Heredia",
+        "location": "Heredia, Costa Rica",
+        "population": 125000,
+        "budget": "$75M",
+        "priority": "medium",
+        "website": "https://www.muniheredia.go.cr",
+        "contact": "info@muniheredia.go.cr",
+        "phone": "+506 2261-5600",
+        "researchNotes": "Municipalidad de Heredia - active in transparency initiatives and NICSP implementation audits. Focus on governance standards and public investment processes.",
+        "painPoints": [
+          "Outdated financial reporting norms (NICSP compliance)",
+          "Policy approval delays",
+          "Accounting norm adoption weaknesses"
+        ],
+        "trAigaRelevant": true
+      },
+      {
+        "id": "entity-muni-tj7k9p3-3",
+        "name": "Municipalidad de Alajuela",
+        "location": "Alajuela, Costa Rica",
+        "population": 280000,
+        "budget": "$95M",
+        "priority": "medium",
+        "website": "https://www.municipalidadalajuela.go.cr",
+        "contact": "info@municipalidadalajuela.go.cr",
+        "phone": "+506 2441-4000",
+        "researchNotes": "Municipalidad de Alajuela - large municipality focused on infrastructure, public services, and institutional transparency.",
+        "painPoints": [],
+        "trAigaRelevant": true
+      }
+    ]
+  }
+}

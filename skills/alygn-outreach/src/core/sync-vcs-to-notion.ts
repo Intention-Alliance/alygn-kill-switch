@@ -4,6 +4,7 @@
  * Self-contained: uses local notion-client from skill's lib/external
  */
 import fs from 'fs';
+import path from 'path';
 
 // Self-contained: use local notion-client
 import { getClient } from '../lib/external/notion-client';
@@ -27,6 +28,32 @@ interface SyncStats {
   failed: number;
 }
 
+interface SentEmailEntry {
+  email: string;
+  name: string;
+  partnerName: string | null;
+  vcName: string;
+  subject: string;
+  sentAt: string;
+  messageId: string;
+  status?: string;
+  note?: string;
+}
+
+interface SentEmails {
+  vcs: SentEmailEntry[];
+  municipalities: SentEmailEntry[];
+  lastUpdated: string | null;
+}
+
+interface ExistingVCResult {
+  exists: boolean;
+  source: 'sent-emails' | 'notion-name' | 'notion-email' | null;
+  pageId?: string;
+  vcName?: string;
+  sentAt?: string;
+}
+
 // Database ID - should be configured in notion-config.json
 const getDatabaseId = () => {
   // Check environment variable first
@@ -38,10 +65,68 @@ const getDatabaseId = () => {
 };
 
 /**
- * Check if VC already exists in Notion by email
+ * Load sent-emails.json to check for existing sends
  */
-async function vcExistsInNotion(email: string | undefined): Promise<boolean> {
-  if (!email) return false;
+function loadSentEmails(): SentEmails {
+  // Self-contained: check skill's data directory first
+  const skillDataPath = path.resolve(__dirname, '../../data/sent-emails.json');
+  const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/skills/alygn-outreach/data/sent-emails.json');
+  
+  try {
+    if (fs.existsSync(skillDataPath)) {
+      return JSON.parse(fs.readFileSync(skillDataPath, 'utf8')) as SentEmails;
+    }
+    if (fs.existsSync(legacyPath)) {
+      return JSON.parse(fs.readFileSync(legacyPath, 'utf8')) as SentEmails;
+    }
+  } catch (error) {
+    console.warn(`   ⚠️  Could not load sent-emails.json: ${(error as Error).message}`);
+  }
+  
+  return { vcs: [], municipalities: [], lastUpdated: null };
+}
+
+/**
+ * Check if VC exists in sent-emails.json
+ */
+function vcExistsInSentEmails(sentEmails: SentEmails, vcName: string, email?: string): ExistingVCResult {
+  // Check by email first
+  if (email) {
+    const byEmail = sentEmails.vcs.find(entry => 
+      entry.email.toLowerCase() === email.toLowerCase()
+    );
+    if (byEmail) {
+      return {
+        exists: true,
+        source: 'sent-emails',
+        vcName: byEmail.vcName,
+        sentAt: byEmail.sentAt
+      };
+    }
+  }
+  
+  // Check by VC name
+  const byName = sentEmails.vcs.find(entry => 
+    entry.vcName.toLowerCase() === vcName.toLowerCase()
+  );
+  if (byName) {
+    return {
+      exists: true,
+      source: 'sent-emails',
+      vcName: byName.vcName,
+      sentAt: byName.sentAt
+    };
+  }
+  
+  return { exists: false, source: null };
+}
+
+/**
+ * Check if VC already exists in Notion by email
+ * Returns the page ID if found
+ */
+async function vcExistsInNotionByEmail(email: string | undefined): Promise<ExistingVCResult> {
+  if (!email) return { exists: false, source: null };
   
   try {
     const notion = getClient();
@@ -57,53 +142,221 @@ async function vcExistsInNotion(email: string | undefined): Promise<boolean> {
       }
     });
     
-    return response.results.length > 0;
+    if (response.results.length > 0) {
+      const page = response.results[0] as { id: string; properties: Record<string, unknown> };
+      // Extract VC Name from the page properties
+      const nameProp = page.properties['Name'] as { title?: Array<{ text: { content: string } }> } | undefined;
+      const vcName = nameProp?.title?.[0]?.text?.content;
+      
+      return {
+        exists: true,
+        source: 'notion-email',
+        pageId: page.id,
+        vcName
+      };
+    }
+    
+    return { exists: false, source: null };
   } catch (error) {
-    console.error(`❌ Error checking for duplicate: ${(error as Error).message}`);
-    return false;
+    console.error(`❌ Error checking Notion by email: ${(error as Error).message}`);
+    return { exists: false, source: null };
   }
 }
 
 /**
- * Create VC in Notion
+ * Check if VC already exists in Notion by name
+ * Returns the page ID if found
  */
-async function createVCInNotion(vc: VC): Promise<unknown> {
-  const notion = getClient();
+async function vcExistsInNotionByName(vcName: string): Promise<ExistingVCResult> {
+  if (!vcName) return { exists: false, source: null };
   
   try {
-    const response = await notion.pages.create({
-      parent: { database_id: DATABASE_ID },
-      properties: {
-        'Name': {
-          title: [{ text: { content: vc.name } }]
-        },
-        'Email': {
-          email: vc.email || null
-        },
-        'Website': {
-          url: vc.website || null
-        },
-        'Status': {
-          select: { name: 'Not contacted' }
-        },
-        'Relevance Score': {
-          number: vc.relevanceScore || 0
-        },
-        'Focus Areas': {
-          multi_select: (vc.focusAreas || []).map(area => ({ name: area }))
-        },
-        'Pain Points': {
-          multi_select: (vc.painPoints || []).map(point => ({ name: point }))
-        },
-        'Partners': {
-          rich_text: [{ text: { content: vc.partners || '' } }]
+    const notion = getClient();
+    const DATABASE_ID = getDatabaseId();
+    
+    const response = await notion.databases.query({
+      database_id: DATABASE_ID,
+      filter: {
+        property: 'Name',
+        title: {
+          contains: vcName
         }
       }
     });
     
-    return response;
+    // Check for exact match (case-insensitive)
+    const exactMatch = response.results.find(result => {
+      const page = result as { id: string; properties: Record<string, unknown> };
+      const nameProp = page.properties['Name'] as { title?: Array<{ text: { content: string } }> } | undefined;
+      const name = nameProp?.title?.[0]?.text?.content || '';
+      return name.toLowerCase() === vcName.toLowerCase();
+    });
+    
+    if (exactMatch) {
+      const page = exactMatch as { id: string; properties: Record<string, unknown> };
+      return {
+        exists: true,
+        source: 'notion-name',
+        pageId: page.id,
+        vcName
+      };
+    }
+    
+    return { exists: false, source: null };
   } catch (error) {
-    console.error(`❌ Failed to create VC: ${(error as Error).message}`);
+    console.error(`❌ Error checking Notion by name: ${(error as Error).message}`);
+    return { exists: false, source: null };
+  }
+}
+
+/**
+ * COMPREHENSIVE DUPLICATE CHECK:
+ * 1. Check sent-emails.json FIRST (local verification)
+ * 2. Query Notion database by "VC Name" (remote verification)
+ * 3. Query Notion database by email (remote verification)
+ * Returns detailed result with source and pageId if found
+ */
+async function checkVCExists(vc: VC): Promise<ExistingVCResult> {
+  // Step 1: Check sent-emails.json FIRST
+  const sentEmails = loadSentEmails();
+  const sentEmailResult = vcExistsInSentEmails(sentEmails, vc.name, vc.email);
+  if (sentEmailResult.exists) {
+    console.log(`   📋 Found in sent-emails.json (sent on ${new Date(sentEmailResult.sentAt || '').toLocaleDateString()})`);
+    return sentEmailResult;
+  }
+  
+  // Step 2: Check Notion by email (most reliable)
+  if (vc.email) {
+    const emailResult = await vcExistsInNotionByEmail(vc.email);
+    if (emailResult.exists) {
+      console.log(`   📊 Found in Notion by email (Page ID: ${emailResult.pageId})`);
+      return emailResult;
+    }
+  }
+  
+  // Step 3: Check Notion by name
+  const nameResult = await vcExistsInNotionByName(vc.name);
+  if (nameResult.exists) {
+    console.log(`   📊 Found in Notion by name (Page ID: ${nameResult.pageId})`);
+    return nameResult;
+  }
+  
+  return { exists: false, source: null };
+}
+
+/**
+ * Create VC in Notion
+ * If pageId is provided, updates the existing page instead of creating
+ */
+async function createVCInNotion(vc: VC, existingPageId?: string): Promise<{ id: string; created: boolean }> {
+  const notion = getClient();
+  const DATABASE_ID = getDatabaseId();
+  
+  const properties = {
+    'Name': {
+      title: [{ text: { content: vc.name } }]
+    },
+    'Email': {
+      email: vc.email || null
+    },
+    'Website': {
+      url: vc.website || null
+    },
+    'Status': {
+      select: { name: 'Not contacted' }
+    },
+    'Relevance Score': {
+      number: vc.relevanceScore || 0
+    },
+    'Focus Areas': {
+      multi_select: (vc.focusAreas || []).map(area => ({ name: area }))
+    },
+    'Pain Points': {
+      multi_select: (vc.painPoints || []).map(point => ({ name: point }))
+    },
+    'Partners': {
+      rich_text: [{ text: { content: vc.partners || '' } }]
+    }
+  };
+  
+  try {
+    // If we have an existing page ID, update instead of create
+    if (existingPageId) {
+      const response = await notion.pages.update({
+        page_id: existingPageId,
+        properties
+      });
+      console.log(`   📝 Updated existing Notion page: ${existingPageId}`);
+      return { id: response.id, created: false };
+    }
+    
+    // Create new page
+    const response = await notion.pages.create({
+      parent: { database_id: DATABASE_ID },
+      properties
+    });
+    
+    return { id: response.id, created: true };
+  } catch (error) {
+    console.error(`❌ Failed to create/update VC: ${(error as Error).message}`);
+    throw error;
+  }
+}
+
+/**
+ * Update VC status in Notion for bounced emails
+ * Sets Status to "Passed" and adds bounce notes
+ */
+export async function updateVCBounceStatus(
+  vcName: string,
+  bounceReason: string,
+  dryRun = false
+): Promise<void> {
+  const notion = getClient();
+  
+  console.log(`📧 Processing bounce for ${vcName}...`);
+  console.log(`   Reason: ${bounceReason}`);
+  
+  // Find the VC in Notion by name
+  const existingCheck = await vcExistsInNotionByName(vcName);
+  
+  if (!existingCheck.exists || !existingCheck.pageId) {
+    console.warn(`   ⚠️  ${vcName} not found in Notion database`);
+    return;
+  }
+  
+  console.log(`   📝 Found Notion page: ${existingCheck.pageId}`);
+  
+  if (dryRun) {
+    console.log(`   [DRY RUN] Would update ${vcName}:`);
+    console.log(`     - Status: "Passed"`);
+    console.log(`     - Notes: "${bounceReason}"`);
+    console.log(`     - Draft Status: "Not Sent"`);
+    return;
+  }
+  
+  try {
+    await notion.pages.update({
+      page_id: existingCheck.pageId,
+      properties: {
+        'Status': {
+          select: { name: 'Passed' }
+        },
+        'Notes': {
+          rich_text: [{ text: { content: bounceReason } }]
+        },
+        'Draft Status': {
+          select: { name: 'Not Sent' }
+        }
+      }
+    });
+    
+    console.log(`   ✅ Updated ${vcName} in Notion:`);
+    console.log(`     - Status: "Passed"`);
+    console.log(`     - Notes: "${bounceReason}"`);
+    console.log(`     - Draft Status: "Not Sent"`);
+  } catch (error) {
+    console.error(`   ❌ Failed to update ${vcName}: ${(error as Error).message}`);
     throw error;
   }
 }
@@ -163,8 +416,17 @@ async function main(): Promise<void> {
   for (const vc of vcs) {
     console.log(`Processing: ${vc.name}`);
     
-    if (await vcExistsInNotion(vc.email)) {
-      console.log(`  ⏭️  Duplicate: ${vc.email}`);
+    // COMPREHENSIVE DUPLICATE CHECK
+    const existingCheck = await checkVCExists(vc);
+    
+    if (existingCheck.exists) {
+      console.log(`  ⏭️  DUPLICATE found (${existingCheck.source}): ${vc.name}`);
+      if (existingCheck.sentAt) {
+        console.log(`       Previously sent: ${new Date(existingCheck.sentAt).toLocaleDateString()}`);
+      }
+      if (existingCheck.pageId) {
+        console.log(`       Notion Page ID: ${existingCheck.pageId}`);
+      }
       stats.duplicates++;
       continue;
     }
@@ -176,8 +438,12 @@ async function main(): Promise<void> {
     }
     
     try {
-      await createVCInNotion(vc);
-      console.log(`  ✅ Created: ${vc.name}`);
+      const result = await createVCInNotion(vc);
+      if (result.created) {
+        console.log(`  ✅ Created: ${vc.name} (ID: ${result.id})`);
+      } else {
+        console.log(`  📝 Updated existing: ${vc.name} (ID: ${result.id})`);
+      }
       stats.created++;
       
       // Rate limiting
@@ -202,4 +468,18 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { createVCInNotion, loadVCsFromFile, vcExistsInNotion };
+export { 
+  createVCInNotion, 
+  loadVCsFromFile, 
+  loadSentEmails,
+  vcExistsInNotionByEmail,
+  vcExistsInNotionByName,
+  vcExistsInSentEmails,
+  checkVCExists,
+  updateVCBounceStatus,
+  type ExistingVCResult,
+  type SentEmails,
+  type SentEmailEntry,
+  type VC,
+  type SyncStats
+};

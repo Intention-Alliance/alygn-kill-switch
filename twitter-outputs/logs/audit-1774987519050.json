@@ -1,0 +1,148 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-31T20:00:16.756Z",
+  "workflow": {
+    "generatedAt": "2026-03-31T19:59:16.860Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 5,
+    "totalThreads": 5,
+    "validUrls": 5,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "Chatham House paper reveals AI governance deadlock from geopolitical misalignments, likely broken only by crisis forcing global coordination via existing institutions.",
+        "replyText": "Pre-crisis prep ensures legitimate, enforceable coordination post-crisis, avoiding ad-hoc failures undermining global AI order.",
+        "sourceUrl": "https://www.chathamhouse.org/2026/03/breaking-deadlock-ai-governance",
+        "isThread": true,
+        "mainLength": 167,
+        "replyLength": 127,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "SHRM releases AI white paper urging human-centric governance, workforce upskilling amid 89% HR efficiency gains, calling for federal risk-based framework.",
+        "replyText": "Aligns innovation, readiness, governance with federal guardrails to prevent bias, build trust, ensure consistent standards in workforce AI adoption.",
+        "sourceUrl": "https://www.shrm.org/about/press-room/shrm-releases-new-ai-white-paper",
+        "isThread": true,
+        "mainLength": 154,
+        "replyLength": 148,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Survey shows Americans prioritize trust in AI governance: 90% back child safety, 87% accountability; trust independent experts most for oversight.",
+        "replyText": "Highlights legitimacy via third-party experts over govt/industry; public splits on intl coordination vs US leadership, informing policy design.",
+        "sourceUrl": "https://fathomai.substack.com/p/ai-governance-what-americans-really",
+        "isThread": true,
+        "mainLength": 146,
+        "replyLength": 143,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "GNI urges WSIS Forum 2026 to focus on action, rights-based AI governance, aligning with Global Digital Compact via multistakeholder processes.",
+        "replyText": "Promotes inclusive coordination integrating AI summits and UN dialogues for implementation-focused, human rights-grounded global AI efforts.",
+        "sourceUrl": "https://globalnetworkinitiative.org/gni-calls-for-action-oriented-rights-based-wsis-forum-2026",
+        "isThread": true,
+        "mainLength": 142,
+        "replyLength": 140,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 5,
+        "mainText": "MAP-AI delivers oral inputs to UN Global Dialogue on AI Governance, stressing inclusive participation, accountability, human rights pillars.",
+        "replyText": "Pushes equitable Global Majority role, cross-framework coordination like WSIS/IGF for multistakeholder AI safety alignment.",
+        "sourceUrl": "https://globalnetworkinitiative.org/map-ai-submits-input-to-un-global-dialogue-on-ai-governance",
+        "isThread": true,
+        "mainLength": 140,
+        "replyLength": 123,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2039070294787109298",
+      "content": "Chatham House paper reveals AI governance deadlock from geopolitical misalignments, likely broken only by crisis forcing global coordination via existing institutions.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2039070314013823144",
+      "content": "Pre-crisis prep ensures legitimate, enforceable coordination post-crisis, avoiding ad-hoc failures undermining global AI order.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2039070294787109298",
+      "sourceUrl": "https://www.chathamhouse.org/2026/03/breaking-deadlock-ai-governance"
+    },
+    {
+      "id": "2039070534164508681",
+      "content": "SHRM releases AI white paper urging human-centric governance, workforce upskilling amid 89% HR efficiency gains, calling for federal risk-based framework.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2039070562153087030",
+      "content": "Aligns innovation, readiness, governance with federal guardrails to prevent bias, build trust, ensure consistent standards in workforce AI adoption.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2039070534164508681",
+      "sourceUrl": "https://www.shrm.org/about/press-room/shrm-releases-new-ai-white-paper"
+    },
+    {
+      "id": "2039070794534334952",
+      "content": "Survey shows Americans prioritize trust in AI governance: 90% back child safety, 87% accountability; trust independent experts most for oversight.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2039070814893470115",
+      "content": "Highlights legitimacy via third-party experts over govt/industry; public splits on intl coordination vs US leadership, informing policy design.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2039070794534334952",
+      "sourceUrl": "https://fathomai.substack.com/p/ai-governance-what-americans-really"
+    },
+    {
+      "id": "2039071034553290761",
+      "content": "GNI urges WSIS Forum 2026 to focus on action, rights-based AI governance, aligning with Global Digital Compact via multistakeholder processes.\n\n#AISafety #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2039071058234397121",
+      "content": "Promotes inclusive coordination integrating AI summits and UN dialogues for implementation-focused, human rights-grounded global AI efforts.\n\n#AIRisk #AIGovernance",
+      "type": "reply",
+      "parentId": "2039071034553290761",
+      "sourceUrl": "https://globalnetworkinitiative.org/gni-calls-for-action-oriented-rights-based-wsis-forum-2026"
+    },
+    {
+      "id": "2039071298836471992",
+      "content": "MAP-AI delivers oral inputs to UN Global Dialogue on AI Governance, stressing inclusive participation, accountability, human rights pillars.\n\n#AICoordination #Alygn",
+      "type": "main"
+    },
+    {
+      "id": "2039071333808550098",
+      "content": "Pushes equitable Global Majority role, cross-framework coordination like WSIS/IGF for multistakeholder AI safety alignment.\n\n#InstitutionalAI #AIPolicy",
+      "type": "reply",
+      "parentId": "2039071298836471992",
+      "sourceUrl": "https://globalnetworkinitiative.org/map-ai-submits-input-to-un-global-dialogue-on-ai-governance"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 10,
+  "failed": 0
+}

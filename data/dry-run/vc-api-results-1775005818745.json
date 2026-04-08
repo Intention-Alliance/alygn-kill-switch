@@ -1,0 +1,63 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 10,
+  "timestamp": "2026-04-01T01:10:18.745Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "Early Stage"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Glasswing Ventures",
+      "website": "https://www.glasswingventures.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early Stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "Security",
+        "Enterprise",
+        "Cybersecurity"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Menlo Ventures",
+      "website": "https://menlovc.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Early Stage"
+      ],
+      "sectorFocus": [
+        "Cybersecurity",
+        "AI"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Halcyon Futures",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "Early Stage"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Security"
+      ],
+      "partners": []
+    }
+  ]
+}

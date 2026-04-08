@@ -145,18 +145,60 @@ function getClient(): SupabaseClient {
 // ============================================================
 
 /**
+ * Query active VCs for discovery
+ */
+export async function getActiveVCs(limit: number = 100): Promise<VCContact[]> {
+  const supabase = getClient();
+
+  const { data, error } = await supabase
+    .from("vc_contacts")
+    .select("*")
+    .eq("status", "discovered")
+    .order("relevance_score", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data as VCContact[]) ?? [];
+}
+
+/**
+ * Get cached VCs with TTL
+ */
+let vcCache: VCContact[] | null = null;
+let vcCacheTimestamp = 0;
+const VC_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export async function getCachedVCs(limit: number = 100): Promise<VCContact[]> {
+  const now = Date.now();
+  if (vcCache && (now - vcCacheTimestamp) < VC_CACHE_TTL) {
+    return vcCache;
+  }
+
+  vcCache = await getActiveVCs(limit);
+  vcCacheTimestamp = now;
+  return vcCache;
+}
+
+/**
  * Update the sent status for a municipality outreach record
  * FIXED: Using municipalities table + outreach_emails instead of municipal_outreach
  */
 export async function updateSentStatus(
   muniId: string,
   messageId: string,
-  sentDate: Date
+  sentDate: Date,
+  emailDetails?: {
+    subject: string;
+    body: string;
+    variant: string;
+    recipientName?: string;
+    recipientEmail?: string;
+  }
 ): Promise<void> {
   const supabase = getClient();
 
   // Update municipalities table
-  const { error } = await supabase
+  const { error: updateError } = await supabase
     .from("municipalities")
     .update({
       outreach_sent_at: sentDate.toISOString(),
@@ -164,7 +206,29 @@ export async function updateSentStatus(
     })
     .eq("id", muniId);
 
-  if (error) throw error;
+  if (updateError) throw updateError;
+
+  // Log to outreach_emails table if details provided
+  if (emailDetails) {
+    const { error: logError } = await supabase
+      .from("outreach_emails")
+      .insert({
+        local_government_id: muniId,
+        message_id: messageId,
+        sent_at: sentDate.toISOString(),
+        status: "sent",
+        subject: emailDetails.subject,
+        body: emailDetails.body,
+        variant: emailDetails.variant,
+        recipient_name: emailDetails.recipientName,
+        recipient_email: emailDetails.recipientEmail,
+      });
+    
+    if (logError) {
+      console.error(`[Supabase] Failed to insert outreach_email log for ${muniId}:`, logError.message);
+      // We don't throw here to avoid failing the whole process if just the log fails
+    }
+  }
 }
 
 /**

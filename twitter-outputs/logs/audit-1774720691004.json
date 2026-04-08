@@ -1,0 +1,29 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-28T17:58:10.457Z",
+  "workflow": {
+    "timestamp": "2026-03-28T17:55:43.882Z",
+    "posts": [
+      {
+        "id": 1,
+        "content": "Self-regulation challenges underscore the role of neutral coordination infrastructure in supporting AI governance legitimacy and preparedness.",
+        "quoteTweetId": "2037755026425159849"
+      }
+    ],
+    "replies": [
+      {
+        "id": 1,
+        "targetHandle": "@tfoxlaw",
+        "targetUrl": "https://x.com/tfoxlaw/status/2037651362893160687",
+        "content": "Raises essential questions on governance for AI in healthcare. Neutral coordination infrastructure can support legitimacy and accountability across stakeholders.",
+        "mention": "@aialygn"
+      }
+    ],
+    "profiles": []
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 2
+}

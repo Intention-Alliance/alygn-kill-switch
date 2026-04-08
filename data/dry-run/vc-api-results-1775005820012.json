@@ -1,0 +1,113 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 10,
+  "timestamp": "2026-04-01T01:10:20.012Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Safe AI Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Halcyon Futures",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Glasswing Ventures",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "seed",
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "cybersecurity"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Menlo Ventures",
+      "website": "https://menlovc.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "cybersecurity",
+        "AI-native security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Evolution Equity Partners",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "early",
+        "growth"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "cybersecurity"
+      ],
+      "partners": []
+    },
+    {
+      "name": "General Catalyst",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "seed"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "enterprise AI security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "GV (Google Ventures)",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "various"
+      ],
+      "sectorFocus": [
+        "AI security",
+        "cybersecurity"
+      ],
+      "partners": []
+    },
+    {
+      "name": "M12",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "early"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI observability"
+      ],
+      "partners": []
+    }
+  ]
+}

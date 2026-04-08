@@ -1,0 +1,107 @@
+{
+  "timestamp": "2026-03-28T17:55:37.754Z",
+  "source": "explore_feed",
+  "snapshotPath": "/tmp/x-explore-snapshot.txt",
+  "discovered": [
+    {
+      "postId": "trending_1774720537753_ih1qzqu4q",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Elon Musk Shares Raw Side of Relentless Work Life",
+      "engagement": {
+        "likes": 3300,
+        "retweets": 990,
+        "replies": 330
+      },
+      "url": "https://x.com/explore",
+      "category": "Entertainment",
+      "age": "11 hours ago",
+      "keywords": [],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774720537753_ab43ionfc",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Claude AI Role-Play Sparks Clash with Grok on Safety",
+      "engagement": {
+        "likes": 1000,
+        "retweets": 300,
+        "replies": 100
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "14 hours ago",
+      "keywords": [
+        "AI",
+        "safety",
+        "Grok"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774720537753_515q4ne8o",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "2019 Climate Protest Photo Draws Mockery in 2026 Resurgence",
+      "engagement": {
+        "likes": 1700,
+        "retweets": 510,
+        "replies": 170
+      },
+      "url": "https://x.com/explore",
+      "category": "News",
+      "age": "11 hours ago",
+      "keywords": [],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774720537753_3eiq345ov",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Crucitas",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774720537753_9z03gjy0a",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Asamblea Legislativa",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774720537753_a7sbvvzv2",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Costa Rica: Diay",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [],
+      "type": "regional"
+    }
+  ]
+}

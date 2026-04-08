@@ -21,6 +21,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { sendEmail, createTransporter } from "./email-sender.js";
 import { generateEmail, generateEmailHTML } from "./outreach-email-template.js";
+import { validateLanguage } from "./language-validator.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -175,7 +176,13 @@ async function updateTracking(emailData, messageId, sentDate) {
     // Update Supabase for Muni
     try {
       const { updateSentStatus } = await import("../muni-outreach/core/supabase-utils.ts");
-      await updateSentStatus(id, messageId, sentDate);
+      await updateSentStatus(id, messageId, sentDate, {
+        subject: emailData.subject,
+        body: emailData.bodyText || '',
+        variant: emailData.variant,
+        recipientName: emailData.recipientName,
+        recipientEmail: emailData.email,
+      });
       console.log(`   ✅ Updated Supabase: ${id}`);
     } catch (error) {
       console.error(`   ⚠️  Failed to update Supabase: ${error.message}`);
@@ -243,6 +250,26 @@ async function main() {
     try {
       // Build email with template
       const built = buildUnifiedEmail(email);
+      
+      // Issue #41: Language validation before send (municipal outreach)
+      if (email.type === 'muni') {
+        const validation = validateLanguage(
+          { subject: built.subject, body: built.html },
+          'es' // Municipal emails should be in Spanish
+        );
+        
+        if (!validation.valid) {
+          console.error(`   ⚠️  BLOCKED: ${validation.warning}`);
+          stats.failed++;
+          continue; // Skip this email
+        }
+        
+        if (validation.warning) {
+          console.log(`   ⚠️  Warning: ${validation.warning}`);
+        } else {
+          console.log(`   ✅ Language validated: ${validation.detected.toUpperCase()}`);
+        }
+      }
       
       if (dryRun) {
         console.log(`   ✅ DRY RUN - Would send: ${built.subject}`);

@@ -31,7 +31,17 @@ export class SentEmailTracker {
 
   saveSentLog() {
     try {
-      fs.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
+      const tempFile = `${SENT_LOG_FILE}.tmp`;
+      const dir = path.dirname(SENT_LOG_FILE);
+      
+      // Ensure directory exists
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      
+      // Atomic write: write to temp file, then rename
+      fs.writeFileSync(tempFile, JSON.stringify(this.sentEmails, null, 2));
+      fs.renameSync(tempFile, SENT_LOG_FILE);
     } catch (e) {
       console.error('Error saving sent log:', e.message);
     }

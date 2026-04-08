@@ -13,7 +13,7 @@
 
 ### Phase 2: Generate Drafts
 
-- Command: `USE_DIRECT_API=true bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=angel --action=personalize --input=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel.json --output=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel-drafted.json`
+- Command: `USE_DIRECT_API=true bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=angel --action=personalize --input=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel.json --output=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel-drafted.json`
 - Output: `$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel-drafted.json`
 
 ### Phase 3: Send to Discord
@@ -25,7 +25,7 @@
 ### Phase 4: Send (if approved)
 
 - Wait for approval (check Notion or Discord)
-- Command: `bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=angel --action=send --input=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel-approved.json --cc=<tanialeaidm@gmail.com> --rate-limit=5`
+- Command: `bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=angel --action=send --input=$HOME/.openclaw/workspace/reports/alygn/ai-waves/wave-{today}-angel-approved.json --cc=<tanialeaidm@gmail.com> --rate-limit=5`
 - Update status to "sent"
 
 ## Success Criteria

@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-28T17:03:43.950Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 4,
+  "totalThreads": 4,
+  "validUrls": 4,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Trump administration urges Congress to enact national AI framework preempting state laws, criticizing patchwork regulations amid states like Utah signing child safety bills.",
+      "replyText": "Reveals tensions in federal-state institutional coordination, raising legitimacy questions on industry influence and need for unified national standards.",
+      "sourceUrl": "https://www.wunc.org/2026-03-28/trump-wants-a-deadlocked-congress-to-move-on-ai-frustrated-states-say-they-already-have",
+      "isThread": true,
+      "mainLength": 173,
+      "replyLength": 153,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "The Elders on March 27 called for urgent global AI governance focusing on peace, human rights, and sustainability through inclusive dialogue and UN coordination.",
+      "replyText": "Advocates cross-organization efforts for transparency and accountability, enhancing legitimacy of AI safety beyond technical measures.",
+      "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good",
+      "isThread": true,
+      "mainLength": 161,
+      "replyLength": 134,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "China's 15th Five-Year Plan, highlighted March 27, embeds AI safety with lifecycle risk management, algorithm oversight, and employment impact monitoring.",
+      "replyText": "Demonstrates institutional coordination in national AI policy, supporting multilateral global frameworks and Global South capacity building.",
+      "sourceUrl": "https://aisafetychina.substack.com/p/ai-safety-in-the-15th-five-year-plan",
+      "isThread": true,
+      "mainLength": 154,
+      "replyLength": 140,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Utah Gov. Cox signed eight AI bills by March 27, mandating deepfake restrictions in schools/healthcare and human oversight in AI decisions.",
+      "replyText": "Exemplifies state-level safety governance amid federal inaction, fostering cross-state alignment on ethics and institutional accountability.",
+      "sourceUrl": "https://www.transparencycoalition.ai/news/ai-legislative-update-march27-2026",
+      "isThread": true,
+      "mainLength": 139,
+      "replyLength": 140,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

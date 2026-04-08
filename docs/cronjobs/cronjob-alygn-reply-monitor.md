@@ -8,13 +8,13 @@
 
 ### Phase 1: Check Gmail
 
-- Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --action=check-replies --since={last_check}
+- Command: bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --action=check-replies --since={last_check}
 - Scan: <alygn@andler.dev> inbox for new replies
 - Filter: Replies to outbound outreach emails only
 
 ### Phase 2: Categorize Replies
 
-- Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --action=categorize --input=/tmp/replies/raw-{timestamp}.json
+- Command: bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --action=categorize --input=/tmp/replies/raw-{timestamp}.json
 - Categories: interested, not_now, pass, meeting_request, needs_followup
 
 ### Phase 3: Update Pipeline

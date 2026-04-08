@@ -1,0 +1,674 @@
+{
+  "timestamp": "2026-03-30T16:36:07.353Z",
+  "type": "vc",
+  "phase": "personalized",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "vc-menlo-79c9b7",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": "tim@menlovc.com",
+        "website": "https://menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-28T05:39:48.540Z",
+        "outreachCount": 0,
+        "researchNotes": "Menlo Ventures is an early-stage VC firm that is 'ALL IN on AI,' investing across the full AI stack from infrastructure and foundation models to enterprise applications, with a strategic partnership with Anthropic through the $100M Anthology Fund to support the next generation of AI startups.",
+        "personalizationContext": {
+          "customSubject": "Alygn - Abnormal AI and AI Governance",
+          "customBody": "Hi Tim at Menlo Ventures,\n\nYour portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.\n\nAlygn provides governance infrastructure for AI coordination. Our protocol enables verifiable commitments, trustless escrow, and multi-agent coordination - critical capabilities as AI systems scale.\n\nKey pain points we address:\n- Portfolio company Abnormal AI's governance challenges as it scales\n- Coordination gaps between Menlo Ventures's AI safety investments\n- Institutional accountability for frontier AI systems\n\nWould you be open to a brief conversation about how we're approaching these challenges?\n\nP.S. Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.\n\nBest,\nAndrew"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Early Stage",
+            "Growth Stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety",
+            "Enterprise Software",
+            "Cybersecurity",
+            "Healthcare"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Tim Tully",
+              "title": "Partner, focused on AI/ML, new data stack, and next-generation cloud"
+            },
+            {
+              "name": "Derek Xiao",
+              "title": "Principal, focused on early-stage investments across AI, cloud infrastructure, and digital health"
+            },
+            {
+              "name": "Greg Yap",
+              "title": "Partner, focused on life science and healthcare with interest in novel therapeutic platforms and digital health"
+            }
+          ],
+          "portfolioCompanies": [
+            "Abnormal AI",
+            "Aisera",
+            "Armadin",
+            "Anthropic",
+            "Pinecone",
+            "Neon",
+            "Edge Delta",
+            "JuliaHub",
+            "TruEra",
+            "Eve",
+            "Unstructured",
+            "Cartwheel",
+            "Clear Labs",
+            "Curie",
+            "Delfi",
+            "Clarifai",
+            "Mercor",
+            "ShopMy",
+            "Brain Jar Games",
+            "Heidi Health",
+            "Cleanlab",
+            "Typeface"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Anthropic",
+              "date": "2024",
+              "stage": "Series D ($750M)"
+            },
+            {
+              "company": "Eve",
+              "date": "2026",
+              "stage": "Early-stage"
+            },
+            {
+              "company": "Heidi Health",
+              "date": "2026",
+              "stage": "Early-stage"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": "legacy-system",
+        "sentAt": "2026-03-26T18:00:00.000Z",
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mn8hiw5u-dq65f3-1774888567351",
+        "draftCreatedAt": "2026-03-30T16:36:07.351Z",
+        "draftBody": "Hi Tim at Menlo Ventures,\n\nYour portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.\n\nAlygn provides governance infrastructure for AI coordination. Our protocol enables verifiable commitments, trustless escrow, and multi-agent coordination - critical capabilities as AI systems scale.\n\nKey pain points we address:\n- Portfolio company Abnormal AI's governance challenges as it scales\n- Coordination gaps between Menlo Ventures's AI safety investments\n- Institutional accountability for frontier AI systems\n\nWould you be open to a brief conversation about how we're approaching these challenges?\n\nP.S. Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.\n\nBest,\nAndrew"
+      },
+      {
+        "id": "vc-spark-7fec5b",
+        "type": "vc",
+        "name": "Spark Capital",
+        "email": "natalie@sparkcapital.com",
+        "website": "https://www.sparkcapital.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-28T05:39:55.634Z",
+        "outreachCount": 0,
+        "researchNotes": "Spark Capital is a generalist venture capital firm founded in 2005 that invests across early and growth-stage technology startups, with particular strength in frontier tech, AI, fintech, and consumer platforms. While the firm has made notable AI investments including Anthropic, the search results do not provide sufficient detail on their specific focus on AI safety, governance, and alignment.",
+        "personalizationContext": {
+          "customSubject": "Alygn - Twitter and AI Governance",
+          "customBody": "Hi Natalie at Spark Capital,\n\nGiven your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.\n\nAlygn provides governance infrastructure for AI coordination. Our protocol enables verifiable commitments, trustless escrow, and multi-agent coordination - critical capabilities as AI systems scale.\n\nKey pain points we address:\n- Portfolio company Twitter's governance challenges as it scales\n- Coordination gaps between Spark Capital's AI safety investments\n- Institutional accountability for frontier AI systems\n\nWould you be open to a brief conversation about how we're approaching these challenges?\n\nP.S. Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\nBest,\nAndrew"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Growth Stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Natalie Sandman",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Twitter",
+            "Discord",
+            "Oculus",
+            "Coinbase",
+            "Plaid",
+            "Snapchat",
+            "Tumblr",
+            "Slack",
+            "Postmates",
+            "Deel",
+            "Scale AI",
+            "Carta",
+            "Affirm",
+            "Ramp",
+            "Anthropic",
+            "Framework Computer",
+            "Cruise",
+            "Eva AI",
+            "Crusoe",
+            "TrialSpark",
+            "Superblocks",
+            "Piston"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Piston",
+              "date": "2025-05-29",
+              "stage": "Unattributed VC"
+            },
+            {
+              "company": "Superblocks",
+              "date": "2025-05-27",
+              "stage": "Series A-II"
+            },
+            {
+              "company": "Garden Intel",
+              "date": "2026-02-05",
+              "stage": "Exit"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": "legacy-system",
+        "sentAt": "2026-03-26T18:00:00.000Z",
+        "draftStatus": "Approved",
+        "draftId": "draft-entity-mn8hiw5u-gwnhvq-1774888567352",
+        "draftCreatedAt": "2026-03-30T16:36:07.352Z",
+        "draftBody": "Hi Natalie at Spark Capital,\n\nGiven your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.\n\nAlygn provides governance infrastructure for AI coordination. Our protocol enables verifiable commitments, trustless escrow, and multi-agent coordination - critical capabilities as AI systems scale.\n\nKey pain points we address:\n- Portfolio company Twitter's governance challenges as it scales\n- Coordination gaps between Spark Capital's AI safety investments\n- Institutional accountability for frontier AI systems\n\nWould you be open to a brief conversation about how we're approaching these challenges?\n\nP.S. Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\nBest,\nAndrew"
+      },
+      {
+        "id": "entity-mn8hiw5u-gh5m6n",
+        "type": "vc",
+        "name": "Lightspeed Venture Partners",
+        "email": null,
+        "website": "https://lsvp.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T05:52:48.210Z",
+        "lastUpdatedAt": "2026-03-28T05:40:01.980Z",
+        "outreachCount": 0,
+        "researchNotes": "Lightspeed Venture Partners is an AI investing pioneer with over a decade of early-stage conviction in AI, having backed 165 AI-native companies with $5.5B deployed. The firm is deeply focused on backing transformative AI companies with particular emphasis on AI safety and trustworthy intelligence, as evidenced by major investments in Anthropic and other category-defining AI enterprises.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI Governance",
+          "customBody": null
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Multi-stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "AI Safety",
+            "AI Infrastructure",
+            "Enterprise AI"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ravi Mhatre",
+              "title": "Founder and Partner"
+            },
+            {
+              "name": "Gaurav Gupta",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Anthropic",
+            "xAI",
+            "Databricks",
+            "Mistral",
+            "Glean",
+            "Abridge",
+            "SSI",
+            "Skild AI",
+            "Stability AI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Anthropic",
+              "date": "2025",
+              "stage": "Series F"
+            },
+            {
+              "company": "Anthropic",
+              "date": "2024",
+              "stage": "Series E"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "draftId": "draft-entity-mn8hiw5u-gh5m6n-1774888567353",
+        "draftCreatedAt": "2026-03-30T16:36:07.353Z"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - Abnormal AI and AI Governance",
+          "html": {
+            "subject": "Alygn - Abnormal AI and AI Governance",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Abnormal AI and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Tim at Menlo Ventures,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Menlo Ventures faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Abnormal AI's governance challenges as it scales</li><li>Coordination gaps between Menlo Ventures's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Abnormal%20AI%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Menlo%20Ventures%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - Abnormal AI and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Tim at Menlo Ventures,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Your portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.\n\n        We understand Menlo Ventures faces challenges such as:\n\n  Portfolio company Abnormal AI's governance challenges as it scalesCoordination gaps between Menlo Ventures's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          }
+        },
+        "subject": "Alygn - Abnormal AI and AI Governance",
+        "draftId": "draft-entity-mn8hiw5u-dq65f3-1774888567351",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "entity-mn8hiw5u-dq65f3",
+          "type": "vc",
+          "name": "Menlo Ventures",
+          "email": null,
+          "website": "https://menlovc.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-28T05:39:48.540Z",
+          "outreachCount": 0,
+          "researchNotes": "Menlo Ventures is an early-stage VC firm that is 'ALL IN on AI,' investing across the full AI stack from infrastructure and foundation models to enterprise applications, with a strategic partnership with Anthropic through the $100M Anthology Fund to support the next generation of AI startups.",
+          "personalizationContext": {
+            "painPoints": [
+              "Portfolio company Abnormal AI's governance challenges as it scales",
+              "Coordination gaps between Menlo Ventures's AI safety investments",
+              "Institutional accountability for frontier AI systems"
+            ],
+            "tailoredHook": "Your portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.",
+            "recentNews": "Partnership with Anthropic through Anthology Fund ($100M co-investment vehicle)",
+            "customSubject": "Alygn - Abnormal AI and AI Governance",
+            "customBody": {
+              "subject": "Alygn - Abnormal AI and AI Governance",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Abnormal AI and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Tim at Menlo Ventures,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Menlo Ventures faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Abnormal AI's governance challenges as it scales</li><li>Coordination gaps between Menlo Ventures's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Abnormal%20AI%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Menlo%20Ventures%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - Abnormal AI and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Tim at Menlo Ventures,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Your portfolio at Menlo Ventures, including Abnormal AI, highlights the growing need for institutional coordination mechanisms in AI and AI Safety and Enterprise Software and Cybersecurity and Healthcare.\n\n        We understand Menlo Ventures faces challenges such as:\n\n  Portfolio company Abnormal AI's governance challenges as it scalesCoordination gaps between Menlo Ventures's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+            },
+            "portfolioReferences": [
+              "Abnormal AI",
+              "Aisera"
+            ],
+            "personalizedPS": "P.S.: Your thesis on AI resonates with our view that governance infrastructure must be built before it's urgently needed.",
+            "partnerName": "Tim",
+            "valueProposition": "Alygn provides the governance infrastructure needed for Early Stage AI/AI Safety investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Early Stage",
+              "Growth Stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety",
+              "Enterprise Software",
+              "Cybersecurity",
+              "Healthcare"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Tim Tully",
+                "title": "Partner, focused on AI/ML, new data stack, and next-generation cloud"
+              },
+              {
+                "name": "Derek Xiao",
+                "title": "Principal, focused on early-stage investments across AI, cloud infrastructure, and digital health"
+              },
+              {
+                "name": "Greg Yap",
+                "title": "Partner, focused on life science and healthcare with interest in novel therapeutic platforms and digital health"
+              }
+            ],
+            "portfolioCompanies": [
+              "Abnormal AI",
+              "Aisera",
+              "Armadin",
+              "Anthropic",
+              "Pinecone",
+              "Neon",
+              "Edge Delta",
+              "JuliaHub",
+              "TruEra",
+              "Eve",
+              "Unstructured",
+              "Cartwheel",
+              "Clear Labs",
+              "Curie",
+              "Delfi",
+              "Clarifai",
+              "Mercor",
+              "ShopMy",
+              "Brain Jar Games",
+              "Heidi Health",
+              "Cleanlab",
+              "Typeface"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Anthropic",
+                "date": "2024",
+                "stage": "Series D ($750M)"
+              },
+              {
+                "company": "Eve",
+                "date": "2026",
+                "stage": "Early-stage"
+              },
+              {
+                "company": "Heidi Health",
+                "date": "2026",
+                "stage": "Early-stage"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": "legacy-system",
+          "sentAt": "2026-03-26T18:00:00.000Z",
+          "draftStatus": "Drafted",
+          "draftId": "draft-entity-mn8hiw5u-dq65f3-1774888567351",
+          "draftCreatedAt": "2026-03-30T16:36:07.351Z"
+        }
+      },
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - Twitter and AI Governance",
+          "html": {
+            "subject": "Alygn - Twitter and AI Governance",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Twitter and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Natalie at Spark Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Spark Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Twitter's governance challenges as it scales</li><li>Coordination gaps between Spark Capital's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Twitter%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Spark%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - Twitter and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Natalie at Spark Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Given your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.\n\n        We understand Spark Capital faces challenges such as:\n\n  Portfolio company Twitter's governance challenges as it scalesCoordination gaps between Spark Capital's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          }
+        },
+        "subject": "Alygn - Twitter and AI Governance",
+        "draftId": "draft-entity-mn8hiw5u-gwnhvq-1774888567352",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "entity-mn8hiw5u-gwnhvq",
+          "type": "vc",
+          "name": "Spark Capital",
+          "email": "natalie@sparkcapital.com",
+          "website": "https://www.sparkcapital.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-28T05:39:55.634Z",
+          "outreachCount": 0,
+          "researchNotes": "Spark Capital is a generalist venture capital firm founded in 2005 that invests across early and growth-stage technology startups, with particular strength in frontier tech, AI, fintech, and consumer platforms. While the firm has made notable AI investments including Anthropic, the search results do not provide sufficient detail on their specific focus on AI safety, governance, and alignment.",
+          "personalizationContext": {
+            "painPoints": [
+              "Portfolio company Twitter's governance challenges as it scales",
+              "Coordination gaps between Spark Capital's AI safety investments",
+              "Institutional accountability for frontier AI systems"
+            ],
+            "tailoredHook": "Given your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.",
+            "recentNews": "Invests in frontier/deeptech including AI companies like Anthropic",
+            "customSubject": "Alygn - Twitter and AI Governance",
+            "customBody": {
+              "subject": "Alygn - Twitter and AI Governance",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Twitter and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Natalie at Spark Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Spark Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Twitter's governance challenges as it scales</li><li>Coordination gaps between Spark Capital's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Twitter%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Spark%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - Twitter and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Natalie at Spark Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        Given your investment in Twitter and focus on AI and AI Safety, you understand that governance infrastructure becomes critical as AI systems scale beyond individual oversight.\n\n        We understand Spark Capital faces challenges such as:\n\n  Portfolio company Twitter's governance challenges as it scalesCoordination gaps between Spark Capital's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+            },
+            "portfolioReferences": [
+              "Twitter",
+              "Discord"
+            ],
+            "personalizedPS": "P.S.: Your investment in Twitter shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.",
+            "partnerName": "Natalie",
+            "valueProposition": "Alygn provides the governance infrastructure needed for Seed AI/AI Safety investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Growth Stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Natalie Sandman",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Twitter",
+              "Discord",
+              "Oculus",
+              "Coinbase",
+              "Plaid",
+              "Snapchat",
+              "Tumblr",
+              "Slack",
+              "Postmates",
+              "Deel",
+              "Scale AI",
+              "Carta",
+              "Affirm",
+              "Ramp",
+              "Anthropic",
+              "Framework Computer",
+              "Cruise",
+              "Eva AI",
+              "Crusoe",
+              "TrialSpark",
+              "Superblocks",
+              "Piston"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Piston",
+                "date": "2025-05-29",
+                "stage": "Unattributed VC"
+              },
+              {
+                "company": "Superblocks",
+                "date": "2025-05-27",
+                "stage": "Series A-II"
+              },
+              {
+                "company": "Garden Intel",
+                "date": "2026-02-05",
+                "stage": "Exit"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": "legacy-system",
+          "sentAt": "2026-03-26T18:00:00.000Z",
+          "draftStatus": "Drafted",
+          "draftId": "draft-entity-mn8hiw5u-gwnhvq-1774888567352",
+          "draftCreatedAt": "2026-03-30T16:36:07.352Z"
+        }
+      },
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - Anthropic and AI Governance",
+          "html": {
+            "subject": "Alygn - Anthropic and AI Governance",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Anthropic and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Ravi at Lightspeed Venture Partners,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">As Anthropic and your other portfolio companies mature, the question of governance accountability becomes increasingly urgent.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Lightspeed Venture Partners faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Anthropic's governance challenges as it scales</li><li>Coordination gaps between Lightspeed Venture Partners's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Anthropic%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Lightspeed%20Venture%20Partners%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your investment in Anthropic shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - Anthropic and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Ravi at Lightspeed Venture Partners,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        As Anthropic and your other portfolio companies mature, the question of governance accountability becomes increasingly urgent.\n\n        We understand Lightspeed Venture Partners faces challenges such as:\n\n  Portfolio company Anthropic's governance challenges as it scalesCoordination gaps between Lightspeed Venture Partners's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your investment in Anthropic shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+          }
+        },
+        "subject": "Alygn - Anthropic and AI Governance",
+        "draftId": "draft-entity-mn8hiw5u-gh5m6n-1774888567353",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "entity-mn8hiw5u-gh5m6n",
+          "type": "vc",
+          "name": "Lightspeed Venture Partners",
+          "email": null,
+          "website": "https://lsvp.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "medium",
+          "discoveredAt": "2026-03-27T05:52:48.210Z",
+          "lastUpdatedAt": "2026-03-28T05:40:01.980Z",
+          "outreachCount": 0,
+          "researchNotes": "Lightspeed Venture Partners is an AI investing pioneer with over a decade of early-stage conviction in AI, having backed 165 AI-native companies with $5.5B deployed. The firm is deeply focused on backing transformative AI companies with particular emphasis on AI safety and trustworthy intelligence, as evidenced by major investments in Anthropic and other category-defining AI enterprises.",
+          "personalizationContext": {
+            "painPoints": [
+              "Portfolio company Anthropic's governance challenges as it scales",
+              "Coordination gaps between Lightspeed Venture Partners's AI safety investments",
+              "Institutional accountability for frontier AI systems"
+            ],
+            "tailoredHook": "As Anthropic and your other portfolio companies mature, the question of governance accountability becomes increasingly urgent.",
+            "recentNews": "Deep focus on AI safety and trustworthy intelligence as core mission criterion",
+            "customSubject": "Alygn - Anthropic and AI Governance",
+            "customBody": {
+              "subject": "Alygn - Anthropic and AI Governance",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - Anthropic and AI Governance</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Ravi at Lightspeed Venture Partners,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">As Anthropic and your other portfolio companies mature, the question of governance accountability becomes increasingly urgent.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Lightspeed Venture Partners faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Portfolio company Anthropic's governance challenges as it scales</li><li>Coordination gaps between Lightspeed Venture Partners's AI safety investments</li><li>Institutional accountability for frontier AI systems</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20Anthropic%20and%20AI%20Governance&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Lightspeed%20Venture%20Partners%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your investment in Anthropic shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - Anthropic and AI Governance\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Ravi at Lightspeed Venture Partners,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions—without centralizing control or asserting authority.\n\n        As Anthropic and your other portfolio companies mature, the question of governance accountability becomes increasingly urgent.\n\n        We understand Lightspeed Venture Partners faces challenges such as:\n\n  Portfolio company Anthropic's governance challenges as it scalesCoordination gaps between Lightspeed Venture Partners's AI safety investmentsInstitutional accountability for frontier AI systems\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your investment in Anthropic shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+            },
+            "portfolioReferences": [
+              "Anthropic",
+              "xAI"
+            ],
+            "personalizedPS": "P.S.: Your investment in Anthropic shows the kind of forward-thinking approach that recognizes governance must evolve alongside capability.",
+            "partnerName": "Ravi",
+            "valueProposition": "Alygn provides the governance infrastructure needed for Seed AI/AI Safety investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Multi-stage"
+            ],
+            "sectorFocus": [
+              "AI",
+              "AI Safety",
+              "AI Infrastructure",
+              "Enterprise AI"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Ravi Mhatre",
+                "title": "Founder and Partner"
+              },
+              {
+                "name": "Gaurav Gupta",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Anthropic",
+              "xAI",
+              "Databricks",
+              "Mistral",
+              "Glean",
+              "Abridge",
+              "SSI",
+              "Skild AI",
+              "Stability AI"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Anthropic",
+                "date": "2025",
+                "stage": "Series F"
+              },
+              {
+                "company": "Anthropic",
+                "date": "2024",
+                "stage": "Series E"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Drafted",
+          "draftId": "draft-entity-mn8hiw5u-gh5m6n-1774888567353",
+          "draftCreatedAt": "2026-03-30T16:36:07.353Z"
+        }
+      }
+    ]
+  }
+}

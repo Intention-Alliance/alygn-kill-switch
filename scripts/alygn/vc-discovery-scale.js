@@ -7,103 +7,11 @@
 import { RegexMXValidator } from '$HOME/.openclaw/workspace/scripts/alygn/lib/email/validators/RegexMXValidator.js';
 import { SentEmailTracker } from '$HOME/.openclaw/workspace/scripts/alygn/lib/SentEmailTracker.js';
 import { web_search } from '$HOME/.openclaw/workspace/scripts/alygn/lib/web-search.js';
+import { getCachedVCs } from '$HOME/.openclaw/workspace/scripts/alygn/muni-outreach/core/supabase-utils.ts';
 import fs from 'fs';
 
 // Search queries for different VC categories
 const SEARCH_QUERIES = [
-  // AI Safety focused
-  'AI safety venture capital seed stage 2024 2025',
-  'AI alignment investment fund',
-  'existential risk venture capital',
-  'AGI governance investors',
-  'AI safety startup funding',
-  
-  // AI Governance
-  'AI governance venture capital',
-  'AI policy investment fund',
-  'responsible AI venture capital',
-  'AI ethics investment',
-  'AI regulation venture capital',
-  
-  // Frontier Tech
-  'frontier technology venture capital',
-  'deep tech AI investors',
-  'transformative technology VC',
-  'hard tech AI venture capital',
-  
-  // Corporate VCs
-  'Google Ventures AI safety',
-  'Microsoft M12 AI investment',
-  'Amazon Alexa Fund AI',
-  'Intel Capital AI',
-  'NVIDIA venture AI',
-  
-  // University/Research spinouts
-  'Stanford AI lab venture capital',
-  'MIT AI venture fund',
-  'Berkeley AI research investors',
-  'OpenAI startup fund',
-  'Anthropic venture partners',
-  
-  // International
-  'European AI safety venture capital',
-  'UK AI governance investors',
-  'EU AI Act venture capital',
-  'Canadian AI safety VC',
-  'Australian AI governance fund',
-  
-  // Impact/ESG focused
-  'impact venture capital AI',
-  'ESG AI investors',
-  'social impact AI fund',
-  'mission-driven AI venture capital',
-  
-  // Specific firms known for AI
-  'Lux Capital AI investments',
-  'Founders Fund AI portfolio',
-  'Andreessen Horowitz AI',
-  'Sequoia AI safety',
-  'Greylock AI investments',
-  'Bessemer Venture Partners AI',
-  'First Round Capital AI',
-  'Accel Partners AI',
-  'Index Ventures AI',
-  'Atomico AI investments'
-];
-
-// Known AI safety relevant VCs to seed the list
-const SEED_VCS = [
-  { name: 'Anthropic', type: 'corporate', focus: 'AI safety' },
-  { name: 'OpenAI Startup Fund', type: 'corporate', focus: 'AI safety' },
-  { name: 'Lux Capital', type: 'vc', focus: 'frontier tech' },
-  { name: 'Founders Fund', type: 'vc', focus: 'frontier tech' },
-  { name: 'A16Z', type: 'vc', focus: 'AI' },
-  { name: 'Sequoia Capital', type: 'vc', focus: 'AI' },
-  { name: 'Greylock Partners', type: 'vc', focus: 'AI' },
-  { name: 'Bessemer Venture Partners', type: 'vc', focus: 'AI' },
-  { name: 'First Round Capital', type: 'vc', focus: 'seed' },
-  { name: 'Accel', type: 'vc', focus: 'AI' },
-  { name: 'Index Ventures', type: 'vc', focus: 'AI' },
-  { name: 'Atomico', type: 'vc', focus: 'AI' },
-  { name: 'General Catalyst', type: 'vc', focus: 'AI' },
-  { name: 'Lightspeed Venture Partners', type: 'vc', focus: 'AI' },
-  { name: 'Khosla Ventures', type: 'vc', focus: 'frontier tech' },
-  { name: 'DCVC', type: 'vc', focus: 'deep tech' },
-  { name: 'Data Collective', type: 'vc', focus: 'AI' },
-  { name: 'Bloomberg Beta', type: 'corporate', focus: 'AI' },
-  { name: 'Comcast Ventures', type: 'corporate', focus: 'AI' },
-  { name: 'Samsung Next', type: 'corporate', focus: 'AI' },
-  { name: 'Qualcomm Ventures', type: 'corporate', focus: 'AI' },
-  { name: 'Salesforce Ventures', type: 'corporate', focus: 'AI' },
-  { name: 'Workday Ventures', type: 'corporate', focus: 'AI' },
-  { name: 'SAP.iO', type: 'corporate', focus: 'AI' },
-  { name: 'GV (Google Ventures)', type: 'corporate', focus: 'AI' },
-  { name: 'Gradient Ventures', type: 'corporate', focus: 'AI' },
-  { name: 'M12 (Microsoft)', type: 'corporate', focus: 'AI' },
-  { name: 'Alexa Fund', type: 'corporate', focus: 'AI' },
-  { name: 'Intel Capital', type: 'corporate', focus: 'AI' },
-  { name: 'NVIDIA Ventures', type: 'corporate', focus: 'AI' }
-];
 
 class VCScaleDiscovery {
   constructor() {
@@ -330,22 +238,25 @@ class VCScaleDiscovery {
     
     // Phase 1: Search with multiple queries
     console.log('📍 Phase 1: Discovery');
+    
+    // Load dynamic VCs from Supabase instead of using static SEED_VCS
+    console.log('\n📍 Loading dynamic VCs from Supabase...');
+    const dynamicVCs = await getCachedVCs(targetCount);
+    for (const vc of dynamicVCs) {
+      if (!this.discoveredVCs.has(vc.name)) {
+        this.discoveredVCs.set(vc.name, {
+          ...vc,
+          source: 'supabase_dynamic',
+          discoveredAt: new Date().toISOString()
+        });
+      }
+    }
+    console.log(`   ✅ Loaded ${dynamicVCs.length} VCs from database`);
+
     for (const query of SEARCH_QUERIES.slice(0, 15)) {
       if (this.discoveredVCs.size >= targetCount * 1.5) break;
       await this.searchVCs(query, 10);
       await new Promise(r => setTimeout(r, 1000)); // Rate limiting
-    }
-    
-    // Add seed VCs
-    console.log('\n📍 Adding seed VCs...');
-    for (const seed of SEED_VCS) {
-      if (!this.discoveredVCs.has(seed.name)) {
-        this.discoveredVCs.set(seed.name, {
-          ...seed,
-          source: 'seed_list',
-          discoveredAt: new Date().toISOString()
-        });
-      }
     }
     
     console.log(`\n📊 Total discovered: ${this.discoveredVCs.size} VCs`);

@@ -86,8 +86,8 @@ export class OutreachEntity implements IOutreachEntity {
     this.sentEmailId = data.sentEmailId ?? null;
     this.sentAt = data.sentAt ? new Date(data.sentAt) : null;
     
-    // Draft status for approval workflow
-    this.draftStatus = data.draftStatus || 'Not drafted';
+    // Draft status for approval workflow - mapped to batch_status for municipalities
+    this.draftStatus = data.draftStatus ?? data.batch_status ?? 'Not drafted';
     this.draftId = data.draftId;
     this.draftCreatedAt = data.draftCreatedAt;
     this.pageId = data.pageId;

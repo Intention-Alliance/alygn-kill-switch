@@ -1,0 +1,1452 @@
+{
+  "timestamp": "2026-04-01T01:04:45.041Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mnfce5tb-ej2g68",
+        "type": "municipal",
+        "name": "Municipalidad de Escazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Escazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 91117. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Complejidad en la transformación digital municipal sin marco regulatorio claro",
+            "Brecha tecnológica entre servicios ciudadanos digitales y expectativas de la población",
+            "Desafíos en gobernanza de datos personales bajo normativas internacionales emergentes",
+            "Coordinación interinstitucional fragmentada en proyectos de smart city"
+          ],
+          "tailoredHook": "Escazú lidera en tecnología, pero ¿tiene el marco de gobernanza para escalar con seguridad?",
+          "valueProposition": "Implementamos infraestructura de gobernanza de IA que permite innovar sin comprometer la legitimidad institucional"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 91117,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 900000
+            }
+          ],
+          "painPoints": [
+            "Complejidad en la transformación digital municipal sin marco regulatorio claro",
+            "Brecha tecnológica entre servicios ciudadanos digitales y expectativas de la población",
+            "Desafíos en gobernanza de datos personales bajo normativas internacionales emergentes",
+            "Coordinación interinstitucional fragmentada en proyectos de smart city"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mnfce5tb-ej2g68",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-nprax7",
+        "type": "municipal",
+        "name": "Municipalidad de Desamparados",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Desamparados",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 208741. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Alta demanda ciudadana en servicios digitales con recursos técnicos limitados",
+            "Fragmentación en la prestación de servicios entre múltiples plataformas municipales",
+            "Necesidad urgente de modernización administrativa sin capacidad de inversión masiva",
+            "Vulnerabilidad en gestión de datos de 200,000+ habitantes sin protocolos de IA"
+          ],
+          "tailoredHook": "Desamparados atiende a más de 200,000 habitantes. ¿Su infraestructura de datos está preparada para el escrutinio del TRAIGA?",
+          "valueProposition": "Co-diseñamos sistemas de gobernanza de IA accesibles para municipios de alta densidad poblacional"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 208741,
+          "budget": 80000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 4000000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 1600000
+            }
+          ],
+          "painPoints": [
+            "Alta demanda ciudadana en servicios digitales con recursos técnicos limitados",
+            "Fragmentación en la prestación de servicios entre múltiples plataformas municipales",
+            "Necesidad urgente de modernización administrativa sin capacidad de inversión masiva",
+            "Vulnerabilidad en gestión de datos de 200,000+ habitantes sin protocolos de IA"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mnfce5tb-nprax7",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-2cdis3",
+        "type": "municipal",
+        "name": "Municipalidad de Puriscal",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Puriscal",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 33484. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Digitalización de servicios en contexto rural con conectividad limitada",
+            "Modernización de procesos agrícolas municipales bajo nuevas regulaciones",
+            "Acceso a herramientas de IA para pequeñas municipalidades sin grandes presupuestos",
+            "Gobernanza de datos ambientales y de desarrollo rural"
+          ],
+          "tailoredHook": "Puriscal: ¿Cómo una municipalidad rural puede liderar en gobernanza de IA sin perder su identidad?",
+          "valueProposition": "Diseñamos arquitecturas de gobernanza de IA para municipios rurales que respetan su contexto y escalabilidad"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 33484,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 500000
+            }
+          ],
+          "painPoints": [
+            "Digitalización de servicios en contexto rural con conectividad limitada",
+            "Modernización de procesos agrícolas municipales bajo nuevas regulaciones",
+            "Acceso a herramientas de IA para pequeñas municipalidades sin grandes presupuestos",
+            "Gobernanza de datos ambientales y de desarrollo rural"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mnfce5tb-2cdis3",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-8in5ho",
+        "type": "municipal",
+        "name": "Municipalidad de Tarrazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Tarrazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 16260. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Integración de IA en cadena productiva del café sin experiencia tecnológica",
+            "Trazabilidad y transparencia en comercio agrícola bajo nuevos estándares globales",
+            "Modernización municipal con presupuesto limitado y alta dependencia sectorial",
+            "Preparación para cumplimiento normativo internacional en exportaciones"
+          ],
+          "tailoredHook": "Tarrazú produce café de exportación. ¿Está su gobernanza de datos lista para los estándares del TRAIGA?",
+          "valueProposition": "Creamos marcos de gobernanza de IA para economías locales dependientes de estándares internacionales de transparencia"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 16260,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 900000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 360000
+            }
+          ],
+          "painPoints": [
+            "Integración de IA en cadena productiva del café sin experiencia tecnológica",
+            "Trazabilidad y transparencia en comercio agrícola bajo nuevos estándares globales",
+            "Modernización municipal con presupuesto limitado y alta dependencia sectorial",
+            "Preparación para cumplimiento normativo internacional en exportaciones"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mnfce5tb-8in5ho",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mnfce5tb-esxlx4",
+        "type": "municipal",
+        "name": "Municipalidad de Aserrí",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Aserrí",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:03:32.591Z",
+        "lastUpdatedAt": "2026-04-01T01:04:45.041Z",
+        "outreachCount": 0,
+        "researchNotes": "Canton of San José province. Population: 58912. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+        "personalizationContext": {
+          "painPoints": [
+            "Transición desde gestión tradicional a modelo de gobierno digital integrado",
+            "Limitaciones presupuestarias para implementar soluciones tecnológicas avanzadas",
+            "Capacitación municipal en nuevas competencias de gobernanza de datos",
+            "Navegar el marco regulatorio emergente de IA sin experiencia previa"
+          ],
+          "tailoredHook": "Aserrí crece. ¿Tiene las salvaguardas de gobernanza para crecer con confianza ciudadana?",
+          "valueProposition": "Acompañamos la maduración digital de municipios en crecimiento con herramientas de gobernanza adaptadas a su escala"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 58912,
+          "budget": 35000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "digital transformation"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "smart city"
+              ]
+            }
+          ],
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ],
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1750000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 700000
+            }
+          ],
+          "painPoints": [
+            "Transición desde gestión tradicional a modelo de gobierno digital integrado",
+            "Limitaciones presupuestarias para implementar soluciones tecnológicas avanzadas",
+            "Capacitación municipal en nuevas competencias de gobernanza de datos",
+            "Navegar el marco regulatorio emergente de IA sin experiencia previa"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": "entity-mnfce5tb-esxlx4",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "population": 91117,
+          "budget": 45000000,
+          "province": "San José",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 2250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 900000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mnfce5tb-ej2g68",
+          "type": "municipal",
+          "name": "Municipalidad de Escazú",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Escazú",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-01T01:03:32.591Z",
+          "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of San José province. Population: 91117. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 91117,
+            "budget": 45000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 2250000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 900000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mnfce5tb-ej2g68",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 208741,
+          "budget": 80000000,
+          "province": "San José",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 4000000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 1600000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mnfce5tb-nprax7",
+          "type": "municipal",
+          "name": "Municipalidad de Desamparados",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Desamparados",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-01T01:03:32.591Z",
+          "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of San José province. Population: 208741. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 208741,
+            "budget": 80000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 4000000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 1600000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mnfce5tb-nprax7",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 33484,
+          "budget": 25000000,
+          "province": "San José",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1250000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 500000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mnfce5tb-2cdis3",
+          "type": "municipal",
+          "name": "Municipalidad de Puriscal",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Puriscal",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-01T01:03:32.591Z",
+          "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of San José province. Population: 33484. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 33484,
+            "budget": 25000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 1250000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 500000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mnfce5tb-2cdis3",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 16260,
+          "budget": 18000000,
+          "province": "San José",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 900000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 360000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mnfce5tb-8in5ho",
+          "type": "municipal",
+          "name": "Municipalidad de Tarrazú",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Tarrazú",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-01T01:03:32.591Z",
+          "lastUpdatedAt": "2026-04-01T01:04:45.040Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of San José province. Population: 16260. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 16260,
+            "budget": 18000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 900000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 360000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mnfce5tb-8in5ho",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "population": 58912,
+          "budget": 35000000,
+          "province": "San José",
+          "initiatives": [
+            {
+              "name": "Transformación Digital Municipal",
+              "description": "Modernización de servicios ciudadanos",
+              "status": "active",
+              "budget": 1750000
+            },
+            {
+              "name": "Gobierno Abierto",
+              "description": "Transparencia y datos abiertos",
+              "status": "active",
+              "budget": 700000
+            }
+          ],
+          "painPoints": [
+            "Digital transformation complexity",
+            "Limited technical resources",
+            "Citizen service delivery",
+            "Data governance and privacy",
+            "Inter-agency coordination"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager / Gerente Municipal",
+              "department": "Executive",
+              "isDecisionMaker": true,
+              "focusAreas": [
+                "Digital transformation",
+                "Service delivery"
+              ]
+            },
+            {
+              "name": "IT Director",
+              "title": "Director de Tecnología",
+              "department": "Technology",
+              "isDecisionMaker": false,
+              "focusAreas": [
+                "Systems",
+                "Data governance"
+              ]
+            }
+          ]
+        },
+        "entity": {
+          "id": "entity-mnfce5tb-esxlx4",
+          "type": "municipal",
+          "name": "Municipalidad de Aserrí",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Aserrí",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-01T01:03:32.591Z",
+          "lastUpdatedAt": "2026-04-01T01:04:45.041Z",
+          "outreachCount": 0,
+          "researchNotes": "Canton of San José province. Population: 58912. Key initiatives: Transformación Digital Municipal, Gobierno Abierto.",
+          "personalizationContext": {
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support",
+            "valueProposition": "Support municipal AI governance and digital transformation"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 58912,
+            "budget": 35000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "digital transformation"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "smart city"
+                ]
+              }
+            ],
+            "keyContacts": [
+              {
+                "name": "Municipal Manager",
+                "title": "City Manager / Gerente Municipal",
+                "department": "Executive",
+                "isDecisionMaker": true,
+                "focusAreas": [
+                  "Digital transformation",
+                  "Service delivery"
+                ]
+              },
+              {
+                "name": "IT Director",
+                "title": "Director de Tecnología",
+                "department": "Technology",
+                "isDecisionMaker": false,
+                "focusAreas": [
+                  "Systems",
+                  "Data governance"
+                ]
+              }
+            ],
+            "initiatives": [
+              {
+                "name": "Transformación Digital Municipal",
+                "description": "Modernización de servicios ciudadanos",
+                "status": "active",
+                "budget": 1750000
+              },
+              {
+                "name": "Gobierno Abierto",
+                "description": "Transparencia y datos abiertos",
+                "status": "active",
+                "budget": 700000
+              }
+            ],
+            "painPoints": [
+              "Digital transformation complexity",
+              "Limited technical resources",
+              "Citizen service delivery",
+              "Data governance and privacy",
+              "Inter-agency coordination"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": "entity-mnfce5tb-esxlx4",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}

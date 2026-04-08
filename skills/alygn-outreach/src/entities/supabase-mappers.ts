@@ -96,7 +96,6 @@ export interface OutreachEmailInsert {
   recipient_email: string;
   recipient_name: string;
   local_government_id?: string | null;
-  municipality_id?: string | null;
   political_figure_id?: string | null;
   variant?: string | null;
   wave_number?: number | null;
@@ -245,7 +244,6 @@ export function toOutreachEmailInsert(
     recipient_email: emailData.recipientEmail,
     recipient_name: emailData.recipientName,
     local_government_id: entity.localGovernmentId,
-    municipality_id: entity.municipalityId || entity.id,
     political_figure_id: null,
     variant: entity.outreachVariant || (entity.personalizationContext?.variant as string) || 'traiga',
     wave_number: entity.waveNumber,

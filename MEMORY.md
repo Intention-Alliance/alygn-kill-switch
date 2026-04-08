@@ -57,6 +57,39 @@
     - Verify args/flags exist before using them
     - No assumptions, no "probably works like this"
     - Going in circles is worse than going slow
+12. **🎯 DELEGATE, DON'T DO** — CRITICAL (learned 2026-04-01)
+    - DO NOT take tasks myself
+    - ALWAYS call the team (spawn agents)
+    - Review their reports and confirm they did the job
+    - Return back to them when unclear
+    - Communicate cross-session to identify and get context
+
+13. **📂 FILE ORGANIZATION for Internal Scripts** — CRITICAL (learned 2026-04-07)
+    - Use `.gitignore` for internal dev scripts (batch-scripts/, temporary files)
+    - Create `docs/` folder for operation summaries (no sensitive data)
+    - Move existing summary docs and samples to docs/ folder
+    - Separate internal tooling from repo structure
+
+14. **🤖 AGENT COORDINATION — "Ping-Pong" Pattern** (learned 2026-04-07)
+    - After `sessions_yield`, wait for completion events (don't poll aggressively)
+    - If agents don't report after multiple yields, use `sessions_send` to ask for updates
+    - Agents sometimes won't report progress proactively — asking is a communication skill
+    - Check git status/file changes for evidence of work before assuming idle
+    - Always track `childSessionKey` for follow-up communication
+
+15. **🐦 X AUTOMATION PATTERNS** (from previous work)
+    - **Browser vs X API:** Browser for discovery, X API for posting
+    - **Rate limiting is critical:** Change ONLY specific values, never refactor architecture
+    - **Format enforcement:** Always use explicit `formatTweet()` function
+    - **Error recovery:** Fallback to posting without media if upload fails
+    - **Queued messages:** When agent is busy, messages stack — process ALL in order
+
+16. **📝 GITHUB ISSUE REPORTING — GOLDEN RULE** (learned 2026-04-07)
+    - When reporting progress on GitHub issues, ALWAYS add a comment to the issue
+    - Include: what was done, results, blockers, next steps
+    - **ALWAYS end with:** "Report by [AGENT_NAME] [EMOJI]" for tracking
+    - Example: "Fixed Tailscale persistence. Auto-reconnect working. Report by Keridz ⚙️"
+    - This provides external memory and clear audit trail for who did what
 
 ## Key Projects (Professional Tone Required)
 

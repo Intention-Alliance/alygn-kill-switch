@@ -1,0 +1,123 @@
+{
+  "mode": "live",
+  "executedAt": "2026-03-28T17:42:25.882Z",
+  "workflow": {
+    "generatedAt": "2026-03-28T17:42:09.219Z",
+    "source": "Grok Search - Prompt #13",
+    "totalPosts": 4,
+    "totalThreads": 4,
+    "validUrls": 4,
+    "invalidUrls": 1,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "Trump administration released National Policy Framework for AI, advocating federal preemption of state laws for unified regulation. Sen. Blackburn unveiled TRUMP AMERICA AI Act draft with developer liability and bias audits.",
+        "replyText": "Advances centralized federal coordination to avoid regulatory patchwork, but challenges state legitimacy and local responsiveness in AI oversight.",
+        "sourceUrl": "https://www.lw.com/en/insights/trump-administration-takes-major-steps-toward-comprehensive-federal-ai-regulation",
+        "isThread": true,
+        "mainLength": 224,
+        "replyLength": 146,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "Rep. Deborah Ross stated at Axios AI+DC Summit that the Constitution should protect state-level AI regulations on deepfakes and elections.",
+        "replyText": "Underscores federal-state coordination tensions, bolstering legitimacy arguments for decentralized governance tailored to public safety needs.",
+        "sourceUrl": "https://www.axios.com/2026/03/26/axios-aidc-summit-the-us-constitution-should-protect-state-level-ai-regulation-rep-ross-says",
+        "isThread": true,
+        "mainLength": 138,
+        "replyLength": 142,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "The Elders, with former leaders and AI experts, urged governments to regulate AI for public good, reject self-regulation, and promote UN-led global dialogue.",
+        "replyText": "Calls for inclusive cross-national coordination, enhancing legitimacy through transparent, science-based international AI safety frameworks.",
+        "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good",
+        "isThread": true,
+        "mainLength": 157,
+        "replyLength": 140,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 4,
+        "mainText": "Forethought proposed independent orgs for AI evaluations and ML scientist coalitions to prepare for superintelligence risks.",
+        "replyText": "Enables cross-organization safety efforts through neutral assessors and collective commitments, building legitimacy in high-stakes AI governance.",
+        "sourceUrl": "https://forum.effectivealtruism.org/posts/kPzhMcvJsRWZ9xWXH/concrete-projects-to-prepare-for-superintelligence",
+        "isThread": true,
+        "mainLength": 124,
+        "replyLength": 145,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [
+    {
+      "id": "2037948440554942482",
+      "content": "Trump administration released National Policy Framework for AI, advocating federal preemption of state laws for unified regulation. Sen. Blackburn unveiled TRUMP AMERICA AI Act draft with developer liability and bias audits.\n\n#AIGovernance #InstitutionalAI",
+      "type": "main"
+    },
+    {
+      "id": "2037948460075286946",
+      "content": "Advances centralized federal coordination to avoid regulatory patchwork, but challenges state legitimacy and local responsiveness in AI oversight.\n\n#AISafety #AIPolicy",
+      "type": "reply",
+      "parentId": "2037948440554942482",
+      "sourceUrl": "https://www.lw.com/en/insights/trump-administration-takes-major-steps-toward-comprehensive-federal-ai-regulation"
+    },
+    {
+      "id": "2037948675209462105",
+      "content": "Rep. Deborah Ross stated at Axios AI+DC Summit that the Constitution should protect state-level AI regulations on deepfakes and elections.\n\n#AIRisk #AIGovernance",
+      "type": "main"
+    },
+    {
+      "id": "2037948700052385827",
+      "content": "Underscores federal-state coordination tensions, bolstering legitimacy arguments for decentralized governance tailored to public safety needs.\n\n#AICoordination #Alygn",
+      "type": "reply",
+      "parentId": "2037948675209462105",
+      "sourceUrl": "https://www.axios.com/2026/03/26/axios-aidc-summit-the-us-constitution-should-protect-state-level-ai-regulation-rep-ross-says"
+    },
+    {
+      "id": "2037948923399082342",
+      "content": "The Elders, with former leaders and AI experts, urged governments to regulate AI for public good, reject self-regulation, and promote UN-led global dialogue.\n\n#InstitutionalAI #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2037948946933223711",
+      "content": "Calls for inclusive cross-national coordination, enhancing legitimacy through transparent, science-based international AI safety frameworks.\n\n#AIGovernance #InstitutionalAI",
+      "type": "reply",
+      "parentId": "2037948923399082342",
+      "sourceUrl": "https://theelders.org/news/governments-must-act-now-manage-ai-public-good"
+    },
+    {
+      "id": "2037949140886299035",
+      "content": "Forethought proposed independent orgs for AI evaluations and ML scientist coalitions to prepare for superintelligence risks.\n\n#AISafety #AIPolicy",
+      "type": "main"
+    },
+    {
+      "id": "2037949160737870011",
+      "content": "Enables cross-organization safety efforts through neutral assessors and collective commitments, building legitimacy in high-stakes AI governance.\n\n#AIRisk #AIGovernance",
+      "type": "reply",
+      "parentId": "2037949140886299035",
+      "sourceUrl": "https://forum.effectivealtruism.org/posts/kPzhMcvJsRWZ9xWXH/concrete-projects-to-prepare-for-superintelligence"
+    }
+  ],
+  "replies": [],
+  "quotes": [],
+  "executed": 8,
+  "failed": 0
+}

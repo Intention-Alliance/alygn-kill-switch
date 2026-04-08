@@ -2,7 +2,8 @@
  * SMTP Email Provider
  * Sends emails via SMTP using nodemailer
  */
-import type { EmailProvider, IEmailPayload, ISendResult } from './EmailProvider';
+import { EmailProvider } from './EmailProvider';
+import type { IEmailPayload, ISendResult } from './EmailProvider';
 
 interface SMTPConfig {
   server?: string;

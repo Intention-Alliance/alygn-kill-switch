@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-04-01T12:10:00.000Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 4,
+    "note": "Filtered out Menlo Ventures (already contacted today)",
+    "entities": [
+      {
+        "id": "entity-mnfcmw6j-homdho",
+        "type": "vc",
+        "name": "Safe AI Fund",
+        "email": "geoff@saif.vc",
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": { "city": "San Francisco", "state": "CA", "country": "US", "region": null },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:57.633Z",
+        "outreachCount": 0,
+        "researchNotes": "Safe AI Fund (SAIF) is an early-stage venture fund founded by former Y Combinator President Geoff Ralston, investing in for-profit startups developing tools to enhance AI safety, security, governance, and responsible deployment, such as AI agent evaluation, cybersecurity, interpretability, and compliance.",
+        "personalizationContext": {
+          "painPoints": [
+            "Need for guardrails in AI deployment to ensure safety and trustworthiness",
+            "Risks from AI in biothreats, disinformation, data center security, and weapon systems",
+            "Lack of intrinsic safety focus in most AI projects, requiring specialized tools for compliance, interpretability, and protection"
+          ],
+          "tailoredHook": "SAIF's exclusive focus on AI safety, security, and alignment through early-stage investments in governance tools like agent certification, risk platforms, and interpretability perfectly aligns with Alygn's mission to advance safe AI systems.",
+          "recentNews": "Investments in AI risk management (CTGT), AI agent governance (Mission Control AI), trustworthy AI agents (Archia, Astha AI)"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early-stage"],
+          "sectorFocus": ["AI safety", "AI security"],
+          "checkSizeMin": 250000,
+          "checkSizeMax": 2000000,
+          "aum": null,
+          "partners": [{ "name": "Geoff Ralston", "title": "Founder" }],
+          "portfolioCompanies": ["AgentHub", "Archia", "Astha AI", "Chimera Cybersecurity", "CTGT", "Mission Control AI", "NewsGuard"],
+          "recentInvestments": [
+            { "company": "Lucid Computing", "date": "Pre-2025", "stage": "Early-stage" },
+            { "company": "Chimera Cybersecurity", "date": "Pre-2025", "stage": "Early-stage" }
+          ],
+          "relevanceScore": 95
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-7vuuyv",
+        "type": "vc",
+        "name": "Halcyon Futures",
+        "email": "mike@halcyonfutures.com",
+        "website": "https://halcyonfutures.com",
+        "phone": null,
+        "location": { "city": "Washington", "state": "DC", "country": "US", "region": null },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:11:02.929Z",
+        "outreachCount": 0,
+        "researchNotes": "Halcyon Futures is a VC firm and incubator focused on AI safety, security, governance, and alignment, incubating 20 organizations and enabling over $350M in funding while providing seed capital, co-founder matching, and board support for projects building a secure world amid transformative AI.",
+        "personalizationContext": {
+          "painPoints": [
+            "Need for governance structures in AI startups to protect public-good missions at venture scale",
+            "Polarization and fear around AI via media, requiring better communication and inclusion",
+            "AI-driven cyber threats like agentic ransomware"
+          ],
+          "tailoredHook": "Halcyon Futures aligns perfectly with Alygn's thesis on AI safety and governance investments, offering a proven track record of incubating high-impact projects and deep expertise via leaders like Mike McCormick.",
+          "recentNews": "Published report on governance for early-stage AI ventures: interviewed 22 experts, studied 20+ companies including OpenAI, Anthropic, Meta"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early-stage", "seed"],
+          "sectorFocus": ["AI safety", "AI governance", "AI alignment"],
+          "checkSizeMin": 500000,
+          "checkSizeMax": 5000000,
+          "aum": 350000000,
+          "partners": [
+            { "name": "Mike McCormick", "title": "Founder and CEO" },
+            { "name": "Ross", "title": "Investment Lead (AI Security & Alignment)" }
+          ],
+          "portfolioCompanies": ["Aymara", "Halcyon AI"],
+          "recentInvestments": [
+            { "company": "AI security/alignment projects", "date": "Last 24 months", "stage": "Seed/incubation" }
+          ],
+          "relevanceScore": 93
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-umxpk3",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "email": "rudina@glasswing.vc",
+        "website": "https://glasswing.vc",
+        "phone": null,
+        "location": { "city": "Boston", "state": "MA", "country": "US", "region": null },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:11:07.584Z",
+        "outreachCount": 0,
+        "researchNotes": "Glasswing Ventures invests in early-stage founders leveraging AI and frontier technology to reinvent enterprise software and cybersecurity markets, with a strong emphasis on intelligent enterprise defense including autonomous threat detection, data governance, and compliance platforms.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited explicit focus on core AI safety/alignment like x-risk mitigation",
+            "Portfolio skewed toward enterprise cybersecurity rather than pure AI governance research",
+            "No clear investments in AI ethics or alignment labs"
+          ],
+          "tailoredHook": "Glasswing's deep technical expertise in AI-native enterprise defense and governance-adjacent cybersecurity aligns with Alygn's AI safety focus, offering co-investment opportunities in secure AI infrastructure.",
+          "recentNews": "Fund III priorities include 'Intelligent enterprise defense' with autonomous threat detection"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["seed", "early-stage"],
+          "sectorFocus": ["AI", "cybersecurity", "enterprise"],
+          "checkSizeMin": 500000,
+          "checkSizeMax": 10000000,
+          "aum": null,
+          "partners": [{ "name": "Rudina Seseri", "title": "Founder and Managing Partner" }],
+          "portfolioCompanies": ["Cydelphi", "Realm.Security", "Liquid AI", "Black Kite", "Basetwo AI"],
+          "recentInvestments": [
+            { "company": "Cydelphi", "date": "2025", "stage": "Seed ($3M)" },
+            { "company": "Realm.Security", "date": "December 2025", "stage": "Series A" },
+            { "company": "Basetwo AI", "date": "December 2025", "stage": "Series A ($11.5M)" }
+          ],
+          "relevanceScore": 82
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-kjbtib",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": "richard@evolutionequity.com",
+        "website": "https://evolutionequity.com",
+        "phone": null,
+        "location": { "city": "New York", "state": "NY", "country": "US", "region": null },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:11:17.523Z",
+        "outreachCount": 0,
+        "researchNotes": "Evolution Equity Partners is a cybersecurity-focused VC firm with over $2B AUM, investing in AI-driven platforms for threat detection and defense, including companies addressing AI safety like Protect AI and Noma Security.",
+        "personalizationContext": {
+          "painPoints": [
+            "Rising AI-driven cyber threats and sophisticated adversaries",
+            "Need for AI/ML platforms to defend expanding attack surfaces",
+            "Balancing AI innovation speed with security and governance"
+          ],
+          "tailoredHook": "Evolution's investments in AI safety (Protect AI, Noma Security) and governance (ESG focus, diverse leadership) align with Alygn's priorities, offering a cybersecurity lens on AI risks.",
+          "recentNews": "Integrates ESG criteria including diverse boards; named Inc. Magazine Top Founder-Friendly Investor 2025"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early", "growth"],
+          "sectorFocus": ["AI safety", "cybersecurity"],
+          "checkSizeMin": 5000000,
+          "checkSizeMax": 50000000,
+          "aum": 2000000000,
+          "partners": [
+            { "name": "Richard Seewald", "title": "Founder and Managing Partner" },
+            { "name": "Dennis Smith", "title": "Founder and Managing Partner" }
+          ],
+          "portfolioCompanies": ["Protect AI", "Noma Security", "Armis", "Snyk", "Carbon Black", "Aqua Security"],
+          "recentInvestments": [
+            { "company": "Noma Security", "date": "Nov 2025", "stage": "Undisclosed" },
+            { "company": "Armis", "date": "Recent", "stage": "$435M at $6.1B valuation" },
+            { "company": "Protect AI", "date": "Recent", "stage": "Acquired by Palo Alto Networks" }
+          ],
+          "relevanceScore": 85
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ]
+  }
+}

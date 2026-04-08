@@ -84,6 +84,46 @@
 
 ---
 
+## File Organization Patterns
+
+### Internal Scripts Management
+
+**For Repository Scripts (e.g., andler-ops):**
+```
+repo-root/
+├── .gitignore              # Ignore: batch-scripts/*, docs/samples/*
+├── batch-scripts/          # Internal dev scripts (gitignored)
+│   ├── COMPLETE-*.sh
+│   └── DEPLOY-*.sh
+├── docs/                   # Operation summaries (no sensitive data)
+│   ├── FINAL-COMPLETION-125-ISSUES.md
+│   ├── DEPLOYMENT-README.md
+│   └── samples/            # Safe-to-share examples
+└── src/                    # Main repo code
+```
+
+**Gitignore Patterns:**
+```gitignore
+# Internal development scripts
+batch-scripts/*
+!batch-scripts/.gitkeep
+
+# Generated docs with sensitive data
+*-with-secrets.md
+.env.local
+
+# Temporary files
+*.tmp
+*.log
+```
+
+**Documentation Strategy:**
+- Keep operation summaries in `docs/` (sanitized, no API keys)
+- Move sensitive samples to `docs/samples/` after scrubbing
+- Internal scripts live in `batch-scripts/` (not committed)
+
+---
+
 ## Google Places API
 
 ### goplaces CLI
@@ -98,7 +138,7 @@
 
 - **Timeouts:** Default 10s, navigation 30s, snapshot 20s, actions 40s, cron 3600s
 - **Profile:** `alygn` (Twitter/X, authenticated)
-- **Usage:** `browser --profile="alygn" [action]`
+- **Usage:** `browser --profile="alygn" [action] --target host`
 
 ---
 
@@ -225,7 +265,7 @@ goplaces search "sushi" --json
 **Usage:**
 
 ```bash
-browser --action=snapshot --timeoutMs=30000 --profile=alygn
+browser --action=snapshot --timeoutMs=30000 --profile=alygn --target host
 ```
 
 ### Alygn Profile (Twitter/X Automation)
@@ -233,7 +273,7 @@ browser --action=snapshot --timeoutMs=30000 --profile=alygn
 - **Profile name:** `alygn`
 - **Chrome instance:** Separate authenticated session
 - **X.com status:** ✅ Fully authenticated
-- **Usage:** `browser --profile="alygn" [action]`
+- **Usage:** `browser --profile="alygn" [action] --target host`
 - **Note:** Use extended timeouts for complex workflows
 
 ---

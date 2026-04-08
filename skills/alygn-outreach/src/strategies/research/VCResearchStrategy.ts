@@ -1,10 +1,16 @@
 /**
  * VCResearchStrategy - Research VC firms for personalization
+ * 
+ * Features:
+ * - Notion duplicate check: Queries Notion database before researching
+ * - Skips VCs already contacted (Status: "Contacted" or "Sent")
+ * - Only researches new VCs or those ready for outreach
  */
 import fs from 'fs';
 import path from 'path';
 import { VCEntity } from '../../entities/VCEntity';
 import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
+import { getClient, queryDatabase } from '../../lib/external/notion-client';
 
 interface VCPortfolioCompany {
   company: string;
@@ -23,6 +29,16 @@ interface VCSearchResult {
   [key: string]: unknown;
 }
 
+// Notion database ID for VC outreach
+const getDatabaseId = () => {
+  return process.env.NOTION_VC_DATABASE_ID || '305334874af681ef983df57c7f70de33';
+};
+
+// Statuses that indicate already contacted (skip research)
+const CONTACTED_STATUSES = ['Contacted', 'Sent', 'replied', 'meeting'];
+// Statuses that allow research
+const RESEARCHABLE_STATUSES = ['Not contacted', 'Ready for outreach', 'discovered', 'validated', 'researched', 'personalized'];
+
 export class VCResearchStrategy extends ResearchStrategy {
   constructor(config: Record<string, unknown> = {}) {
     super(config);
@@ -30,10 +46,122 @@ export class VCResearchStrategy extends ResearchStrategy {
   }
 
   /**
+   * Check if VC exists in Notion database and get its status
+   * Returns: { shouldResearch: boolean, status?: string, sentDate?: string, pageId?: string }
+   */
+  private async checkNotionForVC(vcName: string): Promise<{ 
+    shouldResearch: boolean; 
+    status?: string; 
+    sentDate?: string;
+    pageId?: string;
+    skipReason?: string;
+  }> {
+    try {
+      const notion = getClient();
+      const DATABASE_ID = getDatabaseId();
+      
+      console.log(`   🔍 Checking Notion database for "${vcName}"...`);
+      
+      // Query Notion by VC Name (case-insensitive partial match)
+      const response = await queryDatabase(notion, DATABASE_ID, {
+        filter: {
+          property: 'Name',
+          title: {
+            contains: vcName
+          }
+        }
+      });
+      
+      // Look for exact match (case-insensitive)
+      const exactMatch = response.results.find(result => {
+        const page = result as { id: string; properties: Record<string, unknown> };
+        const nameProp = page.properties['Name'] as { title?: Array<{ text: { content: string } }> } | undefined;
+        const name = nameProp?.title?.[0]?.text?.content || '';
+        return name.toLowerCase() === vcName.toLowerCase();
+      }) as { id: string; properties: Record<string, unknown> } | undefined;
+      
+      if (!exactMatch) {
+        console.log(`   ✅ Not found in Notion - proceeding with research`);
+        return { shouldResearch: true };
+      }
+      
+      // Get status from the page
+      const statusProp = exactMatch.properties['Status'] as { select?: { name: string } } | undefined;
+      const status = statusProp?.select?.name || 'unknown';
+      
+      // Get sent date if available
+      const sentAtProp = exactMatch.properties['Sent At'] as { date?: { start: string } } | undefined;
+      const sentDate = sentAtProp?.date?.start;
+      
+      console.log(`   📊 Found in Notion: Status = "${status}"`);
+      
+      // Check if already contacted
+      if (CONTACTED_STATUSES.some(s => status.toLowerCase() === s.toLowerCase())) {
+        return {
+          shouldResearch: false,
+          status,
+          sentDate,
+          pageId: exactMatch.id,
+          skipReason: `already contacted on ${sentDate ? new Date(sentDate).toLocaleDateString() : 'unknown date'}`
+        };
+      }
+      
+      // Check if researchable status
+      if (RESEARCHABLE_STATUSES.some(s => status.toLowerCase() === s.toLowerCase())) {
+        return {
+          shouldResearch: true,
+          status,
+          pageId: exactMatch.id
+        };
+      }
+      
+      // Unknown status - skip to be safe
+      return {
+        shouldResearch: false,
+        status,
+        pageId: exactMatch.id,
+        skipReason: `status "${status}" prevents research`
+      };
+      
+    } catch (error) {
+      console.warn(`   ⚠️  Notion check failed: ${(error as Error).message}`);
+      console.warn(`   ⏭️  Proceeding with research (failed to check Notion)`);
+      return { shouldResearch: true };
+    }
+  }
+
+  /**
    * Research VC firm using OpenClaw Script ↔ AI Execution pattern
    */
   async research(entity: VCEntity): Promise<IResearchResult> {
     console.log(`📚 Researching VC: ${entity.name}...`);
+    
+    // STEP 1: Check Notion database for duplicates
+    const notionCheck = await this.checkNotionForVC(entity.name);
+    
+    if (!notionCheck.shouldResearch) {
+      // Skip research - already contacted
+      console.log(`   ⏭️  Skipping ${entity.name} - ${notionCheck.skipReason}`);
+      
+      // Return a "skipped" result
+      return {
+        success: true,
+        research: {
+          skipped: true,
+          reason: notionCheck.skipReason,
+          status: notionCheck.status,
+          sentDate: notionCheck.sentDate,
+          pageId: notionCheck.pageId
+        },
+        entity
+      };
+    }
+    
+    if (notionCheck.status) {
+      console.log(`   ✅ Status "${notionCheck.status}" allows research`);
+    }
+    
+    // Continue with normal research flow...
     
     // Cache-first: Check for existing research results
     const cacheFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-result.json`;

@@ -68,12 +68,31 @@ steps:
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/vc-validate/alygn-vc-validated-{timestamp}.json
 
+  # Phase 2.5: Pre-research duplicate check
+  # Build exclusion list from all sources before researching
+  - id: phase2-5-dedup-check
+    command: |
+      mkdir -p /tmp/alygn-dedup && \
+      echo "🔍 Building exclusion list for duplicate prevention..." && \
+      (cat ~/.openclaw/workspace/scripts/alygn/lib/sent-emails.json 2>/dev/null | jq -r '.vcs[].vcName' | sort -u > /tmp/alygn-dedup/sent-emails-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/sent-emails-vcs.txt) && \
+      echo "  ✓ Loaded sent-emails.json ($(wc -l < /tmp/alygn-dedup/sent-emails-vcs.txt || echo 0) entries)" && \
+      (cat ~/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json 2>/dev/null | jq -r '.completedEntities // {} | keys[] as $k | .[$k].vcName // empty' | sort -u > /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/wave-state-vcs.txt) && \
+      echo "  ✓ Loaded wave-state.json ($(wc -l < /tmp/alygn-dedup/wave-state-vcs.txt || echo 0) entries)" && \
+      cat /tmp/alygn-dedup/sent-emails-vcs.txt /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-vcs.txt && \
+      echo "📊 Total excluded VCs: $(wc -l < /tmp/alygn-dedup/exclude-vcs.txt || echo 0)" && \
+      echo "Exclusion list created at: /tmp/alygn-dedup/exclude-vcs.txt"
+    description: "Build exclusion list from sent-emails.json and wave-state.json"
+    after: phase2-validate
+    output:
+      file: /tmp/alygn-dedup/exclude-vcs.txt
+
   # Phase 3: Research (find emails, pain points)
   # MODE B: USE_DIRECT_API=true enables real Perplexity research for thesis/pain points
+  # Note: VCResearchStrategy.ts also performs Notion duplicate check internally
   - id: phase3-research
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=research --limit=5 --dry-run
-    description: "Research validated VCs (Mode B: real Perplexity calls for thesis/pain points)"
-    after: phase2-validate
+    description: "Research validated VCs (Mode B: real Perplexity calls for thesis/pain points, with duplicate filtering)"
+    after: phase2-5-dedup-check
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/vc-research/alygn-vc-researched-{timestamp}.json
 

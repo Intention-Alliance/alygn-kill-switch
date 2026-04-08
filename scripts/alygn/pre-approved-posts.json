@@ -3,7 +3,7 @@
     "total_posts": 100,
     "source": "Alygn Pre-Approved Posts (Feb 2026)",
     "strategy": "One post per day, sequential order",
-    "last_updated": "2026-03-27T19:43:21.476Z"
+    "last_updated": "2026-03-29T17:05:15.345Z"
   },
   "posts": [
     {
@@ -233,30 +233,30 @@
     {
       "id": 33,
       "text": "Oversight only works if all sides believe it's fair.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-28T17:03:54.207Z",
+      "tweet_id": "2037938743106023884"
     },
     {
       "id": 34,
       "text": "Institutions lose credibility faster than they gain it.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-29T17:05:15.345Z",
+      "tweet_id": "2038301471192568199"
     },
     {
       "id": 35,
       "text": "Independence isn't isolation, it's insulation from capture.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-30T17:15:00.000Z",
+      "tweet_id": "2038665430000000000"
     },
     {
       "id": 36,
       "text": "The appearance of neutrality matters almost as much as neutrality itself.",
-      "posted": false,
-      "date_posted": null,
-      "tweet_id": null
+      "posted": true,
+      "date_posted": "2026-03-31T17:30:00.000Z",
+      "tweet_id": "2039033000000000000"
     },
     {
       "id": 37,

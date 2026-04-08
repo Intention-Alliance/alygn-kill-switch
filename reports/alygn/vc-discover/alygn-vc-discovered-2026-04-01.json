@@ -1,0 +1,363 @@
+{
+  "timestamp": "2026-04-01T01:10:20.013Z",
+  "type": "vc",
+  "phase": "discovered",
+  "data": {
+    "count": 8,
+    "entities": [
+      {
+        "id": "entity-mnfcmw6j-homdho",
+        "type": "vc",
+        "name": "Safe AI Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-7vuuyv",
+        "type": "vc",
+        "name": "Halcyon Futures",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-umxpk3",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-36fpo1",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "https://menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "cybersecurity",
+            "AI-native security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-kjbtib",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early",
+            "growth"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-ivwwbk",
+        "type": "vc",
+        "name": "General Catalyst",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "enterprise AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-wfchnv",
+        "type": "vc",
+        "name": "GV (Google Ventures)",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "various"
+          ],
+          "sectorFocus": [
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnfcmw6j-srsgu9",
+        "type": "vc",
+        "name": "M12",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-01T01:10:20.011Z",
+        "lastUpdatedAt": "2026-04-01T01:10:20.011Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI observability"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ]
+  }
+}

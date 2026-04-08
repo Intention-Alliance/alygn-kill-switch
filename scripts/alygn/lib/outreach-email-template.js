@@ -67,6 +67,25 @@ export function generateEmail(params) {
   const logoBase64 = getBase64Image(logoPath);
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
 
+  // Issue #39: TRAIGA Act section for municipal emails
+  const TRAIGA_SECTION = `
+<div style="margin: 24px 0; padding: 16px; background-color: #f8fafc; border-left: 3px solid #0f172a; border-radius: 4px;">
+  <h3 style="margin: 0 0 12px 0; color: #0f172a; font-size: 16px; font-weight: 600;">TRAIGA Act: Marco de Gobernanza de IA</h3>
+  <p style="margin: 0 0 12px 0; line-height: 1.6; color: #374151; font-size: 14px;">
+    El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:
+  </p>
+  <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: #374151; font-size: 14px;">
+    <li><strong>Transparencia:</strong> Documentación clara de la toma de decisiones de IA</li>
+    <li><strong>Evaluación de Riesgos:</strong> Identificación proactiva de posibles daños</li>
+    <li><strong>Rendición de Cuentas:</strong> Responsabilidad definida para los resultados de IA</li>
+    <li><strong>Gobernanza:</strong> Supervisión y marcos de monitoreo continuos</li>
+  </ul>
+  <p style="margin: 12px 0 0 0; line-height: 1.6; color: #374151; font-size: 14px;">
+    Alygn apoya a los municipios en la implementación de estos principios.
+  </p>
+</div>
+`;
+
   // Template copy for municipalities (Spanish)
   const templates = {
     governance: {
@@ -141,6 +160,7 @@ Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : '
       <div class="body-content">
         <p>${copy.intro}</p>
         ${painPointsHtml}
+        ${variant === 'traiga' || variant === 'governance' || variant === 'institutional' ? TRAIGA_SECTION : ''}
       </div>
       <p class="closing">${copy.closing}</p>
       <a href="${mailtoLink}" class="cta-button">${copy.cta}</a>

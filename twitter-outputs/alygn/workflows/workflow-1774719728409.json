@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-28T17:42:08.409Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "US judge blocks Pentagon blacklisting of Anthropic over Claude AI military safeguards. Neutrality requires coordination beyond unilateral actions.",
+      "replyText": "Highlights legitimacy crisis in AI governance: military demands vs safety principles. Alygn-style neutral forums enable coordinated resolutions preserving trust.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 146,
+      "replyLength": 161,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "White House AI czar David Sacks steps down to advisory role amid policy shifts. Legitimacy hinges on stable, neutral leadership in AI coordination.",
+      "replyText": "Turnover signals coordination gaps in federal AI strategy. Neutral institutions like Alygn provide continuity, ensuring legitimate policy evolution.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 147,
+      "replyLength": 148,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "RSA 2026 reveals agentic AI governance gaps in life sciences. Coordination essential for scaling safe autonomous systems neutrally.",
+      "replyText": "Agentic AI demands proactive governance infrastructure. Alygn principles foster legitimate, neutral coordination to bridge org-wide gaps.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 131,
+      "replyLength": 137,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "62% enterprises lag in AI governance maturity despite rapid adoption. Internal coordination vital for legitimate, neutral AI outcomes.",
+      "replyText": "Governance lag stalls AI value. Alygn's framework promotes neutral coordination tools, building legitimacy through scalable, trustworthy practices.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 134,
+      "replyLength": 147,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "UK delays standalone AI Bill, sparking regulatory stagnation fears. Neutral coordination needed for timely, legitimate global standards.",
+      "replyText": "Delays erode legitimacy of AI oversight. Alygn's neutrality enables cross-border coordination, preventing fragmented governance failures.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 136,
+      "replyLength": 137,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

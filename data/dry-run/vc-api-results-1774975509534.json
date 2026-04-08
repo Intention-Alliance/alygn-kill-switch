@@ -1,0 +1,31 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 1,
+  "timestamp": "2026-03-31T16:45:09.534Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Air Street Capital",
+      "website": "",
+      "email": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI",
+        "AI safety",
+        "Machine learning",
+        "Life sciences"
+      ],
+      "partners": [
+        {
+          "name": "",
+          "title": ""
+        }
+      ]
+    }
+  ]
+}

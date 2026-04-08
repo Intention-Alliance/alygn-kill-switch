@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-31T19:58:27.755Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "California's executive order mandates AI safeguards for state contracts, asserting legitimacy in vendor oversight amid federal tensions. Coordination ensures balanced governance.",
+      "replyText": "This event highlights the legitimacy of state-level AI rules, urging neutral coordination between federal and state actors to build robust institutional frameworks without fragmentation.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 178,
+      "replyLength": 186,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "States like California defy federal preemption, advancing AI regulations independently. Legitimacy demands neutral coordination to harmonize national AI policy.",
+      "replyText": "Federal-state clashes reveal coordination gaps; neutral institutions must legitimize multi-level governance, preventing policy silos that erode trust in AI oversight.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 160,
+      "replyLength": 166,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Judge blocks Pentagon's move against Anthropic over AI ethics in weapons. Neutrality in governance protects principled firms, fostering legitimate coordination.",
+      "replyText": "Judicial intervention emphasizes neutrality: governance must coordinate ethical standards across military and private sectors, legitimizing AI safety without arbitrary bans.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 160,
+      "replyLength": 173,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "SEC ramps up AI oversight focus on risks, cybersecurity, vendors. Legitimate governance requires neutral frameworks for accountability in financial AI use.",
+      "replyText": "Regulatory emphasis on AI governance in finance underscores coordination needs: neutral legitimacy ensures consistent risk management across sectors.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 155,
+      "replyLength": 149,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "New York's heavy AI regs spur business exodus, hindering innovation. Coordination and neutrality vital for legitimate, pro-growth governance.",
+      "replyText": "Overregulation risks legitimacy loss; balanced, neutral coordination between states preserves institutional trust, enabling AI progress without stifling competition.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 141,
+      "replyLength": 165,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

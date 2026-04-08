@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-30T17:01:12.263Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Future of Life Institute launches multimillion-dollar \"Protect What’s Human\" campaign for federal and state AI safety rules, urging coordinated regulation.",
+      "replyText": "This initiative exemplifies coordination across government levels for AI safety, bolstering legitimacy via public advocacy and neutrality through human-centric, unbiased policy focus.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 155,
+      "replyLength": 183,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Paul Allen on podcast: AI via CitizenPortal.ai enhances government transparency, rebuilding public trust through verifiable civic platforms.",
+      "replyText": "Demonstrates legitimacy in AI governance by fostering institutional trust, coordination between tech innovators and democracy, and neutrality in accessible information systems.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 140,
+      "replyLength": 176,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Robert Maciejko's new STAR framework empowers boards for quarterly AI oversight, aligning strategy with risk management.",
+      "replyText": "Advances enterprise AI governance via board coordination, legitimacy through accountable oversight, and neutral threat parity in decision-making.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 120,
+      "replyLength": 145,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Boaz Barak's graphs expose AI safety lag behind capabilities, calling for urgent societal and regulatory responses.",
+      "replyText": "Reveals institutional truths on coordination failures in safety scaling, legitimacy gaps in regulation, and need for neutral international efforts.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 115,
+      "replyLength": 147,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Human|AI Masterclass details 5 pillars—principles, policies, processes, controls, assurance—for safe AI innovation.",
+      "replyText": "Structures coordination in AI lifecycles, legitimacy via evidence-based trust, neutrality through fairness and human-centric principles.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 115,
+      "replyLength": 136,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

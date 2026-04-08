@@ -153,9 +153,9 @@ Generates workflow JSON:
 
 ### Step 2.1: Browser Discovery
 ```bash
-browser --profile="alygn" navigate https://x.com/explore
-browser --profile="alygn" search "AGI alignment"
-browser --profile="alygn" snapshot → extract posts
+browser --profile="alygn" navigate https://x.com/explore --target host
+browser --profile="alygn" search "AGI alignment" --target host
+browser --profile="alygn" snapshot → extract posts --target host
 ```
 Discover AI safety posts:
 - Keywords: "AGI alignment", "AI safety", "existential risk"

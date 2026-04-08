@@ -2,7 +2,9 @@
  * EmailService
  * Orchestrates email sending with validation and error handling
  */
+import { EmailProvider } from './providers/EmailProvider';
 import type { IEmailPayload, ISendResult } from './providers/EmailProvider';
+import { EmailProviderFactory } from './EmailProviderFactory';
 
 interface BatchEmailPayload {
   to: string;
@@ -28,16 +30,6 @@ interface BatchResult {
   }>;
 }
 
-interface EmailProvider {
-  send(payload: IEmailPayload): Promise<ISendResult>;
-  validateConfig(): Promise<boolean>;
-  getName(): string;
-}
-
-interface EmailProviderFactory {
-  create(type: string, config: Record<string, unknown>): EmailProvider;
-}
-
 export class EmailService {
   provider: EmailProvider | null = null;
   testEmail: string | null = null;
@@ -56,9 +48,7 @@ export class EmailService {
     if (this.provider) return;
     
     try {
-      // Dynamic imports to avoid bundling issues
-      const { EmailProviderFactory } = await import('./EmailProviderFactory') as { EmailProviderFactory: EmailProviderFactory };
-      this.provider = EmailProviderFactory.create(this.providerType, this.providerConfig);
+      this.provider = await EmailProviderFactory.create(this.providerType, this.providerConfig);
     } catch (error) {
       console.error('Failed to initialize email provider:', error);
       throw error;

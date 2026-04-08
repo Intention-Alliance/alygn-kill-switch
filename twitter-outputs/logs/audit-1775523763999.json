@@ -1,0 +1,23 @@
+{
+  "mode": "live",
+  "executedAt": "2026-04-07T01:02:43.998Z",
+  "workflow": {
+    "source": "Alygn Pre-Approved Post #37",
+    "posts": [
+      {
+        "id": 37,
+        "mainText": "Trust erodes faster than regulation can respond.\n\nmore at @aialygn",
+        "isThread": false,
+        "hashtags": [
+          "#AIGovernance",
+          "#InstitutionalAI"
+        ]
+      }
+    ]
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 0
+}

@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-04-01T17:01:51.445Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Recent nonprofit pitch urges tech giants to fund $100M each for AI safety amid federal inaction. Alygn's coordination principle fosters industry legitimacy for shared safety infrastructure.",
+      "replyText": "This event highlights the need for coordinated private funding to fill government gaps, ensuring legitimate, neutral AI safety mechanisms that all labs can endorse without bias.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 189,
+      "replyLength": 177,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Microsoft releases practical framework for adaptive AI governance, enabling trustworthy enterprise agents. Echoes Alygn's neutrality via platform-level impartial enforcement.",
+      "replyText": "Adaptive frameworks build legitimacy by clarifying oversight, promoting neutral standards that coordinate enterprise AI deployment responsibly across organizations.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 174,
+      "replyLength": 164,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "US reveals empty national AI policy, delegating to Congress. Alygn underscores legitimacy through defined institutional roles for coherent governance.",
+      "replyText": "Policy voids risk legitimacy erosion; Alygn's principles demand neutral coordination to establish clear authorities, preventing fragmented AI oversight.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 150,
+      "replyLength": 152,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "4 key 2026 AI governance trends emerge: regulation maturity, shadow AI surge. Alygn's coordination counters risks with neutral institutional strategies.",
+      "replyText": "Trends signal need for proactive coordination; legitimacy via evidence-based audits and neutrality in addressing shadow AI ensure robust, unbiased governance evolution.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 152,
+      "replyLength": 168,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "AWS stresses AI governance must pace agentic ambitions via risk intelligence. Aligns with Alygn's legitimacy in interdependent security operations.",
+      "replyText": "Agentic AI demands coordinated governance rethinking security holistically; neutrality ensures impartial risk management, bolstering institutional trust.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 147,
+      "replyLength": 153,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

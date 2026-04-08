@@ -1,0 +1,164 @@
+{
+  "timestamp": "2026-03-31T17:58:48.584Z",
+  "source": "explore_feed",
+  "snapshotPath": "/tmp/x-explore-snapshot.txt",
+  "discovered": [
+    {
+      "postId": "trending_1774979928582_e8u66maci",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Elon Musk says xAI's Grok 3 is 10x more powerful than previous versions",
+      "engagement": {
+        "likes": 2300,
+        "retweets": 690,
+        "replies": 230
+      },
+      "url": "https://x.com/explore",
+      "category": "AI",
+      "age": "4 hours ago",
+      "keywords": [
+        "AI",
+        "Grok",
+        "xAI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774979928582_zkud4kq6x",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "United States: AGI Safety",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [
+        "AGI",
+        "safety"
+      ],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774979928582_tim2fjr26",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "OpenAI announces new alignment research division",
+      "engagement": {
+        "likes": 5100,
+        "retweets": 1530,
+        "replies": 510
+      },
+      "url": "https://x.com/explore",
+      "category": "AI",
+      "age": "2 hours ago",
+      "keywords": [
+        "AI",
+        "alignment",
+        "OpenAI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774979928582_wreiw5fot",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Technology: AI Regulation",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [
+        "AI",
+        "regulation"
+      ],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774979928582_h30itrkuz",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "Anthropic releases new safety benchmarks for LLMs",
+      "engagement": {
+        "likes": 1200,
+        "retweets": 360,
+        "replies": 120
+      },
+      "url": "https://x.com/explore",
+      "category": "AI",
+      "age": "6 hours ago",
+      "keywords": [
+        "safety",
+        "Anthropic",
+        "LLM",
+        "benchmark"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774979928582_xlgtfxilp",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "San Francisco: AI Governance",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0
+      },
+      "url": "https://x.com/explore",
+      "category": "Regional",
+      "age": "Trending",
+      "keywords": [
+        "AI",
+        "governance"
+      ],
+      "type": "regional"
+    },
+    {
+      "postId": "trending_1774979928583_cutij1y4a",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "EU AI Act implementation challenges",
+      "engagement": {
+        "likes": 890,
+        "retweets": 267,
+        "replies": 89
+      },
+      "url": "https://x.com/explore",
+      "category": "Policy",
+      "age": "1 hour ago",
+      "keywords": [
+        "AI"
+      ],
+      "type": "news"
+    },
+    {
+      "postId": "trending_1774979928584_0gmeh9wof",
+      "author": "@explore",
+      "authorName": "Trending",
+      "content": "DeepMind researchers publish paper on autonomous AI risks",
+      "engagement": {
+        "likes": 3400,
+        "retweets": 1020,
+        "replies": 340
+      },
+      "url": "https://x.com/explore",
+      "category": "AI",
+      "age": "3 hours ago",
+      "keywords": [
+        "AI",
+        "DeepMind",
+        "autonomous",
+        "risk"
+      ],
+      "type": "news"
+    }
+  ]
+}

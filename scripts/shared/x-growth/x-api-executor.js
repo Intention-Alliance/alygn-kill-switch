@@ -277,16 +277,27 @@ async function executeJsonWorkflow(workflowPath, dryRun = true) {
     // Simulate execution
     if (workflow.posts) {
       for (const post of workflow.posts) {
-        log(`📝 Post: ${post.content.substring(0, 80)}...`);
-        results.posts.push({ content: post.content, status: 'ready' });
-        results.executed++;
+        // Support both new workflow format (mainText/replyText) and legacy (content)
+        const content = post.mainText || post.content;
+        if (content) {
+          log(`📝 Post: ${content.substring(0, 80)}...`);
+          results.posts.push({ content: content, status: 'ready' });
+          results.executed++;
+        }
+        // Also show reply if present
+        if (post.replyText) {
+          log(`💬 Reply: ${post.replyText.substring(0, 80)}...`);
+          results.executed++;
+        }
       }
     }
     
     if (workflow.replies) {
       for (const reply of workflow.replies) {
-        log(`💬 Reply to ${reply.targetHandle}: ${reply.content.substring(0, 80)}...`);
-        results.replies.push({ content: reply.content, target: reply.targetHandle });
+        const content = reply.content || reply.replyText;
+        const target = reply.targetHandle || reply.target;
+        log(`💬 Reply to ${target}: ${content.substring(0, 80)}...`);
+        results.replies.push({ content: content, target: target });
         results.executed++;
       }
     }

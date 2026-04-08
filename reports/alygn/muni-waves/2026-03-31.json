@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-03-31T19:29:38.148Z",
+  "type": "municipal",
+  "phase": "sent",
+  "waveNumber": 1,
+  "waveDate": "2026-03-31",
+  "data": {
+    "count": 3,
+    "personalized": 3,
+    "sent": 3,
+    "failed": 0,
+    "entities": [
+      {
+        "id": "muni-sent-san-ramón-2026-03-31",
+        "name": "Municipalidad de San Ramón",
+        "email": "kperez@sanramon.go.cr",
+        "status": "sent",
+        "sentAt": "2026-03-31T20:27:00.000Z",
+        "messageId": "<f320be86-8db4-5eb8-56eb-dc799ebd1b80@alygn.com>"
+      },
+      {
+        "id": "muni-sent-grecia-2026-03-31",
+        "name": "Municipalidad de Grecia",
+        "email": "alcaldia@grecia.go.cr",
+        "status": "sent",
+        "sentAt": "2026-03-31T20:27:00.000Z",
+        "messageId": "<dda5a848-df98-d7e3-5759-e96345b48882@alygn.com>"
+      },
+      {
+        "id": "muni-sent-paraíso-2026-03-31",
+        "name": "Municipalidad de Paraíso",
+        "email": "alcaldia@muniparaiso.go.cr",
+        "status": "sent",
+        "sentAt": "2026-03-31T20:27:00.000Z",
+        "messageId": "<80d0a712-0d1c-1f7d-0f08-3595710cb4e3@alygn.com>"
+      }
+    ]
+  }
+}

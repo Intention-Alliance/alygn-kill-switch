@@ -1,0 +1,723 @@
+{
+  "timestamp": "2026-03-31T20:30:23.884Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "vc-NYOIaW",
+        "type": "vc",
+        "name": "Bloomberg Beta",
+        "email": null,
+        "website": "https://www.bloombergbeta.com",
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "NY",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T20:30:00.000Z",
+        "lastUpdatedAt": "2026-03-31T20:30:23.883Z",
+        "outreachCount": 0,
+        "researchNotes": "Bloomberg Beta is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Bloomberg Beta would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A"
+          ],
+          "sectorFocus": [
+            "AI",
+            "Data Infrastructure",
+            "Enterprise Software",
+            "Fintech"
+          ],
+          "checkSizeMin": 500000,
+          "checkSizeMax": 5000000,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Roy Bahat",
+              "title": "Head of Bloomberg Beta"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 90
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "vc-uYO7K2",
+        "type": "vc",
+        "name": "Khosla Ventures",
+        "email": null,
+        "website": "https://www.khoslaventures.com",
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T20:30:00.000Z",
+        "lastUpdatedAt": "2026-03-31T20:30:23.883Z",
+        "outreachCount": 0,
+        "researchNotes": "Khosla Ventures is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Khosla Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Growth"
+          ],
+          "sectorFocus": [
+            "AI",
+            "Climate",
+            "Health",
+            "Frontier Tech"
+          ],
+          "checkSizeMin": 1000000,
+          "checkSizeMax": 50000000,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Vinod Khosla",
+              "title": "Founder"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 95
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "vc-EAaJbx",
+        "type": "vc",
+        "name": "Sequoia Capital",
+        "email": null,
+        "website": "https://www.sequoiacap.com",
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T20:30:00.000Z",
+        "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+        "outreachCount": 0,
+        "researchNotes": "Sequoia Capital is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Sequoia Capital would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Early",
+            "Growth"
+          ],
+          "sectorFocus": [
+            "AI",
+            "Enterprise",
+            "Consumer",
+            "Healthcare"
+          ],
+          "checkSizeMin": 1000000,
+          "checkSizeMax": 100000000,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Alfred Lin",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 92
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "vc-BsgvSv",
+        "type": "vc",
+        "name": "Kindred Ventures",
+        "email": null,
+        "website": "https://www.kindred.vc",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T20:30:00.000Z",
+        "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+        "outreachCount": 0,
+        "researchNotes": "Kindred Ventures is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Kindred Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Pre-seed"
+          ],
+          "sectorFocus": [
+            "AI",
+            "Deep Tech",
+            "Infrastructure",
+            "Climate"
+          ],
+          "checkSizeMin": 250000,
+          "checkSizeMax": 3000000,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Kanyi Maqubela",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 88
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "vc-E4nSEi",
+        "type": "vc",
+        "name": "Compound VC",
+        "email": null,
+        "website": "https://compound.vc",
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "NY",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-31T20:30:00.000Z",
+        "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+        "outreachCount": 0,
+        "researchNotes": "Compound VC is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Compound VC would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Pre-seed",
+            "Seed",
+            "Series A"
+          ],
+          "sectorFocus": [
+            "AI",
+            "Deep Tech",
+            "Hardware",
+            "Enterprise"
+          ],
+          "checkSizeMin": 250000,
+          "checkSizeMax": 5000000,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jenny Fielding",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 87
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "Bloomberg Beta is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Roy Bahat",
+              "title": "Head of Bloomberg Beta"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Bloomberg Beta would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "vc-NYOIaW",
+          "type": "vc",
+          "name": "Bloomberg Beta",
+          "email": null,
+          "website": "https://www.bloombergbeta.com",
+          "phone": null,
+          "location": {
+            "city": "New York",
+            "state": "NY",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-31T20:30:00.000Z",
+          "lastUpdatedAt": "2026-03-31T20:30:23.883Z",
+          "outreachCount": 0,
+          "researchNotes": "Bloomberg Beta is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Bloomberg Beta would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A"
+            ],
+            "sectorFocus": [
+              "AI",
+              "Data Infrastructure",
+              "Enterprise Software",
+              "Fintech"
+            ],
+            "checkSizeMin": 500000,
+            "checkSizeMax": 5000000,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Roy Bahat",
+                "title": "Head of Bloomberg Beta"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 90
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Khosla Ventures is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Vinod Khosla",
+              "title": "Founder"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Khosla Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "vc-uYO7K2",
+          "type": "vc",
+          "name": "Khosla Ventures",
+          "email": null,
+          "website": "https://www.khoslaventures.com",
+          "phone": null,
+          "location": {
+            "city": "Menlo Park",
+            "state": "CA",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-31T20:30:00.000Z",
+          "lastUpdatedAt": "2026-03-31T20:30:23.883Z",
+          "outreachCount": 0,
+          "researchNotes": "Khosla Ventures is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Khosla Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Growth"
+            ],
+            "sectorFocus": [
+              "AI",
+              "Climate",
+              "Health",
+              "Frontier Tech"
+            ],
+            "checkSizeMin": 1000000,
+            "checkSizeMax": 50000000,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Vinod Khosla",
+                "title": "Founder"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 95
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Sequoia Capital is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Alfred Lin",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Sequoia Capital would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "vc-EAaJbx",
+          "type": "vc",
+          "name": "Sequoia Capital",
+          "email": null,
+          "website": "https://www.sequoiacap.com",
+          "phone": null,
+          "location": {
+            "city": "Menlo Park",
+            "state": "CA",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-31T20:30:00.000Z",
+          "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+          "outreachCount": 0,
+          "researchNotes": "Sequoia Capital is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Sequoia Capital would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Early",
+              "Growth"
+            ],
+            "sectorFocus": [
+              "AI",
+              "Enterprise",
+              "Consumer",
+              "Healthcare"
+            ],
+            "checkSizeMin": 1000000,
+            "checkSizeMax": 100000000,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Alfred Lin",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 92
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Kindred Ventures is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Kanyi Maqubela",
+              "title": "Managing Partner"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Kindred Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "vc-BsgvSv",
+          "type": "vc",
+          "name": "Kindred Ventures",
+          "email": null,
+          "website": "https://www.kindred.vc",
+          "phone": null,
+          "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-31T20:30:00.000Z",
+          "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+          "outreachCount": 0,
+          "researchNotes": "Kindred Ventures is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Kindred Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Pre-seed"
+            ],
+            "sectorFocus": [
+              "AI",
+              "Deep Tech",
+              "Infrastructure",
+              "Climate"
+            ],
+            "checkSizeMin": 250000,
+            "checkSizeMax": 3000000,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Kanyi Maqubela",
+                "title": "Managing Partner"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 88
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Compound VC is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Jenny Fielding",
+              "title": "Managing Director"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Compound VC would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "vc-E4nSEi",
+          "type": "vc",
+          "name": "Compound VC",
+          "email": null,
+          "website": "https://compound.vc",
+          "phone": null,
+          "location": {
+            "city": "New York",
+            "state": "NY",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-31T20:30:00.000Z",
+          "lastUpdatedAt": "2026-03-31T20:30:23.884Z",
+          "outreachCount": 0,
+          "researchNotes": "Compound VC is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Compound VC would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Pre-seed",
+              "Seed",
+              "Series A"
+            ],
+            "sectorFocus": [
+              "AI",
+              "Deep Tech",
+              "Hardware",
+              "Enterprise"
+            ],
+            "checkSizeMin": 250000,
+            "checkSizeMax": 5000000,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Jenny Fielding",
+                "title": "Managing Director"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 87
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

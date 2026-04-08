@@ -8,7 +8,7 @@
 
 ### Phase 1: Load Configuration
 
-- Read: `$HOME/.openclaw/workspace/skills/alygn-outreach/config/research-config.json`
+- Read: `$HOME/.openclaw/.agents/skills/alygn-outreach/config/research-config.json`
 - Check: target_sectors, founder_backgrounds, portfolio_companies
 
 ### Phase 2: Discover New Angels

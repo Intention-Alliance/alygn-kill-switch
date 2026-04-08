@@ -2,7 +2,7 @@ name: alygn-x-growth-daily
 description: Daily Alygn Twitter growth workflow (8 phases) with wave tracking
 metadata:
   project: alygn
-  twitter: "@aialygn"
+  twitter: "@aialyygn"
   skill: alygn-x-growth
   wave: 1
   state_file: $HOME/.openclaw/workspace/reports/alygn/x-growth/wave-state.json
@@ -55,11 +55,25 @@ steps:
         state.phaseCompleted = 'phase1-preapproved';
         fs.writeFileSync('$HOME/.openclaw/workspace/reports/alygn/x-growth/wave-state.json', JSON.stringify(state, null, 2));
 
-  # Phase 2: Content generation (Grok)
-  - id: phase2-generate
-    command: node scripts/alygn/x-growth/content/thread-generator.js --prompts=1,13
-    description: "Generate threads and replies using Grok"
+  # Phase 2: SEO keyword research (NEW - before content generation)
+  - id: phase2-seo-keywords
+    command: openclaw invoke --tool seo-master --action research-keywords --args-json '{"topic":"AI governance","count":10}'
+    description: "Research trending keywords for AI governance content"
     after: phase1-preapproved
+    output:
+      file: $HOME/.openclaw/workspace/reports/alygn/x-growth/phase2-keywords.json
+    on_complete:
+      script: |
+        const fs = require('fs');
+        const state = JSON.parse(fs.readFileSync('$HOME/.openclaw/workspace/reports/alygn/x-growth/wave-state.json', 'utf8'));
+        state.phaseCompleted = 'phase2-seo-keywords';
+        fs.writeFileSync('$HOME/.openclaw/workspace/reports/alygn/x-growth/wave-state.json', JSON.stringify(state, null, 2));
+
+  # Phase 2b: Content generation (Grok) with SEO keywords
+  - id: phase2-generate
+    command: node scripts/alygn/x-growth/content/thread-generator.js --prompts=1,13 --keywords-file=$HOME/.openclaw/workspace/reports/alygn/x-growth/phase2-keywords.json
+    description: "Generate threads and replies using Grok with SEO keywords"
+    after: phase2-seo-keywords
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/x-growth/phase2-markdown.md
     on_complete:
@@ -170,10 +184,14 @@ steps:
         state.phaseCompleted = 'phase8-decision';
         fs.writeFileSync('$HOME/.openclaw/workspace/reports/alygn/x-growth/wave-state.json', JSON.stringify(state, null, 2));
 
-  # Phase 9: Post discovery content (replies/quotes)
+  # Phase 9: Post discovery content (replies/quotes) with browser fallback
   - id: phase9-engage
-    command: bun scripts/shared/x-growth/x-api-executor.js --workflow=$HOME/.openclaw/workspace/reports/alygn/x-growth/phase8-decisions.json --live --engagement-mode
-    description: "Post replies and quotes to trending topics (max 2-4 engagements/day)"
+    command: |
+      # Try X API first, fallback to browser automation on 403
+      bun scripts/shared/x-growth/x-api-executor.js --workflow=$HOME/.openclaw/workspace/reports/alygn/x-growth/phase8-decisions.json --live --engagement-mode 2>&1 || \
+      (echo "API failed, using browser automation..." && \
+       bun ~/.agents/skills/alygn-x-persona-automation/src/browser-engagement.ts --workflow=$HOME/.openclaw/workspace/reports/alygn/x-growth/phase8-decisions.json --engagement-mode)
+    description: "Post replies and quotes to trending topics (X API → Browser fallback, max 2-4 engagements/day)"
     after: phase8-decision
     approval: optional
     output:

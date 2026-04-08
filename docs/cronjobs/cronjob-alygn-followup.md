@@ -16,7 +16,7 @@
 
 ### Phase 2: Generate Follow-up Drafts
 
-- Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=followup --action=personalize --input=/tmp/followups/queue-{today}.json --dry-run
+- Command: bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=followup --action=personalize --input=/tmp/followups/queue-{today}.json --dry-run
 - Personalize based on: Original email context, firm/angel background
 - Output: /tmp/followups/queue-{today}-drafted.json
 
@@ -29,7 +29,7 @@
 ### Phase 4: Send (if approved)
 
 - Wait for approval (check Notion or Discord)
-- Command: bun ~/.openclaw/workspace/skills/alygn-outreach/bin/alygn-outreach.ts --type=followup --action=send --input=/tmp/followups/queue-{today}-approved.json --rate-limit=4
+- Command: bun ~/.openclaw/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=followup --action=send --input=/tmp/followups/queue-{today}-approved.json --rate-limit=4
 - Update pipeline: Increment follow-up count, update status
 
 ## Success Criteria

@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-03-28T17:42:00Z",
+  "source": "browser-snapshot",
+  "profile": "alygn",
+  "discovered": [
+    {
+      "postId": "2037755026425159849",
+      "author": "@jpschmader",
+      "authorName": "Peter Schmader",
+      "content": "\"A.I. companies have all but given up on self-regulation, which was never going to work anyway. A.I. safety, A.I. alignment, and A.I. governance have all left the building.\"—Jill Lepore",
+      "url": "https://x.com/jpschmader/status/2037755026425159849",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "views": 8
+      },
+      "keywords": ["AI safety", "AI alignment", "AI governance", "self-regulation"],
+      "time": "12 hours ago"
+    },
+    {
+      "postId": "2037651362893160687",
+      "author": "@tfoxlaw",
+      "authorName": "Thomas Fox",
+      "content": "1 in 3 adults now use chatbots for healthcare. What does that mean for privacy, regulation, patient safety, and governance?",
+      "url": "https://x.com/tfoxlaw/status/2037651362893160687",
+      "engagement": {
+        "likes": 0,
+        "retweets": 0,
+        "replies": 0,
+        "views": 20
+      },
+      "keywords": ["regulation", "governance", "healthcare", "AI"],
+      "time": "19 hours ago",
+      "verified": true
+    }
+  ]
+}

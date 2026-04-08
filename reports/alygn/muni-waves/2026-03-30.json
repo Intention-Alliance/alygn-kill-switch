@@ -1,0 +1,136 @@
+{
+  "timestamp": "2026-03-28T05:48:02.980Z",
+  "type": "municipal",
+  "phase": "researched",
+  "waveDate": "2026-03-29",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-muni-tj7k9p3-1",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": "info@msj.go.cr",
+        "website": "https://www.munisanjose.go.cr",
+        "phone": "+506 2547-6000",
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "Central Valley"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-28T01:00:00.000Z",
+        "lastUpdatedAt": "2026-03-28T05:47:54.294Z",
+        "outreachCount": 0,
+        "researchNotes": "Municipalidad de San José, the capital municipality. Large population (288K) with substantial budget. Research indicates they are not a VC firm but a municipal government focused on public services. However, they have connections to national AI strategy via MICITT.",
+        "personalizationContext": {
+          "painPoints": [
+            "Complex coordination with national AI initiatives",
+            "Need for governance alignment with international standards"
+          ],
+          "tailoredHook": "Alygn helps municipalities navigate AI governance and alignment—critical as Costa Rica implements its National AI Strategy. We can help San José establish frameworks for responsible AI deployment.",
+          "recentNews": "Costa Rica's National AI Strategy exists at national level via MICITT. Municipal governments may be key implementation partners."
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 288054,
+          "budget": 150000000,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        }
+      },
+      {
+        "id": "entity-muni-tj7k9p3-2",
+        "type": "municipal",
+        "name": "Municipalidad de Heredia",
+        "email": "info@muniheredia.go.cr",
+        "website": "https://www.muniheredia.go.cr",
+        "phone": "+506 2261-5600",
+        "location": {
+          "city": "Heredia",
+          "state": "Heredia",
+          "country": "Costa Rica",
+          "region": "Central Valley"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-28T01:00:00.000Z",
+        "lastUpdatedAt": "2026-03-28T05:47:58.941Z",
+        "outreachCount": 0,
+        "researchNotes": "Municipalidad de Heredia manages public investments in infrastructure. Known for internal audits on NICSP implementation and public investment processes. Active in transparency initiatives.",
+        "personalizationContext": {
+          "painPoints": [
+            "Outdated internal financial reporting norms not aligned with international standards (NICSP)",
+            "Delays in NICSP implementation and policy approvals",
+            "Weaknesses in accounting norm adoption and project documentation"
+          ],
+          "tailoredHook": "Heredia's focus on transparency and governance standards aligns with Alygn's mission. We can support municipal AI governance frameworks that complement your NICSP compliance efforts.",
+          "recentNews": "Conducts internal audits on special topics like NICSP implementation and public investment processes"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 125000,
+          "budget": 75000000,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Heredia",
+          "trAigaRelevant": true
+        }
+      },
+      {
+        "id": "entity-muni-tj7k9p3-3",
+        "type": "municipal",
+        "name": "Municipalidad de Alajuela",
+        "email": "info@municipalidadalajuela.go.cr",
+        "website": "https://www.municipalidadalajuela.go.cr",
+        "phone": "+506 2441-4000",
+        "location": {
+          "city": "Alajuela",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Central Valley"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-03-28T01:00:00.000Z",
+        "lastUpdatedAt": "2026-03-28T05:48:02.980Z",
+        "outreachCount": 0,
+        "researchNotes": "Municipalidad de Alajuela focuses on local infrastructure, public services, and institutional transparency. Significant municipality with ~280K population.",
+        "personalizationContext": {
+          "painPoints": [],
+          "tailoredHook": "Alajuela's commitment to institutional transparency and public service quality is exactly the foundation that Alygn's AI governance frameworks can build upon.",
+          "recentNews": "Active in municipal financial regulations and public infrastructure projects"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 280000,
+          "budget": 95000000,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        }
+      }
+    ],
+    "researchArtifacts": "$HOME/.openclaw/workspace/reports/alygn/muni-research/"
+  }
+}

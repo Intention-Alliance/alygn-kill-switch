@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "1",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 2",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-03-31T16-45-07 | 3/31/2026, 10:45:09 AM"
+      },
+      "timestamp": "2026-03-31T16:45:09.941Z"
+    },
+    {
+      "title": "VC Firms (1)",
+      "color": 1096065,
+      "description": "**Glasswing Ventures**\n   🌐 https://glasswing.com",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-03-31T16-45-07",
+  "timestamp": "2026-03-31T16-45-07"
+}

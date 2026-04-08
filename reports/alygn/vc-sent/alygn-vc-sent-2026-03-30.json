@@ -1,0 +1,92 @@
+{
+  "timestamp": "2026-03-30T22:31:56.391Z",
+  "type": "vc",
+  "phase": "sent",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "entity-mn9dys42-koebf1",
+        "type": "vc",
+        "name": "AI Safety Ventures",
+        "email": "contact@aisafetyvc.com",
+        "website": "https://aisafetyvc.com",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-03-27T21:00:57.170Z",
+        "lastUpdatedAt": "2026-03-27T21:00:57.170Z",
+        "outreachCount": 0,
+        "researchNotes": "AI Safety Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - SafeAI Systems and AI Governance",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "Portfolio company SafeAI Systems's governance challenges as it scales",
+            "Coordination gaps between AI Safety Ventures's AI safety investments",
+            "Institutional accountability for frontier AI systems"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI safety/AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance",
+            "AI alignment"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dr. Sarah Chen",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "SafeAI Systems",
+            "Alignment Labs"
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Systems",
+              "date": "2024-01",
+              "stage": "Seed"
+            },
+            {
+              "company": "Alignment Labs",
+              "date": "2024-03",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      }
+    ]
+  }
+}

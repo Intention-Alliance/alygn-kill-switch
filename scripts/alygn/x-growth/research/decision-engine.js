@@ -20,6 +20,7 @@
 
 import { promises as fs } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { xai } from "@ai-sdk/xai";
 import { generateText } from "ai";
 import { getGrokKey, getGrokModel } from "../../../shared/load-credentials.js";
@@ -28,6 +29,7 @@ const GROK_API_KEY = getGrokKey();
 const GROK_MODEL = getGrokModel();
 process.env.XAI_API_KEY = GROK_API_KEY;
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WORKSPACE = path.join(__dirname, '../../../../');
 const DISCOVERY_DIR = path.join(WORKSPACE, 'twitter-outputs/alygn/discovery');
 const WORKFLOW_DIR = path.join(WORKSPACE, 'twitter-outputs/alygn/workflows');
@@ -176,10 +178,14 @@ async function evaluateDiscovery(discoveryPath) {
 /**
  * CLI Entry Point
  */
-if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
-  (async () => {
-    try {
-      // Find latest discovery file
+async function runCLI() {
+  try {
+    // Check for --trends argument first
+    const trendsArg = process.argv.find(a => a.startsWith('--trends='));
+    let discoveryFile = trendsArg ? trendsArg.replace('--trends=', '') : null;
+    
+    // If no --trends arg, find latest discovery file
+    if (!discoveryFile) {
       const files = await fs.readdir(DISCOVERY_DIR);
       const discoveryFiles = files.filter(f => f.startsWith('discovery-')).sort().reverse();
       
@@ -188,37 +194,50 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
         process.exit(1);
       }
       
-      const latestDiscovery = path.join(DISCOVERY_DIR, discoveryFiles[0]);
+      discoveryFile = path.join(DISCOVERY_DIR, discoveryFiles[0]);
       log(`📁 Processing: ${discoveryFiles[0]}`);
-      
-      const workflow = await evaluateDiscovery(latestDiscovery);
-      
-      // Save workflow
-      const timestamp = Date.now();
-      const workflowPath = path.join(WORKFLOW_DIR, `workflow-${timestamp}.json`);
-      await fs.mkdir(WORKFLOW_DIR, { recursive: true });
-      await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
-      
-      success(`✅ Workflow saved: ${workflowPath}`);
-      
-      // Print summary
-      console.log('\n📋 Workflow Summary:');
-      console.log(`  Posts: ${workflow.posts.length}`);
-      console.log(`  Replies: ${workflow.replies.length}`);
-      console.log(`  Profiles to follow: ${workflow.profiles.length}`);
-      
-      if (workflow.replies.length > 0) {
-        console.log('\n📝 Replies:');
-        workflow.replies.forEach(r => {
-          console.log(`  ${r.id}. ${r.targetHandle}: ${r.content.substring(0, 80)}...`);
-        });
-      }
-      
-    } catch (err) {
-      error('💥 Fatal error:', err);
-      process.exit(1);
+    } else {
+      log(`📁 Processing: ${discoveryFile}`);
     }
-  })();
+    
+    const workflow = await evaluateDiscovery(discoveryFile);
+    
+    // Save workflow
+    const timestamp = Date.now();
+    const workflowPath = path.join(WORKFLOW_DIR, `workflow-${timestamp}.json`);
+    await fs.mkdir(WORKFLOW_DIR, { recursive: true });
+    await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
+    
+    success(`✅ Workflow saved: ${workflowPath}`);
+    
+    // Print summary
+    console.log('\n📋 Workflow Summary:');
+    console.log(`  Posts: ${workflow.posts.length}`);
+    console.log(`  Replies: ${workflow.replies.length}`);
+    console.log(`  Profiles to follow: ${workflow.profiles.length}`);
+    
+    if (workflow.replies.length > 0) {
+      console.log('\n📝 Replies:');
+      workflow.replies.forEach(r => {
+        console.log(`  ${r.id}. ${r.targetHandle}: ${r.content.substring(0, 80)}...`);
+      });
+    }
+    
+    if (workflow.posts.length > 0) {
+      console.log('\n📢 Quote Posts:');
+      workflow.posts.forEach(p => {
+        console.log(`  ${p.id}. ${p.content.substring(0, 80)}...`);
+      });
+    }
+    
+  } catch (err) {
+    error('💥 Fatal error:', err);
+    process.exit(1);
+  }
+}
+
+if (process.argv[1] && import.meta.url.endsWith(process.argv[1])) {
+  runCLI();
 }
 
 export { evaluateDiscovery, evaluatePost };

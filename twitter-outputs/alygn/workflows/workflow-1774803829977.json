@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-29T17:03:49.977Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "White House released National AI Policy Framework yesterday, pushing for unified federal legislation over patchwork state rules. True coordination builds legitimate AI governance.",
+      "replyText": "This framework underscores coordination as key to legitimacy, preventing fragmented regulations that erode public trust. Neutrality demands balanced federal oversight to guide innovation responsibly.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 179,
+      "replyLength": 199,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Top AI conference reversed ban on papers from US-sanctioned entities amid China boycott threats. Global coordination essential for legitimate, neutral AI research standards.",
+      "replyText": "Event highlights coordination challenges in international AI forums. Legitimacy requires neutral policies free from geopolitical bias, fostering inclusive governance for shared progress.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 173,
+      "replyLength": 186,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "The Elders urged governments to act on AI for public good, calling for inclusive global dialogue on governance grounded in science and transparency yesterday.",
+      "replyText": "Emphasizes coordination via transparent international talks. Legitimacy stems from science-based neutrality, ensuring AI serves humanity without undue influence.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 158,
+      "replyLength": 161,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "AI deepfakes surge in 2026 US midterms with no federal rules curbing political misuse. Urgent need for coordinated regulation to uphold legitimacy and neutrality.",
+      "replyText": "Lack of federal oversight risks eroding democratic legitimacy. Neutral governance frameworks must coordinate to mitigate deepfake threats, preserving electoral trust.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 162,
+      "replyLength": 166,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "Cornell Tech launched AI governance research backed by Mastercard, focusing on transparency in generative AI benefits. Institutional neutrality drives legitimate outcomes.",
+      "replyText": "Advances coordination through research on real-world AI impacts. Legitimacy via transparent, neutral evaluation ensures governance aligns with societal principles.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 171,
+      "replyLength": 163,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

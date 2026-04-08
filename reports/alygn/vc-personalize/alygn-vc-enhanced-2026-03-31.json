@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-03-31T20:35:00.000Z",
+  "type": "vc_enhanced",
+  "phase": "enhanced_personalization",
+  "data": {
+    "count": 4,
+    "entities": [
+      {
+        "id": "vc-safe-ai-fund",
+        "type": "vc",
+        "name": "Safe AI Fund",
+        "partner": {
+          "name": "Geoff Ralston",
+          "title": "Founder"
+        },
+        "focus": "AI safety, responsible AI development, technical guardrails",
+        "enhancedPersonalization": {
+          "tailoredHook": "You built this fund because capability without constraint is not progress. We exist for the same reason: to make governance infrastructure that keeps pace with what AI can do.",
+          "painPoints": [
+            "Fragmented safety standards across jurisdictions create compliance chaos for portfolio companies",
+            "No independent body exists to validate safety claims without conflicts of interest",
+            "Technical teams lack clear guidance on governance implementation at scale",
+            "Investors cannot verify AI risk exposure without standardized accountability frameworks"
+          ],
+          "valueProposition": "Alygn provides the independent governance infrastructure your portfolio needs: verifiable accountability mechanisms, cross-border coordination protocols, and technical standards that satisfy both regulators and engineers.",
+          "personalizedPS": "P.S.: Your thesis assumes safety and speed are not tradeoffs. We agree. The question is who builds the guardrails before they become gates."
+        }
+      },
+      {
+        "id": "vc-halcyon-futures",
+        "type": "vc",
+        "name": "Halcyon Futures",
+        "partner": {
+          "name": "Mike McCormick",
+          "title": "CEO"
+        },
+        "focus": "Long-term futures, transformative technology, civilization-scale impact",
+        "enhancedPersonalization": {
+          "tailoredHook": "Halcyon invests in futures worth inhabiting. We build the governance infrastructure those futures require. The gap between technical possibility and institutional readiness is where both of us operate.",
+          "painPoints": [
+            "Long-term AI risk lacks institutional memory or coordination mechanisms",
+            "Portfolio companies face emerging regulatory landscapes without precedents",
+            "Civilizational-scale technologies demand governance that outlives funding cycles",
+            "No durable framework exists for multi-stakeholder AI accountability across decades"
+          ],
+          "valueProposition": "Alygn offers institutional permanence for the technologies Halcyon backs: governance frameworks designed for generational time horizons, not quarterly reports.",
+          "personalizedPS": "P.S.: The future does not govern itself. Someone must build the scaffolding while the concrete is still wet."
+        }
+      },
+      {
+        "id": "vc-evolution-equity",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "partner": {
+          "name": "Richard Seewald",
+          "title": "Managing Partner"
+        },
+        "focus": "Cybersecurity, enterprise software, European markets",
+        "enhancedPersonalization": {
+          "tailoredHook": "Evolution Equity understands that security and governance are the same problem viewed from different angles. As AI systems become critical infrastructure, the attack surface expands. So does the governance surface.",
+          "painPoints": [
+            "AI systems introduce unquantified security risks that traditional cybersecurity cannot address",
+            "European regulatory complexity (AI Act, GDPR, NIS2) creates compliance fragmentation",
+            "Portfolio companies lack frameworks for AI incident response and accountability",
+            "Cross-border AI operations face conflicting governance requirements without coordination mechanisms"
+          ],
+          "valueProposition": "Alygn bridges the gap between cybersecurity and AI governance: unified accountability frameworks that satisfy European regulators while enabling technical innovation.",
+          "personalizedPS": "P.S.: You have seen how security failures cascade. Governance failures cascade slower but cut deeper."
+        }
+      },
+      {
+        "id": "vc-glasswing",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "partner": {
+          "name": "Rudina Seseri",
+          "title": "Managing Partner"
+        },
+        "focus": "AI-native companies, intelligent automation, enterprise AI",
+        "enhancedPersonalization": {
+          "tailoredHook": "Glasswing invests in AI-native companies because you recognize intelligence as infrastructure. We exist because infrastructure without accountability becomes fragility.",
+          "painPoints": [
+            "AI-native portfolio companies face existential regulatory risk as frameworks crystallize",
+            "Enterprise customers demand governance proof points that startups cannot yet provide",
+            "Technical founders understand models but lack institutional design expertise",
+            "Competition for AI talent distracts from building durable accountability systems"
+          ],
+          "valueProposition": "Alygn gives Glasswing portfolio companies a governance advantage: independent validation, coordinated standards, and institutional credibility that accelerates enterprise adoption.",
+          "personalizedPS": "P.S.: The best AI companies will be those that build accountability in, not bolt it on."
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "enhancementNotes": [
+      "Applied Beautiful Prose skill: eliminated filler transitions, banned patterns, and AI tells",
+      "Each hook leads with concrete specificity rather than generic alignment",
+      "Pain points articulate governance challenges with precision, not platitudes",
+      "Value propositions emphasize institutional credibility and practical outcomes",
+      "P.S. lines function as memorable closing arguments without sentimentality"
+    ]
+  }
+}

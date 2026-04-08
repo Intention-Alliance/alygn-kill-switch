@@ -1,150 +1,150 @@
-# Municipal Outreach Campaign Workflow - Evening (Research)
+# Municipal Outreach — Evening (Research)
 
-Run municipal outreach via Lobster below:
+**Schedule:** 7:00 PM daily (Mon-Fri)
+**Purpose:** Research new municipalities and populate tomorrow's wave
+**Discord Thread:** 1486784946134712500
 
-```yaml
-name: alygn-campaign
-description: Costa Rica municipal outreach pilot (82 cantones) campaign with personalization - using alygn-outreach skill
-metadata:
-  project: alygn
-  type: muni-outreach
-  wave: [latest-wave-number] + 1
-  script: `cd $HOME/.openclaw/workspace && lobster run .lobster/alygn-muni-outreach.lobster`
-```
+---
 
-## Execution
+## Prerequisites
 
-This cronjob runs the `discover` and `research` phases to populate tomorrow's wave.
+- Supabase database is accessible for querying uncontacted municipalities
+- Lobster file `.lobster/alygn-muni-outreach.lobster` is present and functional
+- Discord thread 1486784946134712500 is active for posting tomorrow's wave summary
+- Review `~/.agents/skills/alygn-outreach/docs/DEVELOPER.md` for discovery and research phase details
 
-### 1. Load Tomorrow's Wave File
+---
 
-- Tomorrow's wave file: `/tmp/waves/MUNI/YYYY-MM-DD.json` (calculated from current date + 1)
-- If it doesn't exist, create it with an empty entity list and metadata header
-- Alternatively, check the research queue at `/tmp/waves/MUNI/research-queue.json` for prioritized targets
+## Instructions
 
-### 2. Query Supabase for Uncontacted Municipalities
+1. **Read the skill documentation**
+   → `~/.agents/skills/alygn-outreach/docs/DEVELOPER.md`
+   → Focus on `phase1-source`, `phase2-qualify`, and `phase3-enrich` phases for municipal outreach
 
-- Connect to Alygn Supabase database
-- Query municipalities table for:
-  - `contact_status = 'uncontacted'` OR `contact_status IS NULL`
-  - `last_research_date IS NULL` OR older than 30 days
-  - Prioritize Costa Rica municipalities (San José, Cartago, Heredia, Alajuela, Limón, Puntarenas, Guanacaste provinces)
-- Select batch size: 10-15 municipalities per day
+2. **Prepare tomorrow's wave file**
+   → Tomorrow's wave file: `$HOME/.openclaw/workspace/reports/alygn/muni-waves/YYYY-MM-DD.json` (current date + 1)
+   → If it doesn't exist, create it with metadata header:
+     ```json
+     {
+       "wave_date": "YYYY-MM-DD",
+       "wave_type": "municipal",
+       "region": "costa-rica",
+       "entities": [],
+       "created_at": "[ISO timestamp]"
+     }
+     ```
 
-### 3. Research Mayor Names and Contact Information
+3. **Query Supabase for uncontacted municipalities**
+   → Connect to Alygn Supabase database
+   → Query municipalities table for:
+     - `contact_status = 'uncontacted'` OR `contact_status IS NULL`
+     - `last_research_date IS NULL` OR older than 30 days
+   → Prioritize Costa Rica cantones (San José, Cartago, Heredia, Alajuela, Limón, Puntarenas, Guanacaste provinces)
+   → Select batch size: 10–15 municipalities per day
 
-For each selected municipality:
+4. **Run Phase 1 (Discover) via the alygn-outreach CLI**
+   ```bash
+   cd $HOME/.openclaw/workspace && bun ~/.agents/skills/alygn-outreach/bin/alygn-outreach.ts \
+     --type=municipal \
+     --region=costa-rica \
+     --action=discover \
+     --limit=15 \
+     --dry-run   # Use --dry-run to avoid API credits during testing
+   ```
+   → Lobster file: `.lobster/alygn-muni-outreach.lobster`
 
-- **Research mayor name**: Search official municipal websites, government directories
-- **Find contact email**: Look for:
-  - Municipalidad email pattern (e.g., `alcalde@municipalidad-[name].go.cr`)
-  - General contact email on official website
-  - Planning/permits department emails
-- **Gather context**:
-  - Population size
-  - Recent projects or initiatives (construction, urban planning)
-  - Current challenges (permitting backlogs, code enforcement needs)
-  - TRAIGA Act relevance (transparency/accountability focus)
+5. **Run Phase 2 (Qualify) on discovered entities**
+   ```bash
+   cd $HOME/.openclaw/workspace && bun ~/.agents/skills/alygn-outreach/bin/alygn-outreach.ts \
+     --type=municipal \
+     --region=costa-rica \
+     --action=qualify \
+     --input=$HOME/.openclaw/workspace/reports/alygn/muni-waves/YYYY-MM-DD.json \
+     --limit=15 \
+     --dry-run
+   ```
+   → Score each municipality based on:
+     - Population size (larger = higher priority)
+     - Infrastructure activity (active projects = higher priority)
+     - Digital presence (modern website suggests tech openness)
+     - TRAIGA Act relevance (transparency initiatives)
 
-### 4. Filter and Prioritize
+6. **Run Phase 3 (Research) on qualified entities**
+   ```bash
+   cd $HOME/.openclaw/workspace && bun ~/.agents/skills/alygn-outreach/bin/alygn-outreach.ts \
+     --type=municipal \
+     --region=costa-rica \
+     --action=research \
+     --input=$HOME/.openclaw/workspace/reports/alygn/muni-waves/YYYY-MM-DD.json \
+     --limit=10 \
+     --dry-run
+   ```
+   → For each qualified municipality, gather:
+     - Mayor name and current term
+     - Contact email (general municipal + planning/permits department)
+     - Website URL
+     - Recent projects or initiatives (construction, urban planning)
+     - Current challenges (permitting backlogs, code enforcement needs)
+     - TRAIGA Act relevance (how transparency/accountability applies)
 
-- Score each municipality based on:
-  - Population size (larger = higher priority)
-  - Infrastructure activity (active projects = higher priority)
-  - Digital presence (modern website suggests tech openness)
-  - Previous tool mentions (OpenGov, permitting systems, etc.)
-- Mark selected entities status as `researched`
+7. **Write researched entities to tomorrow's wave file**
+   → Each entity should include:
+     - `entity_id`, `municipality_name`, `province`, `population`
+     - `mayor_name`, `mayor_email`, `department_email`, `website`
+     - `recent_projects`, `traiga_relevance`, `qualification_score`
+     - `status: "researched"`, `created_at`
 
-### 5. Write to Tomorrow's Wave File
+8. **Post summary to Discord**
+   → Thread 1486784946134712500:
+     ```
+     🔬 [alygn-muni-evening] — Tomorrow's Municipal Wave Ready
+     Researched: X new municipalities
+     Provinces: [List of provinces covered]
+     Mayors identified: Y contacts found
+     Wave file: $HOME/.openclaw/workspace/reports/alygn/muni-waves/YYYY-MM-DD.json
+     Pipeline total: Z municipalities in queue
+     ```
 
-Populate the wave file with new entities, each containing:
+9. **Log research session**
+   → Log to: `$HOME/.openclaw/workspace/reports/alygn/muni-waves/logs/research-log.json`
+   → Include: session timestamp, municipalities researched, provinces covered, any errors
 
-- `entity_id` (unique identifier)
-- `municipality_name` (official name)
-- `province` (Costa Rica province)
-- `population` (approximate)
-- `mayor_name` (current mayor)
-- `mayor_email` (primary contact)
-- `department_email` (planning/permits if available)
-- `website` (official URL)
-- `recent_projects` (list of 1-3 recent initiatives)
-- `traiga_relevance` (how TRAIGA Act applies)
-- `source` (research method/link)
-- `qualification_score` (1-10)
-- `status: "researched"`
-- `created_at` (ISO timestamp)
+---
 
-### 6. Post Summary to Discord
+## Expected Output
 
-```txt
-🔬 [alygn-muni-evening] — Tomorrow's Municipal Wave Ready
-• Researched: X new municipalities
-• Provinces: [List of provinces covered]
-• Mayors identified: Y contacts found
-• Wave file: /tmp/waves/MUNI/YYYY-MM-DD.json
-• Pipeline total: Z municipalities in queue
-```
-
-## Lobster File
-
-`~/.openclaw/workspace/.lobster/alygn-vc-outreach.lobster`
-_(Same lobster file as VC — context/target-type flag differentiates behavior)_
-
-## Phases
-
-- `phase1-source` — Query Supabase for uncontacted municipalities
-- `phase2-qualify` — Score municipalities based on population, projects, fit
-- `phase3-enrich` — Gather mayor names, emails, and municipal context
-
-## Expected Outcomes
-
-- Tomorrow's wave file contains X new `researched` municipalities
+- Tomorrow's wave file contains 10–15 new `researched` municipalities
 - Each entity has mayor name and at least one contact method
 - Discord receives a clear research summary with pipeline health metrics
+- Supabase municipalities table updated to reflect `in_progress` status for researched entries
 
-## On Success
+---
 
-- Tomorrow's wave file created/updated with `researched` municipalities
-- Research queue updated (mark municipalities as `in_progress`)
-- Post to Discord: `✅ [alygn-muni-evening] Complete — X municipalities queued for tomorrow`
-- Log research session to `/tmp/waves/MUNI/logs/research-log.json`
+## Error Handling
 
-## On Failure
+| Situation | Action |
+|---|---|
+| Supabase query fails | Post `⚠️ [alygn-muni-evening] Database query failed — check Supabase connection` to Discord and exit |
+| Phase 3 (research) fails for a municipality | Skip that entity, log to error-log.json, continue with others |
+| Wave file cannot be written | Attempt to write to a temp location and alert via Discord |
+| Tomorrow is a weekend/holiday | Still run research; add `skip_weekend: true` flag to wave file metadata |
+| Pipeline has < 5 municipalities | Pull additional targets from backlog to keep pipeline full |
+| Municipal website scraping fails | Use public records/government directories as fallback, log source |
 
-- If Supabase query fails: post to Discord `⚠️ [alygn-muni-evening] Database query failed — check Supabase connection` and exit
-- If Phase 3 (enrich) fails for a municipality: skip that entity (do not add to wave), log it, continue with others
-- If wave file cannot be written: attempt to write to a temp location and alert via Discord
-- Log all errors to `/tmp/waves/MUNI/logs/error-log.json`
+> **Important:** Do not let a single entity failure halt the entire run. Process all remaining entities.
+
+---
 
 ## Notes
 
-- **Spanish focus**: All research should target Spanish-speaking contacts and sources
-- **TRAIGA Act angle**: Municipalities with transparency initiatives are higher priority
-- **Costa Rica focus**: Prioritize Costa Rican municipalities; expand to LATAM later
-- **Data compliance**: Respect public records laws when gathering contact information
-- If tomorrow is a weekend/holiday, still run research but flag wave file accordingly (the morning cron will check for a `skip_weekend` flag)
-- Keep the pipeline full: if tomorrow's wave will have < 5 municipalities, pull additional targets from the backlog
-- **Rate limiting**: Respect municipal website scraping limits — add delays between requests
+- **Spanish focus:** All research should target Spanish-speaking contacts and sources
+- **TRAIGA Act angle:** Municipalities with transparency initiatives are higher priority
+- **Costa Rica focus:** Prioritize Costa Rican municipalities; expand to LATAM later
+- **Rate limiting:** Respect municipal website scraping limits — add delays between requests
+- **Data compliance:** Respect public records laws when gathering contact information
 
-## Important
-
-- Revise the researched municipalities if email is already sent.
-  - Only research municipalities that hasn't been contacted yet.
-- Follow each step as it is. **No shortcuts allowed**.
-- First read the instructions before running the lobster file.
-- Run lobster first. If fails, read the lobster file and follow the steps instructions.
-- Avoid updating code and finding your own solutions. Stop and report.
-- You are reaching out municipalities, ensure to do all validations as described before email send.
-- Provide a snippet of the email draft personalization, so as the Mayor/Politician Figure name and the draft id to quickly identify which to approve/reject.
-- Once a Draft is approved by chat, ensure updating database references (Supabase).
-  - Verifying database schema is a must if required to.
-
-## Schedule
-
-**Time:** 7:00 PM daily (Mon-Fri)
-**Purpose:** Research next batch of municipalities for tomorrow's wave
-**Discord Thread:** 1486784946134712500
+---
 
 ## Test Mode
 
-Add `--dry-run` flag for testing without using API credits.
+Add `--dry-run` flag to all phase commands to test without using API credits.

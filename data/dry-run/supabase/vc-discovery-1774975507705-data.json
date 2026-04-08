@@ -1,0 +1,51 @@
+{
+  "municipalities": [],
+  "local_governments": [],
+  "outreach_emails": [],
+  "political_figures": [
+    {
+      "_simulated": true,
+      "_entityId": "entity-mneul8gu-qil8aw",
+      "_createdAt": "2026-03-31T16:45:09.535Z",
+      "full_name": "Air Street Capital",
+      "municipality_id": null,
+      "local_government_id": null,
+      "email": null,
+      "phone": null,
+      "title": "vc",
+      "department": "AI, AI safety, Machine learning, Life sciences",
+      "role_description": "VC firm: Seed, Series A, Series B",
+      "ai_governance_interest": "AI, AI safety, Machine learning, Life sciences",
+      "is_decision_maker": true,
+      "influence_level": 5,
+      "wave_number": null,
+      "linkedin_url": null,
+      "x_handle": null,
+      "last_contacted_at": null,
+      "created_at": "2026-03-31T16:45:09.534Z",
+      "updated_at": "2026-03-31T16:45:09.534Z"
+    },
+    {
+      "_simulated": true,
+      "_entityId": "entity-mneul8s4-a9elgs",
+      "_createdAt": "2026-03-31T16:45:09.940Z",
+      "full_name": "Glasswing Ventures",
+      "municipality_id": null,
+      "local_government_id": null,
+      "email": null,
+      "phone": null,
+      "title": "vc",
+      "department": "Artificial Intelligence, Enterprise, Security, Software",
+      "role_description": "VC firm: Seed, Early Stage Venture",
+      "ai_governance_interest": "Artificial Intelligence, Enterprise, Security, Software",
+      "is_decision_maker": true,
+      "influence_level": 5,
+      "wave_number": null,
+      "linkedin_url": null,
+      "x_handle": null,
+      "last_contacted_at": null,
+      "created_at": "2026-03-31T16:45:09.940Z",
+      "updated_at": "2026-03-31T16:45:09.940Z"
+    }
+  ]
+}

@@ -92,6 +92,12 @@ export class Pipeline {
   getStateFilePath(phase: string): string {
     const timestamp = new Date().toISOString().split('T')[0];
     const stateSubFolder = this.getStateSubFolder(phase);
+    
+    // For VC researched phase, save to vc-waves folder with expected naming
+    if (this.type === 'vc' && phase === 'researched') {
+      return `${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-waves/${timestamp}.json`;
+    }
+    
     return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${stateSubFolder}/alygn-${this.type}-${phase}-${timestamp}.json`;
   }
 
@@ -356,7 +362,8 @@ export class Pipeline {
     };
     const results: Array<Record<string, unknown>> = [];
     
-    for (const entity of entities) {
+    for (let i = 0; i < entities.length; i++) {
+      const entity = entities[i];
       let result: { success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string };
       if (dryRun && strategy.researchDryRun) {
         result = await strategy.researchDryRun(entity);
@@ -364,6 +371,10 @@ export class Pipeline {
         result = await strategy.research(entity);
       }
       results.push(result);
+      // Use the researched entity returned by the strategy
+      if (result.entity) {
+        entities[i] = result.entity;
+      }
     }
     
     this.entities = entities;
@@ -388,20 +399,51 @@ export class Pipeline {
   
   /**
    * Check if entity was already sent
+   * TWO-VERIFICATION SYSTEM:
+   * 1. Check local SentEmailTracker
+   * 2. Check Supabase database (for municipalities)
    */
   async wasAlreadySent(entity: OutreachEntity): Promise<boolean> {
     if (!entity.email) return false;
     
+    // Verification 1: Check local SentEmailTracker
     try {
-      // Use local SentEmailTracker
       const { SentEmailTracker } = await import('../lib/SentEmailTracker');
       const tracker = new SentEmailTracker();
       const existing = tracker.getSentEntry(entity.email, '', entity.type);
       if (existing) {
-        console.log(`   ⚠️  Skipping ${entity.name}: Already sent on ${new Date(existing.sentAt || '').toLocaleDateString()}`);
+        console.log(`   ⚠️  Skipping ${entity.name}: Already sent on ${new Date(existing.sentAt || '').toLocaleDateString()} (local tracker)`);
         return true;
       }
     } catch { /* ignore */ }
+    
+    // Verification 2: Check Supabase (for municipalities)
+    if (entity.type === 'municipal') {
+      try {
+        // Load credentials
+        const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+        if (fs.existsSync(credentialsPath)) {
+          const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+          if (credentials?.supabase?.url && credentials?.supabase?.key) {
+            const { createClient } = await import('@supabase/supabase-js');
+            const supabase = createClient(credentials.supabase.url, credentials.supabase.key);
+            
+            // Check municipalities table
+            const { data, error } = await supabase
+              .from('municipalities')
+              .select('name, outreach_sent_at')
+              .eq('mayor_email', entity.email)
+              .not('outreach_sent_at', 'is', null)
+              .maybeSingle();
+            
+            if (!error && data?.outreach_sent_at) {
+              console.log(`   ⚠️  Skipping ${entity.name}: Already sent on ${new Date(data.outreach_sent_at).toLocaleDateString()} (Supabase)`);
+              return true;
+            }
+          }
+        }
+      } catch { /* ignore */ }
+    }
     
     return false;
   }
@@ -503,7 +545,9 @@ export class Pipeline {
    * Run send stage
    */
   async runSend(options: { dryRun: boolean; limit: number; input?: string | null; draftStatus?: string; sendToList?: string[] }): Promise<StageResult> {
-    const { dryRun, limit, input, draftStatus = 'Approved', sendToList = [] } = options;
+    // For municipalities, use 'Not drafted' as default since they don't go through Notion approval
+    const defaultDraftStatus = this.type === 'municipal' ? 'Not drafted' : 'Approved';
+    const { dryRun, limit, input, draftStatus = defaultDraftStatus, sendToList = [] } = options;
     
     let entities = this.entities;
     if (input) {

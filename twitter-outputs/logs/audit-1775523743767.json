@@ -1,0 +1,61 @@
+{
+  "mode": "live",
+  "executedAt": "2026-04-07T01:02:23.315Z",
+  "workflow": {
+    "generatedAt": "2026-04-06T17:58:00Z",
+    "source": "Grok Search - Prompt #1",
+    "totalPosts": 3,
+    "totalThreads": 3,
+    "validUrls": 3,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "55.7% of government organizations now use AI. Only 42.9% have formal policies. That gap is where institutional fragility lives.",
+        "replyText": "The gap between operationalization and standardization isn't a lag—it's a warning. When systems outgrow governance, the failures become everyone's problem.",
+        "sourceUrl": "https://granicus.com/blog/from-policy-to-practice-how-ai-is-quietly-reshaping-government-operations-in-2026/",
+        "isThread": true,
+        "mainLength": 125,
+        "replyLength": 154,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "The White House's 2026 AI Legislative Framework pushes federal primacy. But coordination doesn't come from declarations—it comes from trusted frameworks.",
+        "replyText": "When federal and state visions diverge on AI governance, the fragmentation itself becomes a coordination risk. Legitimacy can't be declared; it has to be earned.",
+        "sourceUrl": "https://www.mlstrategies.com/insights-center/viewpoints/54031/2026-04-02-white-house-releases-national-ai-legislative-framework",
+        "isThread": true,
+        "mainLength": 136,
+        "replyLength": 147,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "Chatham House proposes AI safety institutes with crisis-response mandates. Pre-defined triggers. Red lines. Diplomatic back-channels.",
+        "replyText": "Crisis response frameworks designed during crisis tend to reflect panic, not judgment. The real work is building trust before urgency removes options.",
+        "sourceUrl": "https://www.chathamhouse.org/2026/03/breaking-deadlock-ai-governance",
+        "isThread": true,
+        "mainLength": 128,
+        "replyLength": 144,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 3
+}

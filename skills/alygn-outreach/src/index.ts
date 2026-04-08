@@ -2,6 +2,7 @@
  * Alygn Outreach Skill - Main Entry Point (TypeScript)
  */
 import { Pipeline } from './core/Pipeline';
+import { PreflightChecker, CheckPhase } from './core/PreflightChecker';
 
 // CLI argument types
 interface CLIArgs {
@@ -15,6 +16,11 @@ interface CLIArgs {
   sendToList: string[];
   testEmail: string | null;
   validator: string;
+  retryFailed: boolean;
+  // Preflight check options
+  preflightChecks: string | null;
+  requireApproved: boolean;
+  skipPreflight: boolean;
   config: Record<string, unknown>;
 }
 
@@ -33,12 +39,19 @@ function parseArgs(args: string[]): CLIArgs {
     sendToList: [],
     testEmail: null,
     validator: 'regex-mx',
+    retryFailed: false,
+    // Preflight options
+    preflightChecks: null,
+    requireApproved: false,
+    skipPreflight: false,
     config: {}
   };
   
   for (const arg of args) {
     if (arg === '--dry-run' || arg === '-n') {
       parsed.dryRun = true;
+    } else if (arg === '--retry-failed') {
+      parsed.retryFailed = true;
     } else if (arg.startsWith('--type=')) {
       const type = arg.split('=')[1].toLowerCase();
       if (type === 'vc' || type === 'municipal') {
@@ -60,6 +73,12 @@ function parseArgs(args: string[]): CLIArgs {
       parsed.testEmail = arg.split('=')[1];
     } else if (arg.startsWith('--validator=')) {
       parsed.validator = arg.split('=')[1];
+    } else if (arg.startsWith('--preflight-checks=')) {
+      parsed.preflightChecks = arg.split('=')[1];
+    } else if (arg === '--require-approved') {
+      parsed.requireApproved = true;
+    } else if (arg === '--skip-preflight') {
+      parsed.skipPreflight = true;
     } else if (arg === '--help' || arg === '-h') {
       printHelp();
       process.exit(0);
@@ -88,6 +107,10 @@ Options:
   --email-send-to=<ids>      Comma-separated entity IDs
   --test-email=<email>       Override recipient email
   --validator=<type>         Validator: regex-mx, zerobounce (default: regex-mx)
+  --retry-failed             Retry failed sends from latest wave state
+  --preflight-checks=<list>  Run specific checks: state-file-exists,has-approved-drafts,...
+  --require-approved         Require at least 1 approved draft (for send phase)
+  --skip-preflight           Bypass preflight checks (emergency use)
   --dry-run, -n              Simulate without executing
   --help, -h                 Show this help
 
@@ -103,6 +126,15 @@ Examples:
 
   # Send with Two-Filter System
   bun bin/alygn-outreach.ts --type=vc --action=send --draft-status=Approved --email-send-to=entity-abc123
+
+  # Retry Failed Sends (Afternoon Cron)
+  bun bin/alygn-outreach.ts --type=vc --action=send --retry-failed --limit=50
+  bun bin/alygn-outreach.ts --type=municipal --action=send --retry-failed --limit=50
+
+  # Preflight Checks (before cron job)
+  bun bin/alygn-outreach.ts --type=vc --action=send --preflight-checks=state-file-exists,has-approved-drafts,credentials-valid,not-running
+  bun bin/alygn-outreach.ts --type=municipal --action=research --preflight-checks=notion-api-ok,supabase-ok
+  bun bin/alygn-outreach.ts --action=recon --preflight-checks=sync-status,no-orphans
 `);
 }
 
@@ -127,7 +159,53 @@ async function main(): Promise<void> {
   
   // Create pipeline
   const pipeline = new Pipeline(args.type, config);
-  
+
+  // Run preflight checks if enabled
+  if (!args.skipPreflight && args.action !== 'help') {
+    // Determine phase based on action
+    let preflightPhase: CheckPhase = 'send';
+    if (args.action === 'research' || args.action === 'discover') {
+      preflightPhase = 'research';
+    } else if (args.action === 'recon') {
+      preflightPhase = 'recon';
+    }
+
+    // Only run checks if --preflight-checks specified or --require-approved
+    if (args.preflightChecks !== null || args.requireApproved) {
+      const checker = new PreflightChecker({
+        phase: preflightPhase,
+        type: args.type,
+      });
+
+      // Parse specific checks if provided
+      const specificChecks = args.preflightChecks
+        ? args.preflightChecks.split(',')
+        : undefined;
+
+      // Force has-approved-drafts if --require-approved
+      if (args.requireApproved) {
+        const requiredChecks = specificChecks || PreflightChecker.listChecks(preflightPhase).map(c => c.name);
+        if (!requiredChecks.includes('has-approved-drafts')) {
+          requiredChecks.push('has-approved-drafts');
+        }
+        checker.run(requiredChecks);
+      } else {
+        checker.run(specificChecks);
+      }
+
+      checker.printStatus();
+
+      if (!checker.isReady()) {
+        const failed = checker.getFailedChecks();
+        console.error('❌ Preflight checks failed:');
+        for (const check of failed) {
+          console.error(`   • ${check.name}: ${check.message}`);
+        }
+        process.exit(1);
+      }
+    }
+  }
+
   // Run action
   try {
     const result = await pipeline.run(args.action, {
@@ -136,7 +214,8 @@ async function main(): Promise<void> {
       region: args.region,
       input: args.input,
       draftStatus: args.draftStatus,
-      sendToList: args.sendToList
+      sendToList: args.sendToList,
+      retryFailed: args.retryFailed
     });
     
     // Print summary

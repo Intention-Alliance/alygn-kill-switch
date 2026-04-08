@@ -90,6 +90,9 @@ sessions_spawn({
 
 **This is not optional.** It's how you keep coordination tight without micromanaging. The team needs to know you're there, checking in, and ready to help if they hit a snag.
 
+**Key Insight on Proactive Communication (2026-04-07):**
+Agents often won't report progress proactively — asking for status is a communication skill, not micromanagement. When an agent goes silent after `sessions_yield`, use `sessions_send` to ask "Let me know how it went" with specific context about their task. Check git/file changes before assuming no progress was made.
+
 **Agent Label Convention:**
 
 - Gimglich → `fe-coder:[task-label]`
@@ -100,6 +103,18 @@ sessions_spawn({
 - Keridz → `be-coder:[task-label]`
 
 **Key Insight:** Only use `sessions_send` when agents are in persistent session mode. For one-shot tasks (mode: run), check git/files first, then spawn check-in tasks if needed.
+
+---
+
+## File Organization for Agentic Work (2026-04-07)
+
+**For Internal Scripts and Automation:**
+- Use `.gitignore` for internal dev scripts (`batch-scripts/*`, temporary files)
+- Create `docs/` folder for operation summaries (sanitized, no sensitive data)
+- Move completed work samples to `docs/samples/` after scrubbing
+- Keep internal tooling separate from main repo structure
+
+**Why:** Maintains clean repo while preserving operational knowledge for future agents.
 
 ---
 

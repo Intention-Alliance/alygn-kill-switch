@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-03-30T17:02:00.188Z",
+  "source": "Grok Search - Prompt #13",
+  "totalPosts": 3,
+  "totalThreads": 3,
+  "validUrls": 3,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Federal judge temporarily blocked Pentagon from blacklisting Anthropic as a supply-chain risk. The safety-focused firm refuses military AI use. This halts enforcement across agencies.",
+      "replyText": "Exposes tensions in institutional coordination: private AI firms set safety boundaries against government security demands, testing if arbitrary actions override corporate guardrails.",
+      "sourceUrl": "https://titanic.news/article/federal-judge-blocks-pentagon-from-blacklisting-ai-firm-anthropic",
+      "isThread": true,
+      "mainLength": 183,
+      "replyLength": 183,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "U.S. investors increasingly demand board-level AI oversight and disclosure in S&P 100 companies. Over 50% disclose oversight, but fewer than 33% have formal policies. This amid rising AI risks like bias and cyber threats.",
+      "replyText": "Builds legitimacy through market-driven accountability, pressuring firms for structured AI governance amid regulatory voids, fostering cross-institutional coordination on risks.",
+      "sourceUrl": "https://www.realtransparentdisclosure.com/blog/2026/03/30/ai-oversight-investor-expectations-the-sp-100-and-company-specific-analysis",
+      "isThread": true,
+      "mainLength": 221,
+      "replyLength": 177,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "Paul Allen's podcast explores AI's promise for governance via transparent tools like CitizenPortal.ai. Emphasizes verifiable systems to rebuild public trust in institutions. Balances risks with pragmatic human oversight.",
+      "replyText": "Advances legitimacy discussions by integrating AI into public sector coordination, enhancing transparency and accountability without eroding human-led decision-making.",
+      "sourceUrl": "https://blog.volkovlaw.com/2026/03/episode-402-paul-allen-the-promise-of-ai-governance-and-public-trust",
+      "isThread": true,
+      "mainLength": 220,
+      "replyLength": 167,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-03-31T17:59:02.430Z",
+  "posts": [
+    {
+      "id": 1,
+      "content": "Self-regulation has limits. Neutral infrastructure for coordination and independent review supports legitimacy in AI governance.",
+      "quoteTweetId": "2037755026425159849"
+    }
+  ],
+  "replies": [
+    {
+      "id": 1,
+      "targetHandle": "@tfoxlaw",
+      "targetUrl": "https://x.com/tfoxlaw/status/2037651362893160687",
+      "content": "These questions highlight the value of neutral coordination infrastructure for addressing privacy, safety, and governance in AI-assisted healthcare.",
+      "mention": "@aialygn"
+    }
+  ],
+  "profiles": []
+}

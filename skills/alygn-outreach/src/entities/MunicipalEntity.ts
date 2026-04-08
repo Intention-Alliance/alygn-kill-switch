@@ -56,9 +56,9 @@ export class MunicipalEntity extends OutreachEntity {
     };
     
     // Supabase column mappings
-    this.waveNumber = (data.waveNumber as number | null) ?? null;
-    this.waveDate = (data.waveDate as string | null) ?? null;
-    this.batchStatus = (data.batchStatus as string | null) ?? null;
+    this.waveNumber = (data.waveNumber as number | null) ?? data.wave_number ?? null;
+    this.waveDate = (data.waveDate as string | null) ?? data.wave_date ?? null;
+    this.batchStatus = (data.batchStatus as string | null) ?? data.batch_status ?? null;
     this.municipalityId = (data.municipalityId as string | null) ?? data.id ?? null;
     this.localGovernmentId = (data.localGovernmentId as string | null) ?? null;
     this.outreachVariant = (data.outreachVariant as string | null) ?? null;
@@ -233,7 +233,7 @@ export class MunicipalEntity extends OutreachEntity {
           { name: 'Tecnología', focus: ['digital transformation'] },
           { name: 'Planificación', focus: ['smart city'] }
         ],
-        painPoints: ['Digital transformation', 'Citizen services', 'Data governance'],
+        painPoints: ['Complejidad de la transformación digital', 'Recursos técnicos limitados', 'Entrega de servicios ciudadanos', 'Gobernanza de datos y privacidad', 'Coordinación interinstitucional'],
         trAigaRelevant: true
       },
       discoveredAt: new Date(),

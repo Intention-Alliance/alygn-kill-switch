@@ -70,13 +70,13 @@ Applied automatically by `formatTweet()` in all posting scripts.
 **Commands:**
 ```javascript
 // Take snapshot of X trends
-browser --action=snapshot --profile=alygn --targetUrl="https://x.com/explore"
+browser --action=snapshot --profile=alygn --targetUrl="https://x.com/explore" --target host
 
 // Click into trending topic
-browser --action=act --profile=alygn --request='{"kind":"click", "ref":"...", "targetId":"..."}'
+browser --action=act --profile=alygn --request='{"kind":"click", "ref":"...", "targetId":"..."}' --target host
 
 // Screenshot specific trend
-browser --action=screenshot --profile=alygn --fullPage=false
+browser --action=screenshot --profile=alygn --fullPage=false --target host
 ```
 
 ---
@@ -358,11 +358,13 @@ node scripts/alygn/x-twitter/twitter-automation.js exec 13
 # Snapshot trends
 openclaw browser --action=snapshot --profile=alygn \
   --targetUrl="https://x.com/explore" \
-  --refs=aria --compact=true
+  --refs=aria --compact=true \
+  --target host
 
 # Screenshot specific trend
 openclaw browser --action=screenshot --profile=alygn \
-  --fullPage=false --type=png
+  --fullPage=false --type=png \
+  --target host
 ```
 
 ---
@@ -381,19 +383,23 @@ openclaw browser --action=screenshot --profile=alygn \
 ```bash
 # Navigate to tweet
 openclaw browser --action=navigate --profile=alygn \
-  --targetUrl="https://x.com/username/status/123456789"
+  --targetUrl="https://x.com/username/status/123456789" \
+  --target host
 
 # Click reply
 openclaw browser --action=act --profile=alygn \
-  --request='{"kind":"click", "ref":"reply-button"}'
+  --request='{"kind":"click", "ref":"reply-button"}' \
+  --target host
 
 # Type reply
 openclaw browser --action=act --profile=alygn \
-  --request='{"kind":"type", "ref":"compose-field", "text":"Reply text..."}'
+  --request='{"kind":"type", "ref":"compose-field", "text":"Reply text..."}' \
+  --target host
 
 # Submit
 openclaw browser --action=act --profile=alygn \
-  --request='{"kind":"click", "ref":"submit-button"}'
+  --request='{"kind":"click", "ref":"submit-button"}' \
+  --target host
 ```
 
 ---

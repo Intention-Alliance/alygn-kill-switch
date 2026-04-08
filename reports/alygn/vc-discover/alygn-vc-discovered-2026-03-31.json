@@ -1,0 +1,223 @@
+{
+  "timestamp": "2026-03-31T20:29:07.431Z",
+  "type": "vc",
+  "phase": "discovered",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-mnf2l97q-t4ysbb",
+        "type": "vc",
+        "name": "AI Safety Ventures",
+        "email": "contact@aisafetyvc.com",
+        "website": "https://aisafetyvc.com",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-03-31T20:29:07.430Z",
+        "lastUpdatedAt": "2026-03-31T20:29:07.430Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance frameworks",
+            "technical safety standards"
+          ],
+          "tailoredHook": "Active in AI safety community"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance",
+            "AI alignment"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dr. Sarah Chen",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "SafeAI Systems",
+            "Alignment Labs"
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Systems",
+              "date": "2024-01",
+              "stage": "Seed"
+            },
+            {
+              "company": "Alignment Labs",
+              "date": "2024-03",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnf2l97q-3v1gg4",
+        "type": "vc",
+        "name": "Frontier Capital",
+        "email": "investors@frontiercap.com",
+        "website": "https://frontiercap.com",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-03-31T20:29:07.430Z",
+        "lastUpdatedAt": "2026-03-31T20:29:07.430Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": {
+          "painPoints": [
+            "scalable oversight",
+            "risk assessment"
+          ],
+          "tailoredHook": "Focus on responsible innovation"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "series-a",
+            "series-b"
+          ],
+          "sectorFocus": [
+            "frontier tech",
+            "AI",
+            "existential risk"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "James Miller",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Guardian AI",
+            "Future Systems"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Guardian AI",
+              "date": "2024-02",
+              "stage": "Series A"
+            },
+            {
+              "company": "Future Systems",
+              "date": "2024-04",
+              "stage": "Series B"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mnf2l97q-7q91sq",
+        "type": "vc",
+        "name": "Governance Fund",
+        "email": "hello@govfund.vc",
+        "website": "https://govfund.vc",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-03-31T20:29:07.430Z",
+        "lastUpdatedAt": "2026-03-31T20:29:07.430Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": {
+          "painPoints": [
+            "regulatory compliance",
+            "ethical frameworks"
+          ],
+          "tailoredHook": "Policy-focused thesis"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectorFocus": [
+            "AI policy",
+            "AI ethics",
+            "governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Maria Rodriguez",
+              "title": "Founding Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "PolicyAI",
+            "EthicalAI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "PolicyAI",
+              "date": "2024-01",
+              "stage": "Seed"
+            },
+            {
+              "company": "EthicalAI",
+              "date": "2024-03",
+              "stage": "Pre-seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ]
+  }
+}

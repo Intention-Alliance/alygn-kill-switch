@@ -27,9 +27,9 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
    * Supports regions: costa-rica, or generic query search
    * 
    * Modes:
+   * - dryRun=false, region=costa-rica: Query Supabase for unsent municipalities
    * - dryRun=true, USE_DIRECT_API=false: Return mock data (legacy behavior)
    * - dryRun=true, USE_DIRECT_API=true, Costa Rica: Use embedded data + simulate DB (Mode B)
-   * - dryRun=true, USE_DIRECT_API=true, other regions: Call Firecrawl API + simulate DB (Mode B)
    */
   async discover(query: string, options: IDiscoveryOptions = {}): Promise<MunicipalEntity[]> {
     const limit = options.limit || 20;
@@ -50,12 +50,15 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
       return await this.discoverViaFirecrawlModeB(query, limit, options);
     }
     
-    // Handle Costa Rica cantones discovery
+    // Production: Query Supabase for unsent municipalities (BEFORE static data)
+    if (!dryRun && region === 'costa-rica') {
+      return this.discoverFromSupabase(limit);
+    }
+    
+    // Handle Costa Rica cantones discovery (legacy, no emails)
     if (region === 'costa-rica' || query === 'costa-rica-cantones') {
       return this.discoverCostaRicaCantones(limit);
     }
-    
-    console.log(`🔍 Municipal Discovery: Searching "${query}"...`);
     
     // For dry-run (legacy), return mock data
     if (dryRun) {
@@ -66,6 +69,86 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     // For now, return empty array
     console.log(`   ⚠️  Municipal discovery not yet implemented for non-CR regions`);
     return [];
+  }
+
+  /**
+   * Discover municipalities from Supabase (unsent with valid emails)
+   */
+  private async discoverFromSupabase(limit: number): Promise<MunicipalEntity[]> {
+    console.log(`\n   📊 Querying Supabase for unsent municipalities...`);
+    
+    try {
+      // Load credentials
+      const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      if (!fs.existsSync(credentialsPath)) {
+        console.log(`   ⚠️  No credentials file found`);
+        return [];
+      }
+      
+      const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+      if (!credentials?.supabase?.url || !credentials?.supabase?.key) {
+        console.log(`   ⚠️  No Supabase credentials found`);
+        return [];
+      }
+      
+      // Dynamic import
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(credentials.supabase.url, credentials.supabase.key);
+      
+      // Query unsent municipalities with valid emails
+      const { data, error } = await supabase
+        .from('municipalities')
+        .select('*')
+        .is('outreach_sent_at', null)
+        .not('mayor_email', 'is', null)
+        .order('priority_score', { ascending: false })
+        .limit(limit);
+      
+      if (error) {
+        console.log(`   ❌ Supabase error: ${error.message}`);
+        return [];
+      }
+      
+      if (!data || data.length === 0) {
+        console.log(`   ⚠️  No unsent municipalities found in Supabase`);
+        return [];
+      }
+      
+      console.log(`   ✅ Found ${data.length} unsent municipalities`);
+      
+      // Convert to MunicipalEntity
+      return data.map((muni: any) => new MunicipalEntity({
+        id: muni.id,
+        name: `Municipalidad de ${muni.name}`,
+        type: 'municipal',
+        email: muni.mayor_email,
+        website: muni.website_url,
+        phone: muni.phone,
+        location: {
+          city: muni.name,
+          state: muni.province,
+          country: muni.country || 'Costa Rica',
+          region: muni.province
+        },
+        status: 'discovered',
+        priority: muni.priority_score > 70 ? 'high' : 'medium',
+        discoveredAt: muni.discovered_at || new Date(),
+        typeData: {
+          population: muni.population,
+          budget: muni.budget,
+          province: muni.province,
+          painPoints: muni.pain_points || [],
+          trAigaRelevant: true
+        },
+        waveNumber: muni.wave_number,
+        waveDate: muni.wave_date,
+        batchStatus: muni.batch_status
+      }));
+      
+    } catch (err) {
+      console.log(`   ⚠️  Failed to query Supabase: ${(err as Error).message}`);
+      return [];
+    }
   }
 
   /**

@@ -135,7 +135,7 @@ node scripts/alygn/twitter-master-automation.js
 **Profile:** `alygn`  
 **Location:** Chrome user data dir (separate from default)  
 **Status:** Authenticated to X.com  
-**Usage:** `browser --profile="alygn"` in all calls
+**Usage:** `browser --profile="alygn" --target host` in all calls
 
 ### Timeouts
 
@@ -311,7 +311,6 @@ Edit `scripts/alygn/twitter-discovery/decision-engine.js`:
 - Raise approval threshold: engage with fewer posts
 
 ### Monitor Performance
-
 
 ### Update Grok Prompts
 

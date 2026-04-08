@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-31T17:26:11.418Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "White House unveils National AI Policy Framework, prioritizing child safety, data centers, and regulatory sandboxes. Signals push for coordinated federal AI oversight.",
+      "replyText": "Federal policy fosters coordination across agencies and states, builds legitimacy via prioritized risks, and ensures neutrality through sandboxes balancing innovation and safety.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 167,
+      "replyLength": 178,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "California Gov. Newsom signs executive order requiring AI disclosures for state contracts, challenging federal hands-off approach. Spotlights state-federal coordination needs.",
+      "replyText": "State initiatives test federal legitimacy, urging neutral coordination frameworks to align policies, prevent fragmentation, and uphold consistent AI governance standards nationwide.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 175,
+      "replyLength": 181,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "New preprint empirically delineates formal AI governance responsibilities across sectors and regions. Exposes variances in institutional accountability.",
+      "replyText": "Evidence-based mapping clarifies roles for better coordination, enhances legitimacy through transparent structures, and promotes neutral benchmarks for global AI oversight.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 152,
+      "replyLength": 172,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "FINOS releases AI Governance Framework MCP Server to operationalize policies in AI agents, ensuring compliance with regulations.",
+      "replyText": "Practical tools enable enterprise coordination, legitimacy via auditable compliance, and neutrality in AI decision processes, scaling responsible deployment.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 128,
+      "replyLength": 157,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "SAG-AFTRA endorses Trump's AI Policy Framework for protecting performers from AI misuse. Highlights industry role in shaping governance.",
+      "replyText": "Stakeholder buy-in strengthens policy legitimacy, coordinates protections across creative sectors, and maintains neutrality by addressing sector-specific AI risks equitably.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 136,
+      "replyLength": 173,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}
