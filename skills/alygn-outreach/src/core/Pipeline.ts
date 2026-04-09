@@ -4,6 +4,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { traceOperation } from './tracing-utils';
 import { MunicipalEntity } from '../entities/MunicipalEntity';
 import { OutreachEntity } from '../entities/OutreachEntity';
 import { VCEntity } from '../entities/VCEntity';
@@ -225,7 +226,11 @@ export class Pipeline {
       ? 'AI safety venture capital'
       : (region === 'costa-rica' ? 'costa-rica-cantones' : 'municipal government');
     
-    const discovered = await strategy.discover(query, { dryRun, limit, region });
+    const discovered = await traceOperation(
+      'pipeline.discover',
+      async () => strategy.discover(query, { dryRun, limit, region }),
+      { entity_type: this.type, limit, dryRun: String(dryRun), region: region ?? 'global' }
+    );
     this.entities = discovered;
     
     const stateFile = this.saveState('discovered', {
@@ -312,13 +317,19 @@ export class Pipeline {
     const results: Array<Record<string, unknown>> = [];
     
     for (const entity of entities) {
-      const result = await strategy.validate(entity);
-      results.push({
-        name: entity.name,
-        email: entity.email,
-        result: result.result,
-        confidence: result.confidence
-      });
+      await traceOperation(
+        'pipeline.validate',
+        async () => {
+          const result = await strategy.validate(entity);
+          results.push({
+            name: entity.name,
+            email: entity.email,
+            result: result.result,
+            confidence: result.confidence
+          });
+        },
+        { entity_name: entity.name, entity_type: entity.type }
+      );
     }
     
     this.entities = entities;
@@ -364,16 +375,19 @@ export class Pipeline {
     
     for (let i = 0; i < entities.length; i++) {
       const entity = entities[i];
-      let result: { success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string };
-      if (dryRun && strategy.researchDryRun) {
-        result = await strategy.researchDryRun(entity);
-      } else {
-        result = await strategy.research(entity);
-      }
-      results.push(result);
-      // Use the researched entity returned by the strategy
-      if (result.entity) {
-        entities[i] = result.entity;
+      const wrapped = await traceOperation(
+        'pipeline.research',
+        async () => {
+          if (dryRun && strategy.researchDryRun) {
+            return strategy.researchDryRun(entity);
+          }
+          return strategy.research(entity);
+        },
+        { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun) }
+      );
+      results.push(wrapped);
+      if (wrapped.entity) {
+        entities[i] = wrapped.entity;
       }
     }
     
@@ -490,13 +504,17 @@ export class Pipeline {
     const results: Array<Record<string, unknown>> = [];
     
     for (const entity of entities) {
-      let result: { success: boolean; subject?: string; entity?: OutreachEntity; error?: string };
-      if (dryRun && strategy.personalizeDryRun) {
-        result = await strategy.personalizeDryRun(entity);
-      } else {
-        result = await strategy.personalize(entity);
-      }
-      results.push(result);
+      const wrapped = await traceOperation(
+        'pipeline.personalize',
+        async () => {
+          if (dryRun && strategy.personalizeDryRun) {
+            return strategy.personalizeDryRun(entity);
+          }
+          return strategy.personalize(entity);
+        },
+        { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun) }
+      );
+      results.push(wrapped);
     }
     
     this.entities = entities;
@@ -581,8 +599,14 @@ export class Pipeline {
     const results: Array<Record<string, unknown>> = [];
     
     for (const entity of entities) {
-      const result = await strategy.send(entity, { dryRun, draftStatus, sendToList });
-      results.push(result);
+      await traceOperation(
+        'pipeline.send',
+        async () => {
+          const result = await strategy.send(entity, { dryRun, draftStatus, sendToList });
+          results.push(result);
+        },
+        { entity_name: entity.name, entity_email: entity.email ?? '', entity_type: entity.type, dryRun: String(dryRun) }
+      );
     }
     
     const stateFile = this.saveState('sent', {

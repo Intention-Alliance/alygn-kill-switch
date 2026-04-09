@@ -1,0 +1,46 @@
+{
+  "name": "db-timeout",
+  "type": "dependency-failure",
+  "description": "Simulate database connection timeouts to test graceful degradation and retry logic",
+  "scope": "staging",
+  "version": "1.0.0",
+  "author": "chaos-engineering-team",
+  "created": "2026-04-09",
+  
+  "dependency": {
+    "type": "timeout",
+    "target": "db",
+    "duration": 5000,
+    "timeoutMs": 30000
+  },
+  
+  "safety": {
+    "maxDurationMs": 60000,
+    "preserveTransactions": true,
+    "excludeCriticalTables": ["users", "payments", "audit-log"],
+    "connectionPoolMinSize": 2
+  },
+  
+  "expectations": {
+    "retryAttempts": 3,
+    "fallbackActivated": true,
+    "cacheHitRate": ">80%",
+    "userFacingImpact": "degraded-performance"
+  },
+  
+  "metrics": {
+    "track": [
+      "db-connection-errors",
+      "retry-count",
+      "fallback-usage",
+      "cache-hit-rate",
+      "query-timeout-count"
+    ]
+  },
+  
+  "rollback": {
+    "automatic": true,
+    "triggerOn": ["data-loss-risk", "extended-outage"],
+    "notify": ["dba-team", "ops-team", "on-call"]
+  }
+}

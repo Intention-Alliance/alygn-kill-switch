@@ -70,26 +70,27 @@ const RELEVANCE_KEYWORDS = {
 
 const notion = getClient();
 
-/**
- * Search web for VCs (using OpenClaw web_search)
- */
+import { traceOperation } from '../../../core/tracing-utils.js';
+
 async function searchVCs(query, limit = CONFIG.defaultLimit) {
-  console.log(`🔍 Searching: "${query}"...`);
-  
-  try {
-    const { stdout } = await execAsync(
-      `openclaw run "Search for: ${query} venture capital firms. Extract: firm names, websites, focus areas. Return JSON list." --json`,
-      { maxBuffer: 10 * 1024 * 1024 }
-    );
+  return await traceOperation('search-vcs', async () => {
+    console.log(`🔍 Searching: "${query}"...`);
     
-    const result = JSON.parse(stdout);
-    console.log(`   Found ${result.length || 0} potential VCs`);
-    
-    return result;
-  } catch (error) {
-    console.error(`   ❌ Search failed: ${error.message}`);
-    return [];
-  }
+    try {
+      const { stdout } = await execAsync(
+        `openclaw run "Search for: ${query} venture capital firms. Extract: firm names, websites, focus areas. Return JSON list." --json`,
+        { maxBuffer: 10 * 1024 * 1024 }
+      );
+      
+      const result = JSON.parse(stdout);
+      console.log(`   Found ${result.length || 0} potential VCs`);
+      
+      return result;
+    } catch (error) {
+      console.error(`   ❌ Search failed: ${error.message}`);
+      return [];
+    }
+  }, { 'search.query': query });
 }
 
 /**

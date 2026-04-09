@@ -8,6 +8,12 @@
     "alygn-outreach": "bin/alygn-outreach"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.72.0",
+    "@opentelemetry/exporter-jaeger": "^2.6.1",
+    "@opentelemetry/resources": "^2.6.1",
+    "@opentelemetry/sdk-node": "^0.214.0",
+    "@opentelemetry/sdk-trace-node": "^2.6.1",
     "@supabase/supabase-js": "^2.39.0",
     "isomorphic-dompurify": "^3.7.1",
     "nodemailer": "^8.0.4",

@@ -1,0 +1,37 @@
+{
+  "name": "pod-kill",
+  "type": "pod-kill",
+  "description": "Random pod termination - tests service resilience and auto-recovery",
+  "scope": "staging",
+  "version": "1.0.0",
+  "author": "chaos-engineering-team",
+  "created": "2026-04-09",
+  
+  "targets": [
+    "pod:api-server-abc123",
+    "pod:worker-def456",
+    "pod:gateway-ghi789"
+  ],
+  
+  "random": true,
+  "namespace": "staging",
+  
+  "safety": {
+    "maxTerminations": 1,
+    "cooldownMs": 300000,
+    "excludeLabels": ["critical", "database", "primary"],
+    "requireHealthCheck": true
+  },
+  
+  "expectations": {
+    "recoveryTimeMs": 30000,
+    "noDataLoss": true,
+    "alertsTriggered": ["pod-restart", "service-degraded"]
+  },
+  
+  "rollback": {
+    "automatic": true,
+    "triggerOn": ["multiple-failures", "extended-downtime"],
+    "notify": ["ops-team", "on-call"]
+  }
+}

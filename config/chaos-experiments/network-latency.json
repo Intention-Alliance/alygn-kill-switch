@@ -1,0 +1,43 @@
+{
+  "name": "network-latency",
+  "type": "network-latency",
+  "description": "Inject network latency to test timeout handling and circuit breakers",
+  "scope": "staging",
+  "version": "1.0.0",
+  "author": "chaos-engineering-team",
+  "created": "2026-04-09",
+  
+  "latencyMs": 100,
+  "interface": "eth0",
+  "targetHost": null,
+  
+  "duration": 60000,
+  
+  "safety": {
+    "maxLatencyMs": 5000,
+    "maxDurationMs": 300000,
+    "excludeInterfaces": ["lo", "docker0"],
+    "monitorConnections": true
+  },
+  
+  "expectations": {
+    "circuitBreakerTriggers": ["api-timeout", "db-slow-query"],
+    "degradedModeActivated": true,
+    "userFacingImpact": "minimal"
+  },
+  
+  "metrics": {
+    "track": [
+      "request-latency-p99",
+      "error-rate",
+      "circuit-breaker-state",
+      "retry-count"
+    ]
+  },
+  
+  "rollback": {
+    "automatic": true,
+    "triggerOn": ["error-rate-spike", "latency-exceeds-threshold"],
+    "notify": ["ops-team"]
+  }
+}

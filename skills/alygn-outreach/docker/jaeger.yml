@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: alygn-jaeger
+    ports:
+      # Jaeger UI
+      - "16686:16686"
+      # OTLP gRPC receiver (optional, if using OTLP)
+      - "4317:4317"
+      # OTLP HTTP receiver
+      - "4318:4318"
+      # Jaeger collector (for direct HTTP export)
+      - "14268:14268"
+      # Agent (for thrift UDP – legacy)
+      - "6831:6831/udp"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_OTLP_HTTP_URL=http://localhost:4318
+      - COLLECTOR_OTLP_GRPC_URL=localhost:4317
+      - SPAN_STORAGE_TYPE=memory
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

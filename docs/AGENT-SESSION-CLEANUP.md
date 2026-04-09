@@ -1,60 +1,108 @@
 # Agent Session Cleanup Policy
 
-## Problem
-Agent sessions accumulate over time, potentially using significant compute resources.
+## Overview
 
-## Current State
-- **Total session files:** 23 JSON files
-- **Sessions older than 7 days:** To be determined
-- **Sessions older than 30 days:** To be determined
+Agent sessions accumulate over time in `~/.openclaw/agents/{agent-name}/sessions/`. This document defines the cleanup policy to manage disk usage while preserving active work.
 
-## Cleanup Policy
+## Session Lifecycle
 
-### Sessions to Delete
-- Sessions older than 30 days (stale)
-- Sessions with no activity in 7+ days (inactive)
-- Failed/errored sessions (outdated)
+### Session Creation
+- Sessions are created when agents spawn sub-agents or start persistent sessions
+- Each session is stored as a `.jsonl` file with a unique UUID
+- Active sessions are locked with a `.lock` file
 
-### Sessions to Keep
-- Active sessions (recent activity)
-- Sessions with important results (last 7 days)
+### Session Aging Policy
 
-## Implementation
+| Age | Status | Action |
+|-----|--------|--------|
+| < 1 day | Active | Keep - in use |
+| 1-7 days | Review | May be stale, review before deletion |
+| 7-30 days | Stale | Delete automatically |
+| > 30 days | Old | Delete immediately |
+
+## Cleanup Schedule
+
+### Automated Cleanup
+- **Schedule:** Daily at 3:00 AM (EOD)
+- **Command:** `cleanup-sessions.sh 7` (removes sessions > 7 days old)
+- **Location:** `~/.openclaw/workspace/scripts/system/cleanup-sessions.sh`
 
 ### Manual Cleanup
 ```bash
-# List sessions older than 30 days
-find ~/.openclaw -name "*.json" -path "*sessions*" -type f -mtime +30
+# Clean sessions older than 7 days
+~/.openclaw/workspace/scripts/system/cleanup-sessions.sh 7
 
-# Delete sessions older than 30 days
-find ~/.openclaw -name "*.json" -path "*sessions*" -type f -mtime +30 -delete
+# Clean sessions older than 30 days (aggressive)
+~/.openclaw/workspace/scripts/system/cleanup-sessions.sh 30
 
-# List sessions older than 7 days
-find ~/.openclaw -name "*.json" -path "*sessions*" -type f -mtime +7
-
-# Delete sessions older than 7 days (excluding last 7)
-find ~/.openclaw -name "*.json" -path "*sessions*" -type f -mtime +7 -delete
+# Dry run (show what would be deleted)
+find ~/.openclaw/agents -name "*.jsonl" -type f -mtime +7
 ```
 
-### Automated Cleanup (Future)
-Add to crontab:
+## Preserving Important Sessions
+
+To preserve a session beyond the cleanup threshold:
+
+1. **Active sessions** - Sessions with `.lock` files are automatically excluded
+2. **Rename pattern** - Add `.preserve` suffix to keep permanently:
+   ```bash
+   mv session-file.jsonl session-file.jsonl.preserve
+   ```
+3. **Move to backup** - Copy to a backup location outside the agents directory
+
+## Session Directory Structure
+
+```
+~/.openclaw/agents/
+├── main/sessions/
+│   ├── sessions.json          # Session index (never delete)
+│   ├── *.jsonl.lock           # Lock files (never delete)
+│   └── <uuid>.jsonl          # Individual session files
+├── devops/sessions/
+├── architect/sessions/
+└── ...
+```
+
+## Files Excluded from Cleanup
+
+- `sessions.json` - Session index/database
+- `*.lock` - Lock files for active sessions
+- `*.reset.*` - Reset session backups
+- `*.deleted.*` - Deleted session markers
+- `*.checkpoint.*` - Checkpoint files
+
+## Current Storage Usage
+
+As of cleanup (2026-04-08):
+- **Sessions removed:** 169 (> 7 days old)
+- **Remaining sessions:** 145
+- < 1 day old (active): 24
+- 1-7 days old (review): 72
+
+## Cron Configuration
+
+**Note:** This system uses systemd timers instead of cron.
+
+### Systemd Timer (Active ✅)
 ```bash
-# Daily cleanup of sessions older than 30 days
-0 2 * * * find ~/.openclaw -name "*.json" -path "*sessions*" -type f -mtime +30 -delete
+# Files created:
+~/.config/systemd/user/session-cleanup.service
+~/.config/systemd/user/session-cleanup.timer
+
+# Status check:
+systemctl --user list-timers --all | grep session
+
+# Manual trigger:
+systemctl --user start session-cleanup.service
 ```
 
-## Safety Checks
-- Always list before deleting
-- Check for important results before cleanup
-- Keep logs of deleted sessions (optional)
+### Cron (if preferred)
+```bash
+# Clean up sessions older than 7 days, daily at 3 AM
+0 3 * * * /home/andlersrv/.openclaw/workspace/scripts/system/cleanup-sessions.sh 7 >> /var/log/session-cleanup.log 2>&1
+```
 
-## Metrics to Track
-- Total sessions before/after cleanup
-- Disk space recovered
-- Number of active sessions retained
+## Related Documentation
 
----
-
-**Created:** 2026-04-08
-**Author:** Wobblus 🔧
-**Related:** Issue #157 (if created)
+- OpenClaw Agent Documentation
+- Session Management in agent/README.md

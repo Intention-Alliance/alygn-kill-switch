@@ -1,0 +1,21 @@
+{
+  "flags": {
+    "vc-outreach-v2": {
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "allowedProjects": ["alygn"],
+      "description": "VC outreach system version 2 with enhanced targeting"
+    },
+    "muni-warmup-skip": {
+      "enabled": false,
+      "rolloutPercentage": 0,
+      "allowedProjects": [],
+      "description": "Skip warmup phase for municipal outreach"
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-04-09T00:00:00Z",
+    "updatedBy": "system"
+  }
+}
