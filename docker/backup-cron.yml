@@ -1,0 +1,179 @@
+version: '3.8'
+
+# backup-cron.yml - Docker Compose for scheduled backup and health monitoring
+# Issue #111 - Business Continuity Plan
+# Created: 2024-01-15
+
+services:
+  # Daily backup service - runs at 2 AM
+  backup-daily:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backup
+    container_name: backup-3-2-1-daily
+    environment:
+      - BACKUP_TYPE=daily
+      - S3_BACKUP_BUCKET=${S3_BACKUP_BUCKET:-s3://company-backups}
+      - GCS_BACKUP_BUCKET=${GCS_BACKUP_BUCKET:-gs://company-backups-offsite}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - LOG_LEVEL=INFO
+    volumes:
+      - backup-data:/var/backups/3-2-1
+      - ../scripts/system:/scripts:ro
+      - /var/log:/var/log
+    networks:
+      - backup-network
+    restart: unless-stopped
+    # Run daily at 2:00 AM
+    labels:
+      - "backup.schedule=daily"
+      - "backup.time=02:00"
+
+  # Weekly backup service - runs Sundays at 2 AM
+  backup-weekly:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backup
+    container_name: backup-3-2-1-weekly
+    environment:
+      - BACKUP_TYPE=weekly
+      - S3_BACKUP_BUCKET=${S3_BACKUP_BUCKET:-s3://company-backups}
+      - GCS_BACKUP_BUCKET=${GCS_BACKUP_BUCKET:-gs://company-backups-offsite}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - LOG_LEVEL=INFO
+    volumes:
+      - backup-data:/var/backups/3-2-1
+      - ../scripts/system:/scripts:ro
+      - /var/log:/var/log
+    networks:
+      - backup-network
+    restart: unless-stopped
+    labels:
+      - "backup.schedule=weekly"
+      - "backup.time=02:00"
+
+  # Monthly backup service - runs 1st of month at 2 AM
+  backup-monthly:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backup
+    container_name: backup-3-2-1-monthly
+    environment:
+      - BACKUP_TYPE=monthly
+      - S3_BACKUP_BUCKET=${S3_BACKUP_BUCKET:-s3://company-backups}
+      - GCS_BACKUP_BUCKET=${GCS_BACKUP_BUCKET:-gs://company-backups-offsite}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - LOG_LEVEL=INFO
+    volumes:
+      - backup-data:/var/backups/3-2-1
+      - ../scripts/system:/scripts:ro
+      - /var/log:/var/log
+    networks:
+      - backup-network
+    restart: unless-stopped
+    labels:
+      - "backup.schedule=monthly"
+      - "backup.time=02:00"
+
+  # Health monitoring service - runs every 15 minutes
+  health-monitor:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.health
+    container_name: health-monitor
+    environment:
+      - RPO_THRESHOLD_MINUTES=15
+      - HEALTH_CHECK_INTERVAL=900
+      - ALERT_WEBHOOK_URL=${ALERT_WEBHOOK_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - NOTION_TOKEN=${NOTION_TOKEN}
+      - API_HEALTH_URL=${API_HEALTH_URL:-http://app:3000/health}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - CDN_URL=${CDN_URL:-https://cdn.company.com}
+      - AUTH_URL=${AUTH_URL:-http://app:3000/auth/health}
+    volumes:
+      - backup-data:/var/backups/3-2-1:ro
+      - ../scripts/system:/scripts:ro
+      - /var/log:/var/log
+      - health-metrics:/var/lib/health-metrics
+    networks:
+      - backup-network
+    restart: unless-stopped
+    labels:
+      - "monitoring.interval=15m"
+      - "monitoring.type=health-check"
+
+  # Cron scheduler - manages backup timing
+  cron-scheduler:
+    image: mcuadros/ofelia:latest
+    container_name: backup-cron-scheduler
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - backup-network
+    restart: unless-stopped
+    labels:
+      # Daily backup at 2:00 AM
+      - "ofelia.job-run.backup-daily.schedule=0 2 * * *"
+      - "ofelia.job-run.backup-daily.container=backup-3-2-1-daily"
+      - "ofelia.job-run.backup-daily.command=/scripts/backup-3-2-1.sh daily"
+      
+      # Weekly backup at 2:00 AM on Sundays
+      - "ofelia.job-run.backup-weekly.schedule=0 2 * * 0"
+      - "ofelia.job-run.backup-weekly.container=backup-3-2-1-weekly"
+      - "ofelia.job-run.backup-weekly.command=/scripts/backup-3-2-1.sh weekly"
+      
+      # Monthly backup at 2:00 AM on 1st of month
+      - "ofelia.job-run.backup-monthly.schedule=0 2 1 * *"
+      - "ofelia.job-run.backup-monthly.container=backup-3-2-1-monthly"
+      - "ofelia.job-run.backup-monthly.command=/scripts/backup-3-2-1.sh monthly"
+      
+      # Health check every 15 minutes
+      - "ofelia.job-run.health-check.schedule=*/15 * * * *"
+      - "ofelia.job-run.health-check.container=health-monitor"
+      - "ofelia.job-run.health-check.command=/scripts/health-check.sh single"
+
+  # Prometheus metrics exporter
+  metrics-exporter:
+    image: prom/node-exporter:latest
+    container_name: backup-metrics-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - health-metrics:/var/lib/health-metrics:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - backup-network
+    restart: unless-stopped
+    labels:
+      - "prometheus.scrape=true"
+      - "prometheus.port=9100"
+
+networks:
+  backup-network:
+    driver: bridge
+    name: backup-network
+
+volumes:
+  backup-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/backups/3-2-1
+  health-metrics:
+    driver: local

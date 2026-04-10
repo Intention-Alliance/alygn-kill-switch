@@ -1,9 +1,8 @@
 {
   "timestamp": "2026-04-09T17:00:00.000Z",
-  "type": "vc",
   "phase": "researched",
   "data": {
-    "count": 2,
+    "count": 4,
     "entities": [
       {
         "id": "entity-mnrpt2n5-vcrxp1",
@@ -11,144 +10,106 @@
         "name": "Frontier Capital",
         "email": "investors@frontiercap.com",
         "website": "https://frontiercap.com",
-        "phone": null,
-        "location": {
-          "city": "San Francisco",
-          "state": "CA",
-          "country": "US",
-          "region": null
-        },
-        "status": "researched",
-        "priority": "medium",
-        "discoveredAt": "2026-04-09T16:52:17.441Z",
-        "lastUpdatedAt": "2026-04-09T17:00:00.000Z",
-        "outreachCount": 0,
-        "researchNotes": "Next Frontier Capital (NFC) - early-stage VC firm founded 2015. Thesis: 'exceptional talent and innovation exist beyond traditional venture capital hubs on the coasts.' Partners with mission-driven founders building companies of impact in Montana and Mountain West. Now manages $250M across four funds. Fund IV ($102M) focuses on: AI/Data, Cybersecurity, B2B Software, Climate/Clean Energy, Defense Tech, Deep Tech. Seed-stage: $2M-$5M checks, Series A: $8M-$15M follow-ons. Collaborative partnership model, 4-8 week decision timeline. Strong lead tendency.",
-        "personalizationContext": {
-          "painPoints": [
-            "scalable oversight",
-            "risk assessment",
-            "responsible AI deployment"
-          ],
-          "tailoredHook": "Focus on responsible innovation in frontier tech - aligns with Alygn's human-centered AI governance approach",
-          "researchHighlights": {
-            "thesis": "Mountain West early-stage, mission-driven founders",
-            "aum": "$250M across 4 funds",
-            "checkSize": "$2M-$5M seed, $8M-$15M Series A",
-            "sectors": ["AI/Data", "Cybersecurity", "Defense Tech", "Deep Tech"],
-            "stage": "Seed/Series A",
-            "approach": "Collaborative partnership model, takes board seats"
-          }
-        },
-        "typeData": {
-          "firmType": "vc",
-          "stageFocus": ["seed", "series-a"],
-          "sectorFocus": ["AI/Data", "Cybersecurity", "B2B Software", "Climate/Clean Energy", "Defense Tech", "Deep Tech"],
-          "checkSizeMin": 2000000,
-          "checkSizeMax": 15000000,
-          "aum": 250000000,
-          "partners": [
-            {
-              "name": "General Partners (collaborative model)",
-              "title": "Investment Team"
-            }
-          ],
-          "portfolioCompanies": ["Mountain West tech companies"],
-          "recentInvestments": [
-            {
-              "company": "Various AI/Data and Deep Tech startups",
-              "date": "2024-2025",
-              "stage": "Seed/Series A"
-            }
-          ],
-          "linkedInUrl": null,
-          "crunchbaseUrl": null,
-          "relevanceScore": 75
-        },
-        "emailValidation": null,
-        "sentEmailId": null,
-        "sentAt": null,
-        "draftStatus": "Not drafted"
-      },
-      {
-        "id": "entity-mnrpt2n5-5px7yv",
-        "type": "vc",
-        "name": "Governance Fund",
-        "email": "hello@govfund.vc",
-        "website": "https://govfund.vc",
-        "phone": null,
-        "location": {
-          "city": "San Francisco",
-          "state": "CA",
-          "country": "US",
-          "region": null
-        },
         "status": "researched",
         "priority": "high",
-        "discoveredAt": "2026-04-09T16:52:17.441Z",
-        "lastUpdatedAt": "2026-04-09T17:00:00.000Z",
-        "outreachCount": 0,
-        "researchNotes": "Note: 'Governance Fund' as a specific VC firm was not found in research. However, AI governance-focused investing is a major emerging theme. Key developments: RAIVC (Responsible AI Venture Council) at Santa Clara University, Project Liberty Institute with ReframeVenture and ImpactVC providing VC toolkits for responsible AI. 60% of executives report responsible AI boosts ROI. Top AI safety investors: Lightspeed (4 deals, $2B), Sequoia (3 deals, $3B+), Evolution Equity Partners. AI safety funding: $398M (2024), $214M (2025). Recommended pivot: target RAIVC-adjacent firms or AI governance-focused VCs like those backing Anthropic/OpenAI safety initiatives.",
-        "personalizationContext": {
-          "painPoints": [
-            "regulatory compliance",
-            "ethical frameworks",
-            "AI governance implementation"
-          ],
-          "tailoredHook": "Policy-focused thesis - AI governance is becoming central to VC due diligence (31% cite unclear regulations as barrier)",
-          "researchHighlights": {
-            "thesis": "AI governance and responsible AI investment frameworks",
-            "marketContext": "AI safety funding: $398M (2024), $214M (2025)",
-            "keyInitiatives": ["RAIVC", "Project Liberty Institute", "ImpactVC"],
-            "roiEvidence": "60% of executives report responsible AI boosts ROI",
-            "regulatoryFocus": "EU AI Act, California SB 53 compliance"
-          }
-        },
+        "discoveredAt": "2026-04-09T17:00:00.000Z",
+        "researchNotes": "Early-stage VC focused on frontier technology and AI infrastructure.",
         "typeData": {
           "firmType": "vc",
-          "stageFocus": ["pre-seed", "seed"],
-          "sectorFocus": ["AI policy", "AI ethics", "governance", "responsible AI"],
-          "checkSizeMin": null,
-          "checkSizeMax": null,
-          "aum": null,
+          "stageFocus": ["Seed", "Series A"],
+          "sectorFocus": ["AI", "Frontier Tech", "Infrastructure"],
           "partners": [
             {
-              "name": "Maria Rodriguez",
-              "title": "Founding Partner (from discovery data)"
+              "name": "General Partner",
+              "title": "Managing Partner"
+            }
+          ]
+        }
+      },
+      {
+        "id": "entity-mnrpt2n5-eep4k2",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": "richard@evolutionequity.com",
+        "website": "https://evolutionequity.com",
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-09T17:00:00.000Z",
+        "researchNotes": "$2B+ AUM, invested in Protect AI, SecurityScorecard, Aqua Security. Richard Seewald (Founder/Managing Partner) emphasizes AI-cybersecurity nexus as dominant theme for 2026+. Predicted trillion-dollar cybersecurity company within 5-10 years.",
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["Seed", "Series A", "Growth"],
+          "sectorFocus": ["AI Safety", "Cybersecurity", "Enterprise Software", "Data Analytics"],
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder & Managing Partner"
             }
           ],
-          "portfolioCompanies": ["PolicyAI", "EthicalAI"],
-          "recentInvestments": [
+          "notableInvestments": ["Protect AI", "SecurityScorecard", "Quantexa", "Pentera", "Carbon Black", "Arctic Wolf", "Aqua Security"],
+          "aiSafetyFocus": "AI and ML central to cybersecurity strategy; AI attacks becoming cheaper/faster/more effective"
+        }
+      },
+      {
+        "id": "entity-mnrpt2n5-acr3w8",
+        "type": "vc",
+        "name": "Acrew Capital",
+        "email": "mark@acrewcapital.com",
+        "website": "https://www.acrewcapital.com",
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-09T17:00:00.000Z",
+        "researchNotes": "San Francisco-based VC investing in cybersecurity, AI, enterprise software. Led $25M Series A for Aembit (non-human identity management for AI-driven security), $35M for Protect AI (ML code protection). Partners: Mark Kraynak, Theresia Gouw, Aliisa Rosenthal (ex-OpenAI).",
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["Seed", "Series A", "Series B"],
+          "sectorFocus": ["AI Safety", "Cybersecurity", "Enterprise Software", "Under-represented Founders"],
+          "partners": [
             {
-              "company": "PolicyAI",
-              "date": "2024-01",
-              "stage": "Seed"
+              "name": "Mark Kraynak",
+              "title": "Founding Partner"
             },
             {
-              "company": "EthicalAI",
-              "date": "2024-03",
-              "stage": "Pre-seed"
+              "name": "Theresia Gouw",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Aliisa Rosenthal",
+              "title": "General Partner (ex-OpenAI)"
             }
           ],
-          "linkedInUrl": null,
-          "crunchbaseUrl": null,
-          "relevanceScore": 85
-        },
-        "emailValidation": null,
-        "sentEmailId": null,
-        "sentAt": null,
-        "draftStatus": "Not drafted"
+          "notableInvestments": ["Aembit", "Protect AI", "Guild.ai"],
+          "checkSize": "$1M-$50M"
+        }
+      },
+      {
+        "id": "entity-mnrpt2n5-pear5v9",
+        "type": "vc",
+        "name": "Pear VC",
+        "email": "mar@pear.vc",
+        "website": "https://pear.vc",
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-09T17:00:00.000Z",
+        "researchNotes": "Pre-seed/seed firm invested in Guardrails AI, Haize Labs (AI safety testing). Partners: Mar Hershenson, Pejman Nozad. Email format: [first]@pear.vc. PearX pre-seed program open for S26 cohort.",
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["Pre-seed", "Seed"],
+          "sectorFocus": ["AI Safety", "AI Infrastructure", "Enterprise Tech"],
+          "partners": [
+            {
+              "name": "Mar Hershenson",
+              "title": "Founding Managing Partner"
+            },
+            {
+              "name": "Pejman Nozad",
+              "title": "Founding Managing Partner"
+            }
+          ],
+          "notableInvestments": ["Guardrails AI", "Haize Labs", "Listen Labs"],
+          "emailFormat": "[first]@pear.vc"
+        }
       }
     ]
-  },
-  "researchMetadata": {
-    "waveDate": "2026-04-10",
-    "discoverySource": "alygn-vc-discovered-2026-04-09.json",
-    "researchMethod": "Perplexity web search + synthesis",
-    "skippedEntities": ["entity-mnrpt2n5-4wp9ct"],
-    "skipReasons": {
-      "entity-mnrpt2n5-4wp9ct": "AI Safety Ventures - already sent email on 3/20/2026"
-    },
-    "notes": "AI Safety Ventures was skipped due to prior contact. Frontier Capital research revealed it's Next Frontier Capital (NFC), a legitimate Mountain West focused firm. Governance Fund not found as specific firm - may be mock data or early-stage entity. Recommend validating email addresses before personalization phase."
   }
 }

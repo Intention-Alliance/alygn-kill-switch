@@ -1,0 +1,48 @@
+{
+  "channels": ["email", "signal", "discord"],
+  "email": {
+    "imap_server": "imap.gmail.com",
+    "imap_port": 993,
+    "secure": true,
+    "username": "alyyygn@gmail.com",
+    "check_interval": 30,
+    "folders": ["INBOX", "[Gmail]/Sent Mail"],
+    "target_domains": ["menlovc.com", "sparkcapital.com", "lsvp.com", "a16z.com", "sequoiacap.com"]
+  },
+  "signal": {
+    "enabled": true,
+    "dbus_service": "org.asamk.Signal",
+    "dbus_object": "/org/asamk/Signal",
+    "number": "+50662163355"
+  },
+  "discord": {
+    "enabled": true,
+    "listen_dms": true,
+    "listen_mentions": true,
+    "listen_guilds": ["1117841083351711785"]
+  },
+  "websocket_pool": {
+    "heartbeat_interval": 30000,
+    "heartbeat_timeout": 90000,
+    "server_id": "outreach-listener-01"
+  },
+  "redis": {
+    "enabled": true,
+    "url": "redis://localhost:6379",
+    "key_prefix": "outreach:"
+  },
+  "notion": {
+    "enabled": true,
+    "conversation_db_id": "2fe33487-4af6-8137-868e-e14fd068948c"
+  },
+  "urgent_contacts": {
+    "tania": {
+      "signal": "+50662163355",
+      "whatsapp": "+50662163355"
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "./logs/outreach-listener.log"
+  }
+}
