@@ -70,12 +70,14 @@ export class RateLimiter {
 
     const deficit = count - this.tokens;
     const refillsNeeded = Math.ceil(deficit / this.refillAmount);
-    const retryAfterMs = refillsNeeded * this.refillIntervalMs;
+    // Account for time already elapsed since last refill to avoid overestimating wait time.
+    const msToNextRefill = this.refillIntervalMs - ((Date.now() - this.lastRefill) % this.refillIntervalMs);
+    const retryAfterMs = msToNextRefill + (refillsNeeded - 1) * this.refillIntervalMs;
 
     return {
       allowed: false,
       remaining: Math.floor(this.tokens),
-      retryAfterMs,
+      retryAfterMs: deficit > 0 ? retryAfterMs : 0,
       reason: `Rate limit exceeded for "${this.label}": need ${count}, have ${Math.floor(this.tokens)}`,
     };
   }
@@ -96,12 +98,13 @@ export class RateLimiter {
 
     const deficit = count - this.tokens;
     const refillsNeeded = Math.ceil(deficit / this.refillAmount);
-    const retryAfterMs = refillsNeeded * this.refillIntervalMs;
+    const msToNextRefill = this.refillIntervalMs - ((Date.now() - this.lastRefill) % this.refillIntervalMs);
+    const retryAfterMs = msToNextRefill + (refillsNeeded - 1) * this.refillIntervalMs;
 
     return {
       allowed: false,
       remaining: Math.floor(this.tokens),
-      retryAfterMs,
+      retryAfterMs: deficit > 0 ? retryAfterMs : 0,
       reason: `Insufficient tokens for "${this.label}": need ${count}, have ${Math.floor(this.tokens)}`,
     };
   }

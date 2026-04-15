@@ -13,6 +13,7 @@ import { UnsubscribeManager } from './UnsubscribeManager';
 import type { AuditLogger } from '../audit/AuditLogger';
 import { TemplateVersion } from './TemplateVersion';
 import { TemplateRegistry } from './TemplateRegistry';
+import type { EndpointRateLimiter } from '../security/EndpointRateLimiter';
 
 interface BatchEmailPayload {
   to: string;
@@ -49,6 +50,7 @@ export class EmailService {
   private unsubscribeManager: UnsubscribeManager;
   private templateRegistry: TemplateRegistry;
   private auditLogger: AuditLogger | null = null;
+  private endpointRateLimiter: EndpointRateLimiter | null = null;
 
   constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig, unsubscribeManager?: UnsubscribeManager) {
     this.providerType = providerType;
@@ -110,9 +112,32 @@ export class EmailService {
     this.auditLogger = logger;
   }
 
+  /** Inject EndpointRateLimiter for per-endpoint rate limiting */
+  setEndpointRateLimiter(limiter: EndpointRateLimiter): void {
+    this.endpointRateLimiter = limiter;
+  }
+
+  /** Get the EndpointRateLimiter instance (if set) */
+  getEndpointRateLimiter(): EndpointRateLimiter | null {
+    return this.endpointRateLimiter;
+  }
+
   async sendEmail(payload: IEmailPayload): Promise<ISendResult> {
     await this.initialize();
-    
+
+    // Per-endpoint rate limit check
+    if (this.endpointRateLimiter) {
+      const check = this.endpointRateLimiter.canSendEmail();
+      if (!check.allowed) {
+        return {
+          success: false,
+          to: payload.to,
+          subject: payload.subject,
+          error: check.reason ?? 'Email send rate limit exceeded',
+        };
+      }
+    }
+
     // Apply test email override if set
     const actualPayload: IEmailPayload = this.testEmail
       ? { ...payload, to: this.testEmail }

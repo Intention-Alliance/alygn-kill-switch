@@ -209,15 +209,15 @@ export class EndpointRateLimiter {
   }
 
   /**
-   * Record that an email was sent (consumes from both email-send and email-batch).
+   * Record that an email was sent.
    * Call AFTER the send succeeds.
+   *
+   * No-op: tokens are already consumed at check time by canSendEmail()
+   * and canSendBatch(), so there is nothing to deduct here. This matches
+   * the pattern used by recordWebhookProcessed/recordWebhookSent.
    */
-  recordEmailSend(isBatch: boolean = false): void {
-    // email-send token already consumed by canSendEmail()
-    if (isBatch) {
-      const batchLimiter = this.getLimiter('email-batch');
-      batchLimiter.consume(1);
-    }
+  recordEmailSend(_isBatch: boolean = false): void {
+    // Tokens consumed at check time — nothing to do.
   }
 
   // ── WebhookHandler integration helpers ────────────────────────────────

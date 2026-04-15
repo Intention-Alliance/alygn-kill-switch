@@ -9,6 +9,7 @@ import { SentEmailTracker } from '../SentEmailTracker';
 import { UnsubscribeManager } from './UnsubscribeManager';
 import type { RateLimiter } from './RateLimiter';
 import type { AuditLogger } from '../audit/AuditLogger';
+import type { EndpointRateLimiter } from '../security/EndpointRateLimiter';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -75,6 +76,7 @@ export class WebhookHandler {
   private tracker: SentEmailTracker;
   private unsubscribeManager: UnsubscribeManager;
   private rateLimiter: RateLimiter | null;
+  private endpointRateLimiter: EndpointRateLimiter | null;
   private log: WebhookLogEntry[] = [];
   private readonly logDir: string;
   private readonly maxLogSize: number;
@@ -90,6 +92,7 @@ export class WebhookHandler {
     this.tracker = tracker;
     this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager();
     this.rateLimiter = config.rateLimiter ?? null;
+    this.endpointRateLimiter = null;
     this.logDir = config.logDir ?? path.resolve(__dirname, '../../data/webhook-logs');
     this.maxLogSize = config.maxLogSize ?? 1000;
     this.persistLogs = config.persistLogs ?? true;
@@ -104,6 +107,16 @@ export class WebhookHandler {
   /** Inject AuditLogger for audit trail */
   setAuditLogger(logger: AuditLogger): void {
     this.auditLogger = logger;
+  }
+
+  /** Inject EndpointRateLimiter for per-endpoint rate limiting */
+  setEndpointRateLimiter(limiter: EndpointRateLimiter): void {
+    this.endpointRateLimiter = limiter;
+  }
+
+  /** Get the EndpointRateLimiter instance (if set) */
+  getEndpointRateLimiter(): EndpointRateLimiter | null {
+    return this.endpointRateLimiter;
   }
 
   async handleWebhook(
@@ -121,6 +134,19 @@ export class WebhookHandler {
         : this.parseGenericEvent(raw);
 
       const logEntry = this.createLogEntry(source, payload);
+
+      // Per-endpoint rate limit check for incoming webhooks
+      if (this.endpointRateLimiter) {
+        const check = this.endpointRateLimiter.canProcessWebhook();
+        if (!check.allowed) {
+          logEntry.processed = false;
+          logEntry.error = check.reason ?? 'Webhook rate limit exceeded';
+          failed++;
+          errors.push(logEntry.error!);
+          this.appendLog(logEntry);
+          continue;
+        }
+      }
 
       try {
         await this.updateTracker(payload);
