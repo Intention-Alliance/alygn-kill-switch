@@ -11,8 +11,9 @@
  * No new dependencies — uses only Node.js built-ins (fs/promises, path, crypto).
  */
 import { appendFile, mkdir, readdir, unlink, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 import * as crypto from 'node:crypto';
+import { EventEmitter } from 'node:events';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -40,6 +41,8 @@ export interface AuditLoggerOptions {
   dataDir?: string;
   /** Retention period in days (default: 30) */
   retentionDays?: number;
+  /** Called when an audit write fails. Receives the error and the entry that failed. */
+  onError?: (error: Error, entry: AuditEntry) => void;
 }
 
 export interface AuditQueryFilter {
@@ -69,12 +72,28 @@ const FILE_SUFFIX = '.jsonl';
 
 // ── AuditLogger ───────────────────────────────────────────────────────────
 
-export class AuditLogger {
+export class AuditLogger extends EventEmitter {
   private readonly dataDir: string;
   private readonly retentionDays: number;
+  private readonly errorCallback?: (error: Error, entry: AuditEntry) => void;
+  /** Track the last date written to detect day-boundary rotation. */
+  private lastWriteDate: string | null = null;
 
   constructor(opts: AuditLoggerOptions = {}) {
-    this.dataDir = opts.dataDir ?? DEFAULT_DATA_DIR;
+    super();
+    this.errorCallback = opts.onError;
+
+    // Resolve dataDir to an absolute path and validate against path traversal
+    const rawDir = opts.dataDir ?? DEFAULT_DATA_DIR;
+    const absDir = resolve(rawDir);
+    const cwdRoot = resolve('.');
+    const rel = relative(cwdRoot, absDir);
+    if (rel.startsWith('..')) {
+      throw new Error(
+        `AuditLogger: dataDir "${rawDir}" resolves to "${absDir}", which escapes the project root "${cwdRoot}". Path traversal is not allowed.`,
+      );
+    }
+    this.dataDir = absDir;
     this.retentionDays = opts.retentionDays ?? DEFAULT_RETENTION_DAYS;
   }
 
@@ -101,10 +120,26 @@ export class AuditLogger {
       result,
     };
 
-    await mkdir(this.dataDir, { recursive: true });
-    const filePath = this.todayFilePath();
-    const line = JSON.stringify(entry) + '\n';
-    await appendFile(filePath, line, 'utf-8');
+    try {
+      await mkdir(this.dataDir, { recursive: true });
+      const filePath = this.todayFilePath();
+      const todayDate = this.formatDate(new Date());
+
+      // Auto-prune on date boundary: when today's date differs from last write
+      if (this.lastWriteDate !== null && this.lastWriteDate !== todayDate) {
+        // Fire-and-forget prune — don't block the write on retention cleanup
+        this.prune().catch(() => { /* prune failures are non-critical */ });
+      }
+      this.lastWriteDate = todayDate;
+
+      const line = JSON.stringify(entry) + '\n';
+      await appendFile(filePath, line, 'utf-8');
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      this.emit('error', error, entry);
+      this.errorCallback?.(error, entry);
+      // Don't re-throw — audit failures must not crash the app
+    }
 
     return entry;
   }

@@ -175,6 +175,8 @@ export interface ConditionExpr {
   right?: { type: 'path' | 'string' | 'number'; value: string };
   /** Logical operator joining two sub-expressions. */
   logical?: '&&' | '||';
+  /** Left sub-expression (for logical operators). */
+  leftExpr?: ConditionExpr;
   /** Second sub-expression (after && or ||). */
   rightExpr?: ConditionExpr;
 }
@@ -325,6 +327,7 @@ function parseConditionExpr(expr: string): ConditionExpr {
       raw: trimmed,
       leftPath: leftExpr.leftPath,
       logical: op,
+      leftExpr,
       rightExpr,
     };
   }
@@ -394,7 +397,15 @@ function evalCondition(
   let result: boolean;
 
   if (expr.logical && expr.rightExpr) {
-    const left = evalCondition(expr, data, loopStack);
+    // Use stored left sub-expression if available, otherwise build from fields
+    const leftExpr = expr.leftExpr ?? {
+      raw: expr.leftPath,
+      leftPath: expr.leftPath,
+      operator: expr.operator,
+      right: expr.right,
+      negated: expr.negated,
+    };
+    const left = evalCondition(leftExpr, data, loopStack);
     // Short-circuit: for && if left is false, skip right; for || if left is true, skip right
     if (expr.logical === '&&' && !left) {
       result = false;
