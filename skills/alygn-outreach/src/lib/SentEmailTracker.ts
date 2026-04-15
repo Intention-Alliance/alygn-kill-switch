@@ -18,6 +18,9 @@ interface SentEmailEntry {
   subject: string;
   sentAt: string;
   messageId: string;
+  status?: 'sent' | 'bounced' | 'opened' | 'clicked' | 'deferred' | 'spam_report' | 'unsubscribed';
+  bounceReason?: string;
+  bouncedAt?: string;
 }
 
 interface SentEmails {
@@ -186,6 +189,75 @@ export class SentEmailTracker {
     return this.sentEmails[key].find(
       entry => entry.email.toLowerCase() === email.toLowerCase()
     ) || null;
+  }
+
+  /**
+   * Record a bounce for an existing sent email entry.
+   * Updates the entry's status to 'bounced' and records the bounce reason.
+   * If no matching entry is found, logs a warning.
+   */
+  recordBounce(email: string, bounceReason?: string, partnerName?: string, type: 'vc' | 'municipal' = 'vc'): boolean {
+    const key = type === 'vc' ? 'vcs' : 'municipalities';
+
+    if (!email) {
+      console.warn('Cannot record bounce: no email provided');
+      return false;
+    }
+
+    let existingIndex = -1;
+    if (type === 'vc' && partnerName) {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase() &&
+                 entry.partnerName === partnerName
+      );
+    } else {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase()
+      );
+    }
+
+    if (existingIndex === -1) {
+      console.warn(`Cannot record bounce: no sent record found for ${email}`);
+      return false;
+    }
+
+    const entry = this.sentEmails[key][existingIndex];
+    entry.status = 'bounced';
+    entry.bounceReason = bounceReason ?? undefined;
+    entry.bouncedAt = new Date().toISOString();
+    this.sentEmails[key][existingIndex] = entry;
+    this.sentEmails.lastUpdated = new Date().toISOString();
+    this.saveSentLog();
+    console.log(`Recorded bounce for ${email}${partnerName ? ` (${partnerName})` : ''}: ${bounceReason ?? 'no reason'}`);
+    return true;
+  }
+
+  /**
+   * Update the status of an existing sent email entry.
+   */
+  updateStatus(email: string, status: SentEmailEntry['status'], partnerName?: string, type: 'vc' | 'municipal' = 'vc'): boolean {
+    const key = type === 'vc' ? 'vcs' : 'municipalities';
+
+    if (!email) return false;
+
+    let existingIndex = -1;
+    if (type === 'vc' && partnerName) {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase() &&
+                 entry.partnerName === partnerName
+      );
+    } else {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase()
+      );
+    }
+
+    if (existingIndex === -1) return false;
+
+    this.sentEmails[key][existingIndex].status = status;
+    this.sentEmails.lastUpdated = new Date().toISOString();
+    this.saveSentLog();
+    return true;
   }
 
   /**

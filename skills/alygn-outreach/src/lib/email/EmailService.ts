@@ -5,6 +5,9 @@
 import { EmailProvider } from './providers/EmailProvider';
 import type { IEmailPayload, ISendResult } from './providers/EmailProvider';
 import { EmailProviderFactory } from './EmailProviderFactory';
+import { EmailQueue, type EmailQueueConfig, type EmailPriority } from './EmailQueue';
+import { TemplateValidator } from './validators/TemplateValidator';
+import type { EmailTemplateInput, TemplateSizeConstraints, TemplateValidationResult } from './validators/TemplateValidator';
 
 interface BatchEmailPayload {
   to: string;
@@ -33,12 +36,28 @@ interface BatchResult {
 export class EmailService {
   provider: EmailProvider | null = null;
   testEmail: string | null = null;
+  queue: EmailQueue;
   private providerType: string;
   private providerConfig: Record<string, unknown>;
+  private templateValidator: TemplateValidator;
 
-  constructor(providerType: string, config: Record<string, unknown>) {
+  constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig) {
     this.providerType = providerType;
     this.providerConfig = config;
+    this.templateValidator = new TemplateValidator(sizeConstraints);
+    this.queue = new EmailQueue(queueConfig);
+    this.queue.setSendFn(async (payload) => {
+      await this.initialize();
+      const actualPayload: IEmailPayload = this.testEmail
+        ? { ...payload, to: this.testEmail }
+        : payload;
+      const result = await this.provider!.send(actualPayload);
+      return {
+        success: result.success,
+        messageId: result.messageId,
+        error: result.error,
+      };
+    });
   }
 
   /**
@@ -72,7 +91,7 @@ export class EmailService {
   }
 
   /**
-   * Send a single email
+   * Send a single email (no template validation — backward compatible)
    */
   async sendEmail(payload: IEmailPayload): Promise<ISendResult> {
     await this.initialize();
@@ -176,10 +195,114 @@ export class EmailService {
   }
 
   /**
+   * Send emails via the queue system (priority-based, retry, rate-limited)
+   * Returns queue item IDs for tracking
+   */
+  async sendQueued(
+    emails: BatchEmailPayload[],
+    options: { priority?: EmailPriority; dryRun?: boolean } = {}
+  ): Promise<{ ids: string[]; queued: number; dryRun: boolean }> {
+    const { priority = 'medium', dryRun = false } = options;
+
+    if (dryRun) {
+      return { ids: [], queued: emails.length, dryRun: true };
+    }
+
+    await this.initialize();
+    const ids: string[] = [];
+
+    for (const email of emails) {
+      const id = await this.queue.enqueue(
+        {
+          to: email.to,
+          from: email.from,
+          subject: email.subject,
+          html: email.html,
+          text: email.text,
+          cc: email.cc,
+        },
+        priority,
+      );
+      ids.push(id);
+    }
+
+    this.queue.drain(); // fire-and-forget; queue processes in background
+    return { ids, queued: ids.length, dryRun: false };
+  }
+
+  /**
    * Get current provider name
    */
   getProviderName(): string {
     return this.provider?.getName() || 'unknown';
+  }
+
+  /**
+   * Graceful shutdown — persists queue and stops processing
+   */
+  async shutdown(): Promise<void> {
+    this.queue.stop();
+    await this.queue.persist();
+  }
+
+  /**
+   * Validate an email template without sending.
+   * Useful for pre-flight checks before batch sends.
+   */
+  validateTemplate(input: EmailTemplateInput): TemplateValidationResult {
+    return this.templateValidator.validate(input);
+  }
+
+  /**
+   * Send a single email with template validation first.
+   * If validation fails (any errors), the email is NOT sent and a failed
+   * ISendResult is returned. Warnings are logged but do not block sending.
+   *
+   * Backward compatible: sendEmail() still works without validation.
+   */
+  async sendWithValidation(
+    payload: IEmailPayload,
+    language?: 'es' | 'en',
+  ): Promise<ISendResult> {
+    const templateInput: EmailTemplateInput = {
+      subject: payload.subject,
+      html: payload.html || '',
+      text: payload.text,
+      language,
+    };
+
+    const result = this.templateValidator.validate(templateInput);
+
+    if (!result.valid) {
+      const errorSummary = result.errors
+        .map((e) => `[${e.rule}] ${e.message}`)
+        .join('; ');
+      console.error(`[EmailService] Template validation failed — email NOT sent: ${errorSummary}`);
+
+      if (result.warnings.length > 0) {
+        const warnSummary = result.warnings
+          .map((w) => `[${w.rule}] ${w.message}`)
+          .join('; ');
+        console.warn(`[EmailService] Template validation warnings: ${warnSummary}`);
+      }
+
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Template validation failed: ${errorSummary}`,
+      };
+    }
+
+    // Log warnings but proceed
+    if (result.warnings.length > 0) {
+      const warnSummary = result.warnings
+        .map((w) => `[${w.rule}] ${w.message}`)
+        .join('; ');
+      console.warn(`[EmailService] Template validation warnings: ${warnSummary}`);
+    }
+
+    return this.sendEmail(payload);
   }
 }
 
