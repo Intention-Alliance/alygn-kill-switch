@@ -10,6 +10,7 @@ import { TemplateValidator } from './validators/TemplateValidator';
 import type { EmailTemplateInput, TemplateSizeConstraints, TemplateValidationResult } from './validators/TemplateValidator';
 import { ComplianceValidator, type ComplianceEmailInput, type ComplianceStatus } from './ComplianceValidator';
 import { UnsubscribeManager } from './UnsubscribeManager';
+import type { AuditLogger } from '../audit/AuditLogger';
 
 interface BatchEmailPayload {
   to: string;
@@ -44,6 +45,7 @@ export class EmailService {
   private templateValidator: TemplateValidator;
   private complianceValidator: ComplianceValidator;
   private unsubscribeManager: UnsubscribeManager;
+  private auditLogger: AuditLogger | null = null;
 
   constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig, unsubscribeManager?: UnsubscribeManager) {
     this.providerType = providerType;
@@ -99,6 +101,11 @@ export class EmailService {
   /**
    * Send a single email (no template validation — backward compatible)
    */
+  /** Inject AuditLogger for audit trail */
+  setAuditLogger(logger: AuditLogger): void {
+    this.auditLogger = logger;
+  }
+
   async sendEmail(payload: IEmailPayload): Promise<ISendResult> {
     await this.initialize();
     
@@ -108,6 +115,17 @@ export class EmailService {
       : payload;
 
     const result = await this.provider!.send(actualPayload);
+
+    // Audit log
+    if (this.auditLogger) {
+      await this.auditLogger.log(
+        'EmailService',
+        'email.send',
+        payload.to,
+        { subject: payload.subject, provider: result.provider, messageId: result.messageId },
+        result.success ? 'success' : 'failure',
+      ).catch(() => {});
+    }
 
     return {
       ...result,

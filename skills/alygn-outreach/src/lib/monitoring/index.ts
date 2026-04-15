@@ -119,5 +119,6 @@ export { HealthMonitor } from './HealthMonitor';
 export { MetricsCollector } from './MetricsCollector';
 export { AlertManager } from './AlertManager';
 export * from './types';
+export * from './channels';
 
 export default MonitoringSystem;

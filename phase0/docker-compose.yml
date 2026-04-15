@@ -26,7 +26,7 @@ services:
       - "16379:16379"
     volumes:
       - redis-1-data:/data
-      - ./redis/conf/node-1.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./infra/redis/conf/node-1.conf:/usr/local/etc/redis/redis.conf:ro
     command: redis-server /usr/local/etc/redis/redis.conf
 
   redis-node-2:
@@ -37,7 +37,7 @@ services:
       - "16380:16379"
     volumes:
       - redis-2-data:/data
-      - ./redis/conf/node-2.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./infra/redis/conf/node-2.conf:/usr/local/etc/redis/redis.conf:ro
     command: redis-server /usr/local/etc/redis/redis.conf
 
   redis-node-3:
@@ -48,7 +48,7 @@ services:
       - "16381:16379"
     volumes:
       - redis-3-data:/data
-      - ./redis/conf/node-3.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./infra/redis/conf/node-3.conf:/usr/local/etc/redis/redis.conf:ro
     command: redis-server /usr/local/etc/redis/redis.conf
 
   redis-cluster-init:
@@ -86,7 +86,7 @@ services:
   kill-switch-api:
     build:
       context: .
-      dockerfile: kill-switch/Dockerfile
+      dockerfile: apps/kill-switch-api/Dockerfile
     container_name: kill-switch-api
     restart: unless-stopped
     ports:
@@ -132,7 +132,7 @@ services:
       - "4318:4318"     # OTLP HTTP
       - "8888:8888"     # Collector metrics
     volumes:
-      - ./tracing/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - ./infra/tracing/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     depends_on:
       - jaeger

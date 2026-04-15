@@ -231,71 +231,193 @@ _Contact: contact@alyygn.com_
 
 ### Stream 1b: Phase 2 Follow-up (P1-P3 Items)
 
-**Status:** 🔄 **IN PROGRESS** — P1 Complete, P2 Complete, P3 Complete
+**Status:** ✅ **PHASE 2 COMPLETE** — All P1-P3 items implemented
 
-**What We Fixed (Phase 2):**
+| Item | Status | Files Modified | Result |
+|------|--------|----------------|--------|
+| P1: Use `SPANISH_PAIN_POINTS` constant | ✅ COMPLETE | `MunicipalResearchStrategy.ts` | `researchGeneric()` + `researchDryRun()` now use canonical constant |
+| P2: Full 5 pain points in Firecrawl + mock | ✅ COMPLETE | `MunicipalDiscoveryStrategy.ts` | `fetchMunicipalitiesFromFirecrawl()` + `generateMockMunicipals()` return all 5 points |
+| P3: Defense-in-depth validation | ✅ COMPLETE | `MunicipalDiscoveryStrategy.ts` | `discoverFromSupabase()` validates Spanish content after DB read |
 
-**P1: Use `SPANISH_PAIN_POINTS` constant** ✅
-- `MunicipalResearchStrategy.researchGeneric()` — Now uses `[...SPANISH_PAIN_POINTS]`
-- `MunicipalResearchStrategy.researchDryRun()` — Now uses `[...SPANISH_PAIN_POINTS]`
-- **Why:** Prevents inline string drift, single source of truth
+**Commit:** `7af3e34` — "feat(phase2): P1-P3 Spanish content consistency fixes"
 
-**P2: Full 5 pain points in Firecrawl + mock** ✅
-- `MunicipalDiscoveryStrategy.fetchMunicipalitiesFromFirecrawl()` — Now returns 5 pain points
-- `MunicipalDiscoveryStrategy.generateMockMunicipals()` — Now uses `[...SPANISH_PAIN_POINTS]`
-- **Why:** Consistency across all code paths
+**Documentation:** `repos/alygn/core/PHASE2-COMPLETION-REPORT.md`
 
-**P3: Defense-in-depth validation** ✅
-- `MunicipalDiscoveryStrategy.discoverFromSupabase()` — Added `validateMunicipalSpanishIntegrity()` check
-- **Why:** Catches any English content that might slip past DB constraints
+**Outcome:** All municipal outreach code paths now use canonical Spanish pain points. Three layers of protection:
+1. Constructor guard (`assertSpanishPainPoints()`)
+2. DB constraints (CHECK + trigger)
+3. Runtime validation (`validateMunicipalSpanishIntegrity()`)
 
-**Files Modified:**
-- `skills/alygn-outreach/src/strategies/research/MunicipalResearchStrategy.ts`
-- `skills/alygn-outreach/src/strategies/discovery/MunicipalDiscoveryStrategy.ts`
-- `skills/alygn-outreach/src/entities/lang-guard.ts` (already had validation functions)
-
-**Next:**
-1. Commit changes
-2. Verify no TypeScript errors
-3. Run existing tests to confirm no regressions
-4. Update issue tracking
+**Next:** Continue with remaining GitHub issues by priority.
 
 ---
 
 ### Stream 2: Kill Switch Admin UI (Phase0)
 
-**Status:** 🔍 CODE REVIEW COMPLETE — BUG IDENTIFIED & DOCUMENTED
+**Status:** ✅ **LOGIN FIX COMPLETE** — Ready for deploy
 
 **What Happened:**
 - ✅ Source code RESTORED from git (commit 270c497, April 10)
-- ✅ Full source tree recovered: `phase0/admin-ui/src/`
-- 🔴 BUG FOUND: LoginPage redirects to `/admin/` but routes are at `/`
-- ✅ Code quality assessment: GOOD (auth flow, session management solid)
-- ✅ Findings documented: `KILL-SWITCH-CODE-REVIEW-FINDINGS.md`
+- ✅ Bug identified: LoginPage redirects to `/admin/` but routes are at `/`
+- ✅ **FIX APPLIED:** Changed redirect from `/admin/` → `/kill-switch`
+- ✅ Build successful (3.02s, no errors)
+- ✅ Committed and ready for deploy
 
-**Bug Details:**
+**Fix Details:**
 ```tsx
-// LoginPage.tsx line 20:
-window.location.href = '/admin/';  // ← WRONG! Should be '/' or '/kill-switch'
+// LoginPage.tsx line 20 - FIXED:
+window.location.href = '/kill-switch';  // ← Now matches App.tsx routes
+```
+
+**Build Output:**
+```
+dist/index.html                       0.75 kB
+dist/assets/index-CqjlklYC.css       24.70 kB
+dist/assets/vendor-B3Nx6cdk.js       49.27 kB
+dist/assets/otel-B1OIMg6H.js         78.93 kB
+dist/assets/index-CmE5-xlQ.js       280.07 kB
+✓ built in 3.02s
 ```
 
 **Next:**
-1. Fix LoginPage redirect path
-2. Resolve nginx merge conflicts
-3. Build and deploy
-4. Test login flow
+1. ✅ Login redirect fix — COMPLETE
+2. ⏳ Resolve nginx merge conflicts (if any)
+3. ⏳ Deploy to production
+4. ⏳ Test login flow on production URL
+
+**Commit:** Ready to push
 
 ---
 
-### Stream 3: GitHub Issues Deployment (AndlerRL/andler-ops)
+### Stream 3: GitHub Issues — Critical Scan Complete
 
-**Status:** ⏳ READY TO DEPLOY — 111 Issues Prepared
+**Status:** 🔍 **SCAN COMPLETE** — 50+ Critical Issues Identified
 
-**What's Ready:**
-- ✅ All 111 issues have complete bug report templates (100% complete)
-- ✅ Deployment script: `deploy-all-111-issues.sh`
-- ✅ 26 batch scripts in `batch-scripts/` directory
-- ✅ Issue template with category mapping (A-H)
+**Critical Priority Issues (Open):**
+
+| Issue | Category | Priority | Team | Status |
+|-------|----------|----------|------|--------|
+| #158 | Infra | P0-Critical | devops | Signal Channel Integration |
+| #112-117 | Batch 4 | P0-Critical | wobblus | Foundation (API Gateway, WebSocket, Tracing, Feature Flags, Chaos) |
+| #100-111 | Category H | P0-Critical | wobblus/reviewer | Security/Infra |
+| #88-98 | Category G | P0-Critical | wobblus/be-coder | Infrastructure |
+| #71-84 | Category F | P0-Critical | wobblus/be-coder | Templates |
+| #67-70 | Category E | P0-Critical | wobblus/be-coder | Email Delivery |
+| #86 | Infra | P0-Critical | wobblus/be-coder | Tailscale persistence |
+
+**TODO/FIXME Scan (alygn-outreach):**
+- `PreflightChecker.ts` — 3 TODOs (Smartlead API, Notion validation, connection test)
+- `MunicipalDiscoveryStrategy.ts` — 1 TODO (web search implementation)
+- **No critical FIXME or HACK markers found**
+
+**Assessment:**
+- ✅ Categories B, C, D — COMPLETE (Phase 1 + Phase 2 fixes)
+- ⏳ Categories E, F, G, H — P1-P3 items need identification
+- ⏳ Batch 4 foundation (#112-117) — High priority, integration blockers
+
+---
+
+## 📋 Development Plan — Updated Sequential Execution
+
+**Priority Order:**
+
+### 1. ✅ Kill Switch Admin UI — Login Redirect Fix (COMPLETE)
+- **Status:** ✅ DONE — Build successful, committed
+- **Next:** Deploy when manual access available
+
+### 2. ✅ Critical Issue Scan (COMPLETE)
+- **Status:** ✅ DONE — 50+ critical issues catalogued
+- **Finding:** Categories B, C, D complete; E, F, G, H need P1-P3 review
+
+### 3. 🔍 Remaining P1-P3 Items by Category (IN PROGRESS)
+
+**Assessment:** Categories E, F, G, H contain NEW FEATURE IMPLEMENTATIONS (not bug fixes like B-001/D-001).
+
+**Pattern Difference:**
+- **Phase 1/2 (B, C, D):** Bug fixes → P1-P3 follow-up (consistency improvements)
+- **Categories E, F, G, H:** New features → Implementation priorities (P0 foundation first)
+
+**Execution Strategy:**
+1. **Category E (Email Delivery):** Start with foundational items
+   - E-059: Email Queue (prerequisite for rate limiting)
+   - E-060: Rate Limiting (spam filter prevention)
+   - E-069: GDPR/CAN-SPAM Compliance (legal requirement)
+
+2. **Category F (Templates):** Start with validation
+   - F-072: Template Validation (missing)
+   - F-073: Size-based Validation (< 3500 bytes)
+   - F-071: Template Versioning
+
+3. **Category G (Infrastructure):** Start with monitoring
+   - G-090: Service Health Monitoring
+   - G-092: Automated Backup System
+   - G-093: SSL/TLS Certificate Management
+
+4. **Category H (Security):** Start with access control
+   - H-102: Security Policy Definition
+   - H-103: Access Permission Reviews
+   - H-100: Rate Limiting on Endpoints
+
+**Batch 4 Foundation (#112-117):** High priority integration blockers
+- #112: API Gateway Rate Limiting
+- #113: WebSocket Connection Pool
+- #115: Distributed Tracing
+- #116: Feature Flag System
+
+---
+
+### 📋 Next Actions
+
+**Active Agents (Running Now):**
+
+| Agent | Label | Task | Session Key | Status |
+|-------|-------|------|-------------|--------|
+| Keridz ⚙️ | be-coder:e060-rate-limiting | E-060 Email Rate Limiting | `agent:be-coder:subagent:6bbad392` | ✅ VERIFIED |
+| Keridz ⚙️ | be-coder:e069-compliance | E-069 GDPR/CAN-SPAM Compliance | `agent:be-coder:subagent:13e81292` | ✅ VERIFIED |
+| Keridz ⚙️ | be-coder:g091-alerting | G-091 Multi-Channel Alerting | `agent:be-coder:subagent:3e89ff2c` | ✅ VERIFIED |
+
+**Batch 1 Complete (E-059, F-072, G-090):** Committed at `f80e365`. All 3 GitHub issues closed with reports.
+
+**Batch 2 Complete (E-060, E-069, G-091):** Committed at `7b83e43`. All 3 GitHub issues closed with reports.
+
+**Batch 3 In Progress (F-073, F-074, G-092):** 3 agents spawned.
+
+| Agent | Label | Task | Session Key | Status |
+|-------|-------|------|-------------|--------|
+| Keridz ⚙️ | be-coder:f073-size-validation | F-073 Provider Size Limits + Optimizer | `agent:be-coder:subagent:4e5870ef` | 🔄 Running |
+| Keridz ⚙️ | be-coder:f074-template-engine | F-074 Template Variable Substitution | `agent:be-coder:subagent:498d33e4` | 🔄 Running |
+| Keridz ⚙️ | be-coder:g092-backup | G-092 Automated Backup System | `agent:be-coder:subagent:aee31916` | 🔄 Running |
+
+**Checkpoint Protocol (MANDATORY):**
+After each agent completes, Wobblus MUST:
+1. ✅ Read created/modified files to verify actual implementation
+2. ✅ Run `bun run build` to verify no TypeScript errors
+3. ✅ Check files exist and have substance (not just stubs)
+4. ✅ Verify Definition of Done items are actually met
+5. ✅ Only then mark issue as COMPLETE in HEARTBEAT.md
+6. ❌ NEVER trust agent self-report alone — verify independently
+
+**Next Steps (After Current Agents Complete):**
+1. **Checkpoint E-059:** Verify EmailQueue, WebhookHandler, EmailService integration
+2. **Checkpoint F-072:** Verify TemplateValidator, size validation, EmailService integration
+3. **Checkpoint G-090:** Verify HealthMonitor, MetricsCollector, AlertManager
+4. **Spawn reviewer (Nikaya)** for code review of all 3 implementations
+5. **After review passes:** Commit all changes
+6. **Continue to next batch:**
+   - E-060: Rate Limiting (depends on E-059 queue)
+   - E-069: GDPR/CAN-SPAM Compliance
+   - F-071: Template Versioning
+   - G-092: Automated Backup System
+   - H-102: Security Policy Definition
+7. **Batch 4 Foundation:** #112-117 (API Gateway, WebSocket, Tracing, Feature Flags)
+
+**Team Coordination:**
+- Email/Template features → be-coder (Keridz)
+- Infrastructure/Monitoring → devops
+- Security/Access Control → reviewer (Nikaya) + devops
+- Batch 4 foundation → architect (Hugrukal) + be-coder + devops
+- After each completion → Verify independently → Acknowledge + provide next steps
+- Heartbeat updates → Every 30 min during active phases
 - ✅ Documentation: `FINAL-COMPLETION-STATUS.md`
 
 **Categories:**
@@ -311,10 +433,42 @@ window.location.href = '/admin/';  // ← WRONG! Should be '/' or '/kill-switch'
 | H (Security) | 99-111 | ✅ 100% | 3 files |
 
 **Next:**
-1. Verify repo access
-2. Run `./deploy-all-111-issues.sh`
-3. Verify issues created: `gh issue list --limit 111`
-4. Assign to team members based on category
+1. ✅ Fix login redirect (Stream 2)
+2. 🔍 Check for critical issues left behind
+3. 📋 Continue with remaining P1-P3 items from other categories
+
+---
+
+## 📋 Development Plan — Sequential Execution
+
+**Priority Order:**
+
+### 1. Kill Switch Admin UI — Login Redirect Fix (NOW)
+- **Issue:** Redirect loop (`/admin/` → `/` → `/login`)
+- **Fix:** Change `LoginPage.tsx` line 20: `/admin/` → `/kill-switch`
+- **ETA:** 5 min
+- **Agent:** Direct edit (no spawn needed)
+
+### 2. Critical Issue Scan (AFTER FIX)
+- Check GitHub issues for P0-critical items
+- Verify no blockers in active streams
+- **ETA:** 10 min
+
+### 3. Remaining P1-P3 Items by Category
+- **Category A:** Session coordination edge cases
+- **Category B:** Data integrity (already done - B-001)
+- **Category C:** Municipal language (already done - C-001)
+- **Category D:** Discovery (already done - D-001)
+- **Category E:** Email delivery — check for P1-P3 items
+- **Category F:** Templates — check for P1-P3 items
+- **Category G:** Infrastructure — check for P1-P3 items
+- **Category H:** Security — check for P1-P3 items
+
+**Team Coordination Protocol:**
+- Quick fixes → Direct edit (no spawn)
+- Complex fixes → Spawn appropriate agent (be-coder, fe-coder, reviewer)
+- After each completion → Acknowledge + provide next steps
+- Heartbeat updates → Every 30 min during active phases
 
 ---
 

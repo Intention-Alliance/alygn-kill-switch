@@ -104243,6 +104243,397 @@ var init_RegexMXValidator = __esm(() => {
   };
 });
 
+// src/lib/email/TemplateEngine.ts
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, (ch) => ESCAPE_MAP[ch] ?? ch);
+}
+function resolvePath(data, path5, loopStack = []) {
+  if (path5.startsWith("@")) {
+    for (let i = loopStack.length - 1;i >= 0; i--) {
+      const ctx = loopStack[i];
+      if (path5 in ctx)
+        return ctx[path5];
+    }
+    return;
+  }
+  const segments = path5.split(".");
+  let current = data;
+  for (const seg of segments) {
+    if (DANGEROUS_KEYS.has(seg))
+      return;
+    if (current === null || current === undefined)
+      return;
+    if (typeof current === "object") {
+      if (!Object.prototype.hasOwnProperty.call(current, seg))
+        return;
+      current = current[seg];
+    } else {
+      return;
+    }
+  }
+  return current;
+}
+function coerceString(value) {
+  if (value === null || value === undefined)
+    return "";
+  if (Array.isArray(value))
+    return value.map((v) => String(v)).join(", ");
+  return String(value);
+}
+function isTruthy(value) {
+  if (value === null || value === undefined)
+    return false;
+  if (Array.isArray(value))
+    return value.length > 0;
+  if (typeof value === "string")
+    return value.length > 0;
+  if (typeof value === "number")
+    return value !== 0;
+  if (typeof value === "boolean")
+    return value;
+  return true;
+}
+function parseToken(expr) {
+  const parts = expr.split("|");
+  const path5 = parts[0].trim();
+  if (parts.length === 1)
+    return { path: path5 };
+  const modifier = parts[1].trim();
+  if (modifier === "h" || modifier === "r") {
+    return { path: path5, escapeMode: modifier };
+  }
+  return { path: path5, default: parts.slice(1).join("|").trim() };
+}
+function parseTemplate(template) {
+  const nodes = [];
+  const tokenRe = new RegExp("\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(#if\\s+[\\w.]+|#each\\s+[\\w.]+|else|/if|/each|[^}]+)\\}\\}", "g");
+  let cursor = 0;
+  let tokenMatch;
+  const stack = [];
+  let currentNodes = nodes;
+  while ((tokenMatch = tokenRe.exec(template)) !== null) {
+    if (tokenMatch.index > cursor) {
+      currentNodes.push({ type: "text", text: template.slice(cursor, tokenMatch.index) });
+    }
+    cursor = tokenMatch.index + tokenMatch[0].length;
+    const fullMatch = tokenMatch[0];
+    const inner = (tokenMatch[1] || tokenMatch[2]).trim();
+    if (fullMatch.startsWith("{{{")) {
+      currentNodes.push({ type: "variable", token: { path: inner, escapeMode: "r" } });
+      continue;
+    }
+    const ifSimpleMatch = inner.match(/^#if\s+([\w.]+)$/);
+    const ifExprMatch = inner.match(/^#if\s+(.+)$/);
+    if (ifExprMatch) {
+      const exprStr = ifExprMatch[1].trim();
+      const blockNode = {
+        type: "if",
+        conditionPath: ifSimpleMatch ? ifSimpleMatch[1] : undefined,
+        conditionExpr: ifSimpleMatch ? undefined : parseConditionExpr(exprStr),
+        body: [],
+        elseBody: []
+      };
+      if (ifSimpleMatch) {
+        blockNode.conditionExpr = { raw: exprStr, truthyPath: exprStr, leftPath: exprStr };
+      }
+      currentNodes.push(blockNode);
+      stack.push({ nodes: currentNodes, block: blockNode });
+      currentNodes = blockNode.body;
+      continue;
+    }
+    const eachMatch = inner.match(/^#each\s+([\w.]+)$/);
+    if (eachMatch) {
+      const blockNode = {
+        type: "each",
+        iteratorPath: eachMatch[1],
+        body: []
+      };
+      currentNodes.push(blockNode);
+      stack.push({ nodes: currentNodes, block: blockNode });
+      currentNodes = blockNode.body;
+      continue;
+    }
+    if (inner === "else") {
+      const top = stack[stack.length - 1];
+      if (top && top.block.type === "if") {
+        currentNodes = top.block.elseBody;
+      }
+      continue;
+    }
+    if (inner === "/if") {
+      const top = stack.pop();
+      if (top)
+        currentNodes = top.nodes;
+      continue;
+    }
+    if (inner === "/each") {
+      const top = stack.pop();
+      if (top)
+        currentNodes = top.nodes;
+      continue;
+    }
+    currentNodes.push({ type: "variable", token: parseToken(inner) });
+  }
+  if (cursor < template.length) {
+    currentNodes.push({ type: "text", text: template.slice(cursor) });
+  }
+  return nodes;
+}
+function parseConditionExpr(expr) {
+  const trimmed = expr.trim();
+  const logicalIdx = findTopLevelLogical(trimmed);
+  if (logicalIdx !== -1) {
+    const op = trimmed[logicalIdx] === "&" ? "&&" : "||";
+    const leftStr = trimmed.slice(0, logicalIdx).trim();
+    const rightStr = trimmed.slice(logicalIdx + 2).trim();
+    const leftExpr = parseConditionExpr(leftStr);
+    const rightExpr = parseConditionExpr(rightStr);
+    return {
+      raw: trimmed,
+      leftPath: leftExpr.leftPath,
+      logical: op,
+      rightExpr
+    };
+  }
+  if (trimmed.startsWith("!")) {
+    const inner = trimmed.slice(1).trim();
+    const innerExpr = parseConditionExpr(inner);
+    return { ...innerExpr, raw: trimmed, negated: true };
+  }
+  const compMatch = trimmed.match(/^([\w.]+)\s*(===|!==|>=|<=|>|<)\s*(.+)$/);
+  if (compMatch) {
+    const leftPath = compMatch[1];
+    const operator = compMatch[2];
+    const rightRaw = compMatch[3].trim();
+    let right;
+    const strMatch = rightRaw.match(/^(["'])(.*)\1$/);
+    if (strMatch) {
+      right = { type: "string", value: strMatch[2] };
+    } else if (/^-?\d+(?:\.\d+)?$/.test(rightRaw)) {
+      right = { type: "number", value: rightRaw };
+    } else {
+      right = { type: "path", value: rightRaw };
+    }
+    return { raw: trimmed, leftPath, operator, right };
+  }
+  return { raw: trimmed, truthyPath: trimmed, leftPath: trimmed };
+}
+function findTopLevelLogical(expr) {
+  let inQuote = null;
+  for (let i = 0;i < expr.length - 1; i++) {
+    const ch = expr[i];
+    if (inQuote) {
+      if (ch === inQuote)
+        inQuote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inQuote = ch;
+      continue;
+    }
+    if (ch === "&" && expr[i + 1] === "&")
+      return i;
+    if (ch === "|" && expr[i + 1] === "|")
+      return i;
+  }
+  return -1;
+}
+function evalCondition(expr, data, loopStack = []) {
+  let result;
+  if (expr.logical && expr.rightExpr) {
+    const left = evalCondition(expr, data, loopStack);
+    if (expr.logical === "&&" && !left) {
+      result = false;
+    } else if (expr.logical === "||" && left) {
+      result = true;
+    } else {
+      result = evalCondition(expr.rightExpr, data, loopStack);
+    }
+  } else if (expr.operator && expr.right) {
+    const leftVal = resolvePath(data, expr.leftPath, loopStack);
+    const rightVal = resolveRight(expr.right, data, loopStack);
+    result = compare(leftVal, rightVal, expr.operator);
+  } else {
+    const val = resolvePath(data, expr.leftPath, loopStack);
+    result = isTruthy(val);
+  }
+  return expr.negated ? !result : result;
+}
+function resolveRight(right, data, loopStack) {
+  switch (right.type) {
+    case "path":
+      return resolvePath(data, right.value, loopStack);
+    case "string":
+      return right.value;
+    case "number":
+      return Number(right.value);
+  }
+}
+function compare(left, right, op) {
+  if (op === "===") {
+    if (typeof left === "number" && typeof right === "number")
+      return left === right;
+    return coerceString(left) === coerceString(right);
+  }
+  if (op === "!==") {
+    if (typeof left === "number" && typeof right === "number")
+      return left !== right;
+    return coerceString(left) !== coerceString(right);
+  }
+  const leftNum = typeof left === "number" ? left : Number(left);
+  const rightNum = typeof right === "number" ? right : Number(right);
+  if (Number.isNaN(leftNum) || Number.isNaN(rightNum))
+    return false;
+  switch (op) {
+    case ">":
+      return leftNum > rightNum;
+    case "<":
+      return leftNum < rightNum;
+    case ">=":
+      return leftNum >= rightNum;
+    case "<=":
+      return leftNum <= rightNum;
+  }
+  return false;
+}
+function renderNodes(nodes, data, insideEach, loopStack = []) {
+  const parts = [];
+  for (const node of nodes) {
+    switch (node.type) {
+      case "text":
+        parts.push(node.text ?? "");
+        break;
+      case "variable": {
+        const spec = node.token;
+        const raw = resolvePath(data, spec.path, loopStack);
+        let str = coerceString(raw);
+        if (str === "" && spec.default !== undefined) {
+          str = spec.default;
+        }
+        if (spec.escapeMode === "h") {
+          str = escapeHtml(str);
+        } else if (spec.escapeMode === "r") {} else if (!insideEach) {
+          str = escapeHtml(str);
+        }
+        parts.push(str);
+        break;
+      }
+      case "if": {
+        const cond = node.conditionExpr ?? (node.conditionPath ? { raw: node.conditionPath, truthyPath: node.conditionPath, leftPath: node.conditionPath } : undefined);
+        if (cond) {
+          if (evalCondition(cond, data, loopStack)) {
+            parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack));
+          } else {
+            parts.push(renderNodes(node.elseBody ?? [], data, insideEach, loopStack));
+          }
+        }
+        break;
+      }
+      case "each": {
+        const iterable = resolvePath(data, node.iteratorPath, loopStack);
+        if (Array.isArray(iterable)) {
+          const len = iterable.length;
+          for (let i = 0;i < len; i++) {
+            const item = iterable[i];
+            const loopCtx = {
+              "@index": i,
+              "@first": i === 0,
+              "@last": i === len - 1,
+              "@length": len
+            };
+            const nextStack = [...loopStack, loopCtx];
+            const iterData = {
+              ...data,
+              this: item
+            };
+            if (typeof item === "object" && item !== null && !Array.isArray(item)) {
+              const safeItem = {};
+              for (const key of Object.keys(item)) {
+                if (!DANGEROUS_KEYS.has(key)) {
+                  safeItem[key] = item[key];
+                }
+              }
+              Object.assign(iterData, safeItem);
+            }
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+          }
+        } else if (typeof iterable === "object" && iterable !== null && !Array.isArray(iterable)) {
+          const keys = Object.keys(iterable);
+          const len = keys.length;
+          for (let i = 0;i < len; i++) {
+            const key = keys[i];
+            const value = iterable[key];
+            const loopCtx = {
+              "@index": i,
+              "@first": i === 0,
+              "@last": i === len - 1,
+              "@length": len,
+              "@key": key
+            };
+            const nextStack = [...loopStack, loopCtx];
+            const iterData = {
+              ...data,
+              this: value
+            };
+            if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+              const safeItem = {};
+              for (const k of Object.keys(value)) {
+                if (!DANGEROUS_KEYS.has(k)) {
+                  safeItem[k] = value[k];
+                }
+              }
+              Object.assign(iterData, safeItem);
+            }
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+          }
+        }
+        break;
+      }
+    }
+  }
+  return parts.join("");
+}
+
+class TemplateEngine {
+  render(template, data) {
+    const ast = parseTemplate(template);
+    return renderNodes(ast, data, false);
+  }
+  hasUnresolvedTokens(rendered) {
+    return /\{\{[^}]+\}\}/.test(rendered);
+  }
+  extractVariables(template) {
+    const vars = new Set;
+    const re = /\{\{(#if\s+|#each\s+)?([\w.@|]+)\}\}/g;
+    let match;
+    while ((match = re.exec(template)) !== null) {
+      if (match[1]) {
+        const path5 = match[2].trim();
+        vars.add(path5);
+      } else {
+        const expr = match[2].trim();
+        const path5 = expr.split("|")[0].trim();
+        if (path5 !== "else" && path5 !== "/if" && path5 !== "/each" && path5 !== "this" && !path5.startsWith("@")) {
+          vars.add(path5);
+        }
+      }
+    }
+    return Array.from(vars);
+  }
+}
+var ESCAPE_MAP, DANGEROUS_KEYS, templateEngine;
+var init_TemplateEngine = __esm(() => {
+  ESCAPE_MAP = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
+  DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+  templateEngine = new TemplateEngine;
+});
+
 // src/lib/email/outreach-email-template.ts
 var exports_outreach_email_template = {};
 __export(exports_outreach_email_template, {
@@ -104302,35 +104693,49 @@ Como instituci\xF3n independiente de gobernanza de IA, Alygn puede apoyar a los 
 
 Me interesa explorar c\xF3mo podemos apoyar${companyName ? ` a ${companyName}` : ""} con los desaf\xEDos de gobernanza de IA que enfrentan. \xBFPodemos coordinar una llamada para discutir esto m\xE1s a fondo?`;
   const mailtoLink = `mailto:tanialeaidm@gmail.com?subject=${encodeURIComponent(mailtoSubject)}&body=${encodeURIComponent(mailtoBody)}&Bcc=outreach@alyygn.com`;
-  const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0 ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
+  const painPointsTemplate = `{{#if painPoints}}<p style="margin: 16px 0; line-height: 1.6;">{{painPointsIntro}}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p) => `<li>${p.trim()}</li>`).join("")}
-</ul>` : "";
-  const html = `<!DOCTYPE html>
+  {{#each painPoints}}<li>{{this|r}}</li>{{/each}}
+</ul>{{/if}}`;
+  const painPointsHtml = templateEngine.render(painPointsTemplate, {
+    painPoints: Array.isArray(painPoints) ? painPoints.slice(0, 3).map((p) => p.trim()) : [],
+    painPointsIntro: copy.painPointsIntro
+  });
+  const htmlTemplate = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject || "ALYGN - AI Governance"}</title>
+  <title>{{subject|ALYGN - AI Governance}}</title>
   ${emailStyle}
 </head>
 <body>
   <div class="container">
     ${buildHeader(logoImg)}
     <div class="content">
-      <p class="greeting">Estimado/a ${recipientName}${companyName ? `, edil de ${companyName}` : ""},</p>
+      <p class="greeting">Estimado/a {{recipientName|there}}{{#if companyName}}, edil de {{companyName}}{{/if}},</p>
       <div class="body-content">
-        <p>${copy.intro}</p>
+        <p>{{intro|r}}</p>
         ${painPointsHtml}
       </div>
-      <p class="closing">${copy.closing}</p>
-      <a href="${mailtoLink}" class="cta-button">${copy.cta}</a>
-      <p class="ps">${copy.customPS}</p>
+      <p class="closing">{{closing|r}}</p>
+      <a href="{{mailtoLink|r}}" class="cta-button">{{cta|r}}</a>
+      {{#if customPS}}<p class="ps">{{customPS|r}}</p>{{/if}}
     </div>
     ${buildFooter(variant)}
   </div>
 </body>
 </html>`;
+  const html = templateEngine.render(htmlTemplate, {
+    subject: subject || "",
+    recipientName,
+    companyName,
+    intro: copy.intro,
+    closing: copy.closing,
+    cta: copy.cta,
+    customPS: copy.customPS || "",
+    mailtoLink
+  });
   const text = generatePlainText(html);
   return {
     subject: subject || "ALYGN - AI Governance",
@@ -104380,37 +104785,52 @@ Alygn is an independent institution focused on making accountability, emergency 
 
 I am interested in exploring how we can support ${companyName || "your organization"} with the AI governance challenges we both are facing. Can we coordinate a call to discuss this further?`;
   const mailtoLink = `mailto:tanialeaidm@gmail.com?subject=${encodeURIComponent(mailtoSubject)}&body=${encodeURIComponent(mailtoBody)}&Bcc=outreach@alyygn.com`;
-  const hookHtml = customHook ? `<p style="margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;">${customHook}</p>` : "";
-  const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0 ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
+  const hookTemplate = `{{#if customHook}}<p style="margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;">{{customHook|r}}</p>{{/if}}`;
+  const hookHtml = templateEngine.render(hookTemplate, { customHook: customHook || "" });
+  const painPointsTemplate = `{{#if painPoints}}<p style="margin: 16px 0; line-height: 1.6;">{{painPointsIntro|r}}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p) => `<li>${p.trim()}</li>`).join("")}
-</ul>` : "";
-  const html = `<!DOCTYPE html>
+  {{#each painPoints}}<li>{{this|r}}</li>{{/each}}
+</ul>{{/if}}`;
+  const painPointsHtml = templateEngine.render(painPointsTemplate, {
+    painPoints: Array.isArray(painPoints) ? painPoints.slice(0, 3).map((p) => p.trim()) : [],
+    painPointsIntro: copy.painPointsIntro
+  });
+  const htmlTemplate = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject || "ALYGN - AI Governance"}</title>
+  <title>{{subject|ALYGN - AI Governance}}</title>
   ${emailStyle}
 </head>
 <body>
   <div class="container">
     ${buildHeader(logoImg)}
     <div class="content">
-      <p class="greeting">Hi ${firstName}${companyName ? ` at ${companyName}` : ""},</p>
+      <p class="greeting">Hi {{firstName|there}}{{#if companyName}} at {{companyName}}{{/if}},</p>
       <div class="body-content">
-        <p>${copy.intro}</p>
+        <p>{{intro|r}}</p>
         ${hookHtml}
         ${painPointsHtml}
       </div>
-      <p class="closing">${copy.closing}</p>
-      <a href="${mailtoLink}" class="cta-button">${copy.cta}</a>
-      <p class="ps">${copy.customPS}</p>
+      <p class="closing">{{closing|r}}</p>
+      <a href="{{mailtoLink|r}}" class="cta-button">{{cta|r}}</a>
+      {{#if customPS}}<p class="ps">{{customPS|r}}</p>{{/if}}
     </div>
     ${buildFooter(variant)}
   </div>
 </body>
 </html>`;
+  const html = templateEngine.render(htmlTemplate, {
+    subject: subject || "",
+    firstName,
+    companyName,
+    intro: copy.intro,
+    closing: copy.closing,
+    cta: copy.cta,
+    customPS: copy.customPS || "",
+    mailtoLink
+  });
   const text = generatePlainText(html);
   return {
     subject: subject || "ALYGN - AI Governance",
@@ -104556,6 +104976,7 @@ var hostedLogoUrl = "https://res.cloudinary.com/andler-develops/image/upload/v17
   }
 </style>`, outreach_email_template_default;
 var init_outreach_email_template = __esm(() => {
+  init_TemplateEngine();
   outreach_email_template_default = { generateEmail, generateEmailHTML };
 });
 
@@ -116383,6 +116804,318 @@ var init_EmailProviderFactory = __esm(() => {
   init_SMTPProvider();
 });
 
+// src/lib/email/ProviderProfiles.ts
+function getProviderProfile(id) {
+  return BUILTIN_PROFILES[id] ?? SMTP_PROFILE;
+}
+var SENDGRID_PROFILE, SMTP_PROFILE, SMARTLEAD_PROFILE, BUILTIN_PROFILES;
+var init_ProviderProfiles = __esm(() => {
+  SENDGRID_PROFILE = {
+    id: "sendgrid",
+    name: "SendGrid",
+    emailsPerHour: 500,
+    emailsPerDay: 1000,
+    burstSize: 10,
+    refillIntervalMs: 60000,
+    refillAmount: 50,
+    perDomain: {
+      perMinute: 5,
+      perHour: 30
+    },
+    warmupSchedule: {
+      1: 20,
+      2: 40,
+      3: 60,
+      4: 80,
+      5: 100,
+      6: 150,
+      7: 200,
+      8: 250,
+      9: 300,
+      10: 350,
+      14: 500,
+      21: 750,
+      30: 1000
+    }
+  };
+  SMTP_PROFILE = {
+    id: "smtp",
+    name: "SMTP (Generic)",
+    emailsPerHour: 20,
+    emailsPerDay: 500,
+    burstSize: 5,
+    refillIntervalMs: 60000,
+    refillAmount: 20,
+    perDomain: {
+      perMinute: 3,
+      perHour: 15
+    },
+    warmupSchedule: {
+      1: 10,
+      3: 30,
+      7: 100,
+      14: 300,
+      30: 500
+    }
+  };
+  SMARTLEAD_PROFILE = {
+    id: "smartlead",
+    name: "Smartlead",
+    emailsPerHour: 200,
+    emailsPerDay: 500,
+    burstSize: 8,
+    refillIntervalMs: 60000,
+    refillAmount: 30,
+    perDomain: {
+      perMinute: 4,
+      perHour: 25
+    },
+    warmupSchedule: {
+      1: 15,
+      3: 50,
+      7: 150,
+      14: 300,
+      30: 500
+    }
+  };
+  BUILTIN_PROFILES = {
+    sendgrid: SENDGRID_PROFILE,
+    smtp: SMTP_PROFILE,
+    smartlead: SMARTLEAD_PROFILE
+  };
+});
+
+// src/lib/email/RateLimiter.ts
+class RateLimiter {
+  profile;
+  warmupStart;
+  bounceThrottleThreshold;
+  throttleMultiplier;
+  throttleCooldownMs;
+  tokens;
+  lastRefill;
+  domainBuckets = new Map;
+  maxDomains = 1e4;
+  bounceWindow = [];
+  bounceWindowMaxEntries = 1000;
+  bounceWindowMaxAgeMs = 86400000;
+  dailyCount = 0;
+  dailyResetAt;
+  throttled = false;
+  lastBounceAt = 0;
+  constructor(config = {}) {
+    if (typeof config.provider === "object") {
+      this.profile = config.provider;
+    } else {
+      this.profile = getProviderProfile(config.provider ?? "smtp");
+    }
+    this.warmupStart = config.warmupStartDate ? new Date(config.warmupStartDate).getTime() : Date.now();
+    this.bounceThrottleThreshold = config.bounceThrottleThreshold ?? 0.05;
+    this.throttleMultiplier = config.throttleMultiplier ?? 0.5;
+    this.throttleCooldownMs = config.throttleCooldownMs ?? 3600000;
+    this.tokens = this.profile.burstSize;
+    this.lastRefill = Date.now();
+    this.dailyResetAt = this.startOfNextDay();
+  }
+  canSend(recipientEmail) {
+    this.refillTokens();
+    this.resetDailyIfNeeded();
+    this.pruneDomainBuckets();
+    const now = Date.now();
+    if (this.throttled) {
+      const elapsed = now - this.lastBounceAt;
+      if (elapsed < this.throttleCooldownMs) {
+        const remaining = this.throttleCooldownMs - elapsed;
+        return { allowed: false, waitMs: remaining, reason: "Auto-throttled due to high bounce rate" };
+      }
+      this.throttled = false;
+    }
+    const dailyLimit = this.getEffectiveDailyLimit();
+    if (this.dailyCount >= dailyLimit) {
+      const waitMs = this.dailyResetAt - now;
+      return { allowed: false, waitMs: Math.max(waitMs, 1000), reason: `Daily limit reached (${dailyLimit})` };
+    }
+    const effectiveBurst = this.getEffectiveBurst();
+    if (this.tokens < 1) {
+      const waitMs = this.profile.refillIntervalMs;
+      return { allowed: false, waitMs, reason: "Rate limit: no tokens available" };
+    }
+    const domain = this.extractDomain(recipientEmail);
+    const domainResult = this.checkDomainLimit(domain, now);
+    if (!domainResult.allowed) {
+      return domainResult;
+    }
+    return { allowed: true, waitMs: 0 };
+  }
+  recordSend(recipientEmail) {
+    this.refillTokens();
+    if (this.tokens > 0) {
+      this.tokens--;
+    }
+    this.dailyCount++;
+    const domain = this.extractDomain(recipientEmail);
+    const bucket = this.getDomainBucket(domain);
+    const now = Date.now();
+    bucket.timestamps.push(now);
+    bucket.hourlyTimestamps.push(now);
+    bucket.lastActivityAt = now;
+    this.recordBounceWindowSent();
+  }
+  recordBounce() {
+    this.pruneBounceWindow();
+    this.bounceWindow.push({ timestamp: Date.now(), type: "bounce" });
+    this.lastBounceAt = Date.now();
+    const { sent, bounced } = this.getBounceWindowCounts();
+    if (sent > 0 && bounced / sent >= this.bounceThrottleThreshold) {
+      this.throttled = true;
+    }
+  }
+  recordBounceWindowSent() {
+    this.pruneBounceWindow();
+    this.bounceWindow.push({ timestamp: Date.now(), type: "sent" });
+  }
+  setThrottled(throttled) {
+    this.throttled = throttled;
+    if (throttled)
+      this.lastBounceAt = Date.now();
+  }
+  getStatus() {
+    this.refillTokens();
+    return {
+      tokens: this.tokens,
+      dailyCount: this.dailyCount,
+      dailyLimit: this.getEffectiveDailyLimit(),
+      warmupDay: this.getWarmupDay(),
+      throttled: this.throttled,
+      domainCount: this.domainBuckets.size
+    };
+  }
+  refillTokens() {
+    const now = Date.now();
+    const elapsed = now - this.lastRefill;
+    const ticks = Math.floor(elapsed / this.profile.refillIntervalMs);
+    if (ticks > 0) {
+      const effectiveBurst = this.getEffectiveBurst();
+      const added = ticks * this.getEffectiveRefillAmount();
+      this.tokens = Math.min(this.tokens + added, effectiveBurst);
+      this.lastRefill += ticks * this.profile.refillIntervalMs;
+    }
+  }
+  resetDailyIfNeeded() {
+    if (Date.now() >= this.dailyResetAt) {
+      this.dailyCount = 0;
+      this.dailyResetAt = this.startOfNextDay();
+    }
+  }
+  getEffectiveDailyLimit() {
+    let limit = this.profile.emailsPerDay;
+    const warmupDay = this.getWarmupDay();
+    const schedule = this.profile.warmupSchedule;
+    const applicableDays = Object.keys(schedule).map(Number).filter((d) => d <= warmupDay).sort((a, b) => b - a);
+    if (applicableDays.length > 0) {
+      limit = schedule[applicableDays[0]];
+    } else if (warmupDay < 1) {
+      const day1 = Object.keys(schedule).map(Number).sort((a, b) => a - b)[0];
+      if (day1 != null)
+        limit = schedule[day1];
+    }
+    if (this.throttled) {
+      limit = Math.floor(limit * this.throttleMultiplier);
+    }
+    return limit;
+  }
+  getEffectiveBurst() {
+    if (this.throttled) {
+      return Math.max(1, Math.floor(this.profile.burstSize * this.throttleMultiplier));
+    }
+    return this.profile.burstSize;
+  }
+  getEffectiveRefillAmount() {
+    if (this.throttled) {
+      return Math.max(1, Math.floor(this.profile.refillAmount * this.throttleMultiplier));
+    }
+    return this.profile.refillAmount;
+  }
+  getWarmupDay() {
+    const daysSinceStart = (Date.now() - this.warmupStart) / (24 * 60 * 60 * 1000);
+    return Math.floor(daysSinceStart) + 1;
+  }
+  checkDomainLimit(domain, now) {
+    const bucket = this.getDomainBucket(domain);
+    const oneMinuteAgo = now - 60000;
+    const oneHourAgo = now - 3600000;
+    bucket.timestamps = bucket.timestamps.filter((t) => t > oneMinuteAgo);
+    bucket.hourlyTimestamps = bucket.hourlyTimestamps.filter((t) => t > oneHourAgo);
+    bucket.lastActivityAt = now;
+    if (bucket.timestamps.length >= this.profile.perDomain.perMinute) {
+      const oldest = bucket.timestamps[0];
+      const waitMs = oldest + 60000 - now;
+      return { allowed: false, waitMs: Math.max(waitMs, 1000), reason: `Per-domain minute limit reached for ${domain}` };
+    }
+    if (bucket.hourlyTimestamps.length >= this.profile.perDomain.perHour) {
+      const oldest = bucket.hourlyTimestamps[0];
+      const waitMs = oldest + 3600000 - now;
+      return { allowed: false, waitMs: Math.max(waitMs, 1000), reason: `Per-domain hour limit reached for ${domain}` };
+    }
+    return { allowed: true, waitMs: 0 };
+  }
+  getDomainBucket(domain) {
+    let bucket = this.domainBuckets.get(domain);
+    if (!bucket) {
+      bucket = { timestamps: [], hourlyTimestamps: [], lastActivityAt: Date.now() };
+      this.domainBuckets.set(domain, bucket);
+    }
+    return bucket;
+  }
+  pruneDomainBuckets() {
+    const now = Date.now();
+    for (const [domain, bucket] of this.domainBuckets) {
+      if (bucket.timestamps.length === 0 && bucket.hourlyTimestamps.length === 0) {
+        this.domainBuckets.delete(domain);
+      }
+    }
+    if (this.domainBuckets.size > this.maxDomains) {
+      const entries = [...this.domainBuckets.entries()].sort((a, b) => a[1].lastActivityAt - b[1].lastActivityAt);
+      const excess = this.domainBuckets.size - this.maxDomains;
+      for (let i = 0;i < excess; i++) {
+        this.domainBuckets.delete(entries[i][0]);
+      }
+    }
+  }
+  pruneBounceWindow() {
+    const cutoff = Date.now() - this.bounceWindowMaxAgeMs;
+    if (this.bounceWindow.length > this.bounceWindowMaxEntries) {
+      this.bounceWindow = this.bounceWindow.slice(-this.bounceWindowMaxEntries);
+    }
+    this.bounceWindow = this.bounceWindow.filter((e) => e.timestamp > cutoff);
+  }
+  getBounceWindowCounts() {
+    let sent = 0;
+    let bounced = 0;
+    for (const entry of this.bounceWindow) {
+      if (entry.type === "sent")
+        sent++;
+      else
+        bounced++;
+    }
+    return { sent, bounced };
+  }
+  extractDomain(email) {
+    const atIdx = email.lastIndexOf("@");
+    if (atIdx === -1)
+      return email.toLowerCase();
+    return email.slice(atIdx + 1).toLowerCase();
+  }
+  startOfNextDay() {
+    const d = new Date;
+    d.setUTCHours(24, 0, 0, 0);
+    return d.getTime();
+  }
+}
+var init_RateLimiter = __esm(() => {
+  init_ProviderProfiles();
+});
+
 // src/lib/email/EmailQueue.ts
 import fs7 from "fs";
 import path7 from "path";
@@ -116401,6 +117134,7 @@ class EmailQueue {
   backoffMs;
   persistenceDir;
   autoPersist;
+  rateLimiter = null;
   sendTimestamps = [];
   activeCount = 0;
   drainResolves = [];
@@ -116412,6 +117146,9 @@ class EmailQueue {
     this.backoffMs = config.backoffMs ?? [5000, 15000, 45000];
     this.persistenceDir = config.persistenceDir ?? path7.resolve(__dirname, "../../../data/email-queue");
     this.autoPersist = config.autoPersist ?? true;
+    if (config.rateLimiter) {
+      this.rateLimiter = new RateLimiter(config.rateLimiter);
+    }
     this.loadFromDisk();
   }
   setSendFn(fn) {
@@ -116514,8 +117251,21 @@ class EmailQueue {
     const candidates = this.queue.filter((e) => e.status === "pending").filter((e) => !e.nextRetryAt || new Date(e.nextRetryAt).getTime() <= now).sort(prioritySort);
     if (candidates.length === 0)
       return null;
-    if (!this.canSendNow())
-      return null;
+    if (this.rateLimiter) {
+      const check = this.rateLimiter.canSend(candidates[0].payload.to);
+      if (!check.allowed) {
+        if (check.waitMs > 0) {
+          setTimeout(() => {
+            this.ticking = false;
+            this.tick();
+          }, Math.min(check.waitMs, 60000));
+        }
+        return null;
+      }
+    } else {
+      if (!this.canSendNow())
+        return null;
+    }
     const email = candidates[0];
     email.status = "processing";
     return email;
@@ -116523,6 +117273,12 @@ class EmailQueue {
   hasMoreWork() {
     const now = Date.now();
     return this.queue.some((e) => e.status === "pending" && (!e.nextRetryAt || new Date(e.nextRetryAt).getTime() <= now));
+  }
+  getRateLimiter() {
+    return this.rateLimiter;
+  }
+  setRateLimiter(rateLimiter) {
+    this.rateLimiter = rateLimiter;
   }
   canSendNow() {
     const oneMinuteAgo = Date.now() - 60000;
@@ -116538,10 +117294,32 @@ class EmailQueue {
         await this.persist();
       return;
     }
-    while (!this.canSendNow()) {
-      await this.sleep(1000);
+    if (this.rateLimiter) {
+      const check = this.rateLimiter.canSend(email.payload.to);
+      if (!check.allowed && check.waitMs > 0) {
+        await this.sleep(Math.min(check.waitMs, 60000));
+      }
+      let iterations = 0;
+      const MAX_WAIT_ITERATIONS = 60;
+      while (!this.rateLimiter.canSend(email.payload.to).allowed) {
+        iterations++;
+        if (iterations >= MAX_WAIT_ITERATIONS) {
+          email.status = "failed";
+          email.error = "rate_limit_exceeded";
+          this.moveToDeadLetter(email, "Rate limit wait exceeded: unable to send after 60s");
+          if (this.autoPersist)
+            await this.persist();
+          return;
+        }
+        await this.sleep(1000);
+      }
+      this.rateLimiter.recordSend(email.payload.to);
+    } else {
+      while (!this.canSendNow()) {
+        await this.sleep(1000);
+      }
+      this.sendTimestamps.push(Date.now());
     }
-    this.sendTimestamps.push(Date.now());
     email.attempts++;
     email.lastAttemptAt = new Date().toISOString();
     try {
@@ -116621,12 +117399,204 @@ class EmailQueue {
 }
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib/email", PRIORITY_ORDER;
 var init_EmailQueue = __esm(() => {
+  init_RateLimiter();
   PRIORITY_ORDER = {
     high: 0,
     medium: 1,
     low: 2
   };
 });
+
+// src/lib/email/validators/ProviderSizeLimits.ts
+function getLimits(providerName) {
+  const key = providerName.toLowerCase();
+  const limits = registry.get(key);
+  if (limits)
+    return { ...limits };
+  return { ...PROVIDER_LIMITS.smtp };
+}
+var PROVIDER_LIMITS, registry;
+var init_ProviderSizeLimits = __esm(() => {
+  PROVIDER_LIMITS = {
+    sendgrid: {
+      maxHtmlBytes: 10 * 1024 * 1024,
+      maxSubjectChars: 78,
+      maxTextBytes: 10 * 1024 * 1024
+    },
+    gmail: {
+      maxHtmlBytes: 102 * 1024,
+      maxSubjectChars: 78,
+      maxTextBytes: 102 * 1024
+    },
+    outlook: {
+      maxHtmlBytes: 3500,
+      maxSubjectChars: 78,
+      maxTextBytes: 1500
+    },
+    smtp: {
+      maxHtmlBytes: 1024 * 1024,
+      maxSubjectChars: 78,
+      maxTextBytes: 1024 * 1024
+    }
+  };
+  registry = new Map(Object.entries(PROVIDER_LIMITS).map(([k, v]) => [k, { ...v }]));
+});
+
+// src/lib/email/validators/utils.ts
+function byteLength(str) {
+  if (/^[\x00-\x7F]*$/.test(str))
+    return str.length;
+  return new TextEncoder().encode(str).length;
+}
+
+// src/lib/email/validators/TemplateOptimizer.ts
+function stripComments(html) {
+  const stripped = html.replace(/<!--[\s\S]*?-->/g, "");
+  return { result: stripped, changed: stripped !== html };
+}
+function collapseWhitespace(html) {
+  const preBlocks = [];
+  let temp = html.replace(/<pre[\s\S]*?<\/pre>/gi, (m) => {
+    preBlocks.push(m);
+    return `__PRE_${preBlocks.length - 1}__`;
+  });
+  let changed = false;
+  const result = temp.replace(/(^|>)(\s+)([^<])/g, (_match, before, ws, after) => {
+    if (ws.length > 1) {
+      changed = true;
+      return `${before} ${after}`;
+    }
+    return _match;
+  });
+  let restored = result;
+  for (let i = 0;i < preBlocks.length; i++) {
+    restored = restored.replace(`__PRE_${i}__`, preBlocks[i]);
+  }
+  return { result: restored, changed };
+}
+function cleanInlineStyles(html) {
+  let cleaned = html.replace(/\s+style\s*=\s*["']\s*["']/gi, "");
+  const changed = cleaned !== html;
+  return { result: cleaned, changed };
+}
+function minifyHtml(html) {
+  const changes = [];
+  let current = html;
+  const commentResult = stripComments(current);
+  if (commentResult.changed) {
+    changes.push("Removed HTML comments");
+    current = commentResult.result;
+  }
+  const wsResult = collapseWhitespace(current);
+  if (wsResult.changed) {
+    changes.push("Collapsed extra whitespace");
+    current = wsResult.result;
+  }
+  const styleResult = cleanInlineStyles(current);
+  if (styleResult.changed) {
+    changes.push("Cleaned empty inline styles");
+    current = styleResult.result;
+  }
+  return { result: current, changes };
+}
+function truncateText(text, maxBytes) {
+  const currentBytes = byteLength(text);
+  if (currentBytes <= maxBytes)
+    return { result: text, changed: false };
+  let lo = 0;
+  let hi = text.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi + 1) / 2);
+    if (byteLength(text.slice(0, mid)) <= maxBytes) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  let cut = lo;
+  const lastSpace = text.lastIndexOf(" ", cut);
+  if (lastSpace > cut * 0.5)
+    cut = lastSpace;
+  const truncated = text.slice(0, cut).trimEnd() + "\u2026";
+  return { result: truncated, changed: true };
+}
+function shortenSubject(subject, maxChars) {
+  if (subject.length <= maxChars)
+    return { result: subject, changed: false };
+  let cut = subject.lastIndexOf(" ", maxChars - 1);
+  if (cut <= 0)
+    cut = maxChars - 1;
+  const shortened = subject.slice(0, cut).trimEnd() + "\u2026";
+  return { result: shortened, changed: true };
+}
+function optimize(input, limits) {
+  const changes = [];
+  const optimized = {
+    subject: input.subject,
+    html: input.html,
+    text: input.text,
+    language: input.language
+  };
+  if (byteLength(optimized.html) > limits.maxHtmlBytes) {
+    const { result, changes: htmlChanges } = minifyHtml(optimized.html);
+    optimized.html = result;
+    changes.push(...htmlChanges);
+    if (byteLength(optimized.html) > limits.maxHtmlBytes) {
+      const truncated = truncateHtmlBody(optimized.html, limits.maxHtmlBytes);
+      optimized.html = truncated.result;
+      if (truncated.changed)
+        changes.push("Hard-truncated HTML body to fit byte limit");
+    }
+  }
+  if (optimized.text && byteLength(optimized.text) > limits.maxTextBytes) {
+    const { result, changed } = truncateText(optimized.text, limits.maxTextBytes);
+    optimized.text = result;
+    if (changed)
+      changes.push(`Truncated text body to ${limits.maxTextBytes} bytes`);
+  }
+  if (optimized.subject.length > limits.maxSubjectChars) {
+    const { result, changed } = shortenSubject(optimized.subject, limits.maxSubjectChars);
+    optimized.subject = result;
+    if (changed)
+      changes.push(`Shortened subject to ${limits.maxSubjectChars} chars`);
+  }
+  return { optimized, changes };
+}
+function truncateHtmlBody(html, maxBytes) {
+  if (byteLength(html) <= maxBytes)
+    return { result: html, changed: false };
+  let lo = 0;
+  let hi = html.length;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi + 1) / 2);
+    if (byteLength(html.slice(0, mid)) <= maxBytes) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  let cut = lo;
+  const tagSearch = html.lastIndexOf("<", cut);
+  if (tagSearch > cut * 0.8)
+    cut = tagSearch;
+  const truncated = html.slice(0, cut);
+  const openTags = [];
+  const tagRe = /<\/?([a-zA-Z][a-zA-Z0-9]*)[^>]*>/g;
+  let m;
+  while ((m = tagRe.exec(truncated)) !== null) {
+    if (m[0].startsWith("</")) {
+      const top = openTags[openTags.length - 1];
+      if (top === m[1])
+        openTags.pop();
+    } else if (!m[0].endsWith("/>")) {
+      openTags.push(m[1]);
+    }
+  }
+  const closers = openTags.reverse().map((t) => `</${t}>`).join("");
+  const result = truncated + closers;
+  return { result, changed: true };
+}
+var init_TemplateOptimizer = () => {};
 
 // src/lib/email/validators/TemplateValidator.ts
 function validateHtmlStructure(html) {
@@ -116781,11 +117751,6 @@ function validateSizeConstraints(input, constraints) {
   }
   return issues;
 }
-function byteLength(str) {
-  if (/^[\x00-\x7F]*$/.test(str))
-    return str.length;
-  return new TextEncoder().encode(str).length;
-}
 
 class TemplateValidator {
   constraints;
@@ -116814,15 +117779,293 @@ class TemplateValidator {
   getConstraints() {
     return { ...this.constraints };
   }
+  validateAndOptimize(input, providerName) {
+    const limits = providerName ? getLimits(providerName) : this.constraints;
+    const providerValidator = new TemplateValidator(limits);
+    const firstPass = providerValidator.validate(input);
+    const sizeErrors = firstPass.errors.filter((e) => e.rule === "size-constraints");
+    if (sizeErrors.length === 0) {
+      return { result: firstPass, optimized: input, changes: [] };
+    }
+    const { optimized, changes } = optimize(input, limits);
+    const secondPass = providerValidator.validate(optimized);
+    return { result: secondPass, optimized, changes };
+  }
 }
 var DEFAULT_SIZE_CONSTRAINTS;
 var init_TemplateValidator = __esm(() => {
   init_lang_guard();
+  init_ProviderSizeLimits();
+  init_TemplateOptimizer();
   DEFAULT_SIZE_CONSTRAINTS = {
     maxHtmlBytes: 3500,
     maxSubjectChars: 78,
     maxTextBytes: 1500
   };
+});
+
+// src/lib/email/ComplianceValidator.ts
+function checkConsent(input) {
+  if (input.hasConsent) {
+    return { regulation: "GDPR", rule: "consent", message: "Recipient has given consent", result: "pass" };
+  }
+  return { regulation: "GDPR", rule: "consent", message: "No explicit consent recorded for recipient; cold outreach may require legitimate interest basis", result: "warning" };
+}
+function checkErasureSupport(input) {
+  if (input.supportsErasure) {
+    return { regulation: "GDPR", rule: "right-to-erasure", message: "System supports right-to-erasure requests", result: "pass" };
+  }
+  return { regulation: "GDPR", rule: "right-to-erasure", message: "No right-to-erasure mechanism detected; GDPR Art. 17 requires data deletion on request", result: "fail" };
+}
+function checkDataMinimization(input) {
+  const count = input.personalDataFieldsCount ?? 0;
+  if (count === 0) {
+    return { regulation: "GDPR", rule: "data-minimization", message: "No personal data fields declared; cannot verify minimization", result: "warning" };
+  }
+  if (count <= 5) {
+    return { regulation: "GDPR", rule: "data-minimization", message: `Personal data fields: ${count} \u2014 within reasonable bounds`, result: "pass" };
+  }
+  return { regulation: "GDPR", rule: "data-minimization", message: `Personal data fields: ${count} \u2014 consider reducing to what is strictly necessary (GDPR Art. 5(1)(c))`, result: "warning" };
+}
+function checkUnsubscribeLinkGDPR(input) {
+  const html = input.html ?? "";
+  const text = input.text ?? "";
+  const hasUnsubscribe = /unsubscribe|opt.out|desuscribir/i.test(html) || /unsubscribe|opt.out|desuscribir/i.test(text);
+  if (hasUnsubscribe) {
+    return { regulation: "GDPR", rule: "unsubscribe-link", message: "Unsubscribe/opt-out link present", result: "pass" };
+  }
+  return { regulation: "GDPR", rule: "unsubscribe-link", message: "No unsubscribe or opt-out link found in email body", result: "fail" };
+}
+function checkSenderIdentityGDPR(input) {
+  const from = input.from ?? "";
+  if (!from || from.length === 0) {
+    return { regulation: "GDPR", rule: "sender-identity", message: "No sender identity (from address) provided", result: "fail" };
+  }
+  if (/^(noreply|no-reply|donotreply|do-not-reply)@/i.test(from)) {
+    return { regulation: "GDPR", rule: "sender-identity", message: "Sender address appears to be a no-reply address; GDPR encourages identifiable senders", result: "warning" };
+  }
+  return { regulation: "GDPR", rule: "sender-identity", message: "Sender identity disclosed", result: "pass" };
+}
+function checkPhysicalAddress(input) {
+  const html = input.html ?? "";
+  const text = input.text ?? "";
+  const addressPatterns = /(\d+\s+[A-Za-z]+\s+(St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Pkwy|Parkway|Suite|Ste|Unit|#)|P\.?O\.?\s*Box|Texas|EE\.UU|Estados Unidos|United States)/i;
+  const hasAddress = addressPatterns.test(html) || addressPatterns.test(text) || !!input.physicalAddress;
+  if (hasAddress) {
+    return { regulation: "CAN-SPAM", rule: "physical-address", message: "Physical address present in email or provided", result: "pass" };
+  }
+  return { regulation: "CAN-SPAM", rule: "physical-address", message: "No physical mailing address found; CAN-SPAM \xA77703 requires a valid physical address", result: "fail" };
+}
+function checkSenderIdCANSPAM(input) {
+  const from = input.from ?? "";
+  if (!from || from.length === 0) {
+    return { regulation: "CAN-SPAM", rule: "sender-id", message: "No sender (from) address provided; CAN-SPAM requires clear sender identification", result: "fail" };
+  }
+  if (/@(gmail|yahoo|hotmail|outlook)\.com$/i.test(from)) {
+    return { regulation: "CAN-SPAM", rule: "sender-id", message: "From address uses generic consumer email; consider using a branded domain for clearer sender identification", result: "warning" };
+  }
+  return { regulation: "CAN-SPAM", rule: "sender-id", message: "Sender clearly identified", result: "pass" };
+}
+function checkTruthfulSubject(input, brandName) {
+  const subject = input.subject ?? "";
+  if (!subject || subject.trim().length === 0) {
+    return { regulation: "CAN-SPAM", rule: "truthful-subject", message: "Subject line is empty; CAN-SPAM requires non-deceptive subject lines", result: "fail" };
+  }
+  const hasReOrFwd = /^(RE:|FWD:|Fw:)/i.test(subject.trim());
+  if (hasReOrFwd) {
+    return { regulation: "CAN-SPAM", rule: "truthful-subject", message: "Subject line starts with RE:/FWD: but may not be a reply/forward; CAN-SPAM prohibits misleading subjects", result: "warning" };
+  }
+  if (brandName && !new RegExp(`\\b${brandName}\\b`, "i").test(subject)) {
+    return { regulation: "CAN-SPAM", rule: "truthful-subject", message: `Subject line does not contain brand name "${brandName}"; including it improves sender recognition`, result: "warning" };
+  }
+  const capsRatio = (subject.match(/[A-Z]/g) || []).length / subject.length;
+  if (capsRatio > 0.7 && subject.length > 10) {
+    return { regulation: "CAN-SPAM", rule: "truthful-subject", message: "Subject line appears to be mostly ALL CAPS; may be perceived as deceptive or spam-like", result: "warning" };
+  }
+  return { regulation: "CAN-SPAM", rule: "truthful-subject", message: "Subject line appears truthful", result: "pass" };
+}
+function checkUnsubscribeMechanismCANSPAM(input) {
+  const html = input.html ?? "";
+  const text = input.text ?? "";
+  const hasUnsubscribe = /unsubscribe|opt.out|desuscribir|remove/i.test(html) || /unsubscribe|opt.out|desuscribir|remove/i.test(text);
+  if (hasUnsubscribe) {
+    return { regulation: "CAN-SPAM", rule: "unsubscribe-mechanism", message: "Unsubscribe mechanism present", result: "pass" };
+  }
+  return { regulation: "CAN-SPAM", rule: "unsubscribe-mechanism", message: "No unsubscribe mechanism found; CAN-SPAM \xA77704 requires a clear opt-out method", result: "fail" };
+}
+function checkMisleadingFromAddress(input) {
+  const from = input.from ?? "";
+  if (!from || from.length === 0) {
+    return { regulation: "CAN-SPAM", rule: "misleading-from", message: "No from address to evaluate", result: "fail" };
+  }
+  const misleadingPatterns = /"(noreply|admin|support|info)"/i;
+  if (misleadingPatterns.test(from)) {
+    return { regulation: "CAN-SPAM", rule: "misleading-from", message: "From display name may appear misleading; ensure it accurately identifies the sender", result: "warning" };
+  }
+  return { regulation: "CAN-SPAM", rule: "misleading-from", message: "From address does not appear misleading", result: "pass" };
+}
+
+class ComplianceValidator {
+  brandName;
+  constructor(options) {
+    this.brandName = options?.brandName;
+  }
+  validate(input) {
+    const checks = [
+      checkConsent(input),
+      checkErasureSupport(input),
+      checkDataMinimization(input),
+      checkUnsubscribeLinkGDPR(input),
+      checkSenderIdentityGDPR(input),
+      checkPhysicalAddress(input),
+      checkSenderIdCANSPAM(input),
+      checkTruthfulSubject(input, this.brandName),
+      checkUnsubscribeMechanismCANSPAM(input),
+      checkMisleadingFromAddress(input)
+    ];
+    const failures = checks.filter((c) => c.result === "fail");
+    const warnings = checks.filter((c) => c.result === "warning");
+    const violations = [...failures, ...warnings];
+    const score = Math.max(0, 100 - failures.length * 15 - warnings.length * 5);
+    return {
+      score,
+      isCompliant: score >= 80 && failures.length === 0,
+      violations,
+      failures,
+      warnings,
+      checks
+    };
+  }
+  isCompliant(input) {
+    return this.validate(input).isCompliant;
+  }
+}
+var init_ComplianceValidator = () => {};
+
+// src/lib/email/UnsubscribeManager.ts
+import fs8 from "fs";
+import path8 from "path";
+
+class UnsubscribeManager {
+  filePath;
+  data;
+  emailSet;
+  dirty = false;
+  constructor(filePath = UNSUBSCRIBE_FILE) {
+    this.filePath = filePath;
+    this.data = this.load();
+    this.emailSet = new Set(this.data.entries.map((e) => e.email.toLowerCase()));
+  }
+  isUnsubscribed(email) {
+    if (!email)
+      return false;
+    const normalized = email.toLowerCase().trim();
+    return this.emailSet.has(normalized);
+  }
+  async unsubscribe(email, source, reason) {
+    if (!email)
+      return;
+    const normalized = email.toLowerCase().trim();
+    if (this.isUnsubscribed(normalized))
+      return;
+    const entry = {
+      email: normalized,
+      unsubscribedAt: new Date().toISOString(),
+      source: source ?? undefined,
+      reason: reason ?? undefined
+    };
+    this.data.entries.push(entry);
+    this.emailSet.add(normalized);
+    this.data.lastUpdated = new Date().toISOString();
+    this.dirty = true;
+    await this.persist();
+  }
+  unsubscribeSync(email, source, reason) {
+    if (!email)
+      return;
+    const normalized = email.toLowerCase().trim();
+    if (this.isUnsubscribed(normalized))
+      return;
+    const entry = {
+      email: normalized,
+      unsubscribedAt: new Date().toISOString(),
+      source: source ?? undefined,
+      reason: reason ?? undefined
+    };
+    this.data.entries.push(entry);
+    this.emailSet.add(normalized);
+    this.data.lastUpdated = new Date().toISOString();
+    this.dirty = true;
+    this.persistSync();
+  }
+  async resubscribe(email) {
+    if (!email)
+      return false;
+    const normalized = email.toLowerCase().trim();
+    const index = this.data.entries.findIndex((e) => e.email.toLowerCase() === normalized);
+    if (index === -1)
+      return false;
+    this.data.entries.splice(index, 1);
+    this.emailSet.delete(normalized);
+    this.data.lastUpdated = new Date().toISOString();
+    this.dirty = true;
+    await this.persist();
+    return true;
+  }
+  getUnsubscribedEmails() {
+    return this.data.entries.map((e) => e.email);
+  }
+  getEntry(email) {
+    if (!email)
+      return;
+    const normalized = email.toLowerCase().trim();
+    return this.data.entries.find((e) => e.email.toLowerCase() === normalized);
+  }
+  getCount() {
+    return this.data.entries.length;
+  }
+  async reload() {
+    this.data = this.load();
+    this.emailSet = new Set(this.data.entries.map((e) => e.email.toLowerCase()));
+    this.dirty = false;
+  }
+  load() {
+    try {
+      if (fs8.existsSync(this.filePath)) {
+        const raw = fs8.readFileSync(this.filePath, "utf8");
+        return JSON.parse(raw);
+      }
+    } catch (err) {
+      console.error("[UnsubscribeManager] Failed to load unsubscribe list:", err.message);
+    }
+    return { entries: [], lastUpdated: null };
+  }
+  async persist() {
+    try {
+      await fs8.promises.mkdir(path8.dirname(this.filePath), { recursive: true });
+      await fs8.promises.writeFile(this.filePath, JSON.stringify(this.data, null, 2));
+      this.dirty = false;
+    } catch (err) {
+      console.error("[UnsubscribeManager] Failed to persist unsubscribe list:", err.message);
+    }
+  }
+  persistSync() {
+    try {
+      const dir = path8.dirname(this.filePath);
+      if (!fs8.existsSync(dir)) {
+        fs8.mkdirSync(dir, { recursive: true });
+      }
+      fs8.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2));
+      this.dirty = false;
+    } catch (err) {
+      console.error("[UnsubscribeManager] Failed to persist (sync) unsubscribe list:", err.message);
+    }
+  }
+}
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib/email", SKILL_DATA_DIR, UNSUBSCRIBE_FILE;
+var init_UnsubscribeManager = __esm(() => {
+  SKILL_DATA_DIR = path8.resolve(__dirname, "../../data");
+  UNSUBSCRIBE_FILE = path8.resolve(SKILL_DATA_DIR, "unsubscribe-list.json");
 });
 
 // src/lib/email/EmailService.ts
@@ -116839,10 +118082,15 @@ class EmailService {
   providerType;
   providerConfig;
   templateValidator;
-  constructor(providerType, config, sizeConstraints, queueConfig) {
+  complianceValidator;
+  unsubscribeManager;
+  auditLogger = null;
+  constructor(providerType, config, sizeConstraints, queueConfig, unsubscribeManager) {
     this.providerType = providerType;
     this.providerConfig = config;
     this.templateValidator = new TemplateValidator(sizeConstraints);
+    this.complianceValidator = new ComplianceValidator;
+    this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager;
     this.queue = new EmailQueue(queueConfig);
     this.queue.setSendFn(async (payload) => {
       await this.initialize();
@@ -117009,12 +118257,64 @@ class EmailService {
     }
     return this.sendEmail(payload);
   }
+  async sendWithCompliance(payload, options) {
+    if (this.unsubscribeManager.isUnsubscribed(payload.to)) {
+      console.warn(`[EmailService] Recipient ${payload.to} has unsubscribed \u2014 email NOT sent`);
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Recipient ${payload.to} has unsubscribed`
+      };
+    }
+    const complianceInput = {
+      to: payload.to,
+      from: payload.from,
+      subject: payload.subject,
+      html: payload.html ?? "",
+      text: payload.text,
+      hasConsent: options?.hasConsent,
+      physicalAddress: options?.physicalAddress,
+      supportsErasure: options?.supportsErasure,
+      personalDataFieldsCount: options?.personalDataFieldsCount
+    };
+    const compliance = this.complianceValidator.validate(complianceInput);
+    if (!compliance.isCompliant) {
+      const failSummary = compliance.failures.map((v) => `[${v.regulation}:${v.rule}] ${v.message}`).join("; ");
+      console.error(`[EmailService] Compliance check failed \u2014 email NOT sent: ${failSummary}`);
+      if (compliance.warnings.length > 0) {
+        const warnSummary = compliance.warnings.map((v) => `[${v.regulation}:${v.rule}] ${v.message}`).join("; ");
+        console.warn(`[EmailService] Compliance warnings: ${warnSummary}`);
+      }
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Compliance check failed (score ${compliance.score}): ${failSummary}`,
+        compliance
+      };
+    }
+    if (compliance.warnings.length > 0) {
+      const warnSummary = compliance.warnings.map((v) => `[${v.regulation}:${v.rule}] ${v.message}`).join("; ");
+      console.warn(`[EmailService] Compliance warnings: ${warnSummary}`);
+    }
+    const sendResult = await this.sendWithValidation(payload, options?.language);
+    return { ...sendResult, compliance };
+  }
+  getUnsubscribeManager() {
+    return this.unsubscribeManager;
+  }
+  getComplianceValidator() {
+    return this.complianceValidator;
+  }
 }
 var EmailService_default;
 var init_EmailService = __esm(() => {
   init_EmailProviderFactory();
   init_EmailQueue();
   init_TemplateValidator();
+  init_ComplianceValidator();
+  init_UnsubscribeManager();
   EmailService_default = EmailService;
 });
 
@@ -117024,21 +118324,21 @@ __export(exports_SentEmailTracker, {
   default: () => SentEmailTracker_default,
   SentEmailTracker: () => SentEmailTracker
 });
-import fs8 from "fs";
-import path8 from "path";
+import fs9 from "fs";
+import path9 from "path";
 
 class SentEmailTracker {
   sentEmails;
   constructor() {
-    if (!fs8.existsSync(SKILL_DATA_DIR)) {
-      fs8.mkdirSync(SKILL_DATA_DIR, { recursive: true });
+    if (!fs9.existsSync(SKILL_DATA_DIR2)) {
+      fs9.mkdirSync(SKILL_DATA_DIR2, { recursive: true });
     }
     this.sentEmails = this.loadSentLog();
   }
   loadSentLog() {
     try {
-      if (fs8.existsSync(SENT_LOG_FILE)) {
-        return JSON.parse(fs8.readFileSync(SENT_LOG_FILE, "utf8"));
+      if (fs9.existsSync(SENT_LOG_FILE)) {
+        return JSON.parse(fs9.readFileSync(SENT_LOG_FILE, "utf8"));
       }
     } catch (e) {
       const err = e;
@@ -117048,7 +118348,7 @@ class SentEmailTracker {
   }
   saveSentLog() {
     try {
-      fs8.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
+      fs9.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
     } catch (e) {
       const err = e;
       console.error("Error saving sent log:", err.message);
@@ -117178,10 +118478,10 @@ class SentEmailTracker {
     this.saveSentLog();
   }
 }
-var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib", SKILL_DATA_DIR, SENT_LOG_FILE, SentEmailTracker_default;
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib", SKILL_DATA_DIR2, SENT_LOG_FILE, SentEmailTracker_default;
 var init_SentEmailTracker = __esm(() => {
-  SKILL_DATA_DIR = path8.resolve(__dirname, "../../data");
-  SENT_LOG_FILE = path8.resolve(SKILL_DATA_DIR, "sent-emails.json");
+  SKILL_DATA_DIR2 = path9.resolve(__dirname, "../../data");
+  SENT_LOG_FILE = path9.resolve(SKILL_DATA_DIR2, "sent-emails.json");
   SentEmailTracker_default = SentEmailTracker;
 });
 
@@ -117283,8 +118583,8 @@ var init_EmailValidatorFactory = __esm(() => {
 });
 
 // src/core/Pipeline.ts
-import fs10 from "fs";
-import path10 from "path";
+import fs11 from "fs";
+import path11 from "path";
 
 // src/core/tracing-utils.ts
 var import_api2 = __toESM(require_src(), 1);
@@ -119906,8 +121206,8 @@ class VCResearchStrategy extends ResearchStrategy {
 }
 
 // src/strategies/sending/SendingStrategy.ts
-import fs9 from "fs";
-import path9 from "path";
+import fs10 from "fs";
+import path10 from "path";
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/sending";
 
 class SendingStrategy {
@@ -119946,13 +121246,13 @@ class SendingStrategy {
   }
   loadCredentials() {
     try {
-      const configPath = path9.resolve(__dirname, "../../../config/credentials.json");
-      if (fs9.existsSync(configPath)) {
-        return JSON.parse(fs9.readFileSync(configPath, "utf8"));
+      const configPath = path10.resolve(__dirname, "../../../config/credentials.json");
+      if (fs10.existsSync(configPath)) {
+        return JSON.parse(fs10.readFileSync(configPath, "utf8"));
       }
-      const legacyPath = path9.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-      if (fs9.existsSync(legacyPath)) {
-        return JSON.parse(fs9.readFileSync(legacyPath, "utf8"));
+      const legacyPath = path10.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+      if (fs10.existsSync(legacyPath)) {
+        return JSON.parse(fs10.readFileSync(legacyPath, "utf8"));
       }
     } catch (error) {
       console.error("\u26A0\uFE0F  Failed to load credentials:", error.message);
@@ -120426,29 +121726,29 @@ class SendingStrategy {
   }
   async persistRegeneratedDraft(entity) {
     try {
-      const fs10 = await import("fs");
-      const path10 = await import("path");
-      const personalizePath = path10.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-personalize" : "muni-personalize", `alygn-${entity.type}-personalized-${new Date().toISOString().split("T")[0]}.json`);
-      if (fs10.existsSync(personalizePath)) {
-        const data = JSON.parse(fs10.readFileSync(personalizePath, "utf8"));
+      const fs11 = await import("fs");
+      const path11 = await import("path");
+      const personalizePath = path11.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-personalize" : "muni-personalize", `alygn-${entity.type}-personalized-${new Date().toISOString().split("T")[0]}.json`);
+      if (fs11.existsSync(personalizePath)) {
+        const data = JSON.parse(fs11.readFileSync(personalizePath, "utf8"));
         if (data.data?.entities) {
           const entityIndex = data.data.entities.findIndex((e) => e.id === entity.id);
           if (entityIndex !== -1) {
             data.data.entities[entityIndex] = entity;
-            fs10.writeFileSync(personalizePath, JSON.stringify(data, null, 2));
+            fs11.writeFileSync(personalizePath, JSON.stringify(data, null, 2));
             console.log(`   \uD83D\uDCBE Updated personalization file: ${personalizePath}`);
           }
         }
       }
-      const statePath = path10.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-waves" : "muni-waves", "wave-state.json");
-      if (fs10.existsSync(statePath)) {
-        const state = JSON.parse(fs10.readFileSync(statePath, "utf8"));
+      const statePath = path11.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-waves" : "muni-waves", "wave-state.json");
+      if (fs11.existsSync(statePath)) {
+        const state = JSON.parse(fs11.readFileSync(statePath, "utf8"));
         if (state.data?.entities) {
           const entityIndex = state.data.entities.findIndex((e) => e.id === entity.id);
           if (entityIndex !== -1) {
             state.data.entities[entityIndex] = entity;
             state.lastUpdatedAt = new Date().toISOString();
-            fs10.writeFileSync(statePath, JSON.stringify(state, null, 2));
+            fs11.writeFileSync(statePath, JSON.stringify(state, null, 2));
             console.log(`   \uD83D\uDCBE Updated state file: ${statePath}`);
           }
         }
@@ -120570,7 +121870,7 @@ class Pipeline {
   }
   saveState(phase, data) {
     const filePath = this.getStateFilePath(phase);
-    fs10.writeFileSync(filePath, JSON.stringify({
+    fs11.writeFileSync(filePath, JSON.stringify({
       timestamp: new Date().toISOString(),
       type: this.type,
       phase,
@@ -120579,11 +121879,11 @@ class Pipeline {
     return filePath;
   }
   loadState(filePath) {
-    if (!fs10.existsSync(filePath)) {
+    if (!fs11.existsSync(filePath)) {
       return null;
     }
     try {
-      const content = fs10.readFileSync(filePath, "utf8");
+      const content = fs11.readFileSync(filePath, "utf8");
       return JSON.parse(content);
     } catch (error) {
       console.error(`Failed to load state: ${error.message}`);
@@ -120595,7 +121895,7 @@ class Pipeline {
     const tmpDir = "/tmp";
     let files = [];
     try {
-      files = fs10.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path10.join(tmpDir, f)).sort((a, b) => fs10.statSync(b).mtimeMs - fs10.statSync(a).mtimeMs);
+      files = fs11.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path11.join(tmpDir, f)).sort((a, b) => fs11.statSync(b).mtimeMs - fs11.statSync(a).mtimeMs);
     } catch {}
     if (files.length === 0) {
       return null;
@@ -120782,9 +122082,9 @@ class Pipeline {
     } catch {}
     if (entity.type === "municipal") {
       try {
-        const credentialsPath = path10.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-        if (fs10.existsSync(credentialsPath)) {
-          const credentials = JSON.parse(fs10.readFileSync(credentialsPath, "utf8"));
+        const credentialsPath = path11.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+        if (fs11.existsSync(credentialsPath)) {
+          const credentials = JSON.parse(fs11.readFileSync(credentialsPath, "utf8"));
           if (credentials?.supabase?.url && credentials?.supabase?.key) {
             const { createClient: createClient2 } = await Promise.resolve().then(() => (init_dist4(), exports_dist));
             const supabase = createClient2(credentials.supabase.url, credentials.supabase.key);
@@ -120966,8 +122266,8 @@ class Pipeline {
 }
 
 // src/core/PreflightChecker.ts
-import fs11 from "fs";
-import path11 from "path";
+import fs12 from "fs";
+import path12 from "path";
 var CHECK_DEFINITIONS = {
   send: [
     { name: "state-file-exists", description: "Verify wave-state.json exists" },
@@ -121007,18 +122307,18 @@ class PreflightChecker {
   }
   loadCredentials() {
     const credPath = this.getPaths().credentials;
-    if (!fs11.existsSync(credPath)) {
+    if (!fs12.existsSync(credPath)) {
       return null;
     }
     try {
-      return JSON.parse(fs11.readFileSync(credPath, "utf8"));
+      return JSON.parse(fs12.readFileSync(credPath, "utf8"));
     } catch {
       return null;
     }
   }
   checkStateFileExists() {
     const waveStatePath = this.getPaths().waveState;
-    const exists = fs11.existsSync(waveStatePath);
+    const exists = fs12.existsSync(waveStatePath);
     return {
       name: "state-file-exists",
       passed: exists,
@@ -121028,7 +122328,7 @@ class PreflightChecker {
   }
   checkHasApprovedDrafts() {
     const waveStatePath = this.getPaths().waveState;
-    if (!fs11.existsSync(waveStatePath)) {
+    if (!fs12.existsSync(waveStatePath)) {
       return {
         name: "has-approved-drafts",
         passed: false,
@@ -121037,7 +122337,7 @@ class PreflightChecker {
       };
     }
     try {
-      const state = JSON.parse(fs11.readFileSync(waveStatePath, "utf8"));
+      const state = JSON.parse(fs12.readFileSync(waveStatePath, "utf8"));
       const entities = state.data?.entities || [];
       const approved = entities.filter((e) => e?.outreach?.draftStatus === "Approved");
       if (approved.length > 0) {
@@ -121097,7 +122397,7 @@ class PreflightChecker {
   }
   checkNotRunning() {
     const checkpointsDir = this.getPaths().checkpoints;
-    if (!fs11.existsSync(checkpointsDir)) {
+    if (!fs12.existsSync(checkpointsDir)) {
       return {
         name: "not-running",
         passed: true,
@@ -121106,11 +122406,11 @@ class PreflightChecker {
       };
     }
     try {
-      const files = fs11.readdirSync(checkpointsDir).filter((f) => f.startsWith("send-wave-") && f.endsWith(".lock"));
+      const files = fs12.readdirSync(checkpointsDir).filter((f) => f.startsWith("send-wave-") && f.endsWith(".lock"));
       const now = Date.now();
       const staleThreshold = 60 * 60 * 1000;
       const staleLocks = files.filter((f) => {
-        const stats = fs11.statSync(path11.join(checkpointsDir, f));
+        const stats = fs12.statSync(path12.join(checkpointsDir, f));
         return now - stats.mtimeMs > staleThreshold;
       });
       if (files.length === 0) {
@@ -121122,7 +122422,7 @@ class PreflightChecker {
       }
       if (staleLocks.length > 0) {
         for (const lock of staleLocks) {
-          fs11.unlinkSync(path11.join(checkpointsDir, lock));
+          fs12.unlinkSync(path12.join(checkpointsDir, lock));
         }
         return {
           name: "not-running",
@@ -121232,7 +122532,7 @@ class PreflightChecker {
   checkSyncStatus() {
     const sentTrackerPath = this.getPaths().sentTracker;
     const reportsDir = this.getPaths().reports;
-    if (!fs11.existsSync(sentTrackerPath)) {
+    if (!fs12.existsSync(sentTrackerPath)) {
       return {
         name: "sync-status",
         passed: false,
@@ -121240,10 +122540,10 @@ class PreflightChecker {
       };
     }
     try {
-      const tracker = JSON.parse(fs11.readFileSync(sentTrackerPath, "utf8"));
+      const tracker = JSON.parse(fs12.readFileSync(sentTrackerPath, "utf8"));
       const localCount = (tracker.vcs?.length || 0) + (tracker.municipal?.length || 0);
-      const vcWave = fs11.existsSync(`${reportsDir}/vc-waves/wave-state.json`);
-      const muniWave = fs11.existsSync(`${reportsDir}/muni-waves/wave-state.json`);
+      const vcWave = fs12.existsSync(`${reportsDir}/vc-waves/wave-state.json`);
+      const muniWave = fs12.existsSync(`${reportsDir}/muni-waves/wave-state.json`);
       if (localCount === 0 && !vcWave && !muniWave) {
         return {
           name: "sync-status",
@@ -121267,7 +122567,7 @@ class PreflightChecker {
   }
   checkNoOrphans() {
     const sentTrackerPath = this.getPaths().sentTracker;
-    if (!fs11.existsSync(sentTrackerPath)) {
+    if (!fs12.existsSync(sentTrackerPath)) {
       return {
         name: "no-orphans",
         passed: true,
@@ -121275,7 +122575,7 @@ class PreflightChecker {
       };
     }
     try {
-      const tracker = JSON.parse(fs11.readFileSync(sentTrackerPath, "utf8"));
+      const tracker = JSON.parse(fs12.readFileSync(sentTrackerPath, "utf8"));
       const allRecords = [...tracker.vcs || [], ...tracker.municipal || []];
       const orphaned = [];
       for (const record of allRecords) {

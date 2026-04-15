@@ -6,11 +6,11 @@ WORKDIR /app
 RUN apk add --no-cache curl
 
 # Copy shared modules (paths relative to build context: phase0/)
-COPY redis/ ./redis/
-COPY tracing/ ./tracing/
+COPY infra/redis/ ./redis/
+COPY infra/tracing/ ./tracing/
 
 # Copy service to subdirectory (preserves ../redis/ import structure)
-COPY kill-switch/kill-switch-service.mjs ./kill-switch/kill-switch-service.mjs
+COPY apps/kill-switch-api/kill-switch-service.mjs ./kill-switch/kill-switch-service.mjs
 
 # Install dependencies
 RUN bun add @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \
