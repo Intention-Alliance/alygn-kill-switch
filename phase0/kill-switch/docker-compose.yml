@@ -1,0 +1,48 @@
+# Kill Switch API - Phase 0
+# ADR-111 BCP + ADR-117 Chaos Engineering
+#
+# Runs behind nginx on andlersrv.tail62d797.ts.net:11435 (SSL)
+# IP allowlist: 100.66.199.80, 192.168.1.11, 127.0.0.1
+
+services:
+  # Single Redis for standalone (use redis/ docker-compose for cluster)
+  redis-node-1:
+    image: redis:7.4-alpine
+    container_name: kill-switch-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - phase0-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kill-switch-api:
+    build:
+      context: ..
+      dockerfile: kill-switch/Dockerfile
+    container_name: kill-switch-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}
+      - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY}
+      - REDIS_URLS=redis://redis-node-1:6379,redis://redis-node-2:6379,redis://redis-node-3:6379
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=kill-switch-api
+    networks:
+      - phase0-net
+    depends_on:
+      - redis-node-1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/v1/kill-switch/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+networks:
+  phase0-net:

@@ -8,12 +8,13 @@ If `BOOTSTRAP.md` exists, that's your birth certificate. Follow it, figure out w
 
 ## Every Session
 
-Before doing anything else:
+Before doing anything else, sequentially:
 
-1. Read `SOUL.md` — this is who you are
-2. Read `USER.md` — this is who you're helping
-3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
-4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+1. Read `SOUL.md` — this is who you are.
+2. Read `IDENTITY.md` — this is who you identify with.
+3. Read `USER.md` — this is who you're helping.
+4. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context.
+5. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`.
 
 Don't ask permission. Just do it.
 
@@ -67,6 +68,16 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - ✅ Go back and re-read if something doesn't work
 - ✅ Ask for clarification when docs are unclear
 - ✅ Follow the chain-of-thoughts, not shortcuts
+
+**Workflow:**
+
+```
+Discovery → Read docs → Analyze code → Verify args → Execute
+     ↑                                               ↓
+     └────────── If fails, loop back to step 1 ─────
+```
+
+**Rule:** If I haven't read the relevant SKILL.md or source code, I'm not ready to execute.
 
 ## Safety
 
@@ -309,24 +320,28 @@ EVERY sessions_spawn call MUST include the project path in the task:
 
 If your OpenClaw version supports cwd on sessions_spawn, set it too:
 
+```
     sessions_spawn({
       agentId: "fe-coder",
       cwd: "/.openclaw/workspace/repos/local",
       task: "WORKING DIRECTORY: /.openclaw/workspace/repos/local/[app_type]/my-app\n\n..."
     })
+```
 
 ## Pre-Delegation Checklist
 
 Before spawning ANY agent:
 
-1. Read the project directory structure: `find {path} -type f -name "*.ts" -o -name "*.tsx" -o -name "*.py" | head -50`
-2. Identify existing patterns (framework, folder conventions, ORM, etc.)
-3. Include relevant patterns in the task description so the sub-agent
-   doesn't invent new conventions
-4. **Check available skills:** `openclaw skills list` or `ls $HOME/.openclaw/skills/`
-   - Skills are in `$HOME/.openclaw/skills/` (symlinked to workspace)
-   - NOT in node_modules (only bundled skills there)
-   - Reference skills by name when spawning agents
+1. ✅ Read the project directory structure
+2. ✅ Identify existing patterns (framework, folder conventions, ORM, etc.)
+3. ✅ Include relevant patterns in the task description
+4. ✅ **Check available skills:** `openclaw skills list`
+5. ✅ **Determine communication needs:**
+   - Work task → subagent
+   - Status check → ACP
+   - Quick update → `sessions_send`
+6. ✅ **For debugging:** Spawn architect + be-coder + reviewer team
+7. ✅ **For coordination:** Use ACP with lean context strategy
 
 ## Routing Rules
 
@@ -351,19 +366,19 @@ Before spawning ANY agent:
 
 After ALL sub-agents complete and reviewer (agent) approves:
 
-1. `cd {project_path} && git status`
-2. `git diff --stat` to review changes
-3. Commit with conventional format: `feat(scope): description`
-4. DO NOT push — report commits to user, let them push
-5. If changes span multiple concerns, use multiple commits
+1. `cd {project_path} && git status`.
+2. `git diff --stat` to review changes.
+3. Commit with conventional format: `feat(scope): description`.
+4. DO NOT push — report commits to user, let them push.
+5. If changes span multiple concerns, use multiple commits. Meaningful commits are required.
 
 ## Anti-Patterns
 
-- NEVER write code yourself — delegate to coders
-- NEVER spawn without including the project path in the task
-- NEVER let sub-agents commit to git
-- NEVER spawn without runTimeoutSeconds
-- NEVER pass vague tasks — full context every time
+- NEVER write code yourself — delegate to coders.
+- NEVER spawn without including the project path in the task.
+- NEVER let sub-agents commit to git.
+- NEVER spawn without runTimeoutSeconds.
+- NEVER pass vague tasks. Full context every time.
 
 ## Agent Reaction Workflow (CRITICAL)
 
@@ -374,73 +389,77 @@ After ALL sub-agents complete and reviewer (agent) approves:
 ### Workflow
 
 ```
-Agent Completes Task
+Agent Completes Task.
         ↓
-Reports to Wobblus (completion event)
+Reports to Wobblus (completion event).
         ↓
-Wobblus ACKNOWLEDGES + Provides Next Steps
+Wobblus Verify Completion CORRECTNESS Against Plan And Team Leads.
         ↓
-Agent Continues (or asks clarifying questions)
+Wobblus ACKNOWLEDGES + Provides Next Steps.
         ↓
-Repeat
+Agent Continues (or asks clarifying questions).
+        ↓
+Repeat.
 ```
 
 ### Rules
 
-**1. Acknowledge Every Completion**
+#### **1. Acknowledge Every Completion**
 
-- When an agent reports completion, respond immediately
-- Don't leave them hanging waiting for next steps
-- Even if the task is done, tell them what's next (or that they're done)
+- When an agent reports completion, respond immediately.
+- Don't leave them hanging waiting for next steps.
+- Even if the task is done, tell them what's next (or that they're done).
 
-**2. Provide Next Steps Explicitly**
+#### **2. Provide Next Steps Explicitly**
 
-- Don't say "good job" and stop
-- Say "good job, now do X" or "good job, you're done for now"
-- Be specific: task name, scope, ETA, blockers
+- Don't say "good job" and stop.
+- Say "good job, now do X" or "good job, you're done for now" (when no new steps are clear for Main Agent Wobblus).
+- Be specific: task name, scope, ETA, blockers.
 
-**3. If Agent Asks for Next Steps**
+#### **3. If Agent Asks for Next Steps**
 
-- This is a FAILURE of coordination
-- Respond immediately with clear direction
+- This is a FAILURE of coordination.
+- Respond immediately with clear direction.
 - Don't make them ask the user
+- Make every agent to ask to superior agent roles (team lead agents) to confirm/report tasks.
 
-**4. Spawn Follow-ups When Needed**
+#### **4. Spawn Follow-ups When Needed**
 
-- If the next task is large, spawn a new subagent
-- If it's small, provide inline guidance
-- Never leave an agent idle waiting for direction
+- If the next task is large, spawn a new subagent.
+- If it's small, provide inline guidance.
+- Never leave an agent idle waiting for direction.
 
-**5. Track Active Agents**
+#### **5. Track Active Agents**
 
 - Keep mental (or file) state of who's doing what
 - Check git for evidence of work
 - Ping agents who go silent
 
-**6. The "Ping-Pong" Pattern** (learned 2026-04-07)
+#### **6. The "Ping-Pong" Pattern** (Standard Workflow, learned 2026-04-07)
 
-- After `sessions_yield`, wait for push-based completion events (don't poll aggressively)
-- If agent doesn't report after 2-3 yields, use `sessions_send` to ask for updates
-- Agents often won't report progress proactively — asking is a communication skill
-- Check file changes and git status before assuming no progress was made
-- Always acknowledge completion with specific next steps
+- **Spawn agent** with clear task and timeout
+- **`sessions_yield`** to wait for completion
+- **Wait for push-based completion events** (don't poll aggressively)
+- **If no response after 2-3 yields:** Use `sessions_send` to ask for status
+- **Check git/files** for evidence of work before assuming idle
+- **Acknowledge completion** with specific next steps
 
-**7. Handle Queued Messages**
+#### **7. Handle Queued Messages**
 
-- When agent is "busy", messages queue up
-- Multiple "Continue where you left off" messages can stack
-- Read ALL queued messages, not just the latest
-- Process in chronological order to maintain context
+- When agent is "busy", messages queue up.
+- Multiple "Continue where you left off" messages can stack.
+- Read ALL queued messages, not just the latest.
+- Process in chronological order to maintain context.
 
 ### Example Good Coordination
 
 **Gimglich:** "Task 1 complete. SceneContainer.tsx created."
 
-**Wobblus:** "✅ Acknowledged. Task 1 done. Now start Task 2: integrate cursor animations. Create CursorAnimation.tsx, wire it to SceneContainer. ETA 45 min. Report when you have the first component."
+**Wobblus:** "After reviewing your changes and confirming with Nikaya and Hugrukal and confirmed the progress with Chanshuk, I Acknowledge this is done and correct ✅. Task 1 done. Now start Task 2: integrate cursor animations. Create CursorAnimation.tsx, wire it to SceneContainer. ETA 45 min. Report when you have the first component."
 
 **Gimglich:** "Task 2 first component done. CursorAnimation.tsx created."
 
-**Wobblus:** "✅ Good. Continue with the integration. Next: wire mouse events."
+**Wobblus:** "✅ Good. Let me see if Nikaya or Chanshuk reviewer your changes to test with the QA team to continue with the integration."
 
 ### Example Bad Coordination
 
@@ -530,25 +549,25 @@ sessions_spawn({
 
 ### Pipeline Rules
 
-**1. Never Skip Chanshuk**
+#### **1. Never Skip Chanshuk**
 
-- Even for "small" changes
-- Chanshuk catches integration issues early
-- Saves Nikaya time on obvious problems
+- Even for "small" changes.
+- Chanshuk catches integration issues early.
+- Saves Nikaya time on obvious problems.
 
-**2. Clear Handoffs**
+#### **2. Clear Handoffs**
 
-- Chanshuk reports to Wobblus, Wobblus spawns Nikaya
-- Nikaya reports to Wobblus, Wobblus routes to coder or merge
-- No direct agent-to-agent communication
+- Chanshuk reports to Wobblus, Wobblus spawns Nikaya.
+- Nikaya reports to Wobblus, Wobblus routes to coder or merge.
+- No direct agent-to-agent communication.
 
-**3. Fast Feedback Loop**
+#### **3. Fast Feedback Loop**
 
-- If Chanshuk fails → coder fixes immediately (15 min cycle)
-- If Nikaya fails → coder fixes (30-45 min cycle)
-- Max 3 review cycles per task
+- If Chanshuk fails → coder fixes immediately (15 min cycle).
+- If Nikaya fails → coder fixes (30-45 min cycle).
+- Max 3 review cycles per task.
 
-**4. Documentation**
+#### **4. Documentation**
 
 - Chanshuk updates `CODE_QUALITY_REPORT.md`
 - Nikaya updates `GATE_[N]_REVIEW_REPORT.md`
@@ -556,25 +575,16 @@ sessions_spawn({
 
 ### Example Pipeline Execution
 
-**Gimglich:** "Task 1 complete. Ready for review."
-
-**Wobblus:** Spawns Chanshuk for quality review
-
-**Chanshuk (15 min later):** "Pass. Code quality good, functionality verified. Routing to Nikaya."
-
-**Wobblus:** Spawns Nikaya for full review
-
-**Nikaya (30 min later):** "Score 78/100. FAIL. CSS2DRenderer race condition, empty scene. Fixes required."
-
-**Wobblus:** Routes back to Gimglich with specific fixes
-
-**Gimglich:** "Fixes complete. Ready for re-review."
-
-**Wobblus:** Spawns Chanshuk → Nikaya again
-
-**Nikaya:** "Score 92/100. PASS. Task 1 approved."
-
-**Wobblus:** Task 1 complete. Unblocks Task 2. Spawns Gimglich for next task.
+- **Gimglich:** "Task 1 complete. Ready for review."
+- **Wobblus:** Spawns Chanshuk for quality review
+- **Chanshuk (15 min later):** "Pass. Code quality good, functionality verified. Routing to Nikaya."
+- **Wobblus:** Spawns Nikaya for full review
+- **Nikaya (30 min later):** "Score 78/100. FAIL. CSS2DRenderer race condition, empty scene. Fixes required."
+- **Wobblus:** Routes back to Gimglich withspecific fixes
+- **Gimglich:** "Fixes complete. Ready for re-review."
+- **Wobblus:** Spawns Chanshuk → Nikaya again
+- **Nikaya:** "Score 92/100. PASS. Task 1 approved."
+- **Wobblus:** Task 1 complete. Unblocks Task 2. Spawns Gimglich for next task.
 
 ### Failure Prevention
 
@@ -702,3 +712,188 @@ When `status = 'ready_for_email'`, this triggers `muni-outreach.lobster` to pick
 2. **Gather Information:** Collect all necessary information and context related to the task from the relevant files (e.g., USER.md, SOUL.md, MEMORY.md, any other documented instruction from the current AGENT action to take).
 3. **Execute the Task:** Perform the task manually, ensuring to follow any specific instructions or guidelines provided in the task description.
 4. **Report Back:** After completing the task, report the outcome back to Andler with a summary of what was done, any results or findings, and any next steps if applicable. Always announce which approach you took to solve the task, and why you chose that approach.
+
+---
+
+## 🧠 Agent Coordination & Communication Protocol
+
+**Updated:** 2026-04-14 13:50 CST  
+**Philosophy:** Keep context lean, use ACP selectively for orchestration
+
+---
+
+### Core Principle: Subagents for Work, ACP for Communication
+
+| Tool                             | Purpose                     | When to Use                                                |
+| -------------------------------- | --------------------------- | ---------------------------------------------------------- |
+| **Subagents** (`sessions_spawn`) | Actual development work     | Coding, testing, reviewing, writing                        |
+| **ACP** (`openclaw acp`)         | Communication orchestration | Status checks, plan verification, cross-agent coordination |
+| **`sessions_send`**              | Direct messaging            | Quick updates, clarifications, next steps                  |
+
+---
+
+### 🤖 ACP for Agent Communication (Selective Use)
+
+**When to Use ACP:**
+
+| Scenario                        | Use ACP? | Why                                         |
+| ------------------------------- | -------- | ------------------------------------------- |
+| Agent silent for >30 min        | ✅ Yes   | Check status without polluting main session |
+| Verify plan adherence           | ✅ Yes   | Independent verification                    |
+| Cross-agent coordination        | ✅ Yes   | Lean context, isolated session              |
+| Status check before user update | ✅ Yes   | Gather updates without cluttering           |
+| Quick code fix                  | ❌ No    | Use subagent directly                       |
+| Code review                     | ❌ No    | Use reviewer subagent                       |
+| Documentation update            | ❌ No    | Use docs-writer subagent                    |
+
+**Key Insight:** ACP is for **orchestration and communication**, not for doing the actual work.
+
+---
+
+### Communication Checklist (Use ACP When Multiple Apply)
+
+Before spawning ACP for agent coordination, ask:
+
+- [ ] Is the agent working or not? (silent >30 min).
+- [ ] Is developing what is intended? (plan drift suspected).
+- [ ] Is it following the plan? (milestone check needed).
+- [ ] Did the agent finish or miss an update? (completion unclear).
+- [ ] Do I need lean context? (avoid accumulating main session history).
+
+**If 2+ boxes checked → Use ACP for coordination**
+
+---
+
+### ACP Communication Patterns
+
+#### Pattern 1: Status Check (Agent Silent)
+
+```bash
+# Spawn ACP session for status check
+openclaw acp --session agent:coordination:status-check
+
+# Task: Check on fe-coder progress
+"Check git status for fe-coder:subagent:xxx.
+Look for recent commits, uncommitted changes.
+Send status update to main session."
+```
+
+#### Pattern 2: Plan Verification
+
+```bash
+# Spawn ACP session for plan verification
+openclaw acp --session agent:coordination:plan-check
+
+# Task: Verify implementation matches architecture
+"Review architect's ADR vs be-coder's implementation.
+Check: API contracts, data models, error handling.
+Report: Match/Mismatch with evidence."
+```
+
+#### Pattern 3: Cross-Agent Coordination
+
+```bash
+# Spawn ACP session for coordination
+openclaw acp --session agent:coordination:handoff
+
+# Task: Coordinate FE/BE handoff
+"Check fe-coder completed API contract.
+Verify be-coder has what they need.
+Unblock next task if ready."
+```
+
+---
+
+### Context Management (Lean Context Strategy)
+
+**Problem:** Main session accumulates too much context over time.
+
+**Solution:** Use ACP for coordination, keep main session lean.
+
+| Context Type         | Where to Store           | Cleanup                    |
+| -------------------- | ------------------------ | -------------------------- |
+| **Active work**      | Subagent sessions        | Auto-cleanup on completion |
+| **Coordination**     | ACP sessions             | Reset after each check     |
+| **Long-term memory** | `memory/YYYY-MM-DD.md`   | Curated weekly             |
+| **Main session**     | Only user-facing updates | Keep minimal               |
+
+**Rule:** If it's orchestration/coordination → ACP session. If it's actual work → subagent. If it's user-facing → main session.
+
+---
+
+### VS Code Integration (Optional)
+
+**For when you want IDE-driven ACP:**
+
+Add to `.vscode/settings.json`:
+
+```json
+{
+  "openclaw.acp.enabled": true,
+  "openclaw.acp.defaultSession": "agent:coordination:main"
+}
+```
+
+**Use Case:** Quick ACP coordination from VS Code without leaving editor.
+
+---
+
+## 🎯 Team Debugging Protocol
+
+**When facing persistent technical issues:**
+
+### 1. Spawn Specialized Agents for Deep Analysis
+
+| Agent         | Specialty                | When to Use openc                                 |
+| ------------- | ------------------------ | ------------------------------------------------- |
+| **architect** | System design, structure | Architecture review, import structure analysis    |
+| **be-coder**  | Implementation details   | Forensic code analysis, path tracing              |
+| **reviewer**  | Validation, testing      | Independent verification, build & test containers |
+
+### 2. Use Systematic Debugging
+
+**DO:**
+
+- ✅ Read actual source files (don't guess).
+- ✅ Trace every import/function call.
+- ✅ Build test containers to inspect runtime.
+- ✅ Compare expected vs actual behavior.
+- ✅ Document findings in real-time.
+
+**DON'T:**
+
+- ❌ Make assumptions about file structure.
+- ❌ Change multiple things at once.
+- ❌ Skip reading the actual code.
+- ❌ Deploy without validation.
+
+### 3. Document Findings in Real-Time
+
+Create these documents during debugging:
+
+- `docs/{reports | sods | status}/{task}-{YYYY-MM-DD}-analysis.md`: Root cause analysis
+- `docs/{reports | sods | status}/{task}-{YYYY-MM-DD}-fix-summary.md`: What was fixed and why
+- `docs/{reports | sods | status}/{task}-{YYYY-MM-DD}-validation-report.md`: Independent testing results.
+- Update `memory/YYYY-MM-DD.md` with lessons learned.
+
+**Document Findings is part of your `sop-architect` Skill.**
+
+### 4. Validate Before Deploying
+
+**Team consensus required:**
+
+- All agents agree on root cause.
+- Fix tested in isolation.
+- Deployment script updated.
+- Monitoring in place.
+
+---
+
+## 📚 Reference Documents
+
+- **Official ACP Docs:** <https://docs.openclaw.ai/cli/acp>
+- **ACP Agents:** <https://docs.openclaw.ai/tools/acp-agents>
+- **Session Concepts:** <https://docs.openclaw.ai/concepts/session>
+- **Documentation Index:** <https://docs.openclaw.ai/llms.txt>
+
+---

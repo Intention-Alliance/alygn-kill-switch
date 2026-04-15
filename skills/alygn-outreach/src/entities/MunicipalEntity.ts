@@ -8,6 +8,7 @@
  */
 import { OutreachEntity } from './OutreachEntity';
 import type { ICostaRicaCanton, IMunicipalTypeData } from './types';
+import { assertSpanishPainPoints, validateMunicipalSpanishIntegrity } from './lang-guard';
 
 export type { ICostaRicaCanton, IMunicipalTypeData };
 
@@ -40,6 +41,14 @@ export class MunicipalEntity extends OutreachEntity {
     super({ ...data, type: 'municipal' });
     
     // Municipal-specific data
+    const painPoints = data.typeData?.painPoints || data.painPoints || [];
+    
+    // B-001 Data Integrity Guard: Validate Spanish content for municipal entities
+    // This prevents English content from slipping into Costa Rica municipal data
+    if (painPoints.length > 0) {
+      assertSpanishPainPoints(painPoints, 'MunicipalEntity.constructor');
+    }
+    
     this.typeData = {
       governmentType: data.typeData?.governmentType || data.governmentType || 'city',
       population: data.typeData?.population ?? data.population ?? null,
@@ -47,7 +56,7 @@ export class MunicipalEntity extends OutreachEntity {
       departments: data.typeData?.departments || data.departments || [],
       keyContacts: data.typeData?.keyContacts || data.keyContacts || [],
       initiatives: data.typeData?.initiatives || data.initiatives || [],
-      painPoints: data.typeData?.painPoints || data.painPoints || [],
+      painPoints,
       currentVendors: data.typeData?.currentVendors || data.currentVendors || [],
       procurementProcess: data.typeData?.procurementProcess ?? data.procurementProcess ?? null,
       decisionMakers: data.typeData?.decisionMakers || data.decisionMakers || [],
@@ -209,6 +218,16 @@ export class MunicipalEntity extends OutreachEntity {
    * Maps to Supabase `municipalities` table columns
    */
   static fromCanton(canton: ICostaRicaCanton): MunicipalEntity {
+    // B-001: Canonical Spanish pain points for Costa Rica municipalities
+    // These are the ONLY pain points used for CR municipal outreach
+    const PAIN_POINTS_CR = [
+      'Complejidad de la transformación digital',
+      'Recursos técnicos limitados',
+      'Entrega de servicios ciudadanos',
+      'Gobernanza de datos y privacidad',
+      'Coordinación interinstitucional'
+    ] as const;
+    
     return new MunicipalEntity({
       name: `Municipalidad de ${canton.name}`,
       type: 'municipal',
@@ -230,10 +249,10 @@ export class MunicipalEntity extends OutreachEntity {
         budget: canton.budget,
         province: canton.province,
         departments: [
-          { name: 'Tecnología', focus: ['digital transformation'] },
-          { name: 'Planificación', focus: ['smart city'] }
+          { name: 'Tecnología', focus: ['transformación digital'] },
+          { name: 'Planificación', focus: ['ciudad inteligente'] }
         ],
-        painPoints: ['Complejidad de la transformación digital', 'Recursos técnicos limitados', 'Entrega de servicios ciudadanos', 'Gobernanza de datos y privacidad', 'Coordinación interinstitucional'],
+        painPoints: [...PAIN_POINTS_CR],
         trAigaRelevant: true
       },
       discoveredAt: new Date(),

@@ -91,6 +91,47 @@
     - Example: "Fixed Tailscale persistence. Auto-reconnect working. Report by Keridz ⚙️"
     - This provides external memory and clear audit trail for who did what
 
+17. **📝 ANDLER.DEV CONTENT CREATION PATTERN** (learned 2026-04-13)
+    - When @andler.dev requests social/content creation:
+      1. **Sanitize sensitive info** — no ports, configs, brand names in public posts
+      2. **Apply Beautiful Prose** — no em dashes, no "not X but Y" constructions, no filler
+      3. **X/Growth format** — hook-driven, value-focused, proper hashtag placement
+      4. **Blog tutorial first** — create detailed markdown blog before social posts
+      5. **Tone:** Direct, technical, lean startup pragmatism (no marketing fluff)
+    - Content types: X threads, LinkedIn long-form, markdown blog tutorials
+    - Storage: `docs/developer-advocate/` for social, `docs/developer-advocate/blog/` for tutorials
+
+18. **🎨 ASSET GENERATION MANDATORY** (learned 2026-04-13)
+    - **1-7 assets per blog** (depending on content/length):
+      - 1 blog portrait (1200x630px, featured image)
+      - Architecture diagrams (polished, not ASCII)
+      - Flow charts, sequence diagrams
+      - Comparison infographics (before/after, cloud vs. local)
+      - GIFs/memes (1-2 max, tech-savvy audience, relevant humor)
+    - **Style:** Polished, minimalist, sharp, modern
+    - **Infographic inspiration:** Infobae visual journalism (clean, bold, high-contrast, data-driven)
+    - **Color palette:** Consistent with andler.dev brand
+    - **Storage:** `docs/developer-advocate/assets/` with subfolders (portraits/, diagrams/, infographics/, gifs/)
+    - **Naming:** `YYYY-MM-DD-[topic]-[type]-[variant].png`
+    - **SEO impact:** Visuals increase engagement, time-on-page, social shares
+    - **Tools:** image_generate for diagrams/portraits, gifgrep for memes
+
+19. **🔒 CRITICAL: LOCAL vs REMOTE FILES** (learned 2026-04-14)
+    - **LOCAL (workspace/brain):** `docs/developer-advocate/` files, assets, scripts
+    - **REMOTE (Notion, X, LinkedIn):** Platform content that needs manual upload/copy
+    - **They DO NOT sync automatically** - must explicitly copy content from local → remote
+    - **Notion workflow:** Read local file → Use Notion API to create blocks → Upload assets separately
+    - **Never reference local paths in remote content** - remote platforms can't access workspace files
+    - **Memory update:** When creating content, always complete the full loop: local draft → remote publish
+20. **📎 NOTION FILE UPLOAD API** (learned 2026-04-14)
+    - **3-step process:** create → send → attach (single_part auto-completes, NO manual complete needed)
+    - **Multi-part (>20MB):** Requires explicit `complete()` call after all parts sent
+    - **SDK behavior:** `notion.fileUploads.send()` auto-completes single_part uploads
+    - **File types:** `file` (UI, expires 1h), `file_upload` (API, permanent), `external` (URL, never expires)
+    - **Scripts:** `scripts/upload-notion-assets.js` (production ready, 3/3 assets uploaded)
+    - **Docs:** <https://developers.notion.com/reference/file-upload>
+    - **Key insight:** Attach file_upload ID to blocks BEFORE calling complete() for single_part
+
 ## Key Projects (Professional Tone Required)
 
 - **Alygn (ALYGN)** — maintain professional, direct communication
@@ -1235,3 +1276,86 @@ _Updated: 2026-02-07 12:10 PM CST_
 - 4/5 posts ready for manual (10 min)
 - Full automation learning captured for next iteration
 - Bird CLI will be primary tool next time
+
+---
+
+## 📋 Lessons Learned - April 14, 2026 (Phase 0 Deployment)
+
+### Docker Import Structure Debugging
+
+**Problem:** Container crashes with "Cannot find module '../redis/redis-pool.mjs'"
+
+**Root Cause:** Dockerfile copied service file to wrong location:
+
+```dockerfile
+# WRONG - puts file at /app/kill-switch-service.mjs
+COPY kill-switch/kill-switch-service.mjs ./kill-switch-service.mjs
+
+# CORRECT - preserves directory structure
+COPY kill-switch/kill-switch-service.mjs ./kill-switch/kill-switch-service.mjs
+CMD ["bun", "run", "kill-switch/kill-switch-service.mjs"]
+```
+
+**Team Debugging Process:**
+
+1. **Hugrukal (Architect)** - Analyzed import structure
+2. **Keridz (BE Coder)** - Forensic path tracing
+3. **Nikaya (Reviewer)** - Built test container, reproduced crash
+
+**Lesson:** Always read actual import statements and trace path resolution.
+
+### Redis Cluster Initialization
+
+**Problem:** "CLUSTER DOWN Hash slot not served"
+
+**Root Cause:** `redis-cluster-init` container command was malformed (shell escaping issues)
+
+**Fix:** Manual initialization:
+
+```bash
+docker exec redis-node-1 redis-cli --cluster create \
+  redis-node-1:6379 redis-node-2:6379 redis-node-3:6379 \
+  --cluster-replicas 0 --cluster-yes
+```
+
+**Lesson:** Redis cluster nodes don't auto-join. Use array syntax in docker-compose for complex commands.
+
+### IP Allowlist for Docker Networks
+
+**Problem:** API returns 403 "IP not allowed" for Docker network requests
+
+**Root Cause:** IP allowlist only had specific IPs, not Docker network ranges
+
+**Fix:** Added CIDR matching:
+
+```javascript
+const IP_ALLOWLIST = new Set([
+  "172.16.0.0/12", // All Docker networks
+  "172.28.0.0/16", // Our network
+  // ... other IPs
+]);
+```
+
+**Lesson:** Docker uses internal network IPs - allowlist must include CIDR ranges.
+
+---
+
+### ACP for Communication, Not Work
+
+**Clarification:** 2026-04-14 13:50 CST
+
+**Correct Usage:**
+
+- ✅ **Subagents** → Actual development work
+- ✅ **ACP** → Communication orchestration (status checks, plan verification)
+- ✅ **`sessions_send`** → Direct agent messaging
+
+**Incorrect Usage:**
+
+- ❌ Using ACP for coding tasks (use subagents)
+- ❌ Using `ollama launch claude` without bidirectional comms plan
+- ❌ Accumulating all context in main session
+
+**Lesson:** Keep context lean. Use ACP selectively for coordination, subagents for work, main session for user-facing updates.
+
+---

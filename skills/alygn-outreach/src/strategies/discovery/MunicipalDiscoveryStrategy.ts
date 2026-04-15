@@ -376,7 +376,7 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
       typeData: {
         governmentType: 'city',
         province: 'Unknown',
-        painPoints: ['Digital transformation', 'Citizen services'],
+        painPoints: ['Complejidad de la transformación digital', 'Recursos técnicos limitados'],
         trAigaRelevant: true
       }
     }));
@@ -441,26 +441,26 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
         budget: canton.budget,
         province: canton.province,
         departments: [
-          { name: 'Tecnología de la Información', focus: ['digital transformation', 'e-government'] },
-          { name: 'Planificación Urbana', focus: ['smart city', 'data analytics'] },
-          { name: 'Servicios Ciudadanos', focus: ['citizen engagement', 'transparency'] }
+          { name: 'Tecnología de la Información', focus: ['transformación digital', 'gobierno electrónico'] },
+          { name: 'Planificación Urbana', focus: ['ciudad inteligente', 'análisis de datos'] },
+          { name: 'Servicios Ciudadanos', focus: ['participación ciudadana', 'transparencia'] }
         ],
         initiatives: [
           { name: 'Transformación Digital Municipal', description: 'Modernización de servicios ciudadanos', status: 'active', budget: canton.budget * 0.05 },
           { name: 'Gobierno Abierto', description: 'Transparencia y datos abiertos', status: 'active', budget: canton.budget * 0.02 }
         ],
         painPoints: [
-          'Digital transformation complexity',
-          'Limited technical resources',
-          'Citizen service delivery',
-          'Data governance and privacy',
-          'Inter-agency coordination'
+          'Complejidad de la transformación digital',
+          'Recursos técnicos limitados',
+          'Entrega de servicios ciudadanos',
+          'Gobernanza de datos y privacidad',
+          'Coordinación interinstitucional'
         ],
         trAigaRelevant: true
       },
       personalizationContext: {
-        tailoredHook: 'TRAIGA Act compliance and AI governance',
-        valueProposition: 'Support municipal AI governance implementation'
+        tailoredHook: 'Cumplimiento del TRAIGA Act y gobernanza de IA',
+        valueProposition: 'Apoyo en implementación de gobernanza de IA municipal'
       }
     });
   }
@@ -489,13 +489,13 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
           budget: 20000000 + Math.floor(Math.random() * 100000000),
           province: province,
           departments: [
-            { name: 'Tecnología', focus: ['digital transformation'] },
-            { name: 'Planificación', focus: ['smart city'] }
+            { name: 'Tecnología', focus: ['transformación digital'] },
+            { name: 'Planificación', focus: ['ciudad inteligente'] }
           ],
           initiatives: [
-            { name: 'Digital Transformation', description: 'Modernizing services', status: 'active' }
+            { name: 'Transformación Digital', description: 'Modernización de servicios', status: 'active' }
           ],
-          painPoints: ['AI accountability', 'Digital transformation', 'Citizen services'],
+          painPoints: ['Rendición de cuentas en IA', 'Transformación digital', 'Servicios ciudadanos'],
           trAigaRelevant: true
         }
       }));

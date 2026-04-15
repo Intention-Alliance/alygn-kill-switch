@@ -1,8 +1,14 @@
+---
+name: x-warmup
+description: Automated X/Twitter engagement for ALYGN municipal warmup before email outreach. Builds familiarity through follows, likes, replies, and quote-tweets.
+metadata: {"openclaw":{"emoji":"🤝","requires":{"bins":["node","bash"],"env":["X_API_KEY","X_API_SECRET","X_ACCESS_TOKEN","X_ACCESS_SECRET","GROK_API_KEY","SUPABASE_URL","SUPABASE_SERVICE_KEY"],"os":["linux","darwin"]}}}
+---
+
 # X/Twitter Warmup Skill
 
 **Purpose:** Automated X/Twitter engagement to build familiarity with municipalities before email outreach.
 
-**Status:** ✅ **PRODUCTION READY**
+**Status:** Production Ready
 
 **Target:** All municipalities in active waves
 
@@ -367,3 +373,4 @@ CREATE TABLE x_engagements (
 **Created:** 2026-03-04
 **Status:** ✅ PRODUCTION READY
 **Next:** Create x-warmup.lobster workflow, utils/rate-limiter.js
+

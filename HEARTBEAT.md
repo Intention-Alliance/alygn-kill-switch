@@ -208,56 +208,108 @@ _Contact: contact@alyygn.com_
 
 ---
 
-## 🎉 DOCUMENTATION PHASE COMPLETE (2026-04-01 15:15 CST)
+## 🔄 ACTIVE WORK STREAMS (2026-04-15 01:24 CST)
 
-**Status:** ✅ **ALL 111 ISSUES FULLY DOCUMENTED BY TALANARA**
+### Stream 1: Phase 1 Critical Fixes (ALYGN Grant System)
 
-Talanara (docs-writer) completed comprehensive documentation for all 111 issues:
+**Status:** ✅ **PHASE 1 COMPLETE** — 4/4 FIXED
 
-- Full bug-report.md template applied
-- Root cause analysis for each issue
-- Expected vs Actual behavior documented
-- Steps to reproduce with test commands
-- File paths and line numbers specified
-- Team assignments and acceptance criteria
+| Issue | Status | Agent | Result |
+|-------|--------|-------|--------|
+| C-001 | ✅ FIXED | Keridz | Spanish pain points restored in `fromCanton()` |
+| A-001 | ✅ COMPLETE | Chanshuk | Session coordination working, no fix needed |
+| B-001 | ✅ FIXED | Keridz | 5 regression vectors plugged, lang-guard + DB constraints, 23 tests |
+| D-001 | ✅ FIXED | Keridz | 3 additional English leaks fixed, 17 pipeline integration tests |
 
-**Ready for Phase 1 execution.**
+**Final Test Results:** 40/40 tests passing (23 B-001 + 17 D-001)
 
-## 🚀 PHASE 1: CRITICAL FIXES (IN PROGRESS)
+**Phase 1 Outcome:** Entire discovery pipeline now produces **fully Spanish content** across all code paths:
+- ✅ CR cantones path — canonical `SPANISH_PAIN_POINTS`, Spanish dept focus, Spanish initiatives
+- ✅ Mock/dry-run path — Spanish pain points, focus, initiatives
+- ✅ Firecrawl fallback — Spanish pain points hardcoded
+- ✅ Research (CR, generic, dry-run) — Spanish pain points, initiatives, key contacts, departments
+- ✅ Constructor guard — `assertSpanishPainPoints()` blocks English at entity creation
 
-### Completed ✅
-
-- **C-001:** Municipal Language Crisis — **FIXED** by be-coder
-- Root cause: MunicipalEntity.fromCanton() had English pain points
-- Fix: Updated to Spanish pain points
-- Verified: lang="es", "Estimado/a", Spanish content
-
-### Next 🔄
-
-- **A-001:** Session Coordination — Spawn dev-lead (Chanshuk)
-- **B-001:** Data Integrity — Spawn be-coder (Keridz)
-- **D-001:** Discovery — Spawn be-coder (Keridz)
-
-## 📊 Implementation Status
-
-| Phase                | Status      | Progress                  |
-| -------------------- | ----------- | ------------------------- |
-| Documentation        | ✅ Complete | 111/111 issues            |
-| C-001 Fix            | ✅ Complete | Spanish language restored |
-| A-001 Coordination   | 🔄 Ready    | Waiting spawn             |
-| B-001 Data Integrity | ⏳ Pending  | After A-001               |
-| D-001 Discovery      | ⏳ Pending  | After B-001               |
-
-## 🎯 Next Actions
-
-1. Spawn **dev-lead** for A-001 (Session Coordination)
-2. Spawn **be-coder** for B-001 (Data Integrity)
-3. Daily standup: 09:00 CST on GitHub issues
-4. Report progress every completed issue
+**Follow-up Items (Phase 2):**
+- P1: Use `SPANISH_PAIN_POINTS` constant directly in `researchGeneric()` instead of inline strings
+- P2: `fetchMunicipalitiesFromFirecrawl()` should return full 5 pain points, not 2
+- P3: Add `assertSpanishPainPoints()` call in `discoverFromSupabase()` after DB read (defense-in-depth)
+- P3: Add `assertSpanishString()` validation for initiative names/descriptions and department focus
 
 ---
 
-**All systems ready for Phase 1 execution.** 🚀
+### 🎉 PHASE 1 COMPLETE — Ready for Phase 2
+
+**What's now working:**
+- Municipal entities always have Spanish pain points (enforced at constructor + DB level)
+- Discovery pipeline produces Spanish content end-to-end
+- Research pipeline produces Spanish content across all code paths
+- Mock/dry-run data fully Spanish
+- 40 automated tests prevent regression
+
+**Next:** Begin Phase 2 (P1-P3 items from follow-up) or return to grant monitoring/VC outreach.
+
+---
+
+### Stream 2: Kill Switch Admin UI (Phase0)
+
+**Status:** ⏸️ BLOCKED - Awaiting Manual Deploy
+
+**What's Done:**
+- ✅ Auth endpoints added (Keridz)
+- ✅ Admin UI built (vite production build)
+- ✅ Nginx config updated (added `/v1/auth/` proxy)
+- ✅ DEPLOY-COMMANDS.md created
+
+**Blocked On:**
+- Manual sudo commands to deploy nginx config + dist files
+
+**Credentials Ready:**
+- Email: `admin@alyygn.com`
+- Password: `andlersrv-auth-token-2026`
+- URL: `https://andlersrv.tail62d797.ts.net:8443/`
+
+**Next:** Andler runs deploy commands → Test login
+
+---
+
+### Stream 3: Grant Monitoring (Ongoing)
+
+**Status:** ✅ STABLE
+
+- Schmidt Sciences: May 17, 2026 (32 days) — No alert
+- Coefficient Giving: Dec 31, 2026 — No alert
+- No Tania emails pending
+- No status changes detected
+
+---
+
+## 🎯 PARALLEL WORK OPPORTUNITIES
+
+**While waiting for manual deploy (Stream 2):**
+
+1. ✅ **Proceed with A-001** — Session Coordination (dev-lead)
+2. ✅ **Proceed with B-001** — Data Integrity (be-coder, after A-001)
+3. ✅ **Proceed with D-001** — Discovery (be-coder, after B-001)
+4. ⏳ **Grant outreach** — VC email drafting (if time-sensitive)
+5. ⏳ **Twitter automation** — Daily posting (if cron missed)
+
+---
+
+## 📋 COMMUNICATION PROTOCOL
+
+**During active work:**
+
+- **Heartbeat updates:** Every 30 min during active phases
+- **Agent completions:** Immediate acknowledgment + next steps
+- **Blockers:** Report to Discord #alygn within 5 min
+- **User escalations:** Only when team cannot resolve
+
+**File updates:**
+
+- `HEARTBEAT.md` — Phase status, task progress
+- `memory/2026-04-15.md` — Session logs, decisions
+- `docs/alygn/grants/` — Grant tracker sync (if changes)
 
 ---
 

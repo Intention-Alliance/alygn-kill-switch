@@ -46,22 +46,22 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
         { name: 'Gobierno Abierto', description: 'Transparencia y datos abiertos', status: 'active', budget: canton.budget * 0.02 }
       ],
       painPoints: [
-        'Digital transformation complexity',
-        'Limited technical resources',
-        'Citizen service delivery',
-        'Data governance and privacy',
-        'Inter-agency coordination'
+        'Complejidad de la transformación digital',
+        'Recursos técnicos limitados',
+        'Entrega de servicios ciudadanos',
+        'Gobernanza de datos y privacidad',
+        'Coordinación interinstitucional'
       ],
       trAigaRelevant: true,
       keyContacts: this.generateKeyContacts(canton.name)
     };
     
     // Update entity
-    entity.researchNotes = `Canton of ${canton.province} province. Population: ${canton.population}. Key initiatives: ${research.initiatives.map((i: { name: string }) => i.name).join(', ')}.`;
+    entity.researchNotes = `Cantón de la provincia de ${canton.province}. Población: ${canton.population}. Iniciativas clave: ${research.initiatives.map((i: { name: string }) => i.name).join(', ')}.`;
     entity.personalizationContext = {
       painPoints: research.painPoints,
-      tailoredHook: 'TRAIGA Act compliance support',
-      valueProposition: 'Support municipal AI governance and digital transformation'
+      tailoredHook: 'Apoyo en implementación del TRAIGA Act',
+      valueProposition: 'Apoyo en gobernanza de IA y transformación digital municipal'
     };
     
     if (!entity.typeData.population) {
@@ -92,21 +92,21 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
   private researchGeneric(entity: MunicipalEntity): IResearchResult {
     const research = {
       initiatives: [
-        { name: 'Digital Transformation', description: 'Modernizing municipal services', status: 'active' },
-        { name: 'Citizen Engagement', description: 'Improving public participation', status: 'planned' }
+        { name: 'Transformación Digital', description: 'Modernización de servicios municipales', status: 'active' },
+        { name: 'Participación Ciudadana', description: 'Mejora de la participación pública', status: 'planned' }
       ],
       painPoints: [
-        'Digital transformation',
-        'Resource constraints',
-        'Service delivery'
+        'Complejidad de la transformación digital',
+        'Recursos técnicos limitados',
+        'Entrega de servicios ciudadanos'
       ],
       keyContacts: this.generateKeyContacts(entity.name)
     };
     
-    entity.researchNotes = `Municipality research: Focus on digital transformation and citizen services.`;
+    entity.researchNotes = `Investigación municipal: Enfoque en transformación digital y servicios ciudadanos.`;
     entity.personalizationContext = {
       painPoints: research.painPoints,
-      tailoredHook: 'Municipal governance support'
+      tailoredHook: 'Apoyo en gobernanza municipal'
     };
     
     entity.typeData.initiatives = research.initiatives;
@@ -130,17 +130,17 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
     
     const mockResearch = {
       initiatives: [
-        { name: 'Digital Transformation', description: 'Modernizing services', status: 'active', budget: 100000 }
+        { name: 'Transformación Digital', description: 'Modernización de servicios', status: 'active', budget: 100000 }
       ],
-      painPoints: ['AI accountability', 'Digital transformation', 'Citizen services'],
+      painPoints: ['Rendición de cuentas en IA', 'Transformación digital', 'Servicios ciudadanos'],
       trAigaRelevant: true,
-      keyContacts: [{ name: 'Municipal Manager', title: 'City Manager', isDecisionMaker: true }]
+      keyContacts: [{ name: 'Gerente Municipal', title: 'Gerente Municipal', isDecisionMaker: true }]
     };
     
     entity.researchNotes = 'Research notes would be generated here.';
     entity.personalizationContext = {
       painPoints: mockResearch.painPoints,
-      tailoredHook: 'TRAIGA Act compliance support'
+      tailoredHook: 'Apoyo en implementación del TRAIGA Act'
     };
     
     entity.updateStatus('researched');
@@ -160,18 +160,18 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
   private generateKeyContacts(municipalityName: string): Array<{ name: string; title: string; department: string; isDecisionMaker: boolean; focusAreas: string[] }> {
     return [
       {
-        name: 'Municipal Manager',
-        title: 'City Manager / Gerente Municipal',
-        department: 'Executive',
+        name: 'Gerente Municipal',
+        title: 'Gerente Municipal',
+        department: 'Ejecutivo',
         isDecisionMaker: true,
-        focusAreas: ['Digital transformation', 'Service delivery']
+        focusAreas: ['Transformación digital', 'Entrega de servicios']
       },
       {
-        name: 'IT Director',
+        name: 'Director de Tecnología',
         title: 'Director de Tecnología',
-        department: 'Technology',
+        department: 'Tecnología',
         isDecisionMaker: false,
-        focusAreas: ['Systems', 'Data governance']
+        focusAreas: ['Sistemas', 'Gobernanza de datos']
       }
     ];
   }
