@@ -8,6 +8,8 @@ import { EmailProviderFactory } from './EmailProviderFactory';
 import { EmailQueue, type EmailQueueConfig, type EmailPriority } from './EmailQueue';
 import { TemplateValidator } from './validators/TemplateValidator';
 import type { EmailTemplateInput, TemplateSizeConstraints, TemplateValidationResult } from './validators/TemplateValidator';
+import { ComplianceValidator, type ComplianceEmailInput, type ComplianceStatus } from './ComplianceValidator';
+import { UnsubscribeManager } from './UnsubscribeManager';
 
 interface BatchEmailPayload {
   to: string;
@@ -40,11 +42,15 @@ export class EmailService {
   private providerType: string;
   private providerConfig: Record<string, unknown>;
   private templateValidator: TemplateValidator;
+  private complianceValidator: ComplianceValidator;
+  private unsubscribeManager: UnsubscribeManager;
 
-  constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig) {
+  constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig, unsubscribeManager?: UnsubscribeManager) {
     this.providerType = providerType;
     this.providerConfig = config;
     this.templateValidator = new TemplateValidator(sizeConstraints);
+    this.complianceValidator = new ComplianceValidator();
+    this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager();
     this.queue = new EmailQueue(queueConfig);
     this.queue.setSendFn(async (payload) => {
       await this.initialize();
@@ -303,6 +309,97 @@ export class EmailService {
     }
 
     return this.sendEmail(payload);
+  }
+
+  /**
+   * Send a single email with full compliance validation.
+   * Checks GDPR + CAN-SPAM compliance and unsubscribe status before sending.
+   * If compliance fails or recipient is unsubscribed, email is NOT sent.
+   */
+  async sendWithCompliance(
+    payload: IEmailPayload,
+    options?: {
+      language?: 'es' | 'en';
+      hasConsent?: boolean;
+      physicalAddress?: string;
+      supportsErasure?: boolean;
+      personalDataFieldsCount?: number;
+    },
+  ): Promise<ISendResult & { compliance?: ComplianceStatus }> {
+    // 1. Check unsubscribe list
+    if (this.unsubscribeManager.isUnsubscribed(payload.to)) {
+      console.warn(`[EmailService] Recipient ${payload.to} has unsubscribed — email NOT sent`);
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Recipient ${payload.to} has unsubscribed`,
+      };
+    }
+
+    // 2. Run compliance validation
+    const complianceInput: ComplianceEmailInput = {
+      to: payload.to,
+      from: payload.from,
+      subject: payload.subject,
+      html: payload.html ?? '',
+      text: payload.text,
+      hasConsent: options?.hasConsent,
+      physicalAddress: options?.physicalAddress,
+      supportsErasure: options?.supportsErasure,
+      personalDataFieldsCount: options?.personalDataFieldsCount,
+    };
+
+    const compliance = this.complianceValidator.validate(complianceInput);
+
+    if (!compliance.isCompliant) {
+      const failSummary = compliance.failures
+        .map((v) => `[${v.regulation}:${v.rule}] ${v.message}`)
+        .join('; ');
+      console.error(`[EmailService] Compliance check failed — email NOT sent: ${failSummary}`);
+
+      if (compliance.warnings.length > 0) {
+        const warnSummary = compliance.warnings
+          .map((v) => `[${v.regulation}:${v.rule}] ${v.message}`)
+          .join('; ');
+        console.warn(`[EmailService] Compliance warnings: ${warnSummary}`);
+      }
+
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Compliance check failed (score ${compliance.score}): ${failSummary}`,
+        compliance,
+      };
+    }
+
+    // Log warnings but proceed
+    if (compliance.warnings.length > 0) {
+      const warnSummary = compliance.warnings
+        .map((v) => `[${v.regulation}:${v.rule}] ${v.message}`)
+        .join('; ');
+      console.warn(`[EmailService] Compliance warnings: ${warnSummary}`);
+    }
+
+    // 3. Delegate to sendWithValidation for template checks
+    const sendResult = await this.sendWithValidation(payload, options?.language);
+
+    return { ...sendResult, compliance };
+  }
+
+  /**
+   * Get the UnsubscribeManager instance for external use.
+   */
+  getUnsubscribeManager(): UnsubscribeManager {
+    return this.unsubscribeManager;
+  }
+
+  /**
+   * Get the ComplianceValidator instance for external use.
+   */
+  getComplianceValidator(): ComplianceValidator {
+    return this.complianceValidator;
   }
 }
 

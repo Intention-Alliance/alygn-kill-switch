@@ -6,6 +6,8 @@
 import fs from 'fs';
 import path from 'path';
 import { SentEmailTracker } from '../SentEmailTracker';
+import { UnsubscribeManager } from './UnsubscribeManager';
+import type { RateLimiter } from './RateLimiter';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -48,6 +50,8 @@ export interface WebhookHandlerConfig {
   maxLogSize?: number;
   /** Whether to persist logs to disk (default: true) */
   persistLogs?: boolean;
+  /** RateLimiter instance to notify on bounce events (optional) */
+  rateLimiter?: RateLimiter;
 }
 
 // ── SendGrid event mapping ────────────────────────────────────────────────
@@ -68,13 +72,22 @@ const SENDGRID_EVENT_MAP: Record<string, WebhookEvent> = {
 
 export class WebhookHandler {
   private tracker: SentEmailTracker;
+  private unsubscribeManager: UnsubscribeManager;
+  private rateLimiter: RateLimiter | null;
   private log: WebhookLogEntry[] = [];
   private readonly logDir: string;
   private readonly maxLogSize: number;
   private readonly persistLogs: boolean;
 
-  constructor(tracker: SentEmailTracker, config: WebhookHandlerConfig = {}) {
+  // Sliding window bounce tracking
+  private bounceWindow: { timestamp: number; type: 'sent' | 'bounce' }[] = [];
+  private readonly bounceWindowMaxEntries = 1000;
+  private readonly bounceWindowMaxAgeMs = 86_400_000; // 24 hours
+
+  constructor(tracker: SentEmailTracker, unsubscribeManager?: UnsubscribeManager, config: WebhookHandlerConfig = {}) {
     this.tracker = tracker;
+    this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager();
+    this.rateLimiter = config.rateLimiter ?? null;
     this.logDir = config.logDir ?? path.resolve(__dirname, '../../data/webhook-logs');
     this.maxLogSize = config.maxLogSize ?? 1000;
     this.persistLogs = config.persistLogs ?? true;
@@ -103,7 +116,7 @@ export class WebhookHandler {
       const logEntry = this.createLogEntry(source, payload);
 
       try {
-        this.updateTracker(payload);
+        await this.updateTracker(payload);
         logEntry.processed = true;
         processed++;
       } catch (err) {
@@ -204,7 +217,7 @@ export class WebhookHandler {
 
   // ── Internal: tracker update ──────────────────────────────────────────
 
-  private updateTracker(payload: WebhookPayload): void {
+  private async updateTracker(payload: WebhookPayload): Promise<void> {
     if (!payload.email) return;
 
     // Find the matching entry in tracker (vc or municipal)
@@ -221,6 +234,7 @@ export class WebhookHandler {
     // Fix 3: Handle events properly — bounces get recordBounce(), not re-record
     switch (payload.event) {
       case 'delivered':
+        this.pushBounceWindow('sent');
         this.tracker.recordSent({
           email: payload.email,
           name: entry.name,
@@ -241,6 +255,11 @@ export class WebhookHandler {
           entry.partnerName ?? undefined,
           type,
         );
+        // Signal rate limiter about bounce
+        this.pushBounceWindow('bounce');
+        if (this.rateLimiter) {
+          this.rateLimiter.recordBounce();
+        }
         break;
 
       case 'opened':
@@ -251,7 +270,16 @@ export class WebhookHandler {
         this.tracker.updateStatus(payload.email, 'clicked', entry.partnerName ?? undefined, type);
         break;
 
-      // deferred, spam_report, unsubscribed — just log; tracker doesn't have fields for these yet
+      case 'unsubscribed':
+        // Record unsubscribe via UnsubscribeManager — await to ensure durability (GDPR)
+        if (payload.email) {
+          await this.unsubscribeManager.unsubscribe(payload.email, 'webhook');
+          // Also update tracker status
+          this.tracker.updateStatus(payload.email, 'unsubscribed', entry?.partnerName ?? undefined, type);
+        }
+        break;
+
+      // deferred, spam_report — just log; tracker doesn't have fields for these yet
       default:
         break;
     }
@@ -286,6 +314,21 @@ export class WebhookHandler {
     } catch (err) {
       console.error('[WebhookHandler] Failed to persist log:', (err as Error).message);
     }
+  }
+
+  // ── Sliding window bounce tracking ────────────────────────────────────
+
+  private pushBounceWindow(type: 'sent' | 'bounce'): void {
+    this.pruneBounceWindow();
+    this.bounceWindow.push({ timestamp: Date.now(), type });
+  }
+
+  private pruneBounceWindow(): void {
+    const cutoff = Date.now() - this.bounceWindowMaxAgeMs;
+    if (this.bounceWindow.length > this.bounceWindowMaxEntries) {
+      this.bounceWindow = this.bounceWindow.slice(-this.bounceWindowMaxEntries);
+    }
+    this.bounceWindow = this.bounceWindow.filter(e => e.timestamp > cutoff);
   }
 }
 

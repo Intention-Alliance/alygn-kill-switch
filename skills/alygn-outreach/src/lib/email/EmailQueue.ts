@@ -4,6 +4,7 @@
  */
 import fs from 'fs';
 import path from 'path';
+import { RateLimiter, type RateLimiterConfig } from './RateLimiter';
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -42,11 +43,12 @@ export interface DeadLetterEntry {
 
 export interface EmailQueueConfig {
   concurrency?: number;         // parallel sends (default: 1)
-  emailsPerMinute?: number;     // rate limit (default: 20)
+  emailsPerMinute?: number;     // fallback rate limit when no RateLimiter (default: 20)
   maxRetries?: number;          // per email (default: 3)
   backoffMs?: number[];         // delays between retries (default: [5000, 15000, 45000])
   persistenceDir?: string;      // disk path (default: data/email-queue/)
   autoPersist?: boolean;        // persist after every mutation (default: true)
+  rateLimiter?: RateLimiterConfig; // spam-filter-aware rate limiter config
 }
 
 type SendFn = (payload: QueuedEmail['payload']) => Promise<{ success: boolean; messageId?: string; provider?: string; error?: string }>;
@@ -77,10 +79,11 @@ export class EmailQueue {
   private backoffMs: number[];
   private persistenceDir: string;
   private autoPersist: boolean;
-  private sendTimestamps: number[] = [];   // sliding window for rate limiting
+  private rateLimiter: RateLimiter | null = null;
+  private sendTimestamps: number[] = [];   // fallback sliding window (used only when rateLimiter is null)
   private activeCount = 0;
-  private drainResolves: (() => void)[] = [];  // Fix 2: array of resolve callbacks
-  private ticking = false;                     // Fix 1: serialization lock
+  private drainResolves: (() => void)[] = [];
+  private ticking = false;
 
   constructor(config: EmailQueueConfig = {}) {
     this.concurrency = config.concurrency ?? 1;
@@ -89,6 +92,11 @@ export class EmailQueue {
     this.backoffMs = config.backoffMs ?? [5000, 15000, 45000];
     this.persistenceDir = config.persistenceDir ?? path.resolve(__dirname, '../../../data/email-queue');
     this.autoPersist = config.autoPersist ?? true;
+
+    // Initialize RateLimiter if config provided, otherwise fall back to simple sliding window
+    if (config.rateLimiter) {
+      this.rateLimiter = new RateLimiter(config.rateLimiter);
+    }
 
     this.loadFromDisk();
   }
@@ -244,7 +252,20 @@ export class EmailQueue {
       .sort(prioritySort);
 
     if (candidates.length === 0) return null;
-    if (!this.canSendNow()) return null;
+
+    // Use RateLimiter if available, otherwise fall back to simple sliding window
+    if (this.rateLimiter) {
+      const check = this.rateLimiter.canSend(candidates[0].payload.to);
+      if (!check.allowed) {
+        // Schedule a delayed tick so the queue doesn't stall
+        if (check.waitMs > 0) {
+          setTimeout(() => { this.ticking = false; this.tick(); }, Math.min(check.waitMs, 60_000));
+        }
+        return null;
+      }
+    } else {
+      if (!this.canSendNow()) return null;
+    }
 
     const email = candidates[0];
     email.status = 'processing';
@@ -256,6 +277,21 @@ export class EmailQueue {
     return this.queue.some(
       e => e.status === 'pending' && (!e.nextRetryAt || new Date(e.nextRetryAt).getTime() <= now)
     );
+  }
+
+  /**
+   * Get the RateLimiter instance (for external integration, e.g. WebhookHandler bounce signals).
+   * Returns null if no RateLimiter was configured.
+   */
+  getRateLimiter(): RateLimiter | null {
+    return this.rateLimiter;
+  }
+
+  /**
+   * Set or replace the RateLimiter at runtime.
+   */
+  setRateLimiter(rateLimiter: RateLimiter): void {
+    this.rateLimiter = rateLimiter;
   }
 
   private canSendNow(): boolean {
@@ -274,11 +310,34 @@ export class EmailQueue {
     }
 
     // Wait for rate limit slot
-    while (!this.canSendNow()) {
-      await this.sleep(1000);
+    if (this.rateLimiter) {
+      // Spam-filter-aware rate limiting
+      const check = this.rateLimiter.canSend(email.payload.to);
+      if (!check.allowed && check.waitMs > 0) {
+        await this.sleep(Math.min(check.waitMs, 60_000)); // cap wait at 1 minute per check
+      }
+      // Re-check after waiting — max 60 iterations (~60s) to avoid blocking forever
+      let iterations = 0;
+      const MAX_WAIT_ITERATIONS = 60;
+      while (!this.rateLimiter.canSend(email.payload.to).allowed) {
+        iterations++;
+        if (iterations >= MAX_WAIT_ITERATIONS) {
+          email.status = 'failed';
+          email.error = 'rate_limit_exceeded';
+          this.moveToDeadLetter(email, 'Rate limit wait exceeded: unable to send after 60s');
+          if (this.autoPersist) await this.persist();
+          return;
+        }
+        await this.sleep(1000);
+      }
+      this.rateLimiter.recordSend(email.payload.to);
+    } else {
+      // Fallback: simple sliding window
+      while (!this.canSendNow()) {
+        await this.sleep(1000);
+      }
+      this.sendTimestamps.push(Date.now());
     }
-
-    this.sendTimestamps.push(Date.now());
     email.attempts++;
     email.lastAttemptAt = new Date().toISOString();
 

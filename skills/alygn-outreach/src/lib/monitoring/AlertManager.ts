@@ -4,15 +4,12 @@
  * Design decisions:
  *  - Rules are evaluated against HealthSnapshot + MetricsSnapshot.
  *  - Default rules cover the three required thresholds from the spec.
- *  - Alert channels: console log + file (data/alerts/).
- *  - Future-ready: Discord webhook integration via registerChannel().
+ *  - Alert channels: pluggable AlertChannel[] (console, Discord, email, etc.)
  *  - Deduplication: same rule won't fire again until acknowledged or cooldown expires.
  *  - Non-blocking: alert evaluation and dispatch are fire-and-forget.
  *  - Independently usable: no dependency on HealthMonitor or MetricsCollector
  *    (they just provide the data for evaluate()).
  */
-import * as fs from 'fs';
-import * as path from 'path';
 import * as crypto from 'crypto';
 import {
   type Alert,
@@ -23,17 +20,19 @@ import {
   type ServiceName,
   HealthStatus,
 } from './types';
+import type { AlertChannel, AlertPayload, ChannelResult } from './channels/AlertChannel';
+import { ConsoleChannel } from './channels/ConsoleChannel';
 
 export interface AlertManagerOptions {
   /** Directory for alert file persistence (default: data/alerts) */
   dataDir?: string;
   /** Cooldown period in ms before same rule can fire again (default 300_000 = 5min) */
   cooldownMs?: number;
-  /** Max alert history to retain on disk (default 500) */
+  /** Max alert history to retain on disk (default: 500) */
   maxHistory?: number;
+  /** Initial alert channels (default: [ConsoleChannel]) */
+  channels?: AlertChannel[];
 }
-
-export type AlertChannel = (alert: Alert) => Promise<void> | void;
 
 const DEFAULT_RULES: AlertRule[] = [
   {
@@ -119,7 +118,7 @@ export class AlertManager {
   private readonly alerts: Alert[] = [];
 
   constructor(options: AlertManagerOptions = {}) {
-    this.dataDir = options.dataDir ?? path.join(process.cwd(), 'data', 'alerts');
+    this.dataDir = options.dataDir ?? 'data/alerts';
     this.cooldownMs = options.cooldownMs ?? 300_000; // 5 minutes
     this.maxHistory = options.maxHistory ?? 500;
 
@@ -128,9 +127,12 @@ export class AlertManager {
       this.rules.push(rule);
     }
 
-    // Register default channels
-    this.channels.push(this.consoleChannel.bind(this));
-    this.channels.push(this.fileChannel.bind(this));
+    // Register channels — default to ConsoleChannel if none provided
+    if (options.channels && options.channels.length > 0) {
+      this.channels.push(...options.channels);
+    } else {
+      this.channels.push(new ConsoleChannel({ dataDir: this.dataDir }));
+    }
   }
 
   // ─── Public API ────────────────────────────────────────────────
@@ -146,9 +148,20 @@ export class AlertManager {
     if (idx >= 0) this.rules.splice(idx, 1);
   }
 
-  /** Register an alert channel (e.g., Discord webhook) */
-  registerChannel(channel: AlertChannel): void {
+  /** Add an alert channel */
+  addChannel(channel: AlertChannel): void {
     this.channels.push(channel);
+  }
+
+  /** Remove an alert channel by name */
+  removeChannel(name: string): void {
+    const idx = this.channels.findIndex((ch) => ch.name === name);
+    if (idx >= 0) this.channels.splice(idx, 1);
+  }
+
+  /** Get currently registered channel names */
+  getChannelNames(): string[] {
+    return this.channels.map((ch) => ch.name);
   }
 
   /** Evaluate all rules against current data and dispatch alerts */
@@ -182,7 +195,7 @@ export class AlertManager {
           this.alerts.splice(0, this.alerts.length - this.maxHistory);
         }
 
-        // Dispatch to all channels (non-blocking)
+        // Dispatch to all channels (non-blocking, fan-out)
         this.dispatch(alert).catch(() => {});
 
         fired.push(alert);
@@ -223,51 +236,38 @@ export class AlertManager {
 
   // ─── Internal ─────────────────────────────────────────────────
 
+  /** Convert internal Alert to AlertPayload for channel dispatch */
+  private alertToPayload(alert: Alert): AlertPayload {
+    return {
+      severity: alert.severity === 'critical' ? 'critical' : 'warning',
+      service: alert.service ?? 'system',
+      message: alert.message,
+      details: alert.details,
+      timestamp: alert.timestamp,
+    };
+  }
+
+  /** Fan-out dispatch to all channels — each channel runs independently */
   private async dispatch(alert: Alert): Promise<void> {
-    const results = this.channels.map((ch) => {
+    const payload = this.alertToPayload(alert);
+
+    const results = this.channels.map(async (channel): Promise<ChannelResult> => {
       try {
-        return Promise.resolve(ch(alert));
-      } catch {
-        return Promise.resolve();
+        return await channel.send(payload);
+      } catch (err) {
+        return { sent: false, channel: channel.name, error: (err as Error).message };
       }
     });
-    await Promise.allSettled(results);
-  }
 
-  /** Console channel: log alert to stdout */
-  private consoleChannel(alert: Alert): void {
-    const icon = alert.severity === 'critical' ? '🚨' : '⚠️';
-    const ts = new Date(alert.timestamp).toISOString();
-    console.log(`${icon} [${ts}] ALERT [${alert.severity.toUpperCase()}] ${alert.rule}: ${alert.message}`);
-  }
+    const settled = await Promise.allSettled(results);
 
-  /** File channel: append alert to daily log file */
-  private fileChannel(alert: Alert): void {
-    try {
-      fs.mkdirSync(this.dataDir, { recursive: true });
-
-      const date = new Date(alert.timestamp).toISOString().split('T')[0];
-      const filePath = path.join(this.dataDir, `alerts-${date}.jsonl`);
-
-      // Append as JSONL
-      fs.appendFileSync(filePath, JSON.stringify(alert) + '\n');
-
-      // Also update the latest alerts file
-      const latestPath = path.join(this.dataDir, 'latest.json');
-      const existing: Alert[] = fs.existsSync(latestPath)
-        ? JSON.parse(fs.readFileSync(latestPath, 'utf8'))
-        : [];
-
-      existing.push(alert);
-
-      // Keep last 50 in latest.json
-      if (existing.length > 50) {
-        existing.splice(0, existing.length - 50);
+    // Log any channel failures (non-blocking)
+    for (const result of settled) {
+      if (result.status === 'fulfilled' && result.value.error) {
+        console.error(`[AlertManager] Channel "${result.value.channel}" failed: ${result.value.error}`);
+      } else if (result.status === 'rejected') {
+        console.error(`[AlertManager] Channel dispatch rejected: ${result.reason}`);
       }
-
-      fs.writeFileSync(latestPath, JSON.stringify(existing, null, 2));
-    } catch {
-      // File write failure is non-fatal
     }
   }
 
@@ -279,5 +279,8 @@ export class AlertManager {
     return hash.substring(0, 16);
   }
 }
+
+// Re-export channel types for convenience
+export type { AlertChannel as AlertChannelInterface, AlertPayload, ChannelResult } from './channels/AlertChannel';
 
 export default AlertManager;
