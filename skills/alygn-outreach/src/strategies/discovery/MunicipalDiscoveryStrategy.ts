@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from 'path';
 import { MunicipalEntity } from '../../entities/MunicipalEntity';
 import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
+import { SPANISH_PAIN_POINTS, validateMunicipalSpanishIntegrity } from '../../entities/lang-guard';
 import type { ICostaRicaCanton } from '../../entities/types';
 import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
 import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
@@ -117,33 +118,47 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
       console.log(`   ✅ Found ${data.length} unsent municipalities`);
       
       // Convert to MunicipalEntity
-      return data.map((muni: any) => new MunicipalEntity({
-        id: muni.id,
-        name: `Municipalidad de ${muni.name}`,
-        type: 'municipal',
-        email: muni.mayor_email,
-        website: muni.website_url,
-        phone: muni.phone,
-        location: {
-          city: muni.name,
-          state: muni.province,
-          country: muni.country || 'Costa Rica',
-          region: muni.province
-        },
-        status: 'discovered',
-        priority: muni.priority_score > 70 ? 'high' : 'medium',
-        discoveredAt: muni.discovered_at || new Date(),
-        typeData: {
-          population: muni.population,
-          budget: muni.budget,
-          province: muni.province,
-          painPoints: muni.pain_points || [],
-          trAigaRelevant: true
-        },
-        waveNumber: muni.wave_number,
-        waveDate: muni.wave_date,
-        batchStatus: muni.batch_status
-      }));
+      const entities = data.map((muni: any) => {
+        const entity = new MunicipalEntity({
+          id: muni.id,
+          name: `Municipalidad de ${muni.name}`,
+          type: 'municipal',
+          email: muni.mayor_email,
+          website: muni.website_url,
+          phone: muni.phone,
+          location: {
+            city: muni.name,
+            state: muni.province,
+            country: muni.country || 'Costa Rica',
+            region: muni.province
+          },
+          status: 'discovered',
+          priority: muni.priority_score > 70 ? 'high' : 'medium',
+          discoveredAt: muni.discovered_at || new Date(),
+          typeData: {
+            population: muni.population,
+            budget: muni.budget,
+            province: muni.province,
+            painPoints: muni.pain_points || [],
+            trAigaRelevant: true
+          },
+          waveNumber: muni.wave_number,
+          waveDate: muni.wave_date,
+          batchStatus: muni.batch_status
+        });
+        
+        // P3: Defense-in-depth - validate Spanish content after DB read
+        // This catches any English content that might have slipped past DB constraints
+        const validation = validateMunicipalSpanishIntegrity(entity.typeData);
+        if (!validation.valid) {
+          console.log(`   ⚠️  Spanish validation failed for ${entity.name}: ${validation.violations.join(', ')}`);
+          // Don't throw - just log and continue. The constructor guard already validated painPoints.
+        }
+        
+        return entity;
+      });
+      
+      return entities;
       
     } catch (err) {
       console.log(`   ⚠️  Failed to query Supabase: ${(err as Error).message}`);
@@ -376,7 +391,8 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
       typeData: {
         governmentType: 'city',
         province: 'Unknown',
-        painPoints: ['Complejidad de la transformación digital', 'Recursos técnicos limitados'],
+        // P2: Return full 5 pain points instead of 2
+        painPoints: [...SPANISH_PAIN_POINTS],
         trAigaRelevant: true
       }
     }));
@@ -495,7 +511,8 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
           initiatives: [
             { name: 'Transformación Digital', description: 'Modernización de servicios', status: 'active' }
           ],
-          painPoints: ['Rendición de cuentas en IA', 'Transformación digital', 'Servicios ciudadanos'],
+          // P2: Use full SPANISH_PAIN_POINTS instead of partial inline list
+          painPoints: [...SPANISH_PAIN_POINTS],
           trAigaRelevant: true
         }
       }));

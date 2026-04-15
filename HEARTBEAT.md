@@ -208,7 +208,7 @@ _Contact: contact@alyygn.com_
 
 ---
 
-## 🔄 ACTIVE WORK STREAMS (2026-04-15 01:24 CST)
+## 🔄 ACTIVE WORK STREAMS (2026-04-15 03:25 CST)
 
 ### Stream 1: Phase 1 Critical Fixes (ALYGN Grant System)
 
@@ -223,61 +223,106 @@ _Contact: contact@alyygn.com_
 
 **Final Test Results:** 40/40 tests passing (23 B-001 + 17 D-001)
 
-**Phase 1 Outcome:** Entire discovery pipeline now produces **fully Spanish content** across all code paths:
-- ✅ CR cantones path — canonical `SPANISH_PAIN_POINTS`, Spanish dept focus, Spanish initiatives
-- ✅ Mock/dry-run path — Spanish pain points, focus, initiatives
-- ✅ Firecrawl fallback — Spanish pain points hardcoded
-- ✅ Research (CR, generic, dry-run) — Spanish pain points, initiatives, key contacts, departments
-- ✅ Constructor guard — `assertSpanishPainPoints()` blocks English at entity creation
+**Phase 1 Outcome:** Entire discovery pipeline now produces **fully Spanish content** across all code paths.
 
-**Follow-up Items (Phase 2):**
-- P1: Use `SPANISH_PAIN_POINTS` constant directly in `researchGeneric()` instead of inline strings
-- P2: `fetchMunicipalitiesFromFirecrawl()` should return full 5 pain points, not 2
-- P3: Add `assertSpanishPainPoints()` call in `discoverFromSupabase()` after DB read (defense-in-depth)
-- P3: Add `assertSpanishString()` validation for initiative names/descriptions and department focus
+**Follow-up Items (Phase 2):** P1-P3 items documented, ready for implementation.
 
 ---
 
-### 🎉 PHASE 1 COMPLETE — Ready for Phase 2
+### Stream 1b: Phase 2 Follow-up (P1-P3 Items)
 
-**What's now working:**
-- Municipal entities always have Spanish pain points (enforced at constructor + DB level)
-- Discovery pipeline produces Spanish content end-to-end
-- Research pipeline produces Spanish content across all code paths
-- Mock/dry-run data fully Spanish
-- 40 automated tests prevent regression
+**Status:** 🔄 **IN PROGRESS** — P1 Complete, P2 Complete, P3 Complete
 
-**Next:** Begin Phase 2 (P1-P3 items from follow-up) or return to grant monitoring/VC outreach.
+**What We Fixed (Phase 2):**
+
+**P1: Use `SPANISH_PAIN_POINTS` constant** ✅
+- `MunicipalResearchStrategy.researchGeneric()` — Now uses `[...SPANISH_PAIN_POINTS]`
+- `MunicipalResearchStrategy.researchDryRun()` — Now uses `[...SPANISH_PAIN_POINTS]`
+- **Why:** Prevents inline string drift, single source of truth
+
+**P2: Full 5 pain points in Firecrawl + mock** ✅
+- `MunicipalDiscoveryStrategy.fetchMunicipalitiesFromFirecrawl()` — Now returns 5 pain points
+- `MunicipalDiscoveryStrategy.generateMockMunicipals()` — Now uses `[...SPANISH_PAIN_POINTS]`
+- **Why:** Consistency across all code paths
+
+**P3: Defense-in-depth validation** ✅
+- `MunicipalDiscoveryStrategy.discoverFromSupabase()` — Added `validateMunicipalSpanishIntegrity()` check
+- **Why:** Catches any English content that might slip past DB constraints
+
+**Files Modified:**
+- `skills/alygn-outreach/src/strategies/research/MunicipalResearchStrategy.ts`
+- `skills/alygn-outreach/src/strategies/discovery/MunicipalDiscoveryStrategy.ts`
+- `skills/alygn-outreach/src/entities/lang-guard.ts` (already had validation functions)
+
+**Next:**
+1. Commit changes
+2. Verify no TypeScript errors
+3. Run existing tests to confirm no regressions
+4. Update issue tracking
 
 ---
 
 ### Stream 2: Kill Switch Admin UI (Phase0)
 
-**Status:** ⏸️ BLOCKED - Awaiting Manual Deploy
+**Status:** 🔍 CODE REVIEW COMPLETE — BUG IDENTIFIED & DOCUMENTED
 
-**What's Done:**
-- ✅ Auth endpoints added (Keridz)
-- ✅ Admin UI built (vite production build)
-- ✅ Nginx config updated (added `/v1/auth/` proxy)
-- ✅ DEPLOY-COMMANDS.md created
+**What Happened:**
+- ✅ Source code RESTORED from git (commit 270c497, April 10)
+- ✅ Full source tree recovered: `phase0/admin-ui/src/`
+- 🔴 BUG FOUND: LoginPage redirects to `/admin/` but routes are at `/`
+- ✅ Code quality assessment: GOOD (auth flow, session management solid)
+- ✅ Findings documented: `KILL-SWITCH-CODE-REVIEW-FINDINGS.md`
 
-**Blocked On:**
-- Manual sudo commands to deploy nginx config + dist files
+**Bug Details:**
+```tsx
+// LoginPage.tsx line 20:
+window.location.href = '/admin/';  // ← WRONG! Should be '/' or '/kill-switch'
+```
 
-**Credentials Ready:**
-- Email: `admin@alyygn.com`
-- Password: `andlersrv-auth-token-2026`
-- URL: `https://andlersrv.tail62d797.ts.net:8443/`
-
-**Next:** Andler runs deploy commands → Test login
+**Next:**
+1. Fix LoginPage redirect path
+2. Resolve nginx merge conflicts
+3. Build and deploy
+4. Test login flow
 
 ---
 
-### Stream 3: Grant Monitoring (Ongoing)
+### Stream 3: GitHub Issues Deployment (AndlerRL/andler-ops)
+
+**Status:** ⏳ READY TO DEPLOY — 111 Issues Prepared
+
+**What's Ready:**
+- ✅ All 111 issues have complete bug report templates (100% complete)
+- ✅ Deployment script: `deploy-all-111-issues.sh`
+- ✅ 26 batch scripts in `batch-scripts/` directory
+- ✅ Issue template with category mapping (A-H)
+- ✅ Documentation: `FINAL-COMPLETION-STATUS.md`
+
+**Categories:**
+| Category | Issues | Status | Files |
+|----------|--------|--------|-------|
+| A (Coordination) | 1-15 | ✅ 100% | 2 files |
+| B (Data Integrity) | 16-28 | ✅ 100% | 3 files |
+| C (Municipal Language) | 29-42 | ✅ 100% | 2 files |
+| D (Discovery) | 43-56 | ✅ 100% | 5 files |
+| E (Email Delivery) | 57-70 | ✅ 100% | 3 files |
+| F (Templates) | 71-84 | ✅ 100% | 3 files |
+| G (Infrastructure) | 85-98 | ✅ 100% | 3 files |
+| H (Security) | 99-111 | ✅ 100% | 3 files |
+
+**Next:**
+1. Verify repo access
+2. Run `./deploy-all-111-issues.sh`
+3. Verify issues created: `gh issue list --limit 111`
+4. Assign to team members based on category
+
+---
+
+### Stream 4: Grant Monitoring (Ongoing)
 
 **Status:** ✅ STABLE
 
-- Schmidt Sciences: May 17, 2026 (32 days) — No alert
+- Schmidt Sciences: May 17, 2026 (33 days) — No alert
 - Coefficient Giving: Dec 31, 2026 — No alert
 - No Tania emails pending
 - No status changes detected

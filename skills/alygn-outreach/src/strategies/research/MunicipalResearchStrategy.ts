@@ -3,6 +3,7 @@
  */
 import { MunicipalEntity } from '../../entities/MunicipalEntity';
 import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
+import { SPANISH_PAIN_POINTS } from '../../entities/lang-guard';
 import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
 
 export class MunicipalResearchStrategy extends ResearchStrategy {
@@ -95,11 +96,8 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
         { name: 'Transformación Digital', description: 'Modernización de servicios municipales', status: 'active' },
         { name: 'Participación Ciudadana', description: 'Mejora de la participación pública', status: 'planned' }
       ],
-      painPoints: [
-        'Complejidad de la transformación digital',
-        'Recursos técnicos limitados',
-        'Entrega de servicios ciudadanos'
-      ],
+      // P1: Use SPANISH_PAIN_POINTS constant instead of inline strings
+      painPoints: [...SPANISH_PAIN_POINTS],
       keyContacts: this.generateKeyContacts(entity.name)
     };
     
@@ -132,7 +130,8 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
       initiatives: [
         { name: 'Transformación Digital', description: 'Modernización de servicios', status: 'active', budget: 100000 }
       ],
-      painPoints: ['Rendición de cuentas en IA', 'Transformación digital', 'Servicios ciudadanos'],
+      // P1: Use SPANISH_PAIN_POINTS constant for consistency
+      painPoints: [...SPANISH_PAIN_POINTS],
       trAigaRelevant: true,
       keyContacts: [{ name: 'Gerente Municipal', title: 'Gerente Municipal', isDecisionMaker: true }]
     };

@@ -1,0 +1,22 @@
+FROM oven/bun:1.2-alpine
+
+WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy shared modules to their sibling positions
+COPY redis/ ./redis/
+COPY tracing/ ./tracing/
+
+# Copy service INTO a subdirectory so ../redis/ and ../tracing/ resolve correctly
+COPY kill-switch/kill-switch-service.mjs ./kill-switch/kill-switch-service.mjs
+
+# Install dependencies
+RUN bun add @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \
+    @opentelemetry/exporter-trace-otlp-grpc @opentelemetry/api \
+    @opentelemetry/semantic-conventions redis
+
+EXPOSE 3000
+
+CMD ["bun", "run", "kill-switch/kill-switch-service.mjs"]
