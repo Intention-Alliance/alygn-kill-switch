@@ -15,7 +15,7 @@ export function LoginPage() {
 
     try {
       await login(email, password);
-      // Fix: Redirect to /kill-switch instead of /admin/ (routes are at root)
+      // Redirect to /kill-switch (routes are at root)
       window.location.href = '/kill-switch';
     } catch (err) {
       setError(

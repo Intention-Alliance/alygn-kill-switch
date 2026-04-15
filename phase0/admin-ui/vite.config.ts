@@ -13,16 +13,11 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/admin/api': {
+      '/v1': {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/admin\/api/, '/v1'),
       },
-      '/admin/ws': {
-        target: 'ws://127.0.0.1:3000',
-        ws: true,
-        changeOrigin: true,
-      },
+      // WebSocket proxy removed — no WS client code exists
     },
   },
   build: {

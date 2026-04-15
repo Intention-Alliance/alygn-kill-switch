@@ -9,7 +9,7 @@ import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { trace, diag, DiagConsoleLogger, DiagLogLevel, type Attributes } from '@opentelemetry/api';
 import { initHTTPInterceptors } from './http-interceptor';
 
-const COLLECTOR_URL = '/admin/api/traces';
+const COLLECTOR_URL = '/v1/traces';
 
 interface TelemetryConfig {
   serviceName?: string;
@@ -106,8 +106,8 @@ export function initTelemetry(config: TelemetryConfig = {}): void {
 
   // Initialize HTTP interceptors for trace header propagation
   initHTTPInterceptors({
-    baseUrl: '/admin/api',
-    loginRedirectPath: '/admin/login',
+    baseUrl: '/v1',
+    loginRedirectPath: '/login',
   });
 
   diag.info('OpenTelemetry initialized', { serviceName, sampleRate, errorSampleRate });

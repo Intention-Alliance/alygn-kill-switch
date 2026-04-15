@@ -1,4 +1,4 @@
-const API_BASE = '/admin/api';
+const API_BASE = '/v1';
 
 interface ApiError {
   status: number;
@@ -60,7 +60,7 @@ async function request<T>(
 
     if (response.status === 401 || response.status === 403) {
       // Auth failure - redirect handled by interceptor
-      window.location.href = '/admin/login';
+      window.location.href = '/login';
       throw new ApiClientError({
         status: response.status,
         message: 'Authentication required',
