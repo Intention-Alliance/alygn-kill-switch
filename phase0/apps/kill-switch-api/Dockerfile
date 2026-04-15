@@ -9,15 +9,18 @@ RUN apk add --no-cache curl
 COPY infra/redis/ ./redis/
 COPY infra/tracing/ ./tracing/
 
-# Copy service to subdirectory (preserves ../redis/ import structure)
-COPY apps/kill-switch-api/kill-switch-service.mjs ./kill-switch/kill-switch-service.mjs
+# Copy service source
+COPY apps/kill-switch-api/src/ ./kill-switch/src/
+COPY apps/kill-switch-api/package.json ./kill-switch/package.json
+COPY apps/kill-switch-api/tsconfig.json ./kill-switch/tsconfig.json
+
+# Copy shared packages
+COPY packages/shared-types/ ./packages/shared-types/
 
 # Install dependencies
-RUN bun add @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node \
-    @opentelemetry/exporter-trace-otlp-grpc @opentelemetry/api \
-    @opentelemetry/semantic-conventions redis
+RUN bun install
 
 EXPOSE 3000
 
 # Run from subdirectory so ../redis/ resolves to /app/redis/
-CMD ["bun", "run", "kill-switch/kill-switch-service.mjs"]
+CMD ["bun", "run", "kill-switch/src/index.ts"]
