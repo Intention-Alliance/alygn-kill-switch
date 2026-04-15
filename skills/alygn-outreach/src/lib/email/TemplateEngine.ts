@@ -1,5 +1,5 @@
 /**
- * TemplateEngine — F-074 / F-076 / F-075
+ * TemplateEngine — F-074 / F-076 / F-075 / F-077
  * Synchronous template variable substitution engine.
  *
  * Features:
@@ -14,10 +14,21 @@
  *   Loop context vars:      {{@index}}, {{@first}}, {{@last}}, {{@length}}
  *   Nested loops:           {{#each outer}}...{{#each inner}}...{{/each}}...{{/each}}
  *   Object iteration:      {{#each config}}{{@key}}: {{this}}{{/each}}
+ *   Partials:              {{> partialName}} — include a registered partial (F-077)
+ *   Circular dependency:   Detected at render time, throws Error
  *
  * All operations are synchronous pure functions (< 5ms per template).
  * No external dependencies.
  */
+
+import { TemplatePartial } from './TemplatePartial';
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+/** Maximum nesting depth for partial includes (prevents stack overflow). */
+const MAX_PARTIAL_DEPTH = 10;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -25,6 +36,14 @@
 
 export interface TemplateData {
   [key: string]: unknown;
+}
+
+/** Render context for tracking partial resolution and circular deps. */
+export interface RenderContext {
+  /** Set of partial names currently being resolved (for circular dep detection). */
+  partialChain: string[];
+  /** The TemplatePartial registry instance. */
+  partials?: TemplatePartial;
 }
 
 /** Loop context pushed onto stack for each #each iteration. */
@@ -182,12 +201,14 @@ export interface ConditionExpr {
 }
 
 interface BlockNode {
-  type: 'text' | 'variable' | 'if' | 'each';
+  type: 'text' | 'variable' | 'if' | 'each' | 'partial';
   text?: string;
   token?: TokenSpec;
   conditionPath?: string;
   conditionExpr?: ConditionExpr;
   iteratorPath?: string;
+  /** Partial name for {{> partialName}} includes. */
+  partialName?: string;
   children?: BlockNode[];
   body?: BlockNode[];
   elseBody?: BlockNode[];
@@ -195,12 +216,12 @@ interface BlockNode {
 
 /**
  * Parse template string into an AST of BlockNodes.
- * Handles: {{var}}, {{#if path}}...{{else}}...{{/if}}, {{#each path}}...{{/each}}
+ * Handles: {{var}}, {{#if path}}...{{else}}...{{/if}}, {{#each path}}...{{/each}}, {{> partialName}}
  */
-function parseTemplate(template: string): BlockNode[] {
+export function parseTemplate(template: string): BlockNode[] {
   const nodes: BlockNode[] = [];
-  // Regex matches: {{{raw}}} (triple), {{#if path}}, {{#each path}}, {{else}}, {{/if}}, {{/each}}, {{token}}
-  const tokenRe = new RegExp('\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(#if\\s+[^}]+|#each\\s+[\\w.]+|else|/if|/each|[^}]+)\\}\\}', 'g');
+  // Regex matches: {{{raw}}} (triple), {{> partialName}}, {{#if path}}, {{#each path}}, {{else}}, {{/if}}, {{/each}}, {{token}}
+  const tokenRe = new RegExp('\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(>\\s*[\\w.-]+|#if\\s+[^}]+|#each\\s+[\\w.]+|else|/if|/each|[^}]+)\\}\\}', 'g');
 
   let cursor = 0;
   let tokenMatch: RegExpExecArray | null;
@@ -286,6 +307,13 @@ function parseTemplate(template: string): BlockNode[] {
       continue;
     }
 
+    // {{> partialName}} — partial include
+    const partialMatch = inner.match(/^>\s*([\w.-]+)$/);
+    if (partialMatch) {
+      currentNodes.push({ type: 'partial', partialName: partialMatch[1] });
+      continue;
+    }
+
     // Regular variable token {{expr}}
     currentNodes.push({ type: 'variable', token: parseToken(inner) });
   }
@@ -315,18 +343,34 @@ function parseTemplate(template: string): BlockNode[] {
 function parseConditionExpr(expr: string): ConditionExpr {
   const trimmed = expr.trim();
 
-  // Check for logical operators (&& or ||) at the top level (not inside quotes)
-  const logicalIdx = findTopLevelLogical(trimmed);
-  if (logicalIdx !== -1) {
-    const op = trimmed[logicalIdx] === '&' ? '&&' : '||';
-    const leftStr = trimmed.slice(0, logicalIdx).trim();
-    const rightStr = trimmed.slice(logicalIdx + 2).trim();
+  // Two-pass logical parsing: || has lower precedence than &&.
+  // First split on || (lowest precedence), then within each segment split on &&.
+  // This ensures: a || b && c  →  a || (b && c)
+  const orIdx = findTopLevelOr(trimmed);
+  if (orIdx !== -1) {
+    const leftStr = trimmed.slice(0, orIdx).trim();
+    const rightStr = trimmed.slice(orIdx + 2).trim();
     const leftExpr = parseConditionExpr(leftStr);
     const rightExpr = parseConditionExpr(rightStr);
     return {
       raw: trimmed,
       leftPath: leftExpr.leftPath,
-      logical: op,
+      logical: '||',
+      leftExpr,
+      rightExpr,
+    };
+  }
+  // No || found — check for &&
+  const andIdx = findTopLevelAnd(trimmed);
+  if (andIdx !== -1) {
+    const leftStr = trimmed.slice(0, andIdx).trim();
+    const rightStr = trimmed.slice(andIdx + 2).trim();
+    const leftExpr = parseConditionExpr(leftStr);
+    const rightExpr = parseConditionExpr(rightStr);
+    return {
+      raw: trimmed,
+      leftPath: leftExpr.leftPath,
+      logical: '&&',
       leftExpr,
       rightExpr,
     };
@@ -365,10 +409,32 @@ function parseConditionExpr(expr: string): ConditionExpr {
 }
 
 /**
- * Find the index of a top-level && or || operator (not inside quotes).
+ * Find the index of a top-level || operator (not inside quotes).
+ * || has lower precedence than &&, so we split on || first.
  * Returns -1 if none found.
  */
-function findTopLevelLogical(expr: string): number {
+function findTopLevelOr(expr: string): number {
+  let inQuote: string | null = null;
+  for (let i = 0; i < expr.length - 1; i++) {
+    const ch = expr[i];
+    if (inQuote) {
+      if (ch === inQuote) inQuote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inQuote = ch;
+      continue;
+    }
+    if (ch === '|' && expr[i + 1] === '|') return i;
+  }
+  return -1;
+}
+
+/**
+ * Find the index of a top-level && operator (not inside quotes).
+ * Returns -1 if none found.
+ */
+function findTopLevelAnd(expr: string): number {
   let inQuote: string | null = null;
   for (let i = 0; i < expr.length - 1; i++) {
     const ch = expr[i];
@@ -381,7 +447,6 @@ function findTopLevelLogical(expr: string): number {
       continue;
     }
     if (ch === '&' && expr[i + 1] === '&') return i;
-    if (ch === '|' && expr[i + 1] === '|') return i;
   }
   return -1;
 }
@@ -476,11 +541,12 @@ function compare(left: unknown, right: unknown, op: ConditionExpr['operator']): 
 // Rendering
 // ---------------------------------------------------------------------------
 
-function renderNodes(
+export function renderNodes(
   nodes: BlockNode[],
   data: TemplateData,
   insideEach: boolean,
   loopStack: readonly LoopContext[] = [],
+  renderCtx?: RenderContext,
 ): string {
   const parts: string[] = [];
 
@@ -500,16 +566,14 @@ function renderNodes(
           str = spec.default;
         }
 
-        // Escaping: inside #each, default is raw; outside, default is escape
-        if (spec.escapeMode === 'h') {
-          str = escapeHtml(str);
-        } else if (spec.escapeMode === 'r') {
+        // Escaping: default is ALWAYS HTML-escape (including inside #each).
+        // Use explicit |r modifier for raw output.
+        if (spec.escapeMode === 'r') {
           // raw, no escaping
-        } else if (!insideEach) {
-          // Default outside #each: HTML-escape for safety
+        } else {
+          // Default: HTML-escape for safety (both inside and outside #each)
           str = escapeHtml(str);
         }
-        // Inside #each without explicit mode: raw (caller controls HTML)
 
         parts.push(str);
         break;
@@ -519,9 +583,9 @@ function renderNodes(
         const cond = node.conditionExpr ?? (node.conditionPath ? { raw: node.conditionPath, truthyPath: node.conditionPath, leftPath: node.conditionPath } as ConditionExpr : undefined);
         if (cond) {
           if (evalCondition(cond, data, loopStack)) {
-            parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack));
+            parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
           } else {
-            parts.push(renderNodes(node.elseBody ?? [], data, insideEach, loopStack));
+            parts.push(renderNodes(node.elseBody ?? [], data, insideEach, loopStack, renderCtx));
           }
         }
         break;
@@ -558,7 +622,7 @@ function renderNodes(
               }
               Object.assign(iterData, safeItem);
             }
-            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack, renderCtx));
           }
         } else if (
           typeof iterable === 'object' &&
@@ -594,9 +658,46 @@ function renderNodes(
               }
               Object.assign(iterData, safeItem);
             }
-            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack, renderCtx));
           }
         }
+        break;
+      }
+
+      case 'partial': {
+        const partialName = node.partialName!;
+        const partials = renderCtx?.partials;
+        if (!partials) {
+          // No partials registry — leave as-is
+          parts.push(`{{> ${partialName}}}`);
+          break;
+        }
+        const partialDef = partials.get(partialName);
+        if (!partialDef) {
+          throw new Error(`TemplateEngine: partial "${partialName}" not found`);
+        }
+        // Circular dependency detection
+        const chain = renderCtx.partialChain;
+        if (chain.includes(partialName)) {
+          const cycle = [...chain, partialName].join(' → ');
+          throw new Error(`TemplateEngine: circular partial dependency detected: ${cycle}`);
+        }
+        // Max recursion depth check
+        if (chain.length >= MAX_PARTIAL_DEPTH) {
+          throw new Error(`TemplateEngine: max partial depth (${MAX_PARTIAL_DEPTH}) exceeded at "${partialName}". Chain: ${chain.join(' → ')}`);
+        }
+        // Merge partial defaults with current data (current data wins)
+        const partialData: TemplateData = {
+          ...(partialDef.defaults ?? {}),
+          ...data,
+        };
+        // Parse and render the partial template with updated chain
+        const partialAst = parseTemplate(partialDef.template);
+        const partialCtx: RenderContext = {
+          partialChain: [...chain, partialName],
+          partials,
+        };
+        parts.push(renderNodes(partialAst, partialData, insideEach, loopStack, partialCtx));
         break;
       }
     }
@@ -610,16 +711,34 @@ function renderNodes(
 // ---------------------------------------------------------------------------
 
 export class TemplateEngine {
+  /** Partial registry for {{> partialName}} includes. */
+  private partials: TemplatePartial;
+
+  constructor(partials?: TemplatePartial) {
+    this.partials = partials ?? new TemplatePartial();
+  }
+
   /**
    * Render a template string with the given data.
    *
-   * @param template - Template string with {{token}}, {{#if}}, {{#each}} etc.
+   * @param template - Template string with {{token}}, {{#if}}, {{#each}}, {{> partial}} etc.
    * @param data - Key-value pairs for substitution.
    * @returns Rendered string with all tokens resolved.
    */
-  render(template: string, data: TemplateData): string {
+  render(template: string, data: TemplateData, partialChain: string[] = []): string {
     const ast = parseTemplate(template);
-    return renderNodes(ast, data, false);
+    const ctx: RenderContext = {
+      partialChain,
+      partials: this.partials,
+    };
+    return renderNodes(ast, data, false, [], ctx);
+  }
+
+  /**
+   * Get the partial registry (for registering/retrieving partials).
+   */
+  getPartials(): TemplatePartial {
+    return this.partials;
   }
 
   /**
@@ -636,9 +755,13 @@ export class TemplateEngine {
    */
   extractVariables(template: string): string[] {
     const vars = new Set<string>();
-    const re = /\{\{(#if\s+|#each\s+)?([\w.@|]+)\}\}/g;
+    const re = /\{\{(#if\s+|#each\s+|>\s*)?([\w.@|]+)\}\}/g;
     let match: RegExpExecArray | null;
     while ((match = re.exec(template)) !== null) {
+      if (match[1] && match[1].startsWith('>')) {
+        // Partial include — skip, not a variable
+        continue;
+      }
       if (match[1]) {
         // Block opener — extract the path after #if or #each
         const path = match[2].trim();

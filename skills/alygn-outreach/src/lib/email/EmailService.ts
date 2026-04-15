@@ -11,6 +11,8 @@ import type { EmailTemplateInput, TemplateSizeConstraints, TemplateValidationRes
 import { ComplianceValidator, type ComplianceEmailInput, type ComplianceStatus } from './ComplianceValidator';
 import { UnsubscribeManager } from './UnsubscribeManager';
 import type { AuditLogger } from '../audit/AuditLogger';
+import { TemplateVersion } from './TemplateVersion';
+import { TemplateRegistry } from './TemplateRegistry';
 
 interface BatchEmailPayload {
   to: string;
@@ -45,6 +47,7 @@ export class EmailService {
   private templateValidator: TemplateValidator;
   private complianceValidator: ComplianceValidator;
   private unsubscribeManager: UnsubscribeManager;
+  private templateRegistry: TemplateRegistry;
   private auditLogger: AuditLogger | null = null;
 
   constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig, unsubscribeManager?: UnsubscribeManager) {
@@ -53,6 +56,7 @@ export class EmailService {
     this.templateValidator = new TemplateValidator(sizeConstraints);
     this.complianceValidator = new ComplianceValidator();
     this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager();
+    this.templateRegistry = new TemplateRegistry();
     this.queue = new EmailQueue(queueConfig);
     this.queue.setSendFn(async (payload) => {
       await this.initialize();
@@ -404,6 +408,90 @@ export class EmailService {
     const sendResult = await this.sendWithValidation(payload, options?.language);
 
     return { ...sendResult, compliance };
+  }
+
+  /**
+   * Send an email using a versioned template from the registry.
+   * Records which template version was used in the result for audit purposes.
+   * If templateVersion is specified, validates compatibility with the registered template.
+   *
+   * @param payload - Email payload (subject, html, text, to, from, etc.)
+   * @param templateName - Name of the template in the registry
+   * @param templateVersion - Optional specific version; defaults to latest
+   * @param options - Optional compliance/validation options
+   */
+  async sendWithVersion(
+    payload: IEmailPayload,
+    templateName: string,
+    templateVersion?: TemplateVersion | string,
+    options?: {
+      language?: 'es' | 'en';
+      hasConsent?: boolean;
+      physicalAddress?: string;
+      supportsErasure?: boolean;
+      personalDataFieldsCount?: number;
+    },
+  ): Promise<ISendResult & { templateVersion?: string; compliance?: ComplianceStatus }> {
+    // Resolve version
+    const v = templateVersion
+      ? (typeof templateVersion === 'string'
+        ? TemplateVersion.parse(templateVersion)
+        : templateVersion)
+      : undefined;
+
+    // Look up template in registry
+    const entry = this.templateRegistry.get(templateName, v);
+    if (!entry) {
+      const versionStr = v ? v.toString() : 'latest';
+      console.error(`[EmailService] Template "${templateName}" version ${versionStr} not found in registry`);
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Template "${templateName}" version ${versionStr} not found in registry`,
+      };
+    }
+
+    // If a specific version was requested, check compatibility with latest
+    if (v) {
+      const latest = this.templateRegistry.getLatest(templateName);
+      if (latest) {
+        const requestedV = TemplateVersion.parse(entry.version);
+        const latestV = TemplateVersion.parse(latest.version);
+        if (!requestedV.isCompatible(latestV)) {
+          console.warn(
+            `[EmailService] Template "${templateName}" version ${entry.version} is not compatible with latest ${latest.version} (major version mismatch)`,
+          );
+        }
+      }
+    }
+
+    // Merge template content with payload (template content as html/text if payload doesn't override)
+    const mergedPayload: IEmailPayload = {
+      ...payload,
+      html: payload.html || entry.content,
+    };
+
+    // Delegate to sendWithCompliance for full validation
+    const result = await this.sendWithCompliance(mergedPayload, {
+      language: options?.language,
+      hasConsent: options?.hasConsent,
+      physicalAddress: options?.physicalAddress,
+      supportsErasure: options?.supportsErasure,
+      personalDataFieldsCount: options?.personalDataFieldsCount,
+    });
+
+    return {
+      ...result,
+      templateVersion: entry.version,
+    };
+  }
+
+  /**
+   * Get the TemplateRegistry instance for external use (registering templates, etc.).
+   */
+  getTemplateRegistry(): TemplateRegistry {
+    return this.templateRegistry;
   }
 
   /**

@@ -21,6 +21,10 @@ interface SentEmailEntry {
   status?: 'sent' | 'bounced' | 'opened' | 'clicked' | 'deferred' | 'spam_report' | 'unsubscribed';
   bounceReason?: string;
   bouncedAt?: string;
+  /** Template name used to generate this email (F-071) */
+  templateName?: string;
+  /** Template version used to generate this email (F-071) */
+  templateVersion?: string;
 }
 
 interface SentEmails {
@@ -38,6 +42,10 @@ interface RecordSentParams {
   subject: string;
   sentAt?: string;
   messageId?: string;
+  /** Template name for audit trail (F-071) */
+  templateName?: string;
+  /** Template version for audit trail (F-071) */
+  templateVersion?: string;
 }
 
 export class SentEmailTracker {
@@ -126,7 +134,9 @@ export class SentEmailTracker {
       vcName: vcName || name,
       subject,
       sentAt: sentAt || new Date().toISOString(),
-      messageId: messageId || `alygn-${Date.now()}`
+      messageId: messageId || `alygn-${Date.now()}`,
+      templateName: params.templateName,
+      templateVersion: params.templateVersion,
     };
     
     if (existingIndex >= 0) {

@@ -7,9 +7,11 @@
 import { HealthMonitor } from './HealthMonitor';
 import { MetricsCollector } from './MetricsCollector';
 import { AlertManager } from './AlertManager';
+import { CertificateMonitor } from './CertificateMonitor';
 import type { HealthMonitorOptions } from './HealthMonitor';
 import type { MetricsCollectorOptions } from './MetricsCollector';
 import type { AlertManagerOptions } from './AlertManager';
+import type { CertificateMonitorOptions, CertificateService } from './CertificateMonitor';
 import type { HealthSnapshot, MetricsSnapshot, ServiceName } from './types';
 import { HealthStatus } from './types';
 
@@ -17,6 +19,8 @@ export interface MonitoringSystemOptions {
   health?: HealthMonitorOptions;
   metrics?: MetricsCollectorOptions;
   alerts?: AlertManagerOptions;
+  /** Certificate monitoring configuration */
+  certificates?: CertificateMonitorOptions;
   /** Evaluate alerts on every health check cycle (default: true) */
   evaluateAlertsOnCheck?: boolean;
 }
@@ -25,6 +29,7 @@ export class MonitoringSystem {
   readonly health: HealthMonitor;
   readonly metrics: MetricsCollector;
   readonly alerts: AlertManager;
+  readonly certificates: CertificateMonitor;
   private readonly evaluateAlertsOnCheck: boolean;
 
   constructor(options: MonitoringSystemOptions = {}) {
@@ -32,6 +37,14 @@ export class MonitoringSystem {
     this.metrics = new MetricsCollector(options.metrics);
     this.alerts = new AlertManager(options.alerts);
     this.evaluateAlertsOnCheck = options.evaluateAlertsOnCheck ?? true;
+
+    // Wire CertificateMonitor with AlertManager and HealthMonitor references
+    const certOptions: CertificateMonitorOptions = {
+      ...options.certificates,
+      alertManager: this.alerts,
+      healthMonitor: this.health,
+    };
+    this.certificates = new CertificateMonitor(certOptions);
 
     // Override the service-unhealthy-consecutive rule to use
     // consecutiveCount from context (provided by MonitoringSystem)
@@ -66,6 +79,7 @@ export class MonitoringSystem {
   start(): void {
     this.health.start();
     this.metrics.startPersist();
+    this.certificates.start();
 
     // Wire alert evaluation into health check cycle
     if (this.evaluateAlertsOnCheck) {
@@ -91,6 +105,7 @@ export class MonitoringSystem {
   stop(): void {
     this.health.stop();
     this.metrics.stopPersist();
+    this.certificates.stop();
     if (this._alertEvalTimer) {
       clearInterval(this._alertEvalTimer);
       this._alertEvalTimer = null;
@@ -118,6 +133,7 @@ export class MonitoringSystem {
 export { HealthMonitor } from './HealthMonitor';
 export { MetricsCollector } from './MetricsCollector';
 export { AlertManager } from './AlertManager';
+export { CertificateMonitor } from './CertificateMonitor';
 export * from './types';
 export * from './channels';
 
