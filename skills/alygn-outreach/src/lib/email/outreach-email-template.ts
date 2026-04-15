@@ -29,7 +29,7 @@
  *   });
  */
 
-import fs from "fs";
+import { templateEngine } from "./TemplateEngine";
 
 // Logo embedding - Fallback to hosted URL if base64 fails
 const hostedLogoUrl = 'https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png';
@@ -131,40 +131,52 @@ Como institución independiente de gobernanza de IA, Alygn puede apoyar a los mu
 Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : ''} con los desafíos de gobernanza de IA que enfrentan. ¿Podemos coordinar una llamada para discutir esto más a fondo?`;
   const mailtoLink = `mailto:tanialeaidm@gmail.com?subject=${encodeURIComponent(mailtoSubject)}&body=${encodeURIComponent(mailtoBody)}&Bcc=outreach@alyygn.com`;
 
-  // Build pain points HTML
-  const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0
-    ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
+  // Build pain points HTML via TemplateEngine
+  const painPointsTemplate = `{{#if painPoints}}<p style="margin: 16px 0; line-height: 1.6;">{{painPointsIntro}}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p: string) => `<li>${p.trim()}</li>`).join('')}
-</ul>`
-    : '';
+  {{#each painPoints}}<li>{{this|r}}</li>{{/each}}
+</ul>{{/if}}`;
+  const painPointsHtml = templateEngine.render(painPointsTemplate, {
+    painPoints: Array.isArray(painPoints) ? painPoints.slice(0, 3).map((p: string) => p.trim()) : [],
+    painPointsIntro: copy.painPointsIntro,
+  });
 
-  // Build HTML
-  const html = `<!DOCTYPE html>
+  // Build HTML via TemplateEngine
+  const htmlTemplate = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject || 'ALYGN - AI Governance'}</title>
+  <title>{{subject|ALYGN - AI Governance}}</title>
   ${emailStyle}
 </head>
 <body>
   <div class="container">
     ${buildHeader(logoImg)}
     <div class="content">
-      <p class="greeting">Estimado/a ${recipientName}${companyName ? `, edil de ${companyName}` : ''},</p>
+      <p class="greeting">Estimado/a {{recipientName|there}}{{#if companyName}}, edil de {{companyName}}{{/if}},</p>
       <div class="body-content">
-        <p>${copy.intro}</p>
+        <p>{{intro|r}}</p>
         ${painPointsHtml}
       </div>
-      <p class="closing">${copy.closing}</p>
-      <a href="${mailtoLink}" class="cta-button">${copy.cta}</a>
-      <p class="ps">${copy.customPS}</p>
+      <p class="closing">{{closing|r}}</p>
+      <a href="{{mailtoLink|r}}" class="cta-button">{{cta|r}}</a>
+      {{#if customPS}}<p class="ps">{{customPS|r}}</p>{{/if}}
     </div>
     ${buildFooter(variant)}
   </div>
 </body>
 </html>`;
+  const html = templateEngine.render(htmlTemplate, {
+    subject: subject || '',
+    recipientName,
+    companyName,
+    intro: copy.intro,
+    closing: copy.closing,
+    cta: copy.cta,
+    customPS: copy.customPS || '',
+    mailtoLink,
+  });
 
   const text = generatePlainText(html);
 
@@ -232,44 +244,57 @@ Alygn is an independent institution focused on making accountability, emergency 
 I am interested in exploring how we can support ${companyName || 'your organization'} with the AI governance challenges we both are facing. Can we coordinate a call to discuss this further?`;
   const mailtoLink = `mailto:tanialeaidm@gmail.com?subject=${encodeURIComponent(mailtoSubject)}&body=${encodeURIComponent(mailtoBody)}&Bcc=outreach@alyygn.com`;
 
-  // Build custom hook HTML if provided
-  const hookHtml = customHook ? `<p style="margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;">${customHook}</p>` : '';
+  // Build custom hook HTML via TemplateEngine
+  const hookTemplate = `{{#if customHook}}<p style="margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;">{{customHook|r}}</p>{{/if}}`;
+  const hookHtml = templateEngine.render(hookTemplate, { customHook: customHook || '' });
 
-  // Build pain points HTML
-  const painPointsHtml = Array.isArray(painPoints) && painPoints.length > 0
-    ? `<p style="margin: 16px 0; line-height: 1.6;">${copy.painPointsIntro}</p>
+  // Build pain points HTML via TemplateEngine
+  const painPointsTemplate = `{{#if painPoints}}<p style="margin: 16px 0; line-height: 1.6;">{{painPointsIntro|r}}</p>
 <ul style="margin: 16px 0; line-height: 1.8; padding-left: 24px;">
-  ${painPoints.slice(0, 3).map((p: string) => `<li>${p.trim()}</li>`).join('')}
-</ul>`
-    : '';
+  {{#each painPoints}}<li>{{this|r}}</li>{{/each}}
+</ul>{{/if}}`;
+  const painPointsHtml = templateEngine.render(painPointsTemplate, {
+    painPoints: Array.isArray(painPoints) ? painPoints.slice(0, 3).map((p: string) => p.trim()) : [],
+    painPointsIntro: copy.painPointsIntro,
+  });
 
-  // Build HTML
-  const html = `<!DOCTYPE html>
+  // Build HTML via TemplateEngine
+  const htmlTemplate = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject || 'ALYGN - AI Governance'}</title>
+  <title>{{subject|ALYGN - AI Governance}}</title>
   ${emailStyle}
 </head>
 <body>
   <div class="container">
     ${buildHeader(logoImg)}
     <div class="content">
-      <p class="greeting">Hi ${firstName}${companyName ? ` at ${companyName}` : ''},</p>
+      <p class="greeting">Hi {{firstName|there}}{{#if companyName}} at {{companyName}}{{/if}},</p>
       <div class="body-content">
-        <p>${copy.intro}</p>
+        <p>{{intro|r}}</p>
         ${hookHtml}
         ${painPointsHtml}
       </div>
-      <p class="closing">${copy.closing}</p>
-      <a href="${mailtoLink}" class="cta-button">${copy.cta}</a>
-      <p class="ps">${copy.customPS}</p>
+      <p class="closing">{{closing|r}}</p>
+      <a href="{{mailtoLink|r}}" class="cta-button">{{cta|r}}</a>
+      {{#if customPS}}<p class="ps">{{customPS|r}}</p>{{/if}}
     </div>
     ${buildFooter(variant)}
   </div>
 </body>
 </html>`;
+  const html = templateEngine.render(htmlTemplate, {
+    subject: subject || '',
+    firstName,
+    companyName,
+    intro: copy.intro,
+    closing: copy.closing,
+    cta: copy.cta,
+    customPS: copy.customPS || '',
+    mailtoLink,
+  });
 
   const text = generatePlainText(html);
 
@@ -281,17 +306,6 @@ I am interested in exploring how we can support ${companyName || 'your organizat
 }
 
 // Helper functions
-function getBase64Image(imagePath: string): string {
-  try {
-    if (fs.existsSync(imagePath)) {
-      return fs.readFileSync(imagePath, 'base64').toString();
-    }
-  } catch (err) {
-    console.error(`Failed to read image: ${imagePath}`, (err as Error).message);
-  }
-  return '';
-}
-
 function buildHeader(logoImg: string): string {
   return `<div class="header">
   <div class="header-brand">

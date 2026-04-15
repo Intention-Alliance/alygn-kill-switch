@@ -8,6 +8,9 @@
  */
 
 import { containsEnglishPainPoint } from '../../../entities/lang-guard';
+import { getLimits } from './ProviderSizeLimits';
+import { optimize } from './TemplateOptimizer';
+import { byteLength } from './utils';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -41,6 +44,14 @@ export interface TemplateValidationResult {
   valid: boolean;
   errors: ValidationIssue[];
   warnings: ValidationIssue[];
+}
+
+export interface ValidateAndOptimizeResult {
+  result: TemplateValidationResult;
+  /** The (possibly optimized) template */
+  optimized: EmailTemplateInput;
+  /** Changes applied during optimization */
+  changes: string[];
 }
 
 export interface EmailTemplateInput {
@@ -261,13 +272,7 @@ function validateSizeConstraints(
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Compute byte length of a UTF-8 string without allocating a buffer. */
-function byteLength(str: string): number {
-  // Fast path for ASCII
-  if (/^[\x00-\x7F]*$/.test(str)) return str.length;
-  // Fallback: use TextEncoder (available in Node 12+ and modern browsers)
-  return new TextEncoder().encode(str).length;
-}
+// byteLength moved to utils.ts (F-073)
 
 // ---------------------------------------------------------------------------
 // TemplateValidator class
@@ -311,6 +316,38 @@ export class TemplateValidator {
   /** Get current constraints. */
   getConstraints(): TemplateSizeConstraints {
     return { ...this.constraints };
+  }
+
+  /**
+   * Validate and auto-optimize a template.
+   * If the template exceeds size limits, it is optimized and re-validated.
+   * Returns the final validation result, the (possibly optimized) template,
+   * and a list of changes made during optimization.
+   */
+  validateAndOptimize(
+    input: EmailTemplateInput,
+    providerName?: string,
+  ): ValidateAndOptimizeResult {
+    // Use provider-specific limits if a provider name is given
+    const limits = providerName ? getLimits(providerName) : this.constraints;
+
+    // Build a validator that uses the provider limits for size checks
+    const providerValidator = new TemplateValidator(limits);
+
+    // First pass: validate against the limits we'll optimize with
+    const firstPass = providerValidator.validate(input);
+
+    // Check if any size errors exist
+    const sizeErrors = firstPass.errors.filter((e) => e.rule === 'size-constraints');
+    if (sizeErrors.length === 0) {
+      return { result: firstPass, optimized: input, changes: [] };
+    }
+
+    // Optimize against provider limits and re-validate
+    const { optimized, changes } = optimize(input, limits);
+    const secondPass = providerValidator.validate(optimized);
+
+    return { result: secondPass, optimized, changes };
   }
 }
 
