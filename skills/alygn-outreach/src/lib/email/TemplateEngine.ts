@@ -1,5 +1,5 @@
 /**
- * TemplateEngine — F-074 / F-076 / F-075 / F-077
+ * TemplateEngine — F-074 / F-076 / F-075 / F-077 / F-078 / F-079
  * Synchronous template variable substitution engine.
  *
  * Features:
@@ -15,6 +15,8 @@
  *   Nested loops:           {{#each outer}}...{{#each inner}}...{{/each}}...{{/each}}
  *   Object iteration:      {{#each config}}{{@key}}: {{this}}{{/each}}
  *   Partials:              {{> partialName}} — include a registered partial (F-077)
+ *   Template inheritance:  {{extends "base"}} + {{#block name}}...{{/block}} / {{#override name}}...{{/override}} (F-078)
+ *   i18n:                  {{t key}}, {{locale}}, {{formatNumber value}}, {{formatDate value}} (F-079)
  *   Circular dependency:   Detected at render time, throws Error
  *
  * All operations are synchronous pure functions (< 5ms per template).
@@ -22,6 +24,9 @@
  */
 
 import { TemplatePartial } from './TemplatePartial';
+import type { TemplateRegistry } from './TemplateRegistry';
+import type { TemplateI18n } from './TemplateI18n';
+import type { Locale } from './Locale';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -29,6 +34,9 @@ import { TemplatePartial } from './TemplatePartial';
 
 /** Maximum nesting depth for partial includes (prevents stack overflow). */
 const MAX_PARTIAL_DEPTH = 10;
+
+/** Maximum inheritance chain depth (prevents infinite extends loops). */
+const MAX_EXTENDS_DEPTH = 10;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,6 +52,12 @@ export interface RenderContext {
   partialChain: string[];
   /** The TemplatePartial registry instance. */
   partials?: TemplatePartial;
+  /** Override map from child templates: blockName → rendered content. */
+  overrides?: Map<string, BlockNode[]>;
+  /** i18n instance for {{t key}} translations (F-079). */
+  i18n?: TemplateI18n;
+  /** Current locale for {{locale}}, {{formatNumber}}, {{formatDate}} (F-079). */
+  locale?: Locale;
 }
 
 /** Loop context pushed onto stack for each #each iteration. */
@@ -53,6 +67,26 @@ interface LoopContext {
   '@last'?: boolean;
   '@length'?: number;
   '@key'?: string;
+}
+
+/**
+ * Coerce string-valued format options to proper types for Intl APIs.
+ * Numeric strings → number, boolean strings → boolean, rest pass through.
+ */
+function coerceFormatOpts(opts: Record<string, string>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, val] of Object.entries(opts)) {
+    if (val === 'true') {
+      result[key] = true;
+    } else if (val === 'false') {
+      result[key] = false;
+    } else if (/^-?\d+(?:\.\d+)?$/.test(val)) {
+      result[key] = Number(val);
+    } else {
+      result[key] = val;
+    }
+  }
+  return result;
 }
 
 // ---------------------------------------------------------------------------
@@ -201,7 +235,7 @@ export interface ConditionExpr {
 }
 
 interface BlockNode {
-  type: 'text' | 'variable' | 'if' | 'each' | 'partial';
+  type: 'text' | 'variable' | 'if' | 'each' | 'partial' | 'block' | 'override' | 'i18n' | 'locale' | 'formatNumber' | 'formatDate';
   text?: string;
   token?: TokenSpec;
   conditionPath?: string;
@@ -209,6 +243,20 @@ interface BlockNode {
   iteratorPath?: string;
   /** Partial name for {{> partialName}} includes. */
   partialName?: string;
+  /** Block/override name for {{#block name}}...{{/block}} and {{#override name}}...{{/override}}. */
+  blockName?: string;
+  /** i18n translation key for {{t key}} tokens. */
+  i18nKey?: string;
+  /** i18n params extracted from {{t key param1=val1 param2=val2}}. */
+  i18nParams?: Record<string, string>;
+  /** Path for formatNumber/formatDate value resolution. */
+  formatPath?: string;
+  /** Format options for formatNumber (e.g. "currency", "percent", "decimal"). */
+  formatStyle?: string;
+  /** Extra format options (e.g. currency=USD) for formatNumber. */
+  extraFormatOpts?: Record<string, string>;
+  /** Date format style for formatDate (e.g. "short", "medium", "long", "full"). */
+  dateStyle?: string;
   children?: BlockNode[];
   body?: BlockNode[];
   elseBody?: BlockNode[];
@@ -216,12 +264,14 @@ interface BlockNode {
 
 /**
  * Parse template string into an AST of BlockNodes.
- * Handles: {{var}}, {{#if path}}...{{else}}...{{/if}}, {{#each path}}...{{/each}}, {{> partialName}}
+ * Handles: {{var}}, {{#if path}}...{{else}}...{{/if}}, {{#each path}}...{{/each}},
+ *          {{> partialName}}, {{#block name}}...{{/block}}, {{#override name}}...{{/override}}
  */
 export function parseTemplate(template: string): BlockNode[] {
   const nodes: BlockNode[] = [];
-  // Regex matches: {{{raw}}} (triple), {{> partialName}}, {{#if path}}, {{#each path}}, {{else}}, {{/if}}, {{/each}}, {{token}}
-  const tokenRe = new RegExp('\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(>\\s*[\\w.-]+|#if\\s+[^}]+|#each\\s+[\\w.]+|else|/if|/each|[^}]+)\\}\\}', 'g');
+  // Regex matches: {{{raw}}} (triple), {{> partialName}}, {{#if path}}, {{#each path}},
+  // {{#block name}}, {{#override name}}, {{else}}, {{/if}}, {{/each}}, {{/block}}, {{/override}}, {{token}}
+  const tokenRe = new RegExp('\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(>\\s*[\\w.-]+|#if\\s+[^}]+|#each\\s+[\\w.]+|#block\\s+[\\w.-]+|#override\\s+[\\w.-]+|else|/if|/each|/block|/override|[^}]+)\\}\\}', 'g');
 
   let cursor = 0;
   let tokenMatch: RegExpExecArray | null;
@@ -284,6 +334,34 @@ export function parseTemplate(template: string): BlockNode[] {
       continue;
     }
 
+    // {{#block name}} — define a block with default content
+    const blockMatch = inner.match(/^#block\s+([\w.-]+)$/);
+    if (blockMatch) {
+      const blockNode: BlockNode = {
+        type: 'block',
+        blockName: blockMatch[1],
+        body: [],
+      };
+      currentNodes.push(blockNode);
+      stack.push({ nodes: currentNodes, block: blockNode });
+      currentNodes = blockNode.body!;
+      continue;
+    }
+
+    // {{#override name}} — override a block from a base template
+    const overrideMatch = inner.match(/^#override\s+([\w.-]+)$/);
+    if (overrideMatch) {
+      const overrideNode: BlockNode = {
+        type: 'override',
+        blockName: overrideMatch[1],
+        body: [],
+      };
+      currentNodes.push(overrideNode);
+      stack.push({ nodes: currentNodes, block: overrideNode });
+      currentNodes = overrideNode.body!;
+      continue;
+    }
+
     // {{else}}
     if (inner === 'else') {
       const top = stack[stack.length - 1];
@@ -307,10 +385,81 @@ export function parseTemplate(template: string): BlockNode[] {
       continue;
     }
 
+    // {{/block}}
+    if (inner === '/block') {
+      const top = stack.pop();
+      if (top) currentNodes = top.nodes;
+      continue;
+    }
+
+    // {{/override}}
+    if (inner === '/override') {
+      const top = stack.pop();
+      if (top) currentNodes = top.nodes;
+      continue;
+    }
+
     // {{> partialName}} — partial include
     const partialMatch = inner.match(/^>\s*([\w.-]+)$/);
     if (partialMatch) {
       currentNodes.push({ type: 'partial', partialName: partialMatch[1] });
+      continue;
+    }
+
+    // {{t key}} or {{t key param1=val1 param2=val2}} — i18n translation (F-079)
+    const tMatch = inner.match(/^t\s+([\w.-]+)(?:\s+(.+))?$/);
+    if (tMatch) {
+      const i18nKey = tMatch[1];
+      const i18nParams: Record<string, string> = {};
+      if (tMatch[2]) {
+        // Parse param=value pairs
+        const paramRe = /(\w+)=([^\s"]+|"[^"]*")/g;
+        let paramMatch: RegExpExecArray | null;
+        while ((paramMatch = paramRe.exec(tMatch[2])) !== null) {
+          let val = paramMatch[2];
+          // Remove surrounding quotes if present
+          if (val.startsWith('"') && val.endsWith('"')) {
+            val = val.slice(1, -1);
+          }
+          i18nParams[paramMatch[1]] = val;
+        }
+      }
+      currentNodes.push({ type: 'i18n', i18nKey, i18nParams: Object.keys(i18nParams).length > 0 ? i18nParams : undefined });
+      continue;
+    }
+
+    // {{locale}} — output current locale code (F-079)
+    if (inner === 'locale') {
+      currentNodes.push({ type: 'locale' });
+      continue;
+    }
+
+    // {{formatNumber value}} or {{formatNumber value style=currency currency=USD}} — (F-079)
+    const formatNumMatch = inner.match(/^formatNumber\s+([\w.]+)(?:\s+(.+))?$/);
+    if (formatNumMatch) {
+      const formatStyle = formatNumMatch[2];
+      let fs: string | undefined;
+      const extraOpts: Record<string, string> = {};
+      if (formatStyle) {
+        // Parse key=value pairs
+        const paramRe = /(\w+)=([\w]+)/g;
+        let paramMatch: RegExpExecArray | null;
+        while ((paramMatch = paramRe.exec(formatStyle)) !== null) {
+          if (paramMatch[1] === 'style') {
+            fs = paramMatch[2];
+          } else {
+            extraOpts[paramMatch[1]] = paramMatch[2];
+          }
+        }
+      }
+      currentNodes.push({ type: 'formatNumber', formatPath: formatNumMatch[1], formatStyle: fs, extraFormatOpts: Object.keys(extraOpts).length > 0 ? extraOpts : undefined });
+      continue;
+    }
+
+    // {{formatDate value}} or {{formatDate value style=short|medium|long|full}} — (F-079)
+    const formatDateMatch = inner.match(/^formatDate\s+([\w.]+)(?:\s+style=(\w+))?$/);
+    if (formatDateMatch) {
+      currentNodes.push({ type: 'formatDate', formatPath: formatDateMatch[1], dateStyle: formatDateMatch[2] });
       continue;
     }
 
@@ -538,6 +687,115 @@ function compare(left: unknown, right: unknown, op: ConditionExpr['operator']): 
 }
 
 // ---------------------------------------------------------------------------
+// Template inheritance helpers (F-078)
+// ---------------------------------------------------------------------------
+
+/**
+ * Extract the {{extends "base-name"}} directive from a template.
+ * Returns the base template name if found, or undefined.
+ * The extends directive must appear at the top of the template (before any
+ * non-whitespace content).
+ */
+export function extractExtends(template: string): string | undefined {
+  const match = template.match(/^\s*\{\{extends\s+["']([^"']+)["']\}\}\s*/);
+  return match ? match[1] : undefined;
+}
+
+/**
+ * Collect all {{#override name}}...{{/override}} blocks from an AST.
+ * Returns a Map of blockName → body nodes.
+ */
+function collectOverrides(nodes: BlockNode[]): Map<string, BlockNode[]> {
+  const overrides = new Map<string, BlockNode[]>();
+  for (const node of nodes) {
+    if (node.type === 'override' && node.blockName) {
+      overrides.set(node.blockName, node.body ?? []);
+    }
+  }
+  return overrides;
+}
+
+/**
+ * Resolve the full inheritance chain for a template.
+ * Walks bottom-up through {{extends}} directives, collecting overrides at each level.
+ * Returns the chain of template names from root (base) to leaf (child), and
+ * the merged overrides map where child overrides take precedence.
+ *
+ * @param template - The template string to resolve
+ * @param registry - The TemplateRegistry to load base templates from
+ * @param extendsChain - Internal: tracks the chain for circular detection
+ * @returns Object with base template content, merged overrides, and chain depth
+ */
+function resolveInheritanceChain(
+  template: string,
+  registry: TemplateRegistry,
+  extendsChain: string[] = [],
+): {
+  baseTemplate: string;
+  mergedOverrides: Map<string, BlockNode[]>;
+  chainDepth: number;
+} {
+  const baseName = extractExtends(template);
+
+  if (!baseName) {
+    // This template IS the root — no inheritance
+    return {
+      baseTemplate: template,
+      mergedOverrides: new Map(),
+      chainDepth: 0,
+    };
+  }
+
+  // Circular extends detection
+  if (extendsChain.includes(baseName)) {
+    const cycle = [...extendsChain, baseName].join(' → ');
+    throw new Error(`TemplateEngine: circular extends detected: ${cycle}`);
+  }
+
+  // Max depth check
+  if (extendsChain.length >= MAX_EXTENDS_DEPTH) {
+    throw new Error(
+      `TemplateEngine: max extends depth (${MAX_EXTENDS_DEPTH}) exceeded at "${baseName}". Chain: ${extendsChain.join(' → ')}`,
+    );
+  }
+
+  // Load base template from registry
+  const baseEntry = registry.getLatest(baseName);
+  if (!baseEntry) {
+    throw new Error(`TemplateEngine: base template "${baseName}" not found in registry`);
+  }
+
+  // Parse child template to collect its overrides (skip the {{extends}} line)
+  const childAst = parseTemplate(template);
+  const childOverrides = collectOverrides(childAst);
+
+  // Recursively resolve the base template's own inheritance
+  const parentResult = resolveInheritanceChain(
+    baseEntry.content,
+    registry,
+    [...extendsChain, baseName],
+  );
+
+  // Merge: child overrides take precedence over parent overrides
+  // (bottom-up: child wins over parent)
+  const mergedOverrides = new Map<string, BlockNode[]>();
+  // First, add all parent overrides
+  for (const [name, body] of parentResult.mergedOverrides) {
+    mergedOverrides.set(name, body);
+  }
+  // Then, child overrides overwrite parent ones
+  for (const [name, body] of childOverrides) {
+    mergedOverrides.set(name, body);
+  }
+
+  return {
+    baseTemplate: parentResult.baseTemplate,
+    mergedOverrides,
+    chainDepth: parentResult.chainDepth + 1,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Rendering
 // ---------------------------------------------------------------------------
 
@@ -664,6 +922,28 @@ export function renderNodes(
         break;
       }
 
+      case 'block': {
+        // Check if there's an override for this block from a child template
+        const blockName = node.blockName!;
+        const overrides = renderCtx?.overrides;
+        if (overrides && overrides.has(blockName)) {
+          // Render the override content instead of the default
+          parts.push(renderNodes(overrides.get(blockName)!, data, insideEach, loopStack, renderCtx));
+        } else {
+          // Render the default block content
+          parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
+        }
+        break;
+      }
+
+      case 'override': {
+        // Override nodes are collected during inheritance resolution,
+        // not rendered directly. When rendering a child template standalone
+        // (without extends), override content is simply rendered as-is.
+        parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
+        break;
+      }
+
       case 'partial': {
         const partialName = node.partialName!;
         const partials = renderCtx?.partials;
@@ -696,8 +976,84 @@ export function renderNodes(
         const partialCtx: RenderContext = {
           partialChain: [...chain, partialName],
           partials,
+          overrides: renderCtx?.overrides,
+          i18n: renderCtx?.i18n,
+          locale: renderCtx?.locale,
         };
         parts.push(renderNodes(partialAst, partialData, insideEach, loopStack, partialCtx));
+        break;
+      }
+
+      case 'i18n': {
+        const i18nKey = node.i18nKey!;
+        const i18n = renderCtx?.i18n;
+        const locale = renderCtx?.locale;
+        if (!i18n) {
+          // No i18n configured — leave as-is
+          parts.push(`{{t ${i18nKey}}}`);
+          break;
+        }
+        // Resolve i18n params: first check node-level params, then resolve from data
+        const resolvedParams: Record<string, string | number> = {};
+        if (node.i18nParams) {
+          for (const [k, v] of Object.entries(node.i18nParams)) {
+            // Try resolving as data path first; fall back to literal string
+            if (/^[\w.]+$/.test(v)) {
+              const resolved = resolvePath(data, v, loopStack);
+              if (resolved !== undefined && resolved !== null && resolved !== '') {
+                resolvedParams[k] = typeof resolved === 'number' ? resolved : coerceString(resolved);
+              } else {
+                resolvedParams[k] = v;
+              }
+            } else {
+              resolvedParams[k] = v;
+            }
+          }
+        }
+        parts.push(escapeHtml(i18n.t(i18nKey, locale, resolvedParams)));
+        break;
+      }
+
+      case 'locale': {
+        const locale = renderCtx?.locale;
+        if (locale) {
+          parts.push(escapeHtml(locale.code));
+        } else {
+          parts.push('');
+        }
+        break;
+      }
+
+      case 'formatNumber': {
+        const locale = renderCtx?.locale;
+        const raw = resolvePath(data, node.formatPath!, loopStack);
+        if (locale && raw !== undefined && raw !== null) {
+          const opts: Record<string, unknown> = {};
+          if (node.formatStyle) {
+            opts.style = node.formatStyle;
+          }
+          if (node.extraFormatOpts) {
+            Object.assign(opts, coerceFormatOpts(node.extraFormatOpts));
+          }
+          parts.push(escapeHtml(locale.formatNumber(raw as number | string, opts)));
+        } else {
+          parts.push(coerceString(raw));
+        }
+        break;
+      }
+
+      case 'formatDate': {
+        const locale = renderCtx?.locale;
+        const raw = resolvePath(data, node.formatPath!, loopStack);
+        if (locale && raw !== undefined && raw !== null) {
+          const opts: Record<string, unknown> = {};
+          if (node.dateStyle) {
+            opts.dateStyle = node.dateStyle;
+          }
+          parts.push(escapeHtml(locale.formatDate(raw as Date | number | string, opts)));
+        } else {
+          parts.push(coerceString(raw));
+        }
         break;
       }
     }
@@ -714,22 +1070,70 @@ export class TemplateEngine {
   /** Partial registry for {{> partialName}} includes. */
   private partials: TemplatePartial;
 
-  constructor(partials?: TemplatePartial) {
+  /** Template registry for {{extends "base"}} inheritance. */
+  private registry?: TemplateRegistry;
+
+  /** i18n instance for {{t key}} translations (F-079). */
+  private i18n?: TemplateI18n;
+
+  /** Current locale for {{locale}}, {{formatNumber}}, {{formatDate}} (F-079). */
+  private locale?: Locale;
+
+  constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale) {
     this.partials = partials ?? new TemplatePartial();
+    this.registry = registry;
+    this.i18n = i18n;
+    this.locale = locale;
   }
 
   /**
    * Render a template string with the given data.
    *
-   * @param template - Template string with {{token}}, {{#if}}, {{#each}}, {{> partial}} etc.
+   * If the template starts with {{extends "base"}}, the engine resolves the
+   * inheritance chain, loads the base template from the TemplateRegistry,
+   * and merges child overrides into base blocks.
+   *
+   * @param template - Template string with {{token}}, {{#if}}, {{#each}}, {{> partial}}, {{extends}}, {{#block}}, {{#override}} etc.
    * @param data - Key-value pairs for substitution.
+   * @param partialChain - Chain of partial names for circular dep detection (internal).
    * @returns Rendered string with all tokens resolved.
    */
   render(template: string, data: TemplateData, partialChain: string[] = []): string {
+    // Check for template inheritance
+    const baseName = extractExtends(template);
+
+    if (baseName) {
+      if (!this.registry) {
+        throw new Error(
+          `TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`,
+        );
+      }
+
+      // Resolve the full inheritance chain
+      const { baseTemplate, mergedOverrides } = resolveInheritanceChain(
+        template,
+        this.registry,
+      );
+
+      // Parse the root base template and render with overrides applied
+      const baseAst = parseTemplate(baseTemplate);
+      const ctx: RenderContext = {
+        partialChain,
+        partials: this.partials,
+        overrides: mergedOverrides,
+        i18n: this.i18n,
+        locale: this.locale,
+      };
+      return renderNodes(baseAst, data, false, [], ctx);
+    }
+
+    // No inheritance — standard render
     const ast = parseTemplate(template);
     const ctx: RenderContext = {
       partialChain,
       partials: this.partials,
+      i18n: this.i18n,
+      locale: this.locale,
     };
     return renderNodes(ast, data, false, [], ctx);
   }
@@ -739,6 +1143,48 @@ export class TemplateEngine {
    */
   getPartials(): TemplatePartial {
     return this.partials;
+  }
+
+  /**
+   * Get the template registry (for template inheritance).
+   */
+  getRegistry(): TemplateRegistry | undefined {
+    return this.registry;
+  }
+
+  /**
+   * Set the template registry (for template inheritance).
+   */
+  setRegistry(registry: TemplateRegistry): void {
+    this.registry = registry;
+  }
+
+  /**
+   * Get the i18n instance (F-079).
+   */
+  getI18n(): TemplateI18n | undefined {
+    return this.i18n;
+  }
+
+  /**
+   * Set the i18n instance for {{t key}} translations (F-079).
+   */
+  setI18n(i18n: TemplateI18n): void {
+    this.i18n = i18n;
+  }
+
+  /**
+   * Get the current locale (F-079).
+   */
+  getLocale(): Locale | undefined {
+    return this.locale;
+  }
+
+  /**
+   * Set the locale for {{locale}}, {{formatNumber}}, {{formatDate}} (F-079).
+   */
+  setLocale(locale: Locale): void {
+    this.locale = locale;
   }
 
   /**

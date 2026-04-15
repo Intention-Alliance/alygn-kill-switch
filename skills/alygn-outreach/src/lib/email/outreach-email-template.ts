@@ -30,6 +30,13 @@
  */
 
 import { templateEngine } from "./TemplateEngine";
+import { TemplateI18n } from "./TemplateI18n";
+import { Locale } from "./Locale";
+
+// Wire i18n into the templateEngine singleton
+const i18n = new TemplateI18n('en');
+templateEngine.setI18n(i18n);
+templateEngine.setLocale(Locale.fromCode('en'));
 
 // Logo embedding - Fallback to hosted URL if base64 fails
 const hostedLogoUrl = 'https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png';
@@ -44,6 +51,7 @@ interface EmailParams {
   ctaText?: string | null;
   customPS?: string | null;
   customHook?: string | null;
+  locale?: string;
 }
 
 interface EmailResult {
@@ -76,8 +84,13 @@ export function generateEmail(params: EmailParams): EmailResult {
     language = 'es',
     subject = '',
     ctaText = null,
-    customPS = 'P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.'
+    customPS = 'P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.',
+    locale: localeCode = 'en'
   } = params;
+
+  // Set locale context for i18n/formatting
+  const locale = Locale.fromCode(localeCode, 'en');
+  templateEngine.setLocale(locale);
 
   // Self-contained: use hosted URL for logo (no external file dependency)
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
@@ -200,8 +213,13 @@ export function generateEmailHTML(params: EmailParams): EmailResult {
     subject = '',
     ctaText = null,
     customPS = 'P.S.: This message was AI-generated and verified by humans. Total transparency in our processes.',
-    customHook = null
+    customHook = null,
+    locale: localeCode = 'en'
   } = params;
+
+  // Set locale context for i18n/formatting
+  const locale = Locale.fromCode(localeCode, 'en');
+  templateEngine.setLocale(locale);
 
   const firstName = recipientName ? recipientName.split(' ')[0] : 'there';
   // Self-contained: use hosted URL for logo (no external file dependency)
