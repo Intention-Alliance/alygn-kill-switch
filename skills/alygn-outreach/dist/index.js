@@ -104243,7 +104243,160 @@ var init_RegexMXValidator = __esm(() => {
   };
 });
 
+// src/lib/email/TemplatePartial.ts
+class TemplatePartial {
+  partials = new Map;
+  constructor() {
+    for (const partial of BUILT_IN_PARTIALS) {
+      this.partials.set(partial.name, { ...partial });
+    }
+  }
+  register(definition) {
+    const existed = this.partials.has(definition.name);
+    this.partials.set(definition.name, { ...definition });
+    return existed;
+  }
+  get(name) {
+    return this.partials.get(name);
+  }
+  getTemplate(name) {
+    return this.partials.get(name)?.template;
+  }
+  list() {
+    return Array.from(this.partials.keys());
+  }
+  listAll() {
+    return Array.from(this.partials.values());
+  }
+  has(name) {
+    return this.partials.has(name);
+  }
+  remove(name) {
+    return this.partials.delete(name);
+  }
+  resolve(name, data = {}, chain = []) {
+    const partial = this.partials.get(name);
+    if (!partial) {
+      throw new Error(`TemplatePartial: partial "${name}" not found`);
+    }
+    if (chain.includes(name)) {
+      const cycle = [...chain, name].join(" \u2192 ");
+      throw new Error(`TemplatePartial: circular dependency detected: ${cycle}`);
+    }
+    const MAX_PARTIAL_DEPTH = 10;
+    if (chain.length >= MAX_PARTIAL_DEPTH) {
+      throw new Error(`TemplatePartial: max partial depth (${MAX_PARTIAL_DEPTH}) exceeded at "${name}". Chain: ${chain.join(" \u2192 ")}`);
+    }
+    const mergedData = {
+      ...partial.defaults ?? {},
+      ...data
+    };
+    const engine = new TemplateEngine(this);
+    return engine.render(partial.template, mergedData, [...chain, name]);
+  }
+  getDefaults(name) {
+    return this.partials.get(name)?.defaults ?? {};
+  }
+}
+var BUILT_IN_PARTIALS, templatePartial;
+var init_TemplatePartial = __esm(() => {
+  init_TemplateEngine();
+  BUILT_IN_PARTIALS = [
+    {
+      name: "header",
+      description: "Email header with logo and brand name",
+      template: `<div class="header">
+  <div class="header-brand">
+    <h2 class="brand-name">{{brandName|ALYGN}}</h2>
+    {{#if logoUrl}}<img src="{{logoUrl|r}}" alt="{{brandName|ALYGN}}" style="width: 64px; height: 64px; border-radius: 4px; display: block;">{{/if}}
+  </div>
+</div>`,
+      defaults: {
+        brandName: "ALYGN",
+        logoUrl: ""
+      }
+    },
+    {
+      name: "footer",
+      description: "Email footer with social links and copyright",
+      template: `<div class="footer">
+  <p style="margin: 0 0 12px 0;">
+    {{brandName|ALYGN}} - {{tagline|Independent AI Governance Institution}} | {{organization|Institutional Permanence}}<br>
+    {{location|Texas, EE.UU.}} | {{year}} \xA9 All rights reserved.
+  </p>
+  {{#if socialLinks}}
+  <p style="margin: 0; font-size: 14px;">
+    {{#each socialLinks}}<a href="{{url|r}}" style="display: inline-block; margin: 0 8px;">{{label|r}}</a>{{#if @last}}{{else}} | {{/if}}{{/each}}
+  </p>
+  {{/if}}
+</div>`,
+      defaults: {
+        brandName: "ALYGN",
+        tagline: "Independent AI Governance Institution",
+        organization: "Institutional Permanence",
+        location: "Texas, EE.UU.",
+        year: new Date().getFullYear().toString()
+      }
+    },
+    {
+      name: "cta-button",
+      description: "Call-to-action button with customizable text and URL",
+      template: `<a href="{{url|r}}" class="cta-button" style="display: inline-block; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff !important; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 500; margin: 24px 0;">{{text|Learn more}}</a>`,
+      defaults: {
+        url: "#",
+        text: "Learn more"
+      }
+    },
+    {
+      name: "unsubscribe",
+      description: "Unsubscribe link with preference center URL",
+      template: `<div class="unsubscribe" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #9ca3af;">
+  <p style="margin: 0;">You received this email because you expressed interest in AI governance.</p>
+  <p style="margin: 8px 0 0 0;">
+    {{#if preferenceUrl}}<a href="{{preferenceUrl|r}}" style="color: #6b7280; text-decoration: underline;">Update preferences</a> \xB7 {{/if}}<a href="{{unsubscribeUrl|r}}" style="color: #6b7280; text-decoration: underline;">Unsubscribe</a>
+  </p>
+</div>`,
+      defaults: {
+        preferenceUrl: "",
+        unsubscribeUrl: "#"
+      }
+    },
+    {
+      name: "signature",
+      description: "Email signature with name, title, and optional contact info",
+      template: `<div class="signature" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+  <p style="margin: 0; font-weight: 500; color: #1f2937;">{{name|r}}</p>
+  {{#if title}}<p style="margin: 2px 0 0 0; font-size: 14px; color: #6b7280;">{{title|r}}</p>{{/if}}
+  {{#if organization}}<p style="margin: 2px 0 0 0; font-size: 14px; color: #6b7280;">{{organization|r}}</p>{{/if}}
+  {{#if email}}<p style="margin: 2px 0 0 0; font-size: 14px;"><a href="mailto:{{email|r}}" style="color: #6b7280;">{{email|r}}</a></p>{{/if}}
+</div>`,
+      defaults: {
+        name: "",
+        title: "",
+        organization: "",
+        email: ""
+      }
+    }
+  ];
+  templatePartial = new TemplatePartial;
+});
+
 // src/lib/email/TemplateEngine.ts
+function coerceFormatOpts(opts) {
+  const result = {};
+  for (const [key, val] of Object.entries(opts)) {
+    if (val === "true") {
+      result[key] = true;
+    } else if (val === "false") {
+      result[key] = false;
+    } else if (/^-?\d+(?:\.\d+)?$/.test(val)) {
+      result[key] = Number(val);
+    } else {
+      result[key] = val;
+    }
+  }
+  return result;
+}
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, (ch) => ESCAPE_MAP[ch] ?? ch);
 }
@@ -104306,7 +104459,7 @@ function parseToken(expr) {
 }
 function parseTemplate(template) {
   const nodes = [];
-  const tokenRe = new RegExp("\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(#if\\s+[\\w.]+|#each\\s+[\\w.]+|else|/if|/each|[^}]+)\\}\\}", "g");
+  const tokenRe = new RegExp("\\{\\{\\{(.+?)\\}\\}\\}\\}|\\{\\{(>\\s*[\\w.-]+|#if\\s+[^}]+|#each\\s+[\\w.]+|#block\\s+[\\w.-]+|#override\\s+[\\w.-]+|else|/if|/each|/block|/override|[^}]+)\\}\\}", "g");
   let cursor = 0;
   let tokenMatch;
   const stack = [];
@@ -104353,6 +104506,30 @@ function parseTemplate(template) {
       currentNodes = blockNode.body;
       continue;
     }
+    const blockMatch = inner.match(/^#block\s+([\w.-]+)$/);
+    if (blockMatch) {
+      const blockNode = {
+        type: "block",
+        blockName: blockMatch[1],
+        body: []
+      };
+      currentNodes.push(blockNode);
+      stack.push({ nodes: currentNodes, block: blockNode });
+      currentNodes = blockNode.body;
+      continue;
+    }
+    const overrideMatch = inner.match(/^#override\s+([\w.-]+)$/);
+    if (overrideMatch) {
+      const overrideNode = {
+        type: "override",
+        blockName: overrideMatch[1],
+        body: []
+      };
+      currentNodes.push(overrideNode);
+      stack.push({ nodes: currentNodes, block: overrideNode });
+      currentNodes = overrideNode.body;
+      continue;
+    }
     if (inner === "else") {
       const top = stack[stack.length - 1];
       if (top && top.block.type === "if") {
@@ -104372,6 +104549,69 @@ function parseTemplate(template) {
         currentNodes = top.nodes;
       continue;
     }
+    if (inner === "/block") {
+      const top = stack.pop();
+      if (top)
+        currentNodes = top.nodes;
+      continue;
+    }
+    if (inner === "/override") {
+      const top = stack.pop();
+      if (top)
+        currentNodes = top.nodes;
+      continue;
+    }
+    const partialMatch = inner.match(/^>\s*([\w.-]+)$/);
+    if (partialMatch) {
+      currentNodes.push({ type: "partial", partialName: partialMatch[1] });
+      continue;
+    }
+    const tMatch = inner.match(/^t\s+([\w.-]+)(?:\s+(.+))?$/);
+    if (tMatch) {
+      const i18nKey = tMatch[1];
+      const i18nParams = {};
+      if (tMatch[2]) {
+        const paramRe = /(\w+)=([^\s"]+|"[^"]*")/g;
+        let paramMatch;
+        while ((paramMatch = paramRe.exec(tMatch[2])) !== null) {
+          let val = paramMatch[2];
+          if (val.startsWith('"') && val.endsWith('"')) {
+            val = val.slice(1, -1);
+          }
+          i18nParams[paramMatch[1]] = val;
+        }
+      }
+      currentNodes.push({ type: "i18n", i18nKey, i18nParams: Object.keys(i18nParams).length > 0 ? i18nParams : undefined });
+      continue;
+    }
+    if (inner === "locale") {
+      currentNodes.push({ type: "locale" });
+      continue;
+    }
+    const formatNumMatch = inner.match(/^formatNumber\s+([\w.]+)(?:\s+(.+))?$/);
+    if (formatNumMatch) {
+      const formatStyle = formatNumMatch[2];
+      let fs5;
+      const extraOpts = {};
+      if (formatStyle) {
+        const paramRe = /(\w+)=([\w]+)/g;
+        let paramMatch;
+        while ((paramMatch = paramRe.exec(formatStyle)) !== null) {
+          if (paramMatch[1] === "style") {
+            fs5 = paramMatch[2];
+          } else {
+            extraOpts[paramMatch[1]] = paramMatch[2];
+          }
+        }
+      }
+      currentNodes.push({ type: "formatNumber", formatPath: formatNumMatch[1], formatStyle: fs5, extraFormatOpts: Object.keys(extraOpts).length > 0 ? extraOpts : undefined });
+      continue;
+    }
+    const formatDateMatch = inner.match(/^formatDate\s+([\w.]+)(?:\s+style=(\w+))?$/);
+    if (formatDateMatch) {
+      currentNodes.push({ type: "formatDate", formatPath: formatDateMatch[1], dateStyle: formatDateMatch[2] });
+      continue;
+    }
     currentNodes.push({ type: "variable", token: parseToken(inner) });
   }
   if (cursor < template.length) {
@@ -104381,17 +104621,31 @@ function parseTemplate(template) {
 }
 function parseConditionExpr(expr) {
   const trimmed = expr.trim();
-  const logicalIdx = findTopLevelLogical(trimmed);
-  if (logicalIdx !== -1) {
-    const op = trimmed[logicalIdx] === "&" ? "&&" : "||";
-    const leftStr = trimmed.slice(0, logicalIdx).trim();
-    const rightStr = trimmed.slice(logicalIdx + 2).trim();
+  const orIdx = findTopLevelOr(trimmed);
+  if (orIdx !== -1) {
+    const leftStr = trimmed.slice(0, orIdx).trim();
+    const rightStr = trimmed.slice(orIdx + 2).trim();
     const leftExpr = parseConditionExpr(leftStr);
     const rightExpr = parseConditionExpr(rightStr);
     return {
       raw: trimmed,
       leftPath: leftExpr.leftPath,
-      logical: op,
+      logical: "||",
+      leftExpr,
+      rightExpr
+    };
+  }
+  const andIdx = findTopLevelAnd(trimmed);
+  if (andIdx !== -1) {
+    const leftStr = trimmed.slice(0, andIdx).trim();
+    const rightStr = trimmed.slice(andIdx + 2).trim();
+    const leftExpr = parseConditionExpr(leftStr);
+    const rightExpr = parseConditionExpr(rightStr);
+    return {
+      raw: trimmed,
+      leftPath: leftExpr.leftPath,
+      logical: "&&",
+      leftExpr,
       rightExpr
     };
   }
@@ -104418,7 +104672,25 @@ function parseConditionExpr(expr) {
   }
   return { raw: trimmed, truthyPath: trimmed, leftPath: trimmed };
 }
-function findTopLevelLogical(expr) {
+function findTopLevelOr(expr) {
+  let inQuote = null;
+  for (let i = 0;i < expr.length - 1; i++) {
+    const ch = expr[i];
+    if (inQuote) {
+      if (ch === inQuote)
+        inQuote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inQuote = ch;
+      continue;
+    }
+    if (ch === "|" && expr[i + 1] === "|")
+      return i;
+  }
+  return -1;
+}
+function findTopLevelAnd(expr) {
   let inQuote = null;
   for (let i = 0;i < expr.length - 1; i++) {
     const ch = expr[i];
@@ -104433,15 +104705,20 @@ function findTopLevelLogical(expr) {
     }
     if (ch === "&" && expr[i + 1] === "&")
       return i;
-    if (ch === "|" && expr[i + 1] === "|")
-      return i;
   }
   return -1;
 }
 function evalCondition(expr, data, loopStack = []) {
   let result;
   if (expr.logical && expr.rightExpr) {
-    const left = evalCondition(expr, data, loopStack);
+    const leftExpr = expr.leftExpr ?? {
+      raw: expr.leftPath,
+      leftPath: expr.leftPath,
+      operator: expr.operator,
+      right: expr.right,
+      negated: expr.negated
+    };
+    const left = evalCondition(leftExpr, data, loopStack);
     if (expr.logical === "&&" && !left) {
       result = false;
     } else if (expr.logical === "||" && left) {
@@ -104496,7 +104773,56 @@ function compare(left, right, op) {
   }
   return false;
 }
-function renderNodes(nodes, data, insideEach, loopStack = []) {
+function extractExtends(template) {
+  const match = template.match(/^\s*\{\{extends\s+["']([^"']+)["']\}\}\s*/);
+  return match ? match[1] : undefined;
+}
+function collectOverrides(nodes) {
+  const overrides = new Map;
+  for (const node of nodes) {
+    if (node.type === "override" && node.blockName) {
+      overrides.set(node.blockName, node.body ?? []);
+    }
+  }
+  return overrides;
+}
+function resolveInheritanceChain(template, registry, extendsChain = []) {
+  const baseName = extractExtends(template);
+  if (!baseName) {
+    return {
+      baseTemplate: template,
+      mergedOverrides: new Map,
+      chainDepth: 0
+    };
+  }
+  if (extendsChain.includes(baseName)) {
+    const cycle = [...extendsChain, baseName].join(" \u2192 ");
+    throw new Error(`TemplateEngine: circular extends detected: ${cycle}`);
+  }
+  if (extendsChain.length >= MAX_EXTENDS_DEPTH) {
+    throw new Error(`TemplateEngine: max extends depth (${MAX_EXTENDS_DEPTH}) exceeded at "${baseName}". Chain: ${extendsChain.join(" \u2192 ")}`);
+  }
+  const baseEntry = registry.getLatest(baseName);
+  if (!baseEntry) {
+    throw new Error(`TemplateEngine: base template "${baseName}" not found in registry`);
+  }
+  const childAst = parseTemplate(template);
+  const childOverrides = collectOverrides(childAst);
+  const parentResult = resolveInheritanceChain(baseEntry.content, registry, [...extendsChain, baseName]);
+  const mergedOverrides = new Map;
+  for (const [name, body] of parentResult.mergedOverrides) {
+    mergedOverrides.set(name, body);
+  }
+  for (const [name, body] of childOverrides) {
+    mergedOverrides.set(name, body);
+  }
+  return {
+    baseTemplate: parentResult.baseTemplate,
+    mergedOverrides,
+    chainDepth: parentResult.chainDepth + 1
+  };
+}
+function renderNodes(nodes, data, insideEach, loopStack = [], renderCtx) {
   const parts = [];
   for (const node of nodes) {
     switch (node.type) {
@@ -104510,9 +104836,7 @@ function renderNodes(nodes, data, insideEach, loopStack = []) {
         if (str === "" && spec.default !== undefined) {
           str = spec.default;
         }
-        if (spec.escapeMode === "h") {
-          str = escapeHtml(str);
-        } else if (spec.escapeMode === "r") {} else if (!insideEach) {
+        if (spec.escapeMode === "r") {} else {
           str = escapeHtml(str);
         }
         parts.push(str);
@@ -104522,9 +104846,9 @@ function renderNodes(nodes, data, insideEach, loopStack = []) {
         const cond = node.conditionExpr ?? (node.conditionPath ? { raw: node.conditionPath, truthyPath: node.conditionPath, leftPath: node.conditionPath } : undefined);
         if (cond) {
           if (evalCondition(cond, data, loopStack)) {
-            parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack));
+            parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
           } else {
-            parts.push(renderNodes(node.elseBody ?? [], data, insideEach, loopStack));
+            parts.push(renderNodes(node.elseBody ?? [], data, insideEach, loopStack, renderCtx));
           }
         }
         break;
@@ -104555,7 +104879,7 @@ function renderNodes(nodes, data, insideEach, loopStack = []) {
               }
               Object.assign(iterData, safeItem);
             }
-            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack, renderCtx));
           }
         } else if (typeof iterable === "object" && iterable !== null && !Array.isArray(iterable)) {
           const keys = Object.keys(iterable);
@@ -104584,8 +104908,122 @@ function renderNodes(nodes, data, insideEach, loopStack = []) {
               }
               Object.assign(iterData, safeItem);
             }
-            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack));
+            parts.push(renderNodes(node.body ?? [], iterData, true, nextStack, renderCtx));
           }
+        }
+        break;
+      }
+      case "block": {
+        const blockName = node.blockName;
+        const overrides = renderCtx?.overrides;
+        if (overrides && overrides.has(blockName)) {
+          parts.push(renderNodes(overrides.get(blockName), data, insideEach, loopStack, renderCtx));
+        } else {
+          parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
+        }
+        break;
+      }
+      case "override": {
+        parts.push(renderNodes(node.body ?? [], data, insideEach, loopStack, renderCtx));
+        break;
+      }
+      case "partial": {
+        const partialName = node.partialName;
+        const partials = renderCtx?.partials;
+        if (!partials) {
+          parts.push(`{{> ${partialName}}}`);
+          break;
+        }
+        const partialDef = partials.get(partialName);
+        if (!partialDef) {
+          throw new Error(`TemplateEngine: partial "${partialName}" not found`);
+        }
+        const chain = renderCtx.partialChain;
+        if (chain.includes(partialName)) {
+          const cycle = [...chain, partialName].join(" \u2192 ");
+          throw new Error(`TemplateEngine: circular partial dependency detected: ${cycle}`);
+        }
+        if (chain.length >= MAX_PARTIAL_DEPTH) {
+          throw new Error(`TemplateEngine: max partial depth (${MAX_PARTIAL_DEPTH}) exceeded at "${partialName}". Chain: ${chain.join(" \u2192 ")}`);
+        }
+        const partialData = {
+          ...partialDef.defaults ?? {},
+          ...data
+        };
+        const partialAst = parseTemplate(partialDef.template);
+        const partialCtx = {
+          partialChain: [...chain, partialName],
+          partials,
+          overrides: renderCtx?.overrides,
+          i18n: renderCtx?.i18n,
+          locale: renderCtx?.locale
+        };
+        parts.push(renderNodes(partialAst, partialData, insideEach, loopStack, partialCtx));
+        break;
+      }
+      case "i18n": {
+        const i18nKey = node.i18nKey;
+        const i18n = renderCtx?.i18n;
+        const locale = renderCtx?.locale;
+        if (!i18n) {
+          parts.push(`{{t ${i18nKey}}}`);
+          break;
+        }
+        const resolvedParams = {};
+        if (node.i18nParams) {
+          for (const [k, v] of Object.entries(node.i18nParams)) {
+            if (/^[\w.]+$/.test(v)) {
+              const resolved = resolvePath(data, v, loopStack);
+              if (resolved !== undefined && resolved !== null && resolved !== "") {
+                resolvedParams[k] = typeof resolved === "number" ? resolved : coerceString(resolved);
+              } else {
+                resolvedParams[k] = v;
+              }
+            } else {
+              resolvedParams[k] = v;
+            }
+          }
+        }
+        parts.push(escapeHtml(i18n.t(i18nKey, locale, resolvedParams)));
+        break;
+      }
+      case "locale": {
+        const locale = renderCtx?.locale;
+        if (locale) {
+          parts.push(escapeHtml(locale.code));
+        } else {
+          parts.push("");
+        }
+        break;
+      }
+      case "formatNumber": {
+        const locale = renderCtx?.locale;
+        const raw = resolvePath(data, node.formatPath, loopStack);
+        if (locale && raw !== undefined && raw !== null) {
+          const opts = {};
+          if (node.formatStyle) {
+            opts.style = node.formatStyle;
+          }
+          if (node.extraFormatOpts) {
+            Object.assign(opts, coerceFormatOpts(node.extraFormatOpts));
+          }
+          parts.push(escapeHtml(locale.formatNumber(raw, opts)));
+        } else {
+          parts.push(coerceString(raw));
+        }
+        break;
+      }
+      case "formatDate": {
+        const locale = renderCtx?.locale;
+        const raw = resolvePath(data, node.formatPath, loopStack);
+        if (locale && raw !== undefined && raw !== null) {
+          const opts = {};
+          if (node.dateStyle) {
+            opts.dateStyle = node.dateStyle;
+          }
+          parts.push(escapeHtml(locale.formatDate(raw, opts)));
+        } else {
+          parts.push(coerceString(raw));
         }
         break;
       }
@@ -104595,18 +105033,74 @@ function renderNodes(nodes, data, insideEach, loopStack = []) {
 }
 
 class TemplateEngine {
-  render(template, data) {
+  partials;
+  registry;
+  i18n;
+  locale;
+  constructor(partials, registry, i18n, locale) {
+    this.partials = partials ?? new TemplatePartial;
+    this.registry = registry;
+    this.i18n = i18n;
+    this.locale = locale;
+  }
+  render(template, data, partialChain = []) {
+    const baseName = extractExtends(template);
+    if (baseName) {
+      if (!this.registry) {
+        throw new Error(`TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`);
+      }
+      const { baseTemplate, mergedOverrides } = resolveInheritanceChain(template, this.registry);
+      const baseAst = parseTemplate(baseTemplate);
+      const ctx2 = {
+        partialChain,
+        partials: this.partials,
+        overrides: mergedOverrides,
+        i18n: this.i18n,
+        locale: this.locale
+      };
+      return renderNodes(baseAst, data, false, [], ctx2);
+    }
     const ast = parseTemplate(template);
-    return renderNodes(ast, data, false);
+    const ctx = {
+      partialChain,
+      partials: this.partials,
+      i18n: this.i18n,
+      locale: this.locale
+    };
+    return renderNodes(ast, data, false, [], ctx);
+  }
+  getPartials() {
+    return this.partials;
+  }
+  getRegistry() {
+    return this.registry;
+  }
+  setRegistry(registry) {
+    this.registry = registry;
+  }
+  getI18n() {
+    return this.i18n;
+  }
+  setI18n(i18n) {
+    this.i18n = i18n;
+  }
+  getLocale() {
+    return this.locale;
+  }
+  setLocale(locale) {
+    this.locale = locale;
   }
   hasUnresolvedTokens(rendered) {
     return /\{\{[^}]+\}\}/.test(rendered);
   }
   extractVariables(template) {
     const vars = new Set;
-    const re = /\{\{(#if\s+|#each\s+)?([\w.@|]+)\}\}/g;
+    const re = /\{\{(#if\s+|#each\s+|>\s*)?([\w.@|]+)\}\}/g;
     let match;
     while ((match = re.exec(template)) !== null) {
+      if (match[1] && match[1].startsWith(">")) {
+        continue;
+      }
       if (match[1]) {
         const path5 = match[2].trim();
         vars.add(path5);
@@ -104621,8 +105115,9 @@ class TemplateEngine {
     return Array.from(vars);
   }
 }
-var ESCAPE_MAP, DANGEROUS_KEYS, templateEngine;
+var MAX_PARTIAL_DEPTH = 10, MAX_EXTENDS_DEPTH = 10, ESCAPE_MAP, DANGEROUS_KEYS, templateEngine;
 var init_TemplateEngine = __esm(() => {
+  init_TemplatePartial();
   ESCAPE_MAP = {
     "&": "&amp;",
     "<": "&lt;",
@@ -104632,6 +105127,178 @@ var init_TemplateEngine = __esm(() => {
   };
   DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
   templateEngine = new TemplateEngine;
+});
+
+// src/lib/email/Locale.ts
+class Locale {
+  code;
+  fallback;
+  constructor(options) {
+    this.fallback = options.fallback ?? "en";
+    this.code = options.code || this.fallback;
+  }
+  get chain() {
+    const chain = [this.code];
+    if (this.code.includes("-")) {
+      const languageOnly = this.code.split("-")[0];
+      if (languageOnly !== this.code) {
+        chain.push(languageOnly);
+      }
+    }
+    if (this.fallback && !chain.includes(this.fallback)) {
+      chain.push(this.fallback);
+    }
+    return chain;
+  }
+  formatNumber(value, options) {
+    const num = typeof value === "string" ? Number(value) : value;
+    if (Number.isNaN(num))
+      return String(value);
+    const locale = options?.locale || this.code || this.fallback;
+    const { locale: _locale, ...intlOptions } = options ?? {};
+    return new Intl.NumberFormat(locale, intlOptions).format(num);
+  }
+  formatDate(value, options) {
+    let date;
+    if (value instanceof Date) {
+      date = value;
+    } else if (typeof value === "number") {
+      date = new Date(value);
+    } else {
+      date = new Date(value);
+    }
+    if (Number.isNaN(date.getTime()))
+      return String(value);
+    const locale = options?.locale || this.code || this.fallback;
+    const { locale: _locale, ...intlOptions } = options ?? {};
+    return new Intl.DateTimeFormat(locale, intlOptions).format(date);
+  }
+  sameLanguage(other) {
+    return this.code.split("-")[0] === other.split("-")[0];
+  }
+  get language() {
+    return this.code.split("-")[0];
+  }
+  static fromCode(code, fallback) {
+    return new Locale({ code, fallback });
+  }
+}
+var init_Locale = () => {};
+
+// src/lib/email/TemplateI18n.ts
+class TemplateI18n {
+  translations = new Map;
+  defaultLocale;
+  constructor(defaultLocaleCode = "en", defaultFallback) {
+    this.defaultLocale = new Locale({
+      code: defaultLocaleCode,
+      fallback: defaultFallback ?? "en"
+    });
+    this.register("en", BUILT_IN_EN);
+    this.register("es", BUILT_IN_ES);
+  }
+  register(localeCode, translations) {
+    const existing = this.translations.get(localeCode) ?? {};
+    this.translations.set(localeCode, { ...existing, ...translations });
+  }
+  t(key, locale, params) {
+    const loc = typeof locale === "string" ? Locale.fromCode(locale, this.defaultLocale.fallback) : locale ?? this.defaultLocale;
+    const chain = loc.chain;
+    for (const code of chain) {
+      const map = this.translations.get(code);
+      if (map && key in map) {
+        return this.interpolate(map[key], params);
+      }
+    }
+    console.warn(`TemplateI18n: missing translation key "${key}" for locale chain [${chain.join(", ")}]`);
+    return `[missing: ${key}]`;
+  }
+  has(key, localeCode) {
+    const loc = Locale.fromCode(localeCode, this.defaultLocale.fallback);
+    for (const code of loc.chain) {
+      const map = this.translations.get(code);
+      if (map && key in map)
+        return true;
+    }
+    return false;
+  }
+  listLocales() {
+    return Array.from(this.translations.keys());
+  }
+  getTranslations(localeCode) {
+    return this.translations.get(localeCode) ?? {};
+  }
+  getDefaultLocale() {
+    return this.defaultLocale;
+  }
+  setDefaultLocale(code, fallback) {
+    this.defaultLocale = new Locale({ code, fallback: fallback ?? "en" });
+  }
+  interpolate(template, params) {
+    if (!params)
+      return template;
+    return template.replace(/\{(\w+)\}/g, (match, key) => {
+      if (key in params)
+        return String(params[key]);
+      return match;
+    });
+  }
+}
+var BUILT_IN_EN, BUILT_IN_ES;
+var init_TemplateI18n = __esm(() => {
+  init_Locale();
+  BUILT_IN_EN = {
+    "email.greeting": "Hello {name},",
+    "email.greeting.formal": "Dear {name},",
+    "email.greeting.informal": "Hi {name}",
+    "email.closing": "Best regards,",
+    "email.closing.warm": "Warm regards,",
+    "email.closing.formal": "Sincerely,",
+    "email.subject.followUp": "Following up on our conversation",
+    "email.subject.introduction": "Introduction \u2014 {organization}",
+    "email.subject.partnership": "Partnership opportunity \u2014 {organization}",
+    "email.subject.aiGovernance": "AI Governance \u2014 {topic}",
+    "email.body.intro": "I hope this message finds you well.",
+    "email.body.interested": "I would love to schedule a brief call to discuss how we can collaborate on {topic}.",
+    "email.body.learnMore": "I would be happy to provide more details about our work in {area}",
+    "email.body.nextStep": "Would you be available for a brief call this week?",
+    "email.body.thankYou": "Thank you for your time and consideration.",
+    "email.unsubscribe": "Unsubscribe",
+    "email.unsubscribe.reason": "You received this email because you expressed interest in AI governance.",
+    "email.preferences": "Update preferences",
+    "email.cta.learnMore": "Learn more",
+    "email.cta.scheduleCall": "Schedule a call",
+    "email.cta.reply": "Reply to this email",
+    "email.footer.rights": "All rights reserved.",
+    "email.footer.sentBy": "Sent by {organization}",
+    "locale.name": "English"
+  };
+  BUILT_IN_ES = {
+    "email.greeting": "Hola {name},",
+    "email.greeting.formal": "Estimado/a {name},",
+    "email.greeting.informal": "Hola {name},",
+    "email.closing": "Saludos cordiales,",
+    "email.closing.warm": "Un cordial saludo,",
+    "email.closing.formal": "Atentamente,",
+    "email.subject.followUp": "Seguimiento de nuestra conversaci\xF3n",
+    "email.subject.introduction": "Presentaci\xF3n \u2014 {organization}",
+    "email.subject.partnership": "Oportunidad de colaboraci\xF3n \u2014 {organization}",
+    "email.subject.aiGovernance": "Gobernanza de IA \u2014 {topic}",
+    "email.body.intro": "Espero que este mensaje le encuentre bien.",
+    "email.body.interested": "Me encantar\xEDa programar una breve llamada para discutir c\xF3mo podemos colaborar en {topic}.",
+    "email.body.learnMore": "Estar\xE9 encantado de proporcionar m\xE1s detalles sobre nuestro trabajo en {area}",
+    "email.body.nextStep": "\xBFEstar\xEDa disponible para una breve llamada esta semana?",
+    "email.body.thankYou": "Gracias por su tiempo y consideraci\xF3n.",
+    "email.unsubscribe": "Cancelar suscripci\xF3n",
+    "email.unsubscribe.reason": "Recibi\xF3 este correo porque expres\xF3 inter\xE9s en la gobernanza de IA.",
+    "email.preferences": "Actualizar preferencias",
+    "email.cta.learnMore": "M\xE1s informaci\xF3n",
+    "email.cta.scheduleCall": "Programar una llamada",
+    "email.cta.reply": "Responder a este correo",
+    "email.footer.rights": "Todos los derechos reservados.",
+    "email.footer.sentBy": "Enviado por {organization}",
+    "locale.name": "Espa\xF1ol"
+  };
 });
 
 // src/lib/email/outreach-email-template.ts
@@ -104652,8 +105319,11 @@ function generateEmail(params) {
     language = "es",
     subject = "",
     ctaText = null,
-    customPS = "P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos."
+    customPS = "P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.",
+    locale: localeCode = "en"
   } = params;
+  const locale = Locale.fromCode(localeCode, "en");
+  templateEngine.setLocale(locale);
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
   const templates = {
     governance: {
@@ -104753,8 +105423,11 @@ function generateEmailHTML(params) {
     subject = "",
     ctaText = null,
     customPS = "P.S.: This message was AI-generated and verified by humans. Total transparency in our processes.",
-    customHook = null
+    customHook = null,
+    locale: localeCode = "en"
   } = params;
+  const locale = Locale.fromCode(localeCode, "en");
+  templateEngine.setLocale(locale);
   const firstName = recipientName ? recipientName.split(" ")[0] : "there";
   const logoImg = `<img src="${hostedLogoUrl}" alt="ALYGN" style="width: 64px; height: 64px; border-radius: 4px; display: block;">`;
   const templates = {
@@ -104867,7 +105540,7 @@ function generatePlainText(html) {
 
 `).trim();
 }
-var hostedLogoUrl = "https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png", emailStyle = `<style>
+var i18n, hostedLogoUrl = "https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png", emailStyle = `<style>
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     background-color: #f9fafb;
@@ -104977,6 +105650,11 @@ var hostedLogoUrl = "https://res.cloudinary.com/andler-develops/image/upload/v17
 </style>`, outreach_email_template_default;
 var init_outreach_email_template = __esm(() => {
   init_TemplateEngine();
+  init_TemplateI18n();
+  init_Locale();
+  i18n = new TemplateI18n("en");
+  templateEngine.setI18n(i18n);
+  templateEngine.setLocale(Locale.fromCode("en"));
   outreach_email_template_default = { generateEmail, generateEmailHTML };
 });
 
@@ -118068,6 +118746,201 @@ var init_UnsubscribeManager = __esm(() => {
   UNSUBSCRIBE_FILE = path8.resolve(SKILL_DATA_DIR, "unsubscribe-list.json");
 });
 
+// src/lib/email/TemplateVersion.ts
+class TemplateVersion {
+  major;
+  minor;
+  patch;
+  constructor(major, minor, patch) {
+    if (!Number.isInteger(major) || major < 0) {
+      throw new Error(`Invalid major version: ${major}`);
+    }
+    if (!Number.isInteger(minor) || minor < 0) {
+      throw new Error(`Invalid minor version: ${minor}`);
+    }
+    if (!Number.isInteger(patch) || patch < 0) {
+      throw new Error(`Invalid patch version: ${patch}`);
+    }
+    this.major = major;
+    this.minor = minor;
+    this.patch = patch;
+  }
+  static parse(version5) {
+    const match = version5.trim().match(/^(\d+)\.(\d+)\.(\d+)$/);
+    if (!match) {
+      throw new Error(`Invalid version string: "${version5}". Expected format: major.minor.patch (e.g. "1.2.3")`);
+    }
+    return new TemplateVersion(parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10));
+  }
+  static tryParse(version5) {
+    try {
+      return TemplateVersion.parse(version5);
+    } catch {
+      return null;
+    }
+  }
+  static initial() {
+    return new TemplateVersion(0, 1, 0);
+  }
+  bumpMajor() {
+    return new TemplateVersion(this.major + 1, 0, 0);
+  }
+  bumpMinor() {
+    return new TemplateVersion(this.major, this.minor + 1, 0);
+  }
+  bumpPatch() {
+    return new TemplateVersion(this.major, this.minor, this.patch + 1);
+  }
+  isCompatible(other) {
+    return this.major === other.major;
+  }
+  isNewerThan(other) {
+    if (this.major !== other.major)
+      return this.major > other.major;
+    if (this.minor !== other.minor)
+      return this.minor > other.minor;
+    return this.patch > other.patch;
+  }
+  isOlderThan(other) {
+    return other.isNewerThan(this);
+  }
+  equals(other) {
+    return this.major === other.major && this.minor === other.minor && this.patch === other.patch;
+  }
+  toString() {
+    return `${this.major}.${this.minor}.${this.patch}`;
+  }
+  toJSON() {
+    return this.toString();
+  }
+  static fromJSON(json) {
+    return TemplateVersion.parse(json);
+  }
+}
+var init_TemplateVersion = () => {};
+
+// src/lib/email/TemplateRegistry.ts
+import fs9 from "fs";
+import path9 from "path";
+
+class TemplateRegistry {
+  data;
+  constructor() {
+    if (!fs9.existsSync(SKILL_DATA_DIR2)) {
+      fs9.mkdirSync(SKILL_DATA_DIR2, { recursive: true });
+    }
+    this.data = this.load();
+  }
+  register(name, version5, content, metadata) {
+    const v = typeof version5 === "string" ? TemplateVersion.parse(version5) : version5;
+    const entry = {
+      name,
+      version: v.toString(),
+      content,
+      metadata,
+      registeredAt: new Date().toISOString()
+    };
+    if (!this.data.templates[name]) {
+      this.data.templates[name] = [];
+    }
+    const versions = this.data.templates[name];
+    const existingIdx = versions.findIndex((e) => e.version === v.toString());
+    if (existingIdx >= 0) {
+      entry.registeredAt = versions[existingIdx].registeredAt;
+      versions[existingIdx] = entry;
+    } else {
+      versions.push(entry);
+    }
+    versions.sort((a, b) => {
+      const va = TemplateVersion.parse(a.version);
+      const vb = TemplateVersion.parse(b.version);
+      return vb.isNewerThan(va) ? 1 : va.isNewerThan(vb) ? -1 : 0;
+    });
+    this.data.lastUpdated = new Date().toISOString();
+    this.save();
+    return entry;
+  }
+  get(name, version5) {
+    const versions = this.data.templates[name];
+    if (!versions || versions.length === 0)
+      return null;
+    if (version5 === undefined) {
+      return versions[0];
+    }
+    const vStr = typeof version5 === "string" ? version5 : version5.toString();
+    return versions.find((e) => e.version === vStr) ?? null;
+  }
+  getLatest(name) {
+    const versions = this.data.templates[name];
+    if (!versions || versions.length === 0)
+      return null;
+    return versions[0];
+  }
+  listVersions(name) {
+    return this.data.templates[name] ?? [];
+  }
+  listTemplateNames() {
+    return Object.keys(this.data.templates);
+  }
+  has(name, version5) {
+    if (version5 === undefined) {
+      return !!this.data.templates[name]?.length;
+    }
+    return this.get(name, version5) !== null;
+  }
+  removeVersion(name, version5) {
+    const versions = this.data.templates[name];
+    if (!versions)
+      return false;
+    const vStr = typeof version5 === "string" ? version5 : version5.toString();
+    const idx = versions.findIndex((e) => e.version === vStr);
+    if (idx === -1)
+      return false;
+    versions.splice(idx, 1);
+    if (versions.length === 0) {
+      delete this.data.templates[name];
+    }
+    this.data.lastUpdated = new Date().toISOString();
+    this.save();
+    return true;
+  }
+  removeTemplate(name) {
+    const versions = this.data.templates[name];
+    if (!versions)
+      return 0;
+    const count = versions.length;
+    delete this.data.templates[name];
+    this.data.lastUpdated = new Date().toISOString();
+    this.save();
+    return count;
+  }
+  load() {
+    try {
+      if (fs9.existsSync(REGISTRY_FILE)) {
+        return JSON.parse(fs9.readFileSync(REGISTRY_FILE, "utf8"));
+      }
+    } catch (e) {
+      const err = e;
+      console.error("[TemplateRegistry] Error loading registry:", err.message);
+    }
+    return { templates: {}, lastUpdated: null };
+  }
+  save() {
+    try {
+      fs9.writeFileSync(REGISTRY_FILE, JSON.stringify(this.data, null, 2));
+    } catch (e) {
+      const err = e;
+      console.error("[TemplateRegistry] Error saving registry:", err.message);
+    }
+  }
+}
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib/email", SKILL_DATA_DIR2, REGISTRY_FILE;
+var init_TemplateRegistry = __esm(() => {
+  init_TemplateVersion();
+  SKILL_DATA_DIR2 = path9.resolve(__dirname, "../../data");
+  REGISTRY_FILE = path9.resolve(SKILL_DATA_DIR2, "template-registry.json");
+});
+
 // src/lib/email/EmailService.ts
 var exports_EmailService = {};
 __export(exports_EmailService, {
@@ -118084,6 +118957,7 @@ class EmailService {
   templateValidator;
   complianceValidator;
   unsubscribeManager;
+  templateRegistry;
   auditLogger = null;
   constructor(providerType, config, sizeConstraints, queueConfig, unsubscribeManager) {
     this.providerType = providerType;
@@ -118091,6 +118965,7 @@ class EmailService {
     this.templateValidator = new TemplateValidator(sizeConstraints);
     this.complianceValidator = new ComplianceValidator;
     this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager;
+    this.templateRegistry = new TemplateRegistry;
     this.queue = new EmailQueue(queueConfig);
     this.queue.setSendFn(async (payload) => {
       await this.initialize();
@@ -118120,10 +118995,16 @@ class EmailService {
     await this.initialize();
     return await this.provider.validateConfig();
   }
+  setAuditLogger(logger) {
+    this.auditLogger = logger;
+  }
   async sendEmail(payload) {
     await this.initialize();
     const actualPayload = this.testEmail ? { ...payload, to: this.testEmail } : payload;
     const result = await this.provider.send(actualPayload);
+    if (this.auditLogger) {
+      await this.auditLogger.log("EmailService", "email.send", payload.to, { subject: payload.subject, provider: result.provider, messageId: result.messageId }, result.success ? "success" : "failure").catch(() => {});
+    }
     return {
       ...result,
       success: result.success,
@@ -118301,6 +119182,48 @@ class EmailService {
     const sendResult = await this.sendWithValidation(payload, options?.language);
     return { ...sendResult, compliance };
   }
+  async sendWithVersion(payload, templateName, templateVersion, options) {
+    const v = templateVersion ? typeof templateVersion === "string" ? TemplateVersion.parse(templateVersion) : templateVersion : undefined;
+    const entry = this.templateRegistry.get(templateName, v);
+    if (!entry) {
+      const versionStr = v ? v.toString() : "latest";
+      console.error(`[EmailService] Template "${templateName}" version ${versionStr} not found in registry`);
+      return {
+        success: false,
+        to: payload.to,
+        subject: payload.subject,
+        error: `Template "${templateName}" version ${versionStr} not found in registry`
+      };
+    }
+    if (v) {
+      const latest = this.templateRegistry.getLatest(templateName);
+      if (latest) {
+        const requestedV = TemplateVersion.parse(entry.version);
+        const latestV = TemplateVersion.parse(latest.version);
+        if (!requestedV.isCompatible(latestV)) {
+          console.warn(`[EmailService] Template "${templateName}" version ${entry.version} is not compatible with latest ${latest.version} (major version mismatch)`);
+        }
+      }
+    }
+    const mergedPayload = {
+      ...payload,
+      html: payload.html || entry.content
+    };
+    const result = await this.sendWithCompliance(mergedPayload, {
+      language: options?.language,
+      hasConsent: options?.hasConsent,
+      physicalAddress: options?.physicalAddress,
+      supportsErasure: options?.supportsErasure,
+      personalDataFieldsCount: options?.personalDataFieldsCount
+    });
+    return {
+      ...result,
+      templateVersion: entry.version
+    };
+  }
+  getTemplateRegistry() {
+    return this.templateRegistry;
+  }
   getUnsubscribeManager() {
     return this.unsubscribeManager;
   }
@@ -118315,6 +119238,8 @@ var init_EmailService = __esm(() => {
   init_TemplateValidator();
   init_ComplianceValidator();
   init_UnsubscribeManager();
+  init_TemplateVersion();
+  init_TemplateRegistry();
   EmailService_default = EmailService;
 });
 
@@ -118324,21 +119249,21 @@ __export(exports_SentEmailTracker, {
   default: () => SentEmailTracker_default,
   SentEmailTracker: () => SentEmailTracker
 });
-import fs9 from "fs";
-import path9 from "path";
+import fs10 from "fs";
+import path10 from "path";
 
 class SentEmailTracker {
   sentEmails;
   constructor() {
-    if (!fs9.existsSync(SKILL_DATA_DIR2)) {
-      fs9.mkdirSync(SKILL_DATA_DIR2, { recursive: true });
+    if (!fs10.existsSync(SKILL_DATA_DIR3)) {
+      fs10.mkdirSync(SKILL_DATA_DIR3, { recursive: true });
     }
     this.sentEmails = this.loadSentLog();
   }
   loadSentLog() {
     try {
-      if (fs9.existsSync(SENT_LOG_FILE)) {
-        return JSON.parse(fs9.readFileSync(SENT_LOG_FILE, "utf8"));
+      if (fs10.existsSync(SENT_LOG_FILE)) {
+        return JSON.parse(fs10.readFileSync(SENT_LOG_FILE, "utf8"));
       }
     } catch (e) {
       const err = e;
@@ -118348,7 +119273,7 @@ class SentEmailTracker {
   }
   saveSentLog() {
     try {
-      fs9.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
+      fs10.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
     } catch (e) {
       const err = e;
       console.error("Error saving sent log:", err.message);
@@ -118383,7 +119308,9 @@ class SentEmailTracker {
       vcName: vcName || name,
       subject,
       sentAt: sentAt || new Date().toISOString(),
-      messageId: messageId || `alygn-${Date.now()}`
+      messageId: messageId || `alygn-${Date.now()}`,
+      templateName: params.templateName,
+      templateVersion: params.templateVersion
     };
     if (existingIndex >= 0) {
       this.sentEmails[key][existingIndex] = entry;
@@ -118478,10 +119405,10 @@ class SentEmailTracker {
     this.saveSentLog();
   }
 }
-var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib", SKILL_DATA_DIR2, SENT_LOG_FILE, SentEmailTracker_default;
+var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib", SKILL_DATA_DIR3, SENT_LOG_FILE, SentEmailTracker_default;
 var init_SentEmailTracker = __esm(() => {
-  SKILL_DATA_DIR2 = path9.resolve(__dirname, "../../data");
-  SENT_LOG_FILE = path9.resolve(SKILL_DATA_DIR2, "sent-emails.json");
+  SKILL_DATA_DIR3 = path10.resolve(__dirname, "../../data");
+  SENT_LOG_FILE = path10.resolve(SKILL_DATA_DIR3, "sent-emails.json");
   SentEmailTracker_default = SentEmailTracker;
 });
 
@@ -118583,8 +119510,8 @@ var init_EmailValidatorFactory = __esm(() => {
 });
 
 // src/core/Pipeline.ts
-import fs11 from "fs";
-import path11 from "path";
+import fs12 from "fs";
+import path12 from "path";
 
 // src/core/tracing-utils.ts
 var import_api2 = __toESM(require_src(), 1);
@@ -121206,8 +122133,8 @@ class VCResearchStrategy extends ResearchStrategy {
 }
 
 // src/strategies/sending/SendingStrategy.ts
-import fs10 from "fs";
-import path10 from "path";
+import fs11 from "fs";
+import path11 from "path";
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/strategies/sending";
 
 class SendingStrategy {
@@ -121246,13 +122173,13 @@ class SendingStrategy {
   }
   loadCredentials() {
     try {
-      const configPath = path10.resolve(__dirname, "../../../config/credentials.json");
-      if (fs10.existsSync(configPath)) {
-        return JSON.parse(fs10.readFileSync(configPath, "utf8"));
+      const configPath = path11.resolve(__dirname, "../../../config/credentials.json");
+      if (fs11.existsSync(configPath)) {
+        return JSON.parse(fs11.readFileSync(configPath, "utf8"));
       }
-      const legacyPath = path10.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-      if (fs10.existsSync(legacyPath)) {
-        return JSON.parse(fs10.readFileSync(legacyPath, "utf8"));
+      const legacyPath = path11.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+      if (fs11.existsSync(legacyPath)) {
+        return JSON.parse(fs11.readFileSync(legacyPath, "utf8"));
       }
     } catch (error) {
       console.error("\u26A0\uFE0F  Failed to load credentials:", error.message);
@@ -121726,29 +122653,29 @@ class SendingStrategy {
   }
   async persistRegeneratedDraft(entity) {
     try {
-      const fs11 = await import("fs");
-      const path11 = await import("path");
-      const personalizePath = path11.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-personalize" : "muni-personalize", `alygn-${entity.type}-personalized-${new Date().toISOString().split("T")[0]}.json`);
-      if (fs11.existsSync(personalizePath)) {
-        const data = JSON.parse(fs11.readFileSync(personalizePath, "utf8"));
+      const fs12 = await import("fs");
+      const path12 = await import("path");
+      const personalizePath = path12.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-personalize" : "muni-personalize", `alygn-${entity.type}-personalized-${new Date().toISOString().split("T")[0]}.json`);
+      if (fs12.existsSync(personalizePath)) {
+        const data = JSON.parse(fs12.readFileSync(personalizePath, "utf8"));
         if (data.data?.entities) {
           const entityIndex = data.data.entities.findIndex((e) => e.id === entity.id);
           if (entityIndex !== -1) {
             data.data.entities[entityIndex] = entity;
-            fs11.writeFileSync(personalizePath, JSON.stringify(data, null, 2));
+            fs12.writeFileSync(personalizePath, JSON.stringify(data, null, 2));
             console.log(`   \uD83D\uDCBE Updated personalization file: ${personalizePath}`);
           }
         }
       }
-      const statePath = path11.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-waves" : "muni-waves", "wave-state.json");
-      if (fs11.existsSync(statePath)) {
-        const state = JSON.parse(fs11.readFileSync(statePath, "utf8"));
+      const statePath = path12.join(process.env.HOME || "", ".openclaw/workspace/reports/alygn", entity.type === "vc" ? "vc-waves" : "muni-waves", "wave-state.json");
+      if (fs12.existsSync(statePath)) {
+        const state = JSON.parse(fs12.readFileSync(statePath, "utf8"));
         if (state.data?.entities) {
           const entityIndex = state.data.entities.findIndex((e) => e.id === entity.id);
           if (entityIndex !== -1) {
             state.data.entities[entityIndex] = entity;
             state.lastUpdatedAt = new Date().toISOString();
-            fs11.writeFileSync(statePath, JSON.stringify(state, null, 2));
+            fs12.writeFileSync(statePath, JSON.stringify(state, null, 2));
             console.log(`   \uD83D\uDCBE Updated state file: ${statePath}`);
           }
         }
@@ -121870,7 +122797,7 @@ class Pipeline {
   }
   saveState(phase, data) {
     const filePath = this.getStateFilePath(phase);
-    fs11.writeFileSync(filePath, JSON.stringify({
+    fs12.writeFileSync(filePath, JSON.stringify({
       timestamp: new Date().toISOString(),
       type: this.type,
       phase,
@@ -121879,11 +122806,11 @@ class Pipeline {
     return filePath;
   }
   loadState(filePath) {
-    if (!fs11.existsSync(filePath)) {
+    if (!fs12.existsSync(filePath)) {
       return null;
     }
     try {
-      const content = fs11.readFileSync(filePath, "utf8");
+      const content = fs12.readFileSync(filePath, "utf8");
       return JSON.parse(content);
     } catch (error) {
       console.error(`Failed to load state: ${error.message}`);
@@ -121895,7 +122822,7 @@ class Pipeline {
     const tmpDir = "/tmp";
     let files = [];
     try {
-      files = fs11.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path11.join(tmpDir, f)).sort((a, b) => fs11.statSync(b).mtimeMs - fs11.statSync(a).mtimeMs);
+      files = fs12.readdirSync(tmpDir).filter((f) => pattern.test(f)).map((f) => path12.join(tmpDir, f)).sort((a, b) => fs12.statSync(b).mtimeMs - fs12.statSync(a).mtimeMs);
     } catch {}
     if (files.length === 0) {
       return null;
@@ -122082,9 +123009,9 @@ class Pipeline {
     } catch {}
     if (entity.type === "municipal") {
       try {
-        const credentialsPath = path11.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
-        if (fs11.existsSync(credentialsPath)) {
-          const credentials = JSON.parse(fs11.readFileSync(credentialsPath, "utf8"));
+        const credentialsPath = path12.join(process.env.HOME || "", ".openclaw/workspace/config/credentials.json");
+        if (fs12.existsSync(credentialsPath)) {
+          const credentials = JSON.parse(fs12.readFileSync(credentialsPath, "utf8"));
           if (credentials?.supabase?.url && credentials?.supabase?.key) {
             const { createClient: createClient2 } = await Promise.resolve().then(() => (init_dist4(), exports_dist));
             const supabase = createClient2(credentials.supabase.url, credentials.supabase.key);
@@ -122266,8 +123193,8 @@ class Pipeline {
 }
 
 // src/core/PreflightChecker.ts
-import fs12 from "fs";
-import path12 from "path";
+import fs13 from "fs";
+import path13 from "path";
 var CHECK_DEFINITIONS = {
   send: [
     { name: "state-file-exists", description: "Verify wave-state.json exists" },
@@ -122307,18 +123234,18 @@ class PreflightChecker {
   }
   loadCredentials() {
     const credPath = this.getPaths().credentials;
-    if (!fs12.existsSync(credPath)) {
+    if (!fs13.existsSync(credPath)) {
       return null;
     }
     try {
-      return JSON.parse(fs12.readFileSync(credPath, "utf8"));
+      return JSON.parse(fs13.readFileSync(credPath, "utf8"));
     } catch {
       return null;
     }
   }
   checkStateFileExists() {
     const waveStatePath = this.getPaths().waveState;
-    const exists = fs12.existsSync(waveStatePath);
+    const exists = fs13.existsSync(waveStatePath);
     return {
       name: "state-file-exists",
       passed: exists,
@@ -122328,7 +123255,7 @@ class PreflightChecker {
   }
   checkHasApprovedDrafts() {
     const waveStatePath = this.getPaths().waveState;
-    if (!fs12.existsSync(waveStatePath)) {
+    if (!fs13.existsSync(waveStatePath)) {
       return {
         name: "has-approved-drafts",
         passed: false,
@@ -122337,7 +123264,7 @@ class PreflightChecker {
       };
     }
     try {
-      const state = JSON.parse(fs12.readFileSync(waveStatePath, "utf8"));
+      const state = JSON.parse(fs13.readFileSync(waveStatePath, "utf8"));
       const entities = state.data?.entities || [];
       const approved = entities.filter((e) => e?.outreach?.draftStatus === "Approved");
       if (approved.length > 0) {
@@ -122397,7 +123324,7 @@ class PreflightChecker {
   }
   checkNotRunning() {
     const checkpointsDir = this.getPaths().checkpoints;
-    if (!fs12.existsSync(checkpointsDir)) {
+    if (!fs13.existsSync(checkpointsDir)) {
       return {
         name: "not-running",
         passed: true,
@@ -122406,11 +123333,11 @@ class PreflightChecker {
       };
     }
     try {
-      const files = fs12.readdirSync(checkpointsDir).filter((f) => f.startsWith("send-wave-") && f.endsWith(".lock"));
+      const files = fs13.readdirSync(checkpointsDir).filter((f) => f.startsWith("send-wave-") && f.endsWith(".lock"));
       const now = Date.now();
       const staleThreshold = 60 * 60 * 1000;
       const staleLocks = files.filter((f) => {
-        const stats = fs12.statSync(path12.join(checkpointsDir, f));
+        const stats = fs13.statSync(path13.join(checkpointsDir, f));
         return now - stats.mtimeMs > staleThreshold;
       });
       if (files.length === 0) {
@@ -122422,7 +123349,7 @@ class PreflightChecker {
       }
       if (staleLocks.length > 0) {
         for (const lock of staleLocks) {
-          fs12.unlinkSync(path12.join(checkpointsDir, lock));
+          fs13.unlinkSync(path13.join(checkpointsDir, lock));
         }
         return {
           name: "not-running",
@@ -122532,7 +123459,7 @@ class PreflightChecker {
   checkSyncStatus() {
     const sentTrackerPath = this.getPaths().sentTracker;
     const reportsDir = this.getPaths().reports;
-    if (!fs12.existsSync(sentTrackerPath)) {
+    if (!fs13.existsSync(sentTrackerPath)) {
       return {
         name: "sync-status",
         passed: false,
@@ -122540,10 +123467,10 @@ class PreflightChecker {
       };
     }
     try {
-      const tracker = JSON.parse(fs12.readFileSync(sentTrackerPath, "utf8"));
+      const tracker = JSON.parse(fs13.readFileSync(sentTrackerPath, "utf8"));
       const localCount = (tracker.vcs?.length || 0) + (tracker.municipal?.length || 0);
-      const vcWave = fs12.existsSync(`${reportsDir}/vc-waves/wave-state.json`);
-      const muniWave = fs12.existsSync(`${reportsDir}/muni-waves/wave-state.json`);
+      const vcWave = fs13.existsSync(`${reportsDir}/vc-waves/wave-state.json`);
+      const muniWave = fs13.existsSync(`${reportsDir}/muni-waves/wave-state.json`);
       if (localCount === 0 && !vcWave && !muniWave) {
         return {
           name: "sync-status",
@@ -122567,7 +123494,7 @@ class PreflightChecker {
   }
   checkNoOrphans() {
     const sentTrackerPath = this.getPaths().sentTracker;
-    if (!fs12.existsSync(sentTrackerPath)) {
+    if (!fs13.existsSync(sentTrackerPath)) {
       return {
         name: "no-orphans",
         passed: true,
@@ -122575,7 +123502,7 @@ class PreflightChecker {
       };
     }
     try {
-      const tracker = JSON.parse(fs12.readFileSync(sentTrackerPath, "utf8"));
+      const tracker = JSON.parse(fs13.readFileSync(sentTrackerPath, "utf8"));
       const allRecords = [...tracker.vcs || [], ...tracker.municipal || []];
       const orphaned = [];
       for (const record of allRecords) {

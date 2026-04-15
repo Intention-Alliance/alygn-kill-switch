@@ -1,0 +1,45 @@
+{
+  "templates": {
+    "email-base": [
+      {
+        "name": "email-base",
+        "version": "1.0.0",
+        "content": "{{> header}}\n{{#block content}}Default content{{/block}}\n{{#block footer}}Default footer{{/block}}\n{{> footer}}",
+        "registeredAt": "2026-04-15T23:07:23.750Z"
+      }
+    ],
+    "email-layout": [
+      {
+        "name": "email-layout",
+        "version": "1.0.0",
+        "content": "{{#block header}}Default Header{{/block}}\n{{#block body}}Default Body{{/block}}\n{{#block footer}}Default Footer{{/block}}",
+        "registeredAt": "2026-04-15T23:07:23.753Z"
+      }
+    ],
+    "email-base2": [
+      {
+        "name": "email-base2",
+        "version": "1.0.0",
+        "content": "{{extends \"email-layout\"}}\n{{#override header}}Base Header{{/override}}\n{{#override body}}Base Body{{/override}}",
+        "registeredAt": "2026-04-15T23:07:23.753Z"
+      }
+    ],
+    "circular-a": [
+      {
+        "name": "circular-a",
+        "version": "1.0.0",
+        "content": "{{extends \"circular-b\"}}\n{{#override x}}A{{/override}}",
+        "registeredAt": "2026-04-15T23:07:23.754Z"
+      }
+    ],
+    "circular-b": [
+      {
+        "name": "circular-b",
+        "version": "1.0.0",
+        "content": "{{extends \"circular-a\"}}\n{{#override y}}B{{/override}}",
+        "registeredAt": "2026-04-15T23:07:23.754Z"
+      }
+    ]
+  },
+  "lastUpdated": "2026-04-15T23:07:23.754Z"
+}

@@ -22,6 +22,7 @@ import {
 } from './types';
 import type { AlertChannel, AlertPayload, ChannelResult } from './channels/AlertChannel';
 import { ConsoleChannel } from './channels/ConsoleChannel';
+import type { AuditLogger } from '../audit/AuditLogger';
 
 export interface AlertManagerOptions {
   /** Directory for alert file persistence (default: data/alerts) */

@@ -110,6 +110,26 @@ services:
       timeout: 5s
       retries: 3
 
+  # ─── Admin BFF (Next.js) ──────────────────────────────────────────
+  admin-bff:
+    build:
+      context: .
+      dockerfile: apps/admin-bff/Dockerfile
+    container_name: admin-bff
+    restart: unless-stopped
+    ports:
+      - "3001:3000"  # Next.js dev server (maps internal 3000 → host 3001)
+    environment:
+      - KILL_SWITCH_API_URL=http://kill-switch-api:3000
+      - OLLAMA_URL=http://192.168.1.117:11434
+      - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY:-}
+    networks:
+      - phase0-net
+    depends_on:
+      kill-switch-api: { condition: service_healthy }
+
   # ─── Tracing ──────────────────────────────────────────────────────
   jaeger:
     image: jaegertracing/all-in-one:1.69.0

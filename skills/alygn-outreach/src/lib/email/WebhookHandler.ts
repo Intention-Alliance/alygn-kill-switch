@@ -8,6 +8,7 @@ import path from 'path';
 import { SentEmailTracker } from '../SentEmailTracker';
 import { UnsubscribeManager } from './UnsubscribeManager';
 import type { RateLimiter } from './RateLimiter';
+import type { AuditLogger } from '../audit/AuditLogger';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -78,6 +79,7 @@ export class WebhookHandler {
   private readonly logDir: string;
   private readonly maxLogSize: number;
   private readonly persistLogs: boolean;
+  private auditLogger: AuditLogger | null = null;
 
   // Sliding window bounce tracking
   private bounceWindow: { timestamp: number; type: 'sent' | 'bounce' }[] = [];
@@ -99,6 +101,11 @@ export class WebhookHandler {
    * Process a raw webhook payload (auto-detects format)
    * Returns array of processed results
    */
+  /** Inject AuditLogger for audit trail */
+  setAuditLogger(logger: AuditLogger): void {
+    this.auditLogger = logger;
+  }
+
   async handleWebhook(
     rawBody: Record<string, unknown> | Record<string, unknown>[],
     source: 'sendgrid' | 'generic' = 'sendgrid',
@@ -127,6 +134,17 @@ export class WebhookHandler {
       }
 
       this.appendLog(logEntry);
+    }
+
+    // Audit log the batch result
+    if (this.auditLogger) {
+      await this.auditLogger.log(
+        'WebhookHandler',
+        'webhook.receive',
+        source,
+        { processed, failed, eventCount: events.length },
+        failed === 0 ? 'success' : 'failure',
+      ).catch(() => {});
     }
 
     if (this.persistLogs) {
