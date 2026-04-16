@@ -10,6 +10,8 @@
 import fs from 'fs';
 import path from 'path';
 import { TemplateVersion } from './TemplateVersion';
+import { TemplatePermissions, type Role } from './TemplatePermissions';
+import { TemplateAccessControl, TemplateAccessError } from './TemplateAccessControl';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -45,11 +47,23 @@ export class TemplateRegistry {
   /** Optional render cache — auto-invalidated on register (F-080). */
   private cache?: import('./TemplateCache').TemplateCache;
 
-  constructor() {
+  /** Optional access control (F-083). */
+  private accessControl?: TemplateAccessControl;
+  private permissions?: TemplatePermissions;
+  private role?: Role;
+
+  constructor(options?: { permissions?: TemplatePermissions; role?: Role; accessControl?: TemplateAccessControl }) {
     if (!fs.existsSync(SKILL_DATA_DIR)) {
       fs.mkdirSync(SKILL_DATA_DIR, { recursive: true });
     }
     this.data = this.load();
+
+    // F-083: Optional access control integration
+    if (options?.permissions && options?.role) {
+      this.permissions = options.permissions;
+      this.role = options.role;
+      this.accessControl = options.accessControl ?? new TemplateAccessControl();
+    }
   }
 
   /**
@@ -212,6 +226,28 @@ export class TemplateRegistry {
   }
 
   // ---------------------------------------------------------------------------
+  // Access Control (F-083)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Get a permission-enforced proxy of this registry for the given role.
+   * Returns the original registry (no proxy) if no permissions were configured.
+   */
+  withAccess(role: Role, permissions?: TemplatePermissions): TemplateRegistry {
+    const perms = permissions ?? this.permissions;
+    if (!perms) return this;
+    const ac = this.accessControl ?? new TemplateAccessControl();
+    return ac.wrap(this, perms, role);
+  }
+
+  /**
+   * Get the underlying access control instance (if configured).
+   */
+  getAccessControl(): TemplateAccessControl | undefined {
+    return this.accessControl;
+  }
+
+  // ---------------------------------------------------------------------------
   // Persistence
   // ---------------------------------------------------------------------------
 
@@ -238,3 +274,7 @@ export class TemplateRegistry {
 }
 
 export default TemplateRegistry;
+
+// Re-export access control types for convenience (F-083)
+export { TemplateAccessError } from './TemplateAccessControl';
+export type { Role, PermissionLevel } from './TemplatePermissions';

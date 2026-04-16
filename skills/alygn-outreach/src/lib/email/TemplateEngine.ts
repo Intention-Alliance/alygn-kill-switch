@@ -29,6 +29,10 @@ import type { TemplateI18n } from './TemplateI18n';
 import type { Locale } from './Locale';
 import { TemplateCache, computeCacheKey } from './TemplateCache';
 import type { CacheEntry } from './TemplateCache';
+import { TemplateSyntaxValidator } from './TemplateSyntaxValidator';
+import type { ValidationReport } from './TemplateSyntaxValidator';
+import { TemplateTester } from './TemplateTester';
+import type { TestReport, TestAssertion } from './TemplateTester';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -1084,12 +1088,20 @@ export class TemplateEngine {
   /** Optional render cache (F-080). */
   private cache?: TemplateCache;
 
+  /** Syntax validator (F-082). */
+  private syntaxValidator: TemplateSyntaxValidator;
+
+  /** Template tester (F-082). */
+  private tester: TemplateTester;
+
   constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale, cache?: TemplateCache) {
     this.partials = partials ?? new TemplatePartial();
     this.registry = registry;
     this.i18n = i18n;
     this.locale = locale;
     this.cache = cache;
+    this.syntaxValidator = new TemplateSyntaxValidator(registry);
+    this.tester = new TemplateTester(this);
   }
 
   /**
@@ -1222,9 +1234,11 @@ export class TemplateEngine {
 
   /**
    * Set the template registry (for template inheritance).
+   * Also updates the internal syntax validator's registry reference (F-082).
    */
   setRegistry(registry: TemplateRegistry): void {
     this.registry = registry;
+    this.syntaxValidator.setRegistry(registry);
   }
 
   /**
@@ -1253,6 +1267,56 @@ export class TemplateEngine {
    */
   setLocale(locale: Locale): void {
     this.locale = locale;
+  }
+
+  // -----------------------------------------------------------------------
+  // F-082: Validation & Testing
+  // -----------------------------------------------------------------------
+
+  /**
+   * Validate template syntax, variables, and inheritance (F-082).
+   * Returns a ValidationReport with errors and warnings.
+   * Does NOT render the template — purely syntactic checks.
+   *
+   * @param template - Template string to validate
+   * @param requiredVars - Optional list of required variable names
+   * @param data - Optional data to check required vars against
+   */
+  validate(template: string, requiredVars?: string[], data?: TemplateData): ValidationReport {
+    return this.syntaxValidator.validate(template, requiredVars, data);
+  }
+
+  /**
+   * Run test cases against a template (F-082).
+   * Each test case is a function that receives a TemplateTester and returns a TestAssertion.
+   *
+   * @example
+   * ```ts
+   * const report = engine.test('Hello {{name}}!', [
+   *   (t) => t.assertRender('Hello {{name}}!', { name: 'World' }, 'Hello World!'),
+   *   (t) => t.assertContains('Hello {{name}}!', { name: 'World' }, 'World'),
+   * ]);
+   * ```
+   */
+  test(
+    template: string,
+    testCases: Array<(tester: TemplateTester) => TestAssertion>,
+  ): TestReport {
+    return this.tester.test(template, testCases);
+  }
+
+  /**
+   * Get the syntax validator instance (F-082).
+   */
+  getSyntaxValidator(): TemplateSyntaxValidator {
+    return this.syntaxValidator;
+  }
+
+  /**
+   * Get the template tester instance (F-082).
+   */
+  getTester(): TemplateTester {
+    return this.tester;
   }
 
   /**

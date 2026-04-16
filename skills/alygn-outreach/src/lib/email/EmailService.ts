@@ -14,6 +14,8 @@ import type { AuditLogger } from '../audit/AuditLogger';
 import { TemplateVersion } from './TemplateVersion';
 import { TemplateRegistry } from './TemplateRegistry';
 import type { EndpointRateLimiter } from '../security/EndpointRateLimiter';
+import type { PolicyEnforcer, EnforcedResult } from '../security/PolicyEnforcer';
+import type { PolicyContext } from '../security/SecurityPolicy';
 
 interface BatchEmailPayload {
   to: string;
@@ -51,6 +53,7 @@ export class EmailService {
   private templateRegistry: TemplateRegistry;
   private auditLogger: AuditLogger | null = null;
   private endpointRateLimiter: EndpointRateLimiter | null = null;
+  private policyEnforcer: PolicyEnforcer | null = null;
 
   constructor(providerType: string, config: Record<string, unknown>, sizeConstraints?: Partial<TemplateSizeConstraints>, queueConfig?: EmailQueueConfig, unsubscribeManager?: UnsubscribeManager) {
     this.providerType = providerType;
@@ -122,6 +125,16 @@ export class EmailService {
     return this.endpointRateLimiter;
   }
 
+  /** Inject PolicyEnforcer for security policy checks before sending */
+  setPolicyEnforcer(enforcer: PolicyEnforcer): void {
+    this.policyEnforcer = enforcer;
+  }
+
+  /** Get the PolicyEnforcer instance (if set) */
+  getPolicyEnforcer(): PolicyEnforcer | null {
+    return this.policyEnforcer;
+  }
+
   async sendEmail(payload: IEmailPayload): Promise<ISendResult> {
     await this.initialize();
 
@@ -134,6 +147,27 @@ export class EmailService {
           to: payload.to,
           subject: payload.subject,
           error: check.reason ?? 'Email send rate limit exceeded',
+        };
+      }
+    }
+
+    // Security policy enforcement
+    if (this.policyEnforcer) {
+      const policyCtx: PolicyContext = {
+        recipient: payload.to,
+        sender: payload.from,
+        subject: payload.subject,
+        body: payload.html ?? payload.text,
+        attachmentSizes: undefined,
+        tlsAvailable: true,
+      };
+      const enforcement: EnforcedResult = await this.policyEnforcer.enforceEmailPolicy(policyCtx);
+      if (!enforcement.allowed) {
+        return {
+          success: false,
+          to: payload.to,
+          subject: payload.subject,
+          error: enforcement.policyResult.reason,
         };
       }
     }

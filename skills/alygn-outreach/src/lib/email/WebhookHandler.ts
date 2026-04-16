@@ -10,6 +10,8 @@ import { UnsubscribeManager } from './UnsubscribeManager';
 import type { RateLimiter } from './RateLimiter';
 import type { AuditLogger } from '../audit/AuditLogger';
 import type { EndpointRateLimiter } from '../security/EndpointRateLimiter';
+import type { PolicyEnforcer, EnforcedResult } from '../security/PolicyEnforcer';
+import type { PolicyContext } from '../security/SecurityPolicy';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -77,6 +79,7 @@ export class WebhookHandler {
   private unsubscribeManager: UnsubscribeManager;
   private rateLimiter: RateLimiter | null;
   private endpointRateLimiter: EndpointRateLimiter | null;
+  private policyEnforcer: PolicyEnforcer | null;
   private log: WebhookLogEntry[] = [];
   private readonly logDir: string;
   private readonly maxLogSize: number;
@@ -93,6 +96,7 @@ export class WebhookHandler {
     this.unsubscribeManager = unsubscribeManager ?? new UnsubscribeManager();
     this.rateLimiter = config.rateLimiter ?? null;
     this.endpointRateLimiter = null;
+    this.policyEnforcer = null;
     this.logDir = config.logDir ?? path.resolve(__dirname, '../../data/webhook-logs');
     this.maxLogSize = config.maxLogSize ?? 1000;
     this.persistLogs = config.persistLogs ?? true;
@@ -119,6 +123,16 @@ export class WebhookHandler {
     return this.endpointRateLimiter;
   }
 
+  /** Inject PolicyEnforcer for security policy checks on webhooks */
+  setPolicyEnforcer(enforcer: PolicyEnforcer): void {
+    this.policyEnforcer = enforcer;
+  }
+
+  /** Get the PolicyEnforcer instance (if set) */
+  getPolicyEnforcer(): PolicyEnforcer | null {
+    return this.policyEnforcer;
+  }
+
   async handleWebhook(
     rawBody: Record<string, unknown> | Record<string, unknown>[],
     source: 'sendgrid' | 'generic' = 'sendgrid',
@@ -141,6 +155,23 @@ export class WebhookHandler {
         if (!check.allowed) {
           logEntry.processed = false;
           logEntry.error = check.reason ?? 'Webhook rate limit exceeded';
+          failed++;
+          errors.push(logEntry.error!);
+          this.appendLog(logEntry);
+          continue;
+        }
+      }
+
+      // Security policy enforcement
+      if (this.policyEnforcer) {
+        const policyCtx: PolicyContext = {
+          source: payload.email ?? source,
+          metadata: { event: payload.event, messageId: payload.messageId },
+        };
+        const enforcement: EnforcedResult = await this.policyEnforcer.enforceWebhookPolicy('incoming', policyCtx);
+        if (!enforcement.allowed) {
+          logEntry.processed = false;
+          logEntry.error = enforcement.policyResult.reason;
           failed++;
           errors.push(logEntry.error!);
           this.appendLog(logEntry);

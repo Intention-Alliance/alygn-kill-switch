@@ -1,5 +1,5 @@
 /**
- * Security module — rate limiting, endpoint protection, and vulnerability scanning
+ * Security module — rate limiting, endpoint protection, vulnerability scanning, and policy enforcement
  */
 export { RateLimiter, type TokenBucketConfig, type ConsumeResult } from './RateLimiter';
 export {
@@ -18,3 +18,19 @@ export {
   type SecurityScanOptions,
   type InputField,
 } from './SecurityScanner';
+export {
+  SecurityPolicy,
+  DEFAULT_SECURITY_RULES,
+  type PolicyAction,
+  type PolicyVerdict,
+  type ContentFilterRule,
+  type SecurityPolicyRules,
+  type PolicyContext,
+  type PolicyResult,
+  type PolicyCheck,
+} from './SecurityPolicy';
+export {
+  PolicyEnforcer,
+  type PolicyEnforcerOptions,
+  type EnforcedResult,
+} from './PolicyEnforcer';
