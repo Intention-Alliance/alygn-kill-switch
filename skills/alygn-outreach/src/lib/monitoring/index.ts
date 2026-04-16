@@ -8,6 +8,8 @@ import { HealthMonitor } from './HealthMonitor';
 import { MetricsCollector } from './MetricsCollector';
 import { AlertManager } from './AlertManager';
 import { CertificateMonitor } from './CertificateMonitor';
+import { GatewayConfig } from './GatewayConfig';
+import type { GatewayConfigOptions } from './GatewayConfig';
 import type { HealthMonitorOptions } from './HealthMonitor';
 import type { MetricsCollectorOptions } from './MetricsCollector';
 import type { AlertManagerOptions } from './AlertManager';
@@ -21,6 +23,8 @@ export interface MonitoringSystemOptions {
   alerts?: AlertManagerOptions;
   /** Certificate monitoring configuration */
   certificates?: CertificateMonitorOptions;
+  /** Gateway remote URL configuration */
+  gateway?: GatewayConfigOptions;
   /** Evaluate alerts on every health check cycle (default: true) */
   evaluateAlertsOnCheck?: boolean;
 }
@@ -30,6 +34,7 @@ export class MonitoringSystem {
   readonly metrics: MetricsCollector;
   readonly alerts: AlertManager;
   readonly certificates: CertificateMonitor;
+  readonly gateway: GatewayConfig | null;
   private readonly evaluateAlertsOnCheck: boolean;
 
   constructor(options: MonitoringSystemOptions = {}) {
@@ -45,6 +50,14 @@ export class MonitoringSystem {
       healthMonitor: this.health,
     };
     this.certificates = new CertificateMonitor(certOptions);
+
+    // Initialize GatewayConfig and register its health check (only if configured)
+    if (options.gateway || process.env.GATEWAY_REMOTE_URL) {
+      this.gateway = new GatewayConfig(options.gateway);
+      this.health.registerCheck('gateway', this.gateway.asHealthCheck());
+    } else {
+      this.gateway = null;
+    }
 
     // Override the service-unhealthy-consecutive rule to use
     // consecutiveCount from context (provided by MonitoringSystem)
@@ -134,6 +147,7 @@ export { HealthMonitor } from './HealthMonitor';
 export { MetricsCollector } from './MetricsCollector';
 export { AlertManager } from './AlertManager';
 export { CertificateMonitor } from './CertificateMonitor';
+export { GatewayConfig, GatewayConfigError } from './GatewayConfig';
 export * from './types';
 export * from './channels';
 

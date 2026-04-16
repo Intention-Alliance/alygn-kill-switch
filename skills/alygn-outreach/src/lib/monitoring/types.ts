@@ -18,7 +18,7 @@ export interface HealthCheckResult {
   details?: Record<string, unknown>;
 }
 
-export type ServiceName = 'supabase' | 'notion' | 'email' | 'redis' | 'x-api';
+export type ServiceName = 'supabase' | 'notion' | 'email' | 'redis' | 'x-api' | 'gateway';
 
 export interface HealthHistoryEntry extends HealthCheckResult {
   /** Monotonic sequence number within a service's history */

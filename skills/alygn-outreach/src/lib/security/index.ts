@@ -43,6 +43,14 @@ export {
   type AuditLogEntry,
 } from './AccessReviewScheduler';
 export {
+  KeyRotationManager,
+  type KeyStatus,
+  type KeyMetadata,
+  type KeyRotationManagerOptions,
+  type GenerateKeyOptions,
+} from './KeyRotationManager';
+
+export {
   DataClassifier,
   SENSITIVITY_ORDER,
   DEFAULT_CLASSIFICATION_RULES,
@@ -56,3 +64,12 @@ export {
   type DataClassifierOptions,
   type ClassificationEnforcementResult,
 } from './DataClassifier';
+export {
+  IncidentResponseManager,
+  type IncidentType,
+  type IncidentSeverity,
+  type IncidentStatus,
+  type Incident,
+  type IncidentTimelineEntry,
+  type IncidentResponseManagerOptions,
+} from './IncidentResponseManager';
