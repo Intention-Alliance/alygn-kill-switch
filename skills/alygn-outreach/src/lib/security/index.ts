@@ -117,6 +117,14 @@ export {
 } from './BusinessContinuityManager';
 
 export {
+  SecretsManager,
+  type SecretMetadata,
+  type StoredSecret,
+  type StoreSecretOptions,
+  type SecretsManagerOptions,
+} from './SecretsManager';
+
+export {
   SecurityTrainingManager,
   type TrainingCategory,
   type TrainingModuleStatus,
