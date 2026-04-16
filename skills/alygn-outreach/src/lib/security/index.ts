@@ -34,3 +34,25 @@ export {
   type PolicyEnforcerOptions,
   type EnforcedResult,
 } from './PolicyEnforcer';
+export {
+  AccessReviewScheduler,
+  type ReviewStatus,
+  type ReviewItem,
+  type ReviewSchedule,
+  type ReviewReport,
+  type AuditLogEntry,
+} from './AccessReviewScheduler';
+export {
+  DataClassifier,
+  SENSITIVITY_ORDER,
+  DEFAULT_CLASSIFICATION_RULES,
+  DEFAULT_HANDLING_POLICIES,
+  type SensitivityLevel,
+  type DataCategory,
+  type ClassificationRule,
+  type FieldClassification,
+  type ClassificationResult,
+  type DataHandlingPolicy,
+  type DataClassifierOptions,
+  type ClassificationEnforcementResult,
+} from './DataClassifier';

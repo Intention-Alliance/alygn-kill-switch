@@ -29,6 +29,7 @@ import type { TemplateI18n } from './TemplateI18n';
 import type { Locale } from './Locale';
 import { TemplateCache, computeCacheKey } from './TemplateCache';
 import type { CacheEntry } from './TemplateCache';
+import type { TemplateAnalytics } from './TemplateAnalytics';
 import { TemplateSyntaxValidator } from './TemplateSyntaxValidator';
 import type { ValidationReport } from './TemplateSyntaxValidator';
 import { TemplateTester } from './TemplateTester';
@@ -1088,18 +1089,22 @@ export class TemplateEngine {
   /** Optional render cache (F-080). */
   private cache?: TemplateCache;
 
+  /** Optional analytics for render tracking (F-084). */
+  private analytics?: TemplateAnalytics;
+
   /** Syntax validator (F-082). */
   private syntaxValidator: TemplateSyntaxValidator;
 
   /** Template tester (F-082). */
   private tester: TemplateTester;
 
-  constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale, cache?: TemplateCache) {
+  constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale, cache?: TemplateCache, analytics?: TemplateAnalytics) {
     this.partials = partials ?? new TemplatePartial();
     this.registry = registry;
     this.i18n = i18n;
     this.locale = locale;
     this.cache = cache;
+    this.analytics = analytics;
     this.syntaxValidator = new TemplateSyntaxValidator(registry);
     this.tester = new TemplateTester(this);
   }
@@ -1125,51 +1130,60 @@ export class TemplateEngine {
 
     if (canCache) {
       cacheKey = computeCacheKey(template, data, this.locale);
-      const cached = this.cache!.get(cacheKey);
+      const cached = this.cache!.get(cacheKey, templateName);
       if (cached) {
         return cached.output;
       }
     }
 
+    // --- F-084: Render timing ---
+    const renderStart = performance.now();
+    let renderError = false;
+
     // --- Render ---
     let result: string;
 
-    // Check for template inheritance
-    const baseName = extractExtends(template);
+    try {
+      // Check for template inheritance
+      const baseName = extractExtends(template);
 
-    if (baseName) {
-      if (!this.registry) {
-        throw new Error(
-          `TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`,
+      if (baseName) {
+        if (!this.registry) {
+          throw new Error(
+            `TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`,
+          );
+        }
+
+        // Resolve the full inheritance chain
+        const { baseTemplate, mergedOverrides } = resolveInheritanceChain(
+          template,
+          this.registry,
         );
+
+        // Parse the root base template and render with overrides applied
+        const baseAst = parseTemplate(baseTemplate);
+        const ctx: RenderContext = {
+          partialChain,
+          partials: this.partials,
+          overrides: mergedOverrides,
+          i18n: this.i18n,
+          locale: this.locale,
+        };
+        result = renderNodes(baseAst, data, false, [], ctx);
+      } else {
+        // No inheritance — standard render
+        const ast = parseTemplate(template);
+        const ctx: RenderContext = {
+          partialChain,
+          partials: this.partials,
+          i18n: this.i18n,
+          locale: this.locale,
+        };
+        result = renderNodes(ast, data, false, [], ctx);
       }
-
-      // Resolve the full inheritance chain
-      const { baseTemplate, mergedOverrides } = resolveInheritanceChain(
-        template,
-        this.registry,
-      );
-
-      // Parse the root base template and render with overrides applied
-      const baseAst = parseTemplate(baseTemplate);
-      const ctx: RenderContext = {
-        partialChain,
-        partials: this.partials,
-        overrides: mergedOverrides,
-        i18n: this.i18n,
-        locale: this.locale,
-      };
-      result = renderNodes(baseAst, data, false, [], ctx);
-    } else {
-      // No inheritance — standard render
-      const ast = parseTemplate(template);
-      const ctx: RenderContext = {
-        partialChain,
-        partials: this.partials,
-        i18n: this.i18n,
-        locale: this.locale,
-      };
-      result = renderNodes(ast, data, false, [], ctx);
+    } catch (err) {
+      renderError = true;
+      throw err;
     }
 
     // --- F-080: Cache store ---
@@ -1183,6 +1197,12 @@ export class TemplateEngine {
       if (templateName) {
         this.cache!.associateKey(templateName, cacheKey);
       }
+    }
+
+    // --- F-084: Record render event ---
+    if (this.analytics) {
+      const durationMs = performance.now() - renderStart;
+      this.analytics.recordRender(templateName ?? '__anonymous__', durationMs, renderError);
     }
 
     return result;
@@ -1267,6 +1287,20 @@ export class TemplateEngine {
    */
   setLocale(locale: Locale): void {
     this.locale = locale;
+  }
+
+  /**
+   * Get the analytics instance (F-084).
+   */
+  getAnalytics(): TemplateAnalytics | undefined {
+    return this.analytics;
+  }
+
+  /**
+   * Set the analytics instance for render/cache tracking (F-084).
+   */
+  setAnalytics(analytics: TemplateAnalytics): void {
+    this.analytics = analytics;
   }
 
   // -----------------------------------------------------------------------

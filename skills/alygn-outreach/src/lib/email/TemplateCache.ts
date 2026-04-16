@@ -53,6 +53,9 @@ export interface CacheStats {
   hitRate: number;
 }
 
+/** Callback type for cache hit/miss events (F-084). */
+export type CacheEventCallback = (templateName: string) => void;
+
 // ---------------------------------------------------------------------------
 // Simple hash function (FNV-1a 32-bit)
 // No external deps — fast, decent distribution for cache keys
@@ -98,6 +101,10 @@ export class TemplateCache {
   private hits = 0;
   private misses = 0;
 
+  /** F-084: Callbacks for cache hit/miss events. */
+  private onHitCallback?: CacheEventCallback;
+  private onMissCallback?: CacheEventCallback;
+
   constructor(options?: TemplateCacheOptions) {
     this.maxSize = options?.maxSize ?? 100;
     this.ttlMs = options?.ttlMs ?? 5 * 60 * 1000; // 5 minutes
@@ -108,10 +115,13 @@ export class TemplateCache {
    * Get a cached entry by key.
    * Returns undefined on miss (including TTL-expired entries, which are evicted).
    */
-  get(key: string): CacheEntry | undefined {
+  get(key: string, templateName?: string): CacheEntry | undefined {
     const entry = this.entries.get(key);
     if (!entry) {
       this.misses++;
+      if (this.onMissCallback && templateName) {
+        this.onMissCallback(templateName);
+      }
       return undefined;
     }
 
@@ -129,6 +139,9 @@ export class TemplateCache {
         }
       }
       this.misses++;
+      if (this.onMissCallback && templateName) {
+        this.onMissCallback(templateName);
+      }
       return undefined;
     }
 
@@ -137,6 +150,9 @@ export class TemplateCache {
     this.entries.set(key, entry);
 
     this.hits++;
+    if (this.onHitCallback && templateName) {
+      this.onHitCallback(templateName);
+    }
     return entry;
   }
 
@@ -267,6 +283,38 @@ export class TemplateCache {
       }
     }
     return pruned;
+  }
+
+  // -----------------------------------------------------------------------
+  // F-084: Cache event callbacks
+  // -----------------------------------------------------------------------
+
+  /**
+   * Set the onHit callback. Called on every cache hit with the template name.
+   */
+  setOnHit(callback: CacheEventCallback): void {
+    this.onHitCallback = callback;
+  }
+
+  /**
+   * Set the onMiss callback. Called on every cache miss with the template name.
+   */
+  setOnMiss(callback: CacheEventCallback): void {
+    this.onMissCallback = callback;
+  }
+
+  /**
+   * Get the current onHit callback.
+   */
+  getOnHit(): CacheEventCallback | undefined {
+    return this.onHitCallback;
+  }
+
+  /**
+   * Get the current onMiss callback.
+   */
+  getOnMiss(): CacheEventCallback | undefined {
+    return this.onMissCallback;
   }
 }
 
