@@ -65,6 +65,15 @@ export {
   type ClassificationEnforcementResult,
 } from './DataClassifier';
 export {
+  ComplianceReportGenerator,
+  type ComplianceReportType,
+  type CompliancePeriod,
+  type ComplianceFinding,
+  type ComplianceRecommendation,
+  type ComplianceReport,
+  type ComplianceReportGeneratorOptions,
+} from './ComplianceReportGenerator';
+export {
   IncidentResponseManager,
   type IncidentType,
   type IncidentSeverity,
@@ -73,3 +82,15 @@ export {
   type IncidentTimelineEntry,
   type IncidentResponseManagerOptions,
 } from './IncidentResponseManager';
+export {
+  SecurityTrainingManager,
+  type TrainingCategory,
+  type TrainingModuleStatus,
+  type AssignmentStatus,
+  type TrainingModule,
+  type TrainingAssignment,
+  type TrainingReport,
+  type CategoryReport,
+  type OverdueUserEntry,
+  type SecurityTrainingManagerOptions,
+} from './SecurityTrainingManager';

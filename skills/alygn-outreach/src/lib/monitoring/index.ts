@@ -9,11 +9,13 @@ import { MetricsCollector } from './MetricsCollector';
 import { AlertManager } from './AlertManager';
 import { CertificateMonitor } from './CertificateMonitor';
 import { GatewayConfig } from './GatewayConfig';
+import { TailscaleManager } from './TailscaleManager';
 import type { GatewayConfigOptions } from './GatewayConfig';
 import type { HealthMonitorOptions } from './HealthMonitor';
 import type { MetricsCollectorOptions } from './MetricsCollector';
 import type { AlertManagerOptions } from './AlertManager';
 import type { CertificateMonitorOptions, CertificateService } from './CertificateMonitor';
+import type { TailscaleManagerOptions } from './TailscaleManager';
 import type { HealthSnapshot, MetricsSnapshot, ServiceName } from './types';
 import { HealthStatus } from './types';
 
@@ -148,6 +150,7 @@ export { MetricsCollector } from './MetricsCollector';
 export { AlertManager } from './AlertManager';
 export { CertificateMonitor } from './CertificateMonitor';
 export { GatewayConfig, GatewayConfigError } from './GatewayConfig';
+export { TailscaleManager } from './TailscaleManager';
 export * from './types';
 export * from './channels';
 
