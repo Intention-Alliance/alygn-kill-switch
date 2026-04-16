@@ -83,6 +83,40 @@ export {
   type IncidentResponseManagerOptions,
 } from './IncidentResponseManager';
 export {
+  ThreatIntelligenceMonitor,
+  type ThreatIndicatorType,
+  type ThreatSeverity,
+  type ThreatIndicator,
+  type ThreatMatch,
+  type ThreatCheckResult,
+  type ThreatIntelligenceMonitorOptions,
+} from './ThreatIntelligenceMonitor';
+export {
+  DisasterRecoveryManager,
+  type RPO,
+  type RTO,
+  type PlanStatus,
+  type ComplianceStatus,
+  type RecoveryStep,
+  type RecoveryTestResult,
+  type DisasterRecoveryPlan,
+  type ComplianceCheckResult,
+  type DisasterRecoveryManagerOptions,
+} from './DisasterRecoveryManager';
+
+export {
+  BusinessContinuityManager,
+  type ContinuityPlanStatus,
+  type ImpactLevel,
+  type CriticalFunction,
+  type Dependency,
+  type ImpactAssessment,
+  type ContinuityPlan,
+  type ContinuityReport,
+  type BusinessContinuityManagerOptions,
+} from './BusinessContinuityManager';
+
+export {
   SecurityTrainingManager,
   type TrainingCategory,
   type TrainingModuleStatus,
