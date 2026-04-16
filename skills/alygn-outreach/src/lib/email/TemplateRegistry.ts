@@ -42,11 +42,30 @@ const REGISTRY_FILE = path.resolve(SKILL_DATA_DIR, 'template-registry.json');
 export class TemplateRegistry {
   private data: RegistryData;
 
+  /** Optional render cache — auto-invalidated on register (F-080). */
+  private cache?: import('./TemplateCache').TemplateCache;
+
   constructor() {
     if (!fs.existsSync(SKILL_DATA_DIR)) {
       fs.mkdirSync(SKILL_DATA_DIR, { recursive: true });
     }
     this.data = this.load();
+  }
+
+  /**
+   * Set the render cache for auto-invalidation (F-080).
+   * When a new template version is registered, cache entries for that
+   * template name are automatically invalidated.
+   */
+  setCache(cache: import('./TemplateCache').TemplateCache): void {
+    this.cache = cache;
+  }
+
+  /**
+   * Get the render cache (F-080).
+   */
+  getCache(): import('./TemplateCache').TemplateCache | undefined {
+    return this.cache;
   }
 
   // ---------------------------------------------------------------------------
@@ -96,6 +115,12 @@ export class TemplateRegistry {
 
     this.data.lastUpdated = new Date().toISOString();
     this.save();
+
+    // F-080: Auto-invalidate cache when a new version is registered
+    if (this.cache) {
+      this.cache.invalidate(name);
+    }
+
     return entry;
   }
 

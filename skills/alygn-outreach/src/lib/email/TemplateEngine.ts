@@ -27,6 +27,8 @@ import { TemplatePartial } from './TemplatePartial';
 import type { TemplateRegistry } from './TemplateRegistry';
 import type { TemplateI18n } from './TemplateI18n';
 import type { Locale } from './Locale';
+import { TemplateCache, computeCacheKey } from './TemplateCache';
+import type { CacheEntry } from './TemplateCache';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -1079,11 +1081,15 @@ export class TemplateEngine {
   /** Current locale for {{locale}}, {{formatNumber}}, {{formatDate}} (F-079). */
   private locale?: Locale;
 
-  constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale) {
+  /** Optional render cache (F-080). */
+  private cache?: TemplateCache;
+
+  constructor(partials?: TemplatePartial, registry?: TemplateRegistry, i18n?: TemplateI18n, locale?: Locale, cache?: TemplateCache) {
     this.partials = partials ?? new TemplatePartial();
     this.registry = registry;
     this.i18n = i18n;
     this.locale = locale;
+    this.cache = cache;
   }
 
   /**
@@ -1098,7 +1104,24 @@ export class TemplateEngine {
    * @param partialChain - Chain of partial names for circular dep detection (internal).
    * @returns Rendered string with all tokens resolved.
    */
-  render(template: string, data: TemplateData, partialChain: string[] = []): string {
+  render(template: string, data: TemplateData, partialChain: string[] = [], templateName?: string): string {
+    // --- F-080: Cache lookup ---
+    // Only cache non-inherited, top-level renders (partialChain empty)
+    // Inherited templates have complex resolution; skip caching for those.
+    const canCache = this.cache && partialChain.length === 0;
+    let cacheKey: string | undefined;
+
+    if (canCache) {
+      cacheKey = computeCacheKey(template, data, this.locale);
+      const cached = this.cache!.get(cacheKey);
+      if (cached) {
+        return cached.output;
+      }
+    }
+
+    // --- Render ---
+    let result: string;
+
     // Check for template inheritance
     const baseName = extractExtends(template);
 
@@ -1124,18 +1147,63 @@ export class TemplateEngine {
         i18n: this.i18n,
         locale: this.locale,
       };
-      return renderNodes(baseAst, data, false, [], ctx);
+      result = renderNodes(baseAst, data, false, [], ctx);
+    } else {
+      // No inheritance — standard render
+      const ast = parseTemplate(template);
+      const ctx: RenderContext = {
+        partialChain,
+        partials: this.partials,
+        i18n: this.i18n,
+        locale: this.locale,
+      };
+      result = renderNodes(ast, data, false, [], ctx);
     }
 
-    // No inheritance — standard render
-    const ast = parseTemplate(template);
-    const ctx: RenderContext = {
-      partialChain,
-      partials: this.partials,
-      i18n: this.i18n,
-      locale: this.locale,
-    };
-    return renderNodes(ast, data, false, [], ctx);
+    // --- F-080: Cache store ---
+    if (canCache && cacheKey) {
+      const entry: CacheEntry = {
+        ast: [], // AST not stored for non-inherited renders (output is sufficient)
+        output: result,
+        storedAt: Date.now(),
+      };
+      this.cache!.set(cacheKey, entry);
+      if (templateName) {
+        this.cache!.associateKey(templateName, cacheKey);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Get the render cache (F-080).
+   */
+  getCache(): TemplateCache | undefined {
+    return this.cache;
+  }
+
+  /**
+   * Set the render cache (F-080).
+   */
+  setCache(cache: TemplateCache): void {
+    this.cache = cache;
+  }
+
+  /**
+   * Invalidate cache entries for a specific template name (F-080).
+   */
+  invalidateCache(templateName: string): number {
+    if (!this.cache) return 0;
+    return this.cache.invalidate(templateName);
+  }
+
+  /**
+   * Invalidate all cache entries (F-080).
+   */
+  invalidateAllCache(): number {
+    if (!this.cache) return 0;
+    return this.cache.invalidateAll();
   }
 
   /**
