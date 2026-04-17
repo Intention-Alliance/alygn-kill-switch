@@ -1,37 +1,45 @@
-// IP Allowlist + CIDR matching
+// IP Allowlist + CIDR matching — configurable via environment
 // Extracted from kill-switch-service.mjs
 
-const IP_ALLOWLIST = new Set([
+import { timingSafeEqual } from 'crypto';
+
+// Default allowlist (can be overridden via IP_ALLOWLIST env var)
+const DEFAULT_ALLOWED_IPS = [
   '100.66.199.80',
   '192.168.1.11',
   '127.0.0.1',
   '::1',
   '::ffff:127.0.0.1',
-  // Docker network IPs
-  '172.16.0.0/12',
-  '172.17.0.0/16',
-  '172.18.0.0/16',
-  '172.19.0.0/16',
-  '172.20.0.0/16',
-  '172.21.0.0/16',
-  '172.22.0.0/16',
-  '172.23.0.0/16',
-  '172.24.0.0/16',
-  '172.25.0.0/16',
-  '172.26.0.0/16',
-  '172.27.0.0/16',
-  '172.28.0.0/16',
-]);
+];
+
+// Default CIDR ranges (can be overridden via IP_ALLOWLIST_CIDRS env var)
+const DEFAULT_CIDR_RANGES = [
+  '172.16.0.0/12',   // All Docker networks
+  '172.17.0.0/16',   // Docker default bridge
+  '172.28.0.0/16',   // Our phase0 network
+  '172.29.0.0/16',
+  '172.30.0.0/16',
+  '172.31.0.0/16',
+];
+
+function parseEnvList(envVar: string | undefined, defaults: string[]): string[] {
+  if (!envVar) return defaults;
+  return envVar.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+const ALLOWED_IPS = parseEnvList(process.env.IP_ALLOWLIST, DEFAULT_ALLOWED_IPS);
+const CIDR_RANGES = parseEnvList(process.env.IP_ALLOWLIST_CIDRS, DEFAULT_CIDR_RANGES);
 
 export function isIpAllowed(ip: string): boolean {
   const normalizedIp = ip.replace(/^::ffff:/, '');
 
-  if (IP_ALLOWLIST.has(normalizedIp) || IP_ALLOWLIST.has(ip)) {
+  // Check exact IP matches
+  if (ALLOWED_IPS.includes(normalizedIp) || ALLOWED_IPS.includes(ip)) {
     return true;
   }
 
-  const cidrRanges = Array.from(IP_ALLOWLIST).filter((r) => r.includes('/'));
-  for (const cidr of cidrRanges) {
+  // Check CIDR ranges
+  for (const cidr of CIDR_RANGES) {
     if (isIpInCidr(normalizedIp, cidr)) {
       return true;
     }
@@ -50,4 +58,4 @@ function isIpInCidr(ip: string, cidr: string): boolean {
   return (ipNum & mask) === (rangeNum & mask);
 }
 
-export { IP_ALLOWLIST };
+export { ALLOWED_IPS, CIDR_RANGES };

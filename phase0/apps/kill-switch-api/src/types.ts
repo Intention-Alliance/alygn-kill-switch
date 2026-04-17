@@ -1,7 +1,14 @@
-// Types — Re-exports from shared-types + local types
+// Kill Switch types — re-export from shared-types + local extensions
 
-export type { KillSwitchState, KillSwitchStatus, ActivationRecord, UserRole, User } from '@phase0/shared-types';
-export type { AuditEntry, TransitionMetadata } from './services/kill-switch';
-export { STATES, VALID_TRANSITIONS } from './services/kill-switch';
-export { IP_ALLOWLIST } from './services/ip-allowlist';
-export { RATE_LIMIT_MAX } from './services/rate-limiter';
+export type {
+  KillSwitchState,
+  KillSwitchStatus,
+  ActivationRecord,
+  UserRole,
+  User,
+} from '@phase0/shared-types';
+
+export { STATES } from './services/kill-switch';
+export { ALLOWED_IPS, CIDR_RANGES } from './services/ip-allowlist';
+export { RATE_LIMIT_MAX } from './middleware/rate-limit';
+export { AUTH_RATE_LIMIT_MAX } from './middleware/auth-rate-limit';

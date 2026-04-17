@@ -110,16 +110,52 @@ export async function POST(
 }
 
 // GET requests to Ollama (e.g., /api/tags for model list)
+// Also check kill switch state — authenticated users only
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
 ) {
   const { path } = await params;
   const ollamaPath = '/' + path.join('/');
+  const clientIp = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+
+  // Check kill switch state for GET requests too
+  let killSwitchState = 'ARMED';
+  try {
+    const ksRes = await fetch(`${KILL_SWITCH_API}/v1/kill-switch/status`);
+    const ksData = await ksRes.json();
+    killSwitchState = ksData.state || 'ARMED';
+    if (killSwitchState === 'STOPPED' || killSwitchState === 'LOCKED') {
+      return NextResponse.json(
+        { error: 'Ollama access disabled', reason: `Kill switch is ${killSwitchState}` },
+        { status: 503 }
+      );
+    }
+  } catch {
+    // Kill switch unreachable — allow request
+    killSwitchState = 'UNKNOWN';
+  }
 
   try {
     const res = await fetch(`${OLLAMA_URL}${ollamaPath}`);
     const data = await res.json();
+
+    // Audit log for GET requests too
+    writeAuditLog({
+      model: 'unknown',
+      method: 'GET',
+      endpoint: ollamaPath,
+      promptTokens: null,
+      completionTokens: null,
+      clientIp,
+      clientId: null,
+      statusCode: res.status,
+      latencyMs: 0,
+      errorMessage: null,
+      killSwitchState,
+      traceId: null,
+    }).catch(() => {});
+
     return NextResponse.json(data, { status: res.status });
   } catch {
     return NextResponse.json({ error: 'Ollama unreachable' }, { status: 502 });
