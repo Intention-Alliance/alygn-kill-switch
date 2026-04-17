@@ -4,6 +4,7 @@
 import type { KillSwitchState } from '@phase0/shared-types';
 import type { RedisPool } from '../../infra/redis/redis-cluster-pool.mjs';
 import { recordSpan } from '../../infra/tracing/tracing-sdk.mjs';
+import { secureCompare } from '../utils/secure-compare';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -59,11 +60,11 @@ export class KillSwitchService {
     const authHeader = req.headers['authorization'];
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
-      if (token === this.authToken) return true;
+      if (secureCompare(token, this.authToken)) return true;
     }
 
     const apiKeyHeader = req.headers['x-api-key'];
-    if (apiKeyHeader === this.apiKey) return true;
+    if (secureCompare(apiKeyHeader, this.apiKey)) return true;
 
     return false;
   }

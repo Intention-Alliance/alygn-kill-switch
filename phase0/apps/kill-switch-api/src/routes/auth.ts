@@ -3,6 +3,8 @@
 import type { KillSwitchService } from '../services/kill-switch';
 import { parseBody } from '../utils/body-parser';
 import { parseCookies } from '../utils/cookies';
+import { secureCompare } from '../utils/secure-compare';
+import type { AuthRateLimiter } from '../middleware/auth-rate-limit';
 
 export async function handleAuthRoutes(
   method: string,
@@ -10,6 +12,7 @@ export async function handleAuthRoutes(
   req: any,
   res: any,
   service: KillSwitchService,
+  authRateLimiter?: AuthRateLimiter,
 ): Promise<boolean> {
   const isAuthEndpoint = url.startsWith('/v1/auth/');
   if (!isAuthEndpoint) return false;
@@ -22,9 +25,12 @@ export async function handleAuthRoutes(
       const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
       const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
 
-      if (email === validEmail && password === validPassword) {
+      if (secureCompare(email, validEmail) && secureCompare(password, validPassword)) {
         const user = { email, role: 'admin' };
-        res.setHeader('Set-Cookie', `admin_token=${validPassword}; Path=/; HttpOnly; SameSite=Strict; Secure; Max-Age=3600`);
+        // Reset auth rate limiter on successful login
+        const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+        authRateLimiter?.reset(ip);
+        res.setHeader('Set-Cookie', `admin_token=${validPassword}; Path=/; HttpOnly; SameSite=Strict;${process.env.NODE_ENV === 'production' ? ' Secure;' : ''} Max-Age=3600`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ user }));
         return true;
@@ -46,7 +52,7 @@ export async function handleAuthRoutes(
     const token = cookies.admin_token;
     const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
 
-    if (token && token === validPassword) {
+    if (token && secureCompare(token, validPassword)) {
       const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ user: { email: validEmail, role: 'admin' } }));
@@ -60,7 +66,7 @@ export async function handleAuthRoutes(
 
   // POST /v1/auth/logout
   if (method === 'POST' && url === '/v1/auth/logout') {
-    res.setHeader('Set-Cookie', 'admin_token=; Path=/; HttpOnly; SameSite=Strict; Secure; Max-Age=0');
+    res.setHeader('Set-Cookie', `admin_token=; Path=/; HttpOnly; SameSite=Strict;${process.env.NODE_ENV === 'production' ? ' Secure;' : ''} Max-Age=0`);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Logged out' }));
     return true;

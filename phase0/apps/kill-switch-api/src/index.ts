@@ -16,6 +16,7 @@ import { KillSwitchService } from './services/kill-switch';
 import { isIpAllowed } from './services/ip-allowlist';
 import { checkRateLimit, RATE_LIMIT_MAX } from './middleware/rate-limit';
 import { checkAuth } from './middleware/auth';
+import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
 import { handleKillSwitchRoutes } from './routes/kill-switch';
 import { handleFlagsRoutes } from './routes/flags';
@@ -23,6 +24,8 @@ import { handleFlagsRoutes } from './routes/flags';
 // ─── HTTP Handler ────────────────────────────────────────────────────
 
 export function createKillSwitchHandler(service: KillSwitchService) {
+  const authRateLimiter = new AuthRateLimiter();
+
   return async (req: any, res: any) => {
     const ip = req.ip || req.socket?.remoteAddress || 'unknown';
     const url = req.url || '/';
@@ -36,7 +39,20 @@ export function createKillSwitchHandler(service: KillSwitchService) {
       return;
     }
 
-    // ─── Rate Limiting ───────────────────────────────────────────
+    // ─── Auth Rate Limiting (stricter: 5 per 15 min) ──────────
+    if (isAuthEndpoint) {
+      const authRateCheck = authRateLimiter.check(ip);
+      if (!authRateCheck.allowed) {
+        res.writeHead(429, {
+          'Content-Type': 'application/json',
+          'Retry-After': String(authRateCheck.retryAfterSeconds || 900),
+        });
+        res.end(JSON.stringify({ error: 'Too many login attempts', retryAfter: authRateCheck.retryAfterSeconds }));
+        return;
+      }
+    }
+
+    // ─── General Rate Limiting ─────────────────────────────────
     const rateCheck = checkRateLimit(ip);
     if (!rateCheck.allowed) {
       res.writeHead(429, {
@@ -59,7 +75,7 @@ export function createKillSwitchHandler(service: KillSwitchService) {
 
     // ─── Route to handlers ──────────────────────────────────────
     const handled =
-      await handleAuthRoutes(method, url, req, res, service) ||
+      await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
       await handleFlagsRoutes(method, url, req, res);
 

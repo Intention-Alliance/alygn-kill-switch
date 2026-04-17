@@ -3,6 +3,7 @@
 
 import type { KillSwitchService } from '../services/kill-switch';
 import { parseCookies } from '../utils/cookies';
+import { secureCompare } from '../utils/secure-compare';
 
 export function checkAuth(service: KillSwitchService, req: any): { authenticated: boolean; user?: { email: string; role: string } } {
   // Check cookie first
@@ -11,7 +12,7 @@ export function checkAuth(service: KillSwitchService, req: any): { authenticated
   const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
   const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
 
-  if (token && token === validPassword) {
+  if (token && secureCompare(token, validPassword)) {
     return { authenticated: true, user: { email: validEmail, role: 'admin' } };
   }
 
