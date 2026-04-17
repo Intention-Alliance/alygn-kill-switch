@@ -20,6 +20,7 @@ import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
 import { handleKillSwitchRoutes } from './routes/kill-switch';
 import { handleFlagsRoutes } from './routes/flags';
+import { loadRedisPool } from './infra-loader';
 
 // ─── HTTP Handler ────────────────────────────────────────────────────
 
@@ -89,11 +90,10 @@ export function createKillSwitchHandler(service: KillSwitchService) {
 // ─── Standalone Server ─────────────────────────────────────────────
 
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
-  const { RedisPool } = await import('../../infra/redis/redis-cluster-pool.mjs');
+  const RedisPool = await loadRedisPool() as any;
 
-  const redis = new RedisPool({
+  const redis: any = new RedisPool({
     urls: opts.redisUrls || ['redis://localhost:6379'],
-    poolSize: 5,
   });
 
   await redis.connect();

@@ -2,9 +2,9 @@
 // Extracted from kill-switch-service.mjs
 
 import type { KillSwitchState } from '@phase0/shared-types';
-import type { RedisPool } from '../../infra/redis/redis-cluster-pool.mjs';
-import { recordSpan } from '../../infra/tracing/tracing-sdk.mjs';
+import type { RedisPool } from '../types/redis-pool';
 import { secureCompare } from '../utils/secure-compare';
+import { loadTracing } from '../infra-loader';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -77,10 +77,11 @@ export class KillSwitchService {
   }
 
   async transitionTo(newState: KillSwitchState, metadata: TransitionMetadata = {}): Promise<AuditEntry> {
+    const { recordSpan } = await loadTracing();
     return recordSpan('kill-switch.transition', {
       'kill_switch.target_state': newState,
       'kill_switch.initiated_by': metadata.userId || 'system',
-    }, async (span: any) => {
+    }, async (span: any): Promise<AuditEntry> => {
       const currentState = await this.getCurrentState();
 
       if (!VALID_TRANSITIONS[currentState]?.includes(newState)) {
