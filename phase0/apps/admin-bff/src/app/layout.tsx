@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Sidebar } from '@/components/Layout';
 import './globals.css';
 
@@ -13,14 +14,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <body className="bg-gray-950 text-gray-100 antialiased">
         <AuthProvider>
-          <div className="flex h-screen">
-            <Sidebar />
-            <main className="flex-1 overflow-auto bg-gray-950">
-              <div className="p-6">
-                {children}
-              </div>
-            </main>
-          </div>
+          <ErrorBoundary>
+            <div className="flex h-screen">
+              <Sidebar />
+              <main className="flex-1 overflow-auto bg-gray-950">
+                <div className="p-6">
+                  {children}
+                </div>
+              </main>
+            </div>
+          </ErrorBoundary>
         </AuthProvider>
       </body>
     </html>
