@@ -104381,6 +104381,610 @@ var init_TemplatePartial = __esm(() => {
   templatePartial = new TemplatePartial;
 });
 
+// src/lib/email/TemplateCache.ts
+function fnv1a32(input) {
+  let hash = 2166136261;
+  for (let i = 0;i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = hash * 16777619 >>> 0;
+  }
+  return hash;
+}
+function computeCacheKey(template, data, locale) {
+  const keys = Object.keys(data).sort();
+  const shape = keys.join(",");
+  const localeCode = typeof locale === "string" ? locale : locale?.code ?? "";
+  const raw = `${template}\x00${shape}\x00${localeCode}`;
+  return fnv1a32(raw).toString(36);
+}
+
+class TemplateCache {
+  maxSize;
+  ttlMs;
+  entries;
+  hits = 0;
+  misses = 0;
+  onHitCallback;
+  onMissCallback;
+  constructor(options) {
+    this.maxSize = options?.maxSize ?? 100;
+    this.ttlMs = options?.ttlMs ?? 5 * 60 * 1000;
+    this.entries = new Map;
+  }
+  get(key, templateName) {
+    const entry = this.entries.get(key);
+    if (!entry) {
+      this.misses++;
+      if (this.onMissCallback && templateName) {
+        this.onMissCallback(templateName);
+      }
+      return;
+    }
+    if (Date.now() - entry.storedAt > this.ttlMs) {
+      this.entries.delete(key);
+      for (const [, keys] of this.nameIndex) {
+        keys.delete(key);
+      }
+      for (const [name, keys] of this.nameIndex) {
+        if (keys.size === 0) {
+          this.nameIndex.delete(name);
+        }
+      }
+      this.misses++;
+      if (this.onMissCallback && templateName) {
+        this.onMissCallback(templateName);
+      }
+      return;
+    }
+    this.entries.delete(key);
+    this.entries.set(key, entry);
+    this.hits++;
+    if (this.onHitCallback && templateName) {
+      this.onHitCallback(templateName);
+    }
+    return entry;
+  }
+  set(key, entry) {
+    if (this.entries.has(key)) {
+      this.entries.delete(key);
+    }
+    if (this.entries.size >= this.maxSize) {
+      const lruKey = this.entries.keys().next().value;
+      if (lruKey !== undefined) {
+        this.entries.delete(lruKey);
+        for (const [, keys] of this.nameIndex) {
+          keys.delete(lruKey);
+        }
+        for (const [name, keys] of this.nameIndex) {
+          if (keys.size === 0) {
+            this.nameIndex.delete(name);
+          }
+        }
+      }
+    }
+    this.entries.set(key, entry);
+  }
+  nameIndex = new Map;
+  associateKey(templateName, cacheKey) {
+    let keys = this.nameIndex.get(templateName);
+    if (!keys) {
+      keys = new Set;
+      this.nameIndex.set(templateName, keys);
+    }
+    keys.add(cacheKey);
+  }
+  invalidate(templateName) {
+    const keys = this.nameIndex.get(templateName);
+    if (!keys)
+      return 0;
+    let count = 0;
+    for (const key of keys) {
+      if (this.entries.delete(key)) {
+        count++;
+      }
+    }
+    this.nameIndex.delete(templateName);
+    return count;
+  }
+  invalidateAll() {
+    const count = this.entries.size;
+    this.entries.clear();
+    this.nameIndex.clear();
+    return count;
+  }
+  getStats() {
+    const total = this.hits + this.misses;
+    return {
+      hits: this.hits,
+      misses: this.misses,
+      size: this.entries.size,
+      maxSize: this.maxSize,
+      hitRate: total === 0 ? 0 : this.hits / total
+    };
+  }
+  resetCounters() {
+    this.hits = 0;
+    this.misses = 0;
+  }
+  prune() {
+    const now = Date.now();
+    let pruned = 0;
+    for (const [key, entry] of this.entries) {
+      if (now - entry.storedAt > this.ttlMs) {
+        this.entries.delete(key);
+        pruned++;
+      }
+    }
+    for (const [name, keys] of this.nameIndex) {
+      for (const key of keys) {
+        if (!this.entries.has(key)) {
+          keys.delete(key);
+        }
+      }
+      if (keys.size === 0) {
+        this.nameIndex.delete(name);
+      }
+    }
+    return pruned;
+  }
+  setOnHit(callback) {
+    this.onHitCallback = callback;
+  }
+  setOnMiss(callback) {
+    this.onMissCallback = callback;
+  }
+  getOnHit() {
+    return this.onHitCallback;
+  }
+  getOnMiss() {
+    return this.onMissCallback;
+  }
+}
+var init_TemplateCache = () => {};
+
+// src/lib/email/TemplateSyntaxValidator.ts
+function validateBalancedTags(template) {
+  const issues = [];
+  const lines = template.split(`
+`);
+  const stack = [];
+  const blockOpenRe = /\{\{#(if|each|block|override)\s+([^}]+)\}\}/g;
+  const closeRe = /\{\{\/(if|each|block|override)\}\}/g;
+  const elseRe = /\{\{else\}\}/g;
+  for (let lineIdx = 0;lineIdx < lines.length; lineIdx++) {
+    const line = lines[lineIdx];
+    const lineNum = lineIdx + 1;
+    let match;
+    const openRe = new RegExp(blockOpenRe.source, blockOpenRe.flags);
+    while ((match = openRe.exec(line)) !== null) {
+      stack.push({ tag: match[1], name: match[2].trim(), line: lineNum });
+    }
+    const clRe = new RegExp(closeRe.source, closeRe.flags);
+    while ((match = clRe.exec(line)) !== null) {
+      const closeTag = match[1];
+      const top = stack.pop();
+      if (!top) {
+        issues.push({
+          severity: "error",
+          rule: "balanced-tags",
+          message: `Closing {{/${closeTag}}} without matching opening tag`,
+          line: lineNum
+        });
+      } else if (top.tag !== closeTag) {
+        issues.push({
+          severity: "error",
+          rule: "balanced-tags",
+          message: `Mismatched tags: {{#${top.tag} ${top.name}}} closed by {{/${closeTag}}}`,
+          line: lineNum
+        });
+        stack.push(top);
+      }
+    }
+    const elRe = new RegExp(elseRe.source, elseRe.flags);
+    while (elRe.exec(line) !== null) {
+      const topTag = stack[stack.length - 1];
+      if (!topTag || topTag.tag !== "if") {
+        issues.push({
+          severity: "error",
+          rule: "balanced-tags",
+          message: `{{else}} found outside {{#if}} block`,
+          line: lineNum
+        });
+      }
+    }
+  }
+  for (const unclosed of stack) {
+    issues.push({
+      severity: "error",
+      rule: "balanced-tags",
+      message: `Unclosed {{#${unclosed.tag} ${unclosed.name}}} (opened at line ${unclosed.line})`,
+      line: unclosed.line
+    });
+  }
+  return issues;
+}
+function validateExpressions(template) {
+  const issues = [];
+  const lines = template.split(`
+`);
+  for (let lineIdx = 0;lineIdx < lines.length; lineIdx++) {
+    const line = lines[lineIdx];
+    const lineNum = lineIdx + 1;
+    const tokenRe = /\{\{\{(.+?)\}\}\}|\{\{(.+?)\}\}/g;
+    let match;
+    while ((match = tokenRe.exec(line)) !== null) {
+      const inner = (match[1] || match[2]).trim();
+      if (inner.length === 0) {
+        issues.push({
+          severity: "error",
+          rule: "valid-expressions",
+          message: "Empty template token {{}}",
+          line: lineNum
+        });
+        continue;
+      }
+      if (inner === "#if" || inner === "#each" || inner === "#block" || inner === "#override") {
+        issues.push({
+          severity: "error",
+          rule: "valid-expressions",
+          message: `Block tag {{${inner}}} is missing its required argument`,
+          line: lineNum
+        });
+        continue;
+      }
+      const isSpecial = inner.startsWith("#") || inner.startsWith("/") || inner.startsWith(">") || inner === "else" || inner === "locale" || inner.startsWith("t ") || inner.startsWith("formatNumber ") || inner.startsWith("formatDate ");
+      if (!isSpecial) {
+        const pathPart = inner.split("|")[0].trim();
+        if (pathPart && !/^[\w.@-]+$/.test(pathPart)) {
+          issues.push({
+            severity: "warning",
+            rule: "valid-expressions",
+            message: `Variable path "${pathPart}" contains unusual characters`,
+            line: lineNum
+          });
+        }
+      }
+    }
+  }
+  return issues;
+}
+function validateBraceConsistency(template) {
+  const issues = [];
+  const lines = template.split(`
+`);
+  for (let lineIdx = 0;lineIdx < lines.length; lineIdx++) {
+    const line = lines[lineIdx];
+    const lineNum = lineIdx + 1;
+    const strayOpen = /\{\{(?![#/>\w])/g;
+    let m;
+    while ((m = strayOpen.exec(line)) !== null) {
+      const after = line.slice(m.index + 2).trimStart();
+      if (after.startsWith("}") || after.length === 0) {
+        issues.push({
+          severity: "warning",
+          rule: "brace-consistency",
+          message: "Possible malformed template token",
+          line: lineNum
+        });
+      }
+    }
+  }
+  return issues;
+}
+function validateRequiredVars(template, requiredVars, data) {
+  const issues = [];
+  for (const varName of requiredVars) {
+    if (data) {
+      const segments = varName.split(".");
+      let current = data;
+      let found = true;
+      for (const seg of segments) {
+        if (current === null || current === undefined || typeof current !== "object") {
+          found = false;
+          break;
+        }
+        if (!Object.prototype.hasOwnProperty.call(current, seg)) {
+          found = false;
+          break;
+        }
+        current = current[seg];
+      }
+      if (!found) {
+        issues.push({
+          severity: "error",
+          rule: "required-variables",
+          message: `Required variable "${varName}" is missing from provided data`
+        });
+      }
+    } else {
+      const varRe = new RegExp(`\\{\\{[#>]?\\s*${escapeRegExp(varName)}[\\s|}]`, "g");
+      if (!varRe.test(template)) {
+        issues.push({
+          severity: "warning",
+          rule: "required-variables",
+          message: `Required variable "${varName}" is not referenced in the template`
+        });
+      }
+    }
+  }
+  return issues;
+}
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function validateInheritanceChain(template, registry) {
+  const issues = [];
+  const baseName = extractExtends(template);
+  if (!baseName) {
+    return issues;
+  }
+  if (!registry) {
+    issues.push({
+      severity: "warning",
+      rule: "inheritance",
+      message: `Template extends "${baseName}" but no TemplateRegistry is configured for validation`
+    });
+    return issues;
+  }
+  const baseEntry = registry.getLatest(baseName);
+  if (!baseEntry) {
+    issues.push({
+      severity: "error",
+      rule: "inheritance",
+      message: `Base template "${baseName}" not found in registry`
+    });
+    return issues;
+  }
+  const baseAst = parseTemplate(baseEntry.content);
+  const baseBlocks = collectBlockNames(baseAst);
+  const childAst = parseTemplate(template);
+  const childOverrides = collectOverrideNames(childAst);
+  for (const overrideName of childOverrides) {
+    if (!baseBlocks.has(overrideName)) {
+      issues.push({
+        severity: "warning",
+        rule: "inheritance",
+        message: `Override "{{#override ${overrideName}}}" has no matching "{{#block ${overrideName}}}" in base template "${baseName}"`
+      });
+    }
+  }
+  const chain = [baseName];
+  let current = baseEntry.content;
+  let currentName = baseName;
+  while (true) {
+    const nextBase = extractExtends(current);
+    if (!nextBase)
+      break;
+    if (chain.includes(nextBase)) {
+      issues.push({
+        severity: "error",
+        rule: "inheritance",
+        message: `Circular extends detected: ${[...chain, nextBase].join(" \u2192 ")}`
+      });
+      break;
+    }
+    if (chain.length >= 10) {
+      issues.push({
+        severity: "error",
+        rule: "inheritance",
+        message: `Max extends depth (10) exceeded at "${nextBase}"`
+      });
+      break;
+    }
+    chain.push(nextBase);
+    const nextEntry = registry.getLatest(nextBase);
+    if (!nextEntry) {
+      issues.push({
+        severity: "error",
+        rule: "inheritance",
+        message: `Base template "${nextBase}" not found in registry (in extends chain)`
+      });
+      break;
+    }
+    current = nextEntry.content;
+    currentName = nextBase;
+  }
+  return issues;
+}
+function collectBlockNames(nodes) {
+  const names = new Set;
+  function walk(list) {
+    for (const node of list) {
+      if (node.type === "block" && node.blockName) {
+        names.add(node.blockName);
+      }
+      if (node.body)
+        walk(node.body);
+      if (node.elseBody)
+        walk(node.elseBody);
+    }
+  }
+  walk(nodes);
+  return names;
+}
+function collectOverrideNames(nodes) {
+  const names = new Set;
+  function walk(list) {
+    for (const node of list) {
+      if (node.type === "override" && node.blockName) {
+        names.add(node.blockName);
+      }
+      if (node.body)
+        walk(node.body);
+      if (node.elseBody)
+        walk(node.elseBody);
+    }
+  }
+  walk(nodes);
+  return names;
+}
+
+class TemplateSyntaxValidator {
+  registry;
+  constructor(registry) {
+    this.registry = registry;
+  }
+  validateSyntax(template) {
+    const allIssues = [
+      ...validateBalancedTags(template),
+      ...validateExpressions(template),
+      ...validateBraceConsistency(template)
+    ];
+    const errors2 = allIssues.filter((i) => i.severity === "error");
+    const warnings = allIssues.filter((i) => i.severity === "warning");
+    return { valid: errors2.length === 0, errors: errors2, warnings };
+  }
+  validateVariables(template, requiredVars, data) {
+    const issues = validateRequiredVars(template, requiredVars, data);
+    const errors2 = issues.filter((i) => i.severity === "error");
+    const warnings = issues.filter((i) => i.severity === "warning");
+    return { valid: errors2.length === 0, errors: errors2, warnings };
+  }
+  validateInheritance(template) {
+    const issues = validateInheritanceChain(template, this.registry);
+    const errors2 = issues.filter((i) => i.severity === "error");
+    const warnings = issues.filter((i) => i.severity === "warning");
+    return { valid: errors2.length === 0, errors: errors2, warnings };
+  }
+  validate(template, requiredVars, data) {
+    const allIssues = [
+      ...validateBalancedTags(template),
+      ...validateExpressions(template),
+      ...validateBraceConsistency(template)
+    ];
+    if (requiredVars) {
+      allIssues.push(...validateRequiredVars(template, requiredVars, data));
+    }
+    if (extractExtends(template)) {
+      allIssues.push(...validateInheritanceChain(template, this.registry));
+    }
+    const errors2 = allIssues.filter((i) => i.severity === "error");
+    const warnings = allIssues.filter((i) => i.severity === "warning");
+    return { valid: errors2.length === 0, errors: errors2, warnings };
+  }
+  setRegistry(registry) {
+    this.registry = registry;
+  }
+}
+var init_TemplateSyntaxValidator = __esm(() => {
+  init_TemplateEngine();
+});
+
+// src/lib/email/TemplateTester.ts
+class TemplateTester {
+  engine;
+  constructor(engine) {
+    this.engine = engine ?? new TemplateEngine;
+  }
+  assertRender(template, data, expected, name) {
+    const label = name ?? `assertRender`;
+    try {
+      const rendered = this.engine.render(template, data);
+      if (rendered === expected) {
+        return { name: label, status: "pass", message: "Rendered output matches expected" };
+      }
+      return {
+        name: label,
+        status: "fail",
+        message: "Rendered output does not match expected",
+        detail: `Expected:
+${expected}
+
+Got:
+${rendered}`
+      };
+    } catch (err) {
+      return {
+        name: label,
+        status: "fail",
+        message: `Render threw: ${err.message}`
+      };
+    }
+  }
+  assertContains(template, data, substring, name) {
+    const label = name ?? `assertContains("${substring}")`;
+    try {
+      const rendered = this.engine.render(template, data);
+      if (rendered.includes(substring)) {
+        return { name: label, status: "pass", message: `Output contains "${substring}"` };
+      }
+      return {
+        name: label,
+        status: "fail",
+        message: `Output does not contain "${substring}"`,
+        detail: `Rendered:
+${rendered.substring(0, 500)}`
+      };
+    } catch (err) {
+      return {
+        name: label,
+        status: "fail",
+        message: `Render threw: ${err.message}`
+      };
+    }
+  }
+  assertNotContains(template, data, substring, name) {
+    const label = name ?? `assertNotContains("${substring}")`;
+    try {
+      const rendered = this.engine.render(template, data);
+      if (!rendered.includes(substring)) {
+        return { name: label, status: "pass", message: `Output does not contain "${substring}"` };
+      }
+      return {
+        name: label,
+        status: "fail",
+        message: `Output unexpectedly contains "${substring}"`,
+        detail: `Rendered:
+${rendered.substring(0, 500)}`
+      };
+    } catch (err) {
+      return {
+        name: label,
+        status: "fail",
+        message: `Render threw: ${err.message}`
+      };
+    }
+  }
+  assertNoErrors(template, data, name) {
+    const label = name ?? `assertNoErrors`;
+    try {
+      this.engine.render(template, data);
+      return { name: label, status: "pass", message: "Render completed without errors" };
+    } catch (err) {
+      return {
+        name: label,
+        status: "fail",
+        message: `Render threw: ${err.message}`
+      };
+    }
+  }
+  test(template, testCases) {
+    const start = performance.now();
+    const assertions = [];
+    for (const testCase of testCases) {
+      const assertion = testCase(this);
+      assertions.push(assertion);
+    }
+    const elapsed = performance.now() - start;
+    const passed = assertions.filter((a) => a.status === "pass").length;
+    const failed = assertions.filter((a) => a.status === "fail").length;
+    return {
+      template: template.substring(0, 100) + (template.length > 100 ? "..." : ""),
+      total: assertions.length,
+      passed,
+      failed,
+      assertions,
+      durationMs: Math.round(elapsed * 100) / 100
+    };
+  }
+  getEngine() {
+    return this.engine;
+  }
+}
+var init_TemplateTester = __esm(() => {
+  init_TemplateEngine();
+});
+
 // src/lib/email/TemplateEngine.ts
 function coerceFormatOpts(opts) {
   const result = {};
@@ -105037,37 +105641,95 @@ class TemplateEngine {
   registry;
   i18n;
   locale;
-  constructor(partials, registry, i18n, locale) {
+  cache;
+  analytics;
+  syntaxValidator;
+  tester;
+  constructor(partials, registry, i18n, locale, cache, analytics) {
     this.partials = partials ?? new TemplatePartial;
     this.registry = registry;
     this.i18n = i18n;
     this.locale = locale;
+    this.cache = cache;
+    this.analytics = analytics;
+    this.syntaxValidator = new TemplateSyntaxValidator(registry);
+    this.tester = new TemplateTester(this);
   }
-  render(template, data, partialChain = []) {
-    const baseName = extractExtends(template);
-    if (baseName) {
-      if (!this.registry) {
-        throw new Error(`TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`);
+  render(template, data, partialChain = [], templateName) {
+    const canCache = this.cache && partialChain.length === 0;
+    let cacheKey;
+    if (canCache) {
+      cacheKey = computeCacheKey(template, data, this.locale);
+      const cached = this.cache.get(cacheKey, templateName);
+      if (cached) {
+        return cached.output;
       }
-      const { baseTemplate, mergedOverrides } = resolveInheritanceChain(template, this.registry);
-      const baseAst = parseTemplate(baseTemplate);
-      const ctx2 = {
-        partialChain,
-        partials: this.partials,
-        overrides: mergedOverrides,
-        i18n: this.i18n,
-        locale: this.locale
-      };
-      return renderNodes(baseAst, data, false, [], ctx2);
     }
-    const ast = parseTemplate(template);
-    const ctx = {
-      partialChain,
-      partials: this.partials,
-      i18n: this.i18n,
-      locale: this.locale
-    };
-    return renderNodes(ast, data, false, [], ctx);
+    const renderStart = performance.now();
+    let renderError = false;
+    let result;
+    try {
+      const baseName = extractExtends(template);
+      if (baseName) {
+        if (!this.registry) {
+          throw new Error(`TemplateEngine: template uses {{extends "${baseName}"}} but no TemplateRegistry is configured. Pass a registry to the constructor.`);
+        }
+        const { baseTemplate, mergedOverrides } = resolveInheritanceChain(template, this.registry);
+        const baseAst = parseTemplate(baseTemplate);
+        const ctx = {
+          partialChain,
+          partials: this.partials,
+          overrides: mergedOverrides,
+          i18n: this.i18n,
+          locale: this.locale
+        };
+        result = renderNodes(baseAst, data, false, [], ctx);
+      } else {
+        const ast = parseTemplate(template);
+        const ctx = {
+          partialChain,
+          partials: this.partials,
+          i18n: this.i18n,
+          locale: this.locale
+        };
+        result = renderNodes(ast, data, false, [], ctx);
+      }
+    } catch (err) {
+      renderError = true;
+      throw err;
+    }
+    if (canCache && cacheKey) {
+      const entry = {
+        ast: [],
+        output: result,
+        storedAt: Date.now()
+      };
+      this.cache.set(cacheKey, entry);
+      if (templateName) {
+        this.cache.associateKey(templateName, cacheKey);
+      }
+    }
+    if (this.analytics) {
+      const durationMs = performance.now() - renderStart;
+      this.analytics.recordRender(templateName ?? "__anonymous__", durationMs, renderError);
+    }
+    return result;
+  }
+  getCache() {
+    return this.cache;
+  }
+  setCache(cache) {
+    this.cache = cache;
+  }
+  invalidateCache(templateName) {
+    if (!this.cache)
+      return 0;
+    return this.cache.invalidate(templateName);
+  }
+  invalidateAllCache() {
+    if (!this.cache)
+      return 0;
+    return this.cache.invalidateAll();
   }
   getPartials() {
     return this.partials;
@@ -105077,6 +105739,7 @@ class TemplateEngine {
   }
   setRegistry(registry) {
     this.registry = registry;
+    this.syntaxValidator.setRegistry(registry);
   }
   getI18n() {
     return this.i18n;
@@ -105089,6 +105752,24 @@ class TemplateEngine {
   }
   setLocale(locale) {
     this.locale = locale;
+  }
+  getAnalytics() {
+    return this.analytics;
+  }
+  setAnalytics(analytics) {
+    this.analytics = analytics;
+  }
+  validate(template, requiredVars, data) {
+    return this.syntaxValidator.validate(template, requiredVars, data);
+  }
+  test(template, testCases) {
+    return this.tester.test(template, testCases);
+  }
+  getSyntaxValidator() {
+    return this.syntaxValidator;
+  }
+  getTester() {
+    return this.tester;
   }
   hasUnresolvedTokens(rendered) {
     return /\{\{[^}]+\}\}/.test(rendered);
@@ -105118,6 +105799,9 @@ class TemplateEngine {
 var MAX_PARTIAL_DEPTH = 10, MAX_EXTENDS_DEPTH = 10, ESCAPE_MAP, DANGEROUS_KEYS, templateEngine;
 var init_TemplateEngine = __esm(() => {
   init_TemplatePartial();
+  init_TemplateCache();
+  init_TemplateSyntaxValidator();
+  init_TemplateTester();
   ESCAPE_MAP = {
     "&": "&amp;",
     "<": "&lt;",
@@ -118819,17 +119503,167 @@ class TemplateVersion {
 }
 var init_TemplateVersion = () => {};
 
+// src/lib/email/TemplateAccessControl.ts
+class TemplateAccessControl {
+  auditLog = [];
+  maxAuditLogSize;
+  constructor(maxAuditLogSize = 1000) {
+    this.maxAuditLogSize = maxAuditLogSize;
+  }
+  getAuditLog() {
+    return [...this.auditLog];
+  }
+  flushAuditLog() {
+    const entries = [...this.auditLog];
+    this.auditLog = [];
+    return entries;
+  }
+  clearAuditLog() {
+    this.auditLog = [];
+  }
+  audit(role, operation, templateName, result) {
+    this.auditLog.push({
+      timestamp: new Date().toISOString(),
+      role,
+      operation,
+      templateName,
+      granted: result.allowed,
+      reason: result.reason
+    });
+    while (this.auditLog.length > this.maxAuditLogSize) {
+      this.auditLog.shift();
+    }
+  }
+  wrap(registry2, permissions, role) {
+    const self2 = this;
+    return new Proxy(registry2, {
+      get(target, prop, receiver) {
+        const value = Reflect.get(target, prop, receiver);
+        if (typeof value !== "function") {
+          return value;
+        }
+        const fn = value.bind(target);
+        switch (prop) {
+          case "register": {
+            return (name, version5, content, metadata) => {
+              const isUpdate = target.has(name, version5);
+              const operation = isUpdate ? "edit" : "create";
+              const result = operation === "edit" ? permissions.canEdit(role, { name }) : permissions.canCreate(role);
+              self2.audit(role, `register:${operation}`, name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, `register:${operation}`, name, result.reason ?? "Permission denied");
+              }
+              return fn(name, version5, content, metadata);
+            };
+          }
+          case "removeVersion": {
+            return (name, version5) => {
+              const result = permissions.canDelete(role, { name });
+              self2.audit(role, "removeVersion", name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, "removeVersion", name, result.reason ?? "Permission denied");
+              }
+              return fn(name, version5);
+            };
+          }
+          case "removeTemplate": {
+            return (name) => {
+              const result = permissions.canDelete(role, { name });
+              self2.audit(role, "removeTemplate", name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, "removeTemplate", name, result.reason ?? "Permission denied");
+              }
+              return fn(name);
+            };
+          }
+          case "get": {
+            return (name, version5) => {
+              const result = permissions.canView(role, { name });
+              self2.audit(role, "get", name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, "get", name, result.reason ?? "Permission denied");
+              }
+              return fn(name, version5);
+            };
+          }
+          case "getLatest": {
+            return (name) => {
+              const result = permissions.canView(role, { name });
+              self2.audit(role, "getLatest", name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, "getLatest", name, result.reason ?? "Permission denied");
+              }
+              return fn(name);
+            };
+          }
+          case "listVersions": {
+            return (name) => {
+              const result = permissions.canView(role, { name });
+              self2.audit(role, "listVersions", name, result);
+              if (!result.allowed) {
+                throw new TemplateAccessError(role, "listVersions", name, result.reason ?? "Permission denied");
+              }
+              return fn(name);
+            };
+          }
+          case "listTemplateNames":
+          case "has":
+          case "setCache":
+          case "getCache": {
+            return fn;
+          }
+          default: {
+            return fn;
+          }
+        }
+      }
+    });
+  }
+}
+var TemplateAccessError;
+var init_TemplateAccessControl = __esm(() => {
+  TemplateAccessError = class TemplateAccessError extends Error {
+    role;
+    operation;
+    templateName;
+    reason;
+    constructor(role, operation, templateName, reason) {
+      super(`Access denied: role "${role}" cannot ${operation} template "${templateName}". ${reason}`);
+      this.role = role;
+      this.operation = operation;
+      this.templateName = templateName;
+      this.reason = reason;
+      this.name = "TemplateAccessError";
+    }
+  };
+});
+
 // src/lib/email/TemplateRegistry.ts
 import fs9 from "fs";
 import path9 from "path";
 
 class TemplateRegistry {
   data;
-  constructor() {
+  cache;
+  accessControl;
+  permissions;
+  role;
+  constructor(options) {
     if (!fs9.existsSync(SKILL_DATA_DIR2)) {
       fs9.mkdirSync(SKILL_DATA_DIR2, { recursive: true });
     }
     this.data = this.load();
+    if (options?.permissions && options?.role) {
+      this.permissions = options.permissions;
+      this.role = options.role;
+      this.accessControl = options.accessControl ?? new TemplateAccessControl;
+    }
+  }
+  setCache(cache) {
+    this.cache = cache;
+  }
+  getCache() {
+    return this.cache;
   }
   register(name, version5, content, metadata) {
     const v = typeof version5 === "string" ? TemplateVersion.parse(version5) : version5;
@@ -118858,6 +119692,9 @@ class TemplateRegistry {
     });
     this.data.lastUpdated = new Date().toISOString();
     this.save();
+    if (this.cache) {
+      this.cache.invalidate(name);
+    }
     return entry;
   }
   get(name, version5) {
@@ -118914,6 +119751,16 @@ class TemplateRegistry {
     this.save();
     return count;
   }
+  withAccess(role, permissions) {
+    const perms = permissions ?? this.permissions;
+    if (!perms)
+      return this;
+    const ac = this.accessControl ?? new TemplateAccessControl;
+    return ac.wrap(this, perms, role);
+  }
+  getAccessControl() {
+    return this.accessControl;
+  }
   load() {
     try {
       if (fs9.existsSync(REGISTRY_FILE)) {
@@ -118937,6 +119784,8 @@ class TemplateRegistry {
 var __dirname = "/home/andlersrv/.openclaw/workspace/skills/alygn-outreach/src/lib/email", SKILL_DATA_DIR2, REGISTRY_FILE;
 var init_TemplateRegistry = __esm(() => {
   init_TemplateVersion();
+  init_TemplateAccessControl();
+  init_TemplateAccessControl();
   SKILL_DATA_DIR2 = path9.resolve(__dirname, "../../data");
   REGISTRY_FILE = path9.resolve(SKILL_DATA_DIR2, "template-registry.json");
 });
@@ -118959,6 +119808,8 @@ class EmailService {
   unsubscribeManager;
   templateRegistry;
   auditLogger = null;
+  endpointRateLimiter = null;
+  policyEnforcer = null;
   constructor(providerType, config, sizeConstraints, queueConfig, unsubscribeManager) {
     this.providerType = providerType;
     this.providerConfig = config;
@@ -118998,8 +119849,50 @@ class EmailService {
   setAuditLogger(logger) {
     this.auditLogger = logger;
   }
+  setEndpointRateLimiter(limiter) {
+    this.endpointRateLimiter = limiter;
+  }
+  getEndpointRateLimiter() {
+    return this.endpointRateLimiter;
+  }
+  setPolicyEnforcer(enforcer) {
+    this.policyEnforcer = enforcer;
+  }
+  getPolicyEnforcer() {
+    return this.policyEnforcer;
+  }
   async sendEmail(payload) {
     await this.initialize();
+    if (this.endpointRateLimiter) {
+      const check = this.endpointRateLimiter.canSendEmail();
+      if (!check.allowed) {
+        return {
+          success: false,
+          to: payload.to,
+          subject: payload.subject,
+          error: check.reason ?? "Email send rate limit exceeded"
+        };
+      }
+    }
+    if (this.policyEnforcer) {
+      const policyCtx = {
+        recipient: payload.to,
+        sender: payload.from,
+        subject: payload.subject,
+        body: payload.html ?? payload.text,
+        attachmentSizes: undefined,
+        tlsAvailable: true
+      };
+      const enforcement = await this.policyEnforcer.enforceEmailPolicy(policyCtx);
+      if (!enforcement.allowed) {
+        return {
+          success: false,
+          to: payload.to,
+          subject: payload.subject,
+          error: enforcement.policyResult.reason
+        };
+      }
+    }
     const actualPayload = this.testEmail ? { ...payload, to: this.testEmail } : payload;
     const result = await this.provider.send(actualPayload);
     if (this.auditLogger) {

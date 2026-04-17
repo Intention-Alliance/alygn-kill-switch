@@ -39,7 +39,23 @@
         "content": "{{extends \"circular-a\"}}\n{{#override y}}B{{/override}}",
         "registeredAt": "2026-04-15T23:07:23.754Z"
       }
+    ],
+    "test": [
+      {
+        "name": "test",
+        "version": "1.0.0",
+        "content": "hello",
+        "registeredAt": "2026-04-16T00:29:37.728Z"
+      }
+    ],
+    "from-ctor": [
+      {
+        "name": "from-ctor",
+        "version": "1.0.0",
+        "content": "content",
+        "registeredAt": "2026-04-16T00:29:37.729Z"
+      }
     ]
   },
-  "lastUpdated": "2026-04-15T23:07:23.754Z"
+  "lastUpdated": "2026-04-16T00:29:37.729Z"
 }

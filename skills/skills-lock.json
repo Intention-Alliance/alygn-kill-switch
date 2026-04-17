@@ -2,192 +2,192 @@
   "version": 1,
   "skills": {
     "AI Researcher": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "53cc80b637da1edcee5c09200878c57b1ce1958dce8ca03d65199c9557dae75a"
     },
     "algorithmic-art": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "5c2804e8f0d4944c7ce6939a2e4afdcf0cb69c966a505481ed8b96e20bb32eee"
     },
     "alygn-municipal-ai-governance-outreach": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "938b3c27db16d802eb34989df5d04f5e0778f36451e78dc497db4e30b099cdf3"
     },
     "beautiful-prose": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "aa7ee5824f534bcac975662372433d90ba56d64356988d54aa6e107509990cdf"
     },
     "design-md": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "d3a4c7d2f2715a33662c8b06ffc16035d01965a8b4ed81c2958fb22ae94760f8"
     },
     "doc-coauthoring": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "b964e4c3ffe13f66f76dd7919073e60c7aec622cd8a8363bb36323188100cf8e"
     },
     "docx": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "6962db07127ee540a56e4677f65576d0727668a1d67f7da8bc978f10791c2bfe"
     },
     "enhance-prompt": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "71cc23e9ec5fc6361e12453495fa8c683f6cf26f3efaf9b230b0f43e0a32cc96"
     },
     "firecrawl": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "f79f957689cc705613a2731f2f35360192fc9a6a28bc3de73484c973621df5ed"
     },
     "fixing-accessibility": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "4fa8f5a772b4eef3d28a54c136b507d070e54e2c326578f65eaf5e5a0118b38a"
     },
     "fixing-metadata": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "699e13890fb50acffa02dfd2d5b0e719bd916a9e2b7e6035bdc4513fc73d9174"
     },
     "fixing-motion-performance": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "426dcf33f23419643f2aab71e2253e1a5b5684a808fabb8a4ad135e489ed7a0f"
     },
     "frontend-design": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
     "internal-comms": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "b36b333bee983462008af46d74689ae5832c2f79ae5f2c18680ee82f6e6bef56"
     },
     "mcp-builder": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "fc68038c900eb801f73ff96130c9f9dba533cc94212ed8435833242f196dedcf"
     },
     "nano-banana-pro": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "6ee1dfa98a4d114dbbc17c57eb52a5c666ae7f779ef6e0f0234bafb45ec2b500"
     },
     "pdf": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "cfbc539377088ca7e44a813b30c306327385bbd973cd7a721e1743f60837dd62"
     },
     "pptx": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "6b8b859d26f93aa059c9870d1ab76b44ab69e3d6757ce4a03cc94cb760888073"
     },
     "prompt-engineering": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "28717ed0eafe344d25d9d76e74109c0f1db3f5ced98d67406cee55d85d48d553"
     },
     "shadcn-ui": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "dadbca54d35a33fe73e40018611af2179689305bf6da812ab2643987fefd9da3"
     },
     "threejs-animation": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "8c50b1493812bd88f3ed0637c0c3c5d846afdb322157b67b2ffba4ce8e552835"
     },
     "threejs-fundamentals": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "e08d49571071f0f54ef2a76fdfcb96c16673e4fda478067727def4659feb80ca"
     },
     "threejs-geometry": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "4e5757bf80a329810545c237e557e362fa14fd3a3e6a567ec1d75435be6b2dda"
     },
     "threejs-interaction": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "988d235b7ebd85276a584c6f81ce7c801280ebc45b401017b334136dc8a7ec82"
     },
     "threejs-lighting": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "9303d1b8a9704e88415e5a98c98ad7b6e0f654f8029a3606af7947c0efcb86cc"
     },
     "threejs-loaders": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "f2cceed635fd7a2119acf6e5b1a2fcba63a0e52cf2514c1830a69e4744554fcc"
     },
     "threejs-materials": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "201cf0f3720c0ea9e415e6376b8ad389aa86b483875e87ca0e51aa2770c856aa"
     },
     "threejs-postprocessing": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "48e04ff507582a18e0d509c2738b9d9466881b00e8ca2600727910a0d52abf75"
     },
     "threejs-shaders": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "649ceb058edfb5cfd51e80fb3a6c57aca9bab4a9d3a03f6077aa9502be0c0771"
     },
     "threejs-textures": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "772a0bfc1d64cfcbc5347d206584a8fa412983201ad7a2cfb8766097b4936db9"
     },
     "vercel-composition-patterns": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "f98931159fa9c7fed043bcd18a891a46dcf89ababa38df13a4c5b7b30dc0ce07"
     },
     "vercel-react-best-practices": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "afeca00ac2f492d88fdd010e73d91719a5b57c564bb4a73325b0bd77e11323ab"
     },
     "vercel-react-native-skills": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "2e9088a7333666d8c2833b8ff58bd51b955501c42b4c7244f72b4cbf22dafcc4"
     },
     "web-artifacts-builder": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "143730c6db11d82d8c5db4d0cf8f435421983f1fc510b24f77ee9a0e8bae7704"
     },
     "web-design-guidelines": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
     },
     "webapp-testing": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "cf8e5916d474886bd67b09691247f43f331523008b7d366064bc607ab42d6302"
     },
     "x-growth": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     "xlsx": {
-      "source": "$HOME/.openclaw/workspace/skills",
+      "source": "/home/andlersrv/.openclaw/workspace/skills",
       "sourceType": "local",
       "computedHash": "efd0c8011cf0677d8075cf93867ecec804f9a8754a777e1d2fdb46197e9c247f"
     }
