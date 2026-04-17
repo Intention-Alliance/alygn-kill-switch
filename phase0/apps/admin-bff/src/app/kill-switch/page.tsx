@@ -35,7 +35,7 @@ const STATE_TEXT: Record<KillSwitchState, string> = {
 
 export default function KillSwitchPage() {
   const { user } = useAuth();
-  const { status, loading, error, refetch } = useKillSwitchPolling(5000);
+  const { status, loading, error, refetch, connectionMethod } = useKillSwitchPolling(5000);
 
   const state = status?.state ?? 'ARMED';
   const userRole = user?.role ?? 'viewer';
@@ -56,6 +56,12 @@ export default function KillSwitchPage() {
           <h1 className="text-2xl font-bold text-gray-100">Kill Switch Control</h1>
           <p className="text-sm text-gray-500 mt-1">
             Emergency stop for all chaos experiments (ADR-111 BCP)
+            <span className="ml-3 inline-flex items-center gap-1 text-xs text-gray-600">
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${connectionMethod === 'sse' ? 'bg-green-500' : 'bg-yellow-500'}`}
+              />
+              {connectionMethod === 'sse' ? 'Live' : 'Polling 5s'}
+            </span>
           </p>
         </div>
         {error && (
