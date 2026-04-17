@@ -9,7 +9,7 @@ export function checkAuth(service: KillSwitchService, req: any): { authenticated
   const cookies = parseCookies(req);
   const token = cookies.admin_token;
   const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
-  const validEmail = process.env.ADMIN_EMAIL || 'admin@alyygn.com';
+  const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
 
   if (token && token === validPassword) {
     return { authenticated: true, user: { email: validEmail, role: 'admin' } };

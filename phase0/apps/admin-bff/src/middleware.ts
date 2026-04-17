@@ -1,11 +1,11 @@
-// Next.js Auth Proxy (replaces deprecated middleware convention)
-// Protects all routes except /login and /api/auth
+// Next.js Auth Middleware — protects all routes except /login and /api/auth
+// Uses opaque session tokens (NOT raw backend credentials)
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/login', '/api/auth'];
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public paths
@@ -22,7 +22,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for admin_token cookie
+  // Check for admin_token cookie (opaque session ID)
   const token = request.cookies.get('admin_token');
   if (!token) {
     const loginUrl = new URL('/login', request.url);
@@ -30,6 +30,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Token exists — let the request through
+  // Actual token validation happens in API route handlers
   return NextResponse.next();
 }
 

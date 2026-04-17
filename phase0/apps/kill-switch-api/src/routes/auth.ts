@@ -19,7 +19,7 @@ export async function handleAuthRoutes(
     try {
       const body = await parseBody(req);
       const { email, password } = body;
-      const validEmail = process.env.ADMIN_EMAIL || 'admin@alyygn.com';
+      const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
       const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
 
       if (email === validEmail && password === validPassword) {
@@ -47,7 +47,7 @@ export async function handleAuthRoutes(
     const validPassword = process.env.KILL_SWITCH_AUTH_TOKEN;
 
     if (token && token === validPassword) {
-      const validEmail = process.env.ADMIN_EMAIL || 'admin@alyygn.com';
+      const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ user: { email: validEmail, role: 'admin' } }));
       return true;

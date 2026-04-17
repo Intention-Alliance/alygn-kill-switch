@@ -13,6 +13,16 @@ export async function handleKillSwitchRoutes(
   ip: string,
 ): Promise<boolean> {
   try {
+    // GET /v1/kill-switch/activations
+    if (method === 'GET' && url.startsWith('/v1/kill-switch/activations')) {
+      const parsedUrl = new URL(url, 'http://localhost');
+      const limit = parseInt(parsedUrl.searchParams.get('limit') || '50', 10);
+      const activations = service.getAuditLog(limit);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ data: activations, total: activations.length, page: 1, limit }));
+      return true;
+    }
+
     // GET /v1/kill-switch/status
     if (method === 'GET' && url === '/v1/kill-switch/status') {
       const state = await service.getCurrentState();
