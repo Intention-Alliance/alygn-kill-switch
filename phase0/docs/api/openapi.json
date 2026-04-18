@@ -1,0 +1,372 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Kill Switch API",
+    "version": "1.0.0",
+    "description": "Phase 0 Kill Switch Service — BCP + Chaos Engineering"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development"
+    },
+    {
+      "url": "https://kill-switch.staging.example.com",
+      "description": "Staging"
+    },
+    {
+      "url": "https://kill-switch.example.com",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/v1/kill-switch/status": {
+      "get": {
+        "summary": "Get current kill switch state",
+        "operationId": "getKillSwitchStatus",
+        "tags": [
+          "Kill Switch"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current kill switch status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "enum": [
+                        "ARMED",
+                        "RUNNING",
+                        "STOPPING",
+                        "STOPPED",
+                        "LOCKED"
+                      ]
+                    },
+                    "lastActivation": {
+                      "type": "string",
+                      "format": "date-time",
+                      "nullable": true
+                    },
+                    "lastActivationBy": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "reason": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "recentTransitions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/kill-switch/chaos": {
+      "post": {
+        "summary": "Transition kill switch state",
+        "operationId": "transitionKillSwitch",
+        "tags": [
+          "Kill Switch"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "type": "string",
+                    "enum": [
+                      "ARMED",
+                      "RUNNING",
+                      "STOPPING",
+                      "STOPPED",
+                      "LOCKED"
+                    ]
+                  },
+                  "userId": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transition successful"
+          },
+          "409": {
+            "description": "Invalid transition"
+          }
+        }
+      }
+    },
+    "/v1/kill-switch/health": {
+      "get": {
+        "summary": "Health check (no auth required)",
+        "operationId": "healthCheck",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Healthy"
+          },
+          "503": {
+            "description": "Degraded"
+          }
+        }
+      }
+    },
+    "/v1/kill-switch/activations": {
+      "get": {
+        "summary": "Get audit log",
+        "operationId": "getActivations",
+        "tags": [
+          "Kill Switch"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit log entries"
+          }
+        }
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Login with email/password",
+        "operationId": "login",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, cookie set"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "summary": "Logout and clear cookie",
+        "operationId": "logout",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out"
+          }
+        }
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "summary": "Check current session",
+        "operationId": "checkSession",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Session active"
+          },
+          "401": {
+            "description": "Not authenticated"
+          }
+        }
+      }
+    },
+    "/v1/auth/ip": {
+      "get": {
+        "summary": "Get client IP address",
+        "operationId": "getIp",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "IP address"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "LB liveness probe",
+        "operationId": "lbHealth",
+        "tags": [
+          "Infrastructure"
+        ],
+        "responses": {
+          "200": {
+            "description": "Alive"
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "LB readiness probe",
+        "operationId": "lbReady",
+        "tags": [
+          "Infrastructure"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ready"
+          },
+          "503": {
+            "description": "Not ready"
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Prometheus metrics",
+        "operationId": "getMetrics",
+        "tags": [
+          "Infrastructure"
+        ],
+        "responses": {
+          "200": {
+            "description": "Prometheus text format",
+            "content": {
+              "text/plain": {}
+            }
+          }
+        }
+      }
+    },
+    "/admin/cost": {
+      "get": {
+        "summary": "Cost tracking report (auth required)",
+        "operationId": "getCostReport",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Cost report"
+          }
+        }
+      }
+    },
+    "/admin/resources": {
+      "get": {
+        "summary": "Resource monitoring stats (auth required)",
+        "operationId": "getResourceStats",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource stats and alerts"
+          }
+        }
+      }
+    },
+    "/admin/incidents": {
+      "get": {
+        "summary": "Active incidents and blocked IPs (auth required)",
+        "operationId": "getIncidents",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Incident report"
+          }
+        }
+      }
+    },
+    "/admin/runbooks": {
+      "get": {
+        "summary": "Runbook status and procedures (auth required)",
+        "operationId": "getRunbooks",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Runbook information"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "admin_token"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}

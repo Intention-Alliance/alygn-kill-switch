@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
-    "build": "echo 'Bun runtime - no build needed'"
+    "build": "echo 'Bun runtime - no build needed'",
+    "docs:sync": "bun run ../../scripts/sync-docs.ts"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

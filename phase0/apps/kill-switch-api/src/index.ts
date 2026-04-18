@@ -20,17 +20,31 @@ import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
 import { handleKillSwitchRoutes } from './routes/kill-switch';
 import { handleFlagsRoutes } from './routes/flags';
+import { handleLbHealthRoutes } from './middleware/lb-health';
+import { handleAdminRoutes } from './routes/admin';
 import { loadRedisPool } from './infra-loader';
+import { getConfig, isFeatureEnabled } from './config';
 
 // ─── HTTP Handler ────────────────────────────────────────────────────
 
 export function createKillSwitchHandler(service: KillSwitchService) {
   const authRateLimiter = new AuthRateLimiter();
+  const config = getConfig();
 
   return async (req: any, res: any) => {
     const ip = req.ip || req.socket?.remoteAddress || 'unknown';
     const url = req.url || '/';
     const method = req.method || 'GET';
+
+    // ─── LB Health / Metrics (no auth required) ───────────────
+    if (isFeatureEnabled('enableLbHealth')) {
+      const lbHandled = await handleLbHealthRoutes(method, url, req, res, service);
+      if (lbHandled) return;
+    }
+
+    // ─── Admin routes (auth required) ─────────────────────────
+    const adminHandled = await handleAdminRoutes(method, url, req, res, service);
+    if (adminHandled) return;
 
     // ─── IP Allowlist Check (skip for auth endpoints) ──────────
     const isAuthEndpoint = url.startsWith('/v1/auth/');
@@ -40,13 +54,13 @@ export function createKillSwitchHandler(service: KillSwitchService) {
       return;
     }
 
-    // ─── Auth Rate Limiting (stricter: 5 per 15 min) ──────────
+    // ─── Auth Rate Limiting (stricter: configurable per env) ───
     if (isAuthEndpoint) {
       const authRateCheck = authRateLimiter.check(ip);
       if (!authRateCheck.allowed) {
         res.writeHead(429, {
           'Content-Type': 'application/json',
-          'Retry-After': String(authRateCheck.retryAfterSeconds || 900),
+          'Retry-After': String(authRateCheck.retryAfterSeconds || config.rateLimit.authWindowMs / 1000),
         });
         res.end(JSON.stringify({ error: 'Too many login attempts', retryAfter: authRateCheck.retryAfterSeconds }));
         return;
@@ -90,30 +104,34 @@ export function createKillSwitchHandler(service: KillSwitchService) {
 // ─── Standalone Server ─────────────────────────────────────────────
 
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
+  const config = getConfig();
   const RedisPool = await loadRedisPool() as any;
 
   const redis: any = new RedisPool({
-    urls: opts.redisUrls || ['redis://localhost:6379'],
+    urls: opts.redisUrls || config.redis.urls,
   });
 
   await redis.connect();
 
   const service = new KillSwitchService({
     redis,
-    authToken: opts.authToken,
-    apiKey: opts.apiKey,
+    authToken: opts.authToken || process.env.KILL_SWITCH_AUTH_TOKEN,
+    apiKey: opts.apiKey || process.env.KILL_SWITCH_API_KEY,
   });
 
   const handler = createKillSwitchHandler(service);
 
   const server = await import('http').then((m) => m.createServer(handler));
 
-  const port = opts.port || 3000;
+  const port = opts.port || config.server.port;
   server.listen(port, () => {
-    console.log(`⚙️ Kill Switch API listening on port ${port}`);
+    console.log(`⚙️ Kill Switch API listening on port ${port} [${config.env}]`);
     console.log(`   Health: http://localhost:${port}/v1/kill-switch/health`);
     console.log(`   Status: http://localhost:${port}/v1/kill-switch/status`);
     console.log(`   Control: POST http://localhost:${port}/v1/kill-switch/chaos`);
+    console.log(`   LB Health: http://localhost:${port}/health`);
+    console.log(`   Ready: http://localhost:${port}/ready`);
+    console.log(`   Metrics: http://localhost:${port}/metrics`);
   });
 
   return { server, service, redis };
@@ -122,18 +140,7 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
 // ─── Main Entry Point ──────────────────────────────────────────────
 
 if (import.meta.path.endsWith('index.ts') || import.meta.path.endsWith('index.mjs')) {
-  const env = process.env;
-
-  const redisUrls = (env.REDIS_URLS || 'redis://localhost:6379')
-    .split(',')
-    .map((url) => url.trim());
-
-  startServer({
-    redisUrls,
-    authToken: env.KILL_SWITCH_AUTH_TOKEN,
-    apiKey: env.KILL_SWITCH_API_KEY,
-    port: parseInt(env.KILL_SWITCH_PORT || '3000', 10),
-  }).catch((err) => {
+  startServer().catch((err) => {
     console.error('Failed to start Kill Switch API:', err);
     process.exit(1);
   });
