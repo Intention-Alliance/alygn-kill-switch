@@ -357,12 +357,12 @@ export class RedisPool extends EventEmitter {
     return this._connected && this.circuitBreaker.isHealthy();
   }
 
-  /** Health check - ping Redis to verify connectivity */
+  /** Health check - verify Redis connectivity */
   async healthCheck() {
     if (!this._cluster) return { redis: 'UNAVAILABLE' };
     try {
-      const client = await this.getClient();
-      await client.ping();
+      // Cluster client: sendCommand(firstKey, isReadonly, args)
+      await this._cluster.sendCommand(null, true, ['PING']);
       return { redis: 'OK' };
     } catch (err) {
       return { redis: 'ERROR', error: err.message };
