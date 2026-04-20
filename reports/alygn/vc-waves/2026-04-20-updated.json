@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "currentWave": 5,
+  "lastUpdated": "2026-04-20T16:45:00.000Z",
+  "totalWaves": 7,
+  "entities": {
+    "discovered": 16,
+    "researched": 11,
+    "personalized": 5,
+    "contacted_via_form": 0,
+    "contacted_via_linkedin": 0,
+    "sent": 0,
+    "replied": 0
+  },
+  "waveStatus": {
+    "2026-03-28": "completed",
+    "2026-03-30": "personalized",
+    "2026-03-31": "sent",
+    "2026-04-01": "personalized",
+    "2026-04-10": "researched",
+    "2026-04-20": "ready_for_manual_outreach"
+  },
+  "blockerResolution": {
+    "issue": "No partner emails publicly available for 5 VCs",
+    "solution": "Hybrid approach: contact forms (2 VCs) + LinkedIn outreach (3 VCs)",
+    "status": "resolved",
+    "executionMode": "manual",
+    "documentation": "docs/alygn/vc-outreach/WAVE5-CONTACT-FORM-LINKEDIN-CAMPAIGN.md"
+  },
+  "vcDetails": [
+    {
+      "name": "Renaissance AI Fund 1",
+      "channel": "contact_form",
+      "url": "https://theimpactplatform.vc/about-renaissance/",
+      "contact": "Dr. Rumman Chowdhury",
+      "status": "ready",
+      "messageId": 1
+    },
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "channel": "contact_form",
+      "url": "https://www.saif.vc/request",
+      "contact": "Geoff Ralston",
+      "status": "ready",
+      "messageId": 2
+    },
+    {
+      "name": "Ballistic Ventures",
+      "channel": "linkedin",
+      "url": "https://www.linkedin.com/in/jake1/",
+      "contact": "Jake Seid",
+      "status": "ready",
+      "messageId": 3
+    },
+    {
+      "name": "Glasswing Ventures",
+      "channel": "linkedin",
+      "url": "https://www.linkedin.com/in/rudinases/",
+      "contact": "Rudina Seseri",
+      "status": "ready",
+      "messageId": 4
+    },
+    {
+      "name": "Menlo Ventures",
+      "channel": "linkedin",
+      "url": "TBD - search Menlo Ventures AI partner",
+      "contact": "General Partner",
+      "status": "ready",
+      "messageId": 5
+    }
+  ]
+}
