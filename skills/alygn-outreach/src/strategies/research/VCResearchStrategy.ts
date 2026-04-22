@@ -31,7 +31,12 @@ interface VCSearchResult {
 
 // Notion database ID for VC outreach
 const getDatabaseId = () => {
-  return process.env.NOTION_VC_DATABASE_ID || '305334874af681ef983df57c7f70de33';
+  const id = process.env.NOTION_VC_DATABASE_ID;
+  if (!id) {
+    console.error('❌ Missing NOTION_VC_DATABASE_ID environment variable');
+    process.exit(1);
+  }
+  return id;
 };
 
 // Statuses that indicate already contacted (skip research)
@@ -190,7 +195,7 @@ export class VCResearchStrategy extends ResearchStrategy {
       outputFile: cacheFile,
       timestamp: new Date().toISOString(),
       requiredTools: ['web_search', 'web_fetch'],
-      instructions: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ''}. Use web_search to find: investment thesis, portfolio companies, key partners, recent investments, pain points, governance signals. Return JSON with: thesis, portfolio, partners, recentInvestments, painPoints, governanceSignals, whyAlygn. Save to ${cacheFile}`
+      instructions: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ''}. Use web_search to find: investment thesis, portfolio companies, key partners, recent investments, pain points, governance signals. ALSO search for: contact form URL on their website, LinkedIn profiles of key partners (especially those focused on AI/governance). Return JSON with: thesis, portfolio, partners (include linkedInUrl per partner if found), recentInvestments, painPoints, governanceSignals, whyAlygn, contactFormUrl (URL of their /contact or /submit page), linkedInUrl (firm LinkedIn page). Save to ${cacheFile}`
     };
     
     fs.writeFileSync(requestFile, JSON.stringify(request, null, 2));
@@ -228,6 +233,16 @@ export class VCResearchStrategy extends ResearchStrategy {
     }
     if (research.recentInvestments && research.recentInvestments.length > 0) {
       entity.typeData.recentInvestments = research.recentInvestments;
+    }
+    
+    // Contact fallback fields from research
+    if ((research as any).contactFormUrl) {
+      entity.typeData.contactFormUrl = (research as any).contactFormUrl;
+      console.log(`   📝 Found contact form: ${(research as any).contactFormUrl}`);
+    }
+    if ((research as any).linkedInUrl) {
+      entity.typeData.linkedInUrl = (research as any).linkedInUrl;
+      console.log(`   🔗 Found LinkedIn: ${(research as any).linkedInUrl}`);
     }
     
     entity.updateStatus('researched');
@@ -349,7 +364,7 @@ export class VCResearchStrategy extends ResearchStrategy {
           messages: [
             {
               role: 'system',
-              content: 'You are a VC research assistant. Return ONLY a JSON object with: thesis (1-2 sentences), portfolio (array of company names), partners (array of {name, title}), recentInvestments (array of {company, date, stage}), painPoints (array), governanceSignals (array), whyAlygn (string explaining fit).'
+              content: 'You are a VC research assistant. Return ONLY a JSON object with: thesis (1-2 sentences), portfolio (array of company names), partners (array of {name, title, linkedInUrl}), recentInvestments (array of {company, date, stage}), painPoints (array), governanceSignals (array), whyAlygn (string explaining fit), contactFormUrl (URL of their contact form if found), linkedInUrl (firm LinkedIn page URL if found).'
             },
             {
               role: 'user',

@@ -25,6 +25,15 @@ interface PipelineOptions {
   input?: string | null;
   draftStatus?: string;
   sendToList?: string[];
+  deepResearch?: boolean;
+}
+
+interface RunOptions {
+  dryRun: boolean;
+  limit: number;
+  region?: string | null;
+  input?: string | null;
+  deepResearch?: boolean;
 }
 
 interface StageResult {
@@ -183,7 +192,7 @@ export class Pipeline {
    * Run pipeline action
    */
   async run(action: string, options: PipelineOptions = {}): Promise<StageResult> {
-    const { dryRun = false, limit = 20, region = null, input = null } = options;
+    const { dryRun = false, limit = 20, region = null, input = null, deepResearch = false } = options;
     
     console.log(`\n🚀 Running ${this.type.toUpperCase()} pipeline: ${action}`);
     console.log(`   Dry run: ${dryRun ? 'YES' : 'NO'}`);
@@ -193,13 +202,13 @@ export class Pipeline {
     
     switch (action) {
       case 'discover':
-        return await this.runDiscover({ dryRun, limit, region });
+        return await this.runDiscover({ dryRun, limit, region, deepResearch });
         
       case 'validate':
         return await this.runValidate({ dryRun, limit, input });
         
       case 'research':
-        return await this.runResearch({ dryRun, limit, input });
+        return await this.runResearch({ dryRun, limit, input, deepResearch });
         
       case 'personalize':
         return await this.runPersonalize({ dryRun, limit, input });
@@ -208,7 +217,7 @@ export class Pipeline {
         return await this.runSend({ dryRun, limit, input, draftStatus: options.draftStatus, sendToList: options.sendToList });
         
       case 'pipeline':
-        return await this.runFullPipeline({ dryRun, limit, region, input }) as StageResult;
+        return await this.runFullPipeline({ dryRun, limit, region, input, deepResearch }) as StageResult;
         
       default:
         throw new Error(`Unknown action: ${action}`);
@@ -218,18 +227,24 @@ export class Pipeline {
   /**
    * Run discovery stage
    */
-  async runDiscover(options: { dryRun: boolean; limit: number; region?: string | null }): Promise<StageResult> {
-    const { dryRun, limit, region } = options;
+  async runDiscover(options: { dryRun: boolean; limit: number; region?: string | null; deepResearch?: boolean }): Promise<StageResult> {
+    const { dryRun, limit, region, deepResearch } = options;
     const strategy = this.registry.get(this.type, 'discover') as { discover: (query: string, opts: Record<string, unknown>) => Promise<OutreachEntity[]> };
     
     const query = this.type === 'vc' 
       ? 'AI safety venture capital'
       : (region === 'costa-rica' ? 'costa-rica-cantones' : 'municipal government');
     
+    const discoverOpts: Record<string, unknown> = { dryRun, limit, region };
+    if (deepResearch) {
+      discoverOpts.deepResearch = true;
+      console.log(`   🔬 Deep research enabled for discovery (Perplexity + Firecrawl + web search)`);
+    }
+    
     const discovered = await traceOperation(
       'pipeline.discover',
-      async () => strategy.discover(query, { dryRun, limit, region }),
-      { entity_type: this.type, limit, dryRun: String(dryRun), region: region ?? 'global' }
+      async () => strategy.discover(query, discoverOpts),
+      { entity_type: this.type, limit, dryRun: String(dryRun), region: region ?? 'global', deepResearch: String(!!deepResearch) }
     );
     this.entities = discovered;
     
@@ -351,8 +366,8 @@ export class Pipeline {
   /**
    * Run research stage
    */
-  async runResearch(options: { dryRun: boolean; limit: number; input?: string | null }): Promise<StageResult> {
-    const { dryRun, limit, input } = options;
+  async runResearch(options: { dryRun: boolean; limit: number; input?: string | null; deepResearch?: boolean }): Promise<StageResult> {
+    const { dryRun, limit, input, deepResearch } = options;
     
     let entities = this.entities;
     if (input) {
@@ -368,10 +383,15 @@ export class Pipeline {
     entities = entities.slice(0, limit);
     
     const strategy = this.registry.get(this.type, 'research') as { 
-      research: (entity: OutreachEntity) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }>; 
-      researchDryRun?: (entity: OutreachEntity) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }> 
+      research: (entity: OutreachEntity, opts?: Record<string, unknown>) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }>; 
+      researchDryRun?: (entity: OutreachEntity, opts?: Record<string, unknown>) => Promise<{ success: boolean; research?: Record<string, unknown>; entity?: OutreachEntity; error?: string }> 
     };
     const results: Array<Record<string, unknown>> = [];
+    const researchOpts: Record<string, unknown> = {};
+    if (deepResearch) {
+      researchOpts.deepResearch = true;
+      console.log(`   🔬 Deep research enabled (Perplexity + Firecrawl + web search)`);
+    }
     
     for (let i = 0; i < entities.length; i++) {
       const entity = entities[i];
@@ -379,11 +399,11 @@ export class Pipeline {
         'pipeline.research',
         async () => {
           if (dryRun && strategy.researchDryRun) {
-            return strategy.researchDryRun(entity);
+            return strategy.researchDryRun(entity, researchOpts);
           }
-          return strategy.research(entity);
+          return strategy.research(entity, researchOpts);
         },
-        { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun) }
+        { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun), deepResearch: String(!!deepResearch) }
       );
       results.push(wrapped);
       if (wrapped.entity) {
@@ -628,8 +648,8 @@ export class Pipeline {
   /**
    * Run full pipeline
    */
-  async runFullPipeline(options: { dryRun: boolean; limit: number; region?: string | null; input?: string | null }): Promise<Record<string, unknown>> {
-    const { dryRun, limit, region, input } = options;
+  async runFullPipeline(options: { dryRun: boolean; limit: number; region?: string | null; input?: string | null; deepResearch?: boolean }): Promise<Record<string, unknown>> {
+    const { dryRun, limit, region, input, deepResearch } = options;
     const useDirectApi = process.env.USE_DIRECT_API === 'true';
     const isModeB = dryRun && useDirectApi;
     
@@ -658,7 +678,7 @@ export class Pipeline {
     }
     
     // 1. Discover
-    const discoverResult = await this.runDiscover({ dryRun, limit, region });
+    const discoverResult = await this.runDiscover({ dryRun, limit, region, deepResearch });
     (results.stages as Record<string, unknown>).discover = discoverResult;
     (results.summary as Record<string, number>).discovered = discoverResult.discovered || 0;
     
@@ -668,7 +688,7 @@ export class Pipeline {
     (results.summary as Record<string, number>).validated = validateResult.validated || 0;
     
     // 3. Research
-    const researchResult = await this.runResearch({ dryRun, limit });
+    const researchResult = await this.runResearch({ dryRun, limit, deepResearch });
     (results.stages as Record<string, unknown>).research = researchResult;
     (results.summary as Record<string, number>).researched = researchResult.researched || 0;
     

@@ -11,6 +11,11 @@ import fs from "fs";
 const ZEROBOUNCE_API_KEY = process.env.ZEROBOUNCE_API_KEY;
 const MOCK_MODE = process.argv.includes('--mock');
 
+if (!MOCK_MODE && !ZEROBOUNCE_API_KEY) {
+  console.error('❌ Missing ZEROBOUNCE_API_KEY environment variable (use --mock for mock mode)');
+  process.exit(1);
+}
+
 /**
  * Verifies emails for municipalities
  * @param {Array} municipalities - Researched municipalities

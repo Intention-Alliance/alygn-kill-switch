@@ -11,6 +11,11 @@ const GROK_API_KEY = process.env.GROK_API_KEY;
 const GROK_ENDPOINT = process.env.GROK_ENDPOINT || 'https://api.x.ai/v1';
 const GROK_MODEL = process.env.GROK_MODEL || 'grok-4-1-fast-reasoning';
 
+if (!GROK_API_KEY) {
+  console.error('❌ Missing GROK_API_KEY environment variable');
+  process.exit(1);
+}
+
 /**
  * System prompt for Alygn thread generation
  */

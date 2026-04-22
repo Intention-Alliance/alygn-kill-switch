@@ -27,6 +27,7 @@ interface RunOptions {
   dryRun?: boolean;
   limit?: number;
   focusAreas?: string[];
+  deepResearch?: boolean;
 }
 
 /**
@@ -83,12 +84,13 @@ export class GrantDiscoveryPipeline {
     phase: 'discover' | 'research' | 'validate' | 'sync',
     options: RunOptions = {}
   ): Promise<PipelineResult> {
-    const { dryRun = false, limit = 50, focusAreas = this.config.discovery.focusAreas } = options;
+    const { dryRun = false, limit = 50, focusAreas = this.config.discovery.focusAreas, deepResearch = false } = options;
 
     console.log(`\n🚀 Running Grant Discovery Pipeline: ${phase.toUpperCase()}`);
     console.log(`   Dry run: ${dryRun ? 'YES' : 'NO'}`);
     console.log(`   Limit: ${limit}`);
-    console.log(`   Focus areas: ${focusAreas.join(', ')}\n`);
+    console.log(`   Focus areas: ${focusAreas.join(', ')}`);
+    if (deepResearch) console.log(`   🔬 Deep research: ENABLED (Perplexity + Firecrawl + web search)\n`);
 
     const startTime = Date.now();
     const errors: string[] = [];
@@ -99,10 +101,10 @@ export class GrantDiscoveryPipeline {
 
       switch (phase) {
         case 'discover':
-          grants = await this.discoverPhase(limit, dryRun);
+          grants = await this.discoverPhase(limit, dryRun, deepResearch);
           break;
         case 'research':
-          grants = await this.researchPhase(limit, dryRun);
+          grants = await this.researchPhase(limit, dryRun, deepResearch);
           break;
         case 'validate':
           grants = await this.validatePhase(limit, dryRun);
@@ -182,14 +184,20 @@ export class GrantDiscoveryPipeline {
    * @returns {Promise<GrantEntity[]>} Discovered grants
    * @private
    */
-  private async discoverPhase(limit: number, dryRun: boolean): Promise<GrantEntity[]> {
+  private async discoverPhase(limit: number, dryRun: boolean, deepResearch?: boolean): Promise<GrantEntity[]> {
+    const opts: Record<string, unknown> = { dryRun, limit };
+    if (deepResearch) {
+      opts.deepResearch = true;
+      console.log(`   🔬 Deep research enabled for discovery (Perplexity + Firecrawl + web search)`);
+    }
+
     const grants = await this.discoveryStrategy.discover(
       {
         sources: this.config.discovery.sources,
         focusAreas: this.config.discovery.focusAreas,
         excludeClosed: this.config.discovery.excludeClosed
       },
-      { dryRun, limit }
+      opts
     );
 
     this.grants = grants;
@@ -204,7 +212,7 @@ export class GrantDiscoveryPipeline {
    * @returns {Promise<GrantEntity[]>} Researched grants
    * @private
    */
-  private async researchPhase(limit: number, dryRun: boolean): Promise<GrantEntity[]> {
+  private async researchPhase(limit: number, dryRun: boolean, deepResearch?: boolean): Promise<GrantEntity[]> {
     // Load from previous phase if needed
     if (this.grants.length === 0) {
       const latest = this.loadLatestState('discover');
@@ -218,11 +226,15 @@ export class GrantDiscoveryPipeline {
       return this.grants.slice(0, limit);
     }
 
+    if (deepResearch) {
+      console.log(`   🔬 Deep research enabled (Perplexity + Firecrawl + web search)`);
+    }
+
     const researched: GrantEntity[] = [];
     
     for (const grant of this.grants.slice(0, limit)) {
       try {
-        const researchedGrant = await this.researchStrategy.research(grant);
+        const researchedGrant = await this.researchStrategy.research(grant, { deepResearch });
         researched.push(researchedGrant);
       } catch (error) {
         console.error(`   ❌ Failed to research ${grant.name}:`, error);

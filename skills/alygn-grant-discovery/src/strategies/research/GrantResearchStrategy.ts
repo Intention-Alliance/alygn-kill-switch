@@ -41,8 +41,11 @@ export class GrantResearchStrategy {
    * @param {GrantEntity} grant - Grant to research
    * @returns {Promise<GrantEntity>} Enriched grant entity
    */
-  async research(grant: GrantEntity): Promise<GrantEntity> {
+  async research(grant: GrantEntity, opts?: { deepResearch?: boolean }): Promise<GrantEntity> {
     console.log(`📚 Researching grant: ${grant.name}...`);
+    if (opts?.deepResearch) {
+      console.log(`   🔬 Deep research enabled (Perplexity + Firecrawl + web search)`);
+    }
     
     // Check cache first
     const cacheFile = `/tmp/grant-research-${this.sanitizeName(grant.name)}-result.json`;

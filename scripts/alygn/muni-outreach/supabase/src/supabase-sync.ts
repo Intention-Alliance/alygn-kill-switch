@@ -20,8 +20,13 @@ import fs from 'fs';
 import path from 'path';
 
 // Configuration
-const SUPABASE_URL = process.env.SUPABASE_URL || 'postgres://postgres:xjMYgXdLg9nDQTKk@aws-pool:5432/postgres';
+const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ Missing required environment variables: SUPABASE_URL, SUPABASE_KEY');
+  process.exit(1);
+}
 const DRY_RUN = process.argv.includes('--dry-run');
 
 // Console helpers

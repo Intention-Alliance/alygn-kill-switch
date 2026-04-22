@@ -8,6 +8,14 @@ metadata:
   total_municipalities: 82
   skill: alygn-outreach
   learnings_source: vc-outreach (adapted for municipal context)
+  dependencies:
+    - supabase (remote PostgreSQL - ALL status tracking)
+    - notion (optional, for cross-reference)
+    - perplexity (deep research API)
+    - firecrawl (web scraping, optional with deepResearch)
+    - grok (personalization)
+    - zerobounce (email validation)
+    - smartlead (email sending)
 
 # Wave State File Schema
 # Path: $HOME/.openclaw/workspace/reports/alygn/muni-wave-state.json
@@ -54,6 +62,35 @@ metadata:
 #
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEEP RESEARCH FLAG
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Add --deep-research to any discover/research/pipeline command to enable
+# enhanced multi-source research:
+#   → Perplexity API for mayor name / governance signals
+#   → Firecrawl for municipal website scraping
+#   → web_search for additional signals
+#
+# Example:
+#   USE_DIRECT_API=true bun alygn-outreach.ts --type=municipal --action=research --deep-research --dry-run
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# SUPABASE DEPENDENCY (CRITICAL)
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# ALL status tracking uses remote Supabase PostgreSQL. No local SQL.
+# Required env vars (or loaded from credentials.json):
+#   SUPABASE_URL - Supabase project URL
+#   SUPABASE_SERVICE_KEY - Service role key for DB access
+#   NOTION_VC_DATABASE_ID - Notion VC database ID (no hardcoded fallback)
+#
+# Scripts fail fast if required env vars are missing.
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
 # IMPORTANT: All database operations use Bun TypeScript utilities via supabase-utils.ts!
 # ❌ DO NOT use raw SQL commands - they will FAIL against remote Supabase
 # ✅ USE: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=<action>
@@ -92,7 +129,7 @@ steps:
   # ============================================================
   - id: phase1-discovery
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=discover --region=costa-rica --limit=82 --dry-run
-    description: "Discover all 82 Costa Rican cantones (Mode B: real web scraping)"
+    description: "Discover all 82 Costa Rican cantones (Mode B: real web scraping). Add --deep-research for Perplexity + Firecrawl + web search."
     after: prelude-x-discovery
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/muni-discover/muni-cr-discovered-{timestamp}.json
@@ -106,7 +143,7 @@ steps:
   # ============================================================
   - id: phase2-research-mayors
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=research --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-discover/muni-cr-discovered-{timestamp}.json --dry-run
-    description: "Research actual mayor names for each canton (Mode B: real Perplexity research)"
+    description: "Research actual mayor names for each canton (Mode B: real Perplexity research). Add --deep-research for enhanced multi-source research."
     after: phase1-discovery
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/muni-mayor/muni-cr-mayor-names-{timestamp}.json

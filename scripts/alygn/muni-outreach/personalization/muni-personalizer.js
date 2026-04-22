@@ -16,6 +16,11 @@ const GROK_ENDPOINT = process.env.GROK_ENDPOINT || 'https://api.x.ai/v1';
 const GROK_MODEL = process.env.GROK_MODEL || 'grok-4-1-fast-reasoning';
 const MOCK_MODE = process.argv.includes('--mock');
 
+if (!MOCK_MODE && !GROK_API_KEY) {
+  console.error('❌ Missing GROK_API_KEY environment variable (use --mock for mock mode)');
+  process.exit(1);
+}
+
 // Email templates - 100% SPANISH (Costa Rica official language)
 // CRITICAL: ALL communications MUST be in Spanish for Costa Rican municipalities
 const TEMPLATES = {

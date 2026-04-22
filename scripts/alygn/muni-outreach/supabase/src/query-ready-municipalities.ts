@@ -19,6 +19,11 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY || process.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_SERVICE_KEY;
 
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ Missing required environment variables: SUPABASE_URL (or VITE_SUPABASE_URL), SUPABASE_KEY (or VITE_SUPABASE_ANON_KEY / VITE_SUPABASE_SERVICE_KEY)');
+  process.exit(1);
+}
+
 const LIMIT = parseInt(process.argv.find(a => a.startsWith('--limit='))?.split('=')[1] || '5');
 
 // Console helpers
