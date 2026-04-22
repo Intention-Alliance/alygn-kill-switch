@@ -5,6 +5,13 @@ metadata:
   type: vc-outreach
   wave: {{ LATEST_WAVE_NUMBER + 1 }}
   skill: alygn-outreach
+  dependencies:
+    - supabase (remote PostgreSQL for duplicate checks)
+    - notion (VC tracker database)
+    - perplexity (deep research API)
+    - firecrawl (web scraping, optional with deepResearch)
+    - zerobounce (email validation)
+    - smartlead (email sending)
 
 # Wave State File Schema
 # Path: $HOME/.openclaw/workspace/reports/alygn/vc-wave-state.json
@@ -42,6 +49,34 @@ metadata:
 #   → Requires explicit approval gates
 #
 # ═══════════════════════════════════════════════════════════════════════════════
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEEP RESEARCH FLAG
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# Add --deep-research to any discover/research/pipeline command to enable
+# enhanced multi-source research:
+#   → Perplexity API for thesis/pain points
+#   → Firecrawl for website scraping
+#   → web_search for additional signals
+#
+# Example:
+#   USE_DIRECT_API=true bun alygn-outreach.ts --type=vc --action=research --deep-research --dry-run
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# SUPABASE DEPENDENCY
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# The pipeline now checks Supabase (remote) for duplicate detection in addition
+# to local SentEmailTracker. Required env vars:
+#   SUPABASE_URL - Supabase project URL
+#   SUPABASE_SERVICE_KEY - Service role key for DB access
+# These are loaded from ~/.openclaw/workspace/config/credentials.json
+# if not set as environment variables.
+#
+# ═══════════════════════════════════════════════════════════════════════════════
 
 steps:
   # Phase 0: Sync existing VCs to Notion (ensures database is up to date)
@@ -53,9 +88,10 @@ steps:
 
   # Phase 1: Discovery (find new VCs)
   # MODE B: USE_DIRECT_API=true enables real Perplexity research instead of mocks
+  # Add --deep-research for enhanced multi-source discovery
   - id: phase1-discover
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=discover --limit=5 --dry-run
-    description: "Discover new VC targets (Mode B: real API calls, simulated DB)"
+    description: "Discover new VC targets (Mode B: real API calls, simulated DB). Add --deep-research for Perplexity + Firecrawl + web search."
     after: phase0-sync
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-{timestamp}.json
@@ -70,18 +106,27 @@ steps:
 
   # Phase 2.5: Pre-research duplicate check
   # Build exclusion list from all sources before researching
+  # FIXED: Query Notion API instead of local sent-emails.json (stale local data)
   - id: phase2-5-dedup-check
     command: |
       mkdir -p /tmp/alygn-dedup && \
       echo "🔍 Building exclusion list for duplicate prevention..." && \
-      (cat ~/.openclaw/workspace/scripts/alygn/lib/sent-emails.json 2>/dev/null | jq -r '.vcs[].vcName' | sort -u > /tmp/alygn-dedup/sent-emails-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/sent-emails-vcs.txt) && \
-      echo "  ✓ Loaded sent-emails.json ($(wc -l < /tmp/alygn-dedup/sent-emails-vcs.txt || echo 0) entries)" && \
+      NOTION_KEY="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" && \
+      NOTION_DB="30b33487-4af6-8106-8cba-d304fdd0b600" && \
+      NOTION_VERSION="2022-06-28" && \
+      (curl -s -X POST "https://api.notion.com/v1/databases/${NOTION_DB}/query" \
+        -H "Authorization: Bearer ${NOTION_KEY}" \
+        -H "Notion-Version: ${NOTION_VERSION}" \
+        -H "Content-Type: application/json" \
+        -d '{"filter": {"or": [{"property": "Status", "status": {"equals": "Contacted"}}, {"property": "Status", "status": {"equals": "Sent"}}]}}' \
+        | jq -r '.results[]?.properties.Name.title[0].plain_text // .results[]?.properties["VC Name"].title[0].plain_text // empty' 2>/dev/null | sort -u > /tmp/alygn-dedup/notion-sent-vcs.txt || echo "" > /tmp/alygn-dedup/notion-sent-vcs.txt) && \
+      echo "  ✓ Loaded Notion contacted/sent VCs ($(wc -l < /tmp/alygn-dedup/notion-sent-vcs.txt || echo 0) entries)" && \
       (cat ~/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json 2>/dev/null | jq -r '.completedEntities // {} | keys[] as $k | .[$k].vcName // empty' | sort -u > /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/wave-state-vcs.txt) && \
       echo "  ✓ Loaded wave-state.json ($(wc -l < /tmp/alygn-dedup/wave-state-vcs.txt || echo 0) entries)" && \
-      cat /tmp/alygn-dedup/sent-emails-vcs.txt /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-vcs.txt && \
+      cat /tmp/alygn-dedup/notion-sent-vcs.txt /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-vcs.txt && \
       echo "📊 Total excluded VCs: $(wc -l < /tmp/alygn-dedup/exclude-vcs.txt || echo 0)" && \
       echo "Exclusion list created at: /tmp/alygn-dedup/exclude-vcs.txt"
-    description: "Build exclusion list from sent-emails.json and wave-state.json"
+    description: "Build exclusion list from Notion API (Contacted/Sent) and wave-state.json"
     after: phase2-validate
     output:
       file: /tmp/alygn-dedup/exclude-vcs.txt
@@ -89,9 +134,10 @@ steps:
   # Phase 3: Research (find emails, pain points)
   # MODE B: USE_DIRECT_API=true enables real Perplexity research for thesis/pain points
   # Note: VCResearchStrategy.ts also performs Notion duplicate check internally
+  # Add --deep-research for enhanced multi-source research (Perplexity + Firecrawl + web search)
   - id: phase3-research
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc --action=research --limit=5 --dry-run
-    description: "Research validated VCs (Mode B: real Perplexity calls for thesis/pain points, with duplicate filtering)"
+    description: "Research validated VCs (Mode B: real Perplexity calls for thesis/pain points, with duplicate filtering). Add --deep-research for enhanced multi-source research."
     after: phase2-5-dedup-check
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/vc-research/alygn-vc-researched-{timestamp}.json

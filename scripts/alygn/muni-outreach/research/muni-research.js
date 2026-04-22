@@ -10,6 +10,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getSupabaseClient } from "../../lib/supabase-client.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,17 +19,86 @@ const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const MOCK_MODE = process.argv.includes('--mock');
 
+if (!MOCK_MODE && !PERPLEXITY_API_KEY) {
+  console.error('❌ Missing PERPLEXITY_API_KEY environment variable (use --mock for mock mode)');
+  process.exit(1);
+}
+
 /**
  * Researches municipalities: finds mayor email, council contacts, AI governance signals
  * @param {Array} municipalities - Array from discovery phase
  * @param {boolean} mock - Use mock data
  * @returns {Promise<Array>} Municipalities with research data
  */
-function researchMunicipalities(municipalities, mock = false) {
+async function researchMunicipalities(municipalities, mock = false) {
   console.log(`🔬 Researching ${municipalities.length} municipalities...`);
-  
-  // Always use pre-verified data because Firecrawl is unreliable (408/500 errors)
-  console.log('ℹ️  Using pre-verified research data (Firecrawl unreliable)');
+
+  // 1. Try Supabase first — check if any are already researched
+  try {
+    const supabase = getSupabaseClient();
+    const muniNames = municipalities.map(m => m.name);
+    const { data: researched, error } = await supabase
+      .from('municipalities')
+      .select('id, name, researched_at, mayor_name, mayor_email, general_email, council_emails, phone, x_handle, pain_points, ai_governance_signals, current_issues, recent_initiatives, alygn_relevance, notes, language')
+      .in('name', muniNames)
+      .not('researched_at', 'is', null);
+
+    if (error) {
+      console.warn('[muni-research] Supabase query error:', error.message);
+    } else if (researched && researched.length > 0) {
+      console.log(`[muni-research] Found ${researched.length} already-researched municipalities in Supabase`);
+
+      // Merge Supabase data into municipalities
+      const researchedNames = new Set(researched.map(r => r.name));
+      const enriched = municipalities.map(m => {
+        const dbMatch = researched.find(r => r.name === m.name);
+        if (dbMatch) {
+          return {
+            ...m,
+            researched_at: dbMatch.researched_at,
+            research_status: 'complete',
+            contacts: {
+              mayor_name: dbMatch.mayor_name || m.contacts?.mayor_name,
+              mayor_email: dbMatch.mayor_email || m.contacts?.mayor_email,
+              general_email: dbMatch.general_email || m.contacts?.general_email,
+              council_emails: dbMatch.council_emails || m.contacts?.council_emails || [],
+              phone: dbMatch.phone || m.contacts?.phone,
+            },
+            ai_governance_signals: dbMatch.ai_governance_signals || [],
+            pain_points: dbMatch.pain_points || [],
+            current_issues: dbMatch.current_issues || [],
+            recent_initiatives: dbMatch.recent_initiatives || [],
+            alygn_relevance: dbMatch.alygn_relevance || [],
+            x_handle: dbMatch.x_handle || null,
+            website_analyzed: true,
+            language: dbMatch.language || 'es',
+            notes: dbMatch.notes || null,
+            mock: false,
+            source: 'supabase',
+          };
+        }
+        return m;
+      });
+
+      // Still need to research any that weren't in Supabase
+      const unresearched = enriched.filter(m => !researchedNames.has(m.name));
+      if (unresearched.length === 0) {
+        console.log('[muni-research] All municipalities already researched in Supabase — no mock needed');
+        return enriched;
+      }
+      console.log(`[muni-research] ${unresearched.length} still need research, falling through to local data`);
+
+      // Research the unresearched ones via local file
+      const locallyResearched = await generateMockResearch(unresearched);
+      const localMap = new Map(locallyResearched.map(m => [m.name, m]));
+      return enriched.map(m => localMap.get(m.name) || m);
+    }
+  } catch (err) {
+    console.warn('[muni-research] Supabase check failed:', err.message);
+  }
+
+  // 2. Supabase empty or unreachable — use local verified data
+  console.log('[muni-research] Using local verified data (Supabase had no matches)');
   return generateMockResearch(municipalities);
 }
 

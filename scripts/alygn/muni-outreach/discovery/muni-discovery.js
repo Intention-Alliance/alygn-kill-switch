@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import { getSupabaseClient } from "../../lib/supabase-client.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,13 +62,79 @@ const REGION_CONFIGS = {
  */
 async function discoverMunicipalities(region, limit = 100) {
   const config = REGION_CONFIGS[region];
-  
+
   if (!config) {
     throw new Error(`Unknown region: ${region}. Available: ${Object.keys(REGION_CONFIGS).join(', ')}`);
   }
 
   console.log(`🔍 Discovering municipalities in ${config.name}...`);
-  
+
+  // 1. Try Supabase first — get municipalities not yet discovered
+  try {
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase
+      .from('municipalities')
+      .select('*')
+      .is('discovered_at', null)
+      .eq('country', config.name)
+      .limit(limit);
+
+    if (error) {
+      console.warn('[muni-discovery] Supabase query error:', error.message);
+    } else if (data && data.length > 0) {
+      console.log(`[muni-discovery] Found ${data.length} undiscovered municipalities in Supabase`);
+      return data.map(m => ({
+        id: m.id,
+        name: m.name,
+        population: m.population,
+        province: m.region,
+        country: m.country,
+        website: m.website_url,
+        mayor_name: m.mayor_name,
+        mayor_email: m.mayor_email,
+        general_email: m.general_email,
+        council_emails: m.council_emails || [],
+        phone: m.phone,
+        x_handle: m.x_handle,
+        notes: m.notes,
+        discovered_at: new Date().toISOString(),
+        source: 'supabase',
+      }));
+    } else {
+      console.log('[muni-discovery] No undiscovered municipalities in Supabase, trying all municipalities');
+      // If all are discovered, return all for this country
+      const { data: allData, error: allError } = await supabase
+        .from('municipalities')
+        .select('*')
+        .eq('country', config.name)
+        .limit(limit);
+
+      if (!allError && allData && allData.length > 0) {
+        console.log(`[muni-discovery] Found ${allData.length} total municipalities in Supabase`);
+        return allData.map(m => ({
+          id: m.id,
+          name: m.name,
+          population: m.population,
+          province: m.region,
+          country: m.country,
+          website: m.website_url,
+          mayor_name: m.mayor_name,
+          mayor_email: m.mayor_email,
+          general_email: m.general_email,
+          council_emails: m.council_emails || [],
+          phone: m.phone,
+          x_handle: m.x_handle,
+          notes: m.notes,
+          discovered_at: m.discovered_at || new Date().toISOString(),
+          source: 'supabase',
+        }));
+      }
+    }
+  } catch (err) {
+    console.warn('[muni-discovery] Supabase query failed:', err.message);
+  }
+
+  // 2. Supabase empty or unreachable — fall through to local data
   if (MOCK_MODE) {
     console.log('⚠️  Mock mode enabled - returning sample data');
     return generateMockMunicipalities(region, limit);
@@ -75,14 +142,14 @@ async function discoverMunicipalities(region, limit = 100) {
 
   // Use native web search approach (more reliable than direct Firecrawl)
   console.log('🔍 Using web search for discovery...');
-  
+
   const municipalities = await discoverViaWebSearch(region, limit);
-  
+
   if (municipalities.length === 0) {
     console.warn('⚠️  Web search returned no results - falling back to mock data');
     return generateMockMunicipalities(region, limit);
   }
-  
+
   console.log(`✅ Discovered ${municipalities.length} municipalities`);
   return municipalities.slice(0, limit);
 }

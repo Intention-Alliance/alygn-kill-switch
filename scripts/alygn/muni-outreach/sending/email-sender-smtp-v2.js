@@ -14,6 +14,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { sendEmail, sendEmailsBatch } from "../../lib/email-sender.js";
+import { getSupabaseClient } from "../../lib/supabase-client.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -56,20 +57,47 @@ function buildEmail(municipality) {
 async function sendEmails(municipalities, mock = false) {
   console.log(`📧 Sending emails to ${municipalities.length} municipalities...`);
   console.log(`   Using official Alygn template`);
-  
+
+  // 1. Filter out municipalities already sent (check Supabase)
+  let toSend = municipalities;
+  try {
+    const supabase = getSupabaseClient();
+    const muniNames = municipalities.map(m => m.name);
+    const { data: alreadySent, error } = await supabase
+      .from('outreach_emails')
+      .select('recipient_email, recipient_name')
+      .not('sent_at', 'is', null)
+      .in('recipient_name', muniNames);
+
+    if (error) {
+      console.warn('[email-sender] Supabase dedup query error:', error.message);
+    } else if (alreadySent && alreadySent.length > 0) {
+      const sentNames = new Set(alreadySent.map(s => s.recipient_name));
+      toSend = municipalities.filter(m => !sentNames.has(m.name));
+      console.log(`[email-sender] Skipped ${municipalities.length - toSend.length} already-sent (Supabase dedup)`);
+    }
+  } catch (err) {
+    console.warn('[email-sender] Supabase dedup check failed:', err.message);
+  }
+
+  if (toSend.length === 0) {
+    console.log('[email-sender] All municipalities already sent — nothing to do');
+    return { sent_at: new Date().toISOString(), total: municipalities.length, sent: 0, failed: 0, campaigns: {}, skipped: municipalities.length };
+  }
+
   // Safety check: require --approved flag for live sends
   if (!mock && !APPROVED) {
     console.log('⚠️  Safety: Use --approved flag to send live emails. Running in mock mode.');
-    return simulateSend(municipalities);
+    return simulateSend(toSend);
   }
-  
+
   if (mock) {
     console.log('⚠️  Mock mode - simulating send');
-    return simulateSend(municipalities);
+    return simulateSend(toSend);
   }
-  
+
   // Build email objects for batch sending
-  const emails = municipalities.map(muni => {
+  const emails = toSend.map(muni => {
     const email = buildEmail(muni);
     return {
       id: muni.name,
@@ -79,10 +107,30 @@ async function sendEmails(municipalities, mock = false) {
       textBody: email.text
     };
   });
-  
+
   // Use shared batch sender
   const results = await sendEmailsBatch(emails, { rateLimitMs: 0, mock: false });
-  
+
+  // 2. After send, record each in Supabase
+  const supabase = getSupabaseClient();
+  for (const [key, value] of Object.entries(results.campaigns)) {
+    if (value.success) {
+      try {
+        await supabase.from('outreach_emails').insert({
+          recipient_email: value.to,
+          recipient_name: key,
+          type: 'municipal',
+          subject: value.subject,
+          sent_at: results.sent_at,
+          message_id: value.messageId,
+          status: 'sent',
+        });
+      } catch (err) {
+        console.error(`[email-sender] Failed to log ${key} to Supabase:`, err.message);
+      }
+    }
+  }
+
   // Transform results to match expected format
   const transformedResults = {
     sent_at: results.sent_at,
@@ -91,7 +139,7 @@ async function sendEmails(municipalities, mock = false) {
     failed: results.failed,
     campaigns: {}
   };
-  
+
   // Transform campaign results
   for (const [key, value] of Object.entries(results.campaigns)) {
     transformedResults.campaigns[key] = {
@@ -104,7 +152,7 @@ async function sendEmails(municipalities, mock = false) {
       error: value.error
     };
   }
-  
+
   console.log(`\n✅ Sent: ${transformedResults.sent}/${transformedResults.total}`);
   return transformedResults;
 }
