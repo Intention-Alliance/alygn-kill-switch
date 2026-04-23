@@ -1,6 +1,8 @@
 {
-  "dataSourceId": "30533487-4af6-81e7-ad64-000bbd4829ff",
-  "databaseId": "30533487-4af6-81e7-ad64-000bbd4829ff",
-  "databaseUrl": "https://www.notion.so/305334874af681ef983df57c7f70de33",
-  "created": "2025-09-03"
+  "dataSourceId": "30b33487-4af6-8106-8cba-d304fdd0b600",
+  "databaseId": "30b33487-4af6-8106-8cba-d304fdd0b600",
+  "databaseUrl": "https://www.notion.so/30b334874af681068cbad304fdd0b600",
+  "created": "2025-09-03",
+  "updated": "2026-04-22",
+  "note": "VC Outreach database (shared with ClawdBot integration). ID verified 2026-04-22."
 }
