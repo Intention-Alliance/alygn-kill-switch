@@ -136,7 +136,7 @@ export class VCResearchStrategy extends ResearchStrategy {
   }
 
   /**
-   * Research VC firm using OpenClaw Script ↔ AI Execution pattern
+   * Research VC firm using Supabase cache → Perplexity API → skip (no fallback)
    */
   async research(entity: VCEntity): Promise<IResearchResult> {
     console.log(`📚 Researching VC: ${entity.name}...`);
@@ -145,10 +145,7 @@ export class VCResearchStrategy extends ResearchStrategy {
     const notionCheck = await this.checkNotionForVC(entity.name);
     
     if (!notionCheck.shouldResearch) {
-      // Skip research - already contacted
       console.log(`   ⏭️  Skipping ${entity.name} - ${notionCheck.skipReason}`);
-      
-      // Return a "skipped" result
       return {
         success: true,
         research: {
@@ -166,49 +163,53 @@ export class VCResearchStrategy extends ResearchStrategy {
       console.log(`   ✅ Status "${notionCheck.status}" allows research`);
     }
     
-    // Continue with normal research flow...
+    // STEP 2: Check Supabase vc_research table for cached research
+    const vcResearchData = await this.loadFromVcResearch(entity.name);
+    if (vcResearchData) {
+      console.log(`   📁 Found cached research in vc_research table`);
+      return this.applyResearch(entity, vcResearchData);
+    }
     
-    // Cache-first: Check for existing research results
+    // STEP 2b: Check Supabase vc_contacts for cached research (legacy)
+    const supabaseResearch = await this.loadFromSupabase(entity.name);
+    if (supabaseResearch) {
+      console.log(`   📁 Found cached research in Supabase (vc_contacts)`);
+      return this.applyResearch(entity, supabaseResearch);
+    }
+    
+    // STEP 3: Check /tmp cache file (legacy)
     const cacheFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-result.json`;
     if (fs.existsSync(cacheFile)) {
-      console.log(`   📁 Found cached research results`);
+      console.log(`   📁 Found cached research results (file)`);
       const cached = JSON.parse(fs.readFileSync(cacheFile, 'utf8')) as { research?: VCSearchResult };
       if (cached.research) {
         console.log(`   ✅ Using cached research`);
         fs.unlinkSync(cacheFile);
+        // Persist to Supabase for future use
+        await this.saveToSupabase(entity.name, cached.research);
         return this.applyResearch(entity, cached.research);
       }
     }
     
-    // Option B: Direct API call if enabled
+    // STEP 4: Call Perplexity API for real research
     if (process.env.USE_DIRECT_API === 'true') {
       console.log(`   🌐 Direct API mode enabled - calling Perplexity...`);
       return await this.researchViaAPI(entity, cacheFile);
     }
     
-    // Option A: Write request file for sub-agent processing
-    const requestFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-request.json`;
-    const request = {
-      type: 'vc-research',
-      entityName: entity.name,
-      website: entity.website,
-      outputFile: cacheFile,
-      timestamp: new Date().toISOString(),
-      requiredTools: ['web_search', 'web_fetch'],
-      instructions: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ''}. Use web_search to find: investment thesis, portfolio companies, key partners, recent investments, pain points, governance signals. ALSO search for: contact form URL on their website, LinkedIn profiles of key partners (especially those focused on AI/governance). Return JSON with: thesis, portfolio, partners (include linkedInUrl per partner if found), recentInvestments, painPoints, governanceSignals, whyAlygn, contactFormUrl (URL of their /contact or /submit page), linkedInUrl (firm LinkedIn page). Save to ${cacheFile}`
+    // STEP 5: No cache, no API — SKIP personalization (do NOT use fallback)
+    console.log(`   ⚠️  No research data available and USE_DIRECT_API not enabled`);
+    console.log(`   ⏭️  Skipping personalization for ${entity.name} — set USE_DIRECT_API=true to enable deep research`);
+    
+    return {
+      success: false,
+      research: {
+        skipped: true,
+        reason: 'no_research_data_available',
+        needsDeepResearch: true
+      },
+      entity
     };
-    
-    fs.writeFileSync(requestFile, JSON.stringify(request, null, 2));
-    
-    console.log(`   ⏳ No cached research found`);
-    console.log(`   📝 Wrote request file: ${requestFile}`);
-    console.log(`   📤 To execute research:`);
-    console.log(`      Option A: Post to Discord #annotations: "Process VC research request: ${requestFile}"`);
-    console.log(`      Option B: Cronjob spawns sub-agent to process request file`);
-    console.log(`      Option C: Use direct API (Perplexity) - set USE_DIRECT_API=true`);
-    
-    // Return fallback data for now
-    return this.fallbackResearch(entity);
   }
 
   /**
@@ -257,34 +258,141 @@ export class VCResearchStrategy extends ResearchStrategy {
   }
 
   /**
-   * Fallback research when no cache exists
+   * Load research from Supabase vc_research table (dedicated research store)
    */
-  private fallbackResearch(entity: VCEntity): IResearchResult {
-    const research = {
-      thesis: `${entity.name} is a venture capital firm focused on technology investments.`,
-      portfolio: entity.typeData?.portfolioCompanies || [],
-      partners: entity.typeData?.partners || [],
-      recentInvestments: entity.typeData?.recentInvestments || [],
-      painPoints: ['AI governance', 'Coordination challenges', 'Risk management'],
-      governanceSignals: ['AI safety interest'],
-      whyAlygn: `${entity.name} would benefit from Alygn's governance infrastructure for AI coordination.`
-    };
-    
-    entity.researchNotes = research.thesis;
-    entity.personalizationContext = {
-      painPoints: research.painPoints,
-      tailoredHook: research.whyAlygn
-    };
-    
-    entity.updateStatus('researched');
-    
-    console.log(`   ⚠️  Using fallback research (post to Discord for full research)`);
-    
-    return {
-      success: true,
-      research,
-      entity
-    };
+  private async loadFromVcResearch(vcName: string): Promise<VCSearchResult | null> {
+    try {
+      const { getSupabaseClient } = await import('../../lib/external/supabase-client');
+      const supabase = getSupabaseClient();
+      
+      const { data, error } = await supabase
+        .from('vc_research')
+        .select('thesis, portfolio, partners, recent_investments, pain_points, governance_signals, why_alygn, contact_form_url, linkedin_url')
+        .ilike('vc_name', vcName)
+        .limit(1)
+        .maybeSingle();
+      
+      if (error || !data) return null;
+      
+      const result: VCSearchResult = {
+        thesis: data.thesis || undefined,
+        portfolio: Array.isArray(data.portfolio) ? data.portfolio as string[] : [],
+        partners: Array.isArray(data.partners) ? (data.partners as Array<{ name: string; title: string }>) : [],
+        recentInvestments: Array.isArray(data.recent_investments) ? (data.recent_investments as VCPortfolioCompany[]) : [],
+        painPoints: Array.isArray(data.pain_points) ? data.pain_points as string[] : [],
+        governanceSignals: Array.isArray(data.governance_signals) ? data.governance_signals as string[] : [],
+        whyAlygn: data.why_alygn || undefined,
+        contactFormUrl: data.contact_form_url || undefined,
+        linkedInUrl: data.linkedin_url || undefined
+      };
+      
+      console.log(`   ✅ Loaded from vc_research (thesis: ${data.thesis ? 'yes' : 'no'}, painPoints: ${result.painPoints?.length || 0})`);
+      return result;
+    } catch (err) {
+      console.warn(`   ⚠️  vc_research lookup failed: ${(err as Error).message}`);
+      return null;
+    }
+  }
+  
+  /**
+   * Load research from Supabase vc_contacts table (legacy)
+   */
+  private async loadFromSupabase(vcName: string): Promise<VCSearchResult | null> {
+    try {
+      const { getSupabaseClient } = await import('../../lib/external/supabase-client');
+      const supabase = getSupabaseClient();
+      
+      const { data, error } = await supabase
+        .from('vc_contacts')
+        .select('thesis, recent_investments, partners, pain_points, governance_signals, linkedin_url, investment_focus')
+        .ilike('firm', vcName)
+        .limit(1)
+        .maybeSingle();
+      
+      if (error || !data) return null;
+      
+      // Only return if we have meaningful research data (not just discovered status)
+      if (!data.thesis && (!data.pain_points || data.pain_points.length === 0)) {
+        return null;
+      }
+      
+      const result: VCSearchResult = {
+        thesis: data.thesis || undefined,
+        portfolio: Array.isArray(data.recent_investments) ? data.recent_investments as string[] : [],
+        partners: Array.isArray(data.partners) ? (data.partners as Array<{ name: string; title: string }>) : [],
+        recentInvestments: [],
+        painPoints: Array.isArray(data.pain_points) ? data.pain_points as string[] : [],
+        governanceSignals: Array.isArray(data.governance_signals) ? data.governance_signals as string[] : [],
+        whyAlygn: undefined,
+        linkedInUrl: data.linkedin_url || undefined
+      };
+      
+      console.log(`   ✅ Loaded research from Supabase (thesis: ${data.thesis ? 'yes' : 'no'}, painPoints: ${result.painPoints?.length || 0})`);
+      return result;
+    } catch (err) {
+      console.warn(`   ⚠️  Supabase lookup failed: ${(err as Error).message}`);
+      return null;
+    }
+  }
+  
+  /**
+   * Save research results to Supabase (vc_research + vc_contacts)
+   */
+  private async saveToSupabase(vcName: string, research: VCSearchResult): Promise<void> {
+    try {
+      const { getSupabaseClient } = await import('../../lib/external/supabase-client');
+      const supabase = getSupabaseClient();
+      
+      // Save to vc_research table (dedicated research store)
+      const researchData = {
+        vc_name: vcName,
+        thesis: research.thesis || null,
+        portfolio: research.portfolio || research.recentInvestments?.map(ri => ri.company) || [],
+        partners: research.partners || [],
+        recent_investments: research.recentInvestments || [],
+        pain_points: research.painPoints || [],
+        governance_signals: research.governanceSignals || [],
+        why_alygn: research.whyAlygn || null,
+        contact_form_url: (research as any).contactFormUrl || null,
+        linkedin_url: (research as any).linkedInUrl || null,
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error: researchError } = await supabase
+        .from('vc_research')
+        .upsert(researchData, { onConflict: 'vc_name' });
+      
+      if (researchError) {
+        console.warn(`   ⚠️  vc_research save failed: ${researchError.message}`);
+      } else {
+        console.log(`   💾 Research saved to vc_research table`);
+      }
+      
+      // Also update vc_contacts (legacy)
+      const updateData: Record<string, unknown> = {
+        thesis: research.thesis || null,
+        pain_points: research.painPoints || [],
+        governance_signals: research.governanceSignals || [],
+        recent_investments: research.portfolio || research.recentInvestments?.map(ri => ri.company) || [],
+        partners: research.partners || [],
+        linkedin_url: (research as any).linkedInUrl || null,
+        status: 'researched',
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error: contactsError } = await supabase
+        .from('vc_contacts')
+        .update(updateData)
+        .ilike('firm', vcName);
+      
+      if (contactsError) {
+        console.warn(`   ⚠️  vc_contacts save failed: ${contactsError.message}`);
+      } else {
+        console.log(`   💾 Research synced to vc_contacts`);
+      }
+    } catch (err) {
+      console.warn(`   ⚠️  Supabase save failed: ${(err as Error).message}`);
+    }
   }
 
   /**
@@ -326,8 +434,8 @@ export class VCResearchStrategy extends ResearchStrategy {
     };
   }
 
-  /**
-   * Research VC via Perplexity API (direct fallback)
+/**
+   * Research VC via Perplexity API (direct call) + save to Supabase
    */
   private async researchViaAPI(entity: VCEntity, cacheFile: string): Promise<IResearchResult> {
     try {
@@ -338,60 +446,98 @@ export class VCResearchStrategy extends ResearchStrategy {
       if (fs.existsSync(configPath)) {
         credentials = JSON.parse(fs.readFileSync(configPath, 'utf8'));
       } else {
-        // Legacy fallback to workspace credentials
         const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
         if (fs.existsSync(legacyPath)) {
           credentials = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
         }
       }
       
-      const apiKey = credentials?.perplexity?.apiKey || credentials?.openrouter?.apiKey;
-      
-      if (!apiKey) {
-        throw new Error('No API key found');
-      }
-      
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://alygn.org',
-          'X-Title': 'Alygn VC Research'
-        },
-        body: JSON.stringify({
-          model: 'perplexity/sonar-pro',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a VC research assistant. Return ONLY a JSON object with: thesis (1-2 sentences), portfolio (array of company names), partners (array of {name, title, linkedInUrl}), recentInvestments (array of {company, date, stage}), painPoints (array), governanceSignals (array), whyAlygn (string explaining fit), contactFormUrl (URL of their contact form if found), linkedInUrl (firm LinkedIn page URL if found).'
-            },
-            {
-              role: 'user',
-              content: `Research VC firm: ${entity.name} ${entity.website ? `(${entity.website})` : ''}. Focus on AI safety, governance, and alignment investments.`
-            }
-          ],
-          max_tokens: 4000
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-      
-      const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
-      const content = data.choices?.[0]?.message?.content || '{}';
+      // Try Perplexity API key first, then OpenRouter
+      const perplexityKey = credentials?.perplexity?.apiKey || process.env.PERPLEXITY_API_KEY;
+      const openrouterKey = credentials?.openrouter?.apiKey || process.env.OPENROUTER_API_KEY;
       
       let research: VCSearchResult;
-      try {
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        research = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
-      } catch {
-        throw new Error('Failed to parse API response');
+      
+      if (perplexityKey) {
+        // Direct Perplexity API call
+        console.log(`   🔍 Calling Perplexity API for ${entity.name}...`);
+        const response = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${perplexityKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'sonar-pro',
+            messages: [{
+              role: 'user',
+              content: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ''}. Find: investment thesis, 3-5 portfolio companies, 2-3 key partners with titles, recent investments, pain points related to AI governance, governance signals. Return JSON: {thesis, portfolio[], partners[{name,title,linkedInUrl}], recentInvestments[{company,date,stage}], painPoints[], governanceSignals[], whyAlygn, contactFormUrl, linkedInUrl}`
+            }]
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Perplexity API error: ${response.status}`);
+        }
+        
+        const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const content = data.choices?.[0]?.message?.content || '{}';
+        
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          research = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
+        } catch {
+          throw new Error('Failed to parse Perplexity response');
+        }
+      } else if (openrouterKey) {
+        // Fallback to OpenRouter
+        console.log(`   🔍 Calling OpenRouter API for ${entity.name}...`);
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openrouterKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://alygn.org',
+            'X-Title': 'Alygn VC Research'
+          },
+          body: JSON.stringify({
+            model: 'perplexity/sonar-pro',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a VC research assistant. Return ONLY a JSON object with: thesis (1-2 sentences), portfolio (array of company names), partners (array of {name, title, linkedInUrl}), recentInvestments (array of {company, date, stage}), painPoints (array), governanceSignals (array), whyAlygn (string explaining fit), contactFormUrl (URL of their contact form if found), linkedInUrl (firm LinkedIn page URL if found).'
+              },
+              {
+                role: 'user',
+                content: `Research VC firm: ${entity.name} ${entity.website ? `(${entity.website})` : ''}. Focus on AI safety, governance, and alignment investments.`
+              }
+            ],
+            max_tokens: 4000
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`OpenRouter API error: ${response.status}`);
+        }
+        
+        const data = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const content = data.choices?.[0]?.message?.content || '{}';
+        
+        try {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          research = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(content);
+        } catch {
+          throw new Error('Failed to parse OpenRouter response');
+        }
+      } else {
+        throw new Error('No API key found (PERPLEXITY_API_KEY or OPENROUTER_API_KEY)');
       }
       
-      // Save to cache for consistency
+      // Save to /tmp cache
       fs.writeFileSync(cacheFile, JSON.stringify({ research, timestamp: new Date().toISOString() }, null, 2));
+      
+      // Save to Supabase for persistence
+      await this.saveToSupabase(entity.name, research);
       
       console.log(`   ✅ API research complete`);
       return this.applyResearch(entity, research);
@@ -399,8 +545,17 @@ export class VCResearchStrategy extends ResearchStrategy {
     } catch (error) {
       const err = error as Error;
       console.error(`   ❌ API failed: ${err.message}`);
-      console.log(`   📤 Falling back to request file pattern`);
-      return this.fallbackResearch(entity);
+      console.log(`   ⏭️  Skipping personalization — no research data available`);
+      
+      return {
+        success: false,
+        research: {
+          skipped: true,
+          reason: `api_error: ${err.message}`,
+          needsDeepResearch: true
+        },
+        entity
+      };
     }
   }
 }
