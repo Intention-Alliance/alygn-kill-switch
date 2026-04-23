@@ -36,19 +36,19 @@ const CONFIG = {
  * Detect outreach type from file path and content
  * @param {string} filePath - Path to JSON file
  * @param {Object} data - Parsed JSON data
- * @returns {string} 'vc' | 'muni' | 'unknown'
+ * @returns {string} 'vc' | 'municipal' | 'unknown'
  */
 function detectOutreachType(filePath, data) {
   // Check file name pattern
   const fileName = path.basename(filePath).toLowerCase();
   if (fileName.startsWith('vc-')) return 'vc';
-  if (fileName.startsWith('muni-')) return 'muni';
+  if (fileName.startsWith('muni-') || fileName.startsWith('municipal-')) return 'municipal';
   
   // Check data structure
   if (data.vcs && Array.isArray(data.vcs)) return 'vc';
-  if (data.municipalities && Array.isArray(data.municipalities)) return 'muni';
+  if (data.municipalities && Array.isArray(data.municipalities)) return 'municipal';
   if (data.vc && data.vc.name) return 'vc';
-  if (data.name && data.mayor_email) return 'muni';
+  if (data.name && data.mayor_email) return 'municipal';
   
   return 'unknown';
 }
@@ -86,12 +86,12 @@ async function loadEmails(inputFile, limit = CONFIG.defaultLimit) {
       variant: vc.variant || 'governance',
       status: vc.status || 'pending',
     }));
-  } else if (type === 'muni') {
+  } else if (type === 'municipal') {
     // Muni structure: { municipalities: [...] }
     const municipalities = data.municipalities || [data];
     emails = municipalities.slice(0, limit).map(muni => ({
       id: muni.id || muni.pageId,
-      type: 'muni',
+      type: 'municipal',
       name: muni.name,
       email: muni.contacts?.mayor_email || muni.mayor_email || muni.email,
       subject: muni.outreach?.subject,
@@ -252,7 +252,7 @@ async function main() {
       const built = buildUnifiedEmail(email);
       
       // Issue #41: Language validation before send (municipal outreach)
-      if (email.type === 'muni') {
+      if (email.type === 'municipal') {
         const validation = validateLanguage(
           { subject: built.subject, body: built.html },
           'es' // Municipal emails should be in Spanish
