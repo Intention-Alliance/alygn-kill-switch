@@ -75,6 +75,10 @@ export interface IVCTypeData extends Record<string, unknown> {
   linkedInUrl?: string | null;
   crunchbaseUrl?: string | null;
   relevanceScore?: number | null;
+  // Contact fallback fields
+  contactFormUrl?: string | null;    // URL of the VC's contact form
+  outreachMethod?: 'email' | 'form' | 'linkedin' | 'manual';  // How outreach was conducted
+  outreachMethodReason?: string;     // Why this method was chosen (e.g., "No partner email found")
 }
 
 // VC partner
@@ -82,6 +86,7 @@ export interface IVCPartner {
   name: string;
   title: string;
   focus?: string[];
+  linkedInUrl?: string;
 }
 
 // Recent investment

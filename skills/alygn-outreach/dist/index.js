@@ -120136,6 +120136,247 @@ var init_EmailService = __esm(() => {
   EmailService_default = EmailService;
 });
 
+// src/strategies/sending/ContactFallbackStrategy.ts
+var exports_ContactFallbackStrategy = {};
+__export(exports_ContactFallbackStrategy, {
+  isGenericEmail: () => isGenericEmail,
+  handleContactFallback: () => handleContactFallback,
+  generatePlainTextMessage: () => generatePlainTextMessage,
+  generateManualInstructions: () => generateManualInstructions,
+  generateLinkedInNote: () => generateLinkedInNote,
+  generateLinkedInMessage: () => generateLinkedInMessage,
+  generateFormFillInstructions: () => generateFormFillInstructions,
+  determineOutreachMethod: () => determineOutreachMethod,
+  default: () => ContactFallbackStrategy_default
+});
+function determineOutreachMethod(entity) {
+  const email = entity.email?.toLowerCase() || "";
+  if (email && !isGenericEmail(email)) {
+    return { method: "email", reason: "Direct partner email available" };
+  }
+  if (email && isGenericEmail(email)) {
+    const vcEntity2 = entity;
+    const hasPartner = vcEntity2.typeData?.partners && vcEntity2.typeData.partners.length > 0;
+    const hasContactForm2 = vcEntity2.typeData?.contactFormUrl;
+    const hasLinkedIn2 = vcEntity2.typeData?.linkedInUrl || vcEntity2.typeData?.partners?.[0]?.linkedInUrl;
+    if (hasContactForm2) {
+      return { method: "form", reason: `Generic email (${email}) \u2014 contact form available at ${hasContactForm2}` };
+    }
+    if (hasLinkedIn2) {
+      return { method: "linkedin", reason: `Generic email (${email}) \u2014 LinkedIn profile available` };
+    }
+    if (hasPartner) {
+      return { method: "manual", reason: `Generic email (${email}) \u2014 need to find partner contact form or LinkedIn` };
+    }
+    return { method: "generic-email", reason: `Generic email (${email}) \u2014 no partner-specific contact found` };
+  }
+  const vcEntity = entity;
+  const hasContactForm = vcEntity.typeData?.contactFormUrl;
+  const hasLinkedIn = vcEntity.typeData?.linkedInUrl || vcEntity.typeData?.partners?.[0]?.linkedInUrl;
+  if (hasContactForm) {
+    return { method: "form", reason: "No email \u2014 contact form available" };
+  }
+  if (hasLinkedIn) {
+    return { method: "linkedin", reason: "No email \u2014 LinkedIn profile available" };
+  }
+  if (entity.website) {
+    return { method: "manual", reason: "No email \u2014 manual outreach needed (website available for form search)" };
+  }
+  return { method: "manual", reason: "No email, no website \u2014 full manual research needed" };
+}
+function isGenericEmail(email) {
+  const lower = email.toLowerCase();
+  return GENERIC_EMAIL_PREFIXES.some((prefix) => lower.startsWith(prefix));
+}
+function generatePlainTextMessage(entity) {
+  const context2 = entity.personalizationContext || {};
+  const vcEntity = entity;
+  const partner = vcEntity.typeData?.partners?.[0];
+  const firstName = partner?.name?.split(" ")[0] || "there";
+  const painPoints = context2.painPoints || ["AI governance", "coordination challenges"];
+  const hook = context2.tailoredHook || "Alygn provides governance infrastructure for AI coordination.";
+  return `Hi ${firstName},
+
+I'm reaching out from ALYGN, an independent AI governance institution. We focus on making accountability, oversight, and coordination workable for advanced AI systems at global scale.
+
+${hook}
+
+Key areas where we can help:
+${painPoints.map((p) => `- ${p}`).join(`
+`)}
+
+Would you be open to a brief conversation about how governance infrastructure can support ${entity.name}'s work in this space?
+
+Best,
+Tania Lea
+ALYGN - Independent AI Governance Institution
+https://alygn.org`;
+}
+function generateLinkedInNote(entity) {
+  const vcEntity = entity;
+  const sector = vcEntity.typeData?.sectorFocus?.[0] || "AI governance";
+  return `Hi, I'm with ALYGN (AI governance institution). Would love to discuss how governance infrastructure can support ${entity.name}'s ${sector} focus. Open to a brief call?`;
+}
+function generateLinkedInMessage(entity) {
+  const vcEntity = entity;
+  const partner = vcEntity.typeData?.partners?.[0];
+  const firstName = partner?.name?.split(" ")[0] || "there";
+  const sector = vcEntity.typeData?.sectorFocus?.[0] || "AI governance";
+  const painPoints = entity.personalizationContext?.painPoints || ["AI governance", "coordination challenges"];
+  return `Hi ${firstName},
+
+I'm reaching out from ALYGN, an independent AI governance institution. We focus on making accountability, oversight, and coordination workable for advanced AI systems at global scale.
+
+Given ${entity.name}'s focus on ${sector}, I believe there's a strong alignment with our work on:
+${painPoints.map((p) => `- ${p}`).join(`
+`)}
+
+Would you be open to a brief conversation about how governance infrastructure can support ${entity.name}'s portfolio companies?
+
+Best,
+Tania Lea
+ALYGN - Independent AI Governance Institution`;
+}
+function generateManualInstructions(entity) {
+  const vcEntity = entity;
+  const partner = vcEntity.typeData?.partners?.[0];
+  const partnerName = partner?.name || "Unknown";
+  const partnerTitle = partner?.title || "Partner";
+  const linkedInUrl = vcEntity.typeData?.linkedInUrl || "N/A";
+  const website = entity.website || "N/A";
+  const contactFormUrl = vcEntity.typeData?.contactFormUrl || `${website}/contact`;
+  const plainText = generatePlainTextMessage(entity);
+  const linkedInNote = generateLinkedInNote(entity);
+  return `\uD83D\uDCCB MANUAL OUTREACH NEEDED: ${entity.name}
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+
+\uD83C\uDFAF Target: ${partnerName}, ${partnerTitle}
+\uD83D\uDD17 LinkedIn: ${linkedInUrl}
+\uD83C\uDF10 Website: ${website}
+\uD83D\uDCDD Contact Form: ${contactFormUrl}
+
+\uD83D\uDCE7 Option A \u2014 Contact Form:
+1. Go to ${contactFormUrl}
+2. Name: Tania Lea
+3. Email: outreach@alyygn.com
+4. Subject: AI Governance Coordination
+5. Message: Copy the personalized text below
+
+\uD83D\uDCAC Option B \u2014 LinkedIn:
+1. Go to ${linkedInUrl}
+2. Click "Message" or "Connect"
+3. Connection note (300 chars): ${linkedInNote}
+4. Full message: See below
+
+\uD83D\uDCDD Personalized Content:
+${plainText}
+
+\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501
+After completing, update Notion:
+- Status \u2192 "Contacted"
+- Notes \u2192 "Contacted via [form/LinkedIn] on [date]"
+- Draft Status \u2192 "Sent"`;
+}
+function generateFormFillInstructions(entity) {
+  const vcEntity = entity;
+  const contactFormUrl = vcEntity.typeData?.contactFormUrl || (entity.website ? `${entity.website}/contact` : null);
+  if (!contactFormUrl) {
+    return null;
+  }
+  return {
+    url: contactFormUrl,
+    fields: {
+      name: "Tania Lea",
+      email: "outreach@alyygn.com",
+      company: "ALYGN - Independent AI Governance Institution",
+      subject: "AI Governance Coordination"
+    },
+    message: generatePlainTextMessage(entity)
+  };
+}
+async function handleContactFallback(entity) {
+  const { method, reason } = determineOutreachMethod(entity);
+  console.log(`   \uD83D\uDD04 Contact fallback for ${entity.name}: ${method} (${reason})`);
+  const vcEntity = entity;
+  if (vcEntity.typeData) {
+    vcEntity.typeData.outreachMethod = method;
+    vcEntity.typeData.outreachMethodReason = reason;
+  }
+  switch (method) {
+    case "email":
+      return {
+        method: "email",
+        success: true,
+        reason: "Direct partner email available \u2014 proceed with normal email sending",
+        entity
+      };
+    case "generic-email":
+      return {
+        method: "generic-email",
+        success: true,
+        reason: `Generic email (${entity.email}) \u2014 adding partner name to subject line`,
+        details: {
+          partnerName: vcEntity.typeData?.partners?.[0]?.name,
+          plainTextMessage: generatePlainTextMessage(entity)
+        },
+        entity
+      };
+    case "form":
+      const formInstructions = generateFormFillInstructions(entity);
+      return {
+        method: "form",
+        success: !!formInstructions,
+        reason: formInstructions ? "Contact form available \u2014 browser automation instructions generated" : "No contact form URL found",
+        details: formInstructions ? {
+          formUrl: formInstructions.url,
+          plainTextMessage: formInstructions.message
+        } : undefined,
+        entity
+      };
+    case "linkedin":
+      return {
+        method: "linkedin",
+        success: true,
+        reason: "LinkedIn profile available \u2014 message templates generated",
+        details: {
+          linkedInUrl: vcEntity.typeData?.linkedInUrl || undefined,
+          partnerName: vcEntity.typeData?.partners?.[0]?.name,
+          partnerTitle: vcEntity.typeData?.partners?.[0]?.title,
+          linkedInNote: generateLinkedInNote(entity),
+          linkedInMessage: generateLinkedInMessage(entity),
+          plainTextMessage: generatePlainTextMessage(entity)
+        },
+        entity
+      };
+    case "manual":
+      return {
+        method: "manual",
+        success: true,
+        reason: "No automated contact method available \u2014 manual outreach instructions generated",
+        details: {
+          partnerName: vcEntity.typeData?.partners?.[0]?.name,
+          partnerTitle: vcEntity.typeData?.partners?.[0]?.title,
+          linkedInUrl: vcEntity.typeData?.linkedInUrl || undefined,
+          plainTextMessage: generatePlainTextMessage(entity),
+          manualInstructions: generateManualInstructions(entity)
+        },
+        entity
+      };
+    default:
+      return {
+        method: "manual",
+        success: false,
+        reason: `Unknown outreach method: ${method}`,
+        entity
+      };
+  }
+}
+var GENERIC_EMAIL_PREFIXES, ContactFallbackStrategy_default;
+var init_ContactFallbackStrategy = __esm(() => {
+  GENERIC_EMAIL_PREFIXES = ["info@", "contact@", "hello@", "hello-", "inquiries@", "general@", "admin@", "support@", "team@", "press@"];
+  ContactFallbackStrategy_default = { handleContactFallback, determineOutreachMethod, isGenericEmail };
+});
+
 // src/lib/SentEmailTracker.ts
 var exports_SentEmailTracker = {};
 __export(exports_SentEmailTracker, {
@@ -120865,7 +121106,10 @@ class VCEntity extends OutreachEntity {
       recentInvestments: data.typeData?.recentInvestments || data.recentInvestments || [],
       linkedInUrl: data.typeData?.linkedInUrl ?? data.linkedInUrl ?? null,
       crunchbaseUrl: data.typeData?.crunchbaseUrl ?? data.crunchbaseUrl ?? null,
-      relevanceScore: data.typeData?.relevanceScore ?? data.relevanceScore ?? null
+      relevanceScore: data.typeData?.relevanceScore ?? data.relevanceScore ?? null,
+      contactFormUrl: data.typeData?.contactFormUrl ?? data.contactFormUrl ?? null,
+      outreachMethod: data.typeData?.outreachMethod ?? data.outreachMethod ?? undefined,
+      outreachMethodReason: data.typeData?.outreachMethodReason ?? data.outreachMethodReason ?? undefined
     };
   }
   getPrimaryPartner() {
@@ -120875,6 +121119,26 @@ class VCEntity extends OutreachEntity {
     const governanceKeywords = ["AI", "safety", "governance", "alignment", "ethics", "policy"];
     const governancePartner = this.typeData.partners.find((p) => governanceKeywords.some((kw) => (p.focus || p.title || "").toLowerCase().includes(kw.toLowerCase())));
     return governancePartner || this.typeData.partners[0];
+  }
+  getLinkedInUrl() {
+    const partner = this.getPrimaryPartner();
+    if (partner?.linkedInUrl)
+      return partner.linkedInUrl;
+    return this.typeData.linkedInUrl || null;
+  }
+  getContactFormUrl() {
+    if (this.typeData.contactFormUrl)
+      return this.typeData.contactFormUrl;
+    if (this.website)
+      return `${this.website}/contact`;
+    return null;
+  }
+  hasGenericEmail() {
+    if (!this.email)
+      return false;
+    const lower = this.email.toLowerCase();
+    const genericPrefixes = ["info@", "contact@", "hello@", "inquiries@", "general@", "admin@", "support@", "team@", "press@"];
+    return genericPrefixes.some((prefix) => lower.startsWith(prefix));
   }
   matchesCriteria(criteria) {
     if (criteria.stages && criteria.stages.length > 0) {
@@ -122054,7 +122318,7 @@ class VCDiscoveryStrategy extends DiscoveryStrategy {
         messages: [
           {
             role: "system",
-            content: 'You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string, default "vc"), stageFocus (array of strings), sectorFocus (array of strings), partners (array of objects with name and title).'
+            content: 'You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string, default "vc"), stageFocus (array of strings), sectorFocus (array of strings), partners (array of objects with name, title, and linkedInUrl), contactFormUrl (string, optional URL of their contact form), linkedInUrl (string, optional firm LinkedIn page).'
           },
           {
             role: "user",
@@ -123103,12 +123367,32 @@ class SendingStrategy {
         reason: "Not in explicit send list"
       };
     }
-    if (!entity.email) {
-      console.log(`   \u26A0\uFE0F  No email address for ${entity.name}`);
+    const { handleContactFallback: handleContactFallback2, isGenericEmail: isGenericEmail2 } = await Promise.resolve().then(() => (init_ContactFallbackStrategy(), exports_ContactFallbackStrategy));
+    const fallbackResult = await handleContactFallback2(entity);
+    if (fallbackResult.method !== "email" && fallbackResult.method !== "generic-email") {
+      console.log(`   \uD83D\uDD04 Fallback method: ${fallbackResult.method}`);
+      console.log(`   \uD83D\uDCDD Reason: ${fallbackResult.reason}`);
+      if (fallbackResult.details?.manualInstructions) {
+        console.log(`
+${fallbackResult.details.manualInstructions}
+`);
+      }
       return {
-        success: false,
-        error: "No email address"
+        success: true,
+        skipped: true,
+        reason: `FALLBACK: ${fallbackResult.method} \u2014 ${fallbackResult.reason}`,
+        fallbackMethod: fallbackResult.method,
+        fallbackDetails: fallbackResult.details
       };
+    }
+    if (fallbackResult.method === "generic-email" && fallbackResult.details?.partnerName) {
+      console.log(`   \uD83D\uDCE7 Generic email detected \u2014 adding partner name to subject`);
+      if (entity.personalizationContext) {
+        const currentSubject = entity.personalizationContext.customSubject || "";
+        if (!currentSubject.includes(fallbackResult.details.partnerName)) {
+          entity.personalizationContext.customSubject = `For ${fallbackResult.details.partnerName}: ${currentSubject}`;
+        }
+      }
     }
     const emailValidation = await this.validateEmail(entity.email, entity.name);
     if (!emailValidation.valid) {
@@ -123723,7 +124007,7 @@ class Pipeline {
     return this.loadState(files[0]);
   }
   async run(action, options = {}) {
-    const { dryRun = false, limit = 20, region = null, input = null } = options;
+    const { dryRun = false, limit = 20, region = null, input = null, deepResearch = false } = options;
     console.log(`
 \uD83D\uDE80 Running ${this.type.toUpperCase()} pipeline: ${action}`);
     console.log(`   Dry run: ${dryRun ? "YES" : "NO"}`);
@@ -123733,26 +124017,31 @@ class Pipeline {
     console.log("");
     switch (action) {
       case "discover":
-        return await this.runDiscover({ dryRun, limit, region });
+        return await this.runDiscover({ dryRun, limit, region, deepResearch });
       case "validate":
         return await this.runValidate({ dryRun, limit, input });
       case "research":
-        return await this.runResearch({ dryRun, limit, input });
+        return await this.runResearch({ dryRun, limit, input, deepResearch });
       case "personalize":
         return await this.runPersonalize({ dryRun, limit, input });
       case "send":
         return await this.runSend({ dryRun, limit, input, draftStatus: options.draftStatus, sendToList: options.sendToList });
       case "pipeline":
-        return await this.runFullPipeline({ dryRun, limit, region, input });
+        return await this.runFullPipeline({ dryRun, limit, region, input, deepResearch });
       default:
         throw new Error(`Unknown action: ${action}`);
     }
   }
   async runDiscover(options) {
-    const { dryRun, limit, region } = options;
+    const { dryRun, limit, region, deepResearch } = options;
     const strategy = this.registry.get(this.type, "discover");
     const query = this.type === "vc" ? "AI safety venture capital" : region === "costa-rica" ? "costa-rica-cantones" : "municipal government";
-    const discovered = await traceOperation("pipeline.discover", async () => strategy.discover(query, { dryRun, limit, region }), { entity_type: this.type, limit, dryRun: String(dryRun), region: region ?? "global" });
+    const discoverOpts = { dryRun, limit, region };
+    if (deepResearch) {
+      discoverOpts.deepResearch = true;
+      console.log(`   \uD83D\uDD2C Deep research enabled for discovery (Perplexity + Firecrawl + web search)`);
+    }
+    const discovered = await traceOperation("pipeline.discover", async () => strategy.discover(query, discoverOpts), { entity_type: this.type, limit, dryRun: String(dryRun), region: region ?? "global", deepResearch: String(!!deepResearch) });
     this.entities = discovered;
     const stateFile = this.saveState("discovered", {
       count: discovered.length,
@@ -123844,7 +124133,7 @@ class Pipeline {
     };
   }
   async runResearch(options) {
-    const { dryRun, limit, input } = options;
+    const { dryRun, limit, input, deepResearch } = options;
     let entities = this.entities;
     if (input) {
       const state = this.loadState(input);
@@ -123858,14 +124147,19 @@ class Pipeline {
     entities = entities.slice(0, limit);
     const strategy = this.registry.get(this.type, "research");
     const results = [];
+    const researchOpts = {};
+    if (deepResearch) {
+      researchOpts.deepResearch = true;
+      console.log(`   \uD83D\uDD2C Deep research enabled (Perplexity + Firecrawl + web search)`);
+    }
     for (let i = 0;i < entities.length; i++) {
       const entity = entities[i];
       const wrapped = await traceOperation("pipeline.research", async () => {
         if (dryRun && strategy.researchDryRun) {
-          return strategy.researchDryRun(entity);
+          return strategy.researchDryRun(entity, researchOpts);
         }
-        return strategy.research(entity);
-      }, { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun) });
+        return strategy.research(entity, researchOpts);
+      }, { entity_name: entity.name, entity_type: this.type, dryRun: String(dryRun), deepResearch: String(!!deepResearch) });
       results.push(wrapped);
       if (wrapped.entity) {
         entities[i] = wrapped.entity;
@@ -124038,7 +124332,7 @@ class Pipeline {
     };
   }
   async runFullPipeline(options) {
-    const { dryRun, limit, region, input } = options;
+    const { dryRun, limit, region, input, deepResearch } = options;
     const useDirectApi = process.env.USE_DIRECT_API === "true";
     const isModeB = dryRun && useDirectApi;
     console.log(`
@@ -124064,13 +124358,13 @@ class Pipeline {
       console.log(`   \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D
 `);
     }
-    const discoverResult = await this.runDiscover({ dryRun, limit, region });
+    const discoverResult = await this.runDiscover({ dryRun, limit, region, deepResearch });
     results.stages.discover = discoverResult;
     results.summary.discovered = discoverResult.discovered || 0;
     const validateResult = await this.runValidate({ dryRun, limit });
     results.stages.validate = validateResult;
     results.summary.validated = validateResult.validated || 0;
-    const researchResult = await this.runResearch({ dryRun, limit });
+    const researchResult = await this.runResearch({ dryRun, limit, deepResearch });
     results.stages.research = researchResult;
     results.summary.researched = researchResult.researched || 0;
     const personalizeResult = await this.runPersonalize({ dryRun, limit });

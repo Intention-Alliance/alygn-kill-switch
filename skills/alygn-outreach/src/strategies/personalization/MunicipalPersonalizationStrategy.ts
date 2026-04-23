@@ -31,9 +31,10 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
     
     const municipalEntity = entity as MunicipalEntity;
     const contact = municipalEntity.getPrimaryContact();
-    // Use contact name or default to appropriate Spanish honorific
-    const recipientName = contact?.name || 'Tania';
+    // Use contact name or default to appropriate Spanish honorific based on municipality name
     const companyName = entity.name.replace('Municipalidad de ', '');
+    const recipientName = contact?.name || `Alcalde/sa de ${companyName}`;
+    const recipientTitle = contact?.title || 'Edil';
     
     // Get pain points from personalization context or typeData (Supabase: municipalities.pain_points)
     const painPoints = (municipalEntity.personalizationContext?.painPoints as string[]) || 
@@ -103,8 +104,12 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
    * Generate value proposition
    */
   private generateValueProposition(entity: MunicipalEntity): string {
-    const population = (entity.typeData?.population as number) || 50000;
-    const province = (entity.typeData?.province as string) || 'su provincia';
+    const population = entity.typeData?.population as number | undefined;
+    const province = entity.typeData?.province as string | undefined;
+    
+    if (!population || !province) {
+      throw new Error(`Missing research data for ${entity.name}: population=${population}, province=${province}. Run research phase first.`);
+    }
     
     return `Alygn apoya a municipios como el suyo (${population.toLocaleString()} habitantes) en ${province} con la implementación práctica de gobernanza de IA.`;
   }
@@ -130,7 +135,13 @@ export class MunicipalPersonalizationStrategy extends PersonalizationStrategy {
       customSubject: subject,
       customBody: mockEmail.html,
       tailoredHook: 'gobernanza de IA',
-      valueProposition: this.generateValueProposition(municipalEntity)
+      valueProposition: (() => {
+        try {
+          return this.generateValueProposition(municipalEntity);
+        } catch {
+          return `[Value proposition would be generated with research data for ${companyName}]`;
+        }
+      })()
     };
     
     municipalEntity.updateStatus('personalized');

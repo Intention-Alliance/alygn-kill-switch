@@ -294,7 +294,7 @@ export class VCDiscoveryStrategy extends DiscoveryStrategy {
         messages: [
           {
             role: 'system',
-            content: 'You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string, default "vc"), stageFocus (array of strings), sectorFocus (array of strings), partners (array of objects with name and title).'
+            content: 'You are a VC research assistant. Return ONLY a JSON array of VC firms. Each item must have: name (string), website (string, optional), email (string, optional), firmType (string, default "vc"), stageFocus (array of strings), sectorFocus (array of strings), partners (array of objects with name, title, and linkedInUrl), contactFormUrl (string, optional URL of their contact form), linkedInUrl (string, optional firm LinkedIn page).'
           },
           {
             role: 'user',

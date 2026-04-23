@@ -629,6 +629,184 @@ const result = await pipeline.run('validate', {
 }
 ```
 
+## CRITICAL: Contact Fallback Strategy (No Direct Email Available)
+
+### The Problem
+
+Some VC firms have no publicly discoverable partner emails. Generic addresses like `info@firm.com` or `contact@firm.com` don't reach decision-makers directly, and 3rd-party email lookup services (Hunter, Apollo, ZoomInfo) require paid subscriptions we don't currently have.
+
+### The Fallback Chain
+
+When no direct partner email is found, the pipeline follows this priority chain:
+
+```
+1. DIRECT EMAIL     → Partner's personal/work email (ideal)
+2. GENERIC EMAIL     → info@ / contact@ with partner name in subject (acceptable)
+3. CONTACT FORM      → Browser automation fills website form (fallback)
+4. LINKEDIN MESSAGE  → Direct message to target partner (fallback)
+5. MANUAL OUTREACH   → Step-by-step instructions for human (last resort)
+```
+
+### Stage 3: Contact Form Fill (Browser Automation)
+
+**When:** VC website has a contact/inquiry form and browser automation is available.
+
+**Process:**
+1. Navigate to VC website's contact page (from `entity.website`)
+2. Use `browser` tool with `profile="openclaw"` to fill the form
+3. Fields to populate:
+   - **Name:** Tania Lea (or configured sender)
+   - **Email:** outreach@alyygn.com (or alyyygn@gmail.com for staging)
+   - **Company:** ALYGN - Independent AI Governance Institution
+   - **Subject/Topic:** "AI Governance Coordination" or "Investment Inquiry"
+   - **Message:** Use the same personalized content from `generateEmailHTML()` but formatted as plain text (strip HTML tags)
+4. Submit the form
+5. Log the submission in Notion:
+   - Set `Status` = "Contacted"
+   - Set `Notes` = "Contacted via website form on [date]. Form URL: [url]"
+   - Set `Draft Status` = "Sent"
+
+**Browser automation example:**
+```bash
+# Navigate to contact page
+browser --profile=openclaw --action=navigate --url="https://firm.com/contact"
+
+# Snapshot to find form fields
+browser --profile=openclaw --action=snapshot
+
+# Fill form fields
+browser --profile=openclaw --action=act --kind=fill --ref="name-field" --text="Tania Lea"
+browser --profile=openclaw --action=act --kind=fill --ref="email-field" --text="outreach@alyygn.com"
+browser --profile=openclaw --action=act --kind=fill --ref="message-field" --text="[personalized plain text message]"
+
+# Submit
+browser --profile=openclaw --action=act --kind=click --ref="submit-button"
+```
+
+**Important notes:**
+- Some forms have CAPTCHA — browser automation cannot solve these. Fall through to Stage 4 or 5.
+- Some forms have dropdowns ("What is your inquiry about?") — select "Investment" or "Partnership" or closest match.
+- Always snapshot before filling to identify exact field names/refs.
+- If form submission fails, log the error and fall through to Stage 4.
+
+### Stage 4: LinkedIn Direct Message
+
+**When:** Browser automation unavailable, form has CAPTCHA, or form submission failed.
+
+**Target identification:**
+1. Use `entity.typeData.partners` to identify the best contact (see `getPrimaryPartner()` on VCEntity)
+2. Search LinkedIn by name + firm: `web_search("{partner_name} {firm_name} LinkedIn")`
+3. Use `entity.typeData.linkedInUrl` if already available
+
+**Message template (LinkedIn DM):**
+```
+Hi {firstName},
+
+I'm reaching out from ALYGN, an independent AI governance institution. 
+We focus on making accountability, oversight, and coordination workable 
+for advanced AI systems at global scale.
+
+{tailoredHook - why this firm is relevant}
+
+Would you be open to a brief conversation about how governance 
+infrastructure can support {firmName}'s work in this space?
+
+Best,
+Tania Lea
+ALYGN - Independent AI Governance Institution
+```
+
+**LinkedIn outreach steps (manual or browser-assisted):**
+1. Navigate to partner's LinkedIn profile
+2. Click "Message" or "Connect" (with note)
+3. If connecting: Use a shorter note (300 char limit):
+   `Hi {firstName}, I'm with ALYGN (AI governance institution). Would love to discuss how governance infrastructure can support {firmName}'s AI safety focus. Open to a brief call?`
+4. If messaging: Use the full template above
+5. Log in Notion:
+   - Set `Status` = "Contacted"
+   - Set `Notes` = "Contacted via LinkedIn DM to {partner_name} on [date]"
+   - Set `Draft Status` = "Sent"
+
+### Stage 5: Manual Outreach Instructions
+
+**When:** All automation fails (CAPTCHA, LinkedIn login required, browser unavailable).
+
+**Output format for human (post to Discord #annotations):**
+
+```
+📋 MANUAL OUTREACH NEEDED: {firm_name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 Target: {partner_name}, {partner_title}
+🔗 LinkedIn: {linkedin_url}
+🌐 Website: {website_url}
+📝 Contact Form: {website_url}/contact
+
+📧 Option A — Contact Form:
+1. Go to {website_url}/contact
+2. Name: Tania Lea
+3. Email: outreach@alyygn.com
+4. Subject: AI Governance Coordination
+5. Message: [copy personalized plain text below]
+
+💬 Option B — LinkedIn:
+1. Go to {linkedin_url}
+2. Click "Message" or "Connect"
+3. Use this message: [copy LinkedIn template above]
+
+📝 Personalized Content:
+{plain_text_message_from_template}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+After completing, update Notion:
+- Status → "Contacted"
+- Notes → "Contacted via [form/LinkedIn] on [date]"
+- Draft Status → "Sent"
+```
+
+### Notion Tracking for Fallback Contacts
+
+When outreach happens via contact form or LinkedIn (not email), track it differently:
+
+| Field | Email | Contact Form | LinkedIn | Manual |
+|-------|-------|-------------|----------|--------|
+| `Status` | Sent | Contacted | Contacted | Not contacted |
+| `Draft Status` | Sent | Sent | Sent | Not drafted |
+| `Notes` | Email sent | "Form submitted [date]" | "LinkedIn DM [date]" | "Manual outreach needed" |
+| `Email` | partner@firm.com | info@firm.com | N/A | N/A |
+
+### VCEntity Extensions for Fallback
+
+The `IVCTypeData` interface already supports:
+- `linkedInUrl` — For LinkedIn outreach target
+- `partners[]` — With `name`, `title`, `focus` for identifying the right contact
+
+**New fields to add to `IVCTypeData`:**
+```typescript
+interface IVCTypeData {
+  // ... existing fields ...
+  contactFormUrl?: string | null;    // URL of the VC's contact form
+  outreachMethod?: 'email' | 'form' | 'linkedin' | 'manual';  // How outreach was conducted
+  outreachMethodReason?: string;     // Why this method was chosen (e.g., "No partner email found")
+}
+```
+
+### Pipeline Integration
+
+The `SendingStrategy.send()` method should be updated to:
+1. If `entity.email` exists and is a direct partner email → send email (current behavior)
+2. If `entity.email` is generic (`info@`, `contact@`, `hello@`) → check for contact form or LinkedIn
+3. If `entity.email` is null → trigger fallback chain starting at Stage 3
+4. Log the outreach method in `entity.typeData.outreachMethod`
+
+The `VCResearchStrategy.research()` method should be updated to:
+1. During research, check if the discovered email is generic
+2. If generic, also search for: contact form URL, LinkedIn profiles of partners
+3. Store `contactFormUrl` and partner `linkedInUrl` in entity typeData
+4. Set `outreachMethodReason` = "Generic email only - partner email not publicly available"
+
+---
+
 ## CRITICAL: Draft-to-Send Connection (Two-Filter System)
 
 ### The Problem This Solves

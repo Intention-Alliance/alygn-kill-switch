@@ -71,10 +71,18 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
     if (!entity.typeData.budget) {
       entity.typeData.budget = canton.budget;
     }
+    if (!entity.typeData.province) {
+      entity.typeData.province = canton.province;
+    }
     entity.typeData.initiatives = research.initiatives;
     entity.typeData.painPoints = research.painPoints;
     entity.typeData.keyContacts = research.keyContacts;
     entity.typeData.trAigaRelevant = true;
+    
+    // Quality gate: verify essential research data before marking as researched
+    if (!entity.typeData.population || !entity.typeData.province) {
+      throw new Error(`Research incomplete for ${entity.name}: population=${entity.typeData.population}, province=${entity.typeData.province}`);
+    }
     
     entity.updateStatus('researched');
     
@@ -133,7 +141,7 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
       // P1: Use SPANISH_PAIN_POINTS constant for consistency
       painPoints: [...SPANISH_PAIN_POINTS],
       trAigaRelevant: true,
-      keyContacts: [{ name: 'Gerente Municipal', title: 'Gerente Municipal', isDecisionMaker: true }]
+      keyContacts: [] // No fake data in dry-run either
     };
     
     entity.researchNotes = 'Research notes would be generated here.';
@@ -155,24 +163,11 @@ export class MunicipalResearchStrategy extends ResearchStrategy {
 
   /**
    * Generate key contacts
+   * TODO: Browser relay to extract actual alcalde/síndico from municipal website
    */
   private generateKeyContacts(municipalityName: string): Array<{ name: string; title: string; department: string; isDecisionMaker: boolean; focusAreas: string[] }> {
-    return [
-      {
-        name: 'Gerente Municipal',
-        title: 'Gerente Municipal',
-        department: 'Ejecutivo',
-        isDecisionMaker: true,
-        focusAreas: ['Transformación digital', 'Entrega de servicios']
-      },
-      {
-        name: 'Director de Tecnología',
-        title: 'Director de Tecnología',
-        department: 'Tecnología',
-        isDecisionMaker: false,
-        focusAreas: ['Sistemas', 'Gobernanza de datos']
-      }
-    ];
+    // No fake data — return empty array until browser relay extraction is implemented
+    return [];
   }
 }
 

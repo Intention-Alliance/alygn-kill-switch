@@ -30,7 +30,11 @@ export class VCEntity extends OutreachEntity {
       recentInvestments: data.typeData?.recentInvestments || data.recentInvestments || [],
       linkedInUrl: data.typeData?.linkedInUrl ?? data.linkedInUrl ?? null,
       crunchbaseUrl: data.typeData?.crunchbaseUrl ?? data.crunchbaseUrl ?? null,
-      relevanceScore: data.typeData?.relevanceScore ?? data.relevanceScore ?? null
+      relevanceScore: data.typeData?.relevanceScore ?? data.relevanceScore ?? null,
+      // Contact fallback fields
+      contactFormUrl: data.typeData?.contactFormUrl ?? data.contactFormUrl ?? null,
+      outreachMethod: data.typeData?.outreachMethod ?? data.outreachMethod ?? undefined,
+      outreachMethodReason: data.typeData?.outreachMethodReason ?? data.outreachMethodReason ?? undefined
     };
   }
   
@@ -51,6 +55,34 @@ export class VCEntity extends OutreachEntity {
     );
     
     return governancePartner || this.typeData.partners[0];
+  }
+  
+  /**
+   * Get best LinkedIn URL for outreach (partner preferred, firm fallback)
+   */
+  getLinkedInUrl(): string | null {
+    const partner = this.getPrimaryPartner();
+    if (partner?.linkedInUrl) return partner.linkedInUrl;
+    return this.typeData.linkedInUrl || null;
+  }
+  
+  /**
+   * Get contact form URL (explicit or inferred from website)
+   */
+  getContactFormUrl(): string | null {
+    if (this.typeData.contactFormUrl) return this.typeData.contactFormUrl;
+    if (this.website) return `${this.website}/contact`;
+    return null;
+  }
+  
+  /**
+   * Check if email is generic (info@, contact@, etc.)
+   */
+  hasGenericEmail(): boolean {
+    if (!this.email) return false;
+    const lower = this.email.toLowerCase();
+    const genericPrefixes = ['info@', 'contact@', 'hello@', 'inquiries@', 'general@', 'admin@', 'support@', 'team@', 'press@'];
+    return genericPrefixes.some(prefix => lower.startsWith(prefix));
   }
   
   /**

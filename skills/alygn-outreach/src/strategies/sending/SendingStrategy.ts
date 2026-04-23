@@ -16,6 +16,9 @@ interface SendingResult {
   wouldSend?: boolean;
   previouslySentAt?: string;
   provider?: string;
+  // Contact fallback fields
+  fallbackMethod?: 'email' | 'generic-email' | 'form' | 'linkedin' | 'manual';
+  fallbackDetails?: Record<string, unknown>;
 }
 
 interface EmailPayload {
@@ -141,13 +144,42 @@ export class SendingStrategy {
       };
     }
 
-    if (!entity.email) {
-      console.log(`   ⚠️  No email address for ${entity.name}`);
+    // CONTACT FALLBACK CHAIN
+    // When no direct email or only generic email, trigger fallback:
+    // email → generic-email → form → linkedin → manual
+    const { handleContactFallback, isGenericEmail } = await import('./ContactFallbackStrategy');
+    const fallbackResult = await handleContactFallback(entity);
+
+    if (fallbackResult.method !== 'email' && fallbackResult.method !== 'generic-email') {
+      // Non-email outreach (form, linkedin, manual) — return result for agent/human processing
+      console.log(`   🔄 Fallback method: ${fallbackResult.method}`);
+      console.log(`   📝 Reason: ${fallbackResult.reason}`);
+
+      if (fallbackResult.details?.manualInstructions) {
+        console.log(`\n${fallbackResult.details.manualInstructions}\n`);
+      }
+
       return {
-        success: false,
-        error: 'No email address'
+        success: true, // Successfully determined fallback method
+        skipped: true,  // But email was NOT sent — needs alternate action
+        reason: `FALLBACK: ${fallbackResult.method} — ${fallbackResult.reason}`,
+        fallbackMethod: fallbackResult.method,
+        fallbackDetails: fallbackResult.details
       };
     }
+
+    // For generic emails, modify subject to include partner name
+    if (fallbackResult.method === 'generic-email' && fallbackResult.details?.partnerName) {
+      console.log(`   📧 Generic email detected — adding partner name to subject`);
+      if (entity.personalizationContext) {
+        const currentSubject = entity.personalizationContext.customSubject as string || '';
+        if (!currentSubject.includes(fallbackResult.details.partnerName)) {
+          entity.personalizationContext.customSubject = `For ${fallbackResult.details.partnerName}: ${currentSubject}`;
+        }
+      }
+    }
+
+    // For direct email, proceed with normal sending flow below
 
     // P0: Validate email format and domain before sending
     const emailValidation = await this.validateEmail(entity.email, entity.name);
