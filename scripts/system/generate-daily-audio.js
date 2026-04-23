@@ -10,13 +10,19 @@
  * - Multi-org summary
  */
 
-import fs from "fs".promises;
+import fs from "fs/promises";
 import path from "path";
 import { execSync } from "child_process";
 
 const WORKSPACE = process.env.HOME + '/.openclaw/workspace';
 const REPORTS_DIR = path.join(WORKSPACE, 'daily-reports');
 const AUDIO_DIR = path.join(REPORTS_DIR, 'audio');
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const LOCAL_TTS = path.join(__dirname, 'local-tts.sh');
 
 const today = new Date().toISOString().split('T')[0];

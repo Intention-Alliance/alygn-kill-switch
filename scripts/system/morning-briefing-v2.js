@@ -34,15 +34,17 @@ function getYesterday() {
 
 function getDayName(dateStr) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const date = new Date(dateStr);
+  // Parse date string and create date at noon Costa Rica time to avoid timezone rollover
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day, 12, 0, 0);
   return days[date.getDay()];
 }
 
 function formatDateSpoken(dateStr) {
-  const date = new Date(dateStr);
+  const [year, month, day] = dateStr.split('-').map(Number);
   const months = ["January", "February", "March", "April", "May", "June",
                   "July", "August", "September", "October", "November", "December"];
-  return `${months[date.getMonth()]} ${date.getDate()}`;
+  return `${months[month - 1]} ${day}`;
 }
 
 /**
