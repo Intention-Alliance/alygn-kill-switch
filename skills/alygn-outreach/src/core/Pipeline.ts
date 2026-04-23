@@ -134,17 +134,97 @@ export class Pipeline {
   }
   
   /**
-   * Save state to file
+   * Get wave-state.json path for this pipeline type
+   */
+  getWaveStatePath(): string {
+    const subFolder = this.type === 'vc' ? 'vc-waves' : 'muni-waves';
+    return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${subFolder}/wave-state.json`;
+  }
+
+  /**
+   * Save state to file and update wave-state.json
    */
   saveState(phase: string, data: Record<string, unknown>): string {
     const filePath = this.getStateFilePath(phase);
-    fs.writeFileSync(filePath, JSON.stringify({
+    const stateContent = {
       timestamp: new Date().toISOString(),
       type: this.type,
       phase,
       data
-    }, null, 2));
+    };
+    fs.writeFileSync(filePath, JSON.stringify(stateContent, null, 2));
+
+    // Also update wave-state.json with entity data (preserves typeData across phases)
+    this.updateWaveState(data);
+
     return filePath;
+  }
+
+  /**
+   * Update wave-state.json with current entity data
+   * This ensures typeData and other in-memory changes are persisted
+   * to the canonical state file used by sending and other stages.
+   */
+  updateWaveState(data: Record<string, unknown>): void {
+    const waveStatePath = this.getWaveStatePath();
+    const entities = data.entities as Array<Record<string, unknown>> | undefined;
+    if (!entities || entities.length === 0) return;
+
+    // Serialize entities properly (handles class instances with toJSON)
+    const serializedEntities = entities.map(e => {
+      if (typeof (e as any).toJSON === 'function') {
+        return (e as any).toJSON();
+      }
+      return e;
+    });
+
+    try {
+      let waveState: Record<string, unknown>;
+
+      if (fs.existsSync(waveStatePath)) {
+        // Merge: update existing entities by ID, add new ones
+        const existing = JSON.parse(fs.readFileSync(waveStatePath, 'utf8'));
+        const existingEntities = ((existing as Record<string, unknown>).data as Record<string, unknown>)?.entities as Array<Record<string, unknown>> || [];
+
+        // Build lookup by ID
+        const entityMap = new Map<string, Record<string, unknown>>();
+        for (const e of existingEntities) {
+          if (e.id) entityMap.set(e.id as string, e);
+        }
+
+        // Update with new data (preserves typeData from research)
+        for (const e of serializedEntities) {
+          if (e.id) entityMap.set(e.id as string, e);
+        }
+
+        waveState = {
+          ...existing,
+          timestamp: new Date().toISOString(),
+          phase: (data as Record<string, unknown>).phase || (existing as Record<string, unknown>).phase,
+          data: {
+            ...((existing as Record<string, unknown>).data as Record<string, unknown>),
+            entities: Array.from(entityMap.values())
+          }
+        };
+      } else {
+        // Create new wave-state.json
+        const dir = path.dirname(waveStatePath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+        waveState = {
+          timestamp: new Date().toISOString(),
+          type: this.type,
+          phase: 'discovered',
+          data: { entities: serializedEntities }
+        };
+      }
+
+      fs.writeFileSync(waveStatePath, JSON.stringify(waveState, null, 2));
+      console.log(`   💾 Updated wave-state.json (${serializedEntities.length} entities)`);
+    } catch (error) {
+      console.warn(`   ⚠️  Failed to update wave-state.json: ${(error as Error).message}`);
+    }
   }
   
   /**

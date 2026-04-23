@@ -371,8 +371,17 @@ export class SendingStrategy {
       const result = await this.emailService?.sendEmail(payload) || { success: false, error: 'Email service not initialized' };
 
       if (result.success) {
+        // Bug 4.1 fix: Record sentAt immediately on successful send
+        entity.sentAt = new Date();
         entity.status = 'sent';
+        entity.lastUpdatedAt = new Date();
         console.log(`   ✅ Email sent (ID: ${result.messageId})`);
+
+        // Persist sentAt to wave-state.json
+        await this.persistSentStatus(entity);
+
+        // Bug 4.2 fix: IMAP verification after send
+        await this.verifySentViaIMAP(entity.email, subject);
       } else {
         console.log(`   ❌ Send failed: ${result.error}`);
       }
@@ -833,6 +842,176 @@ export class SendingStrategy {
     } catch (err) {
       console.error(`   ❌ Template regeneration failed: ${(err as Error).message}`);
       return null;
+    }
+  }
+
+  /**
+   * Persist sent status to wave-state.json and Supabase
+   * Bug 4.1 fix: Ensure sentAt is recorded immediately after send
+   */
+  private async persistSentStatus(entity: OutreachEntity): Promise<void> {
+    try {
+      // 1. Update wave-state.json
+      const waveStatePath = path.join(
+        process.env.HOME || '',
+        '.openclaw/workspace/reports/alygn',
+        entity.type === 'vc' ? 'vc-waves' : 'muni-waves',
+        'wave-state.json'
+      );
+
+      if (fs.existsSync(waveStatePath)) {
+        const state = JSON.parse(fs.readFileSync(waveStatePath, 'utf8'));
+
+        if (state.data?.entities) {
+          const entityIndex = state.data.entities.findIndex((e: any) => e.id === entity.id);
+          if (entityIndex !== -1) {
+            // Update entity with sent data
+            state.data.entities[entityIndex] = {
+              ...state.data.entities[entityIndex],
+              status: 'sent',
+              sentAt: entity.sentAt?.toISOString() || new Date().toISOString(),
+              lastUpdatedAt: new Date().toISOString()
+            };
+            state.lastUpdatedAt = new Date().toISOString();
+            fs.writeFileSync(waveStatePath, JSON.stringify(state, null, 2));
+            console.log(`   💾 Updated wave-state.json: ${entity.name} marked as sent`);
+          }
+        }
+      }
+
+      // 2. Sync to Supabase outreach_emails table
+      if (entity.type === 'municipal') {
+        await this.syncSentToSupabase(entity);
+      }
+    } catch (err) {
+      console.warn(`   ⚠️  Failed to persist sent status: ${(err as Error).message}`);
+      // Non-blocking: email was sent, persistence failure is not critical
+    }
+  }
+
+  /**
+   * Sync sent status to Supabase outreach_emails table
+   */
+  private async syncSentToSupabase(entity: OutreachEntity): Promise<void> {
+    try {
+      const credentials = this.loadCredentials();
+      if (!credentials?.supabase?.url || !credentials?.supabase?.key) return;
+
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(credentials.supabase.url, credentials.supabase.key);
+
+      const sentAtISO = entity.sentAt?.toISOString() || new Date().toISOString();
+
+      // Update municipalities table
+      const { error: updateError } = await supabase
+        .from('municipalities')
+        .update({ outreach_sent_at: sentAtISO })
+        .eq('mayor_email', entity.email);
+
+      if (updateError) {
+        console.warn(`   ⚠️  Supabase municipalities update failed: ${updateError.message}`);
+      } else {
+        console.log(`   ✅ Synced sent status to Supabase municipalities`);
+      }
+
+      // Insert outreach_emails record
+      const { error: insertError } = await supabase
+        .from('outreach_emails')
+        .upsert({
+          recipient_email: entity.email,
+          recipient_name: entity.name,
+          status: 'sent',
+          sent_at: sentAtISO,
+          subject: entity.personalizationContext?.customSubject as string || 'Outreach from Alygn',
+          variant: 'traiga-municipal',
+          created_at: new Date().toISOString()
+        }, { onConflict: 'recipient_email' });
+
+      if (insertError) {
+        console.warn(`   ⚠️  Supabase outreach_emails insert failed: ${insertError.message}`);
+      } else {
+        console.log(`   ✅ Synced sent status to Supabase outreach_emails`);
+      }
+    } catch (err) {
+      console.warn(`   ⚠️  Supabase sync failed: ${(err as Error).message}`);
+    }
+  }
+
+  /**
+   * Verify email delivery via IMAP Sent folder
+   * Bug 4.2 fix: Post-send IMAP verification
+   */
+  private async verifySentViaIMAP(email: string, subject: string): Promise<boolean> {
+    try {
+      const credentials = this.loadCredentials();
+      if (!credentials?.email?.imap) {
+        console.log(`   ℹ️  IMAP verification skipped: no IMAP config`);
+        return false;
+      }
+
+      const imap = credentials.email.imap as Record<string, unknown>;
+      const Imap = await import('imap');
+
+      return new Promise((resolve) => {
+        const imapClient = new Imap.default({
+          user: credentials.email.address as string,
+          password: imap.password as string,
+          host: imap.host as string,
+          port: imap.port as number || 993,
+          tls: true,
+          tlsOptions: { rejectUnauthorized: false }
+        });
+
+        imapClient.once('ready', () => {
+          imapClient.openBox('Sent', false, (err: Error | null, box: any) => {
+            if (err) {
+              console.warn(`   ⚠️  IMAP Sent folder open failed: ${err.message}`);
+              imapClient.end();
+              resolve(false);
+              return;
+            }
+
+            // Search for the sent email by subject
+            imapClient.search([
+              ['TO', email],
+              ['SUBJECT', subject],
+              ['SINCE', new Date(Date.now() - 86400000)] // Last 24h
+            ], (searchErr: Error | null, results: number[]) => {
+              if (searchErr || results.length === 0) {
+                console.warn(`   ⚠️  Email sent but not found in IMAP Sent folder`);
+                imapClient.end();
+                resolve(false);
+                return;
+              }
+
+              console.log(`   ✅ IMAP verification: Found ${results.length} matching email(s) in Sent folder`);
+              imapClient.end();
+              resolve(true);
+            });
+          });
+        });
+
+        imapClient.once('error', (err: Error) => {
+          console.warn(`   ⚠️  IMAP verification error: ${err.message}`);
+          resolve(false);
+        });
+
+        imapClient.once('end', () => {
+          // Promise already resolved in handlers
+        });
+
+        // Timeout after 10 seconds
+        setTimeout(() => {
+          console.warn(`   ⚠️  IMAP verification timed out`);
+          try { imapClient.end(); } catch { /* ignore */ }
+          resolve(false);
+        }, 10000);
+
+        imapClient.connect();
+      });
+    } catch (err) {
+      console.log(`   ℹ️  IMAP verification skipped: ${(err as Error).message}`);
+      return false;
     }
   }
 

@@ -181,29 +181,12 @@ export class VCResearchStrategy extends ResearchStrategy {
       return await this.researchViaAPI(entity, cacheFile);
     }
     
-    // Option A: Write request file for sub-agent processing
-    const requestFile = `/tmp/vc-research-${this.sanitizeName(entity.name)}-request.json`;
-    const request = {
-      type: 'vc-research',
-      entityName: entity.name,
-      website: entity.website,
-      outputFile: cacheFile,
-      timestamp: new Date().toISOString(),
-      requiredTools: ['web_search', 'web_fetch'],
-      instructions: `Research VC firm "${entity.name}" ${entity.website ? `(${entity.website})` : ''}. Use web_search to find: investment thesis, portfolio companies, key partners, recent investments, pain points, governance signals. Return JSON with: thesis, portfolio, partners, recentInvestments, painPoints, governanceSignals, whyAlygn. Save to ${cacheFile}`
-    };
-    
-    fs.writeFileSync(requestFile, JSON.stringify(request, null, 2));
-    
-    console.log(`   ⏳ No cached research found`);
-    console.log(`   📝 Wrote request file: ${requestFile}`);
-    console.log(`   📤 To execute research:`);
-    console.log(`      Option A: Post to Discord #annotations: "Process VC research request: ${requestFile}"`);
-    console.log(`      Option B: Cronjob spawns sub-agent to process request file`);
-    console.log(`      Option C: Use direct API (Perplexity) - set USE_DIRECT_API=true`);
-    
-    // Return fallback data for now
-    return this.fallbackResearch(entity);
+    // No cache and no direct API — this is a configuration error
+    throw new Error(
+      `USE_DIRECT_API=true required for VC research on "${entity.name}". ` +
+      `Set the environment variable or use --deep-research flag. ` +
+      `The request-file/sub-agent pattern has been removed.`
+    );
   }
 
   /**
@@ -384,8 +367,10 @@ export class VCResearchStrategy extends ResearchStrategy {
     } catch (error) {
       const err = error as Error;
       console.error(`   ❌ API failed: ${err.message}`);
-      console.log(`   📤 Falling back to request file pattern`);
-      return this.fallbackResearch(entity);
+      throw new Error(
+        `VC research via API failed for "${entity.name}": ${err.message}. ` +
+        `Fix API configuration or use --deep-research flag for manual research.`
+      );
     }
   }
 }
