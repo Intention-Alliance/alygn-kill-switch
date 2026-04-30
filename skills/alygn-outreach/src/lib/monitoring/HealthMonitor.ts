@@ -12,11 +12,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
-  type ServiceName,
   type HealthCheckResult,
   type HealthHistoryEntry,
   type HealthSnapshot,
   HealthStatus,
+  type ServiceName,
 } from './types';
 
 export interface HealthMonitorOptions {
@@ -625,7 +625,7 @@ export class HealthMonitor {
   private loadCredentialsFromFile(): Record<string, unknown> | null {
     const credPath =
       process.env.HEALTH_CHECK_CREDENTIALS_PATH ||
-      path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
 
     if (!fs.existsSync(credPath)) return null;
 

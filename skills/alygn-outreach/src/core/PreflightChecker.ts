@@ -57,12 +57,15 @@ export class PreflightChecker {
    * Get workspace paths
    */
   private getPaths() {
-    const base = `${process.env.HOME}/.openclaw/workspace`;
+    const HOME = process.env.HOME || '/home/andlersrv'
+    const base = `${HOME}/.openclaw/workspace`;
     return {
       reports: `${base}/reports/alygn`,
       credentials: `${base}/config/credentials.json`,
       waveState: `${base}/reports/alygn/${this.type}-waves/wave-state.json`,
-      sentTracker: `${process.env.HOME}/.agents/skills/alygn-outreach/data/sent-emails.json`,
+      // ? NOTE: SentTracker removed since we read from remote only to avoid confusions between local and remote.
+      // ! IMPORTANT: Remote must be always up to date of whatever is happening (Notion for VC Outreach and Supabase for Municipal Outreach). The only local data sync are the personalizations draft emails.
+      // sentTracker: `${HOME}/.agents/skills/alygn-outreach/data/sent-emails.json`,
       checkpoints: `${base}/reports/alygn/${this.type}-waves/checkpoints`,
     };
   }

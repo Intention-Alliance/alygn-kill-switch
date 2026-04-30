@@ -70,7 +70,7 @@ export class DiscordReporter {
     } catch { /* ignore */ }
     
     // Legacy fallback
-    const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+    const legacyPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
     try {
       if (fs.existsSync(legacyPath)) {
         const creds = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));

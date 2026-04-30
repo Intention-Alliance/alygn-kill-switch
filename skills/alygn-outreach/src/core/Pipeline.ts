@@ -4,7 +4,6 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { traceOperation } from './tracing-utils';
 import { MunicipalEntity } from '../entities/MunicipalEntity';
 import { OutreachEntity } from '../entities/OutreachEntity';
 import { VCEntity } from '../entities/VCEntity';
@@ -17,6 +16,7 @@ import { MunicipalResearchStrategy } from '../strategies/research/MunicipalResea
 import { VCResearchStrategy } from '../strategies/research/VCResearchStrategy';
 import { SendingStrategy } from '../strategies/sending/SendingStrategy';
 import { ValidationStrategy } from '../strategies/validation/ValidationStrategy';
+import { traceOperation } from './tracing-utils';
 
 interface PipelineOptions {
   dryRun?: boolean;
@@ -72,6 +72,8 @@ export class Pipeline {
     
     this.initializeStrategies();
   }
+
+  private HOME: string = process.env.HOME || '/home/andlersrv'
   
   /**
    * Initialize all strategies
@@ -105,10 +107,10 @@ export class Pipeline {
     
     // For VC researched phase, save to vc-waves folder with expected naming
     if (this.type === 'vc' && phase === 'researched') {
-      return `${process.env.HOME}/.openclaw/workspace/reports/alygn/vc-waves/${timestamp}.json`;
+      return `${this.HOME}/.openclaw/workspace/reports/alygn/vc-waves/${timestamp}.json`;
     }
     
-    return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${stateSubFolder}/alygn-${this.type}-${phase}-${timestamp}.json`;
+    return `${this.HOME}/.openclaw/workspace/reports/alygn/${stateSubFolder}/alygn-${this.type}-${phase}-${timestamp}.json`;
   }
 
   /**
@@ -138,7 +140,7 @@ export class Pipeline {
    */
   getWaveStatePath(): string {
     const subFolder = this.type === 'vc' ? 'vc-waves' : 'muni-waves';
-    return `${process.env.HOME}/.openclaw/workspace/reports/alygn/${subFolder}/wave-state.json`;
+    return `${this.HOME}/.openclaw/workspace/reports/alygn/${subFolder}/wave-state.json`;
   }
 
   /**
@@ -535,7 +537,7 @@ export class Pipeline {
     if (entity.type === 'municipal') {
       try {
         // Load credentials
-        const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+        const credentialsPath = path.join(this.HOME || '', '.openclaw/workspace/config/credentials.json');
         if (fs.existsSync(credentialsPath)) {
           const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
           if (credentials?.supabase?.url && credentials?.supabase?.key) {

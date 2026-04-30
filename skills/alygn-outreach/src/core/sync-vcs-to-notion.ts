@@ -70,7 +70,7 @@ const getDatabaseId = () => {
 function loadSentEmails(): SentEmails {
   // Self-contained: check skill's data directory first
   const skillDataPath = path.resolve(__dirname, '../../data/sent-emails.json');
-  const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/skills/alygn-outreach/data/sent-emails.json');
+  const legacyPath = path.join(process.env.HOME || '/home/andlersrv' || '', '.openclaw/workspace/skills/alygn-outreach/data/sent-emails.json');
   
   try {
     if (fs.existsSync(skillDataPath)) {
@@ -391,7 +391,7 @@ async function main(): Promise<void> {
   const dryRun = args.includes('--dry-run');
   const inputArg = args.find(a => a.startsWith('--input='));
   
-  const DEFAULT_INPUT = `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-vc-complete-${new Date().toISOString().split('T')[0]}.json`;
+  const DEFAULT_INPUT = `${process.env.HOME || '/home/andlersrv'}/.openclaw/workspace/reports/alygn/alygn-vc-complete-${new Date().toISOString().split('T')[0]}.json`;
   const inputPath = inputArg ? inputArg.split('=')[1] : DEFAULT_INPUT;
   
   console.log('🚀 ALYGN VC Sync to Notion\n');
@@ -468,18 +468,9 @@ main().catch(error => {
   process.exit(1);
 });
 
-export { 
-  createVCInNotion, 
-  loadVCsFromFile, 
-  loadSentEmails,
-  vcExistsInNotionByEmail,
+export {
+  checkVCExists, createVCInNotion, loadSentEmails, loadVCsFromFile, updateVCBounceStatus, vcExistsInNotionByEmail,
   vcExistsInNotionByName,
-  vcExistsInSentEmails,
-  checkVCExists,
-  updateVCBounceStatus,
-  type ExistingVCResult,
-  type SentEmails,
-  type SentEmailEntry,
-  type VC,
-  type SyncStats
+  vcExistsInSentEmails, type ExistingVCResult, type SentEmailEntry, type SentEmails, type SyncStats, type VC
 };
+

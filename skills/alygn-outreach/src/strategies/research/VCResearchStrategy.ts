@@ -9,8 +9,8 @@
 import fs from 'fs';
 import path from 'path';
 import { VCEntity } from '../../entities/VCEntity';
-import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
 import { getClient, queryDatabase } from '../../lib/external/notion-client';
+import { ResearchStrategy, type IResearchResult } from './ResearchStrategy';
 
 interface VCPortfolioCompany {
   company: string;
@@ -307,7 +307,7 @@ export class VCResearchStrategy extends ResearchStrategy {
         credentials = JSON.parse(fs.readFileSync(configPath, 'utf8'));
       } else {
         // Legacy fallback to workspace credentials
-        const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+        const legacyPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
         if (fs.existsSync(legacyPath)) {
           credentials = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
         }

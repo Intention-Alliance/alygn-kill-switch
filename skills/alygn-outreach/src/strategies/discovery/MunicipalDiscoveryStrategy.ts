@@ -10,12 +10,12 @@
 import fs from 'fs';
 import path from 'path';
 import { MunicipalEntity } from '../../entities/MunicipalEntity';
-import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
 import { SPANISH_PAIN_POINTS, validateMunicipalSpanishIntegrity } from '../../entities/lang-guard';
+import { COSTA_RICA_CANTONES } from '../../entities/municipal-data';
 import type { ICostaRicaCanton } from '../../entities/types';
-import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
-import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
 import { getDiscordReporter } from '../../lib/reporting/DiscordReporter';
+import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
+import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
 
 export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
   constructor(config: Record<string, unknown> = {}) {
@@ -80,7 +80,7 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     
     try {
       // Load credentials
-      const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      const credentialsPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
       if (!fs.existsSync(credentialsPath)) {
         console.log(`   ⚠️  No credentials file found`);
         return [];
@@ -344,7 +344,7 @@ export class MunicipalDiscoveryStrategy extends DiscoveryStrategy {
     if (fs.existsSync(credentialsPath)) {
       credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
     } else {
-      const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      const legacyPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
       if (fs.existsSync(legacyPath)) {
         credentials = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
       }

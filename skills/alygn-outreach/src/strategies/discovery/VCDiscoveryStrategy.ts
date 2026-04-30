@@ -8,11 +8,11 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
 import { VCEntity } from '../../entities/VCEntity';
 import { RegexMXValidator } from '../../lib/email/validators/RegexMXValidator';
-import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
 import { getDiscordReporter } from '../../lib/reporting/DiscordReporter';
+import { getSupabaseSimulator } from '../../lib/simulation/SupabaseSimulator';
+import { DiscoveryStrategy, type IDiscoveryOptions } from './DiscoveryStrategy';
 
 // Relevance scoring criteria
 const RELEVANCE_KEYWORDS = {
@@ -267,7 +267,7 @@ export class VCDiscoveryStrategy extends DiscoveryStrategy {
     if (fs.existsSync(credentialsPath)) {
       credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
     } else {
-      const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      const legacyPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
       if (fs.existsSync(legacyPath)) {
         credentials = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
       }

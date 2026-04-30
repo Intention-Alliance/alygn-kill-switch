@@ -97,7 +97,7 @@ export class SendingStrategy {
         return JSON.parse(fs.readFileSync(configPath, 'utf8'));
       }
       // Legacy fallback
-      const legacyPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      const legacyPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
       if (fs.existsSync(legacyPath)) {
         return JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
       }
@@ -853,7 +853,7 @@ export class SendingStrategy {
     try {
       // 1. Update wave-state.json
       const waveStatePath = path.join(
-        process.env.HOME || '',
+        process.env.HOME || '/home/andlersrv',
         '.openclaw/workspace/reports/alygn',
         entity.type === 'vc' ? 'vc-waves' : 'muni-waves',
         'wave-state.json'
@@ -1025,7 +1025,7 @@ export class SendingStrategy {
 
       // Update personalization file
       const personalizePath = path.join(
-        process.env.HOME || '',
+        process.env.HOME || '/home/andlersrv',
         '.openclaw/workspace/reports/alygn',
         entity.type === 'vc' ? 'vc-personalize' : 'muni-personalize',
         `alygn-${entity.type}-personalized-${new Date().toISOString().split('T')[0]}.json`
@@ -1047,7 +1047,7 @@ export class SendingStrategy {
 
       // Update state file
       const statePath = path.join(
-        process.env.HOME || '',
+        process.env.HOME || '/home/andlersrv',
         '.openclaw/workspace/reports/alygn',
         entity.type === 'vc' ? 'vc-waves' : 'muni-waves',
         'wave-state.json'

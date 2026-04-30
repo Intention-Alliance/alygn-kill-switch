@@ -30,7 +30,7 @@ function getNotionKey(): string {
   }
   
   // Fall back to workspace credentials (legacy support)
-  const legacyPath = path.resolve(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+  const legacyPath = path.resolve(process.env.HOME || '/home/andlersrv' , '.openclaw/workspace/config/credentials.json');
   try {
     if (fs.existsSync(legacyPath)) {
       const creds = JSON.parse(fs.readFileSync(legacyPath, 'utf8'));
