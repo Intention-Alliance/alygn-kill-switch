@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "5",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 10",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-20T06-07-14 | 4/20/2026, 12:07:17 AM"
+      },
+      "timestamp": "2026-04-20T06:07:17.963Z"
+    },
+    {
+      "title": "VC Firms (5)",
+      "color": 1096065,
+      "description": "**Renaissance AI Fund 1**\n   🌐 https://theimpactplatform.vc/about-renaissance/\n\n**Safe Artificial Intelligence Fund**\n   🌐 https://www.saif.vc\n\n**Glasswing Ventures**\n   🌐 https://www.rho.co/blog/vcs-in-security\n\n**Mythos Ventures**\n   🌐 https://www.lesswrong.com/w/ai-safety-and-entrepreneurship\n\n**Ballistic Ventures**\n   🌐 https://ballisticventures.com",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-20T06-07-14",
+  "timestamp": "2026-04-20T06-07-14"
+}

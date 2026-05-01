@@ -1,0 +1,4701 @@
+{
+  "timestamp": "2026-04-28T08:32:21.042160+00:00",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 85,
+    "entities": [
+      {
+        "id": "vc-WUxCxi",
+        "type": "vc",
+        "name": "Venrock",
+        "email": "info@venrock.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Venrock is the VC arm of the Rockefeller family. Focus on healthcare and tech. AI governance alignment: moderate - broad tech focus. Contact: info@venrock.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Bryan Roberts",
+              "title": "Partner"
+            },
+            {
+              "name": "Ethan Batrash",
+              "title": "Partner"
+            },
+            {
+              "name": "Pak Wing Yan",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8103-a0d0-c2ed6ef6f5fa"
+      },
+      {
+        "id": "vc-szynrr",
+        "type": "vc",
+        "name": "NVIDIA Ventures",
+        "email": "nventures@nvidia.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Santa Clara",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "NVIDIA's venture arm. Invests in AI infrastructure, GPU computing, and deep learning companies. AI governance alignment: moderate - NVIDIA is core AI infrastructure. Contact: nventures@nvidia.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Mohamed Siddeek",
+              "title": "VP/NVIDIA Ventures"
+            },
+            {
+              "name": "Team: NVIDIA corporate development",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8104-a110-cb193a7622ed"
+      },
+      {
+        "id": "vc-VfbKqo",
+        "type": "vc",
+        "name": "Harrison Metal",
+        "email": "michael@harrisonmetal.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Check size: $0.3M - $1.0M\nSource: web_search\nEmail confidence: 85%\nEmail validated: Yes",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Michael Dearing",
+              "title": "Founder"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8106-a758-fd2a2e261457"
+      },
+      {
+        "id": "vc-k2t1lv",
+        "type": "vc",
+        "name": "Wing Venture Capital",
+        "email": "info@wing.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Early-stage VC focused on AI-first tech stack. Peter Wagner is founding partner. Zach DeWitt focuses on PLG companies. AI governance alignment: moderate - AI-first investment thesis. Contact: info@wing.vc or via wing.vc contact form.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Peter Wagner",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Zach DeWitt",
+              "title": "Partner"
+            },
+            {
+              "name": "Gaurav Garg",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-810e-8b86-e403b0cd46b5"
+      },
+      {
+        "id": "vc-RXrzlY",
+        "type": "vc",
+        "name": "Schematic Ventures",
+        "email": "julian@schematicventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Check size: $0.5M - $3.0M\nSource: web_search\nEmail confidence: 80%\nEmail validated: Yes",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Julian Cohan",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-810e-abd9-dab8bca5dcaa"
+      },
+      {
+        "id": "vc-dxbwrJ",
+        "type": "vc",
+        "name": "Torch Capital",
+        "email": "hello@torchcapital.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Check size: $0.5M - $3.0M\nSource: web_search\nEmail confidence: 85%\nEmail validated: Yes",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jon Keidan",
+              "title": "Founding Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-810e-b5be-f1565b20743d"
+      },
+      {
+        "id": "vc-3joX5f",
+        "type": "vc",
+        "name": "Fourth Revolution Capital (4RC)",
+        "email": "info@fourthrevolution.capital",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Santa Monica",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "4RC invests in blockchain and AI as digital infrastructure for the Fourth Industrial Revolution. AI governance alignment: moderate - they focus on decentralized computing and blockchain, but AI is part of their thesis. Contact via info@fourthrevolution.capital or website form.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: small firm focused on blockchain + AI infrastructure",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8116-9634-c68f1bc9a90d"
+      },
+      {
+        "id": "vc-gg9A3T",
+        "type": "vc",
+        "name": "CRV",
+        "email": "info@crv.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "CRV (Charles River Ventures) is a multi-stage VC. George Zachary focuses on frontier tech. AI governance alignment: moderate. Contact: info@crv.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "George Zachary",
+              "title": "Partner"
+            },
+            {
+              "name": "Dev Ittycheria",
+              "title": "Partner"
+            },
+            {
+              "name": "Max Schireson",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8118-ab99-d7b4701f73f3"
+      },
+      {
+        "id": "vc-X0d6xt",
+        "type": "vc",
+        "name": "GV (Google Ventures)",
+        "email": "info@gv.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Mountain View",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Google Ventures is Alphabet's VC arm. David Krane leads. Adam Ghobarah focuses on AI investments. AI governance alignment: strong - Alphabet/Google has AI principles. Contact: info@gv.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "David Krane",
+              "title": "CEO/Managing Partner"
+            },
+            {
+              "name": "Terri Burns",
+              "title": "Partner"
+            },
+            {
+              "name": "Adam Ghobarah",
+              "title": "Partner - AI"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-811a-ba08-e790ee88d5c8"
+      },
+      {
+        "id": "vc-nz1una",
+        "type": "vc",
+        "name": "Precursor Ventures",
+        "email": "charles@precursorvc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Check size: $0.3M - $0.5M\nSource: web_search\nEmail confidence: 90%\nEmail validated: Yes",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Charles Hudson",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-811a-bbd8-ec0a2d481d1f"
+      },
+      {
+        "id": "vc-eYVgPr",
+        "type": "vc",
+        "name": "Intel Capital",
+        "email": "info@intelcapital.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Santa Clara",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Intel's corporate VC arm. Invests in AI, semiconductor, and deep tech companies. AI governance alignment: moderate - Intel has AI ethics framework. Contact: info@intelcapital.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Mark Rostick",
+              "title": "VP/Senior Managing Director"
+            },
+            {
+              "name": "Anthony Lin",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-811b-8530-ea344ed5715a"
+      },
+      {
+        "id": "vc-GUoBiP",
+        "type": "vc",
+        "name": "Point72 Ventures",
+        "email": "ideas@p72.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Point72 Ventures is the VC arm of Point72 (Steve Cohen's firm). Daniel Gwak leads AI/ML investments. AI governance alignment: strong - they have dedicated AI/ML investment focus. Contact: ideas@p72.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Steve Cohen",
+              "title": "Chairman"
+            },
+            {
+              "name": "Pete Casella",
+              "title": "Partner"
+            },
+            {
+              "name": "Daniel Gwak",
+              "title": "Partner - AI/ML"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8120-9f79-c44669e227bb"
+      },
+      {
+        "id": "vc-8aUKuy",
+        "type": "vc",
+        "name": "Differential Ventures",
+        "email": "info@differential.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC focused on data science and engineering. Contact via website form at differential.vc. AI governance alignment: moderate - data/AI focused investment thesis.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: data science and engineering focused partners",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8123-8352-f7b48e8d0fb9"
+      },
+      {
+        "id": "vc-kOpyh8",
+        "type": "vc",
+        "name": "Salesforce Ventures",
+        "email": "info@salesforceventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Salesforce's VC arm. Invests in enterprise cloud and AI companies. AI governance alignment: moderate - Salesforce has AI ethics principles. Contact: info@salesforceventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Alex Kayyal",
+              "title": "Head of Ventures"
+            },
+            {
+              "name": "Som Segal",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8128-9d42-d7bc34fbac21"
+      },
+      {
+        "id": "vc-3eM0BZ",
+        "type": "vc",
+        "name": "Thrive Capital",
+        "email": "info@thrivecap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Josh Kushner's VC firm. Known for consumer tech investments including OpenAI. AI governance alignment: moderate - invested in OpenAI. Contact: info@thrivecap.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Josh Kushner",
+              "title": "Founder/Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8128-acfb-e03eeee79a9c"
+      },
+      {
+        "id": "vc-69Y84g",
+        "type": "vc",
+        "name": "Cowboy Ventures",
+        "email": "info@cowboy.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Aileen Lee is the founder (coined 'unicorn'). Focus on seed-stage tech. AI governance alignment: moderate - broad tech focus. Contact: info@cowboy.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Aileen Lee",
+              "title": "Founder/Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8129-ad57-f7e0bfa67b0c"
+      },
+      {
+        "id": "vc-iKTnlm",
+        "type": "vc",
+        "name": "Two Sigma Ventures",
+        "email": "info@twosigmaventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Two Sigma Ventures is the VC arm of Two Sigma (quant hedge fund). Focus on data-driven companies. Colin Beirne and Dusan Perovic are key partners. AI governance alignment: strong - Two Sigma has deep AI/ML expertise and data ethics focus.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Colin Beirne",
+              "title": "Partner"
+            },
+            {
+              "name": "Dusan Perovic",
+              "title": "Partner"
+            },
+            {
+              "name": "Dan Abelon",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-812c-ae20-c2e2b936c466"
+      },
+      {
+        "id": "vc-cnjVHB",
+        "type": "vc",
+        "name": "Bee Partners",
+        "email": "getfunded@beepartners.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Founded 2011 by Michael Berolzheimer. Thesis: machines reshaping every industry. Conviction-first, at inception. AI governance alignment: moderate - early-stage AI focus but no specific governance thesis. Contact: getfunded@beepartners.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Michael Berolzheimer",
+              "title": "Founder/Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-812f-9c22-da78cd12a0ab"
+      },
+      {
+        "id": "vc-T0bIXN",
+        "type": "vc",
+        "name": "Index Ventures",
+        "email": "info@indexventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Major multi-stage VC. Mark Xu focuses on AI, cybersecurity, and infrastructure. AI governance alignment: strong - Mark Xu specifically covers AI investments. Contact via indexventures.com.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Mark Xu",
+              "title": "Partner - AI/cybersecurity/infrastructure"
+            },
+            {
+              "name": "Danny Rimer",
+              "title": "Partner"
+            },
+            {
+              "name": "Mike Volpi",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8130-890b-eabcb11a11bc"
+      },
+      {
+        "id": "vc-Cgf3TD",
+        "type": "vc",
+        "name": "Y Combinator",
+        "email": "apply@ycombinator.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Mountain View",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "YC is the most famous accelerator. Michael Seibel leads. AI governance alignment: moderate - YC has funded many AI companies and has AI-specific batches. Contact: apply@ycombinator.com (applications only)",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Michael Seibel",
+              "title": "CEO/Partner"
+            },
+            {
+              "name": "Dalton Caldwell",
+              "title": "Partner"
+            },
+            {
+              "name": "Gustaf Alstr\u00f6mer",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8131-8c04-d075a5cdb320"
+      },
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "IQ Capital",
+        "email": "hello@iqcapital.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Max Bautin",
+              "title": "Partner/Co-founder"
+            },
+            {
+              "name": "Ed Stacey",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      },
+      {
+        "id": "vc-o91SwP",
+        "type": "vc",
+        "name": "Berkeley Catalyst Fund",
+        "email": "info@bcfltd.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cupertino",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "UC Berkeley-affiliated deep tech fund. Focus on commercializing Berkeley research. AI governance alignment: moderate - Berkeley AI ecosystem. Contact: info@bcfltd.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: Berkeley-affiliated fund",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8132-b06a-dc6a12b4a99d"
+      },
+      {
+        "id": "vc-0YZhta",
+        "type": "vc",
+        "name": "Costanoa Ventures",
+        "email": "info@costanoavc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Early-stage B2B tech VC. Greg Papadopoulos (ex-Sun CTO) leads. AI governance alignment: moderate - enterprise tech focus. Contact: info@costanoavc.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Greg Papadopoulos",
+              "title": "Partner"
+            },
+            {
+              "name": "Pat Devlin",
+              "title": "Partner"
+            },
+            {
+              "name": "Neill Occhiogrosso",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8138-926c-fe3721b3008e"
+      },
+      {
+        "id": "vc-uHzAso",
+        "type": "vc",
+        "name": "AI Fund",
+        "email": "info@aifund.ai",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Mountain View",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "AI Fund is a venture studio (not traditional VC) founded by Andrew Ng. They co-found companies with entrepreneurs. $370M+ from Sequoia, NEA, SoftBank. AI governance alignment: strong - Andrew Ng is a leading AI voice and has spoken on responsible AI.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Andrew Ng",
+              "title": "Managing General Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8139-bfad-ef152fb1e5ba"
+      },
+      {
+        "id": "vc-ipJBdq",
+        "type": "vc",
+        "name": "AME Ventures",
+        "email": "info@ameventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small fund, limited public info on partners. AI governance alignment: low. Contact: info@ameventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: small family office fund",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-813b-8740-df69fa7a4ac5"
+      },
+      {
+        "id": "vc-slBOlf",
+        "type": "vc",
+        "name": "Georgian Partners",
+        "email": "info@georgian.io",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Toronto",
+          "state": "",
+          "country": "Canada",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Georgian invests in applied AI/ML companies. AI governance alignment: strong - they specifically focus on AI/ML applications and have published on responsible AI. Contact: info@georgian.io",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: applied AI and machine learning investment focus",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-813b-b3db-d6d46146c677"
+      },
+      {
+        "id": "vc-AG4TOO",
+        "type": "vc",
+        "name": "Primary Venture Partners",
+        "email": "info@primary.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "NYC-based seed VC. Focus on enterprise and marketplace companies. AI governance alignment: low - no specific AI thesis. Contact: info@primary.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ben Sun",
+              "title": "Founder/Partner"
+            },
+            {
+              "name": "Brian O'Malley",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8140-8ab9-e29034923636"
+      },
+      {
+        "id": "vc-BLXhDG",
+        "type": "vc",
+        "name": "Anthropic",
+        "email": "press@anthropic.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Anthropic has a VC Partner Program for AI startups. Contact via VC Partner Program page at anthropic.com/contact-sales/vc-partner. This is NOT a traditional VC - they invest through their VC partner program. press@anthropic.com is media, not investment.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dario Amodei",
+              "title": "CEO"
+            },
+            {
+              "name": "Daniela Amodei",
+              "title": "President"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 10,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8142-a10b-e3ccfdf44bc7"
+      },
+      {
+        "id": "vc-AahyWc",
+        "type": "vc",
+        "name": "AI Seed",
+        "email": "info@aiseedfund.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "London",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "AI Seed is Europe's #1 AI VC fund. Small team (3 employees), London-based. Founded 2017. They invest in AI-first startups. Apply via their website form. AI governance alignment: moderate - focused on AI startups but no specific governance thesis.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "James Hirst",
+              "title": "Partner"
+            },
+            {
+              "name": "David Kelnar",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8143-90f7-f45814cf0b23"
+      },
+      {
+        "id": "vc-ySc2OV",
+        "type": "vc",
+        "name": "Elaia",
+        "email": "contact@elaia.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Paris",
+          "state": "",
+          "country": "France",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "French VC focused on deep tech and SaaS. AI governance alignment: moderate - deep tech focus includes AI. Contact: contact@elaia.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jean-David Chambon",
+              "title": "Managing Partner"
+            },
+            {
+              "name": "Marc Fougier",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8148-8a5c-e064d7979d73"
+      },
+      {
+        "id": "vc-OVVAmU",
+        "type": "vc",
+        "name": "OpenAI Startup Fund",
+        "email": "fund@openai.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "OpenAI Startup Fund invests $175M in early-stage AI companies. Brad Lightcap is COO of OpenAI and manages the fund. Ian Hathaway focuses on AI-native companies outside Silicon Valley. Apply via openai.fund. AI governance alignment: direct - this IS the AI safety/governance ecosystem.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Brad Lightcap",
+              "title": "Managing Director/COO OpenAI"
+            },
+            {
+              "name": "Ian Hathaway",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 10,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8149-a393-c695d1ee555c"
+      },
+      {
+        "id": "vc-xAEj9T",
+        "type": "vc",
+        "name": "Andreessen Horowitz (a16z)",
+        "email": "info@a16z.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "a16z is one of the largest VC firms. Anjney Midha and Martin Casado lead AI investments. AI governance alignment: strong - a16z has published extensively on AI policy and governance. Very high-profile firm. Contact: info@a16z.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Anjney Midha",
+              "title": "Partner - AI"
+            },
+            {
+              "name": "Martin Casado",
+              "title": "Partner - AI/infra"
+            },
+            {
+              "name": "Jennifer Li",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-814a-ab45-df8a643cec92"
+      },
+      {
+        "id": "vc-K6nPHj",
+        "type": "vc",
+        "name": "AME Cloud Ventures",
+        "email": "info@amecloudventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Jerry Yang (Yahoo co-founder) leads. Focus on data-driven companies. AI governance alignment: moderate - Jerry Yang has spoken on AI's future. Contact: info@amecloudventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jerry Yang",
+              "title": "Founder"
+            },
+            {
+              "name": "David Lee",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-814c-99c2-d76c52d81863"
+      },
+      {
+        "id": "vc-rqZtsT",
+        "type": "vc",
+        "name": "Berkeley SkyDeck Fund",
+        "email": "info@skydeck.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Berkeley",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "UC Berkeley accelerator fund. Partnership between Haas School of Business, College of Engineering, and VC community. AI governance alignment: moderate - Berkeley is a leading AI research institution. Contact: info@skydeck.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Carolina Brochado",
+              "title": "Managing Director"
+            },
+            {
+              "name": "Brian Bordley",
+              "title": "Partner"
+            },
+            {
+              "name": "Wei Luo",
+              "title": "COO"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-814f-8808-dfc8f245b465"
+      },
+      {
+        "id": "vc-iKmTWq",
+        "type": "vc",
+        "name": "SAP.iO",
+        "email": "sap.io@sap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "SAP's startup accelerator. Invests in enterprise software startups that integrate with SAP. AI governance alignment: moderate - SAP has AI ethics guidelines. Contact: sap.io@sap.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: SAP corporate innovation team",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8155-a56f-d6b2dd30ac53"
+      },
+      {
+        "id": "vc-vJ7ABU",
+        "type": "vc",
+        "name": "M12 (Microsoft)",
+        "email": "info@m12.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Microsoft's venture fund. Focus on enterprise AI, cloud, and security. AI governance alignment: strong - Microsoft has comprehensive AI governance framework. Contact: info@m12.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Samir Patel",
+              "title": "Partner"
+            },
+            {
+              "name": "Rashmi Gopinath",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8158-854a-f83c712011bb"
+      },
+      {
+        "id": "vc-aeWJPu",
+        "type": "vc",
+        "name": "Atomico",
+        "email": "info@atomico.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "London",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "European VC founded by Niklas Zennstr\u00f6m (Skype). Focus on tech companies. AI governance alignment: moderate - broad tech focus with growing AI portfolio. Contact: info@atomico.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Niklas Zennstr\u00f6m",
+              "title": "Founding Partner/CEO"
+            },
+            {
+              "name": "Teddie Wardi",
+              "title": "Partner"
+            },
+            {
+              "name": "Sophia Bendz",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8159-bba4-f68e5624c659"
+      },
+      {
+        "id": "vc-wNFVUG",
+        "type": "vc",
+        "name": "Founders Fund",
+        "email": "info@foundersfund.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Peter Thiel's fund. Known for contrarian bets. AI governance alignment: moderate - invested in AI companies but no specific governance thesis. Contact: info@foundersfund.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Peter Thiel",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Brian Singerman",
+              "title": "Partner"
+            },
+            {
+              "name": "Keith Rabois",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-815a-9543-cf1944c977ff"
+      },
+      {
+        "id": "vc-DkxPlT",
+        "type": "vc",
+        "name": "Comcast Ventures",
+        "email": "info@comcastventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Comcast's VC arm. Focus on media, connectivity, and enterprise. AI governance alignment: low - media/connectivity focus. Contact: info@comcastventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Amy Banse",
+              "title": "Managing Director"
+            },
+            {
+              "name": "Sam Landman",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-815e-bbc0-e6a78c9c53c9"
+      },
+      {
+        "id": "vc-UeG4XC",
+        "type": "vc",
+        "name": "Greycroft",
+        "email": "info@greycroft.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Los Angeles",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC focused on digital media, marketplace, and fintech. AI governance alignment: low - media/marketplace focus. Contact: info@greycroft.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dana Settle",
+              "title": "Co-founder/Partner"
+            },
+            {
+              "name": "Ian Sigalow",
+              "title": "Co-founder/Partner"
+            },
+            {
+              "name": "Ellie Wheeler",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8161-a1c1-dd2fbe6fa15d"
+      },
+      {
+        "id": "vc-U6FIMe",
+        "type": "vc",
+        "name": "Greylock Partners",
+        "email": "info@greylock.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Reid Hoffman (LinkedIn co-founder) is key partner. Sarah Guo specifically focuses on AI investments. AI governance alignment: strong - Reid Hoffman has spoken extensively on AI ethics and governance. Contact: info@greylock.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Reid Hoffman",
+              "title": "Partner"
+            },
+            {
+              "name": "John Lilly",
+              "title": "Partner"
+            },
+            {
+              "name": "Sarah Guo",
+              "title": "Partner - AI"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8161-a653-ff40e64388a3"
+      },
+      {
+        "id": "vc-ZYWsnS",
+        "type": "vc",
+        "name": "Forerunner Ventures",
+        "email": "info@forerunnerventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Check size: $0.5M - $5.0M\nSource: web_search\nEmail confidence: 85%\nEmail validated: Yes",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Kirsten Green",
+              "title": "Founder & Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-816d-b0cb-d8771fe2a3e5"
+      },
+      {
+        "id": "vc-JR7SZq",
+        "type": "vc",
+        "name": "Balderton Capital",
+        "email": "info@balderton.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "London",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Leading European VC. Focus on European tech companies. AI governance alignment: moderate - growing AI portfolio. Contact: info@balderton.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Bernard Liautaud",
+              "title": "Managing Partner"
+            },
+            {
+              "name": "Suranga Chandratillake",
+              "title": "Partner"
+            },
+            {
+              "name": "James Wise",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-816e-be25-eaee35f6b4b0"
+      },
+      {
+        "id": "vc-aDmv0g",
+        "type": "vc",
+        "name": "Mayfield Fund",
+        "email": "info@mayfield.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC. Navin Chaddha leads. Focus on AI-first companies. AI governance alignment: strong - 'AI-first' investment thesis. Contact: info@mayfield.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Navin Chaddha",
+              "title": "Managing Director"
+            },
+            {
+              "name": "Rajeev Batra",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8175-bad1-c7d6153f7c1d"
+      },
+      {
+        "id": "vc-PMbX0x",
+        "type": "vc",
+        "name": "Ubiquity Ventures",
+        "email": "info@ubiquity.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC focused on software beyond screens (IoT, robotics, AI). AI governance alignment: moderate - AI/robotics focus. Contact: info@ubiquity.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Sunil Ramesh",
+              "title": "Founder/Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-817a-82c4-c80aa7600032"
+      },
+      {
+        "id": "vc-3wLnf4",
+        "type": "vc",
+        "name": "LocalGlobe",
+        "email": "hello@localglobe.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "London",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "UK-based seed VC. Saul and Robin Klein are co-founders. Focus on UK/European tech. AI governance alignment: moderate. Contact: hello@localglobe.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Saul Klein",
+              "title": "Co-founder/Partner"
+            },
+            {
+              "name": "Robin Klein",
+              "title": "Co-founder/Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-817a-96fc-f95d33c61929"
+      },
+      {
+        "id": "vc-YgRuUv",
+        "type": "vc",
+        "name": "8VC",
+        "email": "info@8vc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Joe Lonsdale's VC firm. Focus on enterprise, healthcare, and defense tech. AI governance alignment: moderate - defense/enterprise AI. Contact: info@8vc.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Joe Lonsdale",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Drew Oetting",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-817b-8f01-cd1ecdbf4fe9"
+      },
+      {
+        "id": "vc-XPf4cp",
+        "type": "vc",
+        "name": "Storm Ventures",
+        "email": "info@stormventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Enterprise-focused VC. Focus on B2B SaaS and infrastructure. AI governance alignment: low - enterprise SaaS focus. Contact: info@stormventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Tae Hea Nahm",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Alex B.",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8183-ad02-cb91e434fd3b"
+      },
+      {
+        "id": "vc-SkCoNd",
+        "type": "vc",
+        "name": "Lerer Hippeau",
+        "email": "info@lererhippeau.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "NYC-based seed VC. Focus on media, commerce, and fintech. AI governance alignment: low - media/commerce focus. Contact: info@lererhippeau.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ben Lerer",
+              "title": "Managing Partner"
+            },
+            {
+              "name": "Eric Hippeau",
+              "title": "Managing Partner"
+            },
+            {
+              "name": "Andrea Hippeau",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8183-bedb-cf2f33ce7ead"
+      },
+      {
+        "id": "vc-DO8fQm",
+        "type": "vc",
+        "name": "Soma Capital",
+        "email": "info@somacap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small seed fund. Aneel Ranadive leads. Focus on infrastructure and dev tools. AI governance alignment: low. Contact: info@somacap.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Aneel Ranadive",
+              "title": "Founder"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8187-adf2-f39736e09e04"
+      },
+      {
+        "id": "vc-exU1Iv",
+        "type": "vc",
+        "name": "Workday Ventures",
+        "email": "ventures@workday.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Pleasanton",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Workday's corporate VC arm. Focus on enterprise cloud and AI. AI governance alignment: moderate - Workday has responsible AI principles. Contact: ventures@workday.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Mark Peek",
+              "title": "Managing Director/Head of Workday Ventures"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-818e-8240-db9768148c17"
+      },
+      {
+        "id": "vc-uG6EWT",
+        "type": "vc",
+        "name": "RRE Ventures",
+        "email": "info@rre.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "NYC-based multi-stage VC. Focus on fintech, commerce, and infrastructure. AI governance alignment: low - broad focus. Contact: info@rre.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Will Porteous",
+              "title": "General Partner"
+            },
+            {
+              "name": "Alice Lloyd George",
+              "title": "Partner"
+            },
+            {
+              "name": "Jason Black",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8193-ad68-e354820b9278"
+      },
+      {
+        "id": "vc-3lAk9w",
+        "type": "vc",
+        "name": "IA Ventures",
+        "email": "info@iaventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC focused on software/data businesses. Roger Ehrenberg has concentrated portfolio strategy. AI governance alignment: moderate - data-focused investment thesis.",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Roger Ehrenberg",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Jesse Beyroutey",
+              "title": "General Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8196-ac28-d018663c8339"
+      },
+      {
+        "id": "vc-YnPPP5",
+        "type": "vc",
+        "name": "Root Ventures",
+        "email": "info@root.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Root Ventures focuses on hard tech and engineering-led companies. AI governance alignment: moderate - deep tech/engineering focus. Contact: info@root.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Katherine Boyle",
+              "title": "Partner"
+            },
+            {
+              "name": "Chris Dixon",
+              "title": "Partner - not the a16z one"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8197-84ba-c7ff41788d7c"
+      },
+      {
+        "id": "vc-BClmdp",
+        "type": "vc",
+        "name": "Aether VC",
+        "email": "info@aethervc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "MA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small VC with limited public information. AI governance alignment: unknown. Contact: info@aethervc.com or contact@aethervc.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: small fund",
+              "title": ""
+            },
+            {
+              "name": "limited public partner info",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8198-a512-ece36fe08278"
+      },
+      {
+        "id": "vc-qDbCFn",
+        "type": "vc",
+        "name": "Village Global",
+        "email": "info@villageglobal.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Village Global is a network-driven VC backed by Bill Gates, Jeff Bezos, Mark Zuckerberg etc. AI governance alignment: moderate - network-driven approach. Contact: info@villageglobal.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Erik Torenberg",
+              "title": "Partner"
+            },
+            {
+              "name": "Anne Dwane",
+              "title": "Partner"
+            },
+            {
+              "name": "Craig Shapiro",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-8198-b7d9-ee39ffcf0393"
+      },
+      {
+        "id": "vc-q52YPR",
+        "type": "vc",
+        "name": "Notation Capital",
+        "email": "info@notation.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small pre-seed/seed fund. Nicky Gilmartin leads. AI governance alignment: low - broad pre-seed focus. Contact: info@notation.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Nicky Gilmartin",
+              "title": "Founder/Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81a3-8e10-d930f372a088"
+      },
+      {
+        "id": "vc-snCi0o",
+        "type": "vc",
+        "name": "Strawberry Creek Ventures",
+        "email": "info@av.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Berkeley",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small fund. Limited public information on partners. AI governance alignment: unknown. Contact: info@av.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: limited public info",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81a4-838b-e9ea30717158"
+      },
+      {
+        "id": "vc-4uJzBq",
+        "type": "vc",
+        "name": "Comma Capital",
+        "email": "info@comma.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small emerging VC fund. Limited public info. AI governance alignment: unknown. Contact: info@comma.vc or hello@comma.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: small emerging fund",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81a5-a93d-d9b404cc57da"
+      },
+      {
+        "id": "vc-MRIcEs",
+        "type": "vc",
+        "name": "True Ventures",
+        "email": "info@trueventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Early-stage VC focused on tech and healthcare. Jon Callaghan is founding partner. AI governance alignment: moderate - broad tech thesis. Contact: info@trueventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jon Callaghan",
+              "title": "Founder/Partner"
+            },
+            {
+              "name": "Puneet Agarwal",
+              "title": "Partner"
+            },
+            {
+              "name": "Omar Hamoui",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81aa-9472-cb49b4dab9c8"
+      },
+      {
+        "id": "vc-YFwOdb",
+        "type": "vc",
+        "name": "The House Fund",
+        "email": "info@thehouse.fund",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Berkeley",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Berkeley-affiliated fund. Invests in UC Berkeley startups. AI governance alignment: moderate - Berkeley AI ecosystem. Contact: info@thehouse.fund or build@thehouse.fund",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Evan Moore",
+              "title": "Partner"
+            },
+            {
+              "name": "Cameron Brooks",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81aa-be3e-c289d0559d54"
+      },
+      {
+        "id": "vc-PSVMix",
+        "type": "vc",
+        "name": "Pear VC",
+        "email": "info@pear.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Pear VC is a seed-stage firm. Pejman Nozad and Mar Hershenson are co-founders. AI governance alignment: moderate - strong AI portfolio. Contact: info@pear.vc or hello@pear.vc",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Pejman Nozad",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Mar Hershenson",
+              "title": "Founding Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81af-8a2d-e1f2328f1266"
+      },
+      {
+        "id": "vc-OqYumJ",
+        "type": "vc",
+        "name": "Audacious Ventures",
+        "email": "info@audacious.co",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small fund with limited public information. AI governance alignment: unknown. Contact: info@audacious.co",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: limited public info on partners",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81b7-8deb-eb73cfe9782a"
+      },
+      {
+        "id": "vc-9OEh58",
+        "type": "vc",
+        "name": "Tribe Capital",
+        "email": "info@tribecap.co",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Data-driven VC using quantitative analysis. Arjun Sethi leads. AI governance alignment: moderate - data/AI focused approach. Contact: info@tribecap.co",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Arjun Sethi",
+              "title": "Co-founder/Partner"
+            },
+            {
+              "name": "Boris Silverstein",
+              "title": "Partner"
+            },
+            {
+              "name": "Chris Smoak",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81bb-a55d-ff1575f9bbb6"
+      },
+      {
+        "id": "vc-TMIfDK",
+        "type": "vc",
+        "name": "SoftTech VC",
+        "email": "info@softtechvc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC founded by Jeff Clavier. Focus on SaaS, consumer, fintech. AI governance alignment: low - broad seed focus. Contact: info@softtechvc.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jeff Clavier",
+              "title": "Founder/Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81bc-b22a-ff50e100ed4a"
+      },
+      {
+        "id": "vc-dCH8p8",
+        "type": "vc",
+        "name": "Bowery Capital",
+        "email": "info@bowerycap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "B2B seed-stage VC. Focus on enterprise software. AI governance alignment: low - enterprise SaaS focus. Contact: info@bowerycap.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Loren Straub",
+              "title": "Partner"
+            },
+            {
+              "name": "Whitnie Frank",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81c7-99c5-cc1ef6ee3403"
+      },
+      {
+        "id": "vc-RIsqnU",
+        "type": "vc",
+        "name": "Canaan Partners",
+        "email": "info@canaan.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC. Maha Ibrahim leads tech investments. AI governance alignment: moderate - broad tech portfolio. Contact: info@canaan.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Maha Ibrahim",
+              "title": "Partner"
+            },
+            {
+              "name": "Joydeep Bhattacharyya",
+              "title": "Partner"
+            },
+            {
+              "name": "Wendi Breuer",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81ca-894e-e0e09881260c"
+      },
+      {
+        "id": "vc-kaOBYO",
+        "type": "vc",
+        "name": "Qualcomm Ventures",
+        "email": "info@qualcommventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Diego",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Qualcomm's corporate VC arm. Invests in mobile, IoT, AI, and deep tech. AI governance alignment: moderate - Qualcomm has AI research. Contact: info@qualcommventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Carlos Kokron",
+              "title": "VP/Managing Director"
+            },
+            {
+              "name": "Quinn Li",
+              "title": "SVP/Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81cb-b5b6-d0ef4c8c94dc"
+      },
+      {
+        "id": "vc-32lmb4",
+        "type": "vc",
+        "name": "Future Labs Capital",
+        "email": "info@futurelabscapital.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Jeffersonville",
+          "state": "",
+          "country": "KY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small fund with limited public information. AI governance alignment: unknown. Contact: info@futurelabscapital.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: limited public info",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81cd-b3e7-c8050d471a96"
+      },
+      {
+        "id": "vc-2WtRC4",
+        "type": "vc",
+        "name": "Laconia Capital",
+        "email": "info@laconiacapitalgroup.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "New York",
+          "state": "",
+          "country": "NY",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Small fund. AI governance alignment: unknown. Contact: info@laconiacapitalgroup.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Team: limited public info",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81d2-9f49-d0c6393ac51a"
+      },
+      {
+        "id": "vc-mLzcrK",
+        "type": "vc",
+        "name": "High-Tech Gr\u00fcnderfonds (HTGF)",
+        "email": "info@htgf.de",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Bonn",
+          "state": "",
+          "country": "Germany",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "German government-backed seed fund. One of Europe's most active seed investors. AI governance alignment: moderate - strong AI portfolio in Germany. Contact: info@htgf.de",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Kilian Berz",
+              "title": "Partner - AI/Digital Tech"
+            },
+            {
+              "name": "Alex von Frankenberg",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81db-9dce-c78cceda3d7b"
+      },
+      {
+        "id": "vc-82gpl4",
+        "type": "vc",
+        "name": "Norwest Venture Partners",
+        "email": "info@nvp.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC. Promod Haque is a legendary investor. Sonya Huang focuses on AI/infrastructure. AI governance alignment: moderate - growing AI focus. Contact: info@nvp.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Promod Haque",
+              "title": "Senior Managing Partner"
+            },
+            {
+              "name": "Jon Kossow",
+              "title": "Partner"
+            },
+            {
+              "name": "Sonya Huang",
+              "title": "Partner - AI/infra"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81de-b030-dd69cd320edc"
+      },
+      {
+        "id": "vc-yPN4CZ",
+        "type": "vc",
+        "name": "Samsung Next",
+        "email": "info@samsungnext.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Samsung's strategic investment arm. Focus on AI, blockchain, and frontier tech. AI governance alignment: moderate - Samsung has AI ethics framework. Contact: info@samsungnext.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Vincent Tang",
+              "title": "Partner"
+            },
+            {
+              "name": "Brendon Kim",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 6,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81df-a0c7-d8db9a35b8b7"
+      },
+      {
+        "id": "vc-52Tl1q",
+        "type": "vc",
+        "name": "Floodgate",
+        "email": "info@floodgate.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC. Ann Miura-Ko and Mike Maples are co-founders. Known for thesis-driven investing. AI governance alignment: moderate - thesis-driven approach. Contact: info@floodgate.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ann Miura-Ko",
+              "title": "Co-founding Partner"
+            },
+            {
+              "name": "Mike Maples Jr",
+              "title": "Co-founding Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81e1-b909-c8b3b38fa078"
+      },
+      {
+        "id": "vc-3rfQ4F",
+        "type": "vc",
+        "name": "Acrew Capital",
+        "email": "info@acrew.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Theresia Gouw is a prominent female VC founder. Focus on cybersecurity, data, and fintech. AI governance alignment: moderate - data/security focus. Contact: info@acrew.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Theresia Gouw",
+              "title": "Founder/Managing Partner"
+            },
+            {
+              "name": "Lauren Reeder",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81e7-916b-f2925cda7f64"
+      },
+      {
+        "id": "vc-6MnZuS",
+        "type": "vc",
+        "name": "Redpoint Ventures",
+        "email": "info@redpoint.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Menlo Park",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC. Focus on consumer, enterprise, and infrastructure. AI governance alignment: moderate - broad tech focus. Contact: info@redpoint.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Geoff Yang",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "John Vrionis",
+              "title": "Partner"
+            },
+            {
+              "name": "Alex Rampell",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81ea-a850-cb7a0fd421e5"
+      },
+      {
+        "id": "vc-u538D9",
+        "type": "vc",
+        "name": "Homebrew",
+        "email": "info@homebrew.co",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Seed-stage VC. Satya Patel and Hunter Walk are co-founders. Focus on bottom-up SaaS and fintech. AI governance alignment: low - SaaS focus. Contact: info@homebrew.co",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Satya Patel",
+              "title": "Co-founder/Partner"
+            },
+            {
+              "name": "Hunter Walk",
+              "title": "Co-founder/Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81ed-8330-c0c50f516c2e"
+      },
+      {
+        "id": "vc-hbZwYq",
+        "type": "vc",
+        "name": "Shasta Ventures",
+        "email": "info@shastaventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "Multi-stage VC. Focus on consumer and enterprise tech. AI governance alignment: low - broad focus. Contact: info@shastaventures.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Rob Coneybeer",
+              "title": "Managing Director"
+            },
+            {
+              "name": "Nitin Chopra",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81ef-a0e8-d58b9cf8adfc"
+      },
+      {
+        "id": "vc-9waL3l",
+        "type": "vc",
+        "name": "NFX",
+        "email": "info@nfx.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palo Alto",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "NFX is a seed VC focused on network effects. James Currier is a well-known founder/investor. AI governance alignment: low - network effects thesis. Contact: info@nfx.com",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "James Currier",
+              "title": "Founding Partner"
+            },
+            {
+              "name": "Pete Flint",
+              "title": "Partner"
+            },
+            {
+              "name": "Gigi Levy-Weiss",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "32833487-4af6-81f6-878b-f0f519a78549"
+      },
+      {
+        "id": "vc-cpd-m3rj",
+        "type": "vc",
+        "name": "Compound VC",
+        "email": "jenny@compoundvc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jenny Fielding",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 0,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "pageId": "33433487-4af6-81b6-9fae-fc3d70353de1"
+      },
+      {
+        "id": "vc-WhU9jW",
+        "type": "vc",
+        "name": "First Round Capital",
+        "email": "pitch@firstround.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "Philadelphia",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660524 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Josh | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Josh Kopelman (Partner - founder",
+              "title": ""
+            },
+            {
+              "name": "zero-to-IPO expertise)",
+              "title": ""
+            },
+            {
+              "name": "Nick Rubin",
+              "title": "Investor"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "pageId": "30533487-4af6-8140-82dd-c6483d101058"
+      },
+      {
+        "id": "vc-J1XPeT",
+        "type": "vc",
+        "name": "Bessemer Venture Partners",
+        "email": "info@bvp.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "Global",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660526 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Elliott | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-but",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Elliott Robinson (Partner",
+              "title": ""
+            },
+            {
+              "name": "NYC - cloud/growth)",
+              "title": ""
+            },
+            {
+              "name": "Vishal Gupta (Partner",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 10,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "pageId": "30533487-4af6-8182-a700-c4b82e13f794"
+      },
+      {
+        "id": "vc-se4N0k",
+        "type": "vc",
+        "name": "Scale Venture Partners",
+        "email": "info@scalevp.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-32833487-4af6-1777357660527 | Entity ID: entity-32833487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Eric | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Eric Anderson",
+              "title": "Partner - AI/cloud/data"
+            },
+            {
+              "name": "Alex Niehenke",
+              "title": "Partner"
+            },
+            {
+              "name": "Andy Vitus",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 7,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "pageId": "32833487-4af6-8101-ba14-e5d9c7d8ccbb"
+      },
+      {
+        "id": "vc-2cz37A",
+        "type": "vc",
+        "name": "General Catalyst",
+        "email": "info@generalcatalyst.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "DRAFT READY | To: Hemant Taneja (Managing Director) | Subject: Alygn - Institutional Coordination for AI Scale | Variant: institutional\n\n---\nHi Hemant at General Catalyst,\n\nWhen AI systems scale beyond individual control, coordination becomes the bottleneck. Traditional oversight breaks down when no single actor can credibly intervene alone.\n\nAlygn is an independent institution focused on making accountability, emergency response, and cross-organization coordination actually work\u2014before crisis conditions force fragmented outcomes.\n\nYour public advocacy for responsible AI and tech accountability\u2014most notably your work on 'The AI Dilemma'\u2014resonates deeply with our view that governance infrastructure must be built before it's urgently needed.\n\nWe understand General Catalyst faces challenges such as:\n  - Portfolio companies facing coordination challenges as AI governance frameworks proliferate globally\n  - The gap between institutional readiness and the pace of AI capability deployment\n  - Cross-organization coordination failures when no single actor can credibly intervene alone\n\nLooking forward to exploring this with you.\n\nDiscuss institutional coordination: https://alygn.org\n\nP.S.: Your writing on tech accountability and responsible innovation aligns with our institutional approach to making governance coordination actually work at scale.\n\nP.S.: This message was AI-generated and verified by humans. Total transparency in our processes.\n\n---\nAlygn - Independent AI Governance Institution | Institutional Permanence\n\ud835\udd4f @aialygn | \ud83d\udcbc LinkedIn: https://linkedin.com/company/alygn",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Hemant Taneja",
+              "title": "Managing Director"
+            },
+            {
+              "name": "John Arnold",
+              "title": "Partner"
+            },
+            {
+              "name": "Katherine Boyle",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "pageId": "32833487-4af6-810e-88e8-ca3a89750cd5"
+      },
+      {
+        "id": "vc-qLHBQg",
+        "type": "vc",
+        "name": "Gradient Ventures (Google)",
+        "email": "info@gradient.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Mountain View",
+          "state": "",
+          "country": "CA",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728982+00:00",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728982+00:00",
+        "outreachCount": 0,
+        "researchNotes": "DRAFT READY | To: Darian Shirazi (General Partner) | Subject: Alygn - AI Governance for Gradient's Portfolio | Variant: governance\n\n---\nHi Darian at Gradient Ventures (Google),\n\nAlygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\nGiven Gradient's position as Google's AI-first venture fund\u2014backing companies building the AI infrastructure stack\u2014you recognize that technical capability is outpacing institutional coordination, and governance becomes the differentiator for sustainable AI companies.\n\nWe understand Gradient Ventures (Google) faces challenges such as:\n  - Portfolio companies needing governance frameworks that scale with their AI capabilities\n  - Coordination gaps between Google's AI principles and portfolio company implementation\n  - The institutional challenge of making oversight workable across diverse AI applications\n\nWe're interested in exploring how governance infrastructure can support your organization's work.\n\nLearn more about Alygn: https://alygn.org\n\nP.S.: Google's AI Principles and Gradient's focus on the AI-first tech stack demonstrate an understanding that governance and capability must co-evolve.\n\nP.S.: This message was AI-generated and verified by humans. Total transparency in our processes.\n\n---\nAlygn - Independent AI Governance Institution | Institutional Permanence\n\ud835\udd4f @aialygn | \ud83d\udcbc LinkedIn: https://linkedin.com/company/alygn",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Darian Shirazi",
+              "title": "General Partner"
+            },
+            {
+              "name": "Zach Bratun-Glennon",
+              "title": "General Partner"
+            },
+            {
+              "name": "Andrew Brackin",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "pageId": "32833487-4af6-8196-a3d6-c4aca1a3fdf8"
+      }
+    ]
+  }
+}

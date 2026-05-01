@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-04-28T17:18:51.780Z",
+  "type": "municipal",
+  "phase": "pipeline",
+  "data": {
+    "dryRun": true,
+    "type": "municipal",
+    "mode": "dry-run",
+    "stages": {
+      "discover": {
+        "action": "discover",
+        "dryRun": true,
+        "discovered": 1,
+        "results": [
+          {
+            "id": "entity-moiw4fd7-x98aay",
+            "name": "Municipalidad de San José",
+            "email": null,
+            "website": "https://www.sanjosé.go.cr"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-discover/alygn-municipal-discovered-2026-04-28.json"
+      },
+      "validate": {
+        "action": "validate",
+        "dryRun": true,
+        "validated": 1,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-validate/alygn-municipal-validated-2026-04-28.json"
+      },
+      "research": {
+        "action": "research",
+        "dryRun": true,
+        "researched": 1,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-research/alygn-municipal-researched-2026-04-28.json"
+      },
+      "personalize": {
+        "action": "personalize",
+        "dryRun": true,
+        "personalized": 1,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "subject": "Apoyando la transformación digital de San José",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-personalize/alygn-municipal-personalized-2026-04-28.json"
+      },
+      "send": {
+        "action": "send",
+        "dryRun": true,
+        "sent": 0,
+        "failed": 1,
+        "results": [
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-sent/alygn-municipal-sent-2026-04-28.json"
+      }
+    },
+    "summary": {
+      "discovered": 1,
+      "validated": 1,
+      "researched": 1,
+      "personalized": 1,
+      "sent": 0
+    }
+  }
+}

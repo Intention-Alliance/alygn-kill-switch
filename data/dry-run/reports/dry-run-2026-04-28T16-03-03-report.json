@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "5",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 10",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-28T16-03-03 | 4/28/2026, 10:03:08 AM"
+      },
+      "timestamp": "2026-04-28T16:03:08.167Z"
+    },
+    {
+      "title": "VC Firms (5)",
+      "color": 1096065,
+      "description": "**Merantix Capital**\n   🌐 https://merantix-capital.com\n\n**Safe Artificial Intelligence Fund**\n   🌐 https://www.saif.vc\n\n**Ballistic Ventures**\n   🌐 https://ballisticventures.com\n\n**Evolution Equity Partners**\n\n**Fourth Revolution Capital**",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-28T16-03-03",
+  "timestamp": "2026-04-28T16-03-03"
+}

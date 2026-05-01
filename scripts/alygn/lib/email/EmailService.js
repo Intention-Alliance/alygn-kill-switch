@@ -56,15 +56,13 @@ export class EmailService {
       ? { to: this.testEmail, from, subject, html, text, cc }
       : payload;
 
-    return await traceOperation('send-email', async () => {
-      const result = await this.provider.send(actualPayload);
+    const result = await this.provider.send(actualPayload);
 
-      return {
-        ...result,
-        testMode: !!this.testEmail,
-        originalTo: this.testEmail ? payload.to : null
-      };
-    }, { 'email.to': to });
+    return {
+      ...result,
+      testMode: !!this.testEmail,
+      originalTo: this.testEmail ? payload.to : null
+    };
   }
 
   /**

@@ -44,5 +44,18 @@
   "logging": {
     "level": "info",
     "file": "./logs/outreach-listener.log"
+  },
+  "dedup_protocol": {
+    "description": "Triple-layer duplicate prevention for outreach cron jobs",
+    "wave_state_files": {
+      "vc": "$HOME/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json",
+      "municipal": "$HOME/.openclaw/workspace/reports/alygn/muni-waves/wave-state.json"
+    },
+    "exclusion_lists": {
+      "vc": "/tmp/alygn-dedup/exclude-vcs.txt",
+      "municipal": "/tmp/alygn-dedup/exclude-munis.txt"
+    },
+    "sources": ["notion", "supabase", "wave-state"],
+    "send_flag": "--dedup=true"
   }
 }

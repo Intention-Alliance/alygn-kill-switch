@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "text": "EU legislators failed to agree on rolling back AI rules overnight. The sticking point: how machinery and medical device rules intersect with AI oversight. Coordination gaps persist. #AIGovernance #AIPolicy",
+    "content": "EU legislators failed to agree on rolling back AI rules overnight. The sticking point: how machinery and medical device rules intersect with AI oversight. Coordination gaps persist. #AIGovernance #AIPolicy",
+    "source": "https://www.politico.eu/article/eu-legislators-fail-to-clinch-deal-to-delay-ai-law/",
+    "type": "main"
+  },
+  {
+    "id": "1-reply",
+    "text": "When multiple jurisdictions pull in different directions, voluntary commitments become coordination gaps. Neutral infrastructure for shared verification is what's missing. \ud83d\udcda Source: https://tinyurl.com/23bfetbw",
+    "content": "When multiple jurisdictions pull in different directions, voluntary commitments become coordination gaps. Neutral infrastructure for shared verification is what's missing. \ud83d\udcda Source: https://tinyurl.com/23bfetbw",
+    "source": "https://www.politico.eu/article/eu-legislators-fail-to-clinch-deal-to-delay-ai-law/",
+    "type": "reply"
+  },
+  {
+    "id": 2,
+    "text": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition. 10 European countries now resist deregulation proposals. Institutional coordination matters. #AIGovernance #AIRisk",
+    "content": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition. 10 European countries now resist deregulation proposals. Institutional coordination matters. #AIGovernance #AIRisk",
+    "source": "https://www.politico.eu/article/germany-stronger-ai-deregulation-brussels-eu-opposition/",
+    "type": "main"
+  },
+  {
+    "id": "2-reply",
+    "text": "Fragmented regulatory approaches across jurisdictions erode accountability. Neutral coordination infrastructure supports cross-border trust without favoring any single actor. \ud83d\udcda Source: https://tinyurl.com/2y75bcxf",
+    "content": "Fragmented regulatory approaches across jurisdictions erode accountability. Neutral coordination infrastructure supports cross-border trust without favoring any single actor. \ud83d\udcda Source: https://tinyurl.com/2y75bcxf",
+    "source": "https://www.politico.eu/article/germany-stronger-ai-deregulation-brussels-eu-opposition/",
+    "type": "reply"
+  },
+  {
+    "id": 3,
+    "text": "US Congress introduces consolidated AI bill package covering safety, transparency, and accountability. Bipartisan momentum toward institutional oversight frameworks. #AISafety #AIRegulation",
+    "content": "US Congress introduces consolidated AI bill package covering safety, transparency, and accountability. Bipartisan momentum toward institutional oversight frameworks. #AISafety #AIRegulation",
+    "source": "https://www.nextgov.com/artificial-intelligence/2026/04/lieu-and-obernolte-introduce-consolidated-ai-bill-package/413134/",
+    "type": "main"
+  },
+  {
+    "id": "3-reply",
+    "text": "Legislative progress signals institutional demand for coordination. Process legitimacy comes from iterative, inclusive design\u2014not unilateral mandates. \ud83d\udcda Source: https://tinyurl.com/245cfobc",
+    "content": "Legislative progress signals institutional demand for coordination. Process legitimacy comes from iterative, inclusive design\u2014not unilateral mandates. \ud83d\udcda Source: https://tinyurl.com/245cfobc",
+    "source": "https://www.nextgov.com/artificial-intelligence/2026/04/lieu-and-obernolte-introduce-consolidated-ai-bill-package/413134/",
+    "type": "reply"
+  }
+]

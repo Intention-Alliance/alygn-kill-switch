@@ -10,10 +10,10 @@
  * 5. Calculate confidence scores based on source agreement
  */
 
-import { GrantEntity } from '../../entities/GrantEntity';
-import type { ResearchSource, PartialGrantEntity } from '../../types/index';
 import fs from 'fs';
 import path from 'path';
+import { GrantEntity } from '../../entities/GrantEntity';
+import type { ResearchSource } from '../../types/index';
 
 /**
  * Strategy for deep research on discovered grants
@@ -212,7 +212,7 @@ export class GrantResearchStrategy {
     }
 
     if (this.config.useDirectAPI) {
-      const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+      const credentialsPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
       let apiKey = this.config.perplexityApiKey;
       
       if (!apiKey && fs.existsSync(credentialsPath)) {

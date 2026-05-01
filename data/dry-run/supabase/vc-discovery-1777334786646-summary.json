@@ -1,0 +1,11 @@
+{
+  "dryRunId": "vc-discovery-1777334786646",
+  "timestamp": "2026-04-28T00-06-26",
+  "tables": {
+    "municipalities": 0,
+    "local_governments": 0,
+    "outreach_emails": 0,
+    "political_figures": 20
+  },
+  "outputDir": "/home/andlersrv/.openclaw/workspace/data/dry-run/supabase"
+}

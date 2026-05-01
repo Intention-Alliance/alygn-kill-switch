@@ -6,6 +6,10 @@ interface SessionMonitorProps {
   children: React.ReactNode;
 }
 
+/**
+ * SessionMonitor — Idle timer that warns before auto-logout.
+ * Uses the AuthProvider's logout() which delegates to better-auth signOut.
+ */
 export function SessionMonitor({ children }: SessionMonitorProps) {
   const { isAuthenticated, logout } = useAuth();
   const [showWarning, setShowWarning] = useState(false);
@@ -31,7 +35,7 @@ export function SessionMonitor({ children }: SessionMonitorProps) {
       'touchstart',
       'mousemove',
       'click',
-    ];
+    ] as const;
 
     events.forEach((event) => {
       window.addEventListener(event, resetActivity, { passive: true });
@@ -53,14 +57,14 @@ export function SessionMonitor({ children }: SessionMonitorProps) {
     const interval = setInterval(() => {
       const elapsed = Date.now() - lastActivityRef.current;
 
-      // Auto-logout at 15 minutes of inactivity
+      // Auto-logout at configured timeout of inactivity
       if (elapsed >= SESSION_CONFIG.timeoutMs) {
         logout();
         window.location.href = '/login?reason=session_timeout';
         return;
       }
 
-      // Show warning at 12 minutes (only once per session unless dismissed)
+      // Show warning at warning threshold (only once per session)
       if (
         elapsed >= SESSION_WARNING_MS &&
         !warningShownRef.current &&
@@ -109,12 +113,14 @@ export function SessionMonitor({ children }: SessionMonitorProps) {
               <button
                 onClick={dismissWarning}
                 className="rounded px-3 py-1 text-sm text-yellow-200 hover:bg-yellow-800/50"
+                type="button"
               >
                 Dismiss
               </button>
               <button
                 onClick={extendSession}
                 className="rounded bg-yellow-600 px-3 py-1 text-sm font-medium text-white hover:bg-yellow-500"
+                type="button"
               >
                 Stay logged in
               </button>

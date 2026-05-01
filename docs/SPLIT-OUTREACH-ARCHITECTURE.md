@@ -114,7 +114,7 @@ Current monolithic approach (`alygn-muni-outreach.lobster`) suffers from:
 
 | Cronjob                | Schedule       | Time     | Purpose                       |
 | ---------------------- | -------------- | -------- | ----------------------------- |
-| `alygn-muni-evening`   | `0 19 * * 1-5` | 7:00 PM  | Research next municipal batch |
+| `alygn-muni-evening`   | `0 19 * * 0-4` | 7:00 PM  | Research next municipal batch |
 | `alygn-muni-morning`   | `0 10 * * 1-5` | 10:00 AM | Generate municipal drafts     |
 | `alygn-muni-afternoon` | `0 15 * * 1-5` | 3:00 PM  | Handle municipal failures     |
 
@@ -719,7 +719,7 @@ notifications:
 ```yaml
 name: alygn-muni-evening
 description: Research next day's municipal batch
-schedule: "0 19 * * 1-5" # 7 PM weekdays
+schedule: "0 19 * * *" # 7 PM daily
 timezone: America/Costa_Rica
 
 metadata:

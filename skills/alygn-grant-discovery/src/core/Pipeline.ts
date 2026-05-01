@@ -42,6 +42,8 @@ export class GrantDiscoveryPipeline {
   private emailService?: GrantDiscoveryEmailService;
   private grants: GrantEntity[] = [];
 
+  private HOME: string = process.env.HOME || '/home/andlersrv'
+
   /**
    * Creates a new pipeline instance
    * 
@@ -389,7 +391,7 @@ export class GrantDiscoveryPipeline {
    */
   private saveState(phase: string, grants: GrantEntity[], changes?: GrantChange[]): string {
     const timestamp = new Date().toISOString().split('T')[0];
-    const filePath = `${process.env.HOME}/.openclaw/workspace/reports/alygn/grants/alygn-grant-${phase}-${timestamp}.json`;
+    const filePath = `${this.HOME}/.openclaw/workspace/reports/alygn/grants/alygn-grant-${phase}-${timestamp}.json`;
     
     fs.writeFileSync(filePath, JSON.stringify({
       timestamp: new Date().toISOString(),
@@ -436,7 +438,7 @@ export class GrantDiscoveryPipeline {
    */
   private loadLatestState(phase: string): { grants: GrantEntity[]; changes?: GrantChange[] } | null {
     const pattern = new RegExp(`alygn-grant-${phase}-.*\\.json$`);
-    const reportsDir = `${process.env.HOME}/.openclaw/workspace/reports/alygn/grants`;
+    const reportsDir = `${HOME}/.openclaw/workspace/reports/alygn/grants`;
     
     if (!fs.existsSync(reportsDir)) {
       return null;

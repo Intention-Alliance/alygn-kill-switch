@@ -1,0 +1,930 @@
+{
+  "timestamp": "2026-05-01T00:10:24.817Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 6,
+    "entities": [
+      {
+        "id": "vc-ekBO8X",
+        "type": "vc",
+        "name": "Frontier Capital",
+        "email": "investors@frontiercap.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "2026-03-25: ZeroBounce validation FAILED - investors@frontiercap.com blocked (role_based/do_not_mail). Need personal partner email (firstname@frontiercap.com).",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 90,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "vc-spark-7fec5b",
+        "type": "vc",
+        "name": "Spark Capital",
+        "email": "natalie@sparkcapital.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "low",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "Natalie Sandman no longer at firm - email bounced",
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Natalie Sandman",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 0,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-moitf0wq-fmj6nk",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": "richard@evolutionequity.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T16:03:07.226Z",
+        "lastUpdatedAt": "2026-05-01T00:09:56.122Z",
+        "outreachCount": 0,
+        "researchNotes": "Evolution Equity Partners is a New York-based VC firm specializing in cybersecurity software, with a growing focus on AI security investments that address safety risks in AI agents, ML systems, and applications. Their portfolio includes key players like Noma Security and Protect AI, emphasizing secure AI adoption amid rapid innovation.",
+        "personalizationContext": {
+          "painPoints": [
+            "Rapid AI adoption requiring enterprise-grade security for AI agents and ML pipelines",
+            "Risks in MLOps including exploits, prompt injections, and model vulnerabilities",
+            "Need for visibility, auditability, and security in AI systems"
+          ],
+          "tailoredHook": "Evolution's deep expertise in AI/ML security aligns with Alygn's governance and alignment priorities, offering portfolio companies with robust safety tools and a track record of scaling AI security leaders for enterprise adoption.",
+          "recentNews": "Investments in AI TRiSM (Trust, Risk, and Security Management) leaders like Noma Security, recognized by Gartner"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Series B"
+          ],
+          "sectorFocus": [
+            "AI Safety",
+            "AI Security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder"
+            }
+          ],
+          "portfolioCompanies": [
+            "Noma Security",
+            "Protect AI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Noma Security",
+              "date": "July 31, 2025",
+              "stage": "Series B ($100M)"
+            },
+            {
+              "company": "Protect AI",
+              "date": "Approximately 2023-2024",
+              "stage": "Series A ($35M)"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-moitf0wq-gsvekk",
+        "type": "vc",
+        "name": "Sound Ventures",
+        "email": "effie@soundventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T16:03:07.226Z",
+        "lastUpdatedAt": "2026-05-01T00:10:07.625Z",
+        "outreachCount": 0,
+        "researchNotes": "Sound Ventures, co-founded by Ashton Kutcher and Guy Oseary, is an early-stage VC firm with a strong AI focus, having raised a $240M AI fund and invested in foundational AI leaders like OpenAI and Anthropic. It demonstrates commitment to AI safety and governance through its recent lead investment in WitnessAI, a platform for securing enterprise AI agents and ensuring alignment with security and privacy protocols.",
+        "personalizationContext": {
+          "painPoints": [
+            "Primary barrier to enterprise AI adoption is tech doubt, not tech debt [1]",
+            "Securing AI agents and managing data access in corporate infrastructures [2]",
+            "Alignment with security protocols and data privacy regulations for internal AI tools [2]"
+          ],
+          "tailoredHook": "Sound Ventures' lead investment in WitnessAI directly targets AI governance, security, and alignment challenges critical for safe enterprise AI deployment, aligning with Alygn's mission through their hands-on support for AI infrastructure reshaping categories and emphasis on mitigating tech doubt via robust safety measures.",
+          "recentNews": "Led $58M round in WitnessAI for AI security and governance platform [1][2][8]"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Strategic Funding"
+          ],
+          "sectorFocus": [
+            "AI Safety",
+            "Enterprise AI Security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Ashton Kutcher",
+              "title": "General Partner"
+            },
+            {
+              "name": "Guy Oseary",
+              "title": "General Partner"
+            },
+            {
+              "name": "Effie Epstein",
+              "title": "General Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "OpenAI",
+            "Anthropic",
+            "StabilityAI",
+            "WitnessAI",
+            "Airbnb",
+            "Uber",
+            "Flexport",
+            "GitLab",
+            "SentinelOne"
+          ],
+          "recentInvestments": [
+            {
+              "company": "WitnessAI",
+              "date": "February 2026",
+              "stage": "Undisclosed (follow-on after Series A)"
+            },
+            {
+              "company": "WitnessAI",
+              "date": "January 2026",
+              "stage": "Undisclosed ($58M round)"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-moitf1mu-jpg7gl",
+        "type": "vc",
+        "name": "Merantix Capital",
+        "email": "adrian@merantix.com",
+        "website": "https://merantix-capital.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T16:03:08.166Z",
+        "lastUpdatedAt": "2026-05-01T00:10:18.556Z",
+        "outreachCount": 0,
+        "researchNotes": "Merantix Capital actively invests in and promotes AI safety, governance, and alignment through dedicated focus on pre-seed/seed AI companies addressing harmful AI consequences, including alignment problems, security, robustness, and risks like disinformation and cyber attacks.",
+        "personalizationContext": {
+          "painPoints": [
+            "Outdated financial systems inefficient for AI integration",
+            "Harmful AI consequences including misalignment, security risks, biosecurity, pandemics, cyber attacks, disinformation, mass unemployment"
+          ],
+          "tailoredHook": "Merantix Capital's strong emphasis on AI safety, alignment, and governance directly aligns with Alygn's mission, offering pre-seed/seed investment opportunities, an active investor network, and Europe's largest AI community for scaling safety-focused ventures.",
+          "recentNews": "Explicit investment in AI safety to mitigate harmful consequences from AI deployment"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A"
+          ],
+          "sectorFocus": [
+            "AI Safety",
+            "AI"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Matilda Glynn-Henley",
+              "title": "Investor"
+            },
+            {
+              "name": "Adrian Locher",
+              "title": "Co-founder and GP"
+            }
+          ],
+          "portfolioCompanies": [
+            "AI safety startups (unspecified)"
+          ],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-moitf1mu-g216se",
+        "type": "vc",
+        "name": "Fourth Revolution Capital",
+        "email": "edward@fourthrevolution.capital",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T16:03:08.166Z",
+        "lastUpdatedAt": "2026-05-01T00:10:24.816Z",
+        "outreachCount": 0,
+        "researchNotes": "Fourth Revolution Capital (4RC) invests in blockchain and AI as the foundational digital infrastructure for the Fourth Industrial Revolution, partnering with visionary founders to unlock financial and creative freedom through innovations in token economics, on-chain governance, and institutional distribution.[1][2]",
+        "personalizationContext": {
+          "painPoints": [
+            "No publicly available portfolio companies, partners, or recent investments focused specifically on AI safety, governance, or alignment in search results.[1][2][4]",
+            "Limited evidence of investments targeting AI safety or alignment; emphasis is on general blockchain-AI intersection rather than safety/governance specifics.[1][2]",
+            "Search results lack detailed deal history or AI safety-related portfolio examples.[4][5]"
+          ],
+          "tailoredHook": "Limited fit due to absence of explicit AI safety, governance, or alignment investments; 4RC focuses broadly on blockchain-AI infrastructure without highlighted safety emphasis, making it less aligned for specialized AI safety portfolios.",
+          "recentNews": "Supports on-chain governance in portfolio companies as part of investment services.[1][2]"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed"
+          ],
+          "sectorFocus": [
+            "AI Safety",
+            "AI",
+            "Data"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "status \"Invalid email\" prevents research",
+          "status": "Invalid email",
+          "pageId": "32833487-4af6-81ae-8c84-f911763b18ce"
+        },
+        "entity": {
+          "id": "vc-ekBO8X",
+          "type": "vc",
+          "name": "Frontier Capital",
+          "email": "investors@frontiercap.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "",
+            "state": "",
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "high",
+          "discoveredAt": "2026-04-28T08:32:00.728Z",
+          "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+          "outreachCount": 0,
+          "researchNotes": "2026-03-25: ZeroBounce validation FAILED - investors@frontiercap.com blocked (role_based/do_not_mail). Need personal partner email (firstname@frontiercap.com).",
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 90,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "status \"Invalid email\" prevents research",
+          "status": "Invalid email",
+          "pageId": "33333487-4af6-81c1-aae2-fd1af083d78a"
+        },
+        "entity": {
+          "id": "vc-spark-7fec5b",
+          "type": "vc",
+          "name": "Spark Capital",
+          "email": "natalie@sparkcapital.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "",
+            "state": "",
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "low",
+          "discoveredAt": "2026-04-28T08:32:00.728Z",
+          "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+          "outreachCount": 0,
+          "researchNotes": "Natalie Sandman no longer at firm - email bounced",
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Natalie Sandman",
+                "title": ""
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 0,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Evolution Equity Partners is a New York-based VC firm specializing in cybersecurity software, with a growing focus on AI security investments that address safety risks in AI agents, ML systems, and applications. Their portfolio includes key players like Noma Security and Protect AI, emphasizing secure AI adoption amid rapid innovation.",
+          "portfolio": [
+            "Noma Security",
+            "Protect AI"
+          ],
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Noma Security",
+              "date": "July 31, 2025",
+              "stage": "Series B ($100M)"
+            },
+            {
+              "company": "Protect AI",
+              "date": "Approximately 2023-2024",
+              "stage": "Series A ($35M)"
+            }
+          ],
+          "painPoints": [
+            "Rapid AI adoption requiring enterprise-grade security for AI agents and ML pipelines",
+            "Risks in MLOps including exploits, prompt injections, and model vulnerabilities",
+            "Need for visibility, auditability, and security in AI systems"
+          ],
+          "governanceSignals": [
+            "Investments in AI TRiSM (Trust, Risk, and Security Management) leaders like Noma Security, recognized by Gartner",
+            "Focus on cybersecurity governance for AI-powered world via platforms like Protect AI",
+            "Leadership quoting intimate familiarity with AI security category"
+          ],
+          "whyAlygn": "Evolution's deep expertise in AI/ML security aligns with Alygn's governance and alignment priorities, offering portfolio companies with robust safety tools and a track record of scaling AI security leaders for enterprise adoption."
+        },
+        "entity": {
+          "id": "entity-moitf0wq-fmj6nk",
+          "type": "vc",
+          "name": "Evolution Equity Partners",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T16:03:07.226Z",
+          "lastUpdatedAt": "2026-05-01T00:09:56.122Z",
+          "outreachCount": 0,
+          "researchNotes": "Evolution Equity Partners is a New York-based VC firm specializing in cybersecurity software, with a growing focus on AI security investments that address safety risks in AI agents, ML systems, and applications. Their portfolio includes key players like Noma Security and Protect AI, emphasizing secure AI adoption amid rapid innovation.",
+          "personalizationContext": {
+            "painPoints": [
+              "Rapid AI adoption requiring enterprise-grade security for AI agents and ML pipelines",
+              "Risks in MLOps including exploits, prompt injections, and model vulnerabilities",
+              "Need for visibility, auditability, and security in AI systems"
+            ],
+            "tailoredHook": "Evolution's deep expertise in AI/ML security aligns with Alygn's governance and alignment priorities, offering portfolio companies with robust safety tools and a track record of scaling AI security leaders for enterprise adoption.",
+            "recentNews": "Investments in AI TRiSM (Trust, Risk, and Security Management) leaders like Noma Security, recognized by Gartner"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Series B"
+            ],
+            "sectorFocus": [
+              "AI Safety",
+              "AI Security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Richard Seewald",
+                "title": "Founder and Managing Partner"
+              },
+              {
+                "name": "Dennis Smith",
+                "title": "Founder"
+              }
+            ],
+            "portfolioCompanies": [
+              "Noma Security",
+              "Protect AI"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Noma Security",
+                "date": "July 31, 2025",
+                "stage": "Series B ($100M)"
+              },
+              {
+                "company": "Protect AI",
+                "date": "Approximately 2023-2024",
+                "stage": "Series A ($35M)"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Sound Ventures, co-founded by Ashton Kutcher and Guy Oseary, is an early-stage VC firm with a strong AI focus, having raised a $240M AI fund and invested in foundational AI leaders like OpenAI and Anthropic. It demonstrates commitment to AI safety and governance through its recent lead investment in WitnessAI, a platform for securing enterprise AI agents and ensuring alignment with security and privacy protocols.",
+          "portfolio": [
+            "OpenAI",
+            "Anthropic",
+            "StabilityAI",
+            "WitnessAI",
+            "Airbnb",
+            "Uber",
+            "Flexport",
+            "GitLab",
+            "SentinelOne"
+          ],
+          "partners": [
+            {
+              "name": "Ashton Kutcher",
+              "title": "General Partner"
+            },
+            {
+              "name": "Guy Oseary",
+              "title": "General Partner"
+            },
+            {
+              "name": "Effie Epstein",
+              "title": "General Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "WitnessAI",
+              "date": "February 2026",
+              "stage": "Undisclosed (follow-on after Series A)"
+            },
+            {
+              "company": "WitnessAI",
+              "date": "January 2026",
+              "stage": "Undisclosed ($58M round)"
+            }
+          ],
+          "painPoints": [
+            "Primary barrier to enterprise AI adoption is tech doubt, not tech debt [1]",
+            "Securing AI agents and managing data access in corporate infrastructures [2]",
+            "Alignment with security protocols and data privacy regulations for internal AI tools [2]"
+          ],
+          "governanceSignals": [
+            "Led $58M round in WitnessAI for AI security and governance platform [1][2][8]",
+            "Early investor in OpenAI and Anthropic, AI safety leaders [1][3]",
+            "Focus on safe, secure enterprise AI as leading standard [1]",
+            "Investing in AI security startups addressing agent-related threats [2]"
+          ],
+          "whyAlygn": "Sound Ventures' lead investment in WitnessAI directly targets AI governance, security, and alignment challenges critical for safe enterprise AI deployment, aligning with Alygn's mission through their hands-on support for AI infrastructure reshaping categories and emphasis on mitigating tech doubt via robust safety measures."
+        },
+        "entity": {
+          "id": "entity-moitf0wq-gsvekk",
+          "type": "vc",
+          "name": "Sound Ventures",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T16:03:07.226Z",
+          "lastUpdatedAt": "2026-05-01T00:10:07.625Z",
+          "outreachCount": 0,
+          "researchNotes": "Sound Ventures, co-founded by Ashton Kutcher and Guy Oseary, is an early-stage VC firm with a strong AI focus, having raised a $240M AI fund and invested in foundational AI leaders like OpenAI and Anthropic. It demonstrates commitment to AI safety and governance through its recent lead investment in WitnessAI, a platform for securing enterprise AI agents and ensuring alignment with security and privacy protocols.",
+          "personalizationContext": {
+            "painPoints": [
+              "Primary barrier to enterprise AI adoption is tech doubt, not tech debt [1]",
+              "Securing AI agents and managing data access in corporate infrastructures [2]",
+              "Alignment with security protocols and data privacy regulations for internal AI tools [2]"
+            ],
+            "tailoredHook": "Sound Ventures' lead investment in WitnessAI directly targets AI governance, security, and alignment challenges critical for safe enterprise AI deployment, aligning with Alygn's mission through their hands-on support for AI infrastructure reshaping categories and emphasis on mitigating tech doubt via robust safety measures.",
+            "recentNews": "Led $58M round in WitnessAI for AI security and governance platform [1][2][8]"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Strategic Funding"
+            ],
+            "sectorFocus": [
+              "AI Safety",
+              "Enterprise AI Security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Ashton Kutcher",
+                "title": "General Partner"
+              },
+              {
+                "name": "Guy Oseary",
+                "title": "General Partner"
+              },
+              {
+                "name": "Effie Epstein",
+                "title": "General Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "OpenAI",
+              "Anthropic",
+              "StabilityAI",
+              "WitnessAI",
+              "Airbnb",
+              "Uber",
+              "Flexport",
+              "GitLab",
+              "SentinelOne"
+            ],
+            "recentInvestments": [
+              {
+                "company": "WitnessAI",
+                "date": "February 2026",
+                "stage": "Undisclosed (follow-on after Series A)"
+              },
+              {
+                "company": "WitnessAI",
+                "date": "January 2026",
+                "stage": "Undisclosed ($58M round)"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Merantix Capital actively invests in and promotes AI safety, governance, and alignment through dedicated focus on pre-seed/seed AI companies addressing harmful AI consequences, including alignment problems, security, robustness, and risks like disinformation and cyber attacks.",
+          "portfolio": [
+            "AI safety startups (unspecified)"
+          ],
+          "partners": [
+            {
+              "name": "Matilda Glynn-Henley",
+              "title": "Investor"
+            },
+            {
+              "name": "Adrian Locher",
+              "title": "Co-founder and GP"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "Outdated financial systems inefficient for AI integration",
+            "Harmful AI consequences including misalignment, security risks, biosecurity, pandemics, cyber attacks, disinformation, mass unemployment"
+          ],
+          "governanceSignals": [
+            "Explicit investment in AI safety to mitigate harmful consequences from AI deployment",
+            "Focus on AI alignment (ensuring AI does what creators intend)",
+            "AI-driven digital trust for content moderation, fraud flagging, identity verification",
+            "Investor outreach for AI safety founders via matilda@merantix.com",
+            "National security applications using AI for surveillance and risk assessment"
+          ],
+          "whyAlygn": "Merantix Capital's strong emphasis on AI safety, alignment, and governance directly aligns with Alygn's mission, offering pre-seed/seed investment opportunities, an active investor network, and Europe's largest AI community for scaling safety-focused ventures."
+        },
+        "entity": {
+          "id": "entity-moitf1mu-jpg7gl",
+          "type": "vc",
+          "name": "Merantix Capital",
+          "email": null,
+          "website": "https://merantix-capital.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T16:03:08.166Z",
+          "lastUpdatedAt": "2026-05-01T00:10:18.556Z",
+          "outreachCount": 0,
+          "researchNotes": "Merantix Capital actively invests in and promotes AI safety, governance, and alignment through dedicated focus on pre-seed/seed AI companies addressing harmful AI consequences, including alignment problems, security, robustness, and risks like disinformation and cyber attacks.",
+          "personalizationContext": {
+            "painPoints": [
+              "Outdated financial systems inefficient for AI integration",
+              "Harmful AI consequences including misalignment, security risks, biosecurity, pandemics, cyber attacks, disinformation, mass unemployment"
+            ],
+            "tailoredHook": "Merantix Capital's strong emphasis on AI safety, alignment, and governance directly aligns with Alygn's mission, offering pre-seed/seed investment opportunities, an active investor network, and Europe's largest AI community for scaling safety-focused ventures.",
+            "recentNews": "Explicit investment in AI safety to mitigate harmful consequences from AI deployment"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A"
+            ],
+            "sectorFocus": [
+              "AI Safety",
+              "AI"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Matilda Glynn-Henley",
+                "title": "Investor"
+              },
+              {
+                "name": "Adrian Locher",
+                "title": "Co-founder and GP"
+              }
+            ],
+            "portfolioCompanies": [
+              "AI safety startups (unspecified)"
+            ],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Fourth Revolution Capital (4RC) invests in blockchain and AI as the foundational digital infrastructure for the Fourth Industrial Revolution, partnering with visionary founders to unlock financial and creative freedom through innovations in token economics, on-chain governance, and institutional distribution.[1][2]",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "No publicly available portfolio companies, partners, or recent investments focused specifically on AI safety, governance, or alignment in search results.[1][2][4]",
+            "Limited evidence of investments targeting AI safety or alignment; emphasis is on general blockchain-AI intersection rather than safety/governance specifics.[1][2]",
+            "Search results lack detailed deal history or AI safety-related portfolio examples.[4][5]"
+          ],
+          "governanceSignals": [
+            "Supports on-chain governance in portfolio companies as part of investment services.[1][2]"
+          ],
+          "whyAlygn": "Limited fit due to absence of explicit AI safety, governance, or alignment investments; 4RC focuses broadly on blockchain-AI infrastructure without highlighted safety emphasis, making it less aligned for specialized AI safety portfolios."
+        },
+        "entity": {
+          "id": "entity-moitf1mu-g216se",
+          "type": "vc",
+          "name": "Fourth Revolution Capital",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T16:03:08.166Z",
+          "lastUpdatedAt": "2026-05-01T00:10:24.816Z",
+          "outreachCount": 0,
+          "researchNotes": "Fourth Revolution Capital (4RC) invests in blockchain and AI as the foundational digital infrastructure for the Fourth Industrial Revolution, partnering with visionary founders to unlock financial and creative freedom through innovations in token economics, on-chain governance, and institutional distribution.[1][2]",
+          "personalizationContext": {
+            "painPoints": [
+              "No publicly available portfolio companies, partners, or recent investments focused specifically on AI safety, governance, or alignment in search results.[1][2][4]",
+              "Limited evidence of investments targeting AI safety or alignment; emphasis is on general blockchain-AI intersection rather than safety/governance specifics.[1][2]",
+              "Search results lack detailed deal history or AI safety-related portfolio examples.[4][5]"
+            ],
+            "tailoredHook": "Limited fit due to absence of explicit AI safety, governance, or alignment investments; 4RC focuses broadly on blockchain-AI infrastructure without highlighted safety emphasis, making it less aligned for specialized AI safety portfolios.",
+            "recentNews": "Supports on-chain governance in portfolio companies as part of investment services.[1][2]"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed"
+            ],
+            "sectorFocus": [
+              "AI Safety",
+              "AI",
+              "Data"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

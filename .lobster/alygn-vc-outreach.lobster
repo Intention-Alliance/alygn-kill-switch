@@ -2,14 +2,14 @@ name: alygn-campaign
 description: Alygn VC outreach campaign with personalization - using alygn-outreach skill
 metadata:
   project: alygn
-  type: vc-outreach
+  type: vc
   wave: {{ LATEST_WAVE_NUMBER + 1 }}
   skill: alygn-outreach
   dependencies:
-    - supabase (remote PostgreSQL for duplicate checks)
-    - notion (VC tracker database)
+    - notion (VC tracker datasource)
     - perplexity (deep research API)
     - firecrawl (web scraping, optional with deepResearch)
+    - grok (personalization)
     - zerobounce (email validation)
     - smartlead (email sending)
 
@@ -79,7 +79,41 @@ metadata:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 steps:
-  # Phase 0: Sync existing VCs to Notion (ensures database is up to date)
+  # Phase 0: Wave-State Verification (PREVENTS DUPLICATE RUNS)
+  # Checks if a wave is already running or completed today
+  - id: phase0-wave-check
+    command: |
+      WAVE_STATE_FILE="$HOME/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json"
+      if [ -f "$WAVE_STATE_FILE" ]; then
+        LAST_UPDATED=$(jq -r '.lastUpdated // empty' "$WAVE_STATE_FILE" 2>/dev/null)
+        TODAY=$(date -u +%Y-%m-%d)
+        # Check if any waveDate for today is completed/sent
+        TODAY_STATUS=$(jq -r ".waveDates[\"$TODAY\"] // empty" "$WAVE_STATE_FILE" 2>/dev/null)
+        if [ "$TODAY_STATUS" = "sent" ] || [ "$TODAY_STATUS" = "completed" ]; then
+          echo "⚠️ VC wave already completed today (date: $TODAY, status: $TODAY_STATUS). Skipping."
+          exit 0
+        fi
+        # Check if lastUpdated within 24h and a wave is in sending state
+        if [ -n "$LAST_UPDATED" ]; then
+          LAST_EPOCH=$(date -d "$LAST_UPDATED" +%s 2>/dev/null || echo 0)
+          NOW_EPOCH=$(date +%s)
+          DIFF=$(( (NOW_EPOCH - LAST_EPOCH) / 3600 ))
+          if [ "$DIFF" -lt 24 ]; then
+            # Check for any wave in sending/running state
+            SENDING=$(jq -r '.waveDates | to_entries[] | select(.value == "sending" or .value == "running") | .key' "$WAVE_STATE_FILE" 2>/dev/null)
+            if [ -n "$SENDING" ]; then
+              echo "⚠️ VC wave currently in progress (lastUpdated: $LAST_UPDATED, sending wave: $SENDING). Skipping."
+              exit 0
+            fi
+          fi
+        fi
+        echo "✅ VC wave-state check passed. No active/completed wave today. Proceeding."
+      else
+        echo "✅ No wave-state file found. First run. Proceeding."
+      fi
+    description: "Check if VC wave already executed today - skip if so (duplicate prevention layer 1)"
+
+  # Phase 0.5: Sync existing VCs to Notion (ensures database is up to date)
   - id: phase0-sync
     command: bun $HOME/.agents/skills/alygn-outreach/src/core/sync-vcs-to-notion.ts
     description: "Sync existing VCs from JSON to Notion database"
@@ -105,14 +139,14 @@ steps:
       file: $HOME/.openclaw/workspace/reports/alygn/vc-validate/alygn-vc-validated-{timestamp}.json
 
   # Phase 2.5: Pre-research duplicate check
-  # Build exclusion list from all sources before researching
-  # FIXED: Query Notion API instead of local sent-emails.json (stale local data)
+  # Build exclusion list from all sources before researching (duplicate prevention layer 2)
+  # FIXED: Query Notion API + Supabase + wave-state entities (not just stale local data)
   - id: phase2-5-dedup-check
     command: |
       mkdir -p /tmp/alygn-dedup && \
       echo "🔍 Building exclusion list for duplicate prevention..." && \
       NOTION_KEY="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" && \
-      NOTION_DB="30b33487-4af6-8106-8cba-d304fdd0b600" && \
+      NOTION_DB="30533487-4af6-81ef-983d-f57c7f70de33" && \
       NOTION_VERSION="2022-06-28" && \
       (curl -s -X POST "https://api.notion.com/v1/databases/${NOTION_DB}/query" \
         -H "Authorization: Bearer ${NOTION_KEY}" \
@@ -121,12 +155,14 @@ steps:
         -d '{"filter": {"or": [{"property": "Status", "status": {"equals": "Contacted"}}, {"property": "Status", "status": {"equals": "Sent"}}]}}' \
         | jq -r '.results[]?.properties.Name.title[0].plain_text // .results[]?.properties["VC Name"].title[0].plain_text // empty' 2>/dev/null | sort -u > /tmp/alygn-dedup/notion-sent-vcs.txt || echo "" > /tmp/alygn-dedup/notion-sent-vcs.txt) && \
       echo "  ✓ Loaded Notion contacted/sent VCs ($(wc -l < /tmp/alygn-dedup/notion-sent-vcs.txt || echo 0) entries)" && \
-      (cat ~/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json 2>/dev/null | jq -r '.completedEntities // {} | keys[] as $k | .[$k].vcName // empty' | sort -u > /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/wave-state-vcs.txt) && \
-      echo "  ✓ Loaded wave-state.json ($(wc -l < /tmp/alygn-dedup/wave-state-vcs.txt || echo 0) entries)" && \
-      cat /tmp/alygn-dedup/notion-sent-vcs.txt /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-vcs.txt && \
+      (cat ~/.openclaw/workspace/reports/alygn/vc-waves/wave-state.json 2>/dev/null | jq -r '.entities.sent // {} | keys[] as $k | .[$k].vcName // .[$k].name // empty' | sort -u > /tmp/alygn-dedup/wave-state-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/wave-state-vcs.txt) && \
+      echo "  ✓ Loaded wave-state.json sent entities ($(wc -l < /tmp/alygn-dedup/wave-state-vcs.txt || echo 0) entries)" && \
+      (bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=check-sent 2>/dev/null | jq -r '.sent[]?.vcName // empty' | sort -u > /tmp/alygn-dedup/supabase-sent-vcs.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/supabase-sent-vcs.txt) && \
+      echo "  ✓ Loaded Supabase sent VCs ($(wc -l < /tmp/alygn-dedup/supabase-sent-vcs.txt || echo 0) entries)" && \
+      cat /tmp/alygn-dedup/notion-sent-vcs.txt /tmp/alygn-dedup/wave-state-vcs.txt /tmp/alygn-dedup/supabase-sent-vcs.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-vcs.txt && \
       echo "📊 Total excluded VCs: $(wc -l < /tmp/alygn-dedup/exclude-vcs.txt || echo 0)" && \
       echo "Exclusion list created at: /tmp/alygn-dedup/exclude-vcs.txt"
-    description: "Build exclusion list from Notion API (Contacted/Sent) and wave-state.json"
+    description: "Build exclusion list from Notion API + Supabase + wave-state entities (duplicate prevention layer 2)"
     after: phase2-validate
     output:
       file: /tmp/alygn-dedup/exclude-vcs.txt

@@ -1,0 +1,449 @@
+{
+  "timestamp": "2026-05-01T01:09:00.154Z",
+  "type": "municipal",
+  "phase": "researched",
+  "waveDate": "2026-05-01",
+  "count": 5,
+  "entities": [
+    {
+      "id": "entity-mom7sqk9-4btr2p",
+      "type": "municipal",
+      "name": "Municipalidad de Escazú",
+      "email": "alcaldia@escazú.go.cr",
+      "website": "https://www.escazú.go.cr",
+      "phone": null,
+      "location": {
+        "city": "Escazú",
+        "state": "San José",
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "researched",
+      "priority": "high",
+      "discoveredAt": "2026-05-01T01:09:00.152Z",
+      "lastUpdatedAt": "2026-05-01T01:09:00.154Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 91117,
+        "budget": 45000000,
+        "departments": [
+          {
+            "name": "Tecnología",
+            "focus": [
+              "transformación digital"
+            ]
+          },
+          {
+            "name": "Planificación",
+            "focus": [
+              "ciudad inteligente"
+            ]
+          }
+        ],
+        "keyContacts": [],
+        "initiatives": [
+          {
+            "name": "Transformación Digital Municipal",
+            "description": "Modernización de servicios ciudadanos",
+            "status": "active",
+            "budget": 2250000
+          },
+          {
+            "name": "Gobierno Abierto",
+            "description": "Transparencia y datos abiertos",
+            "status": "active",
+            "budget": 900000
+          }
+        ],
+        "painPoints": [
+          "Digital transformation complexity",
+          "Limited technical resources",
+          "Citizen service delivery",
+          "Data governance and privacy",
+          "Inter-agency coordination"
+        ],
+        "currentVendors": [],
+        "procurementProcess": null,
+        "decisionMakers": [],
+        "province": "San José",
+        "trAigaRelevant": true
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted",
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": null,
+      "municipalityId": null,
+      "localGovernmentId": null,
+      "outreachVariant": null,
+      "outreachSentAt": null,
+      "repliedAt": null,
+      "replySentiment": null,
+      "verifiedAt": null,
+      "researchedAt": null,
+      "xHandle": null,
+      "xUrl": null,
+      "xWarmupPhase1At": null,
+      "xWarmupPhase2At": null,
+      "xEngagementCount": null,
+      "xLastEngagementAt": null
+    },
+    {
+      "id": "entity-mom7sqk9-8shj5l",
+      "type": "municipal",
+      "name": "Municipalidad de Mora",
+      "email": "alcaldia@mora.go.cr",
+      "website": "https://www.mora.go.cr",
+      "phone": null,
+      "location": {
+        "city": "Mora",
+        "state": "San José",
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "researched",
+      "priority": "medium",
+      "discoveredAt": "2026-05-01T01:09:00.153Z",
+      "lastUpdatedAt": "2026-05-01T01:09:00.154Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 28378,
+        "budget": 22000000,
+        "departments": [
+          {
+            "name": "Tecnología",
+            "focus": [
+              "transformación digital"
+            ]
+          },
+          {
+            "name": "Planificación",
+            "focus": [
+              "ciudad inteligente"
+            ]
+          }
+        ],
+        "keyContacts": [],
+        "initiatives": [
+          {
+            "name": "Transformación Digital Municipal",
+            "description": "Modernización de servicios ciudadanos",
+            "status": "active",
+            "budget": 1100000
+          },
+          {
+            "name": "Gobierno Abierto",
+            "description": "Transparencia y datos abiertos",
+            "status": "active",
+            "budget": 440000
+          }
+        ],
+        "painPoints": [
+          "Digital transformation complexity",
+          "Limited technical resources",
+          "Citizen service delivery",
+          "Data governance and privacy",
+          "Inter-agency coordination"
+        ],
+        "currentVendors": [],
+        "procurementProcess": null,
+        "decisionMakers": [],
+        "province": "San José",
+        "trAigaRelevant": true
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted",
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": null,
+      "municipalityId": null,
+      "localGovernmentId": null,
+      "outreachVariant": null,
+      "outreachSentAt": null,
+      "repliedAt": null,
+      "replySentiment": null,
+      "verifiedAt": null,
+      "researchedAt": null,
+      "xHandle": null,
+      "xUrl": null,
+      "xWarmupPhase1At": null,
+      "xWarmupPhase2At": null,
+      "xEngagementCount": null,
+      "xLastEngagementAt": null
+    },
+    {
+      "id": "entity-mom7sqk9-msrb5r",
+      "type": "municipal",
+      "name": "Municipalidad de Goicoechea",
+      "email": "alcaldia@goicoechea.go.cr",
+      "website": "https://www.goicoechea.go.cr",
+      "phone": null,
+      "location": {
+        "city": "Goicoechea",
+        "state": "San José",
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "researched",
+      "priority": "high",
+      "discoveredAt": "2026-05-01T01:09:00.153Z",
+      "lastUpdatedAt": "2026-05-01T01:09:00.154Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 133022,
+        "budget": 60000000,
+        "departments": [
+          {
+            "name": "Tecnología",
+            "focus": [
+              "transformación digital"
+            ]
+          },
+          {
+            "name": "Planificación",
+            "focus": [
+              "ciudad inteligente"
+            ]
+          }
+        ],
+        "keyContacts": [],
+        "initiatives": [
+          {
+            "name": "Transformación Digital Municipal",
+            "description": "Modernización de servicios ciudadanos",
+            "status": "active",
+            "budget": 3000000
+          },
+          {
+            "name": "Gobierno Abierto",
+            "description": "Transparencia y datos abiertos",
+            "status": "active",
+            "budget": 1200000
+          }
+        ],
+        "painPoints": [
+          "Digital transformation complexity",
+          "Limited technical resources",
+          "Citizen service delivery",
+          "Data governance and privacy",
+          "Inter-agency coordination"
+        ],
+        "currentVendors": [],
+        "procurementProcess": null,
+        "decisionMakers": [],
+        "province": "San José",
+        "trAigaRelevant": true
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted",
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": null,
+      "municipalityId": null,
+      "localGovernmentId": null,
+      "outreachVariant": null,
+      "outreachSentAt": null,
+      "repliedAt": null,
+      "replySentiment": null,
+      "verifiedAt": null,
+      "researchedAt": null,
+      "xHandle": null,
+      "xUrl": null,
+      "xWarmupPhase1At": null,
+      "xWarmupPhase2At": null,
+      "xEngagementCount": null,
+      "xLastEngagementAt": null
+    },
+    {
+      "id": "entity-mom7sqka-g30yu3",
+      "type": "municipal",
+      "name": "Municipalidad de Santa Ana",
+      "email": "alcaldia@santaana.go.cr",
+      "website": "https://www.santaana.go.cr",
+      "phone": null,
+      "location": {
+        "city": "Santa Ana",
+        "state": "San José",
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "researched",
+      "priority": "high",
+      "discoveredAt": "2026-05-01T01:09:00.154Z",
+      "lastUpdatedAt": "2026-05-01T01:09:00.154Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 67496,
+        "budget": 40000000,
+        "departments": [
+          {
+            "name": "Tecnología",
+            "focus": [
+              "transformación digital"
+            ]
+          },
+          {
+            "name": "Planificación",
+            "focus": [
+              "ciudad inteligente"
+            ]
+          }
+        ],
+        "keyContacts": [],
+        "initiatives": [
+          {
+            "name": "Transformación Digital Municipal",
+            "description": "Modernización de servicios ciudadanos",
+            "status": "active",
+            "budget": 2000000
+          },
+          {
+            "name": "Gobierno Abierto",
+            "description": "Transparencia y datos abiertos",
+            "status": "active",
+            "budget": 800000
+          }
+        ],
+        "painPoints": [
+          "Digital transformation complexity",
+          "Limited technical resources",
+          "Citizen service delivery",
+          "Data governance and privacy",
+          "Inter-agency coordination"
+        ],
+        "currentVendors": [],
+        "procurementProcess": null,
+        "decisionMakers": [],
+        "province": "San José",
+        "trAigaRelevant": true
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted",
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": null,
+      "municipalityId": null,
+      "localGovernmentId": null,
+      "outreachVariant": null,
+      "outreachSentAt": null,
+      "repliedAt": null,
+      "replySentiment": null,
+      "verifiedAt": null,
+      "researchedAt": null,
+      "xHandle": null,
+      "xUrl": null,
+      "xWarmupPhase1At": null,
+      "xWarmupPhase2At": null,
+      "xEngagementCount": null,
+      "xLastEngagementAt": null
+    },
+    {
+      "id": "entity-mom7sqka-rpcw9o",
+      "type": "municipal",
+      "name": "Municipalidad de Alajuelita",
+      "email": "alcaldia@alajuelita.go.cr",
+      "website": "https://www.alajuelita.go.cr",
+      "phone": null,
+      "location": {
+        "city": "Alajuelita",
+        "state": "San José",
+        "country": "Costa Rica",
+        "region": "San José"
+      },
+      "status": "researched",
+      "priority": "high",
+      "discoveredAt": "2026-05-01T01:09:00.154Z",
+      "lastUpdatedAt": "2026-05-01T01:09:00.154Z",
+      "outreachCount": 0,
+      "researchNotes": null,
+      "personalizationContext": null,
+      "typeData": {
+        "governmentType": "city",
+        "population": 89148,
+        "budget": 38000000,
+        "departments": [
+          {
+            "name": "Tecnología",
+            "focus": [
+              "transformación digital"
+            ]
+          },
+          {
+            "name": "Planificación",
+            "focus": [
+              "ciudad inteligente"
+            ]
+          }
+        ],
+        "keyContacts": [],
+        "initiatives": [
+          {
+            "name": "Transformación Digital Municipal",
+            "description": "Modernización de servicios ciudadanos",
+            "status": "active",
+            "budget": 1900000
+          },
+          {
+            "name": "Gobierno Abierto",
+            "description": "Transparencia y datos abiertos",
+            "status": "active",
+            "budget": 760000
+          }
+        ],
+        "painPoints": [
+          "Digital transformation complexity",
+          "Limited technical resources",
+          "Citizen service delivery",
+          "Data governance and privacy",
+          "Inter-agency coordination"
+        ],
+        "currentVendors": [],
+        "procurementProcess": null,
+        "decisionMakers": [],
+        "province": "San José",
+        "trAigaRelevant": true
+      },
+      "emailValidation": null,
+      "sentEmailId": null,
+      "sentAt": null,
+      "draftStatus": "Not drafted",
+      "waveNumber": null,
+      "waveDate": null,
+      "batchStatus": null,
+      "municipalityId": null,
+      "localGovernmentId": null,
+      "outreachVariant": null,
+      "outreachSentAt": null,
+      "repliedAt": null,
+      "replySentiment": null,
+      "verifiedAt": null,
+      "researchedAt": null,
+      "xHandle": null,
+      "xUrl": null,
+      "xWarmupPhase1At": null,
+      "xWarmupPhase2At": null,
+      "xEngagementCount": null,
+      "xLastEngagementAt": null
+    }
+  ]
+}

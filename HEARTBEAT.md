@@ -208,251 +208,131 @@ _Contact: contact@alyygn.com_
 
 ---
 
-## 🔄 ACTIVE WORK STREAMS (2026-04-16 09:19 CST)
+## 🎯 ACTIVE WORK STREAMS (2026-04-29 01:00 CST)
 
-### Stream 1: Phase 1 Critical Fixes (ALYGN Grant System)
+### Stream 0: ✅ ALYGN OUTREACH — TOMORROW'S SENDS PREPPED
 
-**Status:** ✅ **PHASE 1 COMPLETE** — 4/4 FIXED
+**Status:** ✅ **BOTH PIPELINES READY** — Morning check-in scheduled for 8:45 AM CST
 
-| Issue | Status | Agent | Result |
-|-------|--------|-------|--------|
-| C-001 | ✅ FIXED | Keridz | Spanish pain points restored in `fromCanton()` |
-| A-001 | ✅ COMPLETE | Chanshuk | Session coordination working, no fix needed |
-| B-001 | ✅ FIXED | Keridz | 5 regression vectors plugged, lang-guard + DB constraints, 23 tests |
-| D-001 | ✅ FIXED | Keridz | 3 additional English leaks fixed, 17 pipeline integration tests |
+**Tomorrow's Execution Plan:**
+| Time | Pipeline | Action | Ready |
+|------|----------|--------|-------|
+| **9:00 AM CST** | VC Outreach | Personalize + Send 3 emails | ✅ YES |
+| **10:00 AM CST** | Muni Outreach | Personalize + Send 4 municipalities | ✅ YES |
 
-**Final Test Results:** 40/40 tests passing (23 B-001 + 17 D-001)
+**VC Pipeline Summary:**
+- ✅ 20 VCs researched (Wave 2026-04-29)
+- ✅ 18 partner-level emails found (90% success)
+- ✅ 6 removed (already sent: Khosla, DCVC, etc.)
+- ✅ 14 VCs ready for pipeline
+- ✅ ZeroBounce validation complete (5 valid, 2 invalid but already contacted)
+- ✅ Tomorrow's first 3: `nathan@airstreet.com`, `jordan@radical.vc`, `josh@firstround.com`
 
-**Phase 1 Outcome:** Entire discovery pipeline now produces **fully Spanish content** across all code paths.
+**Muni Pipeline Summary:**
+- ✅ Wave 5 complete (4 new municipalities)
+- ✅ 82/82 cantones discovered, ~78 contacted (95% coverage)
+- ✅ Tomorrow's batch: Paraíso, Santa Barbara, Montes de Oro, Pococí
+- ✅ All emails valid, all data complete
+- ✅ Today's success: 11 municipalities sent
 
-**Follow-up Items (Phase 2):** P1-P3 items documented, ready for implementation.
+**Heartbeat Check-in Schedule:**
+- **8:45 AM CST:** Pre-cron verification (both pipelines)
+- **9:15 AM CST:** VC send confirmation
+- **10:15 AM CST:** Muni send confirmation
+- **12:00 PM CST:** Midday status report
 
----
-
-### Stream 1b: Phase 2 Follow-up (P1-P3 Items)
-
-**Status:** ✅ **PHASE 2 COMPLETE** — All P1-P3 items implemented
-
-| Item | Status | Files Modified | Result |
-|------|--------|----------------|--------|
-| P1: Use `SPANISH_PAIN_POINTS` constant | ✅ COMPLETE | `MunicipalResearchStrategy.ts` | `researchGeneric()` + `researchDryRun()` now use canonical constant |
-| P2: Full 5 pain points in Firecrawl + mock | ✅ COMPLETE | `MunicipalDiscoveryStrategy.ts` | `fetchMunicipalitiesFromFirecrawl()` + `generateMockMunicipals()` return all 5 points |
-| P3: Defense-in-depth validation | ✅ COMPLETE | `MunicipalDiscoveryStrategy.ts` | `discoverFromSupabase()` validates Spanish content after DB read |
-
-**Commit:** `7af3e34` — "feat(phase2): P1-P3 Spanish content consistency fixes"
-
-**Documentation:** `repos/alygn/core/PHASE2-COMPLETION-REPORT.md`
-
-**Outcome:** All municipal outreach code paths now use canonical Spanish pain points. Three layers of protection:
-1. Constructor guard (`assertSpanishPainPoints()`)
-2. DB constraints (CHECK + trigger)
-3. Runtime validation (`validateMunicipalSpanishIntegrity()`)
-
-**Next:** Continue with remaining GitHub issues by priority.
+**Notification Rules:**
+- Report to Discord #alygn if either pipeline fails
+- Report send counts + any bounces
+- Report approval workflow issues
+- Celebrate successful sends 🎉
 
 ---
 
-### Stream 2: Kill Switch Admin UI (Phase0)
+### Stream 1: 🔄 KILL SWITCH ADMIN UI — ZERO-TRUST REVISION (NEW)
 
-**Status:** ✅ **LOGIN FIX COMPLETE** — Ready for deploy
+**Status:** 🔄 **STARTING** — Sequential revision with team
 
-**What Happened:**
-- ✅ Source code RESTORED from git (commit 270c497, April 10)
-- ✅ Bug identified: LoginPage redirects to `/admin/` but routes are at `/`
-- ✅ **FIX APPLIED:** Changed redirect from `/admin/` → `/kill-switch`
-- ✅ Build successful (3.02s, no errors)
-- ✅ Committed and ready for deploy
+**Mission:**
+1. Review latest Kill Switch Admin UI code (auth/login focus)
+2. Test locally with zero-trust protocols
+3. Update GitHub issues (AndlerRL/andler-ops) with findings
+4. Create checklist, verify all auth flows working
 
-**Fix Details:**
-```tsx
-// LoginPage.tsx line 20 - FIXED:
-window.location.href = '/kill-switch';  // ← Now matches App.tsx routes
-```
-
-**Build Output:**
-```
-dist/index.html                       0.75 kB
-dist/assets/index-CqjlklYC.css       24.70 kB
-dist/assets/vendor-B3Nx6cdk.js       49.27 kB
-dist/assets/otel-B1OIMg6H.js         78.93 kB
-dist/assets/index-CmE5-xlQ.js       280.07 kB
-✓ built in 3.02s
-```
-
-**Next:**
-1. ✅ Login redirect fix — COMPLETE
-2. ⏳ Resolve nginx merge conflicts (if any)
-3. ⏳ Deploy to production
-4. ⏳ Test login flow on production URL
-
-**Commit:** Ready to push
+**Team:** Chanshuk (dev-lead) + Gimglich (fe-coder) + Keridz (be-coder) + Nikaya (reviewer)
+**ETA:** 90-120 min for full revision + issue updates
 
 ---
 
-### Stream 3: GitHub Issues — Mass Implementation Progress
+### Stream 2: 🔄 ANDLER.DEV BLOG FEATURE — IMPLEMENTATION PLAN (NEW)
 
-**Status:** ✅ **34/40+ ISSUES COMPLETE** — Categories A-H done, G remaining
+**Status:** 🔄 **STARTING** — After Kill Switch revision complete
 
-**Completed Categories:**
-- ✅ Category A (Coordination) — All issues closed
-- ✅ Category B (Data Integrity) — All issues closed
-- ✅ Category C (Municipal Language) — All issues closed
-- ✅ Category D (Discovery) — All issues closed
-- ✅ Category E (Email Delivery) — #59, #60, #69 closed
-- ✅ Category F (Templates) — #71-84 closed
-- ✅ Category G (Infrastructure) — #85, #86, #88, #90-93 closed (4 remaining)
-- ✅ Category H (Security) — #99-111 closed
+**Mission:**
+1. Review existing blog implementation at AndlerRL/andler-landing
+2. Create implementation plan for real content + CI pipeline
+3. Create GitHub issues for tracking (gh CLI)
+4. Add Meta document to Notion (Weekly TODO table)
+5. Create tracking meta issue referencing Notion doc
+
+**Team:** Hugrukal (architect) + Talanara (docs-writer) + Gimglich (fe-coder)
+**ETA:** 60-90 min for plan + issues + Notion sync
+
+---
+
+### Stream 3: ⏳ GITHUB ISSUES MASS IMPLEMENTATION — 6 REMAINING
+
+**Status:** ⏳ **PAUSED** — Will resume after Streams 1-2 complete
 
 **Remaining G Issues:**
-- #89: Environment-Specific Configuration Management
-- #94: Load Balancer Health and Performance Monitoring
-- #95: System Resource Monitoring (CPU, Memory, Disk)
-- #96: Cloud Cost Optimization and Monitoring
-- #97: Automated Documentation Synchronization
+- #89: Environment-Specific Configuration
+- #94: Load Balancer Monitoring
+- #95: System Resource Monitoring
+- #96: Cloud Cost Optimization
+- #97: Automated Documentation Sync
 - #98: Automated Incident Response Runbooks
 
-**Other Open Issues:**
-- #112-117: Batch 4 Foundation (API Gateway, WebSocket, Tracing, Feature Flags, Chaos)
-- #148: X API 401 Auth Failure
-- #150: Tailscale idle drops
-- #155: Tailscale config guide
-- #158: Signal Channel Integration
-- #70: Email Engagement Analytics
-- #68: Intelligent Email Scheduling
-
-**TODO/FIXME Scan (alygn-outreach):**
-- `PreflightChecker.ts` — 3 TODOs (Smartlead API, Notion validation, connection test)
-- `MunicipalDiscoveryStrategy.ts` — 1 TODO (web search implementation)
-- **No critical FIXME or HACK markers found**
-
-**Assessment:**
-- ✅ Categories B, C, D — COMPLETE (Phase 1 + Phase 2 fixes)
-- ⏳ Categories E, F, G, H — P1-P3 items need identification
-- ⏳ Batch 4 foundation (#112-117) — High priority, integration blockers
+**Progress:** 34/40+ complete (85%)
 
 ---
 
-## 📋 Development Plan — Updated Sequential Execution
+### Stream 4: ✅ GRANT MONITORING — STABLE
 
-**Priority Order:**
+**Status:** ✅ STABLE
 
-### 1. ✅ Kill Switch Admin UI — Login Redirect Fix (COMPLETE)
-- **Status:** ✅ DONE — Build successful, committed
-- **Next:** Deploy when manual access available
-
-### 2. ✅ Critical Issue Scan (COMPLETE)
-- **Status:** ✅ DONE — 50+ critical issues catalogued
-- **Finding:** Categories B, C, D complete; E, F, G, H need P1-P3 review
-
-### 3. 🔍 Remaining P1-P3 Items by Category (IN PROGRESS)
-
-**Assessment:** Categories E, F, G, H contain NEW FEATURE IMPLEMENTATIONS (not bug fixes like B-001/D-001).
-
-**Pattern Difference:**
-- **Phase 1/2 (B, C, D):** Bug fixes → P1-P3 follow-up (consistency improvements)
-- **Categories E, F, G, H:** New features → Implementation priorities (P0 foundation first)
-
-**Execution Strategy:**
-1. **Category E (Email Delivery):** Start with foundational items
-   - E-059: Email Queue (prerequisite for rate limiting)
-   - E-060: Rate Limiting (spam filter prevention)
-   - E-069: GDPR/CAN-SPAM Compliance (legal requirement)
-
-2. **Category F (Templates):** Start with validation
-   - F-072: Template Validation (missing)
-   - F-073: Size-based Validation (< 3500 bytes)
-   - F-071: Template Versioning
-
-3. **Category G (Infrastructure):** Start with monitoring
-   - G-090: Service Health Monitoring
-   - G-092: Automated Backup System
-   - G-093: SSL/TLS Certificate Management
-
-4. **Category H (Security):** Start with access control
-   - H-102: Security Policy Definition
-   - H-103: Access Permission Reviews
-   - H-100: Rate Limiting on Endpoints
-
-**Batch 4 Foundation (#112-117):** High priority integration blockers
-- #112: API Gateway Rate Limiting
-- #113: WebSocket Connection Pool
-- #115: Distributed Tracing
-- #116: Feature Flag System
+- Schmidt Sciences: May 17, 2026 (~25 days) — No alert
+- Coefficient Giving: Dec 31, 2026 — No alert
+- No Tania emails pending
+- No status changes detected
 
 ---
 
-### 📋 Next Actions
+### Stream 5: ⏳ X AUTOMATION QUALITY PROTOCOL — ON HOLD
 
-**No active agents running.** Gateway was unstable last night.
+**Status:** ⏳ **ON HOLD** — Lower priority than Streams 1-2
 
-**Batches 1-13 Complete:** 34 issues, 14 commits.
+**Pending:** Onboard alygn-x-growth-executor with posting limits (max 3/run, 8/day total)
 
-| Batch | Issues | Commit |
-|-------|--------|--------|
-| 1 (E-059, F-072, G-090) | 3 | `f80e365` |
-| 2 (E-060, E-069, G-091) | 3 | `7b83e43` |
-| 3 (F-073, F-074, G-092) | 3 | `4d6b3b9` |
-| 4 (F-075, F-076, H-099) | 3 | `101991e` |
-| 5 (F-071, F-077, G-093) | 3 | `991dc6f` |
-| 6 (F-078, F-079, H-100) | 3 | `8d87d0b`, `d6ef87c` |
-| 7 (F-080, F-081, H-101) | 3 | `84c8455` |
-| 8 (F-082, F-083, H-102) | 3 | `407e1fd` |
-| 9 (F-084, H-103, H-104) | 3 | `41a796a` |
-| 10 (G-085, H-105, H-106) | 3 | `29ec263` |
-| 11 (G-086, H-107, H-108) | 3 | `af0a6dc` |
-| 12 (H-109, H-110, H-111) | 3 | `de6cd26` |
-| 13 (G-088) | 1 | `e5f21b5` |
+---
 
-**Next Batch:** G-089, G-094, G-095 (when Andler requests continuation)
+## 📋 TODAY'S ACHIEVEMENTS (2026-04-22)
 
-**Checkpoint Protocol (MANDATORY):**
-After each agent completes, Wobblus MUST:
-1. ✅ Read created/modified files to verify actual implementation
-2. ✅ Run `bun run build` to verify no TypeScript errors
-3. ✅ Check files exist and have substance (not just stubs)
-4. ✅ Verify Definition of Done items are actually met
-5. ✅ Only then mark issue as COMPLETE in HEARTBEAT.md
-6. ❌ NEVER trust agent self-report alone — verify independently
+**34 GitHub issues completed, 14 commits, ~10,000+ lines of production code.**
 
-**Next Steps (After Current Agents Complete):**
-1. **Checkpoint E-059:** Verify EmailQueue, WebhookHandler, EmailService integration
-2. **Checkpoint F-072:** Verify TemplateValidator, size validation, EmailService integration
-3. **Checkpoint G-090:** Verify HealthMonitor, MetricsCollector, AlertManager
-4. **Spawn reviewer (Nikaya)** for code review of all 3 implementations
-5. **After review passes:** Commit all changes
-6. **Continue to next batch:**
-   - E-060: Rate Limiting (depends on E-059 queue)
-   - E-069: GDPR/CAN-SPAM Compliance
-   - F-071: Template Versioning
-   - G-092: Automated Backup System
-   - H-102: Security Policy Definition
-7. **Batch 4 Foundation:** #112-117 (API Gateway, WebSocket, Tracing, Feature Flags)
+**Quality assurance:**
+- ✅ Batch 6-9 report audit completed
+- ✅ All stub reports rewritten with verifiable details
+- ✅ Nikaya review on most batches (gateway timeouts on Batch 10+)
+- ✅ Zero-trust verification protocol followed
 
-**Team Coordination:**
-- Email/Template features → be-coder (Keridz)
-- Infrastructure/Monitoring → devops
-- Security/Access Control → reviewer (Nikaya) + devops
-- Batch 4 foundation → architect (Hugrukal) + be-coder + devops
-- After each completion → Verify independently → Acknowledge + provide next steps
-- Heartbeat updates → Every 30 min during active phases
-- ✅ Documentation: `FINAL-COMPLETION-STATUS.md`
+**Categories shipped:** A, B, C, D, E, F, H (100% complete)
+**Remaining:** G category (6 infrastructure issues)
 
-**Categories:**
-| Category | Issues | Status | Files |
-|----------|--------|--------|-------|
-| A (Coordination) | 1-15 | ✅ 100% | 2 files |
-| B (Data Integrity) | 16-28 | ✅ 100% | 3 files |
-| C (Municipal Language) | 29-42 | ✅ 100% | 2 files |
-| D (Discovery) | 43-56 | ✅ 100% | 5 files |
-| E (Email Delivery) | 57-70 | ✅ 100% | 3 files |
-| F (Templates) | 71-84 | ✅ 100% | 3 files |
-| G (Infrastructure) | 85-98 | ✅ 100% | 3 files |
-| H (Security) | 99-111 | ✅ 100% | 3 files |
-
-**Next:**
-1. ✅ Fix login redirect (Stream 2)
-2. 🔍 Check for critical issues left behind
-3. 📋 Continue with remaining P1-P3 items from other categories
+**Next session priorities:**
+1. Complete G category (#89, #94-98)
+2. Batch 4 Foundation (#112-117) — integration blockers
+3. Deploy Kill Switch Admin UI
+4. Fix ALYGN outreach cron jobs (remote DB checks)
 
 ---
 
@@ -493,10 +373,47 @@ After each agent completes, Wobblus MUST:
 
 **Status:** ✅ STABLE
 
-- Schmidt Sciences: May 17, 2026 (33 days) — No alert
+- Schmidt Sciences: May 17, 2026 (~25 days) — No alert
 - Coefficient Giving: Dec 31, 2026 — No alert
 - No Tania emails pending
 - No status changes detected
+
+---
+
+## 📋 TODAY'S PLAN — ALYGN OUTREACH DEEP REVISION (2026-04-22)
+
+**Priority Order:**
+
+### 1. 🔍 System Audit (IN PROGRESS)
+- **Agent:** Hugrukal (architect)
+- **Task:** Map architecture, identify gaps, cross-reference GitHub issues
+- **ETA:** 30 min
+- **Output:** Gap analysis, file list, issue mapping
+
+### 2. 🔧 Code Fixes (PENDING)
+- **Agent:** Keridz (be-coder)
+- **Task:** Fix Pipeline.ts deep research flags, env var injection, remote DB checks
+- **ETA:** 60-90 min (depends on audit findings)
+
+### 3. 🔄 Cron Job Repairs (PENDING)
+- **Agent:** Devops
+- **Task:** Update cron jobs to check remote state, not local cache
+- **ETA:** 45 min
+
+### 4. 📝 Documentation Update (PENDING)
+- **Agent:** Talanara (docs-writer)
+- **Task:** Update lobster files, skills documentation, cron instructions
+- **ETA:** 30 min
+
+### 5. ✅ Testing & Verification (PENDING)
+- **Agent:** Nikaya (reviewer)
+- **Task:** Dry-run tests, verify remote DB checks working, zero-trust validation
+- **ETA:** 45 min
+
+**Communication Protocol:**
+- Updates to Discord #annotations every 30 min during active phases
+- HEARTBEAT.md updated after each phase complete
+- Zero-trust verification before marking any phase complete
 
 ---
 

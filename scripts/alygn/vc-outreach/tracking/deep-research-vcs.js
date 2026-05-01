@@ -48,7 +48,8 @@ function loadDatabaseId(dataSource = false) {
     const configPath = path.resolve(WORKSPACE_ROOT, 'scripts/alygn/vc-outreach/notion-config.json');
     if (fs.existsSync(configPath)) {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      return dataSource ? config.dataSourceId : config.databaseId;
+      // Use data source ID for querying (newer Notion API)
+      return '30533487-4af6-81e7-ad64-000bbd4829ff';
     }
   } catch (error) {
     console.error('⚠️  Failed to load database ID from config:', error.message);

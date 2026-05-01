@@ -6,5 +6,9 @@
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
     "lint": "bun --filter '*' lint"
+  },
+  "dependencies": {
+    "@better-auth/memory-adapter": "^1.6.9",
+    "better-auth": "^1.6.9"
   }
 }

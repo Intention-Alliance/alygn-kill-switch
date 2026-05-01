@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-04-23T18:37:54.601Z",
+  "type": "vc",
+  "phase": "discovered",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "entity-mobtqtrb-qjpqyr",
+        "type": "vc",
+        "name": "AI Safety Ventures",
+        "email": "contact@aisafetyvc.com",
+        "website": "https://aisafetyvc.com",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-23T18:37:54.599Z",
+        "lastUpdatedAt": "2026-04-23T18:37:54.599Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance frameworks",
+            "technical safety standards"
+          ],
+          "tailoredHook": "Active in AI safety community"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance",
+            "AI alignment"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dr. Sarah Chen",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "SafeAI Systems",
+            "Alignment Labs"
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Systems",
+              "date": "2024-01",
+              "stage": "Seed"
+            },
+            {
+              "company": "Alignment Labs",
+              "date": "2024-03",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ]
+  }
+}

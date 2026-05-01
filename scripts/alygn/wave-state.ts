@@ -5,7 +5,13 @@
  * Manages wave-based outreach tracking with atomic file operations
  */
 
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "fs";
 import { dirname } from "path";
 
 // ============================================================
@@ -21,13 +27,28 @@ export interface WaveState {
   };
   entities: {
     [entityId: string]: {
-      status: "discovered" | "validated" | "researched" | "personalized" | "approved" | "sent" | "replied";
+      status:
+        | "discovered"
+        | "validated"
+        | "researched"
+        | "personalized"
+        | "approved"
+        | "sent"
+        | "replied";
       lastContact: string | null;
       waveNumber: number;
     };
   };
   lastRun: string;
-  phaseCompleted: "discover" | "validate" | "research" | "personalize" | "review" | "send" | "verify" | null;
+  phaseCompleted:
+    | "discover"
+    | "validate"
+    | "research"
+    | "personalize"
+    | "review"
+    | "send"
+    | "verify"
+    | null;
 }
 
 export type WaveType = "vc" | "muni";
@@ -38,10 +59,10 @@ export type PhaseType = WaveState["phaseCompleted"];
 // Constants
 // ============================================================
 
-const STATE_DIR = "/tmp";
+const STATE_DIR = "/reports/alygn";
 const STATE_FILES: Record<WaveType, string> = {
-  vc: `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-vc-wave-state.json`,
-  muni: `${process.env.HOME}/.openclaw/workspace/reports/alygn/alygn-muni-wave-state.json`,
+  vc: `${process.env.HOME || "/home/andlersrv"}/.openclaw/workspace/reports/alygn/alygn-vc-wave-state.json`,
+  muni: `${process.env.HOME || "/home/andlersrv"}/.openclaw/workspace/reports/alygn/alygn-muni-wave-state.json`,
 };
 
 const DEFAULT_WAVE_INTERVAL_DAYS = 7;
@@ -119,7 +140,9 @@ export function saveWaveState(type: WaveType, state: WaveState): void {
  */
 function createInitialState(type: WaveType): WaveState {
   const now = new Date();
-  const nextWeek = new Date(now.getTime() + DEFAULT_WAVE_INTERVAL_DAYS * 24 * 60 * 60 * 1000);
+  const nextWeek = new Date(
+    now.getTime() + DEFAULT_WAVE_INTERVAL_DAYS * 24 * 60 * 60 * 1000,
+  );
 
   return {
     wave: {
@@ -145,7 +168,9 @@ function createInitialState(type: WaveType): WaveState {
 export function initWave(type: WaveType): WaveState {
   const state = loadWaveState(type);
   const now = new Date();
-  const nextWeek = new Date(now.getTime() + DEFAULT_WAVE_INTERVAL_DAYS * 24 * 60 * 60 * 1000);
+  const nextWeek = new Date(
+    now.getTime() + DEFAULT_WAVE_INTERVAL_DAYS * 24 * 60 * 60 * 1000,
+  );
 
   state.wave = {
     number: state.wave.number + 1,
@@ -166,7 +191,9 @@ export function initWave(type: WaveType): WaveState {
   state.phaseCompleted = null;
 
   saveWaveState(type, state);
-  console.log(`[Wave ${state.wave.number}] Initialized new wave (${state.wave.date} → ${state.wave.nextDate})`);
+  console.log(
+    `[Wave ${state.wave.number}] Initialized new wave (${state.wave.date} → ${state.wave.nextDate})`,
+  );
 
   return state;
 }
@@ -205,7 +232,7 @@ export function advancePhase(type: WaveType, phase: PhaseType): void {
 export function updateEntityStatus(
   type: WaveType,
   entityId: string,
-  status: EntityStatus
+  status: EntityStatus,
 ): void {
   const state = loadWaveState(type);
 
@@ -233,7 +260,7 @@ export function updateEntityStatus(
  */
 export function getEntityStatus(
   type: WaveType,
-  entityId: string
+  entityId: string,
 ): WaveState["entities"][string] | null {
   const state = loadWaveState(type);
   return state.entities[entityId] ?? null;
@@ -244,10 +271,11 @@ export function getEntityStatus(
  */
 export function getEntitiesByStatus(
   type: WaveType,
-  status: EntityStatus
+  status: EntityStatus,
 ): Array<{ id: string; entity: WaveState["entities"][string] }> {
   const state = loadWaveState(type);
-  const results: Array<{ id: string; entity: WaveState["entities"][string] }> = [];
+  const results: Array<{ id: string; entity: WaveState["entities"][string] }> =
+    [];
 
   for (const [id, entity] of Object.entries(state.entities)) {
     if (entity.status === status) {
@@ -301,7 +329,7 @@ export function validateWaveReady(type: WaveType): void {
 
     throw new Error(
       `Wave ${loadWaveState(type).wave.number} is within cooldown period. ` +
-      `Next wave available in ${hours}h ${minutes}m`
+        `Next wave available in ${hours}h ${minutes}m`,
     );
   }
 }
@@ -458,7 +486,9 @@ Examples:
           throw new Error("--entity-id and --status are required");
         }
         updateEntityStatus(type, args.entityId, args.status);
-        console.log(`✅ Updated entity ${args.entityId} to status: ${args.status}`);
+        console.log(
+          `✅ Updated entity ${args.entityId} to status: ${args.status}`,
+        );
         break;
       }
 
@@ -503,7 +533,9 @@ Examples:
         if (inCooldown) {
           const remaining = getTimeUntilNextWave(type);
           const hours = Math.floor(remaining / (1000 * 60 * 60));
-          const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+          const minutes = Math.floor(
+            (remaining % (1000 * 60 * 60)) / (1000 * 60),
+          );
           console.log(`Time until next wave: ${hours}h ${minutes}m`);
         }
         break;

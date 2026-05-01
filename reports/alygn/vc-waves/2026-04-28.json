@@ -1,0 +1,191 @@
+{
+  "timestamp": "2026-04-28T17:23:00.460Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "entity-moiw9rcx-to48w4",
+        "type": "vc",
+        "name": "AI Safety Ventures",
+        "email": "contact@aisafetyvc.com",
+        "website": "https://aisafetyvc.com",
+        "phone": null,
+        "location": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T17:23:00.417Z",
+        "lastUpdatedAt": "2026-04-28T17:23:00.417Z",
+        "outreachCount": 0,
+        "researchNotes": "AI Safety Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance",
+            "AI alignment"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Dr. Sarah Chen",
+              "title": "Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "SafeAI Systems",
+            "Alignment Labs"
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Systems",
+              "date": "2024-01",
+              "stage": "Seed"
+            },
+            {
+              "company": "Alignment Labs",
+              "date": "2024-03",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "AI Safety Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "portfolio": [
+            "SafeAI Co",
+            "GovernanceTech",
+            "Aligned Systems"
+          ],
+          "partners": [
+            {
+              "name": "Partner Name",
+              "title": "Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Co",
+              "date": "2024-01",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "whyAlygn": "Alygn provides the governance infrastructure they need for their AI-focused portfolio.",
+          "governanceSignals": [
+            "Active in AI safety community"
+          ]
+        },
+        "entity": {
+          "id": "entity-moiw9rcx-to48w4",
+          "type": "vc",
+          "name": "AI Safety Ventures",
+          "email": "contact@aisafetyvc.com",
+          "website": "https://aisafetyvc.com",
+          "phone": null,
+          "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T17:23:00.417Z",
+          "lastUpdatedAt": "2026-04-28T17:23:00.417Z",
+          "outreachCount": 0,
+          "researchNotes": "AI Safety Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance",
+              "AI alignment"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Dr. Sarah Chen",
+                "title": "Managing Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "SafeAI Systems",
+              "Alignment Labs"
+            ],
+            "recentInvestments": [
+              {
+                "company": "SafeAI Systems",
+                "date": "2024-01",
+                "stage": "Seed"
+              },
+              {
+                "company": "Alignment Labs",
+                "date": "2024-03",
+                "stage": "Seed"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

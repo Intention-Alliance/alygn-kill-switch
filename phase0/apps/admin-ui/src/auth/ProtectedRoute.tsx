@@ -7,12 +7,22 @@ interface ProtectedRouteProps {
   requiredRole?: UserRole | UserRole[];
 }
 
+/**
+ * ProtectedRoute — guards routes behind authentication.
+ * Works with the AuthProvider's isAuthenticated state, which
+ * is driven by the better-auth session.
+ */
 export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      window.location.href = '/login?reason=unauthenticated';
+      // Preserve the attempted URL for post-login redirect
+      const currentPath = window.location.pathname;
+      const redirectUrl = currentPath === '/login' || currentPath === '/'
+        ? '/login'
+        : `/login?redirect=${encodeURIComponent(currentPath)}`;
+      window.location.href = redirectUrl;
     }
   }, [isAuthenticated]);
 

@@ -1,0 +1,9 @@
+{
+  "name": "vc-reply-tracker",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "imap": "^0.8.19",
+    "mailparser": "^3.9.8"
+  }
+}

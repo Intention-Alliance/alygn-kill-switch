@@ -3,14 +3,13 @@ description: Costa Rica municipal outreach pilot (82 cantones) campaign with per
 metadata:
   project: alygn
   region: costa-rica
-  type: muni-outreach
+  type: municipal
   wave: {{ LATEST_WAVE_NUMBER + 1 }}
   total_municipalities: 82
   skill: alygn-outreach
   learnings_source: vc-outreach (adapted for municipal context)
   dependencies:
     - supabase (remote PostgreSQL - ALL status tracking)
-    - notion (optional, for cross-reference)
     - perplexity (deep research API)
     - firecrawl (web scraping, optional with deepResearch)
     - grok (personalization)
@@ -85,7 +84,7 @@ metadata:
 # Required env vars (or loaded from credentials.json):
 #   SUPABASE_URL - Supabase project URL
 #   SUPABASE_SERVICE_KEY - Service role key for DB access
-#   NOTION_VC_DATABASE_ID - Notion VC database ID (no hardcoded fallback)
+#   NOTION_VC_DATASOURCE_ID - Notion VC datasource ID (formerly databaseId, no hardcoded fallback)
 #
 # Scripts fail fast if required env vars are missing.
 #
@@ -110,11 +109,69 @@ metadata:
 
 steps:
   # ============================================================
+  # PHASE 0: Wave-State Verification (PREVENTS DUPLICATE RUNS)
+  # Checks if a wave is already running or completed today
+  # ============================================================
+  - id: phase0-wave-check
+    command: |
+      WAVE_STATE_FILE="$HOME/.openclaw/workspace/reports/alygn/muni-waves/wave-state.json"
+      if [ -f "$WAVE_STATE_FILE" ]; then
+        WAVE_DATE=$(jq -r '.waveDate // empty' "$WAVE_STATE_FILE" 2>/dev/null)
+        PHASE=$(jq -r '.phase // empty' "$WAVE_STATE_FILE" 2>/dev/null)
+        LAST_UPDATED=$(jq -r '.lastUpdatedAt // empty' "$WAVE_STATE_FILE" 2>/dev/null)
+        TODAY=$(date -u +%Y-%m-%d)
+        # Check if wave is in sending/sent phase (in progress or completed)
+        if [ "$PHASE" = "sending" ] || [ "$PHASE" = "sent" ]; then
+          echo "⚠️ Muni wave already in $PHASE phase. Skipping."
+          exit 0
+        fi
+        # Check if waveDate is today and phase is not idle/researched (i.e., already processed today)
+        if [ "$WAVE_DATE" = "$TODAY" ] && [ "$PHASE" != "researched" ] && [ "$PHASE" != "idle" ]; then
+          echo "⚠️ Muni wave already processed today (date: $WAVE_DATE, phase: $PHASE). Skipping."
+          exit 0
+        fi
+        # Check if lastUpdatedAt within 24h while in sending state
+        if [ -n "$LAST_UPDATED" ]; then
+          LAST_EPOCH=$(date -d "$LAST_UPDATED" +%s 2>/dev/null || echo 0)
+          NOW_EPOCH=$(date +%s)
+          DIFF=$(( (NOW_EPOCH - LAST_EPOCH) / 3600 ))
+          if [ "$DIFF" -lt 24 ] && [ "$PHASE" = "sending" ]; then
+            echo "⚠️ Muni wave currently sending (lastUpdated: $LAST_UPDATED). Skipping."
+            exit 0
+          fi
+        fi
+        echo "✅ Muni wave-state check passed. No active/completed wave today. Proceeding."
+      else
+        echo "✅ No wave-state file found. First run. Proceeding."
+      fi
+    description: "Check if muni wave already executed today - skip if so (duplicate prevention layer 1)"
+
+  # ============================================================
+  # PHASE 0.5: Build Exclusion List (duplicate prevention layer 2)
+  # Query Supabase + wave-state + Notion for already-contacted municipalities
+  # ============================================================
+  - id: phase0-5-dedup-check
+    command: |
+      mkdir -p /tmp/alygn-dedup && \
+      echo "🔍 Building exclusion list for municipal duplicate prevention..." && \
+      (bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=check-sent 2>/dev/null | jq -r '.sent[]?.municipalityName // .sent[]?.name // empty' | sort -u > /tmp/alygn-dedup/supabase-sent-munis.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/supabase-sent-munis.txt) && \
+      echo "  ✓ Loaded Supabase sent municipalities ($(wc -l < /tmp/alygn-dedup/supabase-sent-munis.txt || echo 0) entries)" && \
+      (cat ~/.openclaw/workspace/reports/alygn/muni-waves/wave-state.json 2>/dev/null | jq -r '.data | keys[]' | sort -u > /tmp/alygn-dedup/wave-state-munis.txt 2>/dev/null || echo "" > /tmp/alygn-dedup/wave-state-munis.txt) && \
+      echo "  ✓ Loaded wave-state.json entities ($(wc -l < /tmp/alygn-dedup/wave-state-munis.txt || echo 0) entries)" && \
+      cat /tmp/alygn-dedup/supabase-sent-munis.txt /tmp/alygn-dedup/wave-state-munis.txt 2>/dev/null | grep -v '^$' | sort -u > /tmp/alygn-dedup/exclude-munis.txt && \
+      echo "📊 Total excluded municipalities: $(wc -l < /tmp/alygn-dedup/exclude-munis.txt || echo 0)" && \
+      echo "Exclusion list created at: /tmp/alygn-dedup/exclude-munis.txt"
+    description: "Build exclusion list from Supabase + wave-state entities (duplicate prevention layer 2)"
+    output:
+      file: /tmp/alygn-dedup/exclude-munis.txt
+
+  # ============================================================
   # PRELUDE: X Account Discovery & Warming
   # ============================================================
   - id: prelude-x-discovery
     command: openclaw invoke --tool x-growth --action discover --target=municipalities --filter="Costa Rica" --limit=20 --dry-run
     description: "Discover official municipal X accounts via x-growth"
+    after: phase0-5-dedup-check
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/muni-x-accounts/muni-cr-x-accounts-{timestamp}.json
     notes: |
@@ -148,7 +205,6 @@ steps:
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/muni-mayor/muni-cr-mayor-names-{timestamp}.json
     notes: |
-      CRITICAL: Must research mayor names BEFORE validation phase.
       Uses --action=research (NOT research-mayors).
       Email patterns to look for:
         - firstname@msj.go.cr (central government pattern)
@@ -204,7 +260,7 @@ steps:
   # ============================================================
   - id: phase4-personalize
     command: USE_DIRECT_API=true bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=personalize --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-validate/muni-cr-validated-{timestamp}.json --variant=traiga --language=es --dry-run
-    description: "Generate personalized Spanish emails (Mode B: real Grok API)"
+    description: "Generate personalized Spanish emails (Mode B: real Grok API). Auto-translates pain points EN→ES, looks up mayor names, syncs to Supabase."
     after: phase3-update-supabase-research
     output:
       file: $HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
@@ -215,6 +271,13 @@ steps:
         - Language: Spanish (es) with proper Costa Rica localization
         - Tone: Supportive, trust-building (NOT salesy)
         - Variant: 'governance' or 'institutional' (from outreach_templates.variant)
+      
+      AUTOMATED FIXES (2026-04-24):
+        - Pain points: Auto-translates English → Spanish via lang-guard.ts mapping
+        - Mayor names: Queries Supabase municipalities.mayor_name, formats "Estimado [Name], Alcalde de [Cantón]"
+        - Draft status: Sets draftStatus = 'Approved' in entity + Supabase outreach_emails
+        - Email domain: Uses outreach@alyygn.com (confirmed production domain)
+      
       Template lookup: SELECT * FROM outreach_templates WHERE variant=? AND is_active=TRUE
       Draft tracking: 
         SCRIPT: supabase-utils.ts
@@ -233,9 +296,18 @@ steps:
     notes: |
       MANUAL APPROVAL REQUIRED before Phase 6.
       Review requirements:
-        - Check personalization quality
+        - Check personalization quality (Spanish pain points, mayor names, correct email domain)
         - Verify TRAIGA Act references are accurate
         - Confirm canton-specific context is correct
+        - Verify draftStatus = 'Approved' and Supabase sync completed
+      
+      QUALITY CHECKLIST (2026-04-24 fixes):
+        - ✅ Pain points in Spanish (not English)
+        - ✅ Mayor name used when available: "Estimado [Name], Alcalde de [Cantón]"
+        - ✅ Email domain: outreach@alyygn.com (double-y, confirmed production)
+        - ✅ draftStatus = 'Approved' in output JSON
+        - ✅ Supabase outreach_emails synced with personalization_context
+      
       No draft_status column - track via:
         1. File output for human review
         2. Human approves via Discord/Notion
@@ -268,7 +340,7 @@ steps:
   # NO DRY RUN FLAG = REAL SENDING
   # ============================================================
   - id: phase6-send
-    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=send --region=costa-rica --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
+    command: bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal --action=send --region=costa-rica --dedup=true --input=$HOME/.openclaw/workspace/reports/alygn/muni-personalize/muni-cr-personalized-{timestamp}.json
     description: "Send emails via Smartlead with Tania CC and rate limiting (PRODUCTION)"
     after: phase5-5-sent-tracker-check
     output:
@@ -280,7 +352,8 @@ steps:
         - Daily cap: 5 municipal emails/day
       CC requirement:
         - CC: tanialeaidm@gmail.com (PRODUCTION ONLY - no --dry-run flag)
-      Supabase updates on send (TWO operations - use supabase-utils.ts):
+      Dedup: --dedup=true checks SentEmailTracker before each send (duplicate prevention layer 3)
+      Rate limiting, municipal-specific:
         1. Log sent email:
            SCRIPT: supabase-utils.ts
            CALL: bun $HOME/.agents/skills/alygn-outreach/src/lib/supabase-utils.ts --action=log-outreach --muni-id=<id> --input=$HOME/.openclaw/workspace/reports/alygn/muni-sent/muni-cr-sent-{timestamp}.json

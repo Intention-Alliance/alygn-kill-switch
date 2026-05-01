@@ -1,0 +1,2604 @@
+{
+  "timestamp": "2026-04-27T16:41:32.031Z",
+  "type": "municipal",
+  "phase": "validated",
+  "data": {
+    "count": 32,
+    "entities": [
+      {
+        "id": "entity-mohfckmo-fsyscr",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.016Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.016Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 288054,
+          "budget": 150000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmo-tbcj1v",
+        "type": "municipal",
+        "name": "Municipalidad de Escazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Escazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.016Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.016Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 91117,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmo-3fe55m",
+        "type": "municipal",
+        "name": "Municipalidad de Desamparados",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Desamparados",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.016Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.016Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 208741,
+          "budget": 80000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmo-5tag7y",
+        "type": "municipal",
+        "name": "Municipalidad de Puriscal",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Puriscal",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.016Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.016Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 33484,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmo-5ekoii",
+        "type": "municipal",
+        "name": "Municipalidad de Tarrazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Tarrazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.016Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.016Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 16260,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-hth4xp",
+        "type": "municipal",
+        "name": "Municipalidad de Aserrí",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Aserrí",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 58912,
+          "budget": 35000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-tvjmmc",
+        "type": "municipal",
+        "name": "Municipalidad de Mora",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Mora",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 28378,
+          "budget": 22000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-ahf3bq",
+        "type": "municipal",
+        "name": "Municipalidad de Goicoechea",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Goicoechea",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 133022,
+          "budget": 60000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-j6xlm7",
+        "type": "municipal",
+        "name": "Municipalidad de Santa Ana",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Santa Ana",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 67496,
+          "budget": 40000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-14qq5x",
+        "type": "municipal",
+        "name": "Municipalidad de Alajuelita",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Alajuelita",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 89148,
+          "budget": 38000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-9uj1iv",
+        "type": "municipal",
+        "name": "Municipalidad de Vázquez de Coronado",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Vázquez de Coronado",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 60882,
+          "budget": 32000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-66jgnv",
+        "type": "municipal",
+        "name": "Municipalidad de Acosta",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Acosta",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 19734,
+          "budget": 15000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-el8reb",
+        "type": "municipal",
+        "name": "Municipalidad de Tibás",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Tibás",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 82409,
+          "budget": 42000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-c93pwy",
+        "type": "municipal",
+        "name": "Municipalidad de Moravia",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Moravia",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 57182,
+          "budget": 30000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-lj330i",
+        "type": "municipal",
+        "name": "Municipalidad de Montes de Oca",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Montes de Oca",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 56935,
+          "budget": 35000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-zkmice",
+        "type": "municipal",
+        "name": "Municipalidad de Turrubares",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Turrubares",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 6964,
+          "budget": 8000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-508iav",
+        "type": "municipal",
+        "name": "Municipalidad de Dota",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Dota",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 9924,
+          "budget": 10000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-qstrv7",
+        "type": "municipal",
+        "name": "Municipalidad de Curridabat",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Curridabat",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 77232,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmp-vrbi2j",
+        "type": "municipal",
+        "name": "Municipalidad de Pérez Zeledón",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Pérez Zeledón",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.017Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.017Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 134534,
+          "budget": 65000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-dbr5ch",
+        "type": "municipal",
+        "name": "Municipalidad de León Cortés",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "León Cortés",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 11379,
+          "budget": 12000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-8qbey5",
+        "type": "municipal",
+        "name": "Municipalidad de Alajuela",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Alajuela",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 254212,
+          "budget": 120000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-ydnkii",
+        "type": "municipal",
+        "name": "Municipalidad de San Ramón",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Ramón",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 82985,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-8cmmli",
+        "type": "municipal",
+        "name": "Municipalidad de Grecia",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Grecia",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 76902,
+          "budget": 40000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-a862ki",
+        "type": "municipal",
+        "name": "Municipalidad de San Mateo",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Mateo",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 6325,
+          "budget": 8000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-p1by0n",
+        "type": "municipal",
+        "name": "Municipalidad de Atenas",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Atenas",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 25585,
+          "budget": 20000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-i2t4ua",
+        "type": "municipal",
+        "name": "Municipalidad de Naranjo",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Naranjo",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 42918,
+          "budget": 28000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-8lp00r",
+        "type": "municipal",
+        "name": "Municipalidad de Palmares",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Palmares",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 37696,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-f3fexz",
+        "type": "municipal",
+        "name": "Municipalidad de Poás",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Poás",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 29703,
+          "budget": 22000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-c4gnej",
+        "type": "municipal",
+        "name": "Municipalidad de Orotina",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Orotina",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 22088,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-wrtvmg",
+        "type": "municipal",
+        "name": "Municipalidad de San Carlos",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San Carlos",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "high",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 163745,
+          "budget": 75000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-ip16mt",
+        "type": "municipal",
+        "name": "Municipalidad de Zarcero",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Zarcero",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 13671,
+          "budget": 15000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mohfckmq-g5jli0",
+        "type": "municipal",
+        "name": "Municipalidad de Sarchí",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Sarchí",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T16:41:32.018Z",
+        "lastUpdatedAt": "2026-04-27T16:41:32.018Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 18205,
+          "budget": 16000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "name": "Municipalidad de San José",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Escazú",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Desamparados",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Puriscal",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Tarrazú",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Aserrí",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Mora",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Goicoechea",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Santa Ana",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Alajuelita",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Vázquez de Coronado",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Acosta",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Tibás",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Moravia",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Montes de Oca",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Turrubares",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Dota",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Curridabat",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Pérez Zeledón",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de León Cortés",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Alajuela",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de San Ramón",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Grecia",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de San Mateo",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Atenas",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Naranjo",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Palmares",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Poás",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Orotina",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de San Carlos",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Zarcero",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      },
+      {
+        "name": "Municipalidad de Sarchí",
+        "email": null,
+        "wouldValidate": true,
+        "result": "no_email"
+      }
+    ]
+  }
+}

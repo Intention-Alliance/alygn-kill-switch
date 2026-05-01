@@ -11,7 +11,7 @@
         "tz": "America/Costa_Rica"
       },
       "sessionTarget": "isolated",
-      "agentId": "agent-alygn-muni-outreach",
+      "agentId": "alygn-muni-outreach",
       "payload": {
         "kind": "agentTurn",
         "message": "Execute Municipal Outreach Pipeline for Costa Rica with PERSONALIZATION:
@@ -87,13 +87,13 @@ REPORTING:
         "tz": "America/Costa_Rica"
       },
       "sessionTarget": "isolated",
-      "agentId": "agent-alygn-vc-outreach",
+      "agentId": "alygn-vc-outreach",
       "payload": {
         "kind": "agentTurn",
         "message": "Execute VC Outreach Pipeline with PERSONALIZATION:
 
 STEP 1: Load VCs from Notion
-- Query database: 30b33487-4af6-8106-8cba-d304fdd0b600
+- Query database: 30533487-4af6-81ef-983d-f57c7f70de33
 - Filter: status = 'Ready for outreach'
 - Limit: 5 VCs per run
 

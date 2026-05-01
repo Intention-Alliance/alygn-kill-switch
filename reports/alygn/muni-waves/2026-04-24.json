@@ -1,0 +1,136 @@
+{
+  "timestamp": "2026-04-24T01:01:32.937Z",
+  "type": "municipal",
+  "phase": "researched",
+  "waveDate": "2026-04-24",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-moc7g6th-kf07d9",
+        "supabaseId": "286a9c3d-2762-473d-945d-1d9717ba9a52",
+        "type": "municipal",
+        "name": "Municipalidad de Alajuela",
+        "email": "info@munialajuela.go.cr",
+        "status": "researched",
+        "draftStatus": "Not drafted",
+        "sentAt": null,
+        "outreachCount": 0,
+        "website": "https://www.munialajuela.go.cr",
+        "typeData": {
+          "governmentType": "city",
+          "population": 42975,
+          "province": "Alajuela",
+          "painPoints": ["Airport expansion coordination", "Industrial growth"],
+          "departments": [],
+          "initiatives": [],
+          "keyContacts": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "trAigaRelevant": false
+        }
+      },
+      {
+        "id": "entity-moc7g6ti-qnan8u",
+        "supabaseId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "type": "municipal",
+        "name": "Municipalidad de San Ramón",
+        "email": "municipalidad@sanramon.go.cr",
+        "status": "researched",
+        "draftStatus": "Not drafted",
+        "sentAt": null,
+        "outreachCount": 0,
+        "website": "http://www.sanramon.go.cr",
+        "typeData": {
+          "governmentType": "city",
+          "population": 80800,
+          "province": "Alajuela",
+          "painPoints": ["Agricultural transition", "Rural development"],
+          "departments": [],
+          "initiatives": [],
+          "keyContacts": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "trAigaRelevant": false
+        }
+      },
+      {
+        "id": "entity-moc7g6ti-8fi659",
+        "supabaseId": "5ba7c9ab-db15-4bc3-b14e-e981eacbe508",
+        "type": "municipal",
+        "name": "Municipalidad de Grecia",
+        "email": "notificaciones@grecia.go.cr",
+        "status": "researched",
+        "draftStatus": "Not drafted",
+        "sentAt": null,
+        "outreachCount": 0,
+        "website": "https://www.grecia.go.cr",
+        "typeData": {
+          "governmentType": "city",
+          "population": 76000,
+          "province": "Alajuela",
+          "painPoints": ["Industrial park development", "Infrastructure"],
+          "departments": [],
+          "initiatives": [],
+          "keyContacts": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "trAigaRelevant": false
+        }
+      },
+      {
+        "id": "entity-moc7g6ti-2f8yrq",
+        "supabaseId": "2a5f4d35-255b-4b30-8d01-e867c7e0a37b",
+        "type": "municipal",
+        "name": "Municipalidad de San Mateo",
+        "email": "plataforma@sanmateo.go.cr",
+        "status": "researched",
+        "draftStatus": "Not drafted",
+        "sentAt": null,
+        "outreachCount": 0,
+        "website": "https://www.sanmateo.go.cr",
+        "typeData": {
+          "governmentType": "city",
+          "population": 6200,
+          "province": "Alajuela",
+          "painPoints": ["Rural connectivity", "Agricultural economy"],
+          "departments": [],
+          "initiatives": [],
+          "keyContacts": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "trAigaRelevant": false
+        }
+      },
+      {
+        "id": "entity-moc7g6ti-fkqdyv",
+        "supabaseId": "ebf285f8-583a-41ed-8fdd-bd3623daf322",
+        "type": "municipal",
+        "name": "Municipalidad de Atenas",
+        "email": "alcaldia@atenasmuni.go.cr",
+        "status": "researched",
+        "draftStatus": "Not drafted",
+        "sentAt": null,
+        "outreachCount": 0,
+        "website": "https://www.atenasmuni.go.cr",
+        "typeData": {
+          "governmentType": "city",
+          "population": 27000,
+          "province": "Alajuela",
+          "painPoints": ["Retiree community services", "Infrastructure"],
+          "departments": [],
+          "initiatives": [],
+          "keyContacts": [],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "trAigaRelevant": false
+        }
+      }
+    ]
+  }
+}

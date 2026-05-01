@@ -1,0 +1,189 @@
+{
+  "timestamp": "2026-04-24T17:29:52.840Z",
+  "type": "vc",
+  "phase": "pipeline",
+  "data": {
+    "dryRun": false,
+    "type": "vc",
+    "mode": "production",
+    "stages": {
+      "discover": {
+        "action": "discover",
+        "dryRun": false,
+        "discovered": 5,
+        "results": [
+          {
+            "id": "entity-mod6r0ze-9tytib",
+            "name": "Ballistic Ventures",
+            "email": null,
+            "website": "https://ballisticventures.com"
+          },
+          {
+            "id": "entity-mod6r0ze-s7leda",
+            "name": "Evolution Equity Partners",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mod6r0ze-1u6kae",
+            "name": "Safe Artificial Intelligence Fund",
+            "email": null,
+            "website": "https://www.saif.vc"
+          },
+          {
+            "id": "entity-mod6r0ze-y06vr5",
+            "name": "Air Street Capital",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mod6r0ze-5av8r3",
+            "name": "Menlo Ventures",
+            "email": null,
+            "website": "https://menlovc.com/focus-areas/ai/"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-2026-04-24.json"
+      },
+      "validate": {
+        "action": "validate",
+        "validated": 5,
+        "results": [
+          {
+            "name": "Ballistic Ventures",
+            "email": null,
+            "result": "unknown",
+            "confidence": 0
+          },
+          {
+            "name": "Evolution Equity Partners",
+            "email": null,
+            "result": "unknown",
+            "confidence": 0
+          },
+          {
+            "name": "Safe Artificial Intelligence Fund",
+            "email": null,
+            "result": "unknown",
+            "confidence": 0
+          },
+          {
+            "name": "Air Street Capital",
+            "email": null,
+            "result": "unknown",
+            "confidence": 0
+          },
+          {
+            "name": "Menlo Ventures",
+            "email": null,
+            "result": "unknown",
+            "confidence": 0
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-validate/alygn-vc-validated-2026-04-24.json"
+      },
+      "research": {
+        "action": "research",
+        "dryRun": false,
+        "researched": 5,
+        "results": [
+          {
+            "name": "Ballistic Ventures",
+            "success": true
+          },
+          {
+            "name": "Evolution Equity Partners",
+            "success": true
+          },
+          {
+            "name": "Safe Artificial Intelligence Fund",
+            "success": true
+          },
+          {
+            "name": "Air Street Capital",
+            "success": true
+          },
+          {
+            "name": "Menlo Ventures",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-waves/2026-04-24.json"
+      },
+      "personalize": {
+        "action": "personalize",
+        "dryRun": false,
+        "personalized": 5,
+        "results": [
+          {
+            "name": "Ballistic Ventures",
+            "subject": "Alygn - AI safety Governance Infrastructure",
+            "success": true
+          },
+          {
+            "name": "Evolution Equity Partners",
+            "subject": "Alygn - Protect AI and AI Governance",
+            "success": true
+          },
+          {
+            "name": "Safe Artificial Intelligence Fund",
+            "subject": "Alygn - AI safety Governance Infrastructure",
+            "success": true
+          },
+          {
+            "name": "Air Street Capital",
+            "subject": "Alygn - AI Governance Infrastructure",
+            "success": true
+          },
+          {
+            "name": "Menlo Ventures",
+            "subject": "Alygn - AI Governance Infrastructure",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-personalize/alygn-vc-personalized-2026-04-24.json"
+      },
+      "send": {
+        "action": "send",
+        "dryRun": false,
+        "sent": 0,
+        "failed": 5,
+        "results": [
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Drafted !== Approved"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Drafted !== Approved"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Drafted !== Approved"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Drafted !== Approved"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Drafted !== Approved"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-2026-04-24.json"
+      }
+    },
+    "summary": {
+      "discovered": 5,
+      "validated": 5,
+      "researched": 5,
+      "personalized": 5,
+      "sent": 0
+    }
+  }
+}

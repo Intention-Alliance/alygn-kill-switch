@@ -8,7 +8,7 @@ echo "🚀 Building and Deploying Admin UI..."
 echo ""
 
 # 0. Navigate to Admin UI directory
-cd /home/andlersrv/.openclaw/workspace/phase0/admin-ui
+cd /home/andlersrv/.openclaw/workspace/phase0/apps/admin-ui
 
 # 1. Clean previous build
 echo "🧹 Cleaning previous build..."

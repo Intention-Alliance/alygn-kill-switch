@@ -52,6 +52,7 @@ interface EmailParams {
   customPS?: string | null;
   customHook?: string | null;
   locale?: string;
+  recipientTitle?: string;
 }
 
 interface EmailResult {
@@ -66,6 +67,7 @@ type TemplateCopy = {
   cta: string;
   painPointsIntro: string;
   customPS: string;
+  traigaInfoBox?: string;
 };
 
 type TemplateVariant = {
@@ -85,7 +87,8 @@ export function generateEmail(params: EmailParams): EmailResult {
     subject = '',
     ctaText = null,
     customPS = 'P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.',
-    locale: localeCode = 'en'
+    locale: localeCode = 'en',
+    recipientTitle = 'Alcalde(sa)',
   } = params;
 
   // Set locale context for i18n/formatting
@@ -130,7 +133,24 @@ Como institución independiente de gobernanza de IA, Alygn puede apoyar a los mu
         painPointsIntro: companyName
           ? `Entendemos que ${companyName} enfrenta desafíos como:`
           : 'Entendemos que su organización enfrenta desafíos como:',
-        customPS: customPS || ''
+        customPS: customPS || '',
+        traigaInfoBox: `
+      <div style="margin: 24px 0; padding: 16px; border-left: 3px solid #0f172a; background-color: #f8fafc; border-radius: 4px;">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #0f172a;">TRAIGA Act: Marco de Gobernanza de IA</h3>
+        <p style="margin: 0 0 12px 0; font-size: 14px; color: #374151; line-height: 1.6;">
+          El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:
+        </p>
+        <ul style="margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.8;">
+          <li><strong>Transparencia:</strong> Documentación clara de la toma de decisiones de IA</li>
+          <li><strong>Evaluación de Riesgos:</strong> Identificación proactiva de posibles daños</li>
+          <li><strong>Rendición de Cuentas:</strong> Responsabilidad definida para los resultados de IA</li>
+          <li><strong>Gobernanza:</strong> Supervisión y marcos de monitoreo continuos</li>
+        </ul>
+        <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.6;">
+          Alygn apoya a los municipios en la implementación de estos principios.
+        </p>
+      </div>
+    `
       }
     }
   };
@@ -167,10 +187,11 @@ Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : '
   <div class="container">
     ${buildHeader(logoImg)}
     <div class="content">
-      <p class="greeting">Estimado/a {{recipientName|there}}{{#if companyName}}, edil de {{companyName}}{{/if}},</p>
+      <p class="greeting">Estimado/a {{recipientName|there}}{{#if companyName}}, {{recipientTitle|Alcalde(sa)}} de {{companyName}}{{/if}},</p>
       <div class="body-content">
         <p>{{intro|r}}</p>
         ${painPointsHtml}
+        {{#if traigaInfoBox}}{{traigaInfoBox|r}}{{/if}}
       </div>
       <p class="closing">{{closing|r}}</p>
       <a href="{{mailtoLink|r}}" class="cta-button">{{cta|r}}</a>
@@ -184,10 +205,12 @@ Me interesa explorar cómo podemos apoyar${companyName ? ` a ${companyName}` : '
     subject: subject || '',
     recipientName,
     companyName,
+    recipientTitle,
     intro: copy.intro,
     closing: copy.closing,
     cta: copy.cta,
     customPS: copy.customPS || '',
+    traigaInfoBox: copy.traigaInfoBox || '',
     mailtoLink,
   });
 

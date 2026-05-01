@@ -1,0 +1,94 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 5,
+  "timestamp": "2026-04-28T16:03:08.166Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Merantix Capital",
+      "website": "https://merantix-capital.com",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Series A"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI"
+      ],
+      "partners": [
+        {
+          "name": "Matilda Glynn-Henley",
+          "title": "Investor",
+          "linkedInUrl": null
+        }
+      ],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Early Stage"
+      ],
+      "sectorFocus": [
+        "AI Safety"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Ballistic Ventures",
+      "website": "https://ballisticventures.com",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "Cybersecurity"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Evolution Equity Partners",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI Safety"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Fourth Revolution Capital",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI",
+        "Data"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    }
+  ]
+}

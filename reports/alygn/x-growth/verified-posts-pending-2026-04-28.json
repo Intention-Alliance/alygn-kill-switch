@@ -1,0 +1,263 @@
+{
+  "timestamp": "2026-04-28T17:12:26.461Z",
+  "total_candidates": 7,
+  "passed": [
+    {
+      "candidate_id": 3,
+      "text_preview": "China warns ByteDance apps for failing AI content labeling rules. Enforces neutr",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 3,
+        "text": "China warns ByteDance apps for failing AI content labeling rules. Enforces neutrality through mandatory transparency in generative AI outputs. #AITransparency #AIEthics",
+        "content": "China warns ByteDance apps for failing AI content labeling rules. Enforces neutrality through mandatory transparency in generative AI outputs. #AITransparency #AIEthics",
+        "replyText": "Strengthens neutral governance by requiring clear AI labeling, protecting users from deception and fostering trust in AI ecosystems worldwide.\n\n📚 Source: https://tinyurl.com/4juk4crv\n\n#AITransparency #AIRegulation",
+        "sourceUrl": "https://tinyurl.com/4juk4crv",
+        "isThread": true,
+        "status": "ready"
+      }
+    },
+    {
+      "candidate_id": 4,
+      "text_preview": "Google signs classified AI deal with Pentagon despite opposition. Coordination b",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 4,
+        "text": "Google signs classified AI deal with Pentagon despite opposition. Coordination between tech and defense tests ethical legitimacy boundaries. #AIGovernance #AIRisk",
+        "content": "Google signs classified AI deal with Pentagon despite opposition. Coordination between tech and defense tests ethical legitimacy boundaries. #AIGovernance #AIRisk",
+        "replyText": "Raises questions on legitimate dual-use AI deployment, urging neutral frameworks to align military applications with broader societal safety norms.\n\n📚 Source: https://tinyurl.com/mrum728v\n\n#AIGovernance #AIEthics",
+        "sourceUrl": "https://tinyurl.com/mrum728v",
+        "isThread": true,
+        "status": "ready"
+      }
+    },
+    {
+      "candidate_id": 5,
+      "text_preview": "OSCE PA Special Representative visited Copenhagen on AI governance, engaging Uni",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 5,
+        "text": "OSCE PA Special Representative visited Copenhagen on AI governance, engaging University of Copenhagen on ethical frameworks and human rights. #AIGovernance #AIPolicy",
+        "content": "OSCE PA Special Representative visited Copenhagen on AI governance, engaging University of Copenhagen on ethical frameworks and human rights. #AIGovernance #AIPolicy",
+        "replyText": "Fosters institutional coordination between international bodies and academia, promoting legitimacy through inclusive dialogue for accountable, human-centric AI policies.\n\n📚 Source: https://tinyurl.com/4jffd7k8\n\n#AIGovernance #AIAlignment",
+        "sourceUrl": "https://tinyurl.com/4jffd7k8",
+        "isThread": true,
+        "status": "ready"
+      }
+    },
+    {
+      "candidate_id": 6,
+      "text_preview": "South Africa withdrew its draft AI policy after fake citations were found. It pr",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 6,
+        "text": "South Africa withdrew its draft AI policy after fake citations were found. It proposed a National AI Commission and Ethics Board for continental innovation. #AIEthics #AITransparency",
+        "content": "South Africa withdrew its draft AI policy after fake citations were found. It proposed a National AI Commission and Ethics Board for continental innovation. #AIEthics #AITransparency",
+        "replyText": "Exposes legitimacy risks in AI-assisted policymaking, highlighting need for verification protocols to ensure credible institutional coordination and policy integrity.\n\n📚 Source: https://tinyurl.com/yc6xecnm\n\n#AIEthics #AIPolicy",
+        "sourceUrl": "https://tinyurl.com/yc6xecnm",
+        "isThread": true,
+        "status": "ready"
+      }
+    },
+    {
+      "candidate_id": 7,
+      "text_preview": "Credo AI joined CHAI Partner Program, integrating its governance platform with C",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 7,
+        "text": "Credo AI joined CHAI Partner Program, integrating its governance platform with CHAI’s framework. CHAI unites 3,000+ members for trusted health AI deployment. #AISafety #AIGovernance",
+        "content": "Credo AI joined CHAI Partner Program, integrating its governance platform with CHAI’s framework. CHAI unites 3,000+ members for trusted health AI deployment. #AISafety #AIGovernance",
+        "replyText": "Strengthens cross-organization AI safety efforts in healthcare via standardized tools, workflows, and compliance amid rising regulations.\n\n📚 Source: https://tinyurl.com/2rdm3s52\n\n#AISafety #AIRegulation",
+        "sourceUrl": "https://tinyurl.com/2rdm3s52",
+        "isThread": true,
+        "status": "ready"
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "candidate_id": 1,
+      "text_preview": "Microsoft and OpenAI end exclusive deal, paving way for Amazon partnerships. Thi",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": false,
+          "check": "tone",
+          "issues": [
+            "Hype language: \"exclusive\""
+          ]
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": false,
+      "rejection_reasons": [
+        "Hype language: \"exclusive\""
+      ]
+    },
+    {
+      "candidate_id": 2,
+      "text_preview": "China blocks Meta’s $2B acquisition of AI startup Manus over national security. ",
+      "checks": {
+        "veracity": {
+          "passed": false,
+          "check": "veracity",
+          "issues": [
+            "Statistics present without source verification"
+          ]
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": false,
+      "rejection_reasons": [
+        "Statistics present without source verification"
+      ]
+    }
+  ],
+  "summary": {
+    "veracity_fail": 1,
+    "tone_fail": 1,
+    "x_rules_fail": 0,
+    "variation_fail": 0
+  }
+}

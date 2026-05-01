@@ -1,0 +1,238 @@
+{
+  "timestamp": "2026-04-21T00:14:03.190Z",
+  "type": "vc",
+  "phase": "discovered",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mo7vfjxy-teos1a",
+        "type": "vc",
+        "name": "Renaissance AI Fund 1",
+        "email": null,
+        "website": "https://theimpactplatform.vc/about-renaissance/",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-21T00:14:03.190Z",
+        "lastUpdatedAt": "2026-04-21T00:14:03.190Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security",
+            "AI assurance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo7vfjxy-ehy8jz",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-21T00:14:03.190Z",
+        "lastUpdatedAt": "2026-04-21T00:14:03.190Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo7vfjxy-83xmhy",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": null,
+        "website": "https://ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-21T00:14:03.190Z",
+        "lastUpdatedAt": "2026-04-21T00:14:03.190Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo7vfjxy-uou4eo",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "email": null,
+        "website": "https://glasswingventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-21T00:14:03.190Z",
+        "lastUpdatedAt": "2026-04-21T00:14:03.190Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI cybersecurity",
+            "enterprise security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo7vfjxy-yq6k3d",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "https://menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-21T00:14:03.190Z",
+        "lastUpdatedAt": "2026-04-21T00:14:03.190Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI-native security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ]
+  }
+}

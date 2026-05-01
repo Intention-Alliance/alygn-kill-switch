@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-04-28T17:18:51.626Z",
+  "type": "municipal",
+  "phase": "discovered",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "entity-moiw4fd7-x98aay",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": "https://www.sanjosé.go.cr",
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T17:18:51.595Z",
+        "lastUpdatedAt": "2026-04-28T17:18:51.595Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "governmentType": "city",
+          "population": 204802,
+          "budget": 98658208,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active"
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "date": "2026-04-21",
+  "phase": "afternoon-retry",
+  "timestamp": "2026-04-21T20:00:00.000Z",
+  "wave": 5,
+  "result": {
+    "sent": 0,
+    "failed": 0,
+    "retried": 0
+  },
+  "status": "no-retries-needed",
+  "reason": "Morning send phase was BLOCKED (not failed) due to missing partner email addresses. No entities attempted to send, so there are no failed sends to retry.",
+  "blockedEntities": {
+    "count": 5,
+    "entities": [
+      "entity-mo6sopwt-xbp8up",
+      "entity-mo6sopwt-oap7qq",
+      "entity-mo6sopwt-5yquw4",
+      "entity-mo6sopwt-l5k3rx",
+      "entity-mo6sopwt-moig3n"
+    ],
+    "vcNames": [
+      "Renaissance AI Fund 1",
+      "Safe Artificial Intelligence Fund",
+      "Ballistic Ventures",
+      "Glasswing Ventures",
+      "Menlo Ventures"
+    ],
+    "blockerReason": "Partner email addresses not discovered during research phase. Email discovery required before personalization and send."
+  },
+  "waveProgress": {
+    "discovered": 16,
+    "researched": 11,
+    "personalized": 5,
+    "sent": 0,
+    "blocked": 5
+  },
+  "nextSteps": [
+    "Run email discovery research for 5 blocked VCs",
+    "Re-personalize emails with discovered contact info",
+    "Send emails in next outreach window"
+  ],
+  "discordNotification": {
+    "thread": "1486784711928975460",
+    "status": "pending-gateway-recovery",
+    "message": "Afternoon retry complete: 0 retries needed. Morning blocked by missing emails, not send failures."
+  }
+}

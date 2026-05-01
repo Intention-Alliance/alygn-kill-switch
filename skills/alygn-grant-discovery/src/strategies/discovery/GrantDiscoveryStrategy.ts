@@ -9,10 +9,10 @@
  * 4. Sub-agent reads request → executes discovery → saves results
  */
 
-import { GrantEntity } from '../../entities/GrantEntity';
-import type { ResearchSourceType } from '../../types/index';
 import fs from 'fs';
 import path from 'path';
+import { GrantEntity } from '../../entities/GrantEntity';
+import type { ResearchSourceType } from '../../types/index';
 
 interface DiscoveryConfig {
   sources: ResearchSourceType[];
@@ -381,7 +381,7 @@ export class GrantDiscoveryStrategy {
    * @private
    */
   private async callPerplexityAPI(queries: string[]): Promise<Partial<GrantEntity>[]> {
-    const credentialsPath = path.join(process.env.HOME || '', '.openclaw/workspace/config/credentials.json');
+    const credentialsPath = path.join(process.env.HOME || '/home/andlersrv', '.openclaw/workspace/config/credentials.json');
     let apiKey = process.env.PERPLEXITY_API_KEY;
     
     if (!apiKey && fs.existsSync(credentialsPath)) {

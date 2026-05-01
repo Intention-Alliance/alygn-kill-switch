@@ -101,8 +101,13 @@ const CONFIG = {
 
 let WHOLE_MESSAGE = ''; // Store full message for Notion
 
-// Notion helpers
-const VC_DATABASE_ID = getNotionDatabase('vc_outreach');
+// Notion helpers - fallback to hardcoded ID if not configured
+let VC_DATABASE_ID;
+try {
+  VC_DATABASE_ID = getNotionDatabase('vc_outreach');
+} catch (e) {
+  VC_DATABASE_ID = '30533487-4af6-81ef-983d-f57c7f70de33';
+}
 const notion = getClient();
 
 /**

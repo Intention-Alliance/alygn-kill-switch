@@ -1,248 +1,218 @@
 /**
  * SentEmailTracker
- * Tracks sent emails to prevent duplicates — backed by Supabase
- *
- * MIGRATED: Local JSON (sent-emails.json) → Supabase outreach_emails table
- * All reads/writes go through Supabase. No local file I/O.
- *
- * Updated: 2026-04-22 — Phase 1 critical fix (stale local data)
+ * Tracks sent emails to prevent duplicates
+ * 
+ * Updated: Mar 19, 2026 - Unified code paths with absolute paths
  */
+import fs from 'fs';
+import path from 'path';
 
-import { getSupabaseClient } from './supabase-client.js';
+// ABSOLUTE PATHS using $HOME
+const WORKSPACE_ROOT = path.resolve(process.env.HOME, '.openclaw/workspace');
+
+// Use absolute path for sent log file
+const SENT_LOG_FILE = path.resolve(WORKSPACE_ROOT, 'scripts/alygn/lib/sent-emails.json');
 
 export class SentEmailTracker {
   constructor() {
-    this._cache = { vcs: [], municipalities: [], lastUpdated: null };
-    this._cacheLoaded = false;
+    this.sentEmails = this.loadSentLog();
   }
 
-  /**
-   * Load sent emails from Supabase (lazy, cached per instance)
-   */
-  async _ensureCache() {
-    if (this._cacheLoaded) return;
-
-    const supabase = getSupabaseClient();
-
+  loadSentLog() {
     try {
-      const { data, error } = await supabase
-        .from('outreach_emails')
-        .select('*')
-        .not('sent_at', 'is', null);
-
-      if (error) {
-        console.error('[SentEmailTracker] Supabase load error:', error.message);
-        // Keep empty cache rather than crash
-        this._cacheLoaded = true;
-        return;
+      if (fs.existsSync(SENT_LOG_FILE)) {
+        return JSON.parse(fs.readFileSync(SENT_LOG_FILE, 'utf8'));
       }
-
-      // Partition into vc / municipal buckets based on available fields
-      const vcs = [];
-      const municipalities = [];
-
-      for (const row of data || []) {
-        const entry = {
-          email: row.recipient_email || row.contact_email,
-          name: row.recipient_name || row.contact_name,
-          partnerName: row.partner_name || null,
-          vcName: row.vc_name || row.recipient_name || null,
-          subject: row.subject,
-          sentAt: row.sent_at,
-          messageId: row.message_id,
-        };
-
-        if (row.type === 'vc' || row.vc_name) {
-          vcs.push(entry);
-        } else {
-          municipalities.push(entry);
-        }
-      }
-
-      this._cache = {
-        vcs,
-        municipalities,
-        lastUpdated: data?.length ? data[data.length - 1].sent_at : null,
-      };
-      console.log(`[SentEmailTracker] Loaded ${vcs.length} VC + ${municipalities.length} muni records from Supabase`);
-    } catch (err) {
-      console.error('[SentEmailTracker] Failed to load from Supabase:', err.message);
+    } catch (e) {
+      console.error('Error loading sent log:', e.message);
     }
+    return { vcs: [], municipalities: [], lastUpdated: null };
+  }
 
-    this._cacheLoaded = true;
+  saveSentLog() {
+    try {
+      fs.writeFileSync(SENT_LOG_FILE, JSON.stringify(this.sentEmails, null, 2));
+    } catch (e) {
+      console.error('Error saving sent log:', e.message);
+    }
   }
 
   /**
    * Check if email was already sent
-   * @param {string} email
-   * @param {string} partnerName - (VC-level tracking)
+   * @param {string} email - Email address
+   * @param {string} partnerName - Partner name (optional, for VC-level tracking)
    * @param {string} type - 'vc' or 'municipal'
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async wasAlreadySent(email, partnerName, type) {
-    await this._ensureCache();
+  wasAlreadySent(email, partnerName, type) {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
-
+    
     if (!email) return false;
-
+    
+    // For VCs, check email + partner combination if partnerName provided
     if (type === 'vc' && partnerName) {
-      return this._cache[key].some(
-        (e) => e.email?.toLowerCase() === email.toLowerCase() && e.partnerName === partnerName
+      return this.sentEmails[key].some(entry => 
+        entry.email.toLowerCase() === email.toLowerCase() &&
+        entry.partnerName === partnerName
       );
     }
-
-    return this._cache[key].some(
-      (e) => e.email?.toLowerCase() === email.toLowerCase()
+    
+    // For municipalities or if no partner name, just check email
+    return this.sentEmails[key].some(entry => 
+      entry.email.toLowerCase() === email.toLowerCase()
     );
   }
 
   /**
-   * Record sent email to Supabase
+   * Record sent email
    * @param {Object} params
+   * @param {string} params.email
+   * @param {string} params.name - VC or municipality name
+   * @param {string} params.partnerName - Partner name (for VC-level tracking)
+   * @param {string} params.vcName - VC firm name (for partner-level tracking)
+   * @param {string} params.type - 'vc' or 'municipal'
+   * @param {string} params.subject
+   * @param {string} params.sentAt
+   * @param {string} params.messageId
    */
-  async recordSent(params) {
+  recordSent(params) {
     const { email, name, partnerName, vcName, type, subject, sentAt, messageId } = params;
-
+    const key = type === 'vc' ? 'vcs' : 'municipalities';
+    
     if (!email) {
-      console.warn('[SentEmailTracker] Cannot record: no email provided');
+      console.warn('Cannot record sent email: no email provided');
       return;
     }
-
-    const supabase = getSupabaseClient();
-
-    const row = {
-      recipient_email: email,
-      recipient_name: name || partnerName,
-      partner_name: partnerName || null,
-      vc_name: vcName || name || null,
-      type: type || 'municipal',
-      subject,
-      sent_at: sentAt || new Date().toISOString(),
-      message_id: messageId || `alygn-${Date.now()}`,
-      status: 'sent',
-    };
-
-    try {
-      const { error } = await supabase.from('outreach_emails').insert(row);
-
-      if (error) {
-        console.error(`[SentEmailTracker] Supabase insert error for ${email}:`, error.message);
-        return;
-      }
-
-      console.log(`[SentEmailTracker] Recorded ${email}${partnerName ? ` (${partnerName})` : ''} in Supabase`);
-
-      // Update local cache
-      const key = type === 'vc' ? 'vcs' : 'municipalities';
-      const entry = {
-        email,
-        name,
-        partnerName: partnerName || null,
-        vcName: vcName || name,
-        subject,
-        sentAt: row.sent_at,
-        messageId: row.message_id,
-      };
-
-      const existingIdx = this._cache[key].findIndex(
-        (e) => e.email?.toLowerCase() === email.toLowerCase()
+    
+    // Check if already exists (email + partner combination for VCs)
+    let existingIndex = -1;
+    if (type === 'vc' && partnerName) {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase() &&
+                 entry.partnerName === partnerName
       );
-      if (existingIdx >= 0) {
-        this._cache[key][existingIdx] = entry;
-      } else {
-        this._cache[key].push(entry);
-      }
-      this._cache.lastUpdated = row.sent_at;
-    } catch (err) {
-      console.error(`[SentEmailTracker] Failed to record ${email}:`, err.message);
+    } else {
+      existingIndex = this.sentEmails[key].findIndex(
+        entry => entry.email.toLowerCase() === email.toLowerCase()
+      );
     }
+    
+    const entry = {
+      email,
+      name,
+      partnerName: partnerName || null,
+      vcName: vcName || name,
+      subject,
+      sentAt: sentAt || new Date().toISOString(),
+      messageId: messageId || `alygn-${Date.now()}`
+    };
+    
+    if (existingIndex >= 0) {
+      // Update existing
+      this.sentEmails[key][existingIndex] = entry;
+      console.log(`Updated existing sent record for ${email}${partnerName ? ` (${partnerName})` : ''}`);
+    } else {
+      // Add new
+      this.sentEmails[key].push(entry);
+      console.log(`Recorded new sent email for ${email}${partnerName ? ` (${partnerName})` : ''}`);
+    }
+    
+    this.sentEmails.lastUpdated = new Date().toISOString();
+    this.saveSentLog();
   }
 
   /**
    * Get sent emails list
    * @param {string} type - 'vc' or 'municipal'
-   * @returns {Promise<Array>}
+   * @returns {Array}
    */
-  async getSent(type) {
-    await this._ensureCache();
+  getSent(type) {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
-    return this._cache[key];
+    return this.sentEmails[key];
   }
 
   /**
    * Get count
-   * @param {string} type
-   * @returns {Promise<number>}
+   * @param {string} type - 'vc' or 'municipal'
+   * @returns {number}
    */
-  async getCount(type) {
-    const list = await this.getSent(type);
-    return list.length;
+  getCount(type) {
+    const key = type === 'vc' ? 'vcs' : 'municipalities';
+    return this.sentEmails[key].length;
   }
 
   /**
    * Get full stats
-   * @returns {Promise<Object>}
+   * @returns {Object}
    */
-  async getStats() {
+  getStats() {
     return {
-      vcs: await this.getCount('vc'),
-      municipalities: await this.getCount('municipal'),
-      total: (await this.getCount('vc')) + (await this.getCount('municipal')),
-      lastUpdated: this._cache.lastUpdated,
+      vcs: this.getCount('vc'),
+      municipalities: this.getCount('municipal'),
+      total: this.getCount('vc') + this.getCount('municipal'),
+      lastUpdated: this.sentEmails.lastUpdated
     };
   }
 
   /**
    * Get last sent entry for an email
+   * @param {string} email
+   * @param {string} partnerName
+   * @param {string} type
+   * @returns {Object|null}
    */
-  async getSentEntry(email, partnerName, type) {
-    await this._ensureCache();
+  getSentEntry(email, partnerName, type) {
     const key = type === 'vc' ? 'vcs' : 'municipalities';
-
+    
     if (!email) return null;
-
+    
     if (type === 'vc' && partnerName) {
-      return (
-        this._cache[key].find(
-          (e) => e.email?.toLowerCase() === email.toLowerCase() && e.partnerName === partnerName
-        ) || null
-      );
+      return this.sentEmails[key].find(
+        entry => entry.email.toLowerCase() === email.toLowerCase() &&
+                 entry.partnerName === partnerName
+      ) || null;
     }
-
-    return (
-      this._cache[key].find((e) => e.email?.toLowerCase() === email.toLowerCase()) || null
-    );
+    
+    return this.sentEmails[key].find(
+      entry => entry.email.toLowerCase() === email.toLowerCase()
+    ) || null;
   }
 
   /**
    * Check if specific partner was already emailed at a VC
+   * @param {string} email
+   * @param {string} partnerName
+   * @returns {boolean}
    */
-  async wasPartnerEmailed(email, partnerName) {
-    await this._ensureCache();
+  wasPartnerEmailed(email, partnerName) {
     if (!email || !partnerName) return false;
-    return this._cache.vcs.some(
-      (e) => e.email?.toLowerCase() === email.toLowerCase() && e.partnerName === partnerName
+    
+    return this.sentEmails.vcs.some(entry => 
+      entry.email.toLowerCase() === email.toLowerCase() &&
+      entry.partnerName === partnerName
     );
   }
 
   /**
    * Get partners already emailed at a specific VC
+   * @param {string} email
+   * @returns {Array}
    */
-  async getEmailedPartners(email) {
-    await this._ensureCache();
+  getEmailedPartners(email) {
     if (!email) return [];
-    return this._cache.vcs
-      .filter((e) => e.email?.toLowerCase() === email.toLowerCase())
-      .map((e) => e.partnerName)
+    
+    return this.sentEmails.vcs
+      .filter(entry => entry.email.toLowerCase() === email.toLowerCase())
+      .map(entry => entry.partnerName)
       .filter(Boolean);
   }
 
   /**
-   * Clear local cache (does NOT delete Supabase records)
+   * Clear all sent records (use with caution)
    */
-  clearCache() {
-    this._cache = { vcs: [], municipalities: [], lastUpdated: null };
-    this._cacheLoaded = false;
+  clearAll() {
+    this.sentEmails = { vcs: [], municipalities: [], lastUpdated: null };
+    this.saveSentLog();
   }
 }
 

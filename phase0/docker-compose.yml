@@ -91,6 +91,8 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"  # Internal access via nginx (/api/ → :3000/v1/)
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}

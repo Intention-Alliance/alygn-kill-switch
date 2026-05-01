@@ -1,0 +1,223 @@
+{
+  "timestamp": "2026-04-29T17:10:43.949Z",
+  "total_candidates": 6,
+  "passed": [
+    {
+      "candidate_id": 1,
+      "text_preview": "EU legislators failed to agree on rolling back AI rules overnight. The sticking ",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 1,
+        "text": "EU legislators failed to agree on rolling back AI rules overnight. The sticking point: how machinery and medical device rules intersect with AI oversight. Coordination gaps persist. #AIGovernance #AIPolicy",
+        "content": "EU legislators failed to agree on rolling back AI rules overnight. The sticking point: how machinery and medical device rules intersect with AI oversight. Coordination gaps persist. #AIGovernance #AIPolicy",
+        "source": "https://www.politico.eu/article/eu-legislators-fail-to-clinch-deal-to-delay-ai-law/",
+        "type": "main"
+      }
+    },
+    {
+      "candidate_id": "1-reply",
+      "text_preview": "When multiple jurisdictions pull in different directions, voluntary commitments ",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": "1-reply",
+        "text": "When multiple jurisdictions pull in different directions, voluntary commitments become coordination gaps. Neutral infrastructure for shared verification is what's missing. 📚 Source: https://tinyurl.com/23bfetbw",
+        "content": "When multiple jurisdictions pull in different directions, voluntary commitments become coordination gaps. Neutral infrastructure for shared verification is what's missing. 📚 Source: https://tinyurl.com/23bfetbw",
+        "source": "https://www.politico.eu/article/eu-legislators-fail-to-clinch-deal-to-delay-ai-law/",
+        "type": "reply"
+      }
+    },
+    {
+      "candidate_id": 2,
+      "text_preview": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition.",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 2,
+        "text": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition. 10 European countries now resist deregulation proposals. Institutional coordination matters. #AIGovernance #AIRisk",
+        "content": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition. 10 European countries now resist deregulation proposals. Institutional coordination matters. #AIGovernance #AIRisk",
+        "source": "https://www.politico.eu/article/germany-stronger-ai-deregulation-brussels-eu-opposition/",
+        "type": "main"
+      }
+    },
+    {
+      "candidate_id": "2-reply",
+      "text_preview": "Fragmented regulatory approaches across jurisdictions erode accountability. Neut",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": "2-reply",
+        "text": "Fragmented regulatory approaches across jurisdictions erode accountability. Neutral coordination infrastructure supports cross-border trust without favoring any single actor. 📚 Source: https://tinyurl.com/2y75bcxf",
+        "content": "Fragmented regulatory approaches across jurisdictions erode accountability. Neutral coordination infrastructure supports cross-border trust without favoring any single actor. 📚 Source: https://tinyurl.com/2y75bcxf",
+        "source": "https://www.politico.eu/article/germany-stronger-ai-deregulation-brussels-eu-opposition/",
+        "type": "reply"
+      }
+    },
+    {
+      "candidate_id": 3,
+      "text_preview": "US Congress introduces consolidated AI bill package covering safety, transparenc",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": 3,
+        "text": "US Congress introduces consolidated AI bill package covering safety, transparency, and accountability. Bipartisan momentum toward institutional oversight frameworks. #AISafety #AIRegulation",
+        "content": "US Congress introduces consolidated AI bill package covering safety, transparency, and accountability. Bipartisan momentum toward institutional oversight frameworks. #AISafety #AIRegulation",
+        "source": "https://www.nextgov.com/artificial-intelligence/2026/04/lieu-and-obernolte-introduce-consolidated-ai-bill-package/413134/",
+        "type": "main"
+      }
+    },
+    {
+      "candidate_id": "3-reply",
+      "text_preview": "Legislative progress signals institutional demand for coordination. Process legi",
+      "checks": {
+        "veracity": {
+          "passed": true,
+          "check": "veracity",
+          "issues": []
+        },
+        "tone": {
+          "passed": true,
+          "check": "tone",
+          "issues": []
+        },
+        "x_rules": {
+          "passed": true,
+          "check": "x_rules",
+          "issues": []
+        },
+        "variation": {
+          "passed": true,
+          "check": "variation",
+          "issues": []
+        }
+      },
+      "passed": true,
+      "rejection_reasons": [],
+      "candidate": {
+        "id": "3-reply",
+        "text": "Legislative progress signals institutional demand for coordination. Process legitimacy comes from iterative, inclusive design—not unilateral mandates. 📚 Source: https://tinyurl.com/245cfobc",
+        "content": "Legislative progress signals institutional demand for coordination. Process legitimacy comes from iterative, inclusive design—not unilateral mandates. 📚 Source: https://tinyurl.com/245cfobc",
+        "source": "https://www.nextgov.com/artificial-intelligence/2026/04/lieu-and-obernolte-introduce-consolidated-ai-bill-package/413134/",
+        "type": "reply"
+      }
+    }
+  ],
+  "rejected": [],
+  "summary": {
+    "veracity_fail": 0,
+    "tone_fail": 0,
+    "x_rules_fail": 0,
+    "variation_fail": 0
+  }
+}

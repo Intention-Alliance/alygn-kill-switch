@@ -1,0 +1,37 @@
+{
+  "scope": "vc",
+  "batch_size": 1,
+  "wave": 1,
+  "verified_at": "2026-04-27T23:15:49.282Z",
+  "total": 1,
+  "verified_count": 0,
+  "not_found_count": 0,
+  "targets": [
+    {
+      "type": "vc",
+      "name": "Bloomberg Beta",
+      "partner_name": null,
+      "email": "hello@bloombergbeta.com",
+      "assumed_handle": "@bloombergbeta",
+      "source_file": "draft-30533487-4af6-8127-a6f9-d329be6572c6.json",
+      "notion_database_id": "30b33487-4af6-8106-8cba-d304fdd0b600",
+      "verification": {
+        "status": "error",
+        "handle": null,
+        "profile_url": "https://x.com/bloombergbeta",
+        "profile_exists": false,
+        "followers_count": null,
+        "following_count": null,
+        "is_verified": false,
+        "recent_activity": false,
+        "can_follow": false,
+        "can_engage": false,
+        "notes": [
+          "Verification error: browser is not defined"
+        ],
+        "browser_session": null
+      },
+      "verified_at": "2026-04-27T23:15:49.281Z"
+    }
+  ]
+}

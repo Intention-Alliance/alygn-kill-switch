@@ -80,8 +80,8 @@ export function createKillSwitchHandler(service: KillSwitchService) {
 
     // ─── Auth Check (skip for health and auth endpoints) ────────
     if (url !== '/v1/kill-switch/health' && !isAuthEndpoint) {
-      const auth = checkAuth(service, req);
-      if (!auth.authenticated) {
+      const authResult = await checkAuth(service, req);
+      if (!authResult.authenticated) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Authentication required' }));
         return;

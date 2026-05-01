@@ -1,0 +1,79 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 5,
+  "timestamp": "2026-04-28T16:03:07.226Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Safe AI Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Ballistic Ventures",
+      "website": "https://ballisticventures.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI Security",
+        "Cybersecurity",
+        "AI Safety"
+      ],
+      "partners": [
+        {
+          "name": "Barmak Meftah",
+          "title": "Partner",
+          "linkedInUrl": ""
+        }
+      ]
+    },
+    {
+      "name": "Evolution Equity Partners",
+      "firmType": "vc",
+      "stageFocus": [
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "General Catalyst",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Agents"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Sound Ventures",
+      "firmType": "vc",
+      "stageFocus": [
+        "Strategic Funding"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "Enterprise AI Security"
+      ],
+      "partners": []
+    }
+  ]
+}

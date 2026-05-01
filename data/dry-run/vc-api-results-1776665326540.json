@@ -1,0 +1,81 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 5,
+  "timestamp": "2026-04-20T06:08:46.540Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Renaissance AI Fund 1",
+      "website": "https://theimpactplatform.vc/about-renaissance/",
+      "firmType": "vc",
+      "stageFocus": [
+        "pre-seed",
+        "seed"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security",
+        "AI assurance"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Safe AI Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security",
+        "responsible AI"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Mythos Ventures",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "prosocial technologies"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Ballistic Ventures",
+      "website": "https://ballisticventures.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI security",
+        "cybersecurity"
+      ],
+      "partners": [
+        {
+          "name": "Barmak Meftah",
+          "title": "Partner"
+        }
+      ]
+    }
+  ]
+}

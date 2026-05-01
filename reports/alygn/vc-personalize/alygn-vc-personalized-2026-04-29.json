@@ -1,0 +1,834 @@
+{
+  "timestamp": "2026-04-29T01:18:55.062Z",
+  "type": "vc",
+  "phase": "personalized",
+  "data": {
+    "count": 7,
+    "entities": [
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "IQ Capital",
+        "email": "max@iqcapital.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+          "partnerName": "Max",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            "Zachary Bogue (Co-Founder/MD)"
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null,
+          "focusAreas": [
+            "AI",
+            "data science",
+            "deep tech"
+          ],
+          "confidence": "LOW",
+          "source": "Format inference"
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "draftId": "draft-vc-sHXEir-1777425535051",
+        "draftCreatedAt": "2026-04-29T01:18:55.051Z",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      },
+      {
+        "id": "vc-WhU9jW",
+        "type": "vc",
+        "name": "First Round Capital",
+        "email": "josh@firstround.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "Philadelphia",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660524 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Josh | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Josh at First Round Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand First Round Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20First%20Round%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Josh at First Round Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.\n\n        We understand First Round Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": "Josh",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Josh Kopelman (Partner - founder",
+              "title": ""
+            },
+            {
+              "name": "zero-to-IPO expertise)",
+              "title": ""
+            },
+            {
+              "name": "Nick Rubin",
+              "title": "Investor"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 9,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "draftId": "draft-vc-WhU9jW-1777425535053",
+        "draftCreatedAt": "2026-04-29T01:18:55.053Z",
+        "pageId": "30533487-4af6-8140-82dd-c6483d101058"
+      },
+      {
+        "id": "vc-J1XPeT",
+        "type": "vc",
+        "name": "Bessemer Venture Partners",
+        "email": "sameer@bvp.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "",
+          "state": "",
+          "country": "Global",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "high",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660526 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Elliott | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-but",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Elliott at Bessemer Venture Partners,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Bessemer Venture Partners faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Bessemer%20Venture%20Partners%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Elliott at Bessemer Venture Partners,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.\n\n        We understand Bessemer Venture Partners faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+          "partnerName": "Elliott",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Elliott Robinson (Partner",
+              "title": ""
+            },
+            {
+              "name": "NYC - cloud/growth)",
+              "title": ""
+            },
+            {
+              "name": "Vishal Gupta (Partner",
+              "title": ""
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 10,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Drafted",
+        "draftId": "draft-vc-J1XPeT-1777425535054",
+        "draftCreatedAt": "2026-04-29T01:18:55.054Z",
+        "pageId": "30533487-4af6-8182-a700-c4b82e13f794"
+      },
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "Radical Ventures",
+        "email": "jordan@radical.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+          "partnerName": "Max",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            "Zachary Bogue (Co-Founder/MD)"
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null,
+          "focusAreas": [
+            "AI",
+            "data science",
+            "deep tech"
+          ],
+          "confidence": "LOW",
+          "source": "Format inference"
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-bf7adeae-1777426414",
+        "draftCreatedAt": "2026-04-28T19:33:34.477248",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      },
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "Khosla Ventures",
+        "email": "mishra-k@khoslaventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+          "partnerName": "Max",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            "Zachary Bogue (Co-Founder/MD)"
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null,
+          "focusAreas": [
+            "AI",
+            "data science",
+            "deep tech"
+          ],
+          "confidence": "LOW",
+          "source": "Format inference"
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-a1edbb44-1777426414",
+        "draftCreatedAt": "2026-04-28T19:33:34.477268",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      },
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "Lux Capital",
+        "email": "j.wolfe@luxcapital.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+          "partnerName": "Max",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            "Zachary Bogue (Co-Founder/MD)"
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null,
+          "focusAreas": [
+            "AI",
+            "data science",
+            "deep tech"
+          ],
+          "confidence": "LOW",
+          "source": "Format inference"
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-4c99cefd-1777426414",
+        "draftCreatedAt": "2026-04-28T19:33:34.477275",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      },
+      {
+        "id": "vc-sHXEir",
+        "type": "vc",
+        "name": "Data Collective (DCVC)",
+        "email": "zach@dcvc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Cambridge",
+          "state": "",
+          "country": "UK",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T08:32:00.728Z",
+        "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+        "outreachCount": 0,
+        "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI governance Governance Infrastructure",
+          "customBody": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          },
+          "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "portfolioReferences": [],
+          "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+          "partnerName": "Max",
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "seed",
+            "series-a"
+          ],
+          "sectorFocus": [
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            "Zachary Bogue (Co-Founder/MD)"
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": 8,
+          "contactFormUrl": null,
+          "focusAreas": [
+            "AI",
+            "data science",
+            "deep tech"
+          ],
+          "confidence": "LOW",
+          "source": "Format inference"
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Approved",
+        "draftId": "draft-fd0b59da-1777426414",
+        "draftCreatedAt": "2026-04-28T19:33:34.477281",
+        "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - AI governance Governance Infrastructure",
+          "html": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          }
+        },
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "draftId": "draft-vc-sHXEir-1777425535051",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "vc-sHXEir",
+          "type": "vc",
+          "name": "IQ Capital",
+          "email": "max@iqcapital.vc",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Cambridge",
+            "state": "",
+            "country": "UK",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T08:32:00.728Z",
+          "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+          "outreachCount": 0,
+          "researchNotes": "UK-based deep-tech VC. Max Bautin is co-founder and leading partner. Focus on B2B deep tech at pre-Seed through Series A. AI governance alignment: moderate - deep tech focus includes AI. Contact: hello@iqcapital.vc",
+          "personalizationContext": {
+            "customSubject": "Alygn - AI governance Governance Infrastructure",
+            "customBody": {
+              "subject": "Alygn - AI governance Governance Infrastructure",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Max at IQ Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">The AI governance space you're investing in requires new governance frameworks as systems become more capable.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand IQ Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20IQ%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Max at IQ Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        The AI governance space you're investing in requires new governance frameworks as systems become more capable.\n\n        We understand IQ Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+            },
+            "tailoredHook": "The AI governance space you're investing in requires new governance frameworks as systems become more capable.",
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "portfolioReferences": [],
+            "personalizedPS": "P.S.: I noticed your work as Partner/Co-founder at IQ Capital\u2014your focus on building sustainable governance frameworks aligns with our institutional approach.",
+            "partnerName": "Max",
+            "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Max Bautin",
+                "title": "Partner/Co-founder"
+              },
+              {
+                "name": "Ed Stacey",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 8,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Drafted",
+          "draftId": "draft-vc-sHXEir-1777425535051",
+          "draftCreatedAt": "2026-04-29T01:18:55.051Z",
+          "pageId": "32833487-4af6-8132-a101-d92f8fe001bc"
+        }
+      },
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - AI governance Governance Infrastructure",
+          "html": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Josh at First Round Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand First Round Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20First%20Round%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Josh at First Round Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.\n\n        We understand First Round Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          }
+        },
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "draftId": "draft-vc-WhU9jW-1777425535053",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "vc-WhU9jW",
+          "type": "vc",
+          "name": "First Round Capital",
+          "email": "josh@firstround.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "",
+            "state": "",
+            "country": "Philadelphia",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "high",
+          "discoveredAt": "2026-04-28T08:32:00.728Z",
+          "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+          "outreachCount": 0,
+          "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660524 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Josh | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button",
+          "personalizationContext": {
+            "customSubject": "Alygn - AI governance Governance Infrastructure",
+            "customBody": {
+              "subject": "Alygn - AI governance Governance Infrastructure",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Josh at First Round Capital,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand First Round Capital faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20First%20Round%20Capital%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Josh at First Round Capital,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.\n\n        We understand First Round Capital faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+            },
+            "tailoredHook": "Given First Round Capital's thesis on AI governance, you recognize that technical capability is outpacing institutional coordination.",
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "portfolioReferences": [],
+            "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+            "partnerName": "Josh",
+            "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Josh Kopelman (Partner - founder",
+                "title": ""
+              },
+              {
+                "name": "zero-to-IPO expertise)",
+                "title": ""
+              },
+              {
+                "name": "Nick Rubin",
+                "title": "Investor"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 9,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Drafted",
+          "draftId": "draft-vc-WhU9jW-1777425535053",
+          "draftCreatedAt": "2026-04-29T01:18:55.053Z",
+          "pageId": "30533487-4af6-8140-82dd-c6483d101058"
+        }
+      },
+      {
+        "success": true,
+        "email": {
+          "subject": "Alygn - AI governance Governance Infrastructure",
+          "html": {
+            "subject": "Alygn - AI governance Governance Infrastructure",
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Elliott at Bessemer Venture Partners,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Bessemer Venture Partners faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Bessemer%20Venture%20Partners%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Elliott at Bessemer Venture Partners,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.\n\n        We understand Bessemer Venture Partners faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+          }
+        },
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "draftId": "draft-vc-J1XPeT-1777425535054",
+        "draftStatus": "Drafted",
+        "entity": {
+          "id": "vc-J1XPeT",
+          "type": "vc",
+          "name": "Bessemer Venture Partners",
+          "email": "sameer@bvp.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "",
+            "state": "",
+            "country": "Global",
+            "region": null
+          },
+          "status": "personalized",
+          "priority": "high",
+          "discoveredAt": "2026-04-28T08:32:00.728Z",
+          "lastUpdatedAt": "2026-04-28T08:32:00.728Z",
+          "outreachCount": 0,
+          "researchNotes": "PIPELINE DRAFT | Draft ID: draft-entity-30533487-4af6-1777357660526 | Entity ID: entity-30533487-4af6 | Subject: Alygn - AI governance Governance Infrastructure | Partner: Elliott | Variant: governance\n\n---\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-but",
+          "personalizationContext": {
+            "customSubject": "Alygn - AI governance Governance Infrastructure",
+            "customBody": {
+              "subject": "Alygn - AI governance Governance Infrastructure",
+              "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Alygn - AI governance Governance Infrastructure</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Hi Elliott at Bessemer Venture Partners,</p>\n      <div class=\"body-content\">\n        <p>Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.<br><br>\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6; font-style: italic; color: #4b5563;\">Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">We understand Bessemer Venture Partners faces challenges such as:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>AI safety standards</li><li>Governance frameworks</li><li>Risk assessment</li>\n</ul>\n      </div>\n      <p class=\"closing\">We're interested in exploring how governance infrastructure can support your organization's work.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Alygn%20-%20AI%20governance%20Governance%20Infrastructure&body=Greetings%2C%20Tania.%0A%0AI%20am%20interested%20in%20exploring%20how%20we%20can%20support%20Bessemer%20Venture%20Partners%20with%20the%20AI%20governance%20challenges%20we%20both%20are%20facing.%20Can%20we%20coordinate%20a%20call%20to%20discuss%20this%20further%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Learn more about Alygn</a>\n      <p class=\"ps\">P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud835\udd4f @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=governance\" style=\"display: inline-block; margin: 0 8px;\">\ud83d\udcbc LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+              "text": "Alygn - AI governance Governance Infrastructure\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Hi Elliott at Bessemer Venture Partners,\n\n      \n        Alygn is an independent AI governance institution focused on making accountability, oversight, and coordination workable for advanced AI systems operating at global scale.\n\nAs AI systems outgrow individual actors, governance can't be retrofitted. We exist to support coordination across developers, operators, and public institutions\u2014without centralizing control or asserting authority.\n\n        Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.\n\n        We understand Bessemer Venture Partners faces challenges such as:\n\n  AI safety standardsGovernance frameworksRisk assessment\n\n      \n      We're interested in exploring how governance infrastructure can support your organization's work.\n\n      Learn more about Alygn\n      P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 \u00a9 All rights reserved.\n  \n\n  \n    \ud835\udd4f @aialygn | \n    \ud83d\udcbc LinkedIn"
+            },
+            "tailoredHook": "Your focus on AI governance aligns with our work building governance infrastructure for advanced AI systems.",
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "portfolioReferences": [],
+            "personalizedPS": "P.S.: Your thesis on AI governance resonates with our view that governance infrastructure must be built before it's urgently needed.",
+            "partnerName": "Elliott",
+            "valueProposition": "Alygn provides the governance infrastructure needed for seed AI governance investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "seed",
+              "series-a"
+            ],
+            "sectorFocus": [
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Elliott Robinson (Partner",
+                "title": ""
+              },
+              {
+                "name": "NYC - cloud/growth)",
+                "title": ""
+              },
+              {
+                "name": "Vishal Gupta (Partner",
+                "title": ""
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": 10,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Drafted",
+          "draftId": "draft-vc-J1XPeT-1777425535054",
+          "draftCreatedAt": "2026-04-29T01:18:55.054Z",
+          "pageId": "30533487-4af6-8182-a700-c4b82e13f794"
+        }
+      },
+      {
+        "success": true,
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "entity_name": "Radical Ventures",
+        "email": "jordan@radical.vc"
+      },
+      {
+        "success": true,
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "entity_name": "Khosla Ventures",
+        "email": "mishra-k@khoslaventures.com"
+      },
+      {
+        "success": true,
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "entity_name": "Lux Capital",
+        "email": "j.wolfe@luxcapital.com"
+      },
+      {
+        "success": true,
+        "subject": "Alygn - AI governance Governance Infrastructure",
+        "entity_name": "Data Collective (DCVC)",
+        "email": "zach@dcvc.com"
+      }
+    ]
+  }
+}

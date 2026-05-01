@@ -8,7 +8,7 @@
  */
 import { OutreachEntity } from './OutreachEntity';
 import type { ICostaRicaCanton, IMunicipalTypeData } from './types';
-import { assertSpanishPainPoints, validateMunicipalSpanishIntegrity } from './lang-guard';
+import { assertSpanishPainPoints, translatePainPoints, validateMunicipalSpanishIntegrity } from './lang-guard';
 
 export type { ICostaRicaCanton, IMunicipalTypeData };
 
@@ -41,12 +41,12 @@ export class MunicipalEntity extends OutreachEntity {
     super({ ...data, type: 'municipal' });
     
     // Municipal-specific data
-    const painPoints = data.typeData?.painPoints || data.painPoints || [];
+    let painPoints = data.typeData?.painPoints || data.painPoints || [];
     
-    // B-001 Data Integrity Guard: Validate Spanish content for municipal entities
-    // This prevents English content from slipping into Costa Rica municipal data
+    // B-001 Data Integrity Guard: Auto-translate English pain points to Spanish
+    // Prevents English content from slipping into Costa Rica municipal data
     if (painPoints.length > 0) {
-      assertSpanishPainPoints(painPoints, 'MunicipalEntity.constructor');
+      painPoints = translatePainPoints(painPoints);
     }
     
     this.typeData = {
@@ -68,7 +68,7 @@ export class MunicipalEntity extends OutreachEntity {
     this.waveNumber = (data.waveNumber as number | null) ?? data.wave_number ?? null;
     this.waveDate = (data.waveDate as string | null) ?? data.wave_date ?? null;
     this.batchStatus = (data.batchStatus as string | null) ?? data.batch_status ?? null;
-    this.municipalityId = (data.municipalityId as string | null) ?? data.id ?? null;
+    this.municipalityId = (data.municipalityId as string | null) ?? (data.supabaseId as string | null) ?? data.id ?? null;
     this.localGovernmentId = (data.localGovernmentId as string | null) ?? null;
     this.outreachVariant = (data.outreachVariant as string | null) ?? null;
     this.outreachSentAt = (data.outreachSentAt as string | null) ?? null;

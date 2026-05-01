@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "xurl": {
+      "version": "1.0.0",
+      "installedAt": 1776882719280
+    },
+    "himalaya": {
+      "version": "1.0.0",
+      "installedAt": 1776882906375
+    },
+    "gog": {
+      "version": "1.0.0",
+      "installedAt": 1776883258397
+    },
+    "obsidian": {
+      "version": "1.0.0",
+      "installedAt": 1776883322120
+    },
+    "oracle": {
+      "version": "1.0.1",
+      "installedAt": 1776883452508
+    },
+    "eightctl": {
+      "version": "1.0.0",
+      "installedAt": 1776883651830
+    }
+  }
+}

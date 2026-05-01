@@ -19,7 +19,7 @@ const emailValidatorFactoryModule = await import(path.join(ALYGN_DIR, 'lib/email
 const { getClient } = notionClient;
 const { EmailValidatorFactory } = emailValidatorFactoryModule;
 
-const DATABASE_ID = '30533487-4af6-81e7-ad64-000bbd4829ff';
+const DATABASE_ID = '305334874af681ef983df57c7f70de33';
 const notion = getClient();
 
 // Initialize email validator

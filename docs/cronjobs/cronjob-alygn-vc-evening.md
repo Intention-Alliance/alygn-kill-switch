@@ -50,7 +50,7 @@
    **3c. Query Notion for contacted VCs:**
    ```bash
    # Query Notion database for VCs with Status: Contacted, Sent, Replied, Meeting
-   curl -s -X POST "https://api.notion.com/v1/databases/${NOTION_VC_DATABASE_ID}/query" \
+   curl -s -X POST "https://api.notion.com/v1/databases/${NOTION_VC_DATASOURCE_ID}/query" \
      -H "Authorization: Bearer ${NOTION_TOKEN}" \
      -H "Content-Type: application/json" \
      -H "Notion-Version: 2022-06-28" \

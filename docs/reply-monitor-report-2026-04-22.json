@@ -1,0 +1,7 @@
+{
+  "embeds": [{
+    "title": "📧 Alygn Reply Monitor - Municipal Outreach",
+    "description": "**Scan completed:** Wednesday, April 22, 2026 - 12:00 PM CST\n\n**Emails scanned:** 4 (since April 14, 2026)\n**Human replies:** 0\n**Bounces:** 1\n\n---\n\n### 📊 Results Breakdown\n\n| Category | Count |\n|----------|-------|\n| ✅ Positive replies | 0 |\n| ⚠️ Negative replies | 0 |\n| 📭 Out of office | 0 |\n| 🔄 Follow-up needed | 0 |\n| 🤝 Meeting requests | 0 |\n| ❌ Bounced | 1 |\n\n---\n\n### ❌ Bounce Details\n\n**Municipality:** Escazu, Costa Rica\n**Email:** alcaldia@escazu.go.cr\n**Error:** 550 5.4.1 Recipient address rejected: Access denied\n**Action:** Marked as failed in database, needs email verification\n\n---\n\n### 📝 Notes\n\n- 3 emails were Ollama newsletters (not outreach replies)\n- 1 bounce from municipal outreach wave\n- No human replies to classify yet\n- **No auto-responses sent** (per safety protocol)\n\n---\n\n### 🔧 Action Items\n\n1. ⚠️ **Verify Escazu email address** - current address invalid\n2. 📋 Continue monitoring for replies from Wave 1 outreach\n3. ✅ No meeting requests requiring immediate attention",
+    "color": 5814783
+  }]
+}

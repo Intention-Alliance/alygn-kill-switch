@@ -1,0 +1,1112 @@
+{
+  "timestamp": "2026-04-27T00:09:15.951Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 8,
+    "entities": [
+      {
+        "id": "entity-mogfw0z4-lcuxwu",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:09:12.312Z",
+        "outreachCount": 0,
+        "researchNotes": "Evolution Equity Partners is a NYC-based growth capital firm specializing in cybersecurity and AI investments, with strategic focus on AI governance, agentic AI security, and the shift from software protection to intelligence management in an AI-driven world.",
+        "personalizationContext": {
+          "painPoints": [
+            "Agentic AI governance and security",
+            "AI security and governance for enterprise CISOs",
+            "Non-human identity management",
+            "Transition from security software to security intelligence",
+            "Geopolitics of digital sovereignty",
+            "AI compression of attack timelines and threat surface expansion"
+          ],
+          "tailoredHook": "Evolution Equity Partners demonstrates strong alignment with AI safety and governance priorities through its explicit focus on agentic AI governance, AI security platforms (Noma Security), and the strategic shift toward intelligence management in AI-driven cybersecurity. The firm's recent $1.1B fund and portfolio companies directly address governance challenges for enterprise AI deployments, with leadership actively engaging on these themes at industry forums.",
+          "recentNews": "Evolution Technology Fund III reserves 75% for early-growth-stage, 15% for later-growth-stage, and 10% for earlier-stage VC investments"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder and Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Arctic Wolf",
+            "Talon Cyber Security",
+            "Snyk",
+            "Aqua Security",
+            "SecurityScorecard",
+            "Carbon Black",
+            "Noma Security",
+            "Protect AI",
+            "Torque",
+            "Kai"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Noma Security",
+              "date": "July 31, 2025",
+              "stage": "Series B"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mogfw0z4-81vvq4",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": "jake@ballisticventures.com",
+        "website": "ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Co-Founder & General Partner"
+            },
+            {
+              "name": "Jake Seid",
+              "title": "General Partner",
+              "email": "jake@ballisticventures.com",
+              "emailConfidence": "low",
+              "emailSource": "pattern-guess"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "emailConfidence": "low"
+      },
+      {
+        "id": "entity-mogfw0z4-txrkxf",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Geoff Ralston",
+              "title": "Founder"
+            },
+            {
+              "name": "Nick Ralston",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "contactFormUrl": "https://www.saif.vc/request"
+      },
+      {
+        "id": "entity-mogfw0z4-p0hyc2",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mogfw0z4-gtyskj",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "email": "rudina@glasswing.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Early-stage"
+          ],
+          "sectorFocus": [
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Rudina Seseri",
+              "title": "Founder & Managing Partner",
+              "email": "rudina@glasswing.vc",
+              "emailConfidence": "low",
+              "emailSource": "pattern-guess"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "emailConfidence": "low"
+      },
+      {
+        "id": "entity-mogfw0z4-139whr",
+        "type": "vc",
+        "name": "General Catalyst",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:09:15.109Z",
+        "outreachCount": 0,
+        "researchNotes": "General Catalyst is a $40B AUM mega-fund focused on applied AI across critical sectors, with a distinctive $1.5B AI roll-up engine that incubates AI-native companies and transforms fragmented services businesses. The firm emphasizes AI infrastructure, emergency response automation, and enterprise transformation rather than AI safety or alignment as core investment theses.",
+        "personalizationContext": {
+          "painPoints": [
+            "Fragmented services businesses that can be transformed through AI automation",
+            "Manual processes in customer service, data entry, and content generation",
+            "Limited applied AI infrastructure for enterprises",
+            "Emergency response system inefficiencies"
+          ],
+          "tailoredHook": "General Catalyst does not appear to have AI safety, governance, or alignment as core investment focus areas. The firm's thesis centers on applied AI automation, infrastructure development, and operational transformation. A potential engagement would require alignment around practical AI implementation and enterprise adoption rather than AI safety research or governance frameworks.",
+          "recentNews": "Portfolio companies expected to increase AI investments 1.5x in 6-month cycles"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A"
+          ],
+          "sectorFocus": [
+            "AI safety"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Marc Bhargava",
+              "title": "Managing Director, Head of Creation Strategy"
+            }
+          ],
+          "portfolioCompanies": [
+            "Anthropic",
+            "Stripe",
+            "Anduril",
+            "Canvas",
+            "Mercor",
+            "Prepared",
+            "Together AI",
+            "Crescendo",
+            "Long Lake",
+            "Titan MSP",
+            "Eudia",
+            "Beacon",
+            "Commure",
+            "Maven",
+            "CityBlock Health",
+            "Livongo",
+            "Sword",
+            "Hippocratic AI",
+            "Snap",
+            "Kayak"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Prepared",
+              "date": "2024",
+              "stage": "Series C - $80M"
+            },
+            {
+              "company": "Together AI",
+              "date": "Recent",
+              "stage": "Not specified"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mogfw0z4-i6emjl",
+        "type": "vc",
+        "name": "Sequoia Capital",
+        "email": null,
+        "website": "sequoiacap.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mogfw0z4-1ugzvi",
+        "type": "vc",
+        "name": "Air Street Capital",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T00:08:53.488Z",
+        "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "Evolution Equity Partners is a NYC-based growth capital firm specializing in cybersecurity and AI investments, with strategic focus on AI governance, agentic AI security, and the shift from software protection to intelligence management in an AI-driven world.",
+          "portfolio": [
+            "Arctic Wolf",
+            "Talon Cyber Security",
+            "Snyk",
+            "Aqua Security",
+            "SecurityScorecard",
+            "Carbon Black",
+            "Noma Security",
+            "Protect AI",
+            "Torque",
+            "Kai"
+          ],
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder and Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Noma Security",
+              "date": "July 31, 2025",
+              "stage": "Series B"
+            }
+          ],
+          "painPoints": [
+            "Agentic AI governance and security",
+            "AI security and governance for enterprise CISOs",
+            "Non-human identity management",
+            "Transition from security software to security intelligence",
+            "Geopolitics of digital sovereignty",
+            "AI compression of attack timelines and threat surface expansion"
+          ],
+          "governanceSignals": [
+            "Evolution Technology Fund III reserves 75% for early-growth-stage, 15% for later-growth-stage, and 10% for earlier-stage VC investments",
+            "Portfolio diversification across different maturity stages for private markets exposure",
+            "Support in sales/marketing, product technology, human capital, M&A, and business development",
+            "Focus on companies building comprehensive AI security and governance platforms",
+            "Investment thesis emphasizes rapid product-market fit with enterprise security organizations"
+          ],
+          "whyAlygn": "Evolution Equity Partners demonstrates strong alignment with AI safety and governance priorities through its explicit focus on agentic AI governance, AI security platforms (Noma Security), and the strategic shift toward intelligence management in AI-driven cybersecurity. The firm's recent $1.1B fund and portfolio companies directly address governance challenges for enterprise AI deployments, with leadership actively engaging on these themes at industry forums."
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-lcuxwu",
+          "type": "vc",
+          "name": "Evolution Equity Partners",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:09:12.312Z",
+          "outreachCount": 0,
+          "researchNotes": "Evolution Equity Partners is a NYC-based growth capital firm specializing in cybersecurity and AI investments, with strategic focus on AI governance, agentic AI security, and the shift from software protection to intelligence management in an AI-driven world.",
+          "personalizationContext": {
+            "painPoints": [
+              "Agentic AI governance and security",
+              "AI security and governance for enterprise CISOs",
+              "Non-human identity management",
+              "Transition from security software to security intelligence",
+              "Geopolitics of digital sovereignty",
+              "AI compression of attack timelines and threat surface expansion"
+            ],
+            "tailoredHook": "Evolution Equity Partners demonstrates strong alignment with AI safety and governance priorities through its explicit focus on agentic AI governance, AI security platforms (Noma Security), and the strategic shift toward intelligence management in AI-driven cybersecurity. The firm's recent $1.1B fund and portfolio companies directly address governance challenges for enterprise AI deployments, with leadership actively engaging on these themes at industry forums.",
+            "recentNews": "Evolution Technology Fund III reserves 75% for early-growth-stage, 15% for later-growth-stage, and 10% for earlier-stage VC investments"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Richard Seewald",
+                "title": "Founder and Managing Partner"
+              },
+              {
+                "name": "Dennis Smith",
+                "title": "Founder and Managing Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Arctic Wolf",
+              "Talon Cyber Security",
+              "Snyk",
+              "Aqua Security",
+              "SecurityScorecard",
+              "Carbon Black",
+              "Noma Security",
+              "Protect AI",
+              "Torque",
+              "Kai"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Noma Security",
+                "date": "July 31, 2025",
+                "stage": "Series B"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "34933487-4af6-814d-8516-d38b81e4aeb9"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-81vvq4",
+          "type": "vc",
+          "name": "Ballistic Ventures",
+          "email": null,
+          "website": "ballisticventures.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "34933487-4af6-811a-beaa-ead32cf2dafb"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-txrkxf",
+          "type": "vc",
+          "name": "Safe Artificial Intelligence Fund",
+          "email": null,
+          "website": "saif.vc",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Early-stage"
+            ],
+            "sectorFocus": [
+              "AI safety"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "32833487-4af6-81ee-add9-c9d067dd11f7"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-p0hyc2",
+          "type": "vc",
+          "name": "Menlo Ventures",
+          "email": null,
+          "website": "menlovc.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "32833487-4af6-81b0-ae2f-c31acacd409a"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-gtyskj",
+          "type": "vc",
+          "name": "Glasswing Ventures",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Early-stage"
+            ],
+            "sectorFocus": [
+              "AI security",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "General Catalyst is a $40B AUM mega-fund focused on applied AI across critical sectors, with a distinctive $1.5B AI roll-up engine that incubates AI-native companies and transforms fragmented services businesses. The firm emphasizes AI infrastructure, emergency response automation, and enterprise transformation rather than AI safety or alignment as core investment theses.",
+          "portfolio": [
+            "Anthropic",
+            "Stripe",
+            "Anduril",
+            "Canvas",
+            "Mercor",
+            "Prepared",
+            "Together AI",
+            "Crescendo",
+            "Long Lake",
+            "Titan MSP",
+            "Eudia",
+            "Beacon",
+            "Commure",
+            "Maven",
+            "CityBlock Health",
+            "Livongo",
+            "Sword",
+            "Hippocratic AI",
+            "Snap",
+            "Kayak"
+          ],
+          "partners": [
+            {
+              "name": "Marc Bhargava",
+              "title": "Managing Director, Head of Creation Strategy"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Prepared",
+              "date": "2024",
+              "stage": "Series C - $80M"
+            },
+            {
+              "company": "Together AI",
+              "date": "Recent",
+              "stage": "Not specified"
+            }
+          ],
+          "painPoints": [
+            "Fragmented services businesses that can be transformed through AI automation",
+            "Manual processes in customer service, data entry, and content generation",
+            "Limited applied AI infrastructure for enterprises",
+            "Emergency response system inefficiencies"
+          ],
+          "governanceSignals": [
+            "Portfolio companies expected to increase AI investments 1.5x in 6-month cycles",
+            "Focus on operational AI implementation over experimentation",
+            "AI Roll-Up model with deep operational involvement in portfolio companies",
+            "Selection criteria: mapping 70 services categories to identify 10 highest-impact AI opportunities"
+          ],
+          "whyAlygn": "General Catalyst does not appear to have AI safety, governance, or alignment as core investment focus areas. The firm's thesis centers on applied AI automation, infrastructure development, and operational transformation. A potential engagement would require alignment around practical AI implementation and enterprise adoption rather than AI safety research or governance frameworks."
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-139whr",
+          "type": "vc",
+          "name": "General Catalyst",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:09:15.109Z",
+          "outreachCount": 0,
+          "researchNotes": "General Catalyst is a $40B AUM mega-fund focused on applied AI across critical sectors, with a distinctive $1.5B AI roll-up engine that incubates AI-native companies and transforms fragmented services businesses. The firm emphasizes AI infrastructure, emergency response automation, and enterprise transformation rather than AI safety or alignment as core investment theses.",
+          "personalizationContext": {
+            "painPoints": [
+              "Fragmented services businesses that can be transformed through AI automation",
+              "Manual processes in customer service, data entry, and content generation",
+              "Limited applied AI infrastructure for enterprises",
+              "Emergency response system inefficiencies"
+            ],
+            "tailoredHook": "General Catalyst does not appear to have AI safety, governance, or alignment as core investment focus areas. The firm's thesis centers on applied AI automation, infrastructure development, and operational transformation. A potential engagement would require alignment around practical AI implementation and enterprise adoption rather than AI safety research or governance frameworks.",
+            "recentNews": "Portfolio companies expected to increase AI investments 1.5x in 6-month cycles"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A"
+            ],
+            "sectorFocus": [
+              "AI safety"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Marc Bhargava",
+                "title": "Managing Director, Head of Creation Strategy"
+              }
+            ],
+            "portfolioCompanies": [
+              "Anthropic",
+              "Stripe",
+              "Anduril",
+              "Canvas",
+              "Mercor",
+              "Prepared",
+              "Together AI",
+              "Crescendo",
+              "Long Lake",
+              "Titan MSP",
+              "Eudia",
+              "Beacon",
+              "Commure",
+              "Maven",
+              "CityBlock Health",
+              "Livongo",
+              "Sword",
+              "Hippocratic AI",
+              "Snap",
+              "Kayak"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Prepared",
+                "date": "2024",
+                "stage": "Series C - $80M"
+              },
+              {
+                "company": "Together AI",
+                "date": "Recent",
+                "stage": "Not specified"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "32833487-4af6-8176-a8b3-fd631f8193fd"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-i6emjl",
+          "type": "vc",
+          "name": "Sequoia Capital",
+          "email": null,
+          "website": "sequoiacap.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Contacted",
+          "pageId": "32833487-4af6-8100-98d0-e01f5b533737"
+        },
+        "entity": {
+          "id": "entity-mogfw0z4-1ugzvi",
+          "type": "vc",
+          "name": "Air Street Capital",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T00:08:53.488Z",
+          "lastUpdatedAt": "2026-04-27T00:08:53.488Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

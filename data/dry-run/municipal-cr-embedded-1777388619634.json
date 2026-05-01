@@ -1,0 +1,14 @@
+{
+  "region": "costa-rica",
+  "source": "embedded",
+  "timestamp": "2026-04-28T15:03:39.634Z",
+  "mode": "dry-run-direct-api",
+  "cantones": [
+    "San José",
+    "Escazú",
+    "Desamparados",
+    "Puriscal",
+    "Tarrazú"
+  ],
+  "count": 5
+}

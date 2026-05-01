@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-04-28T17:02:09.232Z",
+  "source": "Grok Search - Prompt #1",
+  "totalPosts": 5,
+  "totalThreads": 5,
+  "validUrls": 0,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "Microsoft and OpenAI end exclusive deal, paving way for Amazon partnerships. This advances coordination among AI giants for equitable scaling.",
+      "replyText": "Highlights need for institutional coordination to prevent silos, ease antitrust scrutiny, and build shared infrastructure essential for legitimate AI governance.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 142,
+      "replyLength": 161,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "China blocks Meta's $2B acquisition of AI startup Manus over national security. Reinforces legitimacy of state review in protecting AI assets.",
+      "replyText": "Demonstrates how sovereign legitimacy in AI M&A safeguards domestic innovation, curbing foreign dominance and ensuring balanced global tech competition.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 142,
+      "replyLength": 152,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "China warns ByteDance apps for failing AI content labeling rules. Enforces neutrality through mandatory transparency in generative AI outputs.",
+      "replyText": "Strengthens neutral governance by requiring clear AI labeling, protecting users from deception and fostering trust in AI ecosystems worldwide.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 142,
+      "replyLength": 142,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 4,
+      "mainText": "Google signs classified AI deal with Pentagon despite opposition. Coordination between tech and defense tests ethical legitimacy boundaries.",
+      "replyText": "Raises questions on legitimate dual-use AI deployment, urging neutral frameworks to align military applications with broader societal safety norms.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 140,
+      "replyLength": 147,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 5,
+      "mainText": "600 Google employees protest Pentagon AI deal, prioritizing neutrality over classified uses. Internal checks bolster governance legitimacy.",
+      "replyText": "Employee advocacy underscores need for internal legitimacy mechanisms, ensuring AI decisions reflect neutral, ethical principles amid power concentration.",
+      "sourceUrl": null,
+      "isThread": true,
+      "mainLength": 139,
+      "replyLength": 154,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

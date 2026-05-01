@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Municipal Government",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "3",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 0",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-28T08-55-40 | 4/28/2026, 2:56:42 AM"
+      },
+      "timestamp": "2026-04-28T08:56:42.115Z"
+    },
+    {
+      "title": "Municipalities (3)",
+      "color": 1096065,
+      "description": "**Municipalidad de San José**\n   🌐 https://www.sanjosé.go.cr\n\n**Municipalidad de Alajuela**\n   🌐 https://www.alajuela.go.cr\n\n**Municipalidad de Cartago**\n   🌐 https://www.cartago.go.cr",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-28T08-55-40",
+  "timestamp": "2026-04-28T08-55-40"
+}

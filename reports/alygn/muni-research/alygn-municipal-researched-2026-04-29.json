@@ -1,0 +1,962 @@
+{
+  "timestamp": "2026-04-29T15:07:41.386Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mok6vla8-yznxha",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-29T15:07:41.312Z",
+        "lastUpdatedAt": "2026-04-29T15:07:41.368Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 288054,
+          "budget": 150000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mok6vla8-mclr90",
+        "type": "municipal",
+        "name": "Municipalidad de Escazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Escazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-29T15:07:41.312Z",
+        "lastUpdatedAt": "2026-04-29T15:07:41.368Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 91117,
+          "budget": 45000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mok6vla8-vd6jbm",
+        "type": "municipal",
+        "name": "Municipalidad de Desamparados",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Desamparados",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-04-29T15:07:41.312Z",
+        "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 208741,
+          "budget": 80000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mok6vla8-77elfe",
+        "type": "municipal",
+        "name": "Municipalidad de Puriscal",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Puriscal",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-29T15:07:41.312Z",
+        "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 33484,
+          "budget": 25000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      },
+      {
+        "id": "entity-mok6vla9-9d6uam",
+        "type": "municipal",
+        "name": "Municipalidad de Tarrazú",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": "Tarrazú",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-29T15:07:41.313Z",
+        "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 16260,
+          "budget": 18000000,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Complejidad de la transformación digital",
+            "Recursos técnicos limitados",
+            "Entrega de servicios ciudadanos",
+            "Gobernanza de datos y privacidad",
+            "Coordinación interinstitucional"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": []
+        },
+        "entity": {
+          "id": "entity-mok6vla8-yznxha",
+          "type": "municipal",
+          "name": "Municipalidad de San José",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "San José",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-29T15:07:41.312Z",
+          "lastUpdatedAt": "2026-04-29T15:07:41.368Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 288054,
+            "budget": 150000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Complejidad de la transformación digital",
+              "Recursos técnicos limitados",
+              "Entrega de servicios ciudadanos",
+              "Gobernanza de datos y privacidad",
+              "Coordinación interinstitucional"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": []
+        },
+        "entity": {
+          "id": "entity-mok6vla8-mclr90",
+          "type": "municipal",
+          "name": "Municipalidad de Escazú",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Escazú",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-29T15:07:41.312Z",
+          "lastUpdatedAt": "2026-04-29T15:07:41.368Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 91117,
+            "budget": 45000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Complejidad de la transformación digital",
+              "Recursos técnicos limitados",
+              "Entrega de servicios ciudadanos",
+              "Gobernanza de datos y privacidad",
+              "Coordinación interinstitucional"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": []
+        },
+        "entity": {
+          "id": "entity-mok6vla8-vd6jbm",
+          "type": "municipal",
+          "name": "Municipalidad de Desamparados",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Desamparados",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-04-29T15:07:41.312Z",
+          "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 208741,
+            "budget": 80000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Complejidad de la transformación digital",
+              "Recursos técnicos limitados",
+              "Entrega de servicios ciudadanos",
+              "Gobernanza de datos y privacidad",
+              "Coordinación interinstitucional"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": []
+        },
+        "entity": {
+          "id": "entity-mok6vla8-77elfe",
+          "type": "municipal",
+          "name": "Municipalidad de Puriscal",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Puriscal",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-29T15:07:41.312Z",
+          "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 33484,
+            "budget": 25000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Complejidad de la transformación digital",
+              "Recursos técnicos limitados",
+              "Entrega de servicios ciudadanos",
+              "Gobernanza de datos y privacidad",
+              "Coordinación interinstitucional"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": []
+        },
+        "entity": {
+          "id": "entity-mok6vla9-9d6uam",
+          "type": "municipal",
+          "name": "Municipalidad de Tarrazú",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": "Tarrazú",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-29T15:07:41.313Z",
+          "lastUpdatedAt": "2026-04-29T15:07:41.369Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "tailoredHook": "Apoyo en implementación del TRAIGA Act"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 16260,
+            "budget": 18000000,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Complejidad de la transformación digital",
+              "Recursos técnicos limitados",
+              "Entrega de servicios ciudadanos",
+              "Gobernanza de datos y privacidad",
+              "Coordinación interinstitucional"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}

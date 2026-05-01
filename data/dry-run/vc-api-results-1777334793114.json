@@ -1,0 +1,182 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 20,
+  "timestamp": "2026-04-28T00:06:33.114Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security",
+        "Responsible AI deployment"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Evolution Equity Partners",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series B",
+        "Series C"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Ballistic Ventures",
+      "website": "https://ballisticventures.com",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Early-stage",
+        "Growth"
+      ],
+      "sectorFocus": [
+        "Cybersecurity",
+        "AI security",
+        "Cloud security"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Glasswing Ventures",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "Cybersecurity",
+        "Enterprise security"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Menlo Ventures",
+      "website": "https://menlovc.com",
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "Cybersecurity",
+        "AI"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "General Catalyst",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Series A"
+      ],
+      "sectorFocus": [
+        "AI",
+        "Enterprise AI"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Sound Ventures",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI security",
+        "Enterprise AI security"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Qualcomm Ventures",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI security",
+        "Enterprise AI"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Samsung Ventures",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Series A",
+        "Series B"
+      ],
+      "sectorFocus": [
+        "AI security",
+        "Enterprise technology"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    },
+    {
+      "name": "Air Street Capital",
+      "website": null,
+      "email": null,
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "Life sciences"
+      ],
+      "partners": [],
+      "contactFormUrl": null,
+      "linkedInUrl": null
+    }
+  ]
+}

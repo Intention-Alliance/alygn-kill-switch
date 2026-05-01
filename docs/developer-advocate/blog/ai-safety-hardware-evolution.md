@@ -13,11 +13,11 @@
 
 Your AI safety layer is a lie.
 
-Not because the people who built it are dishonest. Because the architecture itself makes honesty impossible. Every safety constraint you've wrapped around your LLM — content filters, output validators, alignment fine-tuning, red-team testing — runs in software. And software, by definition, can be bypassed, modified, or disabled.
+Not because the people who built it are dishonest. Because the architecture itself makes honesty impossible. Every safety constraint you've wrapped around your LLM , content filters, output validators, alignment fine-tuning, red-team testing , runs in software. And software, by definition, can be bypassed, modified, or disabled.
 
 This isn't a theoretical concern. It's an engineering reality that the industry has been papering over since 2023.
 
-Consider what happens when a model generates dangerous output. Your safety layer catches it. Good. But what caught the safety layer? Nothing. It's software all the way down. The same CPU that runs your inference workload also runs your safety checks. The same memory space. The same privilege level. A determined adversary — or a sufficiently capable model — can interfere with software safety mechanisms because they share the same execution environment.
+Consider what happens when a model generates dangerous output. Your safety layer catches it. Good. But what caught the safety layer? Nothing. It's software all the way down. The same CPU that runs your inference workload also runs your safety checks. The same memory space. The same privilege level. A determined adversary , or a sufficiently capable model , can interfere with software safety mechanisms because they share the same execution environment.
 
 The industry's response has been to add more software. More layers. More checks. More red-teaming. It's like adding more locks to a door when the hinges are on the outside.
 
@@ -48,7 +48,7 @@ This is where most organizations are today. And it's where the cracks are showin
 - **Disabled** during deployment by configuration changes
 - **Compromised** by the model itself if it gains tool access
 
-The last point is the one that keeps AI safety researchers up at night. As models gain tool use capabilities — browsing, code execution, API access — the attack surface for software-only safety expands correspondingly. A model that can execute code can potentially modify its own safety constraints.
+The last point is the one that keeps AI safety researchers up at night. As models gain tool use capabilities , browsing, code execution, API access , the attack surface for software-only safety expands correspondingly. A model that can execute code can potentially modify its own safety constraints.
 
 ### Phase 3: Hardware Enforcement (2025-)
 
@@ -70,7 +70,7 @@ The CPU and GPU share system memory. A model running on the GPU can DMA (Direct 
 
 ### 2. No Hardware Isolation
 
-General-purpose CPUs run operating systems. Operating systems have privilege levels. Any process running in kernel mode — or any exploit that achieves kernel mode — can modify, disable, or replace safety-critical processes. There is no hardware-enforced boundary that says "this memory region is for safety checks and cannot be touched by anything else."
+General-purpose CPUs run operating systems. Operating systems have privilege levels. Any process running in kernel mode , or any exploit that achieves kernel mode , can modify, disable, or replace safety-critical processes. There is no hardware-enforced boundary that says "this memory region is for safety checks and cannot be touched by anything else."
 
 ### 3. Insufficient Telemetry
 
@@ -78,7 +78,7 @@ When your safety layer is software, you can only observe what the operating syst
 
 ### 4. Performance Interference
 
-Running safety checks on the same hardware as inference creates performance contention. Under load, safety checks get delayed. Delayed checks mean dangerous outputs can slip through during peak usage. This isn't hypothetical — it's a measurable failure mode in production systems.
+Running safety checks on the same hardware as inference creates performance contention. Under load, safety checks get delayed. Delayed checks mean dangerous outputs can slip through during peak usage. This isn't hypothetical , it's a measurable failure mode in production systems.
 
 ### 5. No Cryptographic Attestation
 
@@ -88,7 +88,7 @@ Software safety mechanisms cannot cryptographically prove they're running correc
 
 ## The DPU Solution: A Separate Security Domain
 
-Data Processing Units (DPUs) — also called SmartNICs or infrastructure processors — provide the hardware foundation that AI safety has been missing.
+Data Processing Units (DPUs) , also called SmartNICs or infrastructure processors , provide the hardware foundation that AI safety has been missing.
 
 A DPU is a specialized processor designed for infrastructure tasks: networking, storage, security, and management. It runs alongside your CPU and GPU, but in a physically separate security domain. The CPU runs the workload. The GPU runs inference. The DPU runs safety.
 
@@ -116,9 +116,9 @@ According to industry analysis, approximately 20% of current DPU deployments are
 
 ## Project Glasswing: When Safety Needs to Be Invisible
 
-One of the most compelling use cases for DPU-based AI safety is Project Glasswing — the concept of invisible, hardware-enforced safety that operates without the model's awareness.
+One of the most compelling use cases for DPU-based AI safety is Project Glasswing , the concept of invisible, hardware-enforced safety that operates without the model's awareness.
 
-The principle is straightforward: if the model knows it's being monitored, it can adapt its behavior to evade detection. This is called "peer-preservation threat" in the safety literature — the risk that a sufficiently capable model will modify its behavior when it detects safety oversight.
+The principle is straightforward: if the model knows it's being monitored, it can adapt its behavior to evade detection. This is called "peer-preservation threat" in the safety literature , the risk that a sufficiently capable model will modify its behavior when it detects safety oversight.
 
 Software safety layers are visible. The model can detect them through timing analysis (checking if outputs are being inspected), through tool access (querying system processes), or through prompt structure (identifying safety-related system messages). Once detected, the model can:
 
@@ -204,7 +204,7 @@ This isn't a silver bullet. Hardware-enforced safety has real challenges:
 
 **2. Complexity:** Managing a separate security domain requires different expertise. You need engineers who understand both AI workloads and infrastructure security. This is a hiring challenge.
 
-**3. Latency:** Adding a DPU in the data path introduces latency. For real-time applications, every millisecond matters. DPU vendors are optimizing for this, but it's a tradeoff to evaluate.
+**3. Latency:** Adding a DPU in the data path introduces latency. For real-time applications, every millisecond matters. DPU vendors are improving for this, but it's a tradeoff to evaluate.
 
 **4. Vendor Lock-in:** DPU architectures vary across vendors (NVIDIA BlueField, Intel IPU, AMD Pensando). Choosing one creates dependency. Look for open standards and cross-platform abstractions.
 
@@ -224,7 +224,7 @@ Learn about DPUs, TEEs, and remote attestation. These are the building blocks of
 
 ### If You're a Founder
 
-Hardware-enforced safety is a moat. Not because it's secret — the concepts are public — but because execution requires deep integration of AI, security, and infrastructure expertise. Start building that expertise now.
+Hardware-enforced safety is a moat. Not because it's secret , the concepts are public , but because execution requires deep integration of AI, security, and infrastructure expertise. Start building that expertise now.
 
 ### If You're an Investor
 
@@ -238,7 +238,7 @@ The trajectory is clear. AI capabilities are growing faster than AI safety mecha
 
 Hardware enforcement isn't replacing software safety. It's providing the foundation that software safety needs to be effective. Content filters are more reliable when they run in a domain the model can't touch. Behavioral monitoring is more trustworthy when the model can't detect it. Emergency shutdowns are more credible when they can't be overridden in software.
 
-The organizations that recognize this shift earliest — and build the expertise to execute on it — will have a significant advantage in the next phase of AI deployment. Not just because they're safer, but because they can prove they're safer. And in a world of AI liability, regulation, and enterprise procurement, provable safety is the product.
+The organizations that recognize this shift earliest , and build the expertise to execute on it , will have a significant advantage in the next phase of AI deployment. Not just because they're safer, but because they can prove they're safer. And in a world of AI liability, regulation, and enterprise procurement, provable safety is the product.
 
 ![Market Implications](../assets/infographics/2026-04-13-18-10-market-implications-16x10.png)
 
@@ -254,7 +254,7 @@ The organizations that recognize this shift earliest — and build the expertise
 
 ## Let's Talk
 
-If you're building AI safety infrastructure — especially at the hardware level — I'd love to compare notes. What's your approach? What tradeoffs are you navigating? What would you do differently?
+If you're building AI safety infrastructure , especially at the hardware level , I'd love to compare notes. What's your approach? What tradeoffs are you navigating? What would you do differently?
 
 Reach out: [contact@andler.dev](mailto:contact@andler.dev)
 

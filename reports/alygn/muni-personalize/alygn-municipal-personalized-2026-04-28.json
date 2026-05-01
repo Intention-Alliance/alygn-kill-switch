@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-04-28T17:18:51.739Z",
+  "type": "municipal",
+  "phase": "personalized",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "entity-moiw4fd7-x98aay",
+        "type": "municipal",
+        "name": "Municipalidad de San José",
+        "email": null,
+        "website": "https://www.sanjosé.go.cr",
+        "phone": null,
+        "location": {
+          "city": "San José",
+          "state": "San José",
+          "country": "Costa Rica",
+          "region": "San José"
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-28T17:18:51.595Z",
+        "lastUpdatedAt": "2026-04-28T17:18:51.722Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "customSubject": "Apoyando la transformación digital de San José",
+          "customBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Apoyando la transformación digital de San José</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Estimado/a San José, Alcalde de San José,</p>\n      <div class=\"body-content\">\n        <p>El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) establece un marco regulatorio para sistemas de IA de alto riesgo.<br><br>\nComo institución independiente de gobernanza de IA, Alygn puede apoyar a los municipios en la implementación práctica de estas salvaguardas—sin centralizar el control ni afirmar autoridad.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">Entendemos que San José enfrenta desafíos como:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Desarrollo rural</li><li>Infraestructura</li><li>Conectividad rural</li>\n</ul>\n        \n      <div style=\"margin: 24px 0; padding: 16px; border-left: 3px solid #0f172a; background-color: #f8fafc; border-radius: 4px;\">\n        <h3 style=\"margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #0f172a;\">TRAIGA Act: Marco de Gobernanza de IA</h3>\n        <p style=\"margin: 0 0 12px 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:\n        </p>\n        <ul style=\"margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.8;\">\n          <li><strong>Transparencia:</strong> Documentación clara de la toma de decisiones de IA</li>\n          <li><strong>Evaluación de Riesgos:</strong> Identificación proactiva de posibles daños</li>\n          <li><strong>Rendición de Cuentas:</strong> Responsabilidad definida para los resultados de IA</li>\n          <li><strong>Gobernanza:</strong> Supervisión y marcos de monitoreo continuos</li>\n        </ul>\n        <p style=\"margin: 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          Alygn apoya a los municipios en la implementación de estos principios.\n        </p>\n      </div>\n    \n      </div>\n      <p class=\"closing\">Esperando explorar esto con usted.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Apoyando%20la%20transformaci%C3%B3n%20digital%20de%20San%20Jos%C3%A9&body=Saludos%2C%20Tania.%0A%0AMe%20interesa%20explorar%20c%C3%B3mo%20podemos%20apoyar%20a%20San%20Jos%C3%A9%20con%20los%20desaf%C3%ADos%20de%20gobernanza%20de%20IA%20que%20enfrentan.%20%C2%BFPodemos%20coordinar%20una%20llamada%20para%20discutir%20esto%20m%C3%A1s%20a%20fondo%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Conozca cómo podemos ayudar</a>\n      <p class=\"ps\">P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+          "tailoredHook": "gobernanza de IA",
+          "valueProposition": "Alygn apoya a municipios como el suyo (204,802 habitantes) en San José con la implementación práctica de gobernanza de IA."
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 204802,
+          "budget": 98658208,
+          "departments": [
+            {
+              "name": "Tecnología",
+              "focus": [
+                "transformación digital"
+              ]
+            },
+            {
+              "name": "Planificación",
+              "focus": [
+                "ciudad inteligente"
+              ]
+            }
+          ],
+          "keyContacts": [],
+          "initiatives": [
+            {
+              "name": "Transformación Digital",
+              "description": "Modernización de servicios",
+              "status": "active"
+            }
+          ],
+          "painPoints": [
+            "Desarrollo rural",
+            "Infraestructura",
+            "Conectividad rural",
+            "Economía agrícola",
+            "Prestación de servicios"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "San José",
+          "trAigaRelevant": true
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Personalized",
+        "waveNumber": null,
+        "waveDate": null,
+        "batchStatus": null,
+        "municipalityId": null,
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "email": {
+          "subject": "Apoyando la transformación digital de San José",
+          "html": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Apoyando la transformación digital de San José</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Estimado/a San José, Alcalde de San José,</p>\n      <div class=\"body-content\">\n        <p>El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) establece un marco regulatorio para sistemas de IA de alto riesgo.<br><br>\nComo institución independiente de gobernanza de IA, Alygn puede apoyar a los municipios en la implementación práctica de estas salvaguardas—sin centralizar el control ni afirmar autoridad.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">Entendemos que San José enfrenta desafíos como:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Desarrollo rural</li><li>Infraestructura</li><li>Conectividad rural</li>\n</ul>\n        \n      <div style=\"margin: 24px 0; padding: 16px; border-left: 3px solid #0f172a; background-color: #f8fafc; border-radius: 4px;\">\n        <h3 style=\"margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #0f172a;\">TRAIGA Act: Marco de Gobernanza de IA</h3>\n        <p style=\"margin: 0 0 12px 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:\n        </p>\n        <ul style=\"margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.8;\">\n          <li><strong>Transparencia:</strong> Documentación clara de la toma de decisiones de IA</li>\n          <li><strong>Evaluación de Riesgos:</strong> Identificación proactiva de posibles daños</li>\n          <li><strong>Rendición de Cuentas:</strong> Responsabilidad definida para los resultados de IA</li>\n          <li><strong>Gobernanza:</strong> Supervisión y marcos de monitoreo continuos</li>\n        </ul>\n        <p style=\"margin: 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          Alygn apoya a los municipios en la implementación de estos principios.\n        </p>\n      </div>\n    \n      </div>\n      <p class=\"closing\">Esperando explorar esto con usted.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Apoyando%20la%20transformaci%C3%B3n%20digital%20de%20San%20Jos%C3%A9&body=Saludos%2C%20Tania.%0A%0AMe%20interesa%20explorar%20c%C3%B3mo%20podemos%20apoyar%20a%20San%20Jos%C3%A9%20con%20los%20desaf%C3%ADos%20de%20gobernanza%20de%20IA%20que%20enfrentan.%20%C2%BFPodemos%20coordinar%20una%20llamada%20para%20discutir%20esto%20m%C3%A1s%20a%20fondo%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Conozca cómo podemos ayudar</a>\n      <p class=\"ps\">P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+          "text": "Apoyando la transformación digital de San José\n  \n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n\n  \n    \n  \n    ALYGN\n    \n  \n\n    \n      Estimado/a San José, Alcalde de San José,\n\n      \n        El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) establece un marco regulatorio para sistemas de IA de alto riesgo.\n\nComo institución independiente de gobernanza de IA, Alygn puede apoyar a los municipios en la implementación práctica de estas salvaguardas—sin centralizar el control ni afirmar autoridad.\n\n        Entendemos que San José enfrenta desafíos como:\n\n  Desarrollo ruralInfraestructuraConectividad rural\n\n        \n      \n        TRAIGA Act: Marco de Gobernanza de IA\n        \n          El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:\n        \n\n        \n          Transparencia: Documentación clara de la toma de decisiones de IA\n          Evaluación de Riesgos: Identificación proactiva de posibles daños\n          Rendición de Cuentas: Responsabilidad definida para los resultados de IA\n          Gobernanza: Supervisión y marcos de monitoreo continuos\n        \n        \n          Alygn apoya a los municipios en la implementación de estos principios.\n        \n\n      \n    \n      \n      Esperando explorar esto con usted.\n\n      Conozca cómo podemos ayudar\n      P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.\n\n    \n    \n  \n    Alygn - Independent AI Governance Institution | Institutional Permanence\n\n    Texas, EE.UU. | 2026 © All rights reserved.\n  \n\n  \n    𝕏 @aialygn | \n    💼 LinkedIn"
+        },
+        "subject": "Apoyando la transformación digital de San José",
+        "entity": {
+          "id": "entity-moiw4fd7-x98aay",
+          "type": "municipal",
+          "name": "Municipalidad de San José",
+          "email": null,
+          "website": "https://www.sanjosé.go.cr",
+          "phone": null,
+          "location": {
+            "city": "San José",
+            "state": "San José",
+            "country": "Costa Rica",
+            "region": "San José"
+          },
+          "status": "personalized",
+          "priority": "medium",
+          "discoveredAt": "2026-04-28T17:18:51.595Z",
+          "lastUpdatedAt": "2026-04-28T17:18:51.722Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "customSubject": "Apoyando la transformación digital de San José",
+            "customBody": "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Apoyando la transformación digital de San José</title>\n  <style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\n    background-color: #f9fafb;\n    margin: 0;\n    padding: 0;\n    color: #1f2937;\n  }\n  .container {\n    max-width: 600px;\n    margin: 0 auto;\n    background-color: #ffffff;\n    border-radius: 8px;\n    overflow: hidden;\n    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);\n  }\n  .header {\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    padding: 32px 24px;\n    text-align: center;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n  }\n  .header-brand {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    vertical-align: middle;\n    gap: 12px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .header-brand h2 {\n    margin-top: auto;\n    margin-bottom: auto;\n  }\n  .brand-name {\n    color: #ffffff !important;\n    font-size: 28px;\n    font-weight: 700;\n    margin: 0;\n    letter-spacing: 2px;\n    text-transform: uppercase;\n  }\n  .content {\n    padding: 32px 24px;\n  }\n  .greeting {\n    font-size: 16px;\n    font-weight: 500;\n    margin-bottom: 16px;\n    color: #1f2937;\n  }\n  .body-content {\n    line-height: 1.6;\n    font-size: 15px;\n    color: #374151;\n  }\n  .body-content p {\n    margin: 16px 0;\n  }\n  .body-content ul {\n    margin: 16px 0;\n    padding-left: 24px;\n  }\n  .body-content li {\n    margin: 8px 0;\n    line-height: 1.6;\n  }\n  .closing {\n    margin-top: 24px;\n    font-size: 15px;\n    color: #374151;\n  }\n  .cta-button {\n    display: inline-block;\n    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);\n    color: #ffffff !important;\n    text-decoration: none;\n    padding: 12px 24px;\n    border-radius: 6px;\n    font-weight: 500;\n    margin: 24px 0;\n  }\n  .ps {\n    margin-top: 24px;\n    padding-top: 16px;\n    border-top: 1px solid #e5e7eb;\n    font-size: 13px;\n    color: #6b7280;\n    font-style: italic;\n  }\n  .footer {\n    background-color: #f3f4f6;\n    padding: 24px;\n    text-align: center;\n    font-size: 12px;\n    color: #9ca3af;\n    border-top: 1px solid #e5e7eb;\n  }\n  .footer a,\n  .footer p {\n    color: #0f172a;\n    text-decoration: none;\n    margin: 0 8px;\n  }\n</style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n  <div class=\"header-brand\">\n    <h2 class=\"brand-name\">ALYGN</h2>\n    <img src=\"https://res.cloudinary.com/andler-develops/image/upload/v1773687409/alygn/avatar_400x400-transparent_n4gey5.png\" alt=\"ALYGN\" style=\"width: 64px; height: 64px; border-radius: 4px; display: block;\">\n  </div>\n</div>\n    <div class=\"content\">\n      <p class=\"greeting\">Estimado/a San José, Alcalde de San José,</p>\n      <div class=\"body-content\">\n        <p>El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) establece un marco regulatorio para sistemas de IA de alto riesgo.<br><br>\nComo institución independiente de gobernanza de IA, Alygn puede apoyar a los municipios en la implementación práctica de estas salvaguardas—sin centralizar el control ni afirmar autoridad.</p>\n        <p style=\"margin: 16px 0; line-height: 1.6;\">Entendemos que San José enfrenta desafíos como:</p>\n<ul style=\"margin: 16px 0; line-height: 1.8; padding-left: 24px;\">\n  <li>Desarrollo rural</li><li>Infraestructura</li><li>Conectividad rural</li>\n</ul>\n        \n      <div style=\"margin: 24px 0; padding: 16px; border-left: 3px solid #0f172a; background-color: #f8fafc; border-radius: 4px;\">\n        <h3 style=\"margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #0f172a;\">TRAIGA Act: Marco de Gobernanza de IA</h3>\n        <p style=\"margin: 0 0 12px 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          El TRAIGA Act (Tecnologías de Riesgo de Inteligencia Artificial de Gran Alcance) proporciona un enfoque estructurado para la gobernanza de IA:\n        </p>\n        <ul style=\"margin: 0 0 12px 0; padding-left: 20px; font-size: 14px; color: #374151; line-height: 1.8;\">\n          <li><strong>Transparencia:</strong> Documentación clara de la toma de decisiones de IA</li>\n          <li><strong>Evaluación de Riesgos:</strong> Identificación proactiva de posibles daños</li>\n          <li><strong>Rendición de Cuentas:</strong> Responsabilidad definida para los resultados de IA</li>\n          <li><strong>Gobernanza:</strong> Supervisión y marcos de monitoreo continuos</li>\n        </ul>\n        <p style=\"margin: 0; font-size: 14px; color: #374151; line-height: 1.6;\">\n          Alygn apoya a los municipios en la implementación de estos principios.\n        </p>\n      </div>\n    \n      </div>\n      <p class=\"closing\">Esperando explorar esto con usted.</p>\n      <a href=\"mailto:tanialeaidm@gmail.com?subject=RE%3A%20Apoyando%20la%20transformaci%C3%B3n%20digital%20de%20San%20Jos%C3%A9&body=Saludos%2C%20Tania.%0A%0AMe%20interesa%20explorar%20c%C3%B3mo%20podemos%20apoyar%20a%20San%20Jos%C3%A9%20con%20los%20desaf%C3%ADos%20de%20gobernanza%20de%20IA%20que%20enfrentan.%20%C2%BFPodemos%20coordinar%20una%20llamada%20para%20discutir%20esto%20m%C3%A1s%20a%20fondo%3F&Bcc=outreach@alyygn.com\" class=\"cta-button\">Conozca cómo podemos ayudar</a>\n      <p class=\"ps\">P.S.: Este mensaje fue generado con IA, verificado por humanos. Transparencia total en nuestros procesos.</p>\n    </div>\n    <div class=\"footer\">\n  <p style=\"margin: 0 0 12px 0;\">\n    Alygn - Independent AI Governance Institution | Institutional Permanence<br>\n    Texas, EE.UU. | 2026 © All rights reserved.\n  </p>\n  <p style=\"margin: 0; font-size: 14px;\">\n    <a href=\"https://x.com/aialygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">𝕏 @aialygn</a> | \n    <a href=\"https://linkedin.com/company/alygn?utm_source=email&utm_medium=outreach&utm_campaign=traiga\" style=\"display: inline-block; margin: 0 8px;\">💼 LinkedIn</a>\n  </p>\n</div>\n  </div>\n</body>\n</html>",
+            "tailoredHook": "gobernanza de IA",
+            "valueProposition": "Alygn apoya a municipios como el suyo (204,802 habitantes) en San José con la implementación práctica de gobernanza de IA."
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 204802,
+            "budget": 98658208,
+            "departments": [
+              {
+                "name": "Tecnología",
+                "focus": [
+                  "transformación digital"
+                ]
+              },
+              {
+                "name": "Planificación",
+                "focus": [
+                  "ciudad inteligente"
+                ]
+              }
+            ],
+            "keyContacts": [],
+            "initiatives": [
+              {
+                "name": "Transformación Digital",
+                "description": "Modernización de servicios",
+                "status": "active"
+              }
+            ],
+            "painPoints": [
+              "Desarrollo rural",
+              "Infraestructura",
+              "Conectividad rural",
+              "Economía agrícola",
+              "Prestación de servicios"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "San José",
+            "trAigaRelevant": true
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Personalized",
+          "waveNumber": null,
+          "waveDate": null,
+          "batchStatus": null,
+          "municipalityId": null,
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}

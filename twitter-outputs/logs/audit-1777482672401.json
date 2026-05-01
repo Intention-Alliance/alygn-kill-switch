@@ -1,0 +1,61 @@
+{
+  "mode": "live",
+  "executedAt": "2026-04-29T17:11:11.941Z",
+  "workflow": {
+    "generatedAt": "2026-04-29T17:00:00Z",
+    "source": "Grok Search - Daily Generation",
+    "totalPosts": 3,
+    "totalThreads": 3,
+    "validUrls": 3,
+    "invalidUrls": 0,
+    "postedAt": null,
+    "posts": [
+      {
+        "id": 1,
+        "mainText": "EU legislators failed to agree on rolling back AI rules overnight. The sticking point: how machinery and medical device rules intersect with AI oversight. Coordination gaps persist. #AIGovernance #AIPolicy",
+        "replyText": "When multiple jurisdictions pull in different directions, voluntary commitments become coordination gaps. Neutral infrastructure for shared verification is what's missing. 📚 Source: https://tinyurl.com/23bfetbw",
+        "sourceUrl": "https://www.politico.eu/article/eu-legislators-fail-to-clinch-deal-to-delay-ai-law/",
+        "isThread": true,
+        "mainLength": 189,
+        "replyLength": 198,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 2,
+        "mainText": "Germany's push to weaken EU AI rules for manufacturing faces growing opposition. 10 European countries now resist deregulation proposals. Institutional coordination matters. #AIGovernance #AIRisk",
+        "replyText": "Fragmented regulatory approaches across jurisdictions erode accountability. Neutral coordination infrastructure supports cross-border trust without favoring any single actor. 📚 Source: https://tinyurl.com/2y75bcxf",
+        "sourceUrl": "https://www.politico.eu/article/germany-stronger-ai-deregulation-brussels-eu-opposition/",
+        "isThread": true,
+        "mainLength": 188,
+        "replyLength": 198,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      },
+      {
+        "id": 3,
+        "mainText": "US Congress introduces consolidated AI bill package covering safety, transparency, and accountability. Bipartisan momentum toward institutional oversight frameworks. #AISafety #AIRegulation",
+        "replyText": "Legislative progress signals institutional demand for coordination. Process legitimacy comes from iterative, inclusive design—not unilateral mandates. 📚 Source: https://tinyurl.com/245cfobc",
+        "sourceUrl": "https://www.nextgov.com/artificial-intelligence/2026/04/lieu-and-obernolte-introduce-consolidated-ai-bill-package/413134/",
+        "isThread": true,
+        "mainLength": 191,
+        "replyLength": 167,
+        "status": "ready",
+        "tweetId": null,
+        "url": null,
+        "issues": []
+      }
+    ],
+    "executed": 0,
+    "failed": 0
+  },
+  "posts": [],
+  "replies": [],
+  "quotes": [],
+  "executed": 0,
+  "failed": 3
+}

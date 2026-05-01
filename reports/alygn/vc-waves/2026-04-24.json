@@ -1,0 +1,681 @@
+{
+  "timestamp": "2026-04-24T17:29:52.812Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mod6r0ze-9tytib",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": null,
+        "website": "https://ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-24T17:29:45.146Z",
+        "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Series A",
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner",
+              "linkedInUrl": null
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mod6r0ze-s7leda",
+        "type": "vc",
+        "name": "Evolution Equity Partners",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-24T17:29:45.146Z",
+        "lastUpdatedAt": "2026-04-24T17:29:51.934Z",
+        "outreachCount": 0,
+        "researchNotes": "Evolution Equity Partners is a New York-based venture capital firm focused on cybersecurity software companies, with emerging emphasis on AI governance and security intelligence as the industry shifts from traditional software protection to managing AI-driven threats.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI compressing attack timelines",
+            "Expanding threat surface from AI systems",
+            "Conventional security frameworks inadequate for AI-driven threats",
+            "Rise of non-human identities requiring governance",
+            "Geopolitical challenges in digital sovereignty",
+            "Need for intelligence governance in AI-driven environments"
+          ],
+          "tailoredHook": "Evolution Equity Partners' strategic focus on agentic AI governance, intelligence management, and the transition to AI-driven security architectures aligns with Alygn's mission of ensuring responsible AI deployment and governance, particularly in critical cybersecurity infrastructure where AI alignment and safety are existential concerns.",
+          "recentNews": "Agentic AI governance"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Series B"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder and Managing Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Protect AI",
+            "Armis",
+            "Observe",
+            "NMA Security",
+            "Torque",
+            "Kai"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Protect AI",
+              "date": "2025",
+              "stage": "Acquisition (sold to Palo Alto Networks)"
+            },
+            {
+              "company": "Armis",
+              "date": "2025",
+              "stage": "M&A"
+            },
+            {
+              "company": "Observe",
+              "date": "2025",
+              "stage": "M&A"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mod6r0ze-1u6kae",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-24T17:29:45.146Z",
+        "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security",
+            "responsible AI deployment"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mod6r0ze-y06vr5",
+        "type": "vc",
+        "name": "Air Street Capital",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-24T17:29:45.146Z",
+        "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI",
+            "artificial intelligence",
+            "life science"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mod6r0ze-5av8r3",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "https://menlovc.com/focus-areas/ai/",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "discovered",
+        "priority": "medium",
+        "discoveredAt": "2026-04-24T17:29:45.146Z",
+        "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+        "outreachCount": 0,
+        "researchNotes": null,
+        "personalizationContext": null,
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "Seed",
+            "Series A",
+            "Series B",
+            "Series C"
+          ],
+          "sectorFocus": [
+            "AI",
+            "artificial intelligence"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "34933487-4af6-814d-8516-d38b81e4aeb9"
+        },
+        "entity": {
+          "id": "entity-mod6r0ze-9tytib",
+          "type": "vc",
+          "name": "Ballistic Ventures",
+          "email": null,
+          "website": "https://ballisticventures.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-24T17:29:45.146Z",
+          "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Series A",
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Barmak Meftah",
+                "title": "Partner",
+                "linkedInUrl": null
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Evolution Equity Partners is a New York-based venture capital firm focused on cybersecurity software companies, with emerging emphasis on AI governance and security intelligence as the industry shifts from traditional software protection to managing AI-driven threats.",
+          "portfolio": [
+            "Protect AI",
+            "Armis",
+            "Observe",
+            "NMA Security",
+            "Torque",
+            "Kai"
+          ],
+          "partners": [
+            {
+              "name": "Richard Seewald",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Dennis Smith",
+              "title": "Founder and Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Protect AI",
+              "date": "2025",
+              "stage": "Acquisition (sold to Palo Alto Networks)"
+            },
+            {
+              "company": "Armis",
+              "date": "2025",
+              "stage": "M&A"
+            },
+            {
+              "company": "Observe",
+              "date": "2025",
+              "stage": "M&A"
+            }
+          ],
+          "painPoints": [
+            "AI compressing attack timelines",
+            "Expanding threat surface from AI systems",
+            "Conventional security frameworks inadequate for AI-driven threats",
+            "Rise of non-human identities requiring governance",
+            "Geopolitical challenges in digital sovereignty",
+            "Need for intelligence governance in AI-driven environments"
+          ],
+          "governanceSignals": [
+            "Agentic AI governance",
+            "Intelligence management as primary security imperative",
+            "Shift from software protection to security intelligence",
+            "Non-human identity governance",
+            "Geopolitics of digital sovereignty"
+          ],
+          "whyAlygn": "Evolution Equity Partners' strategic focus on agentic AI governance, intelligence management, and the transition to AI-driven security architectures aligns with Alygn's mission of ensuring responsible AI deployment and governance, particularly in critical cybersecurity infrastructure where AI alignment and safety are existential concerns."
+        },
+        "entity": {
+          "id": "entity-mod6r0ze-s7leda",
+          "type": "vc",
+          "name": "Evolution Equity Partners",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-24T17:29:45.146Z",
+          "lastUpdatedAt": "2026-04-24T17:29:51.934Z",
+          "outreachCount": 0,
+          "researchNotes": "Evolution Equity Partners is a New York-based venture capital firm focused on cybersecurity software companies, with emerging emphasis on AI governance and security intelligence as the industry shifts from traditional software protection to managing AI-driven threats.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI compressing attack timelines",
+              "Expanding threat surface from AI systems",
+              "Conventional security frameworks inadequate for AI-driven threats",
+              "Rise of non-human identities requiring governance",
+              "Geopolitical challenges in digital sovereignty",
+              "Need for intelligence governance in AI-driven environments"
+            ],
+            "tailoredHook": "Evolution Equity Partners' strategic focus on agentic AI governance, intelligence management, and the transition to AI-driven security architectures aligns with Alygn's mission of ensuring responsible AI deployment and governance, particularly in critical cybersecurity infrastructure where AI alignment and safety are existential concerns.",
+            "recentNews": "Agentic AI governance"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Series B"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Richard Seewald",
+                "title": "Founder and Managing Partner"
+              },
+              {
+                "name": "Dennis Smith",
+                "title": "Founder and Managing Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Protect AI",
+              "Armis",
+              "Observe",
+              "NMA Security",
+              "Torque",
+              "Kai"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Protect AI",
+                "date": "2025",
+                "stage": "Acquisition (sold to Palo Alto Networks)"
+              },
+              {
+                "company": "Armis",
+                "date": "2025",
+                "stage": "M&A"
+              },
+              {
+                "company": "Observe",
+                "date": "2025",
+                "stage": "M&A"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "34933487-4af6-811a-beaa-ead32cf2dafb"
+        },
+        "entity": {
+          "id": "entity-mod6r0ze-1u6kae",
+          "type": "vc",
+          "name": "Safe Artificial Intelligence Fund",
+          "email": null,
+          "website": "https://www.saif.vc",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-24T17:29:45.146Z",
+          "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Early-stage"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security",
+              "responsible AI deployment"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Contacted",
+          "pageId": "32833487-4af6-8100-98d0-e01f5b533737"
+        },
+        "entity": {
+          "id": "entity-mod6r0ze-y06vr5",
+          "type": "vc",
+          "name": "Air Street Capital",
+          "email": null,
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-24T17:29:45.146Z",
+          "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI",
+              "artificial intelligence",
+              "life science"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "32833487-4af6-81ee-add9-c9d067dd11f7"
+        },
+        "entity": {
+          "id": "entity-mod6r0ze-5av8r3",
+          "type": "vc",
+          "name": "Menlo Ventures",
+          "email": null,
+          "website": "https://menlovc.com/focus-areas/ai/",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "discovered",
+          "priority": "medium",
+          "discoveredAt": "2026-04-24T17:29:45.146Z",
+          "lastUpdatedAt": "2026-04-24T17:29:45.146Z",
+          "outreachCount": 0,
+          "researchNotes": null,
+          "personalizationContext": null,
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "Seed",
+              "Series A",
+              "Series B",
+              "Series C"
+            ],
+            "sectorFocus": [
+              "AI",
+              "artificial intelligence"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

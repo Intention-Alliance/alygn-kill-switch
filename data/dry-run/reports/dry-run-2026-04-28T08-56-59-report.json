@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Venture Capital",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "2",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 4",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-28T08-56-59 | 4/28/2026, 2:57:02 AM"
+      },
+      "timestamp": "2026-04-28T08:57:02.380Z"
+    },
+    {
+      "title": "VC Firms (2)",
+      "color": 1096065,
+      "description": "**Safe Artificial Intelligence Fund**\n   🌐 https://www.saif.vc\n\n**Ballistic Ventures**\n   🌐 https://ballisticventures.com",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-28T08-56-59",
+  "timestamp": "2026-04-28T08-56-59"
+}

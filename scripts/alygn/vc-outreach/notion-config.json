@@ -1,6 +1,15 @@
 {
-  "dataSourceId": "30533487-4af6-81e7-ad64-000bbd4829ff",
-  "databaseId": "30533487-4af6-81e7-ad64-000bbd4829ff",
+  "dataSourceId": "30533487-4af6-81ef-983d-f57c7f70de33",
+  "databaseId": "30533487-4af6-81ef-983d-f57c7f70de33",
   "databaseUrl": "https://www.notion.so/305334874af681ef983df57c7f70de33",
-  "created": "2025-09-03"
+  "created": "2025-09-03",
+  "updated": "2026-04-27",
+  "note": "VC Outreach database (ALYGN VC Outreach Tracker). ID verified 2026-04-27 - CORRECTED from wrong ID 30b33487...",
+  "propertyMapping": {
+    "phase": "Stage",
+    "draftStatus": "Draft Status",
+    "emails": "Email",
+    "contactedAt": "Sent Date",
+    "emailSent": "Status=Sent (inferred)"
+  }
 }

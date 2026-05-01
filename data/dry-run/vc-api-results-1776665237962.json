@@ -1,0 +1,76 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 5,
+  "timestamp": "2026-04-20T06:07:17.962Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Renaissance AI Fund 1",
+      "website": "https://theimpactplatform.vc/about-renaissance/",
+      "firmType": "vc",
+      "stageFocus": [
+        "pre-seed",
+        "seed"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security",
+        "AI assurance"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "AI security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Glasswing Ventures",
+      "website": "https://www.rho.co/blog/vcs-in-security",
+      "firmType": "vc",
+      "stageFocus": [
+        "seed",
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "cybersecurity"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Mythos Ventures",
+      "website": "https://www.lesswrong.com/w/ai-safety-and-entrepreneurship",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI safety",
+        "prosocial technologies"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Ballistic Ventures",
+      "website": "https://ballisticventures.com",
+      "firmType": "vc",
+      "stageFocus": [
+        "early-stage"
+      ],
+      "sectorFocus": [
+        "AI-driven cyber threats",
+        "cybersecurity"
+      ],
+      "partners": []
+    }
+  ]
+}

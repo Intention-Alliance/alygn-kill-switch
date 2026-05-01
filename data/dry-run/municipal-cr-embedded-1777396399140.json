@@ -1,0 +1,19 @@
+{
+  "region": "costa-rica",
+  "source": "embedded",
+  "timestamp": "2026-04-28T17:13:19.140Z",
+  "mode": "dry-run-direct-api",
+  "cantones": [
+    "San José",
+    "Escazú",
+    "Desamparados",
+    "Puriscal",
+    "Tarrazú",
+    "Aserrí",
+    "Mora",
+    "Goicoechea",
+    "Santa Ana",
+    "Alajuelita"
+  ],
+  "count": 10
+}

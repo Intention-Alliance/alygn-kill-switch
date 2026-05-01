@@ -78,21 +78,34 @@ export async function getParagraphBlocks(notion, blockId, pageSize = 100) {
 }
 
 /**
- * Query a Notion database
+ * Query a Notion database (supports both traditional databases and data sources)
  * @param {Client} notion - Notion client
- * @param {string} databaseId - Database ID
+ * @param {string} databaseId - Database/Data Source ID
  * @param {Object} body - Query parameters (filter, sorts, page_size, etc.)
  */
 export async function queryDatabase(notion, databaseId, body) {
+  // Try databases.query first (standard Notion API for database queries)
   try {
-    // Use databases.query API for standard Notion databases
     return await notion.databases.query({
       database_id: databaseId,
       ...body
     });
-  } catch (error) {
-    console.error('❌ Notion query failed:', error.message);
-    throw error;
+  } catch (dbError) {
+    // If databases.query fails, try dataSources.query as fallback
+    if (notion.dataSources?.query) {
+      try {
+        return await notion.dataSources.query({
+          data_source_id: databaseId,
+          ...body
+        });
+      } catch (dsError) {
+        console.error('❌ Both Notion query methods failed:');
+        console.error('   databases.query:', dbError.message);
+        console.error('   dataSources.query:', dsError.message);
+        throw dsError;
+      }
+    }
+    throw dbError;
   }
 }
 

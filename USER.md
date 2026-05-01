@@ -77,4 +77,40 @@ When switching between projects, actively filter context:
 
 ---
 
+## 🔐 Discord Role-Based Access Control (ander-develops Guild)
+
+**Guild ID:** `1117841083351711785`
+
+**Role Configuration:**
+
+| Role Name | Role ID | Access Level | Members |
+|-----------|---------|--------------|---------|
+| **Alygn** | `1499153156859498697` | Alygn-only context | External Alygn team |
+| **Andler Devs** | `1499157675651633341` | Full context (inner circle) | Andler + trusted devs |
+
+**Your Role (Andler):** BOTH roles (full access)
+
+**Enforcement Protocol:**
+
+1. **Automatic role check** on every Discord message via `message(action="member-info")`
+2. **Context filtering** based on roles (see AGENTS.md for detailed rules)
+3. **File access control:**
+   - Alygn role → Only `docs/alygn/`, HEARTBEAT.md (Alygn sections)
+   - Andler Devs role → Full access to all contexts
+4. **Response filtering:**
+   - Never mention cross-project info to Alygn-only users
+   - Deflect sensitive questions politely
+
+**Implementation:**
+- Role checks cached per session (avoid repeated API calls)
+- Default to minimal context if role check fails
+- See AGENTS.md "Discord Role-Based Context Isolation" for full protocol
+
+**Security Notes:**
+- This is **automatic NDA enforcement**
+- Never assume role from username — always verify via API
+- If user has BOTH roles, treat as "Andler Devs" priority
+
+---
+
 Building context over time. Focus on helping with project management, technical decisions, creative work, and continuous learning.

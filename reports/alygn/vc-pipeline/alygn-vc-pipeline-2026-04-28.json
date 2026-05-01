@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-04-28T17:23:00.539Z",
+  "type": "vc",
+  "phase": "pipeline",
+  "data": {
+    "dryRun": true,
+    "type": "vc",
+    "mode": "dry-run",
+    "stages": {
+      "discover": {
+        "action": "discover",
+        "dryRun": true,
+        "discovered": 1,
+        "results": [
+          {
+            "id": "entity-moiw9rcx-to48w4",
+            "name": "AI Safety Ventures",
+            "email": "contact@aisafetyvc.com",
+            "website": "https://aisafetyvc.com"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-discover/alygn-vc-discovered-2026-04-28.json"
+      },
+      "validate": {
+        "action": "validate",
+        "dryRun": true,
+        "validated": 1,
+        "results": [
+          {
+            "name": "AI Safety Ventures",
+            "email": "contact@aisafetyvc.com",
+            "wouldValidate": true,
+            "result": "valid"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-validate/alygn-vc-validated-2026-04-28.json"
+      },
+      "research": {
+        "action": "research",
+        "dryRun": true,
+        "researched": 1,
+        "results": [
+          {
+            "name": "AI Safety Ventures",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-waves/2026-04-28.json"
+      },
+      "personalize": {
+        "action": "personalize",
+        "dryRun": true,
+        "personalized": 1,
+        "results": [
+          {
+            "name": "AI Safety Ventures",
+            "subject": "Alygn - SafeAI Systems and AI Governance",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-personalize/alygn-vc-personalized-2026-04-28.json"
+      },
+      "send": {
+        "action": "send",
+        "dryRun": true,
+        "sent": 0,
+        "failed": 1,
+        "results": [
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Not drafted !== Approved"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/vc-sent/alygn-vc-sent-2026-04-28.json"
+      }
+    },
+    "summary": {
+      "discovered": 1,
+      "validated": 1,
+      "researched": 1,
+      "personalized": 1,
+      "sent": 0
+    }
+  }
+}

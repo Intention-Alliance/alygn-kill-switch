@@ -1,0 +1,431 @@
+{
+  "timestamp": "2026-04-22T20:52:10.794Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-mo6sopwt-xbp8up",
+        "type": "vc",
+        "name": "Renaissance AI Fund 1",
+        "email": null,
+        "website": "https://theimpactplatform.vc/about-renaissance/",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Renaissance AI Fund 1 invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security",
+            "AI assurance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-oap7qq",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Safe Artificial Intelligence Fund invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-5yquw4",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": null,
+        "website": "https://ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Ballistic Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "Renaissance AI Fund 1 invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "portfolio": [
+            "SafeAI Co",
+            "GovernanceTech",
+            "Aligned Systems"
+          ],
+          "partners": [
+            {
+              "name": "Partner Name",
+              "title": "Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Co",
+              "date": "2024-01",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "whyAlygn": "Alygn provides the governance infrastructure they need for their AI-focused portfolio.",
+          "governanceSignals": [
+            "Active in AI safety community"
+          ]
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-xbp8up",
+          "type": "vc",
+          "name": "Renaissance AI Fund 1",
+          "email": null,
+          "website": "https://theimpactplatform.vc/about-renaissance/",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+          "outreachCount": 0,
+          "researchNotes": "Renaissance AI Fund 1 invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "pre-seed",
+              "seed"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security",
+              "AI assurance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Safe Artificial Intelligence Fund invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "portfolio": [
+            "SafeAI Co",
+            "GovernanceTech",
+            "Aligned Systems"
+          ],
+          "partners": [
+            {
+              "name": "Partner Name",
+              "title": "Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Co",
+              "date": "2024-01",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "whyAlygn": "Alygn provides the governance infrastructure they need for their AI-focused portfolio.",
+          "governanceSignals": [
+            "Active in AI safety community"
+          ]
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-oap7qq",
+          "type": "vc",
+          "name": "Safe Artificial Intelligence Fund",
+          "email": null,
+          "website": "https://www.saif.vc",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+          "outreachCount": 0,
+          "researchNotes": "Safe Artificial Intelligence Fund invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "early-stage"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Ballistic Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "portfolio": [
+            "SafeAI Co",
+            "GovernanceTech",
+            "Aligned Systems"
+          ],
+          "partners": [
+            {
+              "name": "Partner Name",
+              "title": "Managing Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "SafeAI Co",
+              "date": "2024-01",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "whyAlygn": "Alygn provides the governance infrastructure they need for their AI-focused portfolio.",
+          "governanceSignals": [
+            "Active in AI safety community"
+          ]
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-5yquw4",
+          "type": "vc",
+          "name": "Ballistic Ventures",
+          "email": null,
+          "website": "https://ballisticventures.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+          "outreachCount": 0,
+          "researchNotes": "Ballistic Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI safety standards",
+              "Governance frameworks",
+              "Risk assessment"
+            ],
+            "tailoredHook": "Alygn provides the governance infrastructure they need for their AI-focused portfolio."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "early-stage"
+            ],
+            "sectorFocus": [
+              "AI security",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Barmak Meftah",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

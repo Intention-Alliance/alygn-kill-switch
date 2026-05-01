@@ -131,6 +131,17 @@
     - **Scripts:** `scripts/upload-notion-assets.js` (production ready, 3/3 assets uploaded)
     - **Docs:** <https://developers.notion.com/reference/file-upload>
     - **Key insight:** Attach file_upload ID to blocks BEFORE calling complete() for single_part
+22. **🔥 DRIZZLEORM GOLDEN RULE** (learned 2026-04-21 - CRITICAL)
+    - **NEVER write manual SQL migrations for DrizzleORM projects**
+    - **ALWAYS use `bun run db:push` workflow:**
+      1. Modify `src/db/schema.ts` (DrizzleORM schema)
+      2. Run `bun run db:push` (applies changes to database)
+      3. Run `bun run db:generate` (generates migration files from schema)
+      4. Commit generated migrations + snapshots
+    - **Why:** Manual SQL migrations break Drizzle's snapshot system, cause drift, create complexity
+    - **Consequences of manual migrations:** Missing snapshots, journal inconsistencies, database errors, stress, failure
+    - **Zero-trust applies:** Even if I think manual SQL is easier, NEVER bypass Drizzle's workflow
+    - **Official documentation is law:** Follow DrizzleORM docs exactly, no shortcuts
 
 ## Key Projects (Professional Tone Required)
 
@@ -1359,3 +1370,105 @@ const IP_ALLOWLIST = new Set([
 **Lesson:** Keep context lean. Use ACP selectively for coordination, subagents for work, main session for user-facing updates.
 
 ---
+
+## Promoted From Short-Term Memory (2026-04-19)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:3:3 -->
+- - Frontend: React 19, Vite, TypeScript, Tailwind CSS - Backend: Bun, Elysia - Auth: Cookie-based (`admin_token`) - UI: Custom components (migration target: shadcn/ui) ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: 2026-04-15 01:24 CST — Phase 1 Execution Started: **Wobblus took action:** After 14-day stall, finally moved on Phase 1 Critical Fixes. [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:101-108]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:7:10 -->
+- ## Light Sleep <!-- openclaw:dreaming:light:start --> - Candidate: 2026-04-15 01:24 CST — Phase 1 Execution Started: **Wobblus took action:** After 14-day stall, finally moved on Phase 1 Critical Fixes. - confidence: 0.62 - evidence: memory/2026-04-15.md:3-3 - recalls: 0 - status: staged - Candidate: Actions Taken: **Updated HEARTBEAT.md** — Added active work streams section:; Stream 1: Phase 1 Critical Fixes (A-001, B-001, C-001, D-001); Stream 2: Kill Switch Admin UI (blocked on manual deploy); Stream 3: Grant Monitoring (stable, ongoing) [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:106-113]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:13:16 -->
+- - recalls: 0 - status: staged - Candidate: Actions Taken: Parallel work opportunities identified - confidence: 0.62 - evidence: memory/2026-04-15.md:11-11 - recalls: 0 - status: staged - Candidate: Actions Taken: **Spawned Chanshuk (dev-lead)** for A-001 Session Coordination:; Session key: `agent:dev-lead:subagent:00a018fa-8d48-469a-8065-0c256d234f55`; Task: Analyze session state management, coordinate with team, deliver root cause + fix; ETA: 45-60 min [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:116-123]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:17:17 -->
+- - recalls: 0 - status: staged - Candidate: Actions Taken: **Spawned Chanshuk (dev-lead)** for A-001 Session Coordination:; Session key: `agent:dev-lead:subagent:00a018fa-8d48-469a-8065-0c256d234f55`; Task: Analyze session state management, coordinate with team, deliver root cause + fix; ETA: 45-60 min - confidence: 0.62 - evidence: memory/2026-04-15.md:13-16 - recalls: 0 - status: staged - Candidate: Actions Taken: Priority: P0-Critical (blocks B-001, D-001) [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:121-128]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:22:25 -->
+- - recalls: 0 - status: staged - Candidate: Context from Session Review: **Discord session** (`agent:main:discord:direct:856709050824392714`): - confidence: 0.62 - evidence: memory/2026-04-15.md:21-21 - recalls: 0 - status: staged - Candidate: Context from Session Review: Kill Switch Admin UI work active; Keridz added 4 auth endpoints (working inside container); Nginx config updated with `/v1/auth/` proxy; Blocked on manual sudo deploy commands [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:131-138]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:26:26 -->
+- - recalls: 0 - status: staged - Candidate: Context from Session Review: Kill Switch Admin UI work active; Keridz added 4 auth endpoints (working inside container); Nginx config updated with `/v1/auth/` proxy; Blocked on manual sudo deploy commands - confidence: 0.62 - evidence: memory/2026-04-15.md:22-25 - recalls: 0 - status: staged - Candidate: Context from Session Review: Credentials ready: `admin@alyygn.com` / `andlersrv-auth-token-2026` [score=0.832 recalls=0 avg=0.620 source=memory/2026-04-15.md:136-143]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:11:11 -->
+- - recalls: 0 - status: staged - Candidate: Actions Taken: **Updated HEARTBEAT.md** — Added active work streams section:; Stream 1: Phase 1 Critical Fixes (A-001, B-001, C-001, D-001); Stream 2: Kill Switch Admin UI (blocked on manual deploy); Stream 3: Grant Monitoring (stable, ongoing) - confidence: 0.62 - evidence: memory/2026-04-15.md:7-10 - recalls: 0 - status: staged - Candidate: Actions Taken: Parallel work opportunities identified [score=0.822 recalls=0 avg=0.620 source=memory/2026-04-15.md:111-118]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:21:21 -->
+- - recalls: 0 - status: staged - Candidate: Actions Taken: Priority: P0-Critical (blocks B-001, D-001) - confidence: 0.62 - evidence: memory/2026-04-15.md:17-17 - recalls: 0 - status: staged - Candidate: Context from Session Review: **Discord session** (`agent:main:discord:direct:856709050824392714`): [score=0.812 recalls=0 avg=0.620 source=memory/2026-04-15.md:126-133]
+
+## Promoted From Short-Term Memory (2026-04-23)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:464:466 -->
+- - Candidate: Possible Lasting Truths: 🎉 Major Accomplishment: **Admin UI + Kill Switch API fully deployed and operational** [confidence=0.58 evidence=memory/2026-04-14.md:466-466]; 🎉 Major Accomplishment: ✅ Admin UI accessible at `https://andlersrv.tail62d797.ts.net:8443/`; ✅ Kill Switch AP - confidence: 0.62 - evidence: memory/2026-04-17.md:484-486 [score=0.836 recalls=0 avg=0.620 source=memory/2026-04-17.md:8-10]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:475:478 -->
+- **Problem:** `RedisPool.healthCheck()` called `client.ping()` which doesn't exist on node-redis v4 cluster client. **Root cause:** Cluster client uses `sendCommand()` not `.ping()` method. [score=0.830 recalls=0 avg=0.620 source=memory/2026-04-17.md:475-476]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:479:479 -->
+- **Commit:** `9fdc9a4` [score=0.830 recalls=0 avg=0.620 source=memory/2026-04-17.md:479-479]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:482:485 -->
+- | Task | Status | Commit | Evidence | |------|--------|--------|---------| | C-1: Error Boundaries | ✅ | `0165553` | 5 files, `getDerivedStateFromError` + `componentDidCatch`, defense-in-depth in layout | [score=0.830 recalls=0 avg=0.620 source=memory/2026-04-17.md:482-484]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:486:486 -->
+- | C-3: E2E Tests | ✅ | `d2e3d86` | Playwright 1.59.1, 17 tests, 4 spec files, all mocked, build clean | [score=0.830 recalls=0 avg=0.620 source=memory/2026-04-17.md:486-486]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-17.md:489:492 -->
+- | # | Issue | Status | Evidence | |---|-------|--------|----------| | 1 | Timing-safe comparison | ✅ | 5/5 auth comparisons use `secureCompare`, zero raw `===` | [score=0.830 recalls=0 avg=0.620 source=memory/2026-04-17.md:489-491]
+
+## Promoted From Short-Term Memory (2026-04-24)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-19.md:19:19 -->
+- **Problem 1: Tailscale DNS health warning** — "can't reach configured DNS servers" — cosmetic, external DNS works via systemd-resolved fallback. Fix: add global nameservers (8.8.8.8, 1.1.1.1) in Tailscale admin console. [score=0.846 recalls=0 avg=0.620 source=memory/2026-04-19.md:19-19]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-19.md:21:21 -->
+- **Problem 2: Nginx allowlist blocks remote Ollama access** — Port 11435 only allows `100.66.199.80` (self), `192.168.1.11` (old), `127.0.0.1`. Missing `100.115.234.1` (andler-pro) and entire Tailscale subnet. [score=0.846 recalls=0 avg=0.620 source=memory/2026-04-19.md:21-21]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-19.md:23:24 -->
+- **Fix prepared (requires sudo):** ```nginx [score=0.846 recalls=0 avg=0.620 source=memory/2026-04-19.md:23-24]
+
+## Promoted From Short-Term Memory (2026-04-26)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-23.md:23:23 -->
+- **Greeting Template Error:** [score=0.878 recalls=0 avg=0.620 source=memory/2026-04-23.md:23-23]
+
+## Promoted From Short-Term Memory (2026-04-27)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:5:6 -->
+- **Time:** 2026-04-21 00:18 CST **Status:** FIXED ✅ [score=0.844 recalls=0 avg=0.620 source=memory/2026-04-21.md:5-6]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:9:9 -->
+- All 3 municipal cron jobs used `--type=muni` instead of `--type=municipal`. [score=0.844 recalls=0 avg=0.620 source=memory/2026-04-21.md:9-9]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:11:11 -->
+- The CLI (`bin/alygn-outreach.ts`) only accepts `vc` or `municipal` (exact match). When `--type=muni` was passed, it fell back to default `vc`, generating **English** emails instead of Spanish TRAIGA Act templates. [score=0.844 recalls=0 avg=0.620 source=memory/2026-04-21.md:11-11]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:19:19 -->
+- Replaced `--type=muni` with `--type=municipal` in all 3 cron jobs. [score=0.845 recalls=0 avg=0.620 source=memory/2026-04-21.md:19-19]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:22:22 -->
+- After fix: All jobs now use `--type=municipal` (exact match confirmed via grep). [score=0.845 recalls=0 avg=0.620 source=memory/2026-04-21.md:22-22]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:28:29 -->
+- **Time:** 2026-04-21 00:30 CST **Status:** FIXED ✅ [score=0.845 recalls=0 avg=0.620 source=memory/2026-04-21.md:28-29]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-21.md:32:32 -->
+- Cron jobs used `"to": "thread:1486784711928975460"` (with `thread:` prefix). [score=0.845 recalls=0 avg=0.620 source=memory/2026-04-21.md:32-32]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:5:5 -->
+- **What Happened:** I was tunnel-visioned on Wave 5 (5 VCs from 2026-04-21) when the Notion VC Outreach Tracker actually has **100+ VCs with Status="Ready for outreach"**, some waiting **40-70 days**! [score=0.838 recalls=0 avg=0.620 source=memory/2026-04-22.md:5-5]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:7:7 -->
+- **Root Cause:** Didn't query Notion database before executing outreach — violated the alygn-outreach skill protocol. [score=0.838 recalls=0 avg=0.620 source=memory/2026-04-22.md:7-7]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:9:9 -->
+- **Correct Protocol:** [score=0.837 recalls=0 avg=0.620 source=memory/2026-04-22.md:9-9]
+
+## Promoted From Short-Term Memory (2026-04-28)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:17:17 -->
+- **Backlog Discovered:** [score=0.843 recalls=0 avg=0.620 source=memory/2026-04-22.md:17-17]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:22:22 -->
+- **Priority Order:** Old backlog (70 days) → March backlog (34 days) → Wave 5 (1 day) [score=0.843 recalls=0 avg=0.620 source=memory/2026-04-22.md:22-22]
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:28:28 -->
+- **Correct Pattern:** `alygn-{type}-{phase}-{timestamp}.json` [score=0.843 recalls=0 avg=0.620 source=memory/2026-04-22.md:28-28]
+
+## Promoted From Short-Term Memory (2026-04-29)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-22.md:30:30 -->
+- **Folders:** [score=0.842 recalls=0 avg=0.620 source=memory/2026-04-22.md:30-30]
+
+## Promoted From Short-Term Memory (2026-04-29)
+
+<!-- openclaw-memory-promotion:memory:memory/2026-04-23.md:7:7 -->
+- **Morning + Afternoon Cron Runs (Apr 22):** [score=0.838 recalls=0 avg=0.620 source=memory/2026-04-23.md:7-7]

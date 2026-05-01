@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-04-28T17:13:00.260Z",
+  "source": "Grok Search - Prompts #1 and #13 (Zero-Trust Verified)",
+  "totalPosts": 3,
+  "validUrls": 3,
+  "invalidUrls": 0,
+  "postedAt": null,
+  "posts": [
+    {
+      "id": 1,
+      "mainText": "China warns ByteDance apps for failing AI content labeling rules. Enforces neutrality through mandatory transparency in generative AI outputs. #AITransparency #AIEthics",
+      "replyText": "Strengthens neutral governance by requiring clear AI labeling, protecting users from deception and fostering trust in AI ecosystems worldwide.\n\n📚 Source: https://tinyurl.com/4juk4crv\n\n#AITransparency #AIRegulation",
+      "sourceUrl": "https://tinyurl.com/4juk4crv",
+      "isThread": true,
+      "mainLength": 168,
+      "replyLength": 214,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 2,
+      "mainText": "Google signs classified AI deal with Pentagon despite opposition. Coordination between tech and defense tests ethical legitimacy boundaries. #AIGovernance #AIRisk",
+      "replyText": "Raises questions on legitimate dual-use AI deployment, urging neutral frameworks to align military applications with broader societal safety norms.\n\n📚 Source: https://tinyurl.com/mrum728v\n\n#AIGovernance #AIEthics",
+      "sourceUrl": "https://tinyurl.com/mrum728v",
+      "isThread": true,
+      "mainLength": 162,
+      "replyLength": 213,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    },
+    {
+      "id": 3,
+      "mainText": "OSCE PA Special Representative visited Copenhagen on AI governance, engaging University of Copenhagen on ethical frameworks and human rights. #AIGovernance #AIPolicy",
+      "replyText": "Fosters institutional coordination between international bodies and academia, promoting legitimacy through inclusive dialogue for accountable, human-centric AI policies.\n\n📚 Source: https://tinyurl.com/4jffd7k8\n\n#AIGovernance #AIAlignment",
+      "sourceUrl": "https://tinyurl.com/4jffd7k8",
+      "isThread": true,
+      "mainLength": 165,
+      "replyLength": 238,
+      "status": "ready",
+      "tweetId": null,
+      "url": null,
+      "issues": []
+    }
+  ],
+  "executed": 0,
+  "failed": 0
+}

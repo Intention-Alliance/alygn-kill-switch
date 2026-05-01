@@ -1,12 +1,12 @@
 /**
  * Twitter Browser Executor v1
- * 
+ *
  * Executes pre-generated Twitter workflow via browser relay with:
  * - alygn profile (authenticated X.com session)
  * - VERY long timeouts (60-120s per action)
  * - Sequential action execution with proper waits
  * - Robust error handling + logging
- * 
+ *
  * Input: workflow JSON file (from twitter-automation-v2.js)
  * Output: Execution report + WhatsApp notification
  */
@@ -15,20 +15,28 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 
-const WORKSPACE = path.join(process.env.HOME!, ".openclaw/workspace");
+const WORKSPACE = path.join(
+  process.env.HOME || "/home/andlersrv",
+  ".openclaw/workspace",
+);
 const OUTPUTS_DIR = path.join(WORKSPACE, "twitter-outputs");
 const BROWSER_PROFILE = "alygn";
 
 // Timeouts (VERY long to avoid port conflicts)
 const TIMEOUTS = {
-  NAVIGATE: 120000,      // 120s for page load
-  SNAPSHOT: 60000,       // 60s for rendering
-  ACTION: 90000,         // 90s for click/type
-  BETWEEN_POSTS: 45000   // 45s between actions
+  NAVIGATE: 120000, // 120s for page load
+  SNAPSHOT: 60000, // 60s for rendering
+  ACTION: 90000, // 90s for click/type
+  BETWEEN_POSTS: 45000, // 45s between actions
 };
 
 interface Workflow {
-  posts: Array<{ id: number; hook: string; points: string[]; isThread: boolean }>;
+  posts: Array<{
+    id: number;
+    hook: string;
+    points: string[];
+    isThread: boolean;
+  }>;
   replies: Array<{ id: number; targetHandle: string; content: string }>;
   profiles: string[];
 }
@@ -39,7 +47,9 @@ async function executeWorkflow() {
   console.log("");
 
   // Find latest workflow
-  const files = fs.readdirSync(OUTPUTS_DIR).filter(f => f.startsWith("workflow-") && f.endsWith(".json"));
+  const files = fs
+    .readdirSync(OUTPUTS_DIR)
+    .filter((f) => f.startsWith("workflow-") && f.endsWith(".json"));
   if (files.length === 0) {
     console.error("❌ No workflow files found in", OUTPUTS_DIR);
     process.exit(1);
@@ -61,7 +71,7 @@ async function executeWorkflow() {
     postsPublished: 0,
     repliesSent: 0,
     profilesFollowed: 0,
-    errors: [] as string[]
+    errors: [] as string[],
   };
 
   console.log("⏳ PHASE 1: Publishing Posts");
@@ -70,14 +80,16 @@ async function executeWorkflow() {
   // Execute each post
   for (let i = 0; i < workflow.posts.length; i++) {
     const post = workflow.posts[i];
-    console.log(`\n[${i + 1}/${workflow.posts.length}] ${post.hook.substring(0, 50)}...`);
+    console.log(
+      `\n[${i + 1}/${workflow.posts.length}] ${post.hook.substring(0, 50)}...`,
+    );
 
     try {
       // Navigate to home
       console.log("  → Navigate to compose...");
       execSync(
         `browser --profile="${BROWSER_PROFILE}" --action=navigate --targetUrl="https://x.com/compose/post" --timeoutMs=${TIMEOUTS.NAVIGATE} --target host`,
-        { encoding: "utf8" }
+        { encoding: "utf8" },
       );
 
       await sleep(3000);
@@ -86,7 +98,7 @@ async function executeWorkflow() {
       console.log("  → Taking snapshot...");
       const snapshot = execSync(
         `browser --profile="${BROWSER_PROFILE}" --action=snapshot --timeoutMs=${TIMEOUTS.SNAPSHOT} --target host`,
-        { encoding: "utf8" }
+        { encoding: "utf8" },
       );
 
       console.log("  ✅ Post composed (ready to submit)");
@@ -99,7 +111,9 @@ async function executeWorkflow() {
 
     // Wait between posts
     if (i < workflow.posts.length - 1) {
-      console.log(`  ⏳ Waiting ${TIMEOUTS.BETWEEN_POSTS / 1000}s before next post...`);
+      console.log(
+        `  ⏳ Waiting ${TIMEOUTS.BETWEEN_POSTS / 1000}s before next post...`,
+      );
       await sleep(TIMEOUTS.BETWEEN_POSTS);
     }
   }
@@ -110,12 +124,16 @@ async function executeWorkflow() {
   // Execute each reply (simplified - just navigate to profile)
   for (let i = 0; i < workflow.replies.length; i++) {
     const reply = workflow.replies[i];
-    console.log(`\n[${i + 1}/${workflow.replies.length}] Reply to ${reply.targetHandle}`);
+    console.log(
+      `\n[${i + 1}/${workflow.replies.length}] Reply to ${reply.targetHandle}`,
+    );
 
     try {
       // This would navigate to the target and attempt reply
       // For now, log the action (full implementation requires post URL from workflow)
-      console.log(`  → ${reply.targetHandle}: "${reply.content.substring(0, 50)}..."`);
+      console.log(
+        `  → ${reply.targetHandle}: "${reply.content.substring(0, 50)}..."`,
+      );
       results.repliesSent++;
     } catch (error) {
       const msg = `Reply ${i + 1} to ${reply.targetHandle} failed`;
@@ -154,13 +172,19 @@ async function executeWorkflow() {
   // Report
   console.log("\n\n✅ EXECUTION COMPLETE");
   console.log("=".repeat(60));
-  console.log(`Posts published: ${results.postsPublished}/${workflow.posts.length}`);
-  console.log(`Replies sent: ${results.repliesSent}/${workflow.replies.length}`);
-  console.log(`Profiles followed: ${results.profilesFollowed}/${workflow.profiles.length}`);
+  console.log(
+    `Posts published: ${results.postsPublished}/${workflow.posts.length}`,
+  );
+  console.log(
+    `Replies sent: ${results.repliesSent}/${workflow.replies.length}`,
+  );
+  console.log(
+    `Profiles followed: ${results.profilesFollowed}/${workflow.profiles.length}`,
+  );
 
   if (results.errors.length > 0) {
     console.log(`\n⚠️ Errors encountered: ${results.errors.length}`);
-    results.errors.forEach(e => console.log(`   - ${e}`));
+    results.errors.forEach((e) => console.log(`   - ${e}`));
   }
 
   console.log(`\n📋 Workflow file: ${latestFile}`);
@@ -170,7 +194,7 @@ async function executeWorkflow() {
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Run

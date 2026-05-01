@@ -1,0 +1,2906 @@
+{
+  "timestamp": "2026-04-29T00:04:50.144Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 14,
+    "entities": [
+      {
+        "id": "entity-1777268739014-ov49gv",
+        "type": "vc",
+        "name": "8VC",
+        "email": "joe@8vc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.014Z",
+        "lastUpdatedAt": "2026-04-29T00:03:57.966Z",
+        "outreachCount": 0,
+        "researchNotes": "8VC builds billion-dollar technology platforms across AI, defense, and enterprise software, with particular focus on securing AI-generated code and autonomous systems. The firm combines venture capital with an internal Build Program that creates ~30% of portfolio companies from within.",
+        "personalizationContext": {
+          "painPoints": [
+            "Security vulnerabilities in AI-generated code",
+            "Lack of advanced autonomy in complex terrain",
+            "Complex financial and back-office workflows",
+            "Enterprise digital transformation gaps"
+          ],
+          "tailoredHook": "8VC's explicit focus on AI safety through Enclave (detecting dangerous flaws in AI-written code) and autonomous systems governance through its defense portfolio (Saronic, Overland, Anduril) aligns with safety-focused governance and alignment imperatives. The firm's Build Program approach embeds governance from inception rather than retrofit, and their $6B+ AUM provides capital to scale safety infrastructure across the AI ecosystem.",
+          "recentNews": "Build Program structure incentivizes founder-first mentality and internal accountability"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Joe Lonsdale",
+              "title": "Founder"
+            },
+            {
+              "name": "Drew Oetting",
+              "title": "Founding Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Palantir",
+            "Addepar",
+            "OpenGov",
+            "Affinity",
+            "Anduin",
+            "Standard Metrics",
+            "Saronic",
+            "Enclave",
+            "Overland AI",
+            "Anduril",
+            "Resilience"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Enclave",
+              "date": "March 2026",
+              "stage": "Seed"
+            },
+            {
+              "company": "Overland AI",
+              "date": "2026",
+              "stage": "Series A"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@8vc.com"
+      },
+      {
+        "id": "entity-1777268739014-yk9u8o",
+        "type": "vc",
+        "name": "Aether VC",
+        "email": "info@aethervc.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.014Z",
+        "lastUpdatedAt": "2026-04-29T00:04:02.554Z",
+        "outreachCount": 0,
+        "researchNotes": "Aether is a research group dedicated to AI safety, focusing on alignment, control, and evaluation of LLM agents through technical research on chain-of-thought monitorability and oversight in agentic settings. It is not a traditional VC firm but aims to convert early-career talent into impactful AI safety work, with no direct evidence of portfolio investments in AI safety, governance, or alignment.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited public information distinguishing Aether research group from similarly named AI entities like Aether AI or AetherLab.",
+            "No disclosed investments or portfolio companies specifically in AI safety, governance, or alignment.",
+            "Focus appears research-oriented rather than investment-driven."
+          ],
+          "tailoredHook": "Aether's deep expertise in LLM agent alignment and safety research aligns with Alygn's focus on responsible AI governance, offering potential for collaborative talent pipelines and insights into agentic risks without direct investment overlap.",
+          "recentNews": "Emphasis on LLM agent safety evaluations, including long-horizon deception and oversight of complex reasoning chains."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-1777268739014-nuwvu9",
+        "type": "vc",
+        "name": "AI Fund",
+        "email": "andrew@aifund.ai",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.014Z",
+        "lastUpdatedAt": "2026-04-29T00:04:02.818Z",
+        "outreachCount": 0,
+        "researchNotes": "AI Fund is an early-stage venture fund investing in startups developing tools and technologies to enhance AI safety, trustworthiness, and alignment with human values. It focuses on for-profit companies building guardrails for safer AI deployment, emphasizing security, transparency, and mitigation of unintended harms.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited public information on specific portfolio companies, partners, or recent investments.",
+            "Multiple similar-named funds (e.g., AI Safety Fund, Safe AI Fund) create confusion in distinguishing the exact 'AI Fund' entity."
+          ],
+          "tailoredHook": "AI Fund's investment thesis in for-profit AI safety startups aligns with Alygn's priorities in governance and alignment; potential to co-invest in scalable safety tools while addressing the gap in commercializing AI safety innovations.",
+          "recentNews": "Explicit focus on AI safety, security, transparency, and mitigating unintended harms through startup investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@aifund.ai"
+      },
+      {
+        "id": "entity-1777268739014-af3gsd",
+        "type": "vc",
+        "name": "AI Seed",
+        "email": "info@aiseedfund.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.014Z",
+        "lastUpdatedAt": "2026-04-29T00:04:06.694Z",
+        "outreachCount": 0,
+        "researchNotes": "AI Seed is Europe's leading AI-focused venture capital fund, investing in early-stage pure-play AI companies since 2017 with a strong track record of exits and returns. While it provides specialist support for AI scaling, its portfolio emphasizes general AI innovation rather than a specific focus on AI safety, governance, or alignment.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited public information on specific portfolio companies or investments.",
+            "No explicit emphasis on AI safety, governance, or alignment in available sources.",
+            "General AI focus may not align perfectly with safety-specific mandates."
+          ],
+          "tailoredHook": "Moderate fit; AI Seed's broad early-stage AI expertise could support AI safety startups via talent access and scaling help, but lacks dedicated safety focus unlike Catalyze Impact's networks."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [
+            "Europe\u2019s largest portfolio of pure-play AI companies (specific names not listed)"
+          ],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-1777268739014-n86k1e",
+        "type": "vc",
+        "name": "AME Cloud Ventures",
+        "email": "jerry@amecloudventures.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.014Z",
+        "lastUpdatedAt": "2026-04-29T00:04:15.083Z",
+        "outreachCount": 0,
+        "researchNotes": "AME Cloud Ventures invests in seed to later-stage companies building infrastructure and value chains around data, believing that accurate, actionable data will be a major life-blood in the future economy. The fund targets technology-heavy companies gathering or creating unique data across the entire data stack\u2014from infrastructure to applications, sensors, and end-user products.",
+        "personalizationContext": {
+          "painPoints": [
+            "No explicit focus on AI safety, governance, or alignment investments identified in available sources",
+            "Portfolio shows strength in data infrastructure and enterprise applications but lacks documented commitment to responsible AI development",
+            "Search results do not indicate active governance frameworks or safety-first investment criteria"
+          ],
+          "tailoredHook": "AME Cloud Ventures does not appear to be a strong fit for an AI safety, governance, and alignment-focused investor based on available information. While the firm demonstrates sophisticated investment practices and strong founder focus, the search results reveal no explicit commitment to AI safety, governance standards, or alignment-related investments. The fund's data-infrastructure thesis is orthogonal to safety-first investment criteria. A more targeted search or direct outreach would be needed to assess whether governance and alignment considerations factor into their investment decisions.",
+          "recentNews": "Partnership-based model with distributed decision-making across multiple partners"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jerry Yang",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Jeff Chung",
+              "title": "Managing Director"
+            }
+          ],
+          "portfolioCompanies": [
+            "Viz.ai",
+            "Minio",
+            "GrubMarket",
+            "Mammoth",
+            "Blockstream",
+            "Zoom",
+            "Wish",
+            "Planet",
+            "Freenome",
+            "Nervana Systems",
+            "Elementum",
+            "Synthego",
+            "Rigetti Quantum Computing",
+            "Capella Space",
+            "Accion Systems",
+            "Canvas Technology",
+            "MegaBots",
+            "Vicarious Surgical",
+            "Flint",
+            "Sage Care",
+            "Cartography Biosciences",
+            "Ellipsis Health",
+            "Galatea"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Flint",
+              "date": "November 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Sage Care",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Cartography Biosciences",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Ellipsis Health",
+              "date": "June 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Galatea",
+              "date": "March 2025",
+              "stage": "Series A"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@amecloudventures.com"
+      },
+      {
+        "id": "entity-1777268739015-43ss4f",
+        "type": "vc",
+        "name": "AME Ventures",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:19.987Z",
+        "outreachCount": 0,
+        "researchNotes": "AME Cloud Ventures, led by Yahoo! co-founder Jerry Yang, invests in seed to later-stage companies building data infrastructure and value chains, with a focus on technology-heavy sectors including AI, enterprise applications, and high tech. While not explicitly centered on AI safety, governance, or alignment, the firm has backed AI-related companies like Viz.ai, Nervana Systems (AI hardware), and GrubMarket (enterprise AI), alongside data-driven infrastructure plays.",
+        "personalizationContext": {
+          "painPoints": [
+            "No direct investments identified in AI safety, governance, or alignment-focused startups",
+            "Portfolio emphasizes general data infrastructure over specialized AI risk management or ethical AI",
+            "Limited public signals on thesis evolution toward AI alignment amid 2026 AI safety discussions"
+          ],
+          "tailoredHook": "AME Cloud Ventures complements Alygn's focus through its data infrastructure expertise and AI portfolio (e.g., Viz.ai, Nervana), providing potential synergies in scaling AI governance tech; however, bridging their generalist data thesis to Alygn's AI safety niche would require highlighting alignment applications in data stacks for enterprise risk management.",
+          "recentNews": "Active value-add engagement with portfolio companies, including board seats (e.g., Jeff Chung on Savioke board)"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Jerry Yang",
+              "title": "Founder/Managing General Partner"
+            },
+            {
+              "name": "Jeff Chung",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Viz.ai",
+            "Minio",
+            "GrubMarket",
+            "Mammoth",
+            "Blockstream",
+            "Nervana Systems",
+            "Freenome",
+            "Elementum",
+            "Synthego",
+            "Rigetti Quantum Computing",
+            "Zoom",
+            "Wish",
+            "Zymergen",
+            "Planet"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Flint",
+              "date": "November 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Sage Care",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Cartography Biosciences",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Ellipsis Health",
+              "date": "June 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Galatea",
+              "date": "March 2025",
+              "stage": "Series A"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@ameventures.com"
+      },
+      {
+        "id": "entity-1777268739015-ntqggk",
+        "type": "vc",
+        "name": "Andreessen Horowitz (a16z)",
+        "email": "sarah@a16z.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:24.128Z",
+        "outreachCount": 0,
+        "researchNotes": "Andreessen Horowitz (a16z) invests heavily in AI infrastructure and applications but shows limited direct focus on AI safety, governance, and alignment, with investments primarily in AI-powered cybersecurity and data platforms rather than explicit safety or alignment initiatives.",
+        "personalizationContext": {
+          "painPoints": [
+            "No direct investments identified in core AI safety, governance, or alignment-focused companies.",
+            "Portfolio emphasizes AI cybersecurity and data infrastructure over existential risk mitigation or alignment research.",
+            "Public stance critiques 'existential angst' in AI policy, suggesting skepticism toward heavy safety regulation."
+          ],
+          "tailoredHook": "a16z's pragmatic, evidence-based approach to AI complements Alygn's focus on practical governance without overemphasizing speculative risks, offering potential co-investment opportunities in scalable AI security solutions that indirectly support alignment.",
+          "recentNews": "Advocates basing AI policy on evidence rather than existential concerns."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [
+            "Adaptive Security",
+            "Protege AI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Adaptive Security",
+              "date": "Recent (2020s)",
+              "stage": "Series A"
+            },
+            {
+              "company": "Protege AI",
+              "date": "Recent (2020s)",
+              "stage": "$30M round"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@a16z.com"
+      },
+      {
+        "id": "entity-1777268739015-uibf69",
+        "type": "vc",
+        "name": "Anthropic",
+        "email": "press@anthropic.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:28.534Z",
+        "outreachCount": 0,
+        "researchNotes": "Anthropic is an AI company, not a VC firm, renowned for its leadership in AI safety, alignment, and governance through techniques like Constitutional AI, robust safeguards, and advocacy for federal policy frameworks.",
+        "personalizationContext": {
+          "painPoints": [
+            "Founded due to concerns over OpenAI's commercialization prioritizing products over safety.",
+            "High capital expenditures in AI industry raise bubble concerns, though Anthropic emphasizes efficiency.",
+            "Ongoing need to counter threats like jailbreaking, hackers, and fraudsters exploiting AI."
+          ],
+          "tailoredHook": "Anthropic's deep commitment to AI safety, alignment via Constitutional AI, and proactive governance advocacy\u2014such as $20M donation for policy safeguards and federal frameworks\u2014perfectly aligns with Alygn's focus on responsible AI investments, offering strong signals for risk-mitigated, enterprise-grade AI leadership.",
+          "recentNews": "Donated $20M to Public First Action for AI education, safeguards, federal governance, export controls, and regulation on bioweapons/cyberattacks[3]."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-1777268739015-usaorg",
+        "type": "vc",
+        "name": "Atomico",
+        "email": "info@atomico.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:31.844Z",
+        "outreachCount": 0,
+        "researchNotes": "Atomico actively invests in AI technologies with a strong emphasis on governance, as demonstrated by their seed investment in Electric Twin, where they received specialized counsel on AI diligence, model integration, data governance, IP strategy, and regulatory compliance.",
+        "personalizationContext": {
+          "painPoints": [
+            "Nuanced considerations at the intersection of intellectual property, data governance, and emerging AI regulation.",
+            "AI-focused diligence including model integration, data practices, customer contracting, and regulatory positioning."
+          ],
+          "tailoredHook": "Atomico's investment in Electric Twin highlights their proactive approach to AI governance and regulatory compliance, making them a strong fit for Alygn's focus on responsible AI deployment through expert legal diligence and risk mitigation strategies in high-stakes AI transactions.",
+          "recentNews": "Engaged Proskauer as specialist AI counsel for AI-related aspects of investment."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [
+            "Electric Twin"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Electric Twin",
+              "date": "February 18, 2026",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-1777268739015-0x3osg",
+        "type": "vc",
+        "name": "Balderton Capital",
+        "email": "suranga@balderton.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:35.396Z",
+        "outreachCount": 0,
+        "researchNotes": "Balderton Capital demonstrates interest in AI through investments like Escape, an AI-powered cybersecurity platform for offensive security, but shows no direct investments in AI safety, governance, or alignment focused on ethical AI development or risk mitigation.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited evidence of investments specifically in AI safety, governance, or alignment; focus appears on applied AI in security and finance rather than existential risks or ethical alignment."
+          ],
+          "tailoredHook": "Balderton's publications on AI regulation and responsible principles signal governance awareness, pairing well with their AI security investment in Escape; Alygn could extend this into true AI safety/alignment via co-investment or advisory to bridge applied AI to ethical governance.",
+          "recentNews": "Published 'Founders' Guide to AI Policy & Regulation' and articles on responsible AI principles, indicating thought leadership in AI governance."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Suranga Chandratillake",
+              "title": "Partner"
+            },
+            {
+              "name": "James Wise",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [
+            "Escape",
+            "Light"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Escape",
+              "date": "Recent (2025 implied)",
+              "stage": "Series A ($18M)"
+            },
+            {
+              "company": "Light",
+              "date": "Recent (2025 implied)",
+              "stage": "Series A ($30M)"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@balderton.com"
+      },
+      {
+        "id": "entity-1777268739015-pf9kr2",
+        "type": "vc",
+        "name": "Bee Partners",
+        "email": "michael@beepartners.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:40.634Z",
+        "outreachCount": 0,
+        "researchNotes": "Bee Partners is a pre-seed VC firm specializing in deep-tech AI, robotics, and human-machine convergence, investing in founders at the frontier of the AI supercycle with a focus on enterprise AI agents, secure model tuning, and hardware acceleration. While they emphasize technical infrastructure and agent management, their portfolio shows indirect alignment with AI safety through secure testing, synthetic data for privacy, and agent supervision tools.",
+        "personalizationContext": {
+          "painPoints": [
+            "Lack of secure AI testing without production data sharing (Okareo)",
+            "Privacy concerns in data scraping for AI training (Synthesis AI)",
+            "Managing and supervising enterprise AI agents at scale (Wayfound AI)",
+            "Tuning AI models securely to proprietary data"
+          ],
+          "tailoredHook": "Bee Partners' emphasis on AI agent management, secure tuning, and privacy-focused synthetic data aligns closely with Alygn's mission in AI safety and governance, positioning them as an ideal pre-seed partner for startups building alignment tools like robust oversight and verifiable AI systems.",
+          "recentNews": "Promotion of Vergara to Principal to support AI companies"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Michael Berolzheimer",
+              "title": "Founder & Managing Partner"
+            },
+            {
+              "name": "Vergara",
+              "title": "Principal"
+            }
+          ],
+          "portfolioCompanies": [
+            "TensorStax",
+            "Wayfound AI",
+            "Okareo",
+            "Deepscribe",
+            "Synthesis AI",
+            "Knowde",
+            "Super",
+            "Crowdbotics",
+            "InnerPlant",
+            "C-Infinity",
+            "Reshape Automation",
+            "WARP",
+            "Voltaiq",
+            "Rapid Robotics"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Synthesis AI",
+              "date": "Ongoing portfolio",
+              "stage": "Pre-seed"
+            },
+            {
+              "company": "Wayfound AI",
+              "date": "Funds III/IV",
+              "stage": "Pre-seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "getfunded@beepartners.vc"
+      },
+      {
+        "id": "entity-1777268739015-toqdvf",
+        "type": "vc",
+        "name": "Berkeley Catalyst Fund",
+        "email": "laura@bcfltd.com",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:40.894Z",
+        "outreachCount": 0,
+        "researchNotes": "Berkeley Catalyst Fund is an early-stage venture capital fund focused on life sciences, biotechnology, and cleantech emerging from UC Berkeley and affiliated institutions, with a primary investment stage of Seed and Series A. While the fund does not have a stated focus on AI safety, governance, and alignment investments, there is limited public information about its current portfolio and investment activities.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited public disclosure of portfolio companies and exits",
+            "No publicly stated focus on AI safety and governance investments",
+            "Sector focus (life sciences, cleantech) does not align with AI safety priorities"
+          ],
+          "tailoredHook": "Berkeley Catalyst Fund is not a strategic fit for Alygn's AI safety and governance focus. The fund's primary investment thesis centers on life sciences, biotechnology, agriculture, and cleantech\u2014sectors with minimal overlap with AI safety priorities. Additionally, the fund's portfolio and recent investment activity are not publicly disclosed, making it difficult to assess any emerging interest in AI governance or alignment investments.",
+          "recentNews": "Operates with standard general partner structure alongside philanthropic component"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Laura Smoliar",
+              "title": "Founder"
+            },
+            {
+              "name": "Ted Hou",
+              "title": "Founder"
+            },
+            {
+              "name": "Drew Lanza",
+              "title": "Founder"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@bcfltd.com"
+      },
+      {
+        "id": "entity-1777268739015-guvvpq",
+        "type": "vc",
+        "name": "Berkeley SkyDeck Fund",
+        "email": "chon@skydeck.vc",
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T05:45:39.015Z",
+        "lastUpdatedAt": "2026-04-29T00:04:45.472Z",
+        "outreachCount": 0,
+        "researchNotes": "Berkeley SkyDeck Fund is the venture capital arm of UC Berkeley's SkyDeck accelerator, investing $200K in early-stage deep tech startups across AI, biotech, fintech, and climate tech, with a focus on university-driven innovation but no evident specialization in AI safety, governance, or alignment.",
+        "personalizationContext": {
+          "painPoints": [],
+          "tailoredHook": "Limited evidence of investments in AI safety, governance, or alignment; portfolio emphasizes general AI and deep tech without specific focus on these areas, making it a weaker fit for specialized AI risk mitigation strategies.",
+          "recentNews": "Donates 50% of carried interest back to UC Berkeley"
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Chon Tang",
+              "title": "Founder"
+            },
+            {
+              "name": "Brian Bordley",
+              "title": "Venture Investor"
+            }
+          ],
+          "portfolioCompanies": [
+            "SuperAnnotate",
+            "Deepfence",
+            "Xendit",
+            "Waypoint AI"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Waypoint AI",
+              "date": "June 2025",
+              "stage": "Seed"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@skydeck.vc"
+      },
+      {
+        "id": "entity-1777271880338-1zjcky",
+        "type": "vc",
+        "name": "Bessemer Venture Partners",
+        "email": "nithin@bvp.com",
+        "website": "https://www.bvp.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-27T06:38:00.338Z",
+        "lastUpdatedAt": "2026-04-29T00:04:49.823Z",
+        "outreachCount": 0,
+        "researchNotes": "Bessemer Venture Partners invests in AI applications enhancing safety and security across public safety, pharmacovigilance, healthcare, and cybersecurity, with a focus on evaluation infrastructure for AI reliability in healthcare, though no direct investments in core AI safety, governance, or alignment research are evident.",
+        "personalizationContext": {
+          "painPoints": [
+            "Limited evidence of investments specifically targeting AI safety, governance, or alignment (e.g., no mentions of x-risk mitigation, ethical AI frameworks beyond healthcare evaluation, or alignment research).",
+            "Focus skewed toward applied AI in verticals like public safety and pharma rather than foundational AI safety infrastructure."
+          ],
+          "tailoredHook": "Bessemer aligns moderately with Alygn's AI safety/governance focus via healthcare AI evaluation tools and safety-enhancing applications (e.g., pharmacovigilance, public safety), but lacks depth in core alignment research; potential for co-investment in evaluation infrastructure or safety platforms.",
+          "recentNews": "Healthcare AI roadmap emphasizes 'evaluation infrastructure' for assessing AI performance, safety, and ethical implications[7]."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [],
+          "sectorFocus": [
+            "AI safety",
+            "AI governance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Nithin Kaimal",
+              "title": "Partner at Bessemer Venture Partners India"
+            }
+          ],
+          "portfolioCompanies": [
+            "Spot AI",
+            "Graph AI",
+            "Upwind Security",
+            "Protectt AI",
+            "Waymo",
+            "Mind Robotics",
+            "Foxglove",
+            "Breaker",
+            "Noda",
+            "Voxel51",
+            "DroneDeploy",
+            "Auterion",
+            "Perceptron",
+            "ANYbotics"
+          ],
+          "recentInvestments": [
+            {
+              "company": "Graph AI",
+              "date": "Oct 15, 2025",
+              "stage": "Seed ($3M)"
+            },
+            {
+              "company": "Upwind Security",
+              "date": "Recent (2025/2026)",
+              "stage": "Series B ($250M)"
+            }
+          ],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null,
+          "contactFormUrl": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "genericEmail": "info@bvp.com"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "32833487-4af6-8169-91b2-ee8338a535bc"
+        },
+        "entity": {
+          "id": "entity-1777268739014-2n86rm",
+          "type": "vc",
+          "name": "2048 Ventures",
+          "email": "info@2048.vc",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-27T05:45:39.014Z",
+          "outreachCount": 0,
+          "researchNotes": "",
+          "personalizationContext": {
+            "painPoints": [],
+            "tailoredHook": "",
+            "recentNews": ""
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "8VC builds billion-dollar technology platforms across AI, defense, and enterprise software, with particular focus on securing AI-generated code and autonomous systems. The firm combines venture capital with an internal Build Program that creates ~30% of portfolio companies from within.",
+          "portfolio": [
+            "Palantir",
+            "Addepar",
+            "OpenGov",
+            "Affinity",
+            "Anduin",
+            "Standard Metrics",
+            "Saronic",
+            "Enclave",
+            "Overland AI",
+            "Anduril",
+            "Resilience"
+          ],
+          "partners": [
+            {
+              "name": "Joe Lonsdale",
+              "title": "Founder"
+            },
+            {
+              "name": "Drew Oetting",
+              "title": "Founding Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Enclave",
+              "date": "March 2026",
+              "stage": "Seed"
+            },
+            {
+              "company": "Overland AI",
+              "date": "2026",
+              "stage": "Series A"
+            }
+          ],
+          "painPoints": [
+            "Security vulnerabilities in AI-generated code",
+            "Lack of advanced autonomy in complex terrain",
+            "Complex financial and back-office workflows",
+            "Enterprise digital transformation gaps"
+          ],
+          "governanceSignals": [
+            "Build Program structure incentivizes founder-first mentality and internal accountability",
+            "28 internally-built companies demonstrate operational governance expertise",
+            "Portfolio spans regulated sectors (defense, healthcare, financial services) requiring compliance infrastructure",
+            "Strategic network effects across autonomous systems portfolio (ground, air, sea coordination)"
+          ],
+          "whyAlygn": "8VC's explicit focus on AI safety through Enclave (detecting dangerous flaws in AI-written code) and autonomous systems governance through its defense portfolio (Saronic, Overland, Anduril) aligns with safety-focused governance and alignment imperatives. The firm's Build Program approach embeds governance from inception rather than retrofit, and their $6B+ AUM provides capital to scale safety infrastructure across the AI ecosystem."
+        },
+        "entity": {
+          "id": "entity-1777268739014-ov49gv",
+          "type": "vc",
+          "name": "8VC",
+          "email": "info@8vc.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-29T00:03:57.966Z",
+          "outreachCount": 0,
+          "researchNotes": "8VC builds billion-dollar technology platforms across AI, defense, and enterprise software, with particular focus on securing AI-generated code and autonomous systems. The firm combines venture capital with an internal Build Program that creates ~30% of portfolio companies from within.",
+          "personalizationContext": {
+            "painPoints": [
+              "Security vulnerabilities in AI-generated code",
+              "Lack of advanced autonomy in complex terrain",
+              "Complex financial and back-office workflows",
+              "Enterprise digital transformation gaps"
+            ],
+            "tailoredHook": "8VC's explicit focus on AI safety through Enclave (detecting dangerous flaws in AI-written code) and autonomous systems governance through its defense portfolio (Saronic, Overland, Anduril) aligns with safety-focused governance and alignment imperatives. The firm's Build Program approach embeds governance from inception rather than retrofit, and their $6B+ AUM provides capital to scale safety infrastructure across the AI ecosystem.",
+            "recentNews": "Build Program structure incentivizes founder-first mentality and internal accountability"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Joe Lonsdale",
+                "title": "Founder"
+              },
+              {
+                "name": "Drew Oetting",
+                "title": "Founding Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Palantir",
+              "Addepar",
+              "OpenGov",
+              "Affinity",
+              "Anduin",
+              "Standard Metrics",
+              "Saronic",
+              "Enclave",
+              "Overland AI",
+              "Anduril",
+              "Resilience"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Enclave",
+                "date": "March 2026",
+                "stage": "Seed"
+              },
+              {
+                "company": "Overland AI",
+                "date": "2026",
+                "stage": "Series A"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "30533487-4af6-81ea-937a-f5cc98871cdb"
+        },
+        "entity": {
+          "id": "entity-1777268739014-d36s5c",
+          "type": "vc",
+          "name": "Abstract Ventures",
+          "email": "info@abstractvc.com",
+          "website": "https://www.abstractvc.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-27T05:45:39.014Z",
+          "outreachCount": 0,
+          "researchNotes": "With a partner who has direct US government AI policy experience, Abstract understands the regulatory landscape better than most seed funds. Their portfolio companies building AI tools will face early compliance pressure. AI governance solutions that bridge the gap between government AI policy and startup implementation would leverage their unique positioning. They need tools that help seed-stage AI companies build governance in from day one.",
+          "personalizationContext": {
+            "painPoints": [
+              "With a partner who has direct US government AI policy experience, Abstract understands the regulatory landscape better than most seed funds. Their portfolio companies building AI tools will face early compliance pressure. AI governance solutions that bridge the gap between government AI policy and startup implementation would leverage their unique positioning. They need tools that help seed-stage AI companies build governance in from day one."
+            ],
+            "tailoredHook": "Andrei Kozyrev's background as Chief of Staff to the US CTO (Michael Kratsios) gives Abstract unique government/policy insight. This connection to federal AI policy is a strong governance signal. Will Thomsen built a proprietary data platform for VC sourcing. No explicit AI governance fund but the policy/government connection is notable.",
+            "recentNews": ""
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "30533487-4af6-81a2-aaaf-f4aeca7de93d"
+        },
+        "entity": {
+          "id": "entity-1777268739014-x1dkya",
+          "type": "vc",
+          "name": "Accel",
+          "email": "info@accel.com",
+          "website": "https://www.accel.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-27T05:45:39.014Z",
+          "outreachCount": 0,
+          "researchNotes": "With $5B+ committed to AI, Accel's portfolio companies will face increasing regulatory scrutiny (EU AI Act, US state laws, etc.). Enterprise AI adopters need governance frameworks to deploy responsibly. AI governance tools that help Accel's portfolio companies achieve compliance and responsible deployment at scale would be highly relevant - especially as they scale from early-stage to enterprise customers.",
+          "personalizationContext": {
+            "painPoints": [
+              "With $5B+ committed to AI, Accel's portfolio companies will face increasing regulatory scrutiny (EU AI Act, US state laws, etc.). Enterprise AI adopters need governance frameworks to deploy responsibly. AI governance tools that help Accel's portfolio companies achieve compliance and responsible deployment at scale would be highly relevant - especially as they scale from early-stage to enterprise customers."
+            ],
+            "tailoredHook": "No explicit AI governance/safety fund from Accel (the VC firm). Note: Accel.AI is a separate nonprofit focused on ethical AI and AI regulation - not affiliated with Accel the VC firm. Accel VC has massive AI investment commitments but governance angle is not prominent in their public positioning. Their scale and AI focus means portfolio companies will face governance challenges.",
+            "recentNews": ""
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Aether is a research group dedicated to AI safety, focusing on alignment, control, and evaluation of LLM agents through technical research on chain-of-thought monitorability and oversight in agentic settings. It is not a traditional VC firm but aims to convert early-career talent into impactful AI safety work, with no direct evidence of portfolio investments in AI safety, governance, or alignment.",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "Limited public information distinguishing Aether research group from similarly named AI entities like Aether AI or AetherLab.",
+            "No disclosed investments or portfolio companies specifically in AI safety, governance, or alignment.",
+            "Focus appears research-oriented rather than investment-driven."
+          ],
+          "governanceSignals": [
+            "Emphasis on LLM agent safety evaluations, including long-horizon deception and oversight of complex reasoning chains.",
+            "Research vision prioritizes monitorability in agentic settings over strict chain-of-thought faithfulness for high-stakes monitoring.",
+            "Mentorship program for early-career researchers to build career capital in AI safety."
+          ],
+          "whyAlygn": "Aether's deep expertise in LLM agent alignment and safety research aligns with Alygn's focus on responsible AI governance, offering potential for collaborative talent pipelines and insights into agentic risks without direct investment overlap."
+        },
+        "entity": {
+          "id": "entity-1777268739014-yk9u8o",
+          "type": "vc",
+          "name": "Aether VC",
+          "email": "info@aethervc.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-29T00:04:02.554Z",
+          "outreachCount": 0,
+          "researchNotes": "Aether is a research group dedicated to AI safety, focusing on alignment, control, and evaluation of LLM agents through technical research on chain-of-thought monitorability and oversight in agentic settings. It is not a traditional VC firm but aims to convert early-career talent into impactful AI safety work, with no direct evidence of portfolio investments in AI safety, governance, or alignment.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited public information distinguishing Aether research group from similarly named AI entities like Aether AI or AetherLab.",
+              "No disclosed investments or portfolio companies specifically in AI safety, governance, or alignment.",
+              "Focus appears research-oriented rather than investment-driven."
+            ],
+            "tailoredHook": "Aether's deep expertise in LLM agent alignment and safety research aligns with Alygn's focus on responsible AI governance, offering potential for collaborative talent pipelines and insights into agentic risks without direct investment overlap.",
+            "recentNews": "Emphasis on LLM agent safety evaluations, including long-horizon deception and oversight of complex reasoning chains."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "AI Fund is an early-stage venture fund investing in startups developing tools and technologies to enhance AI safety, trustworthiness, and alignment with human values. It focuses on for-profit companies building guardrails for safer AI deployment, emphasizing security, transparency, and mitigation of unintended harms.",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "Limited public information on specific portfolio companies, partners, or recent investments.",
+            "Multiple similar-named funds (e.g., AI Safety Fund, Safe AI Fund) create confusion in distinguishing the exact 'AI Fund' entity."
+          ],
+          "governanceSignals": [
+            "Explicit focus on AI safety, security, transparency, and mitigating unintended harms through startup investments.",
+            "Mission-driven approach supporting tools that make AI more trustworthy and human-aligned."
+          ],
+          "whyAlygn": "AI Fund's investment thesis in for-profit AI safety startups aligns with Alygn's priorities in governance and alignment; potential to co-invest in scalable safety tools while addressing the gap in commercializing AI safety innovations."
+        },
+        "entity": {
+          "id": "entity-1777268739014-nuwvu9",
+          "type": "vc",
+          "name": "AI Fund",
+          "email": "info@aifund.ai",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-29T00:04:02.818Z",
+          "outreachCount": 0,
+          "researchNotes": "AI Fund is an early-stage venture fund investing in startups developing tools and technologies to enhance AI safety, trustworthiness, and alignment with human values. It focuses on for-profit companies building guardrails for safer AI deployment, emphasizing security, transparency, and mitigation of unintended harms.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited public information on specific portfolio companies, partners, or recent investments.",
+              "Multiple similar-named funds (e.g., AI Safety Fund, Safe AI Fund) create confusion in distinguishing the exact 'AI Fund' entity."
+            ],
+            "tailoredHook": "AI Fund's investment thesis in for-profit AI safety startups aligns with Alygn's priorities in governance and alignment; potential to co-invest in scalable safety tools while addressing the gap in commercializing AI safety innovations.",
+            "recentNews": "Explicit focus on AI safety, security, transparency, and mitigating unintended harms through startup investments."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "AI Seed is Europe's leading AI-focused venture capital fund, investing in early-stage pure-play AI companies since 2017 with a strong track record of exits and returns. While it provides specialist support for AI scaling, its portfolio emphasizes general AI innovation rather than a specific focus on AI safety, governance, or alignment.",
+          "portfolio": [
+            "Europe\u2019s largest portfolio of pure-play AI companies (specific names not listed)"
+          ],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "Limited public information on specific portfolio companies or investments.",
+            "No explicit emphasis on AI safety, governance, or alignment in available sources.",
+            "General AI focus may not align perfectly with safety-specific mandates."
+          ],
+          "governanceSignals": [],
+          "whyAlygn": "Moderate fit; AI Seed's broad early-stage AI expertise could support AI safety startups via talent access and scaling help, but lacks dedicated safety focus unlike Catalyze Impact's networks."
+        },
+        "entity": {
+          "id": "entity-1777268739014-af3gsd",
+          "type": "vc",
+          "name": "AI Seed",
+          "email": "info@aiseedfund.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-29T00:04:06.694Z",
+          "outreachCount": 0,
+          "researchNotes": "AI Seed is Europe's leading AI-focused venture capital fund, investing in early-stage pure-play AI companies since 2017 with a strong track record of exits and returns. While it provides specialist support for AI scaling, its portfolio emphasizes general AI innovation rather than a specific focus on AI safety, governance, or alignment.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited public information on specific portfolio companies or investments.",
+              "No explicit emphasis on AI safety, governance, or alignment in available sources.",
+              "General AI focus may not align perfectly with safety-specific mandates."
+            ],
+            "tailoredHook": "Moderate fit; AI Seed's broad early-stage AI expertise could support AI safety startups via talent access and scaling help, but lacks dedicated safety focus unlike Catalyze Impact's networks."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [
+              "Europe\u2019s largest portfolio of pure-play AI companies (specific names not listed)"
+            ],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "30533487-4af6-8146-925c-fce60dd5203e"
+        },
+        "entity": {
+          "id": "entity-1777268739014-ocufls",
+          "type": "vc",
+          "name": "AI2 Incubator (by Allen Institute for AI)",
+          "email": "jacob@ai2incubator.com, yifan@ai2incubator.com, info@ai2incubator.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-27T05:45:39.014Z",
+          "outreachCount": 0,
+          "researchNotes": "Applied AI incubator. $80M Fund3. Born from Allen Institute for AI (Ai2). Team: Jacob Colker (MD), Yifan Zhang (MD), Oren Etzioni (Tech Director). Focus: AI-first startups, applied AI. Seattle-based. AI House community hub. Pre-seed/seed stage.",
+          "personalizationContext": {
+            "painPoints": [
+              "Born inside Allen Institute for AI with $100M+ annual research funding. Concerned about gap between AI research and real-world application. 'Balancing Optimism with Reality' on AI agents. Applied AI focus means they need governance frameworks that work in production, not just theory. Non-profit heritage drives responsible AI values."
+            ],
+            "tailoredHook": "Non-profit AI research institute heritage (Allen Institute for AI). Oren Etzioni is a well-known AI ethics voice. Published 'State of AI Agents in 2025: Balancing Optimism with Reality'. Ai2's mission is 'AI for the common good'. Strong natural alignment with AI governance - born from responsible AI research institution.",
+            "recentNews": "Applied AI incubator. $80M Fund3. Born from Allen Institute for AI (Ai2). Team: Jacob Colker (MD), Yifan Zhang (MD), Oren Etzioni (Tech Director). Focus: AI-first startups, applied AI. Seattle-based. AI House community hub. Pre-seed/seed stage."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "AME Cloud Ventures invests in seed to later-stage companies building infrastructure and value chains around data, believing that accurate, actionable data will be a major life-blood in the future economy. The fund targets technology-heavy companies gathering or creating unique data across the entire data stack\u2014from infrastructure to applications, sensors, and end-user products.",
+          "portfolio": [
+            "Viz.ai",
+            "Minio",
+            "GrubMarket",
+            "Mammoth",
+            "Blockstream",
+            "Zoom",
+            "Wish",
+            "Planet",
+            "Freenome",
+            "Nervana Systems",
+            "Elementum",
+            "Synthego",
+            "Rigetti Quantum Computing",
+            "Capella Space",
+            "Accion Systems",
+            "Canvas Technology",
+            "MegaBots",
+            "Vicarious Surgical",
+            "Flint",
+            "Sage Care",
+            "Cartography Biosciences",
+            "Ellipsis Health",
+            "Galatea"
+          ],
+          "partners": [
+            {
+              "name": "Jerry Yang",
+              "title": "Founder and Managing Partner"
+            },
+            {
+              "name": "Jeff Chung",
+              "title": "Managing Director"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Flint",
+              "date": "November 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Sage Care",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Cartography Biosciences",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Ellipsis Health",
+              "date": "June 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Galatea",
+              "date": "March 2025",
+              "stage": "Series A"
+            }
+          ],
+          "painPoints": [
+            "No explicit focus on AI safety, governance, or alignment investments identified in available sources",
+            "Portfolio shows strength in data infrastructure and enterprise applications but lacks documented commitment to responsible AI development",
+            "Search results do not indicate active governance frameworks or safety-first investment criteria"
+          ],
+          "governanceSignals": [
+            "Partnership-based model with distributed decision-making across multiple partners",
+            "Strong founder quality evaluation centered on track record and domain expertise",
+            "Extensive use of advisory network for technical due diligence",
+            "Active value-add engagement with portfolio companies"
+          ],
+          "whyAlygn": "AME Cloud Ventures does not appear to be a strong fit for an AI safety, governance, and alignment-focused investor based on available information. While the firm demonstrates sophisticated investment practices and strong founder focus, the search results reveal no explicit commitment to AI safety, governance standards, or alignment-related investments. The fund's data-infrastructure thesis is orthogonal to safety-first investment criteria. A more targeted search or direct outreach would be needed to assess whether governance and alignment considerations factor into their investment decisions."
+        },
+        "entity": {
+          "id": "entity-1777268739014-n86k1e",
+          "type": "vc",
+          "name": "AME Cloud Ventures",
+          "email": "info@amecloudventures.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.014Z",
+          "lastUpdatedAt": "2026-04-29T00:04:15.083Z",
+          "outreachCount": 0,
+          "researchNotes": "AME Cloud Ventures invests in seed to later-stage companies building infrastructure and value chains around data, believing that accurate, actionable data will be a major life-blood in the future economy. The fund targets technology-heavy companies gathering or creating unique data across the entire data stack\u2014from infrastructure to applications, sensors, and end-user products.",
+          "personalizationContext": {
+            "painPoints": [
+              "No explicit focus on AI safety, governance, or alignment investments identified in available sources",
+              "Portfolio shows strength in data infrastructure and enterprise applications but lacks documented commitment to responsible AI development",
+              "Search results do not indicate active governance frameworks or safety-first investment criteria"
+            ],
+            "tailoredHook": "AME Cloud Ventures does not appear to be a strong fit for an AI safety, governance, and alignment-focused investor based on available information. While the firm demonstrates sophisticated investment practices and strong founder focus, the search results reveal no explicit commitment to AI safety, governance standards, or alignment-related investments. The fund's data-infrastructure thesis is orthogonal to safety-first investment criteria. A more targeted search or direct outreach would be needed to assess whether governance and alignment considerations factor into their investment decisions.",
+            "recentNews": "Partnership-based model with distributed decision-making across multiple partners"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Jerry Yang",
+                "title": "Founder and Managing Partner"
+              },
+              {
+                "name": "Jeff Chung",
+                "title": "Managing Director"
+              }
+            ],
+            "portfolioCompanies": [
+              "Viz.ai",
+              "Minio",
+              "GrubMarket",
+              "Mammoth",
+              "Blockstream",
+              "Zoom",
+              "Wish",
+              "Planet",
+              "Freenome",
+              "Nervana Systems",
+              "Elementum",
+              "Synthego",
+              "Rigetti Quantum Computing",
+              "Capella Space",
+              "Accion Systems",
+              "Canvas Technology",
+              "MegaBots",
+              "Vicarious Surgical",
+              "Flint",
+              "Sage Care",
+              "Cartography Biosciences",
+              "Ellipsis Health",
+              "Galatea"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Flint",
+                "date": "November 2025",
+                "stage": "Series A"
+              },
+              {
+                "company": "Sage Care",
+                "date": "October 2025",
+                "stage": "Series B"
+              },
+              {
+                "company": "Cartography Biosciences",
+                "date": "October 2025",
+                "stage": "Series B"
+              },
+              {
+                "company": "Ellipsis Health",
+                "date": "June 2025",
+                "stage": "Series A"
+              },
+              {
+                "company": "Galatea",
+                "date": "March 2025",
+                "stage": "Series A"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "AME Cloud Ventures, led by Yahoo! co-founder Jerry Yang, invests in seed to later-stage companies building data infrastructure and value chains, with a focus on technology-heavy sectors including AI, enterprise applications, and high tech. While not explicitly centered on AI safety, governance, or alignment, the firm has backed AI-related companies like Viz.ai, Nervana Systems (AI hardware), and GrubMarket (enterprise AI), alongside data-driven infrastructure plays.",
+          "portfolio": [
+            "Viz.ai",
+            "Minio",
+            "GrubMarket",
+            "Mammoth",
+            "Blockstream",
+            "Nervana Systems",
+            "Freenome",
+            "Elementum",
+            "Synthego",
+            "Rigetti Quantum Computing",
+            "Zoom",
+            "Wish",
+            "Zymergen",
+            "Planet"
+          ],
+          "partners": [
+            {
+              "name": "Jerry Yang",
+              "title": "Founder/Managing General Partner"
+            },
+            {
+              "name": "Jeff Chung",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Flint",
+              "date": "November 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Sage Care",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Cartography Biosciences",
+              "date": "October 2025",
+              "stage": "Series B"
+            },
+            {
+              "company": "Ellipsis Health",
+              "date": "June 2025",
+              "stage": "Series A"
+            },
+            {
+              "company": "Galatea",
+              "date": "March 2025",
+              "stage": "Series A"
+            }
+          ],
+          "painPoints": [
+            "No direct investments identified in AI safety, governance, or alignment-focused startups",
+            "Portfolio emphasizes general data infrastructure over specialized AI risk management or ethical AI",
+            "Limited public signals on thesis evolution toward AI alignment amid 2026 AI safety discussions"
+          ],
+          "governanceSignals": [
+            "Active value-add engagement with portfolio companies, including board seats (e.g., Jeff Chung on Savioke board)",
+            "Strong track record of exits: 16 unicorns, 16 IPOs, 83 acquisitions",
+            "Founder-centric evaluation with US and Asia-Pacific market relationships"
+          ],
+          "whyAlygn": "AME Cloud Ventures complements Alygn's focus through its data infrastructure expertise and AI portfolio (e.g., Viz.ai, Nervana), providing potential synergies in scaling AI governance tech; however, bridging their generalist data thesis to Alygn's AI safety niche would require highlighting alignment applications in data stacks for enterprise risk management."
+        },
+        "entity": {
+          "id": "entity-1777268739015-43ss4f",
+          "type": "vc",
+          "name": "AME Ventures",
+          "email": "info@ameventures.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:19.987Z",
+          "outreachCount": 0,
+          "researchNotes": "AME Cloud Ventures, led by Yahoo! co-founder Jerry Yang, invests in seed to later-stage companies building data infrastructure and value chains, with a focus on technology-heavy sectors including AI, enterprise applications, and high tech. While not explicitly centered on AI safety, governance, or alignment, the firm has backed AI-related companies like Viz.ai, Nervana Systems (AI hardware), and GrubMarket (enterprise AI), alongside data-driven infrastructure plays.",
+          "personalizationContext": {
+            "painPoints": [
+              "No direct investments identified in AI safety, governance, or alignment-focused startups",
+              "Portfolio emphasizes general data infrastructure over specialized AI risk management or ethical AI",
+              "Limited public signals on thesis evolution toward AI alignment amid 2026 AI safety discussions"
+            ],
+            "tailoredHook": "AME Cloud Ventures complements Alygn's focus through its data infrastructure expertise and AI portfolio (e.g., Viz.ai, Nervana), providing potential synergies in scaling AI governance tech; however, bridging their generalist data thesis to Alygn's AI safety niche would require highlighting alignment applications in data stacks for enterprise risk management.",
+            "recentNews": "Active value-add engagement with portfolio companies, including board seats (e.g., Jeff Chung on Savioke board)"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Jerry Yang",
+                "title": "Founder/Managing General Partner"
+              },
+              {
+                "name": "Jeff Chung",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Viz.ai",
+              "Minio",
+              "GrubMarket",
+              "Mammoth",
+              "Blockstream",
+              "Nervana Systems",
+              "Freenome",
+              "Elementum",
+              "Synthego",
+              "Rigetti Quantum Computing",
+              "Zoom",
+              "Wish",
+              "Zymergen",
+              "Planet"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Flint",
+                "date": "November 2025",
+                "stage": "Series A"
+              },
+              {
+                "company": "Sage Care",
+                "date": "October 2025",
+                "stage": "Series B"
+              },
+              {
+                "company": "Cartography Biosciences",
+                "date": "October 2025",
+                "stage": "Series B"
+              },
+              {
+                "company": "Ellipsis Health",
+                "date": "June 2025",
+                "stage": "Series A"
+              },
+              {
+                "company": "Galatea",
+                "date": "March 2025",
+                "stage": "Series A"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "30533487-4af6-8149-b84e-e92464eeb5c0"
+        },
+        "entity": {
+          "id": "entity-1777268739015-udjy5j",
+          "type": "vc",
+          "name": "Amplify Partners",
+          "email": "info@amplifypartners.com, lenny@amplifypartners.com, sarah@amplifypartners.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-27T05:45:39.015Z",
+          "outreachCount": 0,
+          "researchNotes": "First investor for technical founders. ~15 years investing. Focus: developer tools, AI/ML, data, cybersecurity, infrastructure. Small initial checks with repeated follow-on. Operates as 'technical think tank' publishing deep essays. Menlo Park-based.",
+          "personalizationContext": {
+            "painPoints": [
+              "Invested in Moonbounce - 'Guardrails for the slop era' - directly concerned about AI content moderation and safety guardrails. As infrastructure-focused investors, need governance tools that work at the systems level. Technical founders need practical governance embedded in their stack, not bolted on."
+            ],
+            "tailoredHook": "Invested in Moonbounce ('Guardrails for the slop era' - AI content moderation/safety). Portfolio includes security and infrastructure companies where governance is built-in. Published deep essays on AI infrastructure. Technical approach to governance - tools over policies.",
+            "recentNews": "First investor for technical founders. ~15 years investing. Focus: developer tools, AI/ML, data, cybersecurity, infrastructure. Small initial checks with repeated follow-on. Operates as 'technical think tank' publishing deep essays. Menlo Park-based."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Andreessen Horowitz (a16z) invests heavily in AI infrastructure and applications but shows limited direct focus on AI safety, governance, and alignment, with investments primarily in AI-powered cybersecurity and data platforms rather than explicit safety or alignment initiatives.",
+          "portfolio": [
+            "Adaptive Security",
+            "Protege AI"
+          ],
+          "partners": [],
+          "recentInvestments": [
+            {
+              "company": "Adaptive Security",
+              "date": "Recent (2020s)",
+              "stage": "Series A"
+            },
+            {
+              "company": "Protege AI",
+              "date": "Recent (2020s)",
+              "stage": "$30M round"
+            }
+          ],
+          "painPoints": [
+            "No direct investments identified in core AI safety, governance, or alignment-focused companies.",
+            "Portfolio emphasizes AI cybersecurity and data infrastructure over existential risk mitigation or alignment research.",
+            "Public stance critiques 'existential angst' in AI policy, suggesting skepticism toward heavy safety regulation."
+          ],
+          "governanceSignals": [
+            "Advocates basing AI policy on evidence rather than existential concerns.",
+            "No explicit governance or alignment investment signals in provided data."
+          ],
+          "whyAlygn": "a16z's pragmatic, evidence-based approach to AI complements Alygn's focus on practical governance without overemphasizing speculative risks, offering potential co-investment opportunities in scalable AI security solutions that indirectly support alignment."
+        },
+        "entity": {
+          "id": "entity-1777268739015-ntqggk",
+          "type": "vc",
+          "name": "Andreessen Horowitz (a16z)",
+          "email": "info@a16z.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:24.128Z",
+          "outreachCount": 0,
+          "researchNotes": "Andreessen Horowitz (a16z) invests heavily in AI infrastructure and applications but shows limited direct focus on AI safety, governance, and alignment, with investments primarily in AI-powered cybersecurity and data platforms rather than explicit safety or alignment initiatives.",
+          "personalizationContext": {
+            "painPoints": [
+              "No direct investments identified in core AI safety, governance, or alignment-focused companies.",
+              "Portfolio emphasizes AI cybersecurity and data infrastructure over existential risk mitigation or alignment research.",
+              "Public stance critiques 'existential angst' in AI policy, suggesting skepticism toward heavy safety regulation."
+            ],
+            "tailoredHook": "a16z's pragmatic, evidence-based approach to AI complements Alygn's focus on practical governance without overemphasizing speculative risks, offering potential co-investment opportunities in scalable AI security solutions that indirectly support alignment.",
+            "recentNews": "Advocates basing AI policy on evidence rather than existential concerns."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [
+              "Adaptive Security",
+              "Protege AI"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Adaptive Security",
+                "date": "Recent (2020s)",
+                "stage": "Series A"
+              },
+              {
+                "company": "Protege AI",
+                "date": "Recent (2020s)",
+                "stage": "$30M round"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Anthropic is an AI company, not a VC firm, renowned for its leadership in AI safety, alignment, and governance through techniques like Constitutional AI, robust safeguards, and advocacy for federal policy frameworks.",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "Founded due to concerns over OpenAI's commercialization prioritizing products over safety.",
+            "High capital expenditures in AI industry raise bubble concerns, though Anthropic emphasizes efficiency.",
+            "Ongoing need to counter threats like jailbreaking, hackers, and fraudsters exploiting AI."
+          ],
+          "governanceSignals": [
+            "Donated $20M to Public First Action for AI education, safeguards, federal governance, export controls, and regulation on bioweapons/cyberattacks[3].",
+            "Employs constitutional classifiers, red-teaming, threat intelligence to ensure AI reliability and prevent harmful outputs[2].",
+            "Prioritizes transparency, collaboration with AI community, and model safeguards for enterprise trust[1][2]."
+          ],
+          "whyAlygn": "Anthropic's deep commitment to AI safety, alignment via Constitutional AI, and proactive governance advocacy\u2014such as $20M donation for policy safeguards and federal frameworks\u2014perfectly aligns with Alygn's focus on responsible AI investments, offering strong signals for risk-mitigated, enterprise-grade AI leadership."
+        },
+        "entity": {
+          "id": "entity-1777268739015-uibf69",
+          "type": "vc",
+          "name": "Anthropic",
+          "email": "press@anthropic.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:28.534Z",
+          "outreachCount": 0,
+          "researchNotes": "Anthropic is an AI company, not a VC firm, renowned for its leadership in AI safety, alignment, and governance through techniques like Constitutional AI, robust safeguards, and advocacy for federal policy frameworks.",
+          "personalizationContext": {
+            "painPoints": [
+              "Founded due to concerns over OpenAI's commercialization prioritizing products over safety.",
+              "High capital expenditures in AI industry raise bubble concerns, though Anthropic emphasizes efficiency.",
+              "Ongoing need to counter threats like jailbreaking, hackers, and fraudsters exploiting AI."
+            ],
+            "tailoredHook": "Anthropic's deep commitment to AI safety, alignment via Constitutional AI, and proactive governance advocacy\u2014such as $20M donation for policy safeguards and federal frameworks\u2014perfectly aligns with Alygn's focus on responsible AI investments, offering strong signals for risk-mitigated, enterprise-grade AI leadership.",
+            "recentNews": "Donated $20M to Public First Action for AI education, safeguards, federal governance, export controls, and regulation on bioweapons/cyberattacks[3]."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Atomico actively invests in AI technologies with a strong emphasis on governance, as demonstrated by their seed investment in Electric Twin, where they received specialized counsel on AI diligence, model integration, data governance, IP strategy, and regulatory compliance.",
+          "portfolio": [
+            "Electric Twin"
+          ],
+          "partners": [],
+          "recentInvestments": [
+            {
+              "company": "Electric Twin",
+              "date": "February 18, 2026",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [
+            "Nuanced considerations at the intersection of intellectual property, data governance, and emerging AI regulation.",
+            "AI-focused diligence including model integration, data practices, customer contracting, and regulatory positioning."
+          ],
+          "governanceSignals": [
+            "Engaged Proskauer as specialist AI counsel for AI-related aspects of investment.",
+            "Advised on model integration and governance, intellectual property strategy, data practices, customer contracting frameworks, and regulatory positioning under evolving AI regimes."
+          ],
+          "whyAlygn": "Atomico's investment in Electric Twin highlights their proactive approach to AI governance and regulatory compliance, making them a strong fit for Alygn's focus on responsible AI deployment through expert legal diligence and risk mitigation strategies in high-stakes AI transactions."
+        },
+        "entity": {
+          "id": "entity-1777268739015-usaorg",
+          "type": "vc",
+          "name": "Atomico",
+          "email": "info@atomico.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:31.844Z",
+          "outreachCount": 0,
+          "researchNotes": "Atomico actively invests in AI technologies with a strong emphasis on governance, as demonstrated by their seed investment in Electric Twin, where they received specialized counsel on AI diligence, model integration, data governance, IP strategy, and regulatory compliance.",
+          "personalizationContext": {
+            "painPoints": [
+              "Nuanced considerations at the intersection of intellectual property, data governance, and emerging AI regulation.",
+              "AI-focused diligence including model integration, data practices, customer contracting, and regulatory positioning."
+            ],
+            "tailoredHook": "Atomico's investment in Electric Twin highlights their proactive approach to AI governance and regulatory compliance, making them a strong fit for Alygn's focus on responsible AI deployment through expert legal diligence and risk mitigation strategies in high-stakes AI transactions.",
+            "recentNews": "Engaged Proskauer as specialist AI counsel for AI-related aspects of investment."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [
+              "Electric Twin"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Electric Twin",
+                "date": "February 18, 2026",
+                "stage": "Seed"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Balderton Capital demonstrates interest in AI through investments like Escape, an AI-powered cybersecurity platform for offensive security, but shows no direct investments in AI safety, governance, or alignment focused on ethical AI development or risk mitigation.",
+          "portfolio": [
+            "Escape",
+            "Light"
+          ],
+          "partners": [
+            {
+              "name": "Suranga Chandratillake",
+              "title": "Partner"
+            },
+            {
+              "name": "James Wise",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Escape",
+              "date": "Recent (2025 implied)",
+              "stage": "Series A ($18M)"
+            },
+            {
+              "company": "Light",
+              "date": "Recent (2025 implied)",
+              "stage": "Series A ($30M)"
+            }
+          ],
+          "painPoints": [
+            "Limited evidence of investments specifically in AI safety, governance, or alignment; focus appears on applied AI in security and finance rather than existential risks or ethical alignment."
+          ],
+          "governanceSignals": [
+            "Published 'Founders' Guide to AI Policy & Regulation' and articles on responsible AI principles, indicating thought leadership in AI governance.",
+            "James Wise discusses AI policy and entrepreneurship."
+          ],
+          "whyAlygn": "Balderton's publications on AI regulation and responsible principles signal governance awareness, pairing well with their AI security investment in Escape; Alygn could extend this into true AI safety/alignment via co-investment or advisory to bridge applied AI to ethical governance."
+        },
+        "entity": {
+          "id": "entity-1777268739015-0x3osg",
+          "type": "vc",
+          "name": "Balderton Capital",
+          "email": "info@balderton.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:35.396Z",
+          "outreachCount": 0,
+          "researchNotes": "Balderton Capital demonstrates interest in AI through investments like Escape, an AI-powered cybersecurity platform for offensive security, but shows no direct investments in AI safety, governance, or alignment focused on ethical AI development or risk mitigation.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited evidence of investments specifically in AI safety, governance, or alignment; focus appears on applied AI in security and finance rather than existential risks or ethical alignment."
+            ],
+            "tailoredHook": "Balderton's publications on AI regulation and responsible principles signal governance awareness, pairing well with their AI security investment in Escape; Alygn could extend this into true AI safety/alignment via co-investment or advisory to bridge applied AI to ethical governance.",
+            "recentNews": "Published 'Founders' Guide to AI Policy & Regulation' and articles on responsible AI principles, indicating thought leadership in AI governance."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Suranga Chandratillake",
+                "title": "Partner"
+              },
+              {
+                "name": "James Wise",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [
+              "Escape",
+              "Light"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Escape",
+                "date": "Recent (2025 implied)",
+                "stage": "Series A ($18M)"
+              },
+              {
+                "company": "Light",
+                "date": "Recent (2025 implied)",
+                "stage": "Series A ($30M)"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Bee Partners is a pre-seed VC firm specializing in deep-tech AI, robotics, and human-machine convergence, investing in founders at the frontier of the AI supercycle with a focus on enterprise AI agents, secure model tuning, and hardware acceleration. While they emphasize technical infrastructure and agent management, their portfolio shows indirect alignment with AI safety through secure testing, synthetic data for privacy, and agent supervision tools.",
+          "portfolio": [
+            "TensorStax",
+            "Wayfound AI",
+            "Okareo",
+            "Deepscribe",
+            "Synthesis AI",
+            "Knowde",
+            "Super",
+            "Crowdbotics",
+            "InnerPlant",
+            "C-Infinity",
+            "Reshape Automation",
+            "WARP",
+            "Voltaiq",
+            "Rapid Robotics"
+          ],
+          "partners": [
+            {
+              "name": "Michael Berolzheimer",
+              "title": "Founder & Managing Partner"
+            },
+            {
+              "name": "Vergara",
+              "title": "Principal"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Synthesis AI",
+              "date": "Ongoing portfolio",
+              "stage": "Pre-seed"
+            },
+            {
+              "company": "Wayfound AI",
+              "date": "Funds III/IV",
+              "stage": "Pre-seed"
+            }
+          ],
+          "painPoints": [
+            "Lack of secure AI testing without production data sharing (Okareo)",
+            "Privacy concerns in data scraping for AI training (Synthesis AI)",
+            "Managing and supervising enterprise AI agents at scale (Wayfound AI)",
+            "Tuning AI models securely to proprietary data"
+          ],
+          "governanceSignals": [
+            "Promotion of Vergara to Principal to support AI companies",
+            "Venture partners with domain expertise in AI infrastructure and enterprise GTM",
+            "Focus on enterprises hiring/managing AI agents with full visibility/control",
+            "Secure testing and synthetic data for privacy-preserving AI development"
+          ],
+          "whyAlygn": "Bee Partners' emphasis on AI agent management, secure tuning, and privacy-focused synthetic data aligns closely with Alygn's mission in AI safety and governance, positioning them as an ideal pre-seed partner for startups building alignment tools like robust oversight and verifiable AI systems."
+        },
+        "entity": {
+          "id": "entity-1777268739015-pf9kr2",
+          "type": "vc",
+          "name": "Bee Partners",
+          "email": "getfunded@beepartners.vc",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:40.634Z",
+          "outreachCount": 0,
+          "researchNotes": "Bee Partners is a pre-seed VC firm specializing in deep-tech AI, robotics, and human-machine convergence, investing in founders at the frontier of the AI supercycle with a focus on enterprise AI agents, secure model tuning, and hardware acceleration. While they emphasize technical infrastructure and agent management, their portfolio shows indirect alignment with AI safety through secure testing, synthetic data for privacy, and agent supervision tools.",
+          "personalizationContext": {
+            "painPoints": [
+              "Lack of secure AI testing without production data sharing (Okareo)",
+              "Privacy concerns in data scraping for AI training (Synthesis AI)",
+              "Managing and supervising enterprise AI agents at scale (Wayfound AI)",
+              "Tuning AI models securely to proprietary data"
+            ],
+            "tailoredHook": "Bee Partners' emphasis on AI agent management, secure tuning, and privacy-focused synthetic data aligns closely with Alygn's mission in AI safety and governance, positioning them as an ideal pre-seed partner for startups building alignment tools like robust oversight and verifiable AI systems.",
+            "recentNews": "Promotion of Vergara to Principal to support AI companies"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Michael Berolzheimer",
+                "title": "Founder & Managing Partner"
+              },
+              {
+                "name": "Vergara",
+                "title": "Principal"
+              }
+            ],
+            "portfolioCompanies": [
+              "TensorStax",
+              "Wayfound AI",
+              "Okareo",
+              "Deepscribe",
+              "Synthesis AI",
+              "Knowde",
+              "Super",
+              "Crowdbotics",
+              "InnerPlant",
+              "C-Infinity",
+              "Reshape Automation",
+              "WARP",
+              "Voltaiq",
+              "Rapid Robotics"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Synthesis AI",
+                "date": "Ongoing portfolio",
+                "stage": "Pre-seed"
+              },
+              {
+                "company": "Wayfound AI",
+                "date": "Funds III/IV",
+                "stage": "Pre-seed"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Berkeley Catalyst Fund is an early-stage venture capital fund focused on life sciences, biotechnology, and cleantech emerging from UC Berkeley and affiliated institutions, with a primary investment stage of Seed and Series A. While the fund does not have a stated focus on AI safety, governance, and alignment investments, there is limited public information about its current portfolio and investment activities.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Laura Smoliar",
+              "title": "Founder"
+            },
+            {
+              "name": "Ted Hou",
+              "title": "Founder"
+            },
+            {
+              "name": "Drew Lanza",
+              "title": "Founder"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "Limited public disclosure of portfolio companies and exits",
+            "No publicly stated focus on AI safety and governance investments",
+            "Sector focus (life sciences, cleantech) does not align with AI safety priorities"
+          ],
+          "governanceSignals": [
+            "Operates with standard general partner structure alongside philanthropic component",
+            "Returns shared with UC Berkeley Foundation to support College of Chemistry",
+            "Collaboration with UC Berkeley, Lawrence Berkeley National Laboratory, and UCSF for due diligence"
+          ],
+          "whyAlygn": "Berkeley Catalyst Fund is not a strategic fit for Alygn's AI safety and governance focus. The fund's primary investment thesis centers on life sciences, biotechnology, agriculture, and cleantech\u2014sectors with minimal overlap with AI safety priorities. Additionally, the fund's portfolio and recent investment activity are not publicly disclosed, making it difficult to assess any emerging interest in AI governance or alignment investments."
+        },
+        "entity": {
+          "id": "entity-1777268739015-toqdvf",
+          "type": "vc",
+          "name": "Berkeley Catalyst Fund",
+          "email": "info@bcfltd.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:40.894Z",
+          "outreachCount": 0,
+          "researchNotes": "Berkeley Catalyst Fund is an early-stage venture capital fund focused on life sciences, biotechnology, and cleantech emerging from UC Berkeley and affiliated institutions, with a primary investment stage of Seed and Series A. While the fund does not have a stated focus on AI safety, governance, and alignment investments, there is limited public information about its current portfolio and investment activities.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited public disclosure of portfolio companies and exits",
+              "No publicly stated focus on AI safety and governance investments",
+              "Sector focus (life sciences, cleantech) does not align with AI safety priorities"
+            ],
+            "tailoredHook": "Berkeley Catalyst Fund is not a strategic fit for Alygn's AI safety and governance focus. The fund's primary investment thesis centers on life sciences, biotechnology, agriculture, and cleantech\u2014sectors with minimal overlap with AI safety priorities. Additionally, the fund's portfolio and recent investment activity are not publicly disclosed, making it difficult to assess any emerging interest in AI governance or alignment investments.",
+            "recentNews": "Operates with standard general partner structure alongside philanthropic component"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Laura Smoliar",
+                "title": "Founder"
+              },
+              {
+                "name": "Ted Hou",
+                "title": "Founder"
+              },
+              {
+                "name": "Drew Lanza",
+                "title": "Founder"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Berkeley SkyDeck Fund is the venture capital arm of UC Berkeley's SkyDeck accelerator, investing $200K in early-stage deep tech startups across AI, biotech, fintech, and climate tech, with a focus on university-driven innovation but no evident specialization in AI safety, governance, or alignment.",
+          "portfolio": [
+            "SuperAnnotate",
+            "Deepfence",
+            "Xendit",
+            "Waypoint AI"
+          ],
+          "partners": [
+            {
+              "name": "Chon Tang",
+              "title": "Founder"
+            },
+            {
+              "name": "Brian Bordley",
+              "title": "Venture Investor"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Waypoint AI",
+              "date": "June 2025",
+              "stage": "Seed"
+            }
+          ],
+          "painPoints": [],
+          "governanceSignals": [
+            "Donates 50% of carried interest back to UC Berkeley",
+            "Partnership between Haas School of Business, College of Engineering, and Office of the Vice Chancellor for Research"
+          ],
+          "whyAlygn": "Limited evidence of investments in AI safety, governance, or alignment; portfolio emphasizes general AI and deep tech without specific focus on these areas, making it a weaker fit for specialized AI risk mitigation strategies."
+        },
+        "entity": {
+          "id": "entity-1777268739015-guvvpq",
+          "type": "vc",
+          "name": "Berkeley SkyDeck Fund",
+          "email": "info@skydeck.vc",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T05:45:39.015Z",
+          "lastUpdatedAt": "2026-04-29T00:04:45.472Z",
+          "outreachCount": 0,
+          "researchNotes": "Berkeley SkyDeck Fund is the venture capital arm of UC Berkeley's SkyDeck accelerator, investing $200K in early-stage deep tech startups across AI, biotech, fintech, and climate tech, with a focus on university-driven innovation but no evident specialization in AI safety, governance, or alignment.",
+          "personalizationContext": {
+            "painPoints": [],
+            "tailoredHook": "Limited evidence of investments in AI safety, governance, or alignment; portfolio emphasizes general AI and deep tech without specific focus on these areas, making it a weaker fit for specialized AI risk mitigation strategies.",
+            "recentNews": "Donates 50% of carried interest back to UC Berkeley"
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Chon Tang",
+                "title": "Founder"
+              },
+              {
+                "name": "Brian Bordley",
+                "title": "Venture Investor"
+              }
+            ],
+            "portfolioCompanies": [
+              "SuperAnnotate",
+              "Deepfence",
+              "Xendit",
+              "Waypoint AI"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Waypoint AI",
+                "date": "June 2025",
+                "stage": "Seed"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Bessemer Venture Partners invests in AI applications enhancing safety and security across public safety, pharmacovigilance, healthcare, and cybersecurity, with a focus on evaluation infrastructure for AI reliability in healthcare, though no direct investments in core AI safety, governance, or alignment research are evident.",
+          "portfolio": [
+            "Spot AI",
+            "Graph AI",
+            "Upwind Security",
+            "Protectt AI",
+            "Waymo",
+            "Mind Robotics",
+            "Foxglove",
+            "Breaker",
+            "Noda",
+            "Voxel51",
+            "DroneDeploy",
+            "Auterion",
+            "Perceptron",
+            "ANYbotics"
+          ],
+          "partners": [
+            {
+              "name": "Nithin Kaimal",
+              "title": "Partner at Bessemer Venture Partners India"
+            }
+          ],
+          "recentInvestments": [
+            {
+              "company": "Graph AI",
+              "date": "Oct 15, 2025",
+              "stage": "Seed ($3M)"
+            },
+            {
+              "company": "Upwind Security",
+              "date": "Recent (2025/2026)",
+              "stage": "Series B ($250M)"
+            }
+          ],
+          "painPoints": [
+            "Limited evidence of investments specifically targeting AI safety, governance, or alignment (e.g., no mentions of x-risk mitigation, ethical AI frameworks beyond healthcare evaluation, or alignment research).",
+            "Focus skewed toward applied AI in verticals like public safety and pharma rather than foundational AI safety infrastructure."
+          ],
+          "governanceSignals": [
+            "Healthcare AI roadmap emphasizes 'evaluation infrastructure' for assessing AI performance, safety, and ethical implications[7].",
+            "Investments in pharmacovigilance AI (Graph AI) prioritize patient safety and drug safety through AI-native solutions[2][4].",
+            "Public Safety AI roadmap highlights AI for proactive safety applications like video surveillance and theft prevention[1]."
+          ],
+          "whyAlygn": "Bessemer aligns moderately with Alygn's AI safety/governance focus via healthcare AI evaluation tools and safety-enhancing applications (e.g., pharmacovigilance, public safety), but lacks depth in core alignment research; potential for co-investment in evaluation infrastructure or safety platforms."
+        },
+        "entity": {
+          "id": "entity-1777271880338-1zjcky",
+          "type": "vc",
+          "name": "Bessemer Venture Partners",
+          "email": "info@bvp.com",
+          "website": "https://www.bvp.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T06:38:00.338Z",
+          "lastUpdatedAt": "2026-04-29T00:04:49.823Z",
+          "outreachCount": 0,
+          "researchNotes": "Bessemer Venture Partners invests in AI applications enhancing safety and security across public safety, pharmacovigilance, healthcare, and cybersecurity, with a focus on evaluation infrastructure for AI reliability in healthcare, though no direct investments in core AI safety, governance, or alignment research are evident.",
+          "personalizationContext": {
+            "painPoints": [
+              "Limited evidence of investments specifically targeting AI safety, governance, or alignment (e.g., no mentions of x-risk mitigation, ethical AI frameworks beyond healthcare evaluation, or alignment research).",
+              "Focus skewed toward applied AI in verticals like public safety and pharma rather than foundational AI safety infrastructure."
+            ],
+            "tailoredHook": "Bessemer aligns moderately with Alygn's AI safety/governance focus via healthcare AI evaluation tools and safety-enhancing applications (e.g., pharmacovigilance, public safety), but lacks depth in core alignment research; potential for co-investment in evaluation infrastructure or safety platforms.",
+            "recentNews": "Healthcare AI roadmap emphasizes 'evaluation infrastructure' for assessing AI performance, safety, and ethical implications[7]."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Nithin Kaimal",
+                "title": "Partner at Bessemer Venture Partners India"
+              }
+            ],
+            "portfolioCompanies": [
+              "Spot AI",
+              "Graph AI",
+              "Upwind Security",
+              "Protectt AI",
+              "Waymo",
+              "Mind Robotics",
+              "Foxglove",
+              "Breaker",
+              "Noda",
+              "Voxel51",
+              "DroneDeploy",
+              "Auterion",
+              "Perceptron",
+              "ANYbotics"
+            ],
+            "recentInvestments": [
+              {
+                "company": "Graph AI",
+                "date": "Oct 15, 2025",
+                "stage": "Seed ($3M)"
+              },
+              {
+                "company": "Upwind Security",
+                "date": "Recent (2025/2026)",
+                "stage": "Series B ($250M)"
+              }
+            ],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "skipped": true,
+          "reason": "already contacted on unknown date",
+          "status": "Sent",
+          "pageId": "30533487-4af6-8127-a6f9-d329be6572c6"
+        },
+        "entity": {
+          "id": "entity-1777271880338-skc7lv",
+          "type": "vc",
+          "name": "Bloomberg Beta",
+          "email": "info@bloombergbeta.com",
+          "website": null,
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-27T06:38:00.338Z",
+          "lastUpdatedAt": "2026-04-27T06:38:00.338Z",
+          "outreachCount": 0,
+          "researchNotes": "",
+          "personalizationContext": {
+            "painPoints": [],
+            "tailoredHook": "",
+            "recentNews": ""
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [],
+            "sectorFocus": [
+              "AI safety",
+              "AI governance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null,
+            "contactFormUrl": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

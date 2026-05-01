@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Municipal Government",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "32",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 64, VC: 0",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-27T16-41-31 | 4/27/2026, 10:41:32 AM"
+      },
+      "timestamp": "2026-04-27T16:41:32.020Z"
+    },
+    {
+      "title": "Municipalities (32)",
+      "color": 1096065,
+      "description": "**Municipalidad de San José**\n\n**Municipalidad de Escazú**\n\n**Municipalidad de Desamparados**\n\n**Municipalidad de Puriscal**\n\n**Municipalidad de Tarrazú**\n\n**Municipalidad de Aserrí**\n\n**Municipalidad de Mora**\n\n**Municipalidad de Goicoechea**\n\n**Municipalidad de Santa Ana**\n\n**Municipalidad de Alajuelita**\n\n\n*... and 22 more*",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-27T16-41-31",
+  "timestamp": "2026-04-27T16-41-31"
+}

@@ -1,0 +1,34 @@
+{
+  "query": "municipal government",
+  "source": "firecrawl",
+  "timestamp": "2026-04-22T05:29:50.687Z",
+  "mode": "dry-run-direct-api",
+  "entities": [
+    {
+      "name": "municipal government Municipality 1",
+      "website": null,
+      "country": "Unknown"
+    },
+    {
+      "name": "municipal government Municipality 2",
+      "website": null,
+      "country": "Unknown"
+    },
+    {
+      "name": "municipal government Municipality 3",
+      "website": null,
+      "country": "Unknown"
+    },
+    {
+      "name": "municipal government Municipality 4",
+      "website": null,
+      "country": "Unknown"
+    },
+    {
+      "name": "municipal government Municipality 5",
+      "website": null,
+      "country": "Unknown"
+    }
+  ],
+  "count": 5
+}

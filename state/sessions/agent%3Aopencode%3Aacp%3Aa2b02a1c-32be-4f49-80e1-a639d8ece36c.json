@@ -1,0 +1,44 @@
+{
+  "schema": "acpx.session.v1",
+  "acpx_record_id": "agent:opencode:acp:a2b02a1c-32be-4f49-80e1-a639d8ece36c",
+  "acp_session_id": "ses_220ed8c15ffeR4S1HjZUzpx70P",
+  "agent_command": "npx -y opencode-ai acp",
+  "cwd": "/home/andlersrv/.openclaw/workspace",
+  "name": "agent:opencode:acp:a2b02a1c-32be-4f49-80e1-a639d8ece36c",
+  "created_at": "2026-04-30T15:47:04.444Z",
+  "last_used_at": "2026-04-30T15:47:04.444Z",
+  "last_seq": 0,
+  "event_log": {
+    "active_path": "/home/andlersrv/.acpx/sessions/agent%3Aopencode%3Aacp%3Aa2b02a1c-32be-4f49-80e1-a639d8ece36c.stream.ndjson",
+    "segment_count": 5,
+    "max_segment_bytes": 67108864,
+    "max_segments": 5,
+    "last_write_error": null
+  },
+  "closed": false,
+  "pid": 589291,
+  "agent_started_at": "2026-04-30T15:46:58.427Z",
+  "protocol_version": 1,
+  "agent_capabilities": {
+    "loadSession": true,
+    "mcpCapabilities": {
+      "http": true,
+      "sse": true
+    },
+    "promptCapabilities": {
+      "embeddedContext": true,
+      "image": true
+    },
+    "sessionCapabilities": {
+      "fork": {},
+      "list": {},
+      "resume": {}
+    }
+  },
+  "title": null,
+  "messages": [],
+  "updated_at": "2026-04-30T15:47:04.444Z",
+  "cumulative_token_usage": {},
+  "request_token_usage": {},
+  "acpx": {}
+}

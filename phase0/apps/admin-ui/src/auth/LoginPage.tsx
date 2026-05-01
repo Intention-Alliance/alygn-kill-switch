@@ -1,6 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { useAuth } from './AuthProvider';
 
+/**
+ * Login page — uses the AuthProvider.login() which delegates to better-auth.
+ *
+ * Redirect path: /kill-switch is the default dashboard route.
+ * If the backend provides a different redirect on login success,
+ * update the path below. The path should match the index redirect
+ * in App.tsx (currently <Navigate to="kill-switch" />).
+ */
 export function LoginPage() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
@@ -15,7 +23,7 @@ export function LoginPage() {
 
     try {
       await login(email, password);
-      // Redirect to /kill-switch (routes are at root)
+      // Redirect to dashboard — matches the index route in App.tsx
       window.location.href = '/kill-switch';
     } catch (err) {
       setError(

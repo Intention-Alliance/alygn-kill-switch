@@ -1,6 +1,6 @@
 # Municipal Outreach — Evening (Research)
 
-**Schedule:** 7:00 PM daily (Mon-Fri)
+**Schedule:** 7:00 PM (Sun-Thu)
 **Purpose:** Research new municipalities and populate tomorrow's wave
 **Discord Thread:** 1486784946134712500
 

@@ -1,7 +1,7 @@
 /**
  * Chrome Cookie Extractor for X.com (Twitter)
  * Uses Bun's built-in sqlite + crypto to extract Chrome cookies
- * 
+ *
  * Purpose: Extract auth_token & ct0 from Chrome's encrypted Cookies database
  * for use with Bird CLI or direct X API requests
  */
@@ -10,7 +10,10 @@ import { Database } from "bun:sqlite";
 import * as fs from "fs";
 import * as path from "path";
 
-const CHROME_PROFILE = path.join(process.env.HOME!, ".config/google-chrome/Default");
+const CHROME_PROFILE = path.join(
+  process.env.HOME || "/home/andlersrv",
+  ".config/google-chrome/Default",
+);
 const COOKIES_DB = path.join(CHROME_PROFILE, "Cookies");
 const COOKIE_OUTPUT = "/tmp/x_cookies.json";
 
@@ -58,8 +61,12 @@ async function extractCookies() {
       }
       // If encrypted, note it
       else if (encrypted_value && (encrypted_value as any).length > 0) {
-        console.log(`   ⚠️ Value is encrypted (${(encrypted_value as any).length} bytes)`);
-        console.log(`   (Linux DPAPI decryption requires system keyring access)`);
+        console.log(
+          `   ⚠️ Value is encrypted (${(encrypted_value as any).length} bytes)`,
+        );
+        console.log(
+          `   (Linux DPAPI decryption requires system keyring access)`,
+        );
       } else {
         console.log(`   ❌ No value or encrypted data`);
       }
@@ -74,28 +81,38 @@ async function extractCookies() {
       // Save to file
       fs.writeFileSync(COOKIE_OUTPUT, JSON.stringify(cookies, null, 2));
       console.log(`✅ Cookies saved to: ${COOKIE_OUTPUT}`);
-      
+
       if (cookies.auth_token && cookies.ct0) {
         console.log("\n🐦 Ready for Bird CLI:");
-        console.log(`   bird --auth-token "${cookies.auth_token.substring(0, 10)}..." --ct0 "${cookies.ct0.substring(0, 10)}..." reply [tweet-id] "[text]"`);
+        console.log(
+          `   bird --auth-token "${cookies.auth_token.substring(0, 10)}..." --ct0 "${cookies.ct0.substring(0, 10)}..." reply [tweet-id] "[text]"`,
+        );
       }
     } else {
-      console.log("❌ No plain-text cookies extracted. They appear to be encrypted.");
+      console.log(
+        "❌ No plain-text cookies extracted. They appear to be encrypted.",
+      );
       console.log("\n💡 Solutions:");
-      console.log("   1. Use browser relay with profile flag (currently working):");
+      console.log(
+        "   1. Use browser relay with profile flag (currently working):",
+      );
       console.log('      browser --profile="alygn" [action]');
       console.log("");
       console.log("   2. Try extracting via Chrome DevTools Protocol (CDP):");
       console.log("      chrome --remote-debugging-port=9222");
       console.log("");
-      console.log("   3. Run Chrome in --password-store=basic mode (disables encryption)");
+      console.log(
+        "   3. Run Chrome in --password-store=basic mode (disables encryption)",
+      );
     }
   } catch (error) {
     console.error("❌ Error:", (error as Error).message);
 
     if ((error as any).message?.includes("locked")) {
       console.error("\n⚠️ Chrome database is locked (Chrome may be running).");
-      console.error("   Solution: Close Chrome first, or use --profile=alygn browser relay.");
+      console.error(
+        "   Solution: Close Chrome first, or use --profile=alygn browser relay.",
+      );
     }
 
     process.exit(1);

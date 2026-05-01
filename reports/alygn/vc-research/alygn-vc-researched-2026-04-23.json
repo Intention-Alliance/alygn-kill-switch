@@ -1,0 +1,391 @@
+{
+  "timestamp": "2026-04-23T01:30:01.867Z",
+  "type": "vc",
+  "phase": "researched",
+  "data": {
+    "count": 3,
+    "entities": [
+      {
+        "id": "entity-mo6sopwt-xbp8up",
+        "type": "vc",
+        "name": "Renaissance AI Fund 1",
+        "email": null,
+        "website": "https://theimpactplatform.vc/about-renaissance/",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-23T01:30:01.320Z",
+        "outreachCount": 0,
+        "researchNotes": "Renaissance AI Fund 1 is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Renaissance AI Fund 1 would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security",
+            "AI assurance"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-oap7qq",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-23T01:30:01.665Z",
+        "outreachCount": 0,
+        "researchNotes": "Safe Artificial Intelligence Fund is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Safe Artificial Intelligence Fund would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI safety",
+            "AI security"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-5yquw4",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": null,
+        "website": "https://ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "researched",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-23T01:30:01.867Z",
+        "outreachCount": 0,
+        "researchNotes": "Ballistic Ventures is a venture capital firm focused on technology investments.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "tailoredHook": "Ballistic Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": [
+            "early-stage"
+          ],
+          "sectorFocus": [
+            "AI security",
+            "cybersecurity"
+          ],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "thesis": "Renaissance AI Fund 1 is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Renaissance AI Fund 1 would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-xbp8up",
+          "type": "vc",
+          "name": "Renaissance AI Fund 1",
+          "email": null,
+          "website": "https://theimpactplatform.vc/about-renaissance/",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-23T01:30:01.320Z",
+          "outreachCount": 0,
+          "researchNotes": "Renaissance AI Fund 1 is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Renaissance AI Fund 1 would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "pre-seed",
+              "seed"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security",
+              "AI assurance"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Safe Artificial Intelligence Fund is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Safe Artificial Intelligence Fund would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-oap7qq",
+          "type": "vc",
+          "name": "Safe Artificial Intelligence Fund",
+          "email": null,
+          "website": "https://www.saif.vc",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-23T01:30:01.665Z",
+          "outreachCount": 0,
+          "researchNotes": "Safe Artificial Intelligence Fund is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Safe Artificial Intelligence Fund would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "early-stage"
+            ],
+            "sectorFocus": [
+              "AI safety",
+              "AI security"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      },
+      {
+        "success": true,
+        "research": {
+          "thesis": "Ballistic Ventures is a venture capital firm focused on technology investments.",
+          "portfolio": [],
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner"
+            }
+          ],
+          "recentInvestments": [],
+          "painPoints": [
+            "AI governance",
+            "Coordination challenges",
+            "Risk management"
+          ],
+          "governanceSignals": [
+            "AI safety interest"
+          ],
+          "whyAlygn": "Ballistic Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+        },
+        "entity": {
+          "id": "entity-mo6sopwt-5yquw4",
+          "type": "vc",
+          "name": "Ballistic Ventures",
+          "email": null,
+          "website": "https://ballisticventures.com",
+          "phone": null,
+          "location": {
+            "city": null,
+            "state": null,
+            "country": "US",
+            "region": null
+          },
+          "status": "researched",
+          "priority": "medium",
+          "discoveredAt": "2026-04-19T06:09:25.805Z",
+          "lastUpdatedAt": "2026-04-23T01:30:01.867Z",
+          "outreachCount": 0,
+          "researchNotes": "Ballistic Ventures is a venture capital firm focused on technology investments.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI governance",
+              "Coordination challenges",
+              "Risk management"
+            ],
+            "tailoredHook": "Ballistic Ventures would benefit from Alygn's governance infrastructure for AI coordination."
+          },
+          "typeData": {
+            "firmType": "vc",
+            "stageFocus": [
+              "early-stage"
+            ],
+            "sectorFocus": [
+              "AI security",
+              "cybersecurity"
+            ],
+            "checkSizeMin": null,
+            "checkSizeMax": null,
+            "aum": null,
+            "partners": [
+              {
+                "name": "Barmak Meftah",
+                "title": "Partner"
+              }
+            ],
+            "portfolioCompanies": [],
+            "recentInvestments": [],
+            "linkedInUrl": null,
+            "crunchbaseUrl": null,
+            "relevanceScore": null
+          },
+          "emailValidation": null,
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted"
+        }
+      }
+    ]
+  }
+}

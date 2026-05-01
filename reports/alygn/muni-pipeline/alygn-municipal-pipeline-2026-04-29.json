@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-04-29T15:07:41.473Z",
+  "type": "municipal",
+  "phase": "pipeline",
+  "data": {
+    "dryRun": true,
+    "type": "municipal",
+    "mode": "dry-run-direct-api",
+    "stages": {
+      "discover": {
+        "action": "discover",
+        "dryRun": true,
+        "discovered": 5,
+        "results": [
+          {
+            "id": "entity-mok6vla8-yznxha",
+            "name": "Municipalidad de San José",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mok6vla8-mclr90",
+            "name": "Municipalidad de Escazú",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mok6vla8-vd6jbm",
+            "name": "Municipalidad de Desamparados",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mok6vla8-77elfe",
+            "name": "Municipalidad de Puriscal",
+            "email": null,
+            "website": null
+          },
+          {
+            "id": "entity-mok6vla9-9d6uam",
+            "name": "Municipalidad de Tarrazú",
+            "email": null,
+            "website": null
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-discover/alygn-municipal-discovered-2026-04-29.json"
+      },
+      "validate": {
+        "action": "validate",
+        "dryRun": true,
+        "validated": 5,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          },
+          {
+            "name": "Municipalidad de Escazú",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          },
+          {
+            "name": "Municipalidad de Desamparados",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          },
+          {
+            "name": "Municipalidad de Puriscal",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          },
+          {
+            "name": "Municipalidad de Tarrazú",
+            "email": null,
+            "wouldValidate": true,
+            "result": "no_email"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-validate/alygn-municipal-validated-2026-04-29.json"
+      },
+      "research": {
+        "action": "research",
+        "dryRun": true,
+        "researched": 5,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Escazú",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Desamparados",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Puriscal",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Tarrazú",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-research/alygn-municipal-researched-2026-04-29.json"
+      },
+      "personalize": {
+        "action": "personalize",
+        "dryRun": true,
+        "personalized": 5,
+        "results": [
+          {
+            "name": "Municipalidad de San José",
+            "subject": "Apoyo en gobernanza de IA - San José",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Escazú",
+            "subject": "Apoyo en gobernanza de IA - Escazú",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Desamparados",
+            "subject": "Apoyo en gobernanza de IA - Desamparados",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Puriscal",
+            "subject": "Apoyo en gobernanza de IA - Puriscal",
+            "success": true
+          },
+          {
+            "name": "Municipalidad de Tarrazú",
+            "subject": "Apoyo en gobernanza de IA - Tarrazú",
+            "success": true
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-personalize/alygn-municipal-personalized-2026-04-29.json"
+      },
+      "send": {
+        "action": "send",
+        "dryRun": true,
+        "sent": 0,
+        "failed": 5,
+        "results": [
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          },
+          {
+            "success": false,
+            "skipped": true,
+            "reason": "Draft status mismatch: Personalized !== Not drafted"
+          }
+        ],
+        "stateFile": "/home/andlersrv/.openclaw/workspace/reports/alygn/muni-sent/alygn-municipal-sent-2026-04-29.json"
+      }
+    },
+    "summary": {
+      "discovered": 5,
+      "validated": 5,
+      "researched": 5,
+      "personalized": 5,
+      "sent": 0
+    }
+  }
+}

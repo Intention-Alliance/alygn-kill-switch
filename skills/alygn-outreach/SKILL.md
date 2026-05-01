@@ -7,12 +7,65 @@ A single, unified skill that handles both VC (Venture Capital) and municipal out
 ## Overview
 
 This skill consolidates outreach workflows into a single system with:
+
 - **Unified Pipeline**: discover → validate → research → personalize → send
 - **Type-Specific Strategies**: Different behavior for VC vs Municipal entities
 - **Shared Infrastructure**: Common validation, email sending, and tracking
 - **Unified CLI**: Single command interface with type switching
 - **Wave Tracking**: 6-cronjob architecture for batch outreach (municipal only)
 - **Supabase Integration**: Database persistence with generated types
+
+## Sub-Skill Delegation
+
+This skill serves as the **unified parent** for two specialized sub-skills:
+
+| Sub-Skill | Type | Purpose | Location |
+|-----------|------|---------|----------|
+| [alygn-vc-outreach](../alygn-vc-outreach/SKILL.md) | `vc` | VC fundraising outreach | `skills/alygn-vc-outreach/` |
+| [alygn-muni-outreach](../alygn-muni-outreach/SKILL.md) | `municipal` | Municipal AI governance outreach | `skills/alygn-muni-outreach/` |
+
+### Delegation Pattern
+
+**Sub-skills are configuration wrappers only.** They define type-specific:
+- Decision frameworks (risk thresholds)
+- Edge cases and protocols
+- Default parameters
+- Lobster workflow references
+
+**All execution routes through this parent skill:**
+```bash
+# VC outreach (via sub-skill)
+bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=vc [action]
+
+# Municipal outreach (via sub-skill)
+bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type=municipal [action]
+```
+
+**When OpenClaw resolves a sub-skill:**
+1. Reads sub-skill metadata (`parent_skill: alygn-outreach`)
+2. Loads sub-skill configuration (defaults, edge cases)
+3. Delegates execution to parent skill with `--type` parameter
+4. Applies sub-skill overrides on top of parent behavior
+
+### Sub-Skill Metadata Contract
+
+Each sub-skill MUST include:
+```yaml
+metadata:
+  openclaw:
+    parent_skill: alygn-outreach
+    skill_type: sub-skill
+    entity_type: {vc|municipal}
+    delegates_to: alygn-outreach
+    delegate_command: "bun $HOME/.agents/skills/alygn-outreach/bin/alygn-outreach.ts --type={vc|municipal}"
+```
+
+### Why This Pattern?
+
+- **Single source of truth**: Pipeline logic lives in one place
+- **Type-specific tuning**: Each sub-skill tailors without duplication
+- **OpenClaw compatibility**: Skills resolve correctly without confusion
+- **Maintainability**: Changes to core logic only need one update
 
 ## Directory Structure
 
@@ -70,6 +123,7 @@ import type {
 **Generated Types Location**: `scripts/alygn/muni-outreach/supabase/src/database.types.ts`
 
 This file is auto-generated from the Supabase schema and provides:
+
 - `Database` - Complete database type definition
 - `Tables` - All table row types
 - `TablesInsert` - Insert types for all tables
@@ -186,15 +240,16 @@ IOutreachEntity (base)
 
 **Migration Files**: `scripts/alygn/muni-outreach/supabase/migrations/`
 
-| File | Description |
-|------|-------------|
+| File                                         | Description                                                  |
+| -------------------------------------------- | ------------------------------------------------------------ |
 | `000_municipal_outreach_pipeline_schema.sql` | Core schema (municipalities, outreach_emails, x_engagements) |
-| `001_local_government_outreach_schema.sql` | Extended local government tables |
-| `003_add_wave_tracking.sql` | Wave tracking columns and tables |
+| `001_local_government_outreach_schema.sql`   | Extended local government tables                             |
+| `003_add_wave_tracking.sql`                  | Wave tracking columns and tables                             |
 
 ### Core Tables
 
 #### municipalities
+
 ```sql
 CREATE TABLE municipalities (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -231,6 +286,7 @@ CREATE TABLE municipalities (
 ```
 
 #### outreach_emails
+
 ```sql
 CREATE TABLE outreach_emails (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -252,6 +308,7 @@ CREATE TABLE outreach_emails (
 ```
 
 #### checkpoints (for cronjob tracking)
+
 ```sql
 CREATE TABLE checkpoints (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -311,13 +368,13 @@ The pipeline follows a 5-stage sequence:
 1. DISCOVER → 2. VALIDATE → 3. RESEARCH → 4. PERSONALIZE → 5. SEND
 ```
 
-| Stage | VC Action | Municipal Action | Output |
-|-------|-----------|------------------|--------|
-| **Discover** | Web search for AI safety VCs | Returns Costa Rica cantones (82 total) | Entity list with basic info |
-| **Validate** | Email validation (regex-mx/zerobounce) | Email validation (regex-mx/zerobounce) | Validated email addresses |
-| **Research** | Portfolio, thesis, partners, pain points | Initiatives, pain points, decision makers | Enriched entity data |
-| **Personalize** | Generate English email (governance variant) | Generate Spanish email (traiga variant) | Personalized email draft |
-| **Send** | Send via SMTP/Smartlead | Send via SMTP/Smartlead | Sent email tracking |
+| Stage           | VC Action                                   | Municipal Action                          | Output                      |
+| --------------- | ------------------------------------------- | ----------------------------------------- | --------------------------- |
+| **Discover**    | Web search for AI safety VCs                | Returns Costa Rica cantones (82 total)    | Entity list with basic info |
+| **Validate**    | Email validation (regex-mx/zerobounce)      | Email validation (regex-mx/zerobounce)    | Validated email addresses   |
+| **Research**    | Portfolio, thesis, partners, pain points    | Initiatives, pain points, decision makers | Enriched entity data        |
+| **Personalize** | Generate English email (governance variant) | Generate Spanish email (traiga variant)   | Personalized email draft    |
+| **Send**        | Send via SMTP/Smartlead                     | Send via SMTP/Smartlead                   | Sent email tracking         |
 
 ### Wave Tracking (Municipal Only)
 
@@ -337,20 +394,21 @@ Municipal outreach uses a **6-cronjob architecture** for batch processing:
 ```
 
 **Wave Tracking Fields**:
+
 - `wave_number` - Integer (1-6) tracking which wave a municipality belongs to
 - `wave_date` - Date when municipality was assigned to current wave
 - `batch_status` - Current status in wave: `researched` | `drafted` | `approved` | `sent` | `failed`
 
 **Cronjob Schedule**:
 
-| Cronjob | Schedule | Purpose |
-|---------|----------|---------|
-| `research-wave` | Daily 9:00 AM | Discover and research new municipalities |
-| `draft-wave` | Daily 10:00 AM | Generate personalized email drafts |
-| `approve-wave` | Manual trigger | Human review and approval |
-| `send-wave` | Daily 2:00 PM | Send approved emails |
-| `track-wave` | Hourly | Monitor replies and engagement |
-| `report-wave` | Weekly Monday | Generate outreach analytics |
+| Cronjob         | Schedule       | Purpose                                  |
+| --------------- | -------------- | ---------------------------------------- |
+| `research-wave` | Daily 9:00 AM  | Discover and research new municipalities |
+| `draft-wave`    | Daily 10:00 AM | Generate personalized email drafts       |
+| `approve-wave`  | Manual trigger | Human review and approval                |
+| `send-wave`     | Daily 2:00 PM  | Send approved emails                     |
+| `track-wave`    | Hourly         | Monitor replies and engagement           |
+| `report-wave`   | Weekly Monday  | Generate outreach analytics              |
 
 **State Persistence**:
 
@@ -393,13 +451,13 @@ const emailHtml = generateEmail({
 
 ### Template Variants
 
-| Variant | Language | Use Case |
-|---------|----------|----------|
-| `governance` | Spanish | Standard municipal outreach |
-| `institutional` | Spanish | Institutional coordination focus |
-| `traiga` | Spanish | TRAIGA Act compliance focus |
-| `governance` | English | Standard VC outreach |
-| `institutional` | English | Institutional VC outreach |
+| Variant         | Language | Use Case                         |
+| --------------- | -------- | -------------------------------- |
+| `governance`    | Spanish  | Standard municipal outreach      |
+| `institutional` | Spanish  | Institutional coordination focus |
+| `traiga`        | Spanish  | TRAIGA Act compliance focus      |
+| `governance`    | English  | Standard VC outreach             |
+| `institutional` | English  | Institutional VC outreach        |
 
 ### Template Variables
 
@@ -419,6 +477,7 @@ interface MunicipalEmailParams {
 ```
 
 Default Spanish P.S. line:
+
 ```
 P.S.: Este mensaje fue generado con IA, verificado por humanos. 
 Transparencia total en nuestros procesos.
@@ -441,6 +500,7 @@ interface VCEmailParams {
 ```
 
 Default English P.S. line:
+
 ```
 P.S.: This message was AI-generated and verified by humans. 
 Total transparency in our processes.
@@ -469,18 +529,18 @@ bun bin/alygn-outreach.ts --type=vc --action=send --limit=5 --dry-run
 
 ### CLI Options
 
-| Option | Description | Values |
-|--------|-------------|--------|
-| `--type` | Entity type | `vc`, `municipal` |
-| `--action` | Action to perform | `discover`, `validate`, `research`, `personalize`, `send`, `pipeline` |
-| `--limit` | Max entities to process | Number (default: 20) |
-| `--dry-run` | Simulate without executing | Flag |
-| `--region` | Region filter | `costa-rica` |
-| `--input` | Input state file | File path |
-| `--test-email` | Override recipient email | Email address |
-| `--validator` | Email validator | `regex-mx`, `zerobounce` |
-| `--draft-status` | Filter by Notion Draft Status | `Not drafted`, `Drafted`, `Approved`, `Rejected`, `Sent` |
-| `--email-send-to` | Comma-separated list of entity IDs to send to | `entity-xxx,entity-yyy` |
+| Option            | Description                                   | Values                                                       |
+| ----------------- | --------------------------------------------- | ------------------------------------------------------------ |
+| `--type`          | Entity type                                   | `vc`, `municipal`                                            |
+| `--action`        | Action to perform                             | `discover`, `validate`, `research`, `personalize`, `send`, `pipeline` |
+| `--limit`         | Max entities to process                       | Number (default: 20)                                         |
+| `--dry-run`       | Simulate without executing                    | Flag                                                         |
+| `--region`        | Region filter                                 | `costa-rica`                                                 |
+| `--input`         | Input state file                              | File path                                                    |
+| `--test-email`    | Override recipient email                      | Email address                                                |
+| `--validator`     | Email validator                               | `regex-mx`, `zerobounce`                                     |
+| `--draft-status`  | Filter by Notion Draft Status                 | `Not drafted`, `Drafted`, `Approved`, `Rejected`, `Sent`     |
+| `--email-send-to` | Comma-separated list of entity IDs to send to | `entity-xxx,entity-yyy`                                      |
 
 ### Send Action with Two-Filter System
 
@@ -652,6 +712,7 @@ When no direct partner email is found, the pipeline follows this priority chain:
 **When:** VC website has a contact/inquiry form and browser automation is available.
 
 **Process:**
+
 1. Navigate to VC website's contact page (from `entity.website`)
 2. Use `browser` tool with `profile="openclaw"` to fill the form
 3. Fields to populate:
@@ -667,6 +728,7 @@ When no direct partner email is found, the pipeline follows this priority chain:
    - Set `Draft Status` = "Sent"
 
 **Browser automation example:**
+
 ```bash
 # Navigate to contact page
 browser --profile=openclaw --action=navigate --url="https://firm.com/contact"
@@ -684,6 +746,7 @@ browser --profile=openclaw --action=act --kind=click --ref="submit-button"
 ```
 
 **Important notes:**
+
 - Some forms have CAPTCHA — browser automation cannot solve these. Fall through to Stage 4 or 5.
 - Some forms have dropdowns ("What is your inquiry about?") — select "Investment" or "Partnership" or closest match.
 - Always snapshot before filling to identify exact field names/refs.
@@ -694,11 +757,13 @@ browser --profile=openclaw --action=act --kind=click --ref="submit-button"
 **When:** Browser automation unavailable, form has CAPTCHA, or form submission failed.
 
 **Target identification:**
+
 1. Use `entity.typeData.partners` to identify the best contact (see `getPrimaryPartner()` on VCEntity)
 2. Search LinkedIn by name + firm: `web_search("{partner_name} {firm_name} LinkedIn")`
 3. Use `entity.typeData.linkedInUrl` if already available
 
 **Message template (LinkedIn DM):**
+
 ```
 Hi {firstName},
 
@@ -717,6 +782,7 @@ ALYGN - Independent AI Governance Institution
 ```
 
 **LinkedIn outreach steps (manual or browser-assisted):**
+
 1. Navigate to partner's LinkedIn profile
 2. Click "Message" or "Connect" (with note)
 3. If connecting: Use a shorter note (300 char limit):
@@ -768,20 +834,22 @@ After completing, update Notion:
 
 When outreach happens via contact form or LinkedIn (not email), track it differently:
 
-| Field | Email | Contact Form | LinkedIn | Manual |
-|-------|-------|-------------|----------|--------|
-| `Status` | Sent | Contacted | Contacted | Not contacted |
-| `Draft Status` | Sent | Sent | Sent | Not drafted |
-| `Notes` | Email sent | "Form submitted [date]" | "LinkedIn DM [date]" | "Manual outreach needed" |
-| `Email` | partner@firm.com | info@firm.com | N/A | N/A |
+| Field          | Email            | Contact Form            | LinkedIn             | Manual                   |
+| -------------- | ---------------- | ----------------------- | -------------------- | ------------------------ |
+| `Status`       | Sent             | Contacted               | Contacted            | Not contacted            |
+| `Draft Status` | Sent             | Sent                    | Sent                 | Not drafted              |
+| `Notes`        | Email sent       | "Form submitted [date]" | "LinkedIn DM [date]" | "Manual outreach needed" |
+| `Email`        | partner@firm.com | info@firm.com           | N/A                  | N/A                      |
 
 ### VCEntity Extensions for Fallback
 
 The `IVCTypeData` interface already supports:
+
 - `linkedInUrl` — For LinkedIn outreach target
 - `partners[]` — With `name`, `title`, `focus` for identifying the right contact
 
 **New fields to add to `IVCTypeData`:**
+
 ```typescript
 interface IVCTypeData {
   // ... existing fields ...
@@ -794,12 +862,14 @@ interface IVCTypeData {
 ### Pipeline Integration
 
 The `SendingStrategy.send()` method should be updated to:
+
 1. If `entity.email` exists and is a direct partner email → send email (current behavior)
 2. If `entity.email` is generic (`info@`, `contact@`, `hello@`) → check for contact form or LinkedIn
 3. If `entity.email` is null → trigger fallback chain starting at Stage 3
 4. Log the outreach method in `entity.typeData.outreachMethod`
 
 The `VCResearchStrategy.research()` method should be updated to:
+
 1. During research, check if the discovered email is generic
 2. If generic, also search for: contact form URL, LinkedIn profiles of partners
 3. Store `contactFormUrl` and partner `linkedInUrl` in entity typeData
@@ -810,15 +880,18 @@ The `VCResearchStrategy.research()` method should be updated to:
 ## CRITICAL: Draft-to-Send Connection (Two-Filter System)
 
 ### The Problem This Solves
+
 Without explicit connection, drafts created for VCs A, B, C → Script sends to VCs X, Y, Z (mismatch).
 
 ### The Solution: Two-Filter System
 
 **Filter 1: Draft Status**
+
 - Notion property: `Draft Status` (Not drafted | Drafted | Approved | Rejected | Sent)
 - Only VCs with status matching `--draft-status` parameter pass
 
 **Filter 2: Explicit Send List**
+
 - Parameter: `--email-send-to=vc_id_1,vc_id_2,vc_id_3`
 - Only VCs with IDs in this list pass
 
@@ -827,17 +900,21 @@ Without explicit connection, drafts created for VCs A, B, C → Script sends to 
 ### Workflow Steps
 
 1. **Generate Drafts**
+
    ```bash
    bun bin/alygn-outreach.ts --type=vc --action=personalize --limit=3
    ```
+
    - Creates personalized content
    - Sets Notion: Draft Status = "Drafted"
 
 2. **Human Review**
+
    - Review drafts in Notion
    - Approve: Draft Status = "Approved"
 
 3. **Send with Both Filters**
+
    ```bash
    bun bin/alygn-outreach.ts --type=vc --action=send \
      --draft-status=Approved \
@@ -846,12 +923,12 @@ Without explicit connection, drafts created for VCs A, B, C → Script sends to 
 
 ## Notion Schema
 
-| Property | Type | Values | Description |
-|----------|------|--------|-------------|
-| `Draft Status` | Select | Not drafted, Drafted, Approved, Rejected, Sent | Tracks email draft approval workflow |
-| `Status` | Select | discovered, validated, researched, personalized, sent | Pipeline stage tracking |
-| `Email` | Email | - | Validated email address |
-| `Type` | Select | vc, municipal | Entity type |
+| Property       | Type   | Values                                                | Description                          |
+| -------------- | ------ | ----------------------------------------------------- | ------------------------------------ |
+| `Draft Status` | Select | Not drafted, Drafted, Approved, Rejected, Sent        | Tracks email draft approval workflow |
+| `Status`       | Select | discovered, validated, researched, personalized, sent | Pipeline stage tracking              |
+| `Email`        | Email  | -                                                     | Validated email address              |
+| `Type`         | Select | vc, municipal                                         | Entity type                          |
 
 ## Configuration
 
@@ -911,28 +988,34 @@ bun bin/alygn-outreach.ts --type=vc --action=validate --validator=zerobounce --l
 ## Troubleshooting
 
 ### Emails sent but not personalized
+
 **Cause:** Two-filter system not used
 **Fix:** Use both `--draft-status` and `--email-send-to` together
 
 ### Drafts not connecting to sends
-**Cause:** Entity IDs in send command don't match drafted VCs
-**Fix:** Copy IDs exactly as they appear in Notion
+
+**Cause:** Entity IDs in send command don't match drafted VCs or Municipalities (depending the type)
+**Fix:** Copy IDs exactly as they appear in Notion or Supabase (depending the type)
 
 ### Send returns "No entities found"
+
 **Cause:** Filters too restrictive
 **Fix:** Check Notion for correct `Draft Status` values
 
 ### TypeScript import errors
+
 **Cause:** Missing .js extension in imports
 **Fix:** All imports must use `.js` extension (e.g., `import { Pipeline } from './Pipeline'`)
 
 ### Supabase types not found
+
 **Cause:** Generated types file missing
-**Fix:** Run `supabase gen types typescript` in `scripts/alygn/muni-outreach/supabase/`
+**Fix:** Run `supabase gen types typescript` in `alygn-outreach/data/supabase`
 
 ## Migration Notes
 
 This skill replaces:
+
 - `/scripts/alygn/vc-outreach/core/automated-vc-discovery.js`
 - `/scripts/alygn/muni-outreach/*`
 

@@ -1,0 +1,287 @@
+{
+  "timestamp": "2026-04-19T06:09:25.832Z",
+  "type": "vc",
+  "phase": "sent",
+  "data": {
+    "count": 5,
+    "entities": [
+      {
+        "id": "entity-mo6sopwt-xbp8up",
+        "type": "vc",
+        "name": "Renaissance AI Fund 1",
+        "email": null,
+        "website": "https://theimpactplatform.vc/about-renaissance/",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Renaissance AI Fund 1 invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI safety Governance Infrastructure",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for pre-seed AI safety/AI security investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["pre-seed", "seed"],
+          "sectorFocus": ["AI safety", "AI security", "AI assurance"],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-oap7qq",
+        "type": "vc",
+        "name": "Safe Artificial Intelligence Fund",
+        "email": null,
+        "website": "https://www.saif.vc",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Safe Artificial Intelligence Fund invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI safety Governance Infrastructure",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI safety/AI security investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early-stage"],
+          "sectorFocus": ["AI safety", "AI security"],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-5yquw4",
+        "type": "vc",
+        "name": "Ballistic Ventures",
+        "email": null,
+        "website": "https://ballisticventures.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Ballistic Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI security Governance Infrastructure",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI security/cybersecurity investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early-stage"],
+          "sectorFocus": ["AI security", "cybersecurity"],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [
+            {
+              "name": "Barmak Meftah",
+              "title": "Partner"
+            }
+          ],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-c0g12z",
+        "type": "vc",
+        "name": "Glasswing Ventures",
+        "email": null,
+        "website": null,
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Glasswing Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI Governance Infrastructure",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for seed AI/cybersecurity investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["seed", "early-stage"],
+          "sectorFocus": ["AI", "cybersecurity"],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      },
+      {
+        "id": "entity-mo6sopwt-6rjp73",
+        "type": "vc",
+        "name": "Menlo Ventures",
+        "email": null,
+        "website": "https://menlovc.com",
+        "phone": null,
+        "location": {
+          "city": null,
+          "state": null,
+          "country": "US",
+          "region": null
+        },
+        "status": "personalized",
+        "priority": "medium",
+        "discoveredAt": "2026-04-19T06:09:25.805Z",
+        "lastUpdatedAt": "2026-04-19T06:09:25.805Z",
+        "outreachCount": 0,
+        "researchNotes": "Menlo Ventures invests in frontier technology with a focus on responsible innovation and AI governance.",
+        "personalizationContext": {
+          "customSubject": "Alygn - AI-native security Governance Infrastructure",
+          "customBody": "<!-- HTML email would be generated here -->",
+          "tailoredHook": "AI governance",
+          "painPoints": [
+            "AI safety standards",
+            "Governance frameworks",
+            "Risk assessment"
+          ],
+          "valueProposition": "Alygn provides the governance infrastructure needed for early-stage AI-native security/cybersecurity investments."
+        },
+        "typeData": {
+          "firmType": "vc",
+          "stageFocus": ["early-stage"],
+          "sectorFocus": ["AI-native security", "cybersecurity"],
+          "checkSizeMin": null,
+          "checkSizeMax": null,
+          "aum": null,
+          "partners": [],
+          "portfolioCompanies": [],
+          "recentInvestments": [],
+          "linkedInUrl": null,
+          "crunchbaseUrl": null,
+          "relevanceScore": null
+        },
+        "emailValidation": null,
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted"
+      }
+    ],
+    "results": [
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      },
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      },
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      },
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      },
+      {
+        "success": false,
+        "skipped": true,
+        "reason": "Draft status mismatch: Not drafted !== Approved"
+      }
+    ]
+  }
+}

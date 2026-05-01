@@ -20,7 +20,7 @@ export type EntityStatus = 'discovered' | 'validated' | 'researched' | 'personal
 export type Priority = 'high' | 'medium' | 'low';
 
 // Draft status for approval workflow
-export type DraftStatus = 'Not drafted' | 'Drafted' | 'Approved' | 'Rejected' | 'Sent';
+export type DraftStatus = 'Not drafted' | 'Drafted' | 'Personalized' | 'Approved' | 'Rejected' | 'Sent';
 
 // Email validation result
 export interface IEmailValidation {

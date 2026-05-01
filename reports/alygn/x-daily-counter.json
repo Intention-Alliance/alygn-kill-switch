@@ -1,0 +1,11 @@
+{
+  "date": "2026-04-29",
+  "posts_today": 0,
+  "posts_log": [],
+  "last_reset": "2026-04-29T17:04:26.568Z",
+  "config": {
+    "max_per_cron": 3,
+    "max_per_day": 8,
+    "timezone": "America/Costa_Rica"
+  }
+}

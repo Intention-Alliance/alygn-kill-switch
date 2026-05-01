@@ -1,0 +1,37 @@
+{
+  "query": "AI safety venture capital",
+  "limit": 2,
+  "timestamp": "2026-04-28T08:57:02.134Z",
+  "mode": "dry-run-direct-api",
+  "results": [
+    {
+      "name": "Safe Artificial Intelligence Fund",
+      "website": "https://www.saif.vc",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI Safety",
+        "AI Security"
+      ],
+      "partners": []
+    },
+    {
+      "name": "Glasswing Ventures",
+      "website": "",
+      "firmType": "vc",
+      "stageFocus": [
+        "Seed",
+        "Early-stage"
+      ],
+      "sectorFocus": [
+        "AI",
+        "Cybersecurity",
+        "Enterprise Security"
+      ],
+      "partners": []
+    }
+  ]
+}

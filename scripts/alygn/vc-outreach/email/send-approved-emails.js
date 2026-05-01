@@ -48,14 +48,14 @@ const EmailServiceModule = await import(path.join(EMAIL_DIR, 'EmailService.js'))
 const EmailProviderFactoryModule = await import(path.join(EMAIL_DIR, 'EmailProviderFactory.js'));
 const ZeroBounceValidatorModule = await import(path.join(EMAIL_DIR, 'validators/ZeroBounceValidator.js'));
 const SentEmailTrackerModule = await import(path.join(LIB_DIR, 'SentEmailTracker.js'));
-const SupabaseUtilsModule = await import(path.join(ALYGN_DIR, 'muni-outreach/core/supabase-utils.js'));
+// Supabase removed — VC Outreach is Notion-only pipeline
 
 const { getClient, queryDatabase } = notionClient;
 const { EmailService } = EmailServiceModule;
 const { EmailProviderFactory } = EmailProviderFactoryModule;
 const { ZeroBounceValidator } = ZeroBounceValidatorModule;
 const { SentEmailTracker } = SentEmailTrackerModule;
-const { logOutreachEmail } = SupabaseUtilsModule;
+// logOutreachEmail removed — tracking is Notion-only
 
 // Load database ID from config
 function loadDatabaseId() {
@@ -519,18 +519,8 @@ async function main() {
         // Update Notion status to "Sent"
         await updateVCStatus(vc.pageId, 'Sent', { sentAt });
 
-        // Log to Supabase outreach_email_logs for tracking
-        try {
-          await logOutreachEmail(vc.id || vc.pageId, {
-            variant: draft.variant,
-            subject: payload.subject,
-            body: payload.text || ''
-          });
-          console.log(`      ✅ Logged to Supabase outreach_email_logs`);
-        } catch (supabaseError) {
-          console.warn(`      ⚠️  Supabase logging failed: ${supabaseError.message}`);
-          // Don't fail the send if logging fails
-        }
+        // Tracking is Notion-only — status already updated above
+        console.log(`      ✅ Logged to Notion (status: Sent)`);
       } else {
         console.log(`      ❌ Failed: ${result.error}`);
         stats.failed++;

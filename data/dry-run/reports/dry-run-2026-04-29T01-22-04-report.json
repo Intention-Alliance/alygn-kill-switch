@@ -1,0 +1,49 @@
+{
+  "embeds": [
+    {
+      "title": "🤖 Alygn Outreach Dry Run Report",
+      "color": 8141549,
+      "fields": [
+        {
+          "name": "Type",
+          "value": "Municipal Government",
+          "inline": true
+        },
+        {
+          "name": "Action",
+          "value": "discover",
+          "inline": true
+        },
+        {
+          "name": "Mode",
+          "value": "Dry Run + Direct API",
+          "inline": true
+        },
+        {
+          "name": "🔍 Discovered",
+          "value": "7",
+          "inline": true
+        },
+        {
+          "name": "💾 DB Records (sim)",
+          "value": "Muni: 0, VC: 0",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Dry Run ID: dry-run-2026-04-29T01-22-04 | 4/28/2026, 7:22:04 PM"
+      },
+      "timestamp": "2026-04-29T01:22:04.434Z"
+    },
+    {
+      "title": "Municipalities (7)",
+      "color": 1096065,
+      "description": "**Municipalidad de San José**\n   🌐 https://www.sanjosé.go.cr\n\n**Municipalidad de Alajuela**\n   🌐 https://www.alajuela.go.cr\n\n**Municipalidad de Cartago**\n   🌐 https://www.cartago.go.cr\n\n**Municipalidad de Heredia**\n   🌐 https://www.heredia.go.cr\n\n**Municipalidad de Guanacaste**\n   🌐 https://www.guanacaste.go.cr\n\n**Municipalidad de Puntarenas**\n   🌐 https://www.puntarenas.go.cr\n\n**Municipalidad de Limón**\n   🌐 https://www.limón.go.cr",
+      "footer": {
+        "text": "Dry Run - No actual emails sent"
+      }
+    }
+  ],
+  "dryRunId": "dry-run-2026-04-29T01-22-04",
+  "timestamp": "2026-04-29T01-22-04"
+}

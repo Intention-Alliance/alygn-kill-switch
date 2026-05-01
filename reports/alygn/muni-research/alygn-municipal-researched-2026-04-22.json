@@ -1,0 +1,186 @@
+{
+  "timestamp": "2026-04-22T20:53:45.105Z",
+  "type": "municipal",
+  "phase": "researched",
+  "data": {
+    "count": 1,
+    "entities": [
+      {
+        "id": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "type": "municipal",
+        "name": "Municipalidad de San Ramón",
+        "email": "kperez@sanramon.go.cr",
+        "website": "https://sanramon.go.cr",
+        "phone": "2445-1000",
+        "location": {
+          "city": "San Ramón",
+          "state": "Alajuela",
+          "country": "Costa Rica",
+          "region": "Alajuela"
+        },
+        "status": "researched",
+        "priority": "high",
+        "discoveredAt": "2026-03-19T05:25:53.228Z",
+        "lastUpdatedAt": "2026-04-22T20:53:45.105Z",
+        "outreachCount": 0,
+        "researchNotes": "Research notes would be generated here.",
+        "personalizationContext": {
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "tailoredHook": "TRAIGA Act compliance support"
+        },
+        "typeData": {
+          "governmentType": "city",
+          "population": 80800,
+          "budget": null,
+          "departments": [],
+          "keyContacts": [],
+          "initiatives": [],
+          "painPoints": [
+            "Agricultural transition",
+            "Rural development"
+          ],
+          "currentVendors": [],
+          "procurementProcess": null,
+          "decisionMakers": [],
+          "province": "Alajuela",
+          "trAigaRelevant": true
+        },
+        "emailValidation": {
+          "result": "valid",
+          "confidence": 0.8,
+          "details": {
+            "domain": "sanramon.go.cr",
+            "format": "valid"
+          },
+          "validator": "regex-mx"
+        },
+        "sentEmailId": null,
+        "sentAt": null,
+        "draftStatus": "Not drafted",
+        "waveNumber": 1,
+        "waveDate": null,
+        "batchStatus": "researched",
+        "municipalityId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+        "localGovernmentId": null,
+        "outreachVariant": null,
+        "outreachSentAt": null,
+        "repliedAt": null,
+        "replySentiment": null,
+        "verifiedAt": null,
+        "researchedAt": null,
+        "xHandle": null,
+        "xUrl": null,
+        "xWarmupPhase1At": null,
+        "xWarmupPhase2At": null,
+        "xEngagementCount": null,
+        "xLastEngagementAt": null
+      }
+    ],
+    "results": [
+      {
+        "success": true,
+        "research": {
+          "initiatives": [
+            {
+              "name": "Digital Transformation",
+              "description": "Modernizing services",
+              "status": "active",
+              "budget": 100000
+            }
+          ],
+          "painPoints": [
+            "AI accountability",
+            "Digital transformation",
+            "Citizen services"
+          ],
+          "trAigaRelevant": true,
+          "keyContacts": [
+            {
+              "name": "Municipal Manager",
+              "title": "City Manager",
+              "isDecisionMaker": true
+            }
+          ]
+        },
+        "entity": {
+          "id": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+          "type": "municipal",
+          "name": "Municipalidad de San Ramón",
+          "email": "kperez@sanramon.go.cr",
+          "website": "https://sanramon.go.cr",
+          "phone": "2445-1000",
+          "location": {
+            "city": "San Ramón",
+            "state": "Alajuela",
+            "country": "Costa Rica",
+            "region": "Alajuela"
+          },
+          "status": "researched",
+          "priority": "high",
+          "discoveredAt": "2026-03-19T05:25:53.228Z",
+          "lastUpdatedAt": "2026-04-22T20:53:45.105Z",
+          "outreachCount": 0,
+          "researchNotes": "Research notes would be generated here.",
+          "personalizationContext": {
+            "painPoints": [
+              "AI accountability",
+              "Digital transformation",
+              "Citizen services"
+            ],
+            "tailoredHook": "TRAIGA Act compliance support"
+          },
+          "typeData": {
+            "governmentType": "city",
+            "population": 80800,
+            "budget": null,
+            "departments": [],
+            "keyContacts": [],
+            "initiatives": [],
+            "painPoints": [
+              "Agricultural transition",
+              "Rural development"
+            ],
+            "currentVendors": [],
+            "procurementProcess": null,
+            "decisionMakers": [],
+            "province": "Alajuela",
+            "trAigaRelevant": true
+          },
+          "emailValidation": {
+            "result": "valid",
+            "confidence": 0.8,
+            "details": {
+              "domain": "sanramon.go.cr",
+              "format": "valid"
+            },
+            "validator": "regex-mx"
+          },
+          "sentEmailId": null,
+          "sentAt": null,
+          "draftStatus": "Not drafted",
+          "waveNumber": 1,
+          "waveDate": null,
+          "batchStatus": "researched",
+          "municipalityId": "9ee60def-af5b-45a3-9fc8-d5cd1c6381ee",
+          "localGovernmentId": null,
+          "outreachVariant": null,
+          "outreachSentAt": null,
+          "repliedAt": null,
+          "replySentiment": null,
+          "verifiedAt": null,
+          "researchedAt": null,
+          "xHandle": null,
+          "xUrl": null,
+          "xWarmupPhase1At": null,
+          "xWarmupPhase2At": null,
+          "xEngagementCount": null,
+          "xLastEngagementAt": null
+        }
+      }
+    ]
+  }
+}
