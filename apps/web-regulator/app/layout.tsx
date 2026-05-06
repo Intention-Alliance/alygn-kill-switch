@@ -2,7 +2,9 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Figtree } from "next/font/google";
-import { Suspense } from "react";
+import { AuthProvider } from "@/lib/auth-context";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -11,7 +13,10 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "ALYGN Regulator",
-  description: "Dashboard ALYGN Regulator",
+  description: "Sovereign Compliance Infrastructure for AI Safety",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 const figtreeSans = Figtree({
@@ -34,7 +39,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          <AuthProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster richColors closeButton />
+            </TooltipProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
