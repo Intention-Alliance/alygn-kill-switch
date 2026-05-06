@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # Kill Switch API Service (Bun + Elysia)
+  # ============================================
+  server-kill-switch:
+    build:
+      context: ../..
+      dockerfile: apps/server-kill-switch/Dockerfile
+    container_name: alygn-kill-switch
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist SQLite database across restarts
+      - kill-switch-data:/app/data
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - KILL_SWITCH_ENV=${KILL_SWITCH_ENV:-production}
+      - KILL_SWITCH_PORT=3000
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET required}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
+      - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
+      - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - DATA_DIR=/app/data
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4317}
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-kill-switch-api}
+    networks:
+      - kill-switch-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+networks:
+  kill-switch-network:
+    driver: bridge
+
+volumes:
+  kill-switch-data:

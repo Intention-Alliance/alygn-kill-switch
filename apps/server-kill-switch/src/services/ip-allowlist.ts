@@ -1,0 +1,61 @@
+// IP Allowlist + CIDR matching — configurable via environment
+// Extracted from kill-switch-service.mjs
+
+import { timingSafeEqual } from 'crypto';
+
+// Default allowlist (can be overridden via IP_ALLOWLIST env var)
+const DEFAULT_ALLOWED_IPS = [
+  '100.66.199.80',
+  '192.168.1.11',
+  '127.0.0.1',
+  '::1',
+  '::ffff:127.0.0.1',
+];
+
+// Default CIDR ranges (can be overridden via IP_ALLOWLIST_CIDRS env var)
+const DEFAULT_CIDR_RANGES = [
+  '172.16.0.0/12',   // All Docker networks
+  '172.17.0.0/16',   // Docker default bridge
+  '172.28.0.0/16',   // Our phase0 network
+  '172.29.0.0/16',
+  '172.30.0.0/16',
+  '172.31.0.0/16',
+];
+
+function parseEnvList(envVar: string | undefined, defaults: string[]): string[] {
+  if (!envVar) return defaults;
+  return envVar.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+const ALLOWED_IPS = parseEnvList(process.env.IP_ALLOWLIST, DEFAULT_ALLOWED_IPS);
+const CIDR_RANGES = parseEnvList(process.env.IP_ALLOWLIST_CIDRS, DEFAULT_CIDR_RANGES);
+
+export function isIpAllowed(ip: string): boolean {
+  const normalizedIp = ip.replace(/^::ffff:/, '');
+
+  // Check exact IP matches
+  if (ALLOWED_IPS.includes(normalizedIp) || ALLOWED_IPS.includes(ip)) {
+    return true;
+  }
+
+  // Check CIDR ranges
+  for (const cidr of CIDR_RANGES) {
+    if (isIpInCidr(normalizedIp, cidr)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function isIpInCidr(ip: string, cidr: string): boolean {
+  const [range, bits] = cidr.split('/');
+  const mask = ~(2 ** (32 - parseInt(bits, 10)) - 1);
+
+  const ipNum = ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+  const rangeNum = range.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+
+  return (ipNum & mask) === (rangeNum & mask);
+}
+
+export { ALLOWED_IPS, CIDR_RANGES };

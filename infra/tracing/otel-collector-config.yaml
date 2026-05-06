@@ -1,0 +1,88 @@
+# OpenTelemetry Collector Configuration
+# Phase 0 - ADR-115 Distributed Tracing
+#
+# Receivers → Processors → Exporters pipeline
+# Sampling: 100% for errors, tail-based for latency outliers
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Tail-based sampling: keep 100% of errors + slow traces
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100
+    expected_new_traces_per_sec: 10
+    policies:
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes:
+            - ERROR
+      - name: slow-requests
+        type: latency
+        latency:
+          threshold_ms: 2000
+      - name: chaos-spans
+        type: string_attribute
+        string_attribute:
+          key: chaos.experiment_id
+          values:
+            - ".*"
+      - name: kill-switch-spans
+        type: string_attribute
+        string_attribute:
+          key: kill_switch.activated
+          values:
+            - "true"
+      - name: health-check-sample
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 10
+
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: development
+        action: upsert
+      - key: service.namespace
+        value: phase0
+        action: upsert
+
+  # Batch for efficiency
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+exporters:
+  # Jaeger backend
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+
+  # Logging (dev debugging)
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource, tail_sampling, batch]
+      exporters: [otlp/jaeger, debug]
+
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      address: 0.0.0.0:8888

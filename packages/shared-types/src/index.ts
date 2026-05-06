@@ -8,3 +8,6 @@ export * from "./cluster";
 export * from "./compliance";
 export * from "./slashing";
 export * from "./telemetry";
+export * from "./auth";
+export * from "./kill-switch";
+export * from "./flags";
