@@ -1,10 +1,10 @@
-import { ClusterDetails } from "@/components/cluster/cluster-details";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
-export default async function ClusterDetailsPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  return <ClusterDetails slug={slug || ""} />;
+export const metadata: Metadata = {
+  title: "Cluster Details — ALYGN Regulator",
+};
+
+export default async function ClusterDetailsPage() {
+  redirect("/kill-switch");
 }
