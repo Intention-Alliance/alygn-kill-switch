@@ -78,3 +78,7 @@ yarn-error.log*
 next-env.d.ts
 
 guide
+
+# Kill Switch SQLite data files
+apps/server-kill-switch/data/*.sqlite
+apps/server-kill-switch/data/*.sqlite-*
