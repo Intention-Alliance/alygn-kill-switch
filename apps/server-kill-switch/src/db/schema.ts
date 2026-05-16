@@ -4,15 +4,19 @@
  * Central schema for:
  *  - Better-Auth v2 tables (user, session, account, verification)
  *  - Kill Switch state persistence
- *  - Feature flags
- *  - Flag audit log
- *  - Machine inventory
+ *  - Audit log (extended with severity, machineId, metadata)
+ *  - Feature flags + audit
+ *  - Machine inventory (full rebuild)
+ *  - Settings persistence (new)
+ *  - Per-machine flag overrides (new)
+ *  - Per-machine agent registry (new)
  *
  * ADR-121: SQLite over file adapter for durability + crash safety.
  * ADR-122: Drizzle ORM for type-safe queries tied to schema.
+ * ADR-133: Kill Switch dashboard rebuild — extended schema.
  */
 
-import { sqliteTable, text, integer, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, uniqueIndex, index, primaryKey } from 'drizzle-orm/sqlite-core';
 
 // ─── Better-Auth v2 Required Tables ──────────────────────────────────────
 
@@ -24,6 +28,7 @@ export const users = sqliteTable(
     emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
     name: text('name'),
     image: text('image'),
+    role: text('role').default('admin'),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()).$onUpdate(() => new Date()),
   },
@@ -102,20 +107,26 @@ export const killSwitchState = sqliteTable(
   },
 );
 
+// ─── Kill Switch Audit Log (Extended — ADR-133) ──────────────────────────
+
 export const killSwitchAuditLog = sqliteTable(
   'kill_switch_audit_log',
   {
     id: text('id').primaryKey(),
+    timestamp: integer('timestamp', { mode: 'timestamp' }).notNull(),
+    userId: text('user_id').notNull(),
+    reason: text('reason').notNull(),
     previousState: text('previous_state').notNull(),
     newState: text('new_state').notNull(),
-    initiatedBy: text('initiated_by').notNull().default('system'),
-    reason: text('reason').notNull().default('manual'),
-    ipAddress: text('ip_address'),
-    traceId: text('trace_id'),
-    timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    traceId: text('trace_id').notNull(),
+    machineId: text('machine_id'),
+    severity: text('severity').notNull().default('info'),
+    metadata: text('metadata'), // JSON string
   },
   (table) => ({
-    stateTimestampIdx: index('ks_audit_state_time_idx').on(table.newState, table.timestamp),
+    severityTimeIdx: index('ks_audit_severity_time_idx').on(table.severity, table.timestamp),
+    machineTimeIdx: index('ks_audit_machine_time_idx').on(table.machineId, table.timestamp),
+    stateTimeIdx: index('ks_audit_state_time_idx').on(table.newState, table.timestamp),
   }),
 );
 
@@ -155,23 +166,71 @@ export const flagAuditLog = sqliteTable(
   }),
 );
 
-// ─── Machines Inventory ──────────────────────────────────────────────────
+// ─── Machines Inventory (Rebuilt — ADR-133) ──────────────────────────────
 
 export const machines = sqliteTable(
   'machine',
   {
     id: text('id').primaryKey(),
-    hostname: text('hostname').notNull(),
-    ipAddress: text('ip_address').notNull(),
-    status: text('status').notNull().default('online'),     // online | offline | degraded | maintenance
-    lastHeartbeat: integer('last_heartbeat', { mode: 'timestamp' }),
-    tags: text('tags'),                                      // JSON string array
-    metadata: text('metadata'),                              // JSON string object
+    name: text('name').notNull(),
+    hostname: text('hostname').notNull().unique(),
+    status: text('status').notNull().default('active'),       // active | inactive | offline
+    role: text('role').notNull(),
+    hasDpu: integer('has_dpu', { mode: 'boolean' }).notNull().default(false),
+    specs: text('specs'),                                      // JSON: { cpu, ram, gpu, dpu }
+    lastSeen: integer('last_seen', { mode: 'timestamp' }),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()).$onUpdate(() => new Date()),
   },
   (table) => ({
     hostnameIdx: uniqueIndex('machine_hostname_idx').on(table.hostname),
-    ipIdx: index('machine_ip_idx').on(table.ipAddress),
+    statusIdx: index('machine_status_idx').on(table.status),
+  }),
+);
+
+// ─── Settings Persistence (New — ADR-133) ────────────────────────────────
+
+export const settings = sqliteTable(
+  'setting',
+  {
+    key: text('key').primaryKey(),
+    value: text('value').notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+);
+
+// ─── Per-Machine Flag Overrides (New — ADR-133) ──────────────────────────
+
+export const machineFlags = sqliteTable(
+  'machine_flag',
+  {
+    machineId: text('machine_id').notNull()
+      .references(() => machines.id, { onDelete: 'cascade' }),
+    flagKey: text('flag_key').notNull(),
+    value: text('value'),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.machineId, table.flagKey] }),
+    flagKeyIdx: index('machine_flag_key_idx').on(table.flagKey),
+  }),
+);
+
+// ─── Per-Machine Agent Registry (New — ADR-133) ──────────────────────────
+
+export const agents = sqliteTable(
+  'agent',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => machines.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    version: text('version').notNull(),
+    capabilities: text('capabilities'),                       // JSON array of capability strings
+    lastHeartbeat: integer('last_heartbeat', { mode: 'timestamp' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    machineIdx: index('agent_machine_idx').on(table.machineId),
+    heartbeatIdx: index('agent_heartbeat_idx').on(table.lastHeartbeat),
   }),
 );

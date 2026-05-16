@@ -79,6 +79,8 @@ export function AuditLog({ flagId, limit, className }: AuditLogProps) {
           "rounded-md bg-destructive/5 p-4 text-sm text-destructive",
           className,
         )}
+        role="alert"
+        aria-live="polite"
       >
         {error}
       </div>
@@ -98,7 +100,7 @@ export function AuditLog({ flagId, limit, className }: AuditLogProps) {
       {logs.length === 0 ? (
         <p className="text-sm text-muted-foreground">No audit events yet.</p>
       ) : (
-        <div className="rounded-md border">
+        <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>

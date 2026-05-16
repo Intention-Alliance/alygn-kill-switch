@@ -42,7 +42,7 @@ export interface TransitionMetadata {
 }
 
 export class KillSwitchService {
-  private redis: RedisPool;
+  public readonly redis: RedisPool;
   private authToken: string;
   private apiKey: string;
   private auditLog: AuditEntry[] = [];

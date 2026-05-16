@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Shield, Activity } from "lucide-react";
+import { useCallback } from "react";
+import { Shield, Activity, Wifi, WifiOff, Loader2 } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import { StatusIndicator } from "@/components/kill-switch/status-indicator";
 import { EmergencyStopButton } from "@/components/kill-switch/emergency-stop-button";
@@ -10,61 +10,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { apiGet } from "@/lib/api-client";
-import type { KillSwitchState, KillSwitchStatus } from "@/types/shared";
+import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
+import type { KillSwitchState } from "@/types/shared";
 
 export default function KillSwitchDashboardPage() {
-  const [status, setStatus] = useState<KillSwitchStatus | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    status,
+    auditLog,
+    isConnected,
+    reconnectAttempt,
+  } = useKillSwitchWebSocket();
 
-  const fetchStatus = useCallback(async () => {
-    try {
-      const data = await apiGet<KillSwitchStatus>("/api/kill-switch/status");
-      setStatus(data);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch status");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchStatus();
-
-    // Poll every 5s for real-time updates
-    const interval = setInterval(fetchStatus, 5_000);
-    return () => clearInterval(interval);
-  }, [fetchStatus]);
+  const isLoading = !status;
 
   const handleStateChange = useCallback(
     (newState: KillSwitchState) => {
-      setStatus((prev) =>
-        prev ? { ...prev, state: newState } : prev,
-      );
+      // Status updates happen via WebSocket, no need to manually set
     },
     [],
   );
 
-  if (isLoading) {
+  if (isLoading && !isConnected) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-10 w-64" />
+        {/* Connecting indicator */}
+        <div
+          className="rounded-lg border border-muted bg-muted/30 p-6 text-center"
+          role="status"
+          aria-live="polite"
+        >
+          <Loader2 className="mx-auto h-8 w-8 motion-safe:animate-spin text-primary" aria-hidden="true" />
+          <h2 className="mt-4 text-lg font-semibold">
+            Connecting to Kill Switch…
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Attempting WebSocket connection (attempt{" "}
+            {reconnectAttempt > 0 ? reconnectAttempt : 1}
+            /5)
+          </p>
+        </div>
         <Skeleton className="h-32 w-full" />
         <Skeleton className="h-48 w-full" />
-      </div>
-    );
-  }
-
-  if (error && !status) {
-    return (
-      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-8 text-center">
-        <Shield className="mx-auto h-10 w-10 text-destructive/50" />
-        <h2 className="mt-4 text-lg font-semibold text-destructive">
-          Failed to Load Kill Switch
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">{error}</p>
       </div>
     );
   }
@@ -72,6 +59,12 @@ export default function KillSwitchDashboardPage() {
   return (
     <ErrorBoundary>
       <div className="space-y-6">
+        {/* WebSocket Connection Notice */}
+        <ConnectionNotice
+          isConnected={isConnected}
+          reconnectAttempt={reconnectAttempt}
+        />
+
         {/* Page Header */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -161,11 +154,53 @@ export default function KillSwitchDashboardPage() {
           </Card>
         </SectionErrorBoundary>
 
-        {/* Activation History */}
+        {/* Activation History — uses WebSocket auditLog */}
         <SectionErrorBoundary title="Activation History">
-          <ActivationHistory limit={20} />
+          <ActivationHistory
+            limit={20}
+            webSocketRecords={auditLog}
+          />
         </SectionErrorBoundary>
       </div>
     </ErrorBoundary>
+  );
+}
+
+// ─── Connection Notice ───────────────────────────────────────────
+
+function ConnectionNotice({
+  isConnected,
+  reconnectAttempt,
+}: {
+  isConnected: boolean;
+  reconnectAttempt: number;
+}) {
+  if (isConnected) {
+    return (
+      <div
+        className="flex items-center gap-2 rounded-md bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400"
+        role="status"
+        aria-live="polite"
+      >
+        <Wifi className="h-3.5 w-3.5" />
+        <span>Live — WebSocket connected</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex items-center gap-2 rounded-md bg-amber-500/10 px-4 py-2 text-sm text-amber-600 dark:text-amber-400"
+      role="alert"
+      aria-live="assertive"
+    >
+      <WifiOff className="h-3.5 w-3.5" />
+      <span>
+        WS disconnected{reconnectAttempt > 0
+          ? ` (retry ${reconnectAttempt}/5)`
+          : ""}
+        , using polling fallback
+      </span>
+    </div>
   );
 }

@@ -59,6 +59,8 @@ export async function handleFlagsRoutes(
   req: any,
   res: any,
   userId: string = 'api',
+  userRole: string | null = null,
+  publishEvent?: (channel: string, data: string) => void | Promise<void>,
 ): Promise<boolean> {
   // Only intercept /v1/flags paths
   if (!url.startsWith('/v1/flags')) return false;
@@ -101,8 +103,12 @@ export async function handleFlagsRoutes(
       return true;
     }
 
-    // ─── POST /v1/flags — Create flag ────────────────────────────
+    // ─── POST /v1/flags — Create flag (admin only) ─────────────
     if (method === 'POST' && url === '/v1/flags') {
+      if (userRole !== 'admin') {
+        json(res, 403, { error: 'Admin role required' });
+        return true;
+      }
       const body = await parseJsonBody(req);
       if (!body?.key || body?.value === undefined) {
         json(res, 400, { error: 'Missing required fields: key, value' });
@@ -124,11 +130,18 @@ export async function handleFlagsRoutes(
       await logFlagAction(flag.id, 'created', userId, undefined, JSON.stringify(flag));
 
       json(res, 201, { flag: { ...flag, value: !!flag.value, enabled: !!flag.enabled } });
+      if (publishEvent) {
+        await publishEvent('bcp:flags:updates', JSON.stringify({ type: 'flag-update', action: 'created', flag }));
+      }
       return true;
     }
 
-    // ─── PUT /v1/flags/:id — Update flag ─────────────────────────
+    // ─── PUT /v1/flags/:id — Update flag (admin only) ──────────
     if (method === 'PUT' && idMatch) {
+      if (userRole !== 'admin') {
+        json(res, 403, { error: 'Admin role required' });
+        return true;
+      }
       const flagId = idMatch[1];
       const body = await parseJsonBody(req);
       if (!body || Object.keys(body).length === 0) {
@@ -180,11 +193,18 @@ export async function handleFlagsRoutes(
           enabled: !!updated!.enabled,
         },
       });
+      if (publishEvent) {
+        await publishEvent('bcp:flags:updates', JSON.stringify({ type: 'flag-update', action: 'updated', flag: updated }));
+      }
       return true;
     }
 
-    // ─── DELETE /v1/flags/:id — Delete flag ──────────────────────
+    // ─── DELETE /v1/flags/:id — Delete flag (admin only) ─────
     if (method === 'DELETE' && idMatch) {
+      if (userRole !== 'admin') {
+        json(res, 403, { error: 'Admin role required' });
+        return true;
+      }
       const flagId = idMatch[1];
 
       const existing = await db
@@ -202,6 +222,9 @@ export async function handleFlagsRoutes(
       await db.delete(featureFlags).where(eq(featureFlags.id, flagId)).run();
 
       json(res, 200, { success: true, deleted: flagId });
+      if (publishEvent) {
+        await publishEvent('bcp:flags:updates', JSON.stringify({ type: 'flag-update', action: 'deleted', flagId }));
+      }
       return true;
     }
 

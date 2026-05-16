@@ -7,6 +7,7 @@ import {
   Flag,
   Server,
   Settings,
+  BookOpen,
   PanelLeftClose,
   PanelLeft,
 } from "lucide-react";
@@ -47,6 +48,12 @@ const NAV_ITEMS = [
     label: "Settings",
     icon: Settings,
     description: "System configuration",
+  },
+  {
+    href: "/docs",
+    label: "Documentation",
+    icon: BookOpen,
+    description: "Guides, API reference & troubleshooting",
   },
 ];
 

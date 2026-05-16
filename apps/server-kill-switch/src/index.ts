@@ -1,26 +1,9 @@
 /**
- * Kill Switch API Service — Refactored TypeScript Entry Point
- * ADR-111 BCP + ADR-117 Chaos Engineering + ADR-121 SQLite Auth
- *
- * Consolidated into canonical monorepo: @alygn/server-kill-switch v2.0.0
- *
- * Endpoints:
- *   GET  /v1/kill-switch/status    - Current state (full KillSwitchStatus)
- *   POST /v1/kill-switch/chaos     - Change state
- *   GET  /v1/kill-switch/health    - Health check
- *   POST /v1/auth/login            - Login (Better-Auth v2 + SQLite)
- *   POST /v1/auth/logout           - Logout
- *   GET  /v1/auth/me               - Session check
- *   GET  /v1/auth/ip               - IP detection
- *   GET  /v1/flags                  - List feature flags
- *   POST /v1/flags                  - Create flag
- *   PUT  /v1/flags/:id              - Update flag
- *   DELETE /v1/flags/:id           - Delete flag
- *   GET  /v1/flags/:id/audit       - Flag audit log
+ * Kill Switch API Service — Bun.serve() with native WebSocket (ADR-133)
  */
-
 import { KillSwitchService } from './services/kill-switch';
-import { db, sqlite as sqliteDb } from './db/index'; // P0-2: ensure DB tables are created on startup
+import { WebSocketManager } from './services/websocket-manager';
+import { sqlite as sqliteDb } from './db/index';
 import { isIpAllowed } from './services/ip-allowlist';
 import { checkRateLimit, RATE_LIMIT_MAX } from './middleware/rate-limit';
 import { checkAuth } from './middleware/auth';
@@ -35,9 +18,9 @@ import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
 import { validateEnvironment } from './config/validate-env';
 
-// ─── HTTP Handler ────────────────────────────────────────────────────
+// ─── Node-style HTTP Handler ───────────────────────────────────────
 
-export function createKillSwitchHandler(service: KillSwitchService) {
+function createHandler(service: KillSwitchService) {
   const authRateLimiter = new AuthRateLimiter();
   const config = getConfig();
 
@@ -46,97 +29,67 @@ export function createKillSwitchHandler(service: KillSwitchService) {
     const url = req.url || '/';
     const method = req.method || 'GET';
 
-    // ─── CORS Headers ────────────────────────────────────────
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin || 'http://localhost:3001');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-CSRF-Token');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Max-Age', '86400');
 
-    if (method === 'OPTIONS') {
-      res.writeHead(204);
-      res.end();
-      return;
-    }
+    if (method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
-    // ─── LB Health / Metrics (no auth required) ───────────────
     if (isFeatureEnabled('enableLbHealth')) {
-      const lbHandled = await handleLbHealthRoutes(method, url, req, res, service);
-      if (lbHandled) return;
+      const lb = await handleLbHealthRoutes(method, url, req, res, service);
+      if (lb) return;
     }
 
-    // ─── Admin routes (auth required) ─────────────────────────
-    const adminHandled = await handleAdminRoutes(method, url, req, res, service);
-    if (adminHandled) return;
+    const admin = await handleAdminRoutes(method, url, req, res, service);
+    if (admin) return;
 
-    // ─── IP Allowlist Check (skip for auth endpoints) ──────────
-    const isAuthEndpoint = url.startsWith('/v1/auth/');
-    if (!isAuthEndpoint && !isIpAllowed(ip)) {
+    const isAuth = url.startsWith('/v1/auth/');
+    if (!isAuth && !isIpAllowed(ip)) {
       res.writeHead(403, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'IP not allowed', ip }));
       return;
     }
 
-    // ─── Auth Rate Limiting ────────────────────────────────────
-    if (isAuthEndpoint) {
-      const authRateCheck = authRateLimiter.check(ip);
-      if (!authRateCheck.allowed) {
-        res.writeHead(429, {
-          'Content-Type': 'application/json',
-          'Retry-After': String(authRateCheck.retryAfterSeconds || config.rateLimit.authWindowMs / 1000),
-        });
-        res.end(JSON.stringify({ error: 'Too many login attempts', retryAfter: authRateCheck.retryAfterSeconds }));
+    if (isAuth) {
+      const check = authRateLimiter.check(ip);
+      if (!check.allowed) {
+        res.writeHead(429, { 'Content-Type': 'application/json', 'Retry-After': String(check.retryAfterSeconds || 900) });
+        res.end(JSON.stringify({ error: 'Too many login attempts', retryAfter: check.retryAfterSeconds }));
         return;
       }
     }
 
-    // ─── General Rate Limiting ─────────────────────────────────
-    const rateCheck = checkRateLimit(ip);
-    if (!rateCheck.allowed) {
-      res.writeHead(429, {
-        'Content-Type': 'application/json',
-        'Retry-After': String(rateCheck.retryAfter || 60),
-      });
+    const rate = checkRateLimit(ip);
+    if (!rate.allowed) {
+      res.writeHead(429, { 'Content-Type': 'application/json', 'Retry-After': String(rate.retryAfter || 60) });
       res.end(JSON.stringify({ error: 'Rate limit exceeded', limit: RATE_LIMIT_MAX }));
       return;
     }
 
-    // ─── Auth Check (skip for health and auth endpoints) ───────
-    let authenticatedUserId: string | null = null;
-
-    if (url !== '/v1/kill-switch/health' && !isAuthEndpoint) {
-      const authResult = await checkAuth(service, req);
-      if (!authResult.authenticated) {
-        res.writeHead(401, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Authentication required' }));
-        return;
-      }
-      authenticatedUserId = authResult.user?.email ?? null;
+    let uid: string | null = null;
+    if (url !== '/v1/kill-switch/health' && !isAuth) {
+      const ar = await checkAuth(service, req);
+      if (!ar.authenticated) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Authentication required' })); return; }
+      uid = ar.user?.email ?? null;
     }
 
-    // ─── Route to handlers ─────────────────────────────────────
     const handled =
       await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
-      await handleFlagsRoutes(method, url, req, res, authenticatedUserId || 'api');
+      await handleFlagsRoutes(method, url, req, res, uid || 'api');
 
-    if (!handled) {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Not found' }));
-    }
+    if (!handled) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Not found' })); }
   };
 }
 
-// ─── Standalone Server ─────────────────────────────────────────────
+// ─── Server Startup with Bun.serve() + native WebSocket ────────────
 
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
   const config = getConfig();
   const RedisPool = await loadRedisPool() as any;
-
-  const redis: any = new RedisPool({
-    urls: opts.redisUrls || config.redis.urls,
-  });
-
+  const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls });
   await redis.connect();
 
   const service = new KillSwitchService({
@@ -145,82 +98,126 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     apiKey: opts.apiKey || process.env.KILL_SWITCH_API_KEY,
   });
 
-  const handler = createKillSwitchHandler(service);
+  const wsManager = new WebSocketManager();
 
-  // Seed admin user before accepting connections
+  if (typeof redis.subscribe === 'function') {
+    wsManager.setRedisSubscribe((ch: string, h: (msg: string) => void) => redis.subscribe(ch, h));
+  }
+
+  service.onStateChange((entry: any) => wsManager.broadcastStateChange(entry));
+
   await seedAdminUser();
-
-  const server = await import('http').then((m) => m.createServer(handler));
 
   const port = opts.port || config.server.port;
 
-  // ─── Graceful Shutdown ───────────────────────────────────────
-  function gracefulShutdown(signal: string) {
-    console.log(`[server] Received ${signal}, shutting down gracefully...`);
+  // Bun.serve with native WebSocket
+  const server = Bun.serve({
+    port,
+    websocket: {
+      maxPayloadLength: 65536,
+      open(ws: any) { wsManager.handleBunUpgrade(ws); },
+      close() {},
+      message(ws: any, msg: string | Buffer) {
+        const text = typeof msg === 'string' ? msg : Buffer.from(msg).toString();
+        if (text === 'pong') { /* handled by Bun's auto-pong */ }
+      },
+    },
+    async fetch(req, srv) {
+      const url = new URL(req.url);
 
-    server.close((err?: Error) => {
-      if (err) console.error(`[server] Error closing HTTP server: ${err.message}`);
-      else console.log('[server] HTTP server closed');
+      // WebSocket upgrade — validate session via Better-Auth v2
+      if (req.headers.get('upgrade')?.toLowerCase() === 'websocket') {
+        const token = url.searchParams.get('token');
+        if (!token) return new Response(JSON.stringify({ error: 'Missing token', code: 4001 }), { status: 401, headers: { 'content-type': 'application/json' } });
 
-      // Close SQLite database
-      try {
-        sqliteDb.close();
-        console.log('[server] SQLite (kill-switch) database closed');
-      } catch (e: any) {
-        console.error(`[server] Error closing SQLite: ${e.message}`);
+        try {
+          const auth = await import('./lib/auth').then(m => m.auth);
+          const cookieHeader = req.headers.get('cookie') || '';
+          const hasBA = cookieHeader.includes('better-auth.session_token') || cookieHeader.includes('__Secure-better-auth.session_token');
+
+          // Use the browser's real cookie, or construct a signed cookie from the raw token
+          // Better-Auth v2 signing: HMAC-SHA256(rawToken, key=secret) → base64 (see makeSignature in crypto/index.mjs)
+          const sc = hasBA ? cookieHeader : (() => {
+            const crypto = require('node:crypto');
+            const hmac = crypto.createHmac('sha256', process.env.BETTER_AUTH_SECRET || '');
+            hmac.update(token);
+            const sig = hmac.digest('base64');
+            return `better-auth.session_token=${token}.${sig}`;
+          })();
+
+          // Validate via auth.handler() — same proven pattern as middleware/auth.ts
+          const headers = new Headers();
+          headers.set('cookie', sc);
+          headers.set('accept', 'application/json');
+          const sessionReq = new Request(`http://localhost:${port}/v1/auth/get-session`, { method: 'GET', headers });
+          const response = await auth.handler(sessionReq);
+
+          if (!response.ok) {
+            console.error('[ws] getSession returned ' + response.status);
+            return new Response(JSON.stringify({ error: 'Invalid or expired token', code: 4001 }), { status: 401, headers: { 'content-type': 'application/json' } });
+          }
+
+          const data = await response.json().catch(() => null);
+          if (!data?.user) {
+            return new Response(JSON.stringify({ error: 'Invalid or expired token', code: 4001 }), { status: 401, headers: { 'content-type': 'application/json' } });
+          }
+
+          const userId = data.user.email || data.user.id || 'unknown';
+          const ip = req.headers.get('x-real-ip') || srv.requestIP(req)?.address || 'unknown';
+          const conns = (wsManager as any).ipCounts?.get(ip) || 0;
+          if (conns >= 5) return new Response(JSON.stringify({ error: 'Too many connections', code: 4003 }), { status: 429, headers: { 'content-type': 'application/json' } });
+
+          console.log('[ws] Upgrading: ' + userId + ' from ' + ip);
+          const ok = srv.upgrade(req, { data: { userId, ip } });
+          return ok ? undefined : new Response('Upgrade failed', { status: 500 });
+        } catch (e: any) {
+          console.error('[ws] token validation error:', e.message);
+          return new Response(JSON.stringify({ error: 'Authentication failed', code: 4001 }), { status: 401, headers: { 'content-type': 'application/json' } });
+        }
       }
 
-      // Close Redis connection
-      if (redis) {
-        redis.disconnect().then(() => {
-          console.log('[server] Redis pool disconnected');
-          process.exit(0);
-        }).catch((e: any) => {
-          console.error(`[server] Error disconnecting Redis: ${e.message}`);
-          process.exit(0);
-        });
-      } else {
-        process.exit(0);
-      }
-    });
+      // Regular HTTP — read body, convert to node-style, process via handler
+      const bodyText = (req.method !== 'GET' && req.method !== 'HEAD')
+        ? await req.text().catch(() => '') : '';
 
-    // Force exit after 10s if graceful shutdown hangs
-    setTimeout(() => {
-      console.error('[server] Forced shutdown after timeout');
-      process.exit(1);
-    }, 10000);
-  }
+      return new Promise(resolve => {
+        const ip = srv.requestIP(req)?.address || 'unknown';
+        const nodeReq: any = {
+          method: req.method,
+          url: url.pathname + url.search,
+          headers: {} as Record<string, string>,
+          socket: { remoteAddress: ip }, ip,
+          body: bodyText,
+          on(ev: string, cb: Function) {
+            if (ev === 'data' && bodyText) cb(Buffer.from(bodyText));
+            if (ev === 'end') cb();
+          },
+        };
+        for (const [k, v] of req.headers.entries()) nodeReq.headers[k] = v;
 
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+        const nodeRes: any = {
+          _h: {} as Record<string, string>, _s: 200, _b: '',
+          setHeader(n: string, v: string) { this._h[n.toLowerCase()] = String(v); },
+          writeHead(s: number, h?: Record<string, string>) { this._s = s; if (h) Object.entries(h).forEach(([k, v]) => { this._h[k.toLowerCase()] = String(v); }); },
+          end(d?: string) {
+            this._b = d || '';
+            const hdrs = new Headers(this._h);
+            hdrs.set('content-length', String(Buffer.byteLength(this._b)));
+            resolve(new Response(this._b, { status: this._s, headers: hdrs }));
+          },
+        };
 
-  server.listen(port, () => {
-    console.log(`⚙️ Kill Switch API v2.0.0 listening on port ${port} [${config.env}]`);
-    console.log(`   Auth DB: SQLite (WAL mode)`);
-    console.log(`   Health: http://localhost:${port}/v1/kill-switch/health`);
-    console.log(`   Status: http://localhost:${port}/v1/kill-switch/status`);
-    console.log(`   Control: POST http://localhost:${port}/v1/kill-switch/chaos`);
-    console.log(`   Flags:  http://localhost:${port}/v1/flags`);
-    console.log(`   LB Health: http://localhost:${port}/health`);
-    console.log(`   Ready: http://localhost:${port}/ready`);
-    console.log(`   Metrics: http://localhost:${port}/metrics`);
+        createHandler(service)(nodeReq, nodeRes);
+      });
+    },
   });
 
-  return { server, service, redis };
+  console.log(`\u2699\ufe0f Kill Switch API v2.0.0 listening on port ${port} [${config.env}]`);
+  console.log(`   WebSocket: ws://localhost:${port}/ws`);
+  return { server, service, redis, wsManager };
 }
 
-// ─── Main Entry Point ──────────────────────────────────────────────
-
 if (import.meta.path.endsWith('index.ts') || import.meta.path.endsWith('index.mjs')) {
-  try {
-    validateEnvironment();
-  } catch (err: any) {
-    console.error(err.message);
-    process.exit(1);
-  }
-
-  startServer().catch((err) => {
-    console.error('Failed to start Kill Switch API:', err);
-    process.exit(1);
-  });
+  try { validateEnvironment(); } catch (err: any) { console.error(err.message); process.exit(1); }
+  startServer().catch((err: any) => { console.error('Failed:', err); process.exit(1); });
 }

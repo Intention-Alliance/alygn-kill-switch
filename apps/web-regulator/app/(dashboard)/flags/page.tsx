@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Flag, Plus, Pencil, Trash2, Loader2, Shield } from "lucide-react";
+import { Flag, Plus, Pencil, Trash2, Loader2, Shield, WifiOff, Wifi } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import { FlagEditor } from "@/components/flags/flag-editor";
 import { FlagStatusBadge } from "@/components/flags/flag-status-badge";
@@ -34,6 +34,7 @@ import { Input } from "@/components/ui/input";
 import { apiGet, apiPut, apiDelete } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type { Flag as FlagType } from "@/types/shared";
 
 // The backend returns flags with a slightly different shape
@@ -49,6 +50,8 @@ interface BackendFlag {
 }
 
 export default function FlagsDashboardPage() {
+  const { flags: wsFlags, isConnected } = useKillSwitchWebSocket();
+
   const [flags, setFlags] = useState<FlagType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,10 +62,10 @@ export default function FlagsDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFlagId, setSelectedFlagId] = useState<string | null>(null);
 
+  // Initial fetch — only run on mount
   const fetchFlags = useCallback(async () => {
     try {
       const data = await apiGet<{ flags: BackendFlag[] }>("/api/flags");
-      // Adapt backend format to shared-types Flag
       const adapted: FlagType[] = (data.flags ?? []).map((f) => ({
         id: f.id,
         name: f.key,
@@ -85,13 +88,17 @@ export default function FlagsDashboardPage() {
     }
   }, []);
 
+  // Fetch once on mount
   useEffect(() => {
     fetchFlags();
-
-    // Poll every 10s
-    const interval = setInterval(fetchFlags, 10_000);
-    return () => clearInterval(interval);
   }, [fetchFlags]);
+
+  // Use WebSocket flags when connected; keep current if disconnected
+  useEffect(() => {
+    if (isConnected && wsFlags.length > 0) {
+      setFlags(wsFlags);
+    }
+  }, [wsFlags, isConnected]);
 
   async function handleToggleFlag(flag: FlagType) {
     try {
@@ -174,8 +181,12 @@ export default function FlagsDashboardPage() {
 
   if (error && flags.length === 0) {
     return (
-      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-8 text-center">
-        <Flag className="mx-auto h-10 w-10 text-destructive/50" />
+      <div
+        className="rounded-lg border border-destructive/30 bg-destructive/5 p-8 text-center"
+        role="alert"
+        aria-live="assertive"
+      >
+        <Flag className="mx-auto h-10 w-10 text-destructive/50" aria-hidden="true" />
         <h2 className="mt-4 text-lg font-semibold text-destructive">
           Failed to Load Flags
         </h2>
@@ -190,6 +201,9 @@ export default function FlagsDashboardPage() {
   return (
     <ErrorBoundary>
       <div className="space-y-6">
+        {/* WebSocket Connection Notice */}
+        <ConnectionNotice isConnected={isConnected} />
+
         {/* Page Header */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -253,7 +267,7 @@ export default function FlagsDashboardPage() {
                   )}
                 </div>
               ) : (
-                <div className="rounded-md border">
+                <div className="overflow-x-auto rounded-md border">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -295,30 +309,32 @@ export default function FlagsDashboardPage() {
                             />
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={(e: React.MouseEvent) => {
-                                  e.stopPropagation();
-                                  openEdit(flag);
-                                }}
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 text-destructive"
-                                onClick={(e: React.MouseEvent) => {
-                                  e.stopPropagation();
-                                  setDeletingFlag(flag);
-                                }}
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            </div>
+            <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                openEdit(flag);
+              }}
+              aria-label={`Edit flag ${flag.key}`}
+            >
+              <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-destructive"
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                setDeletingFlag(flag);
+              }}
+              aria-label={`Delete flag ${flag.key}`}
+            >
+              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+            </Button>
+          </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -383,5 +399,33 @@ export default function FlagsDashboardPage() {
         </AlertDialog>
       </div>
     </ErrorBoundary>
+  );
+}
+
+// ─── Connection Notice ───────────────────────────────────────────
+
+function ConnectionNotice({ isConnected }: { isConnected: boolean }) {
+  if (isConnected) {
+    return (
+      <div
+        className="flex items-center gap-2 rounded-md bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400"
+        role="status"
+        aria-live="polite"
+      >
+        <Wifi className="h-3.5 w-3.5" />
+        <span>Live — WebSocket connected</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="flex items-center gap-2 rounded-md bg-amber-500/10 px-4 py-2 text-sm text-amber-600 dark:text-amber-400"
+      role="alert"
+      aria-live="assertive"
+    >
+      <WifiOff className="h-3.5 w-3.5" />
+      <span>WS disconnected, using polling fallback</span>
+    </div>
   );
 }

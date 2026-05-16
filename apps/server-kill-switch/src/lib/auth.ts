@@ -1,20 +1,25 @@
 /**
- * Better-Auth v1 Configuration with SQLite Persistence
+ * Better-Auth v1 Configuration with Drizzle SQLite Adapter
  *
- * Upgraded from file adapter (JSON) to SQLite persistence.
+ * Refactored from custom sqliteAdapter (memory wrapper) to native
+ * drizzleAdapter from Better-Auth. This removes the fragile in-memory
+ * persistence layer and lets Better-Auth talk directly to SQLite via Drizzle.
+ *
  * Uses Bun.password for password hashing (Argon2id via bun built-in).
  *
  * Architecture:
- *   - Loads state from SQLite → in-memory adapter on startup
- *   - Persists every mutation back to SQLite
- *   - Sessions survive container restarts
+ *   - drizzleAdapter → Drizzle ORM → bun:sqlite → disk (WAL mode)
+ *   - Sessions survive container restarts natively (no more memory layer)
+ *   - No custom sqlite-adapter.ts import needed
  *
- * SECURITY: All secrets validated on import. Process exits
- * if BETTER_AUTH_SECRET or KILL_SWITCH_AUTH_TOKEN are missing.
+ * SECURITY: BETTER_AUTH_SECRET validated on import. Process exits
+ * if BETTER_AUTH_SECRET is missing.
  */
 
 import { betterAuth } from 'better-auth';
-import { sqliteAdapter } from './sqlite-adapter';
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { db } from '../db/index';
+import * as schema from '../db/schema';
 
 // ─── Environment Validation ──────────────────────────────────────────────
 
@@ -46,28 +51,72 @@ export const auth = betterAuth({
   baseURL: BETTER_AUTH_URL,
   basePath: BASE_PATH,
   secret: BETTER_AUTH_SECRET,
-  database: sqliteAdapter,
+  database: drizzleAdapter(db, {
+    provider: 'sqlite',
+    schema: {
+      user: schema.users,
+      session: schema.sessions,
+      account: schema.accounts,
+      verification: schema.verifications,
+    },
+  }),
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: false,
+    password: {
+      hash: (input: string) => Bun.password.hash(input),
+      verify: ({ password, hash }) => Bun.password.verify(password, hash),
+    },
   },
   session: {
     expiresIn: 60 * 60,          // 1 hour
     updateAge: 5 * 60,           // refresh every 5 minutes
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        required: false,
+        defaultValue: 'admin',
+        output: true,
+        input: false,
+      },
+    },
+  },
+  trustedOrigins: [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://alygn-kill-switch:3000',
+    'http://alygn-web-regulator:3000',
+    'http://localhost:3001',
+    'https://andlersrv.tail62d797.ts.net:8443',
+  ],
 });
 
 // ─── Constants ───────────────────────────────────────────────────────────
 
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@alygn.com';
-export const ADMIN_PASSWORD = requireSecretEnv('KILL_SWITCH_AUTH_TOKEN', 16);
 
 // ─── Auto-Seed Admin User ────────────────────────────────────────────────
 
+/**
+ * Seeds the default admin user on startup.
+ * Uses Better-Auth's native signUpEmail API which respects the configured
+ * Bun.password hashing (Argon2id). Password comes from KILL_SWITCH_AUTH_TOKEN
+ * env var (same as before for backward compatibility).
+ */
 export async function seedAdminUser() {
   const email = ADMIN_EMAIL;
-  const password = ADMIN_PASSWORD;
+  const password = process.env.KILL_SWITCH_AUTH_TOKEN;
+
+  if (!password || password.length < 16) {
+    console.warn(
+      `[auth] KILL_SWITCH_AUTH_TOKEN is missing or too short (<16 chars). ` +
+      `Admin user will NOT be seeded. Set KILL_SWITCH_AUTH_TOKEN in environment.`
+    );
+    return;
+  }
 
   // Try sign-in first to check if admin exists
   try {
@@ -84,7 +133,7 @@ export async function seedAdminUser() {
     console.log(`[auth] Admin user "${email}" not found, creating...`);
   }
 
-  // Create admin user
+  // Create admin user via Better-Auth (uses Bun.password hashing internally)
   try {
     const result = await auth.api.signUpEmail({
       body: { email, password, name: 'Admin' },

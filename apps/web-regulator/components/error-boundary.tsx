@@ -49,10 +49,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback;
       }
 
+      const isDev =
+        typeof process !== "undefined" &&
+        process.env?.NODE_ENV === "development";
+
       return (
         <DefaultFallback
           error={this.state.error}
           onReset={this.handleReset}
+          isDev={isDev}
         />
       );
     }
@@ -75,13 +80,17 @@ export function SectionErrorBoundary({
   return (
     <ErrorBoundary
       fallback={
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center">
+        <div
+          className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center"
+          role="alert"
+        >
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
             <svg
               className="h-6 w-6 text-destructive"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -98,6 +107,13 @@ export function SectionErrorBoundary({
             An error occurred while rendering this section. Try refreshing the
             page.
           </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-4 inline-flex items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Report to Admin & Reload
+          </button>
         </div>
       }
     >
@@ -111,12 +127,17 @@ export function SectionErrorBoundary({
 function DefaultFallback({
   error,
   onReset,
+  isDev,
 }: {
   error: Error | null;
   onReset: () => void;
+  isDev: boolean;
 }) {
   return (
-    <div className="flex min-h-[400px] items-center justify-center p-8">
+    <div
+      className="flex min-h-[400px] items-center justify-center p-8"
+      role="alert"
+    >
       <div className="max-w-md text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
           <svg
@@ -124,6 +145,7 @@ function DefaultFallback({
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -137,20 +159,42 @@ function DefaultFallback({
         <p className="mt-2 text-sm text-muted-foreground">
           {error?.message ?? "An unexpected error occurred. Please try again."}
         </p>
-        <div className="mt-6 flex justify-center gap-3">
+
+        {/* Stack trace — dev only */}
+        {isDev && error?.stack && (
+          <details className="mt-3 text-left">
+            <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Stack trace (dev only)
+            </summary>
+            <pre className="mt-2 max-h-40 overflow-auto rounded-md bg-muted p-3 text-xs font-mono text-muted-foreground">
+              {error.stack}
+            </pre>
+          </details>
+        )}
+
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <div className="flex gap-3">
+            <button
+              onClick={onReset}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              type="button"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              type="button"
+            >
+              Reload Page
+            </button>
+          </div>
           <button
-            onClick={onReset}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             type="button"
-          >
-            Try Again
-          </button>
-          <button
             onClick={() => window.location.reload()}
-            className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
-            type="button"
+            className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors"
           >
-            Reload Page
+            Report this error to the admin team
           </button>
         </div>
       </div>

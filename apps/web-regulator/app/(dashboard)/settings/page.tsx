@@ -1,7 +1,9 @@
 "use client";
 
-import { Settings, Shield } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Settings, Shield, Loader2 } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
+import { useSettingsSync } from "@/hooks/use-settings-sync";
 import {
   Card,
   CardContent,
@@ -14,9 +16,180 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { apiGet, apiPost, apiPut } from "@/lib/api-client";
 import { toast } from "sonner";
+import {
+  parseSettings,
+  serializeSettings,
+  type AppSettings,
+  type RawSettings,
+} from "@/types/shared";
+
+interface SettingsResponse {
+  settings: RawSettings;
+  updatedAt: string;
+}
+
+/** Map of camelCase frontend keys to snake_case API keys */
+const KEY_MAP: Record<keyof AppSettings, string> = {
+  autoPollInterval: "auto_poll_interval",
+  enableNotifications: "enable_notifications",
+  auditLogRetentionDays: "audit_log_retention_days",
+  sessionTimeoutMinutes: "session_timeout_minutes",
+  ipAllowlistEnabled: "ip_allowlist_enabled",
+  rateLimitPerMinute: "rate_limit_per_minute",
+};
+
+/** Reverse map for API responses */
+function toRawSettings(appSettings: Partial<AppSettings>): RawSettings {
+  const result: RawSettings = {};
+  if (appSettings.autoPollInterval !== undefined) {
+    result.auto_poll_interval = String(appSettings.autoPollInterval);
+  }
+  if (appSettings.enableNotifications !== undefined) {
+    result.enable_notifications = String(appSettings.enableNotifications);
+  }
+  if (appSettings.auditLogRetentionDays !== undefined) {
+    result.audit_log_retention_days = String(
+      appSettings.auditLogRetentionDays,
+    );
+  }
+  if (appSettings.sessionTimeoutMinutes !== undefined) {
+    result.session_timeout_minutes = String(
+      appSettings.sessionTimeoutMinutes,
+    );
+  }
+  if (appSettings.ipAllowlistEnabled !== undefined) {
+    result.ip_allowlist_enabled = String(appSettings.ipAllowlistEnabled);
+  }
+  if (appSettings.rateLimitPerMinute !== undefined) {
+    result.rate_limit_per_minute = String(appSettings.rateLimitPerMinute);
+  }
+  return result;
+}
+
+const DEFAULT_SETTINGS: AppSettings = {
+  autoPollInterval: 5000,
+  enableNotifications: true,
+  auditLogRetentionDays: 30,
+  sessionTimeoutMinutes: 60,
+  ipAllowlistEnabled: false,
+  rateLimitPerMinute: 100,
+};
 
 export default function SettingsPage() {
+  const [settings, setSettings] =
+    useState<AppSettings>(DEFAULT_SETTINGS);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // ─── Fetch settings on mount ──────────────────────────────────
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const data = await apiGet<SettingsResponse>("/api/settings");
+      const parsed = parseSettings(data.settings);
+      setSettings(parsed);
+    } catch (err) {
+      // If settings API is not yet available, use defaults
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[settings] API not available, using defaults:",
+        err instanceof Error ? err.message : "",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  // ─── Cross-tab sync ───────────────────────────────────────
+
+  const { broadcastSetting } = useSettingsSync((key, value) => {
+    if (value === null) return;
+
+    // Map snake_case sync key back to AppSettings field
+    const camelKey = (Object.entries(KEY_MAP) as [keyof AppSettings, string][]).find(
+      ([, v]) => v === key,
+    )?.[0];
+
+    if (!camelKey) return;
+
+    setSettings((prev) => {
+      const parsed = parseSettings({ [key]: value });
+      return { ...prev, ...parsed };
+    });
+  });
+
+  // ─── Update a single setting ──────────────────────────────────
+
+  const updateSetting = useCallback(
+    async <K extends keyof AppSettings>(
+      key: K,
+      value: AppSettings[K],
+    ) => {
+      setSettings((prev) => ({ ...prev, [key]: value }));
+
+      const apiKey = KEY_MAP[key];
+      const stringValue = String(value);
+
+      try {
+        await apiPut(`/api/settings/${apiKey}`, {
+          value: stringValue,
+        });
+        // Broadcast to other tabs
+        broadcastSetting(apiKey, stringValue);
+      } catch (err) {
+        toast.error(
+          err instanceof Error
+            ? err.message
+            : `Failed to save "${apiKey}"`,
+        );
+        // Revert on failure
+        fetchSettings();
+      }
+    },
+    [fetchSettings, broadcastSetting],
+  );
+
+  // ─── Batch save all settings ──────────────────────────────────
+
+  async function handleSaveAll() {
+    setIsSaving(true);
+    try {
+      const raw = toRawSettings(settings);
+      await apiPost("/api/settings", { settings: raw });
+      toast.success("All settings saved");
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Failed to save settings",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  // ─── Loading State ─────────────────────────────────────────────
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-64 w-full" />
+        <Skeleton className="h-48 w-full" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+    );
+  }
+
+  // ─── Render ────────────────────────────────────────────────────
+
   return (
     <ErrorBoundary>
       <div className="space-y-6">
@@ -24,7 +197,9 @@ export default function SettingsPage() {
         <div>
           <div className="flex items-center gap-2">
             <Settings className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Settings
+            </h1>
           </div>
           <p className="text-sm text-muted-foreground">
             System configuration and preferences
@@ -45,37 +220,89 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Auto-poll Status</Label>
+                  <Label
+                    htmlFor="auto-poll-interval"
+                    className="font-medium"
+                  >
+                    Auto-poll Interval
+                  </Label>
                   <p className="text-xs text-muted-foreground">
-                    Automatically refresh kill switch status every 5 seconds
+                    Status refresh interval in milliseconds (1000–60000)
                   </p>
                 </div>
-                <Switch defaultChecked />
+                <Input
+                  id="auto-poll-interval"
+                  type="number"
+                  className="w-24"
+                  min={1000}
+                  max={60000}
+                  step={1000}
+                  value={settings.autoPollInterval}
+                  onChange={(e) => {
+                    const n = parseInt(e.target.value, 10);
+                    if (!isNaN(n) && n >= 1000 && n <= 60000) {
+                      updateSetting("autoPollInterval", n);
+                    } else if (e.target.value === "") {
+                      setSettings((prev) => ({
+                        ...prev,
+                        autoPollInterval: 1000,
+                      }));
+                    }
+                  }}
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Enable Notifications</Label>
+                  <Label
+                    htmlFor="enable-notifications"
+                    className="font-medium"
+                  >
+                    Enable Notifications
+                  </Label>
                   <p className="text-xs text-muted-foreground">
                     Receive desktop notifications for state changes
                   </p>
                 </div>
-                <Switch defaultChecked />
+                <Switch
+                  id="enable-notifications"
+                  checked={settings.enableNotifications}
+                  onCheckedChange={(checked) =>
+                    updateSetting("enableNotifications", checked)
+                  }
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Audit Log Retention</Label>
+                  <Label
+                    htmlFor="audit-log-retention"
+                    className="font-medium"
+                  >
+                    Audit Log Retention
+                  </Label>
                   <p className="text-xs text-muted-foreground">
-                    Days to keep activation history records
+                    Days to keep activation history records (1–365)
                   </p>
                 </div>
                 <Input
+                  id="audit-log-retention"
                   type="number"
-                  defaultValue={30}
-                  className="w-20"
+                  className="w-24"
                   min={1}
                   max={365}
+                  value={settings.auditLogRetentionDays}
+                  onChange={(e) => {
+                    const n = parseInt(e.target.value, 10);
+                    if (!isNaN(n) && n >= 1 && n <= 365) {
+                      updateSetting("auditLogRetentionDays", n);
+                    } else if (e.target.value === "") {
+                      setSettings((prev) => ({
+                        ...prev,
+                        auditLogRetentionDays: 30,
+                      }));
+                    }
+                  }}
                 />
               </div>
             </CardContent>
@@ -94,43 +321,89 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Session Timeout</Label>
+                  <Label
+                    htmlFor="session-timeout"
+                    className="font-medium"
+                  >
+                    Session Timeout
+                  </Label>
                   <p className="text-xs text-muted-foreground">
-                    Automatically log out after inactivity (minutes)
+                    Automatically log out after inactivity in minutes
+                    (5–480)
                   </p>
                 </div>
                 <Input
+                  id="session-timeout"
                   type="number"
-                  defaultValue={60}
-                  className="w-20"
+                  className="w-24"
                   min={5}
                   max={480}
+                  value={settings.sessionTimeoutMinutes}
+                  onChange={(e) => {
+                    const n = parseInt(e.target.value, 10);
+                    if (!isNaN(n) && n >= 5 && n <= 480) {
+                      updateSetting("sessionTimeoutMinutes", n);
+                    } else if (e.target.value === "") {
+                      setSettings((prev) => ({
+                        ...prev,
+                        sessionTimeoutMinutes: 60,
+                      }));
+                    }
+                  }}
                 />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">IP Allowlist</Label>
+                  <Label
+                    htmlFor="ip-allowlist"
+                    className="font-medium"
+                  >
+                    IP Allowlist
+                  </Label>
                   <p className="text-xs text-muted-foreground">
                     Restrict dashboard access to specific IPs
                   </p>
                 </div>
-                <Switch />
+                <Switch
+                  id="ip-allowlist"
+                  checked={settings.ipAllowlistEnabled}
+                  onCheckedChange={(checked) =>
+                    updateSetting("ipAllowlistEnabled", checked)
+                  }
+                />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Rate Limiting</Label>
+                  <Label
+                    htmlFor="rate-limit"
+                    className="font-medium"
+                  >
+                    Rate Limiting
+                  </Label>
                   <p className="text-xs text-muted-foreground">
-                    Limit API requests per minute
+                    Limit API requests per minute (10–1000)
                   </p>
                 </div>
                 <Input
+                  id="rate-limit"
                   type="number"
-                  defaultValue={100}
-                  className="w-20"
+                  className="w-24"
                   min={10}
                   max={1000}
+                  value={settings.rateLimitPerMinute}
+                  onChange={(e) => {
+                    const n = parseInt(e.target.value, 10);
+                    if (!isNaN(n) && n >= 10 && n <= 1000) {
+                      updateSetting("rateLimitPerMinute", n);
+                    } else if (e.target.value === "") {
+                      setSettings((prev) => ({
+                        ...prev,
+                        rateLimitPerMinute: 100,
+                      }));
+                    }
+                  }}
                 />
               </div>
             </CardContent>
@@ -147,11 +420,14 @@ export default function SettingsPage() {
               <div className="flex items-start gap-3">
                 <Shield className="h-5 w-5 text-primary mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium">ALYGN Regulator v2.0.0</p>
+                  <p className="text-sm font-medium">
+                    ALYGN Regulator v2.0.0
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Sovereign Compliance Infrastructure for AI Safety.
-                    Backend: Bun + Elysia + Better-Auth + SQLite.
-                    Frontend: Next.js 16 + shadcn/ui + Tailwind CSS v4.
+                    Sovereign Compliance Infrastructure for AI
+                    Safety. Backend: Bun + Elysia + Better-Auth +
+                    SQLite. Frontend: Next.js 16 + shadcn/ui +
+                    Tailwind CSS v4.
                   </p>
                 </div>
               </div>
@@ -159,10 +435,20 @@ export default function SettingsPage() {
           </Card>
         </SectionErrorBoundary>
 
-        {/* Save Button */}
+        {/* Save Button — batch save all */}
         <div className="flex justify-end">
-          <Button onClick={() => toast.success("Settings saved")}>
-            Save Settings
+          <Button
+            onClick={handleSaveAll}
+            disabled={isSaving || isLoading}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving…
+              </>
+            ) : (
+              "Save Settings"
+            )}
           </Button>
         </div>
       </div>
