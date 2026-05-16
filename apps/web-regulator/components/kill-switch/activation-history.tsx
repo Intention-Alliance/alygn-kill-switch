@@ -19,17 +19,28 @@ import type { ActivationRecord } from "@/types/shared";
 interface ActivationHistoryProps {
   limit?: number;
   className?: string;
+  /** Records from WebSocket hook — if provided, skips API fetch */
+  webSocketRecords?: ActivationRecord[];
 }
 
 export function ActivationHistory({
   limit = 20,
   className,
+  webSocketRecords,
 }: ActivationHistoryProps) {
   const [records, setRecords] = useState<ActivationRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!webSocketRecords);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // If WebSocket provides records, use them directly
+    if (webSocketRecords) {
+      setRecords(webSocketRecords.slice(0, limit));
+      setIsLoading(false);
+      return;
+    }
+
+    // Otherwise fall back to API fetch
     let cancelled = false;
 
     async function fetchHistory() {
@@ -50,14 +61,13 @@ export function ActivationHistory({
     }
 
     fetchHistory();
+
+    const interval = setInterval(fetchHistory, 15_000);
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
-
-    // Poll every 15s for real-time updates
-    const interval = setInterval(fetchHistory, 15_000);
-    return () => clearInterval(interval);
-  }, [limit]);
+  }, [limit, webSocketRecords]);
 
   if (isLoading) {
     return (
@@ -68,7 +78,7 @@ export function ActivationHistory({
     );
   }
 
-  if (error) {
+  if (error && !webSocketRecords) {
     return (
       <div className={cn("rounded-md bg-destructive/5 p-4 text-sm text-destructive", className)}>
         Failed to load activation history: {error}
@@ -91,7 +101,7 @@ export function ActivationHistory({
           No activation events recorded yet.
         </p>
       ) : (
-        <div className="rounded-md border">
+        <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -145,5 +155,3 @@ function StateBadge({ state }: { state: string }) {
     </Badge>
   );
 }
-
-

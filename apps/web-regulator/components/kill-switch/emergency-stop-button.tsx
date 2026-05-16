@@ -57,8 +57,9 @@ export function EmergencyStopButton({
     }
   }
 
-  async function submitStateChange() {
-    if (!targetState) return;
+  async function submitStateChange(state?: KillSwitchState) {
+    const nextState = state ?? targetState;
+    if (!nextState) return;
     setIsSubmitting(true);
 
     try {
@@ -67,8 +68,8 @@ export function EmergencyStopButton({
         previous: KillSwitchState;
         timestamp: number;
       }>("/api/kill-switch/chaos", {
-        state: targetState,
-        reason: `Manual override via dashboard: ${targetState}`,
+        state: nextState,
+        reason: `Manual override via dashboard: ${nextState}`,
       });
 
       toast.success(`State changed to ${result.current}`);
@@ -76,6 +77,7 @@ export function EmergencyStopButton({
       setIsDialogOpen(false);
       setIsConfirmOpen(false);
       setConfirmPhrase("");
+      setTargetState(null);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to change state";
@@ -92,7 +94,7 @@ export function EmergencyStopButton({
           <Button
             variant="default"
             size="lg"
-            onClick={() => submitStateChange()}
+            onClick={() => submitStateChange("ARMED")}
             disabled={isSubmitting}
           >
             <Shield className="mr-2 h-5 w-5" />
@@ -119,7 +121,7 @@ export function EmergencyStopButton({
               <Button
                 variant="default"
                 size="lg"
-                onClick={() => submitStateChange()}
+                onClick={() => submitStateChange("RUNNING")}
                 disabled={isSubmitting}
               >
                 <Loader2
@@ -208,7 +210,7 @@ export function EmergencyStopButton({
             >
               Cancel
             </Button>
-            <Button onClick={submitStateChange} disabled={isSubmitting}>
+            <Button onClick={() => submitStateChange()} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

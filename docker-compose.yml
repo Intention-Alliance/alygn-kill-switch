@@ -39,7 +39,7 @@ services:
       dockerfile: apps/server-kill-switch/Dockerfile
     container_name: alygn-kill-switch
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - kill-switch-data:/app/data
     environment:
@@ -51,12 +51,17 @@ services:
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
       - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
+      - REDIS_URLS=${REDIS_URLS:-redis://redis:6379}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - DATA_DIR=/app/data
       - LOG_LEVEL=${LOG_LEVEL:-info}
+    extra_hosts:
+      - "redis:host-gateway"
+      - "otel-collector:host-gateway"
     networks:
       - align-network
+      - phase0-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
@@ -86,27 +91,29 @@ services:
   
 
   # ============================================
-  # Web Regulator (Next.js)
+  # Web Regulator (Next.js Kill Switch Admin UI)
   # ============================================
-  # TODO: Add web regulator Dockerfile
-  # web-regulator:
-  #   build:
-  #     context: ./apps/web-regulator
-  #     dockerfile: ./apps/web-regulator/Dockerfile
-  #   container_name: align-web-regulator
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
-  #     - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${SUPABASE_ANON_KEY}
-  #   volumes:
-  #     - ./apps/web-regulator:/app
-  #     - /app/node_modules
-  #     - /app/.next
-  #   networks:
-  #     - align-network
+  web-regulator:
+    build:
+      context: .
+      dockerfile: apps/web-regulator/Dockerfile
+    container_name: alygn-web-regulator
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      - NODE_ENV=production
+      - KILL_SWITCH_BACKEND_URL=http://alygn-kill-switch:3000
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://alygn-kill-switch:3000}
+      - NEXT_PUBLIC_BETTER_AUTH_URL=/api/auth
+      - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}
+      - NEXT_PUBLIC_OTEL_ENABLED=false
+    networks:
+      - align-network
+    depends_on:
+      kill-switch:
+        condition: service_healthy
 
   # ============================================
   # PostgreSQL (Local Development)
@@ -130,6 +137,8 @@ services:
 networks:
   align-network:
     driver: bridge
+  phase0-net:
+    external: true
 
 volumes:
   kill-switch-data:

@@ -48,14 +48,19 @@ export function StatusIndicator({ state, className }: StatusIndicatorProps) {
   const config = STATE_CONFIG[state] ?? STATE_CONFIG.ARMED;
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div
+      className={cn("flex items-center gap-2", className)}
+      aria-live="polite"
+      role="status"
+    >
       <div className="flex items-center gap-1.5">
         <span
           className={cn(
             "inline-block h-2.5 w-2.5 rounded-full",
             config.color.replace("text-", "bg-"),
-            config.pulse && "animate-pulse",
+            config.pulse && "motion-safe:animate-pulse",
           )}
+          aria-hidden="true"
         />
         <span className={cn("text-sm font-semibold", config.color)}>
           {config.label}

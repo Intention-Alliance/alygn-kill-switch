@@ -38,7 +38,7 @@ export async function checkAuth(
       if (data && data.user) {
         return {
           authenticated: true,
-          user: { email: data.user.email, role: 'admin' },
+          user: { email: data.user.email, role: data.user.role || 'viewer' },
         };
       }
     }
