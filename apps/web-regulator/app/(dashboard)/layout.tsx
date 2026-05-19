@@ -1,6 +1,8 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { Suspense, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
@@ -35,6 +37,12 @@ function AuthGuard({ children }: { children: ReactNode }) {
 }
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
+  // Dashboard root page uses full-width (handles its own p-8).
+  // All other (dashboard) pages get the legacy max-w-6xl wrapper.
+  const isDashboard = pathname === "/";
+
   return (
     <AuthGuard>
       <div className="flex h-screen overflow-hidden">
@@ -45,13 +53,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <MobileSidebar />
 
       <main className="flex-1 overflow-y-auto bg-background">
-        <div className="mx-auto max-w-6xl p-4 pt-14 md:pt-4 lg:p-8">
+        {isDashboard ? (
           <ErrorBoundary>
             <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" /></div>}>
               {children}
             </Suspense>
           </ErrorBoundary>
-        </div>
+        ) : (
+          <div className="mx-auto max-w-6xl p-4 pt-14 md:pt-4 lg:p-8">
+            <ErrorBoundary>
+              <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" /></div>}>
+                {children}
+              </Suspense>
+            </ErrorBoundary>
+          </div>
+        )}
       </main>
       </div>
     </AuthGuard>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Shield,
+  LayoutDashboard,
   Flag,
   Server,
   Settings,
@@ -25,6 +26,12 @@ import {
 import { useAuth } from "@/lib/auth-context";
 
 const NAV_ITEMS = [
+  {
+    href: "/",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    description: "Compliance monitoring overview",
+  },
   {
     href: "/kill-switch",
     label: "Kill Switch",
@@ -86,13 +93,13 @@ export function AppSidebar({ className }: AppSidebarProps) {
       {/* Brand */}
       <div className="flex h-14 items-center justify-between px-4">
         {!collapsed && (
-          <Link href="/kill-switch" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary" />
             <span className="font-bold tracking-tight">ALYGN</span>
           </Link>
         )}
         {collapsed && (
-          <Link href="/kill-switch" className="mx-auto">
+          <Link href="/" className="mx-auto">
             <Shield className="h-5 w-5 text-primary" />
           </Link>
         )}
