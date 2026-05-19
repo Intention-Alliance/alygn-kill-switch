@@ -27,6 +27,11 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import {
+  StateMachineDiagram,
+  FlagResolutionDiagram,
+  WebSocketArchitectureDiagram,
+} from "@/components/docs/diagrams";
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -72,45 +77,6 @@ const STATES: StateInfo[] = [
     description: "Emergency lockdown. All operations frozen. No state transitions allowed except unlock by admin. This state is reserved for security incidents, detected attacks, or manual panic-button activation.",
   },
 ];
-
-const STATE_TRANSITIONS_ASCII = `┌────────────────────────────────────────────────────┐
-│                 Kill Switch State Machine           │
-│                                                     │
-│    ┌──────────┐    activate     ┌──────────┐       │
-│    │  ARMED   │ ──────────────→ │ RUNNING  │       │
-│    │ (idle)   │                 │ (active) │       │
-│    └────┬─────┘                 └────┬─────┘       │
-│         │                            │             │
-│         │ emergency                  │ stop        │
-│         │ stop                       │             │
-│         │                            ▼             │
-│         │                      ┌──────────┐       │
-│         │                      │ STOPPING │       │
-│         │                      │(draining)│       │
-│         │                      └────┬─────┘       │
-│         │                           │              │
-│         │                           │ drain done   │
-│         │                           ▼              │
-│         │                      ┌──────────┐       │
-│         └─────────────────────→│ STOPPED  │       │
-│                lock            │(quiesced)│       │
-│                                └────┬─────┘       │
-│                                     │             │
-│                                     │ lock         │
-│                                     ▼             │
-│                                ┌──────────┐       │
-│                                │ LOCKED   │       │
-│                                │(frozen)  │       │
-│                                └──────────┘       │
-│                                                     │
-│  ARM ──→ RUNNING (start interception)              │
-│  RUNNING ──→ STOPPING (graceful shutdown)          │
-│  ARM/RUNNING ──→ STOPPED (emergency stop)          │
-│  STOPPING ──→ STOPPED (drain complete)             │
-│  STOPPED ──→ LOCKED (lockdown)                     │
-│  STOPPED ──→ ARMED (re-arm)                        │
-│  LOCKED ──→ ARMED (unlock + re-arm, admin only)    │
-└────────────────────────────────────────────────────┘`;
 
 const PREDEFINED_FLAGS = [
   {
@@ -259,9 +225,9 @@ export default function DocsPage() {
 
           <div>
             <h3 className="font-semibold text-base mb-2">State Transitions</h3>
-            <pre className="overflow-x-auto rounded-lg border bg-muted/50 p-4 text-xs font-mono leading-relaxed text-foreground/80">
-              {STATE_TRANSITIONS_ASCII}
-            </pre>
+            <div className="overflow-x-auto rounded-lg border bg-muted/50 p-4">
+              <StateMachineDiagram className="w-full max-w-[700px] mx-auto text-foreground" />
+            </div>
           </div>
 
           <div>
@@ -334,6 +300,9 @@ export default function DocsPage() {
               over global defaults, ensuring operators can apply stricter policies to
               high-risk nodes without affecting the entire fleet.
             </p>
+            <div className="overflow-x-auto rounded-lg border bg-muted/50 p-4 mb-4">
+              <FlagResolutionDiagram className="w-full max-w-[700px] mx-auto text-foreground" />
+            </div>
             <div className="rounded-lg border p-4 space-y-2">
               <div className="flex items-center gap-3">
                 <Badge variant="destructive" className="text-[10px]">1</Badge>
@@ -832,8 +801,20 @@ export default function DocsPage() {
                 <pre className="text-xs font-mono leading-relaxed overflow-x-auto">{`curl "http://localhost:3000/v1/machines?status=active&sortBy=lastSeen&limit=20" \\
   -H "Cookie: better-auth.session_token=..."`}</pre>
               </div>
-              <div className="rounded-lg border bg-muted/30 p-4">
-                <p className="text-xs font-semibold mb-2">Connect via WebSocket</p>
+          <div>
+            <h3 className="font-semibold text-base mb-2">WebSocket Event Architecture</h3>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Real-time updates flow from the Bun server to connected dashboards via
+              WebSocket. The server publishes state changes, flag updates, and agent events
+              to Redis channels, which are then broadcast to all active WebSocket connections.
+            </p>
+            <div className="overflow-x-auto rounded-lg border bg-muted/50 p-4">
+              <WebSocketArchitectureDiagram className="w-full max-w-[750px] mx-auto text-foreground" />
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-muted/30 p-4 mt-4">
+            <p className="text-xs font-semibold mb-2">Connect via WebSocket</p>
                 <pre className="text-xs font-mono leading-relaxed overflow-x-auto">{`// Browser:
 const ws = new WebSocket("ws://localhost:3000/ws?token=YOUR_SESSION_TOKEN");
 

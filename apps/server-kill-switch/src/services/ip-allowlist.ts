@@ -2,10 +2,39 @@
 // Extracted from kill-switch-service.mjs
 
 import { timingSafeEqual } from 'crypto';
+import { resolve4 } from 'node:dns/promises';
+
+// ─── Tailscale MagicDNS — dynamic DNS resolution for Tailscale IP ──
+
+const TAILSCALE_MAGICDNS = 'andlersrv.tail62d797.ts.net';
+const DNS_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+let dnsResolvedIps: string[] = [];
+let refreshTimer: ReturnType<typeof setInterval> | null = null;
+
+export async function refreshTailscaleDns(): Promise<string[]> {
+  try {
+    const addresses = await resolve4(TAILSCALE_MAGICDNS);
+    dnsResolvedIps = addresses;
+    console.log(`[ip-allowlist] DNS resolved ${TAILSCALE_MAGICDNS} → [${addresses.join(', ')}]`);
+    return addresses;
+  } catch (err: any) {
+    console.error(`[ip-allowlist] DNS resolution failed for ${TAILSCALE_MAGICDNS}: ${err.message}`);
+    return dnsResolvedIps; // keep previous
+  }
+}
+
+export function startDnsRefresh(): void {
+  refreshTailscaleDns(); // immediate
+  refreshTimer = setInterval(refreshTailscaleDns, DNS_REFRESH_INTERVAL_MS);
+}
+
+export function stopDnsRefresh(): void {
+  if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+}
 
 // Default allowlist (can be overridden via IP_ALLOWLIST env var)
 const DEFAULT_ALLOWED_IPS = [
-  '100.66.199.80',
   '192.168.1.11',
   '127.0.0.1',
   '::1',
@@ -32,9 +61,10 @@ const CIDR_RANGES = parseEnvList(process.env.IP_ALLOWLIST_CIDRS, DEFAULT_CIDR_RA
 
 export function isIpAllowed(ip: string): boolean {
   const normalizedIp = ip.replace(/^::ffff:/, '');
+  const allIps = [...ALLOWED_IPS, ...dnsResolvedIps];
 
-  // Check exact IP matches
-  if (ALLOWED_IPS.includes(normalizedIp) || ALLOWED_IPS.includes(ip)) {
+  // Check exact IP matches (static + DNS-resolved)
+  if (allIps.includes(normalizedIp) || allIps.includes(ip)) {
     return true;
   }
 

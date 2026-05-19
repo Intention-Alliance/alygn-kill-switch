@@ -37,6 +37,41 @@ import { toast } from "sonner";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type { Flag as FlagType } from "@/types/shared";
 
+// ─── ADR-133 Predefined Flags ──────────────────────────────────────
+
+const PREDEFINED_FLAGS = [
+  {
+    key: "llm_interception_enabled",
+    type: "boolean",
+    description:
+      "Master toggle for LLM request interception. When false, all requests pass through unscored. Toggle per-machine for granular control.",
+  },
+  {
+    key: "auto_stop_threshold",
+    type: "number",
+    description:
+      "Score threshold for automatic blocking (0.0–1.0). Lower values = stricter blocking. Set to 1.0 to disable auto-blocking while still logging scores.",
+  },
+  {
+    key: "damage_logging_level",
+    type: "string",
+    description:
+      "Verbosity: minimal (blocked only), standard (blocked + near-threshold), verbose (all scored). Higher levels increase storage usage.",
+  },
+  {
+    key: "alert_on_critical_score",
+    type: "boolean",
+    description:
+      "Desktop notification on critical events when request score exceeds 0.9. Early warning before auto-stop triggers.",
+  },
+  {
+    key: "request_sampling_rate",
+    type: "number",
+    description:
+      "Percentage of requests to sample (0.0–1.0). At 1.0 every request is scored. Lower values reduce CPU load but create blind spots.",
+  },
+];
+
 // The backend returns flags with a slightly different shape
 interface BackendFlag {
   id: string;
@@ -225,6 +260,35 @@ export default function FlagsDashboardPage() {
         </div>
 
         <Separator />
+
+        {/* Predefined Flags (ADR-133) */}
+        <Card className="bg-muted/30">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm font-semibold">Predefined Flags — ADR-133</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {PREDEFINED_FLAGS.map((pf) => (
+                <div key={pf.key} className="rounded-md border bg-background p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <code className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-mono font-semibold">
+                      {pf.key}
+                    </code>
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1">
+                      {pf.type}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {pf.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Search */}
         <div className="flex items-center gap-3">

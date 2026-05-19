@@ -9,6 +9,11 @@ export async function loadRedisPool() {
 }
 
 export async function loadTracing() {
-  const { recordSpan } = await import('../../../infra/tracing/tracing-sdk.mjs');
-  return { recordSpan };
+  try {
+    const { recordSpan } = await import('../../../infra/tracing/tracing-sdk.mjs');
+    return { recordSpan };
+  } catch (err: any) {
+    console.error('[tracing] OTel SDK load failed, using no-op tracer:', err.message);
+    return { recordSpan: async (name: string, _attrs: any, fn: (span: any) => any) => fn({ spanContext: () => ({ traceId: 'noop' }), setAttribute: () => {} }) };
+  }
 }

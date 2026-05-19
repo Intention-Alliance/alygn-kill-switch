@@ -85,7 +85,9 @@ async function parseJsonBody(req: any): Promise<any> {
   });
 }
 
-function getUserRole(req: any): string | null {
+function getUserRole(req: any, passedRole?: string | null): string | null {
+  // Use the role passed from auth middleware (primary source)
+  if (passedRole) return passedRole;
   try {
     // Try to extract from request context set by auth middleware
     if (req._user && req._user.role) return req._user.role;
@@ -104,6 +106,7 @@ export async function handleSettingsRoutes(
   url: string,
   req: any,
   res: any,
+  userRole?: string | null,
   publishEvent?: (channel: string, message: string) => Promise<void>,
 ): Promise<boolean> {
   if (!url.startsWith('/v1/settings')) return false;
@@ -132,7 +135,7 @@ export async function handleSettingsRoutes(
     // ─── POST /v1/settings — Batch update ──────────────────────────
     if (method === 'POST' && url === '/v1/settings') {
       // Admin role check
-      const role = getUserRole(req);
+      const role = getUserRole(req, userRole);
       if (role !== 'admin') {
         json(res, 403, { error: 'Admin role required to modify settings' });
         return true;
@@ -222,7 +225,7 @@ export async function handleSettingsRoutes(
     // ─── PUT /v1/settings/:key — Update single setting ──────────────
     if (method === 'PUT' && keyMatch) {
       // Admin role check
-      const role = getUserRole(req);
+      const role = getUserRole(req, userRole);
       if (role !== 'admin') {
         json(res, 403, { error: 'Admin role required to modify settings' });
         return true;

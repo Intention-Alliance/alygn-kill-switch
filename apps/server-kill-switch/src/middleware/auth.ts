@@ -15,32 +15,20 @@ export async function checkAuth(
   service: KillSwitchService,
   req: any,
 ): Promise<{ authenticated: boolean; user?: { email: string; role: string } }> {
-  // ── Try Better-Auth v2 session cookie ──
+  // ── Try Better-Auth v2 session cookie (direct API call) ──
   try {
     const headers = new Headers();
     if (req.headers?.cookie) {
       headers.set('cookie', req.headers.cookie);
     }
-    headers.set('accept', 'application/json');
 
-    const proto = req.socket?.encrypted ? 'https' : 'http';
-    const host = req.headers?.['host'] || 'localhost:3000';
+    const data = await auth.api.getSession({ headers }) as any;
 
-    const webReq = new Request(
-      `${proto}://${host}/v1/auth/get-session`,
-      { method: 'GET', headers },
-    );
-
-    const response = await auth.handler(webReq);
-
-    if (response.ok) {
-      const data: any = await response.json();
-      if (data && data.user) {
-        return {
-          authenticated: true,
-          user: { email: data.user.email, role: data.user.role || 'viewer' },
-        };
-      }
+    if (data?.user) {
+      return {
+        authenticated: true,
+        user: { email: data.user.email, role: data.user.role || 'viewer' },
+      };
     }
   } catch (err: any) {
     console.error('[auth-middleware] Session check failed:', err.message);

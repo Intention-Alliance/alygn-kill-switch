@@ -20,6 +20,8 @@
 import type { KillSwitchService } from '../services/kill-switch';
 import type { AuthRateLimiter } from '../middleware/auth-rate-limit';
 import { auth } from '../lib/auth';
+import { validatePassword } from '../utils/password-validation';
+import { parseBody } from '../utils/body-parser';
 
 /**
  * Convert a Node.js IncomingMessage to a Web Request for Better-Auth.
@@ -122,6 +124,24 @@ export async function handleAuthRoutes(
   if (legacyRedirect) {
     req.url = legacyRedirect;
     // fall through to catch-all below
+  }
+
+  // ─── Password complexity validation for sign-up ───
+  if (method === 'POST' && (url === '/v1/auth/sign-up/email' || url === '/v1/auth/sign-up')) {
+    const body = await parseBody(req);
+    if (!body?.password) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Password is required' }));
+      return true;
+    }
+    const validation = validatePassword(body.password);
+    if (!validation.valid) {
+      res.writeHead(422, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Password does not meet complexity requirements', errors: validation.errors }));
+      return true;
+    }
+    // Set body for the catch-all to forward to Better-Auth
+    req.body = JSON.stringify(body);
   }
 
   // GET /v1/auth/ip — utility endpoint

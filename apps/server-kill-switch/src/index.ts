@@ -4,13 +4,15 @@
 import { KillSwitchService } from './services/kill-switch';
 import { WebSocketManager } from './services/websocket-manager';
 import { sqlite as sqliteDb } from './db/index';
-import { isIpAllowed } from './services/ip-allowlist';
-import { checkRateLimit, RATE_LIMIT_MAX } from './middleware/rate-limit';
+import { isIpAllowed, startDnsRefresh } from './services/ip-allowlist';
+import { checkRateLimit, isReadRequest, initRateLimiter, READ_RATE_LIMIT_MAX, WRITE_RATE_LIMIT_MAX, RATE_LIMIT_MAX } from './middleware/rate-limit';
 import { checkAuth } from './middleware/auth';
 import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
 import { handleKillSwitchRoutes } from './routes/kill-switch';
 import { handleFlagsRoutes } from './routes/flags';
+import { handleMachinesRoutes } from './routes/machines';
+import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
 import { loadRedisPool } from './infra-loader';
@@ -61,7 +63,7 @@ function createHandler(service: KillSwitchService) {
       }
     }
 
-    const rate = checkRateLimit(ip);
+    const rate = await checkRateLimit(ip, req.method || 'GET', req.url || '/');
     if (!rate.allowed) {
       res.writeHead(429, { 'Content-Type': 'application/json', 'Retry-After': String(rate.retryAfter || 60) });
       res.end(JSON.stringify({ error: 'Rate limit exceeded', limit: RATE_LIMIT_MAX }));
@@ -69,16 +71,20 @@ function createHandler(service: KillSwitchService) {
     }
 
     let uid: string | null = null;
+    let userRole: string | null = null;
     if (url !== '/v1/kill-switch/health' && !isAuth) {
       const ar = await checkAuth(service, req);
       if (!ar.authenticated) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Authentication required' })); return; }
       uid = ar.user?.email ?? null;
+      userRole = ar.user?.role ?? null;
     }
 
     const handled =
       await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
-      await handleFlagsRoutes(method, url, req, res, uid || 'api');
+      await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
+      await handleMachinesRoutes(method, url, req, res, null) ||
+      await handleSettingsRoutes(method, url, req, res, userRole, null);
 
     if (!handled) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Not found' })); }
   };
@@ -91,6 +97,9 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   const RedisPool = await loadRedisPool() as any;
   const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls });
   await redis.connect();
+
+  initRateLimiter(redis);
+  startDnsRefresh();
 
   const service = new KillSwitchService({
     redis,
