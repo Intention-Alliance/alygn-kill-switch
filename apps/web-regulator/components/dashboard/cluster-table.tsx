@@ -84,7 +84,7 @@ export function ClusterTable({ clusters, isLoading }: ClusterTableProps) {
                 <TableCell>
                   <span
                     className={
-                      (cluster.avg_latency || 0.0) < 4
+                      (cluster.avg_latency || 0.0) < 5
                         ? "text-green-500"
                         : "text-yellow-500"
                     }
