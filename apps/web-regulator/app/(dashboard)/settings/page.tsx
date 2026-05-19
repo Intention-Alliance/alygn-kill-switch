@@ -69,6 +69,16 @@ function toRawSettings(appSettings: Partial<AppSettings>): RawSettings {
   return result;
 }
 
+/** Inline error indicator shown when a setting failed to save */
+function SettingErrorBadge({ apiKey, failedKeys }: { apiKey: string; failedKeys: Set<string> }) {
+  if (!failedKeys.has(apiKey)) return null;
+  return (
+    <span className="ml-2 inline-flex items-center rounded bg-destructive/10 px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+      Save failed
+    </span>
+  );
+}
+
 const DEFAULT_SETTINGS: AppSettings = {
   autoPollInterval: 5000,
   enableNotifications: true,
@@ -144,11 +154,16 @@ export default function SettingsPage() {
         // Broadcast to other tabs
         broadcastSetting(apiKey, stringValue);
       } catch (err) {
-        toast.error(
-          err instanceof Error
-            ? err.message
-            : `Failed to save "${apiKey}"`,
-        );
+        // Detect 403 — insufficient permissions
+        if (err instanceof Error && err.message.includes("403")) {
+          toast.error("Save failed — ensure you have admin privileges");
+        } else {
+          toast.error(
+            err instanceof Error
+              ? err.message
+              : `Failed to save "${apiKey}"`,
+          );
+        }
         // Revert on failure
         fetchSettings();
       }
@@ -158,21 +173,64 @@ export default function SettingsPage() {
 
   // ─── Batch save all settings ──────────────────────────────────
 
+  // Tracks which settings failed to save for inline error display
+  const [failedKeys, setFailedKeys] = useState<Set<string>>(new Set());
+
   async function handleSaveAll() {
     setIsSaving(true);
-    try {
-      const raw = toRawSettings(settings);
-      await apiPost("/api/settings", { settings: raw });
+    setFailedKeys(new Set());
+
+    // Save each setting individually for partial-failure tolerance
+    const entries = Object.entries(KEY_MAP) as [keyof AppSettings, string][];
+    const results = await Promise.allSettled(
+      entries.map(async ([camelKey, apiKey]) => {
+        const stringValue = String(settings[camelKey]);
+        await apiPut(`/api/settings/${apiKey}`, {
+          value: stringValue,
+        });
+        broadcastSetting(apiKey, stringValue);
+        return camelKey;
+      }),
+    );
+
+    const failures: string[] = [];
+    const failedSet = new Set<string>();
+
+    results.forEach((result) => {
+      if (result.status === "rejected") {
+        const err = result.reason as Error | undefined;
+        const msg = err?.message ?? "";
+        if (msg.includes("403")) {
+          failures.push("Requires admin privileges");
+        } else {
+          failures.push(msg || "Unknown error");
+        }
+      } else if (result.status === "fulfilled") {
+        failedSet.delete(
+          KEY_MAP[result.value as keyof AppSettings] ?? "",
+        );
+      }
+    });
+
+    // Identify which keys failed for inline indicators
+    results.forEach((result, i) => {
+      if (result.status === "rejected") {
+        failedSet.add(entries[i][1]);
+      }
+    });
+    setFailedKeys(failedSet);
+
+    if (failures.length === 0) {
       toast.success("All settings saved");
-    } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : "Failed to save settings",
+    } else if (failures.length === results.length) {
+      toast.error("All settings failed to save — check your permissions");
+    } else {
+      toast.warning(
+        `${results.length - failures.length} of ${results.length} settings saved — ${failures.length} failed`,
       );
-    } finally {
-      setIsSaving(false);
     }
+
+    setIsSaving(false);
   }
 
   // ─── Loading State ─────────────────────────────────────────────
@@ -225,6 +283,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     Auto-poll Interval
+                    <SettingErrorBadge apiKey="auto_poll_interval" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Status refresh interval in milliseconds (1000–60000)
@@ -259,6 +318,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     Enable Notifications
+                    <SettingErrorBadge apiKey="enable_notifications" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Receive desktop notifications for state changes
@@ -280,6 +340,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     Audit Log Retention
+                    <SettingErrorBadge apiKey="audit_log_retention_days" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Days to keep activation history records (1–365)
@@ -326,6 +387,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     Session Timeout
+                    <SettingErrorBadge apiKey="session_timeout_minutes" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Automatically log out after inactivity in minutes
@@ -360,6 +422,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     IP Allowlist
+                    <SettingErrorBadge apiKey="ip_allowlist_enabled" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Restrict dashboard access to specific IPs
@@ -381,6 +444,7 @@ export default function SettingsPage() {
                     className="font-medium"
                   >
                     Rate Limiting
+                    <SettingErrorBadge apiKey="rate_limit_per_minute" failedKeys={failedKeys} />
                   </Label>
                   <p className="text-xs text-muted-foreground">
                     Limit API requests per minute (10–1000)

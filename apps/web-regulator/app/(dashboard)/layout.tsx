@@ -1,12 +1,43 @@
 import type { ReactNode } from "react";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { useAuth } from "@/lib/auth-context";
+
+function AuthGuard({ children }: { children: ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
+          <p className="text-sm text-muted-foreground">Verifying session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // Will redirect — don't flash protected content
+  }
+
+  return <>{children}</>;
+}
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <AuthGuard>
+      <div className="flex h-screen overflow-hidden">
       {/* Desktop sidebar — hidden on mobile */}
       <AppSidebar className="hidden md:flex" />
 
@@ -22,6 +53,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </ErrorBoundary>
         </div>
       </main>
-    </div>
+      </div>
+    </AuthGuard>
   );
 }

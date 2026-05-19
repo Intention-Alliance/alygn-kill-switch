@@ -1,113 +1,80 @@
 /**
- * Split Rate Limiter — Read (60/min) + Write (10/min)
+ * Redis-backed Sliding-Window Rate Limiter
  *
- * Replaces the old single 10/min rate limiter with two independent limiters:
- *   - ReadRateLimiter: 60 requests per 60s window (GET/HEAD/OPTIONS)
- *   - WriteRateLimiter: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
+ * Replaces the old Map-based in-memory rate limiter with Redis sorted sets:
+ *   - Read: 60 requests per 60s window (GET/HEAD/OPTIONS)
+ *   - Write: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
  *
- * Heartbeat endpoints (machines/:id/heartbeat) bypass rate limiting entirely.
+ * Heartbeat endpoints (/health, /v1/kill-switch/health) bypass rate limiting entirely.
  *
- * ADR-133: Kill Switch dashboard rebuild — split rate limits.
+ * Graceful degradation: allows requests if Redis is unavailable.
+ *
+ * ADR-133: Kill Switch dashboard — Redis-backed rate limits.
  */
 
-const READ_WINDOW_MS = 60_000;
-const READ_MAX = 60;
-const WRITE_WINDOW_MS = 60_000;
-const WRITE_MAX = 10;
+import type { RedisPool } from '../types/redis-pool';
 
-// ─── Read Rate Limiter (60/min) ─────────────────────────────────────
+// ─── Configuration ────────────────────────────────
+export const READ_RATE_LIMIT_MAX = 60;   // GET requests per minute
+export const WRITE_RATE_LIMIT_MAX = 10;  // POST/PUT/DELETE per minute
+export const RATE_LIMIT_WINDOW_MS = 60000;
+export const RATE_LIMIT_MAX = READ_RATE_LIMIT_MAX; // legacy compat
 
-export class ReadRateLimiter {
-  private requests = new Map<string, { count: number; windowStart: number }>();
+// ─── Redis-backed Sliding Window ──────────────────
+let _redis: RedisPool | null = null;
 
-  check(ip: string): boolean {
-    const now = Date.now();
-    const entry = this.requests.get(ip);
-
-    if (!entry || now - entry.windowStart > READ_WINDOW_MS) {
-      this.requests.set(ip, { count: 1, windowStart: now });
-      return true;
-    }
-
-    if (entry.count >= READ_MAX) {
-      return false;
-    }
-
-    entry.count++;
-    return true;
-  }
+export function initRateLimiter(redis: RedisPool): void {
+  _redis = redis;
 }
 
-// ─── Write Rate Limiter (10/min) ────────────────────────────────────
-
-export class WriteRateLimiter {
-  private requests = new Map<string, { count: number; windowStart: number }>();
-
-  check(ip: string): boolean {
-    const now = Date.now();
-    const entry = this.requests.get(ip);
-
-    if (!entry || now - entry.windowStart > WRITE_WINDOW_MS) {
-      this.requests.set(ip, { count: 1, windowStart: now });
-      return true;
-    }
-
-    if (entry.count >= WRITE_MAX) {
-      return false;
-    }
-
-    entry.count++;
-    return true;
-  }
-}
-
-// ─── Helpers ────────────────────────────────────────────────────────
-
-/**
- * Determine if a request is a read request based on HTTP method.
- */
-export function isReadRequest(method: string): boolean {
-  return ['GET', 'HEAD', 'OPTIONS'].includes(method.toUpperCase());
-}
-
-/**
- * Determine if a request is a machine heartbeat (should bypass rate limit).
- */
-export function isHeartbeatRequest(url: string): boolean {
-  return url.includes('/heartbeat');
-}
-
-// ─── Singleton instances ────────────────────────────────────────────
-
-const readLimiter = new ReadRateLimiter();
-const writeLimiter = new WriteRateLimiter();
-
-/**
- * Check rate limit for any request.
- * Returns { allowed: boolean; retryAfter?: number }.
- */
-export function checkRateLimit(ip: string, method: string = 'GET', url: string = ''): { allowed: boolean; retryAfter?: number } {
-  // Heartbeat endpoints bypass rate limiting entirely
-  if (isHeartbeatRequest(url)) {
+async function checkRateLimitRedis(
+  ip: string,
+  maxRequests: number
+): Promise<{ allowed: boolean; retryAfter?: number }> {
+  if (!_redis) {
+    console.warn('[rate-limit] Redis not initialized, allowing request');
     return { allowed: true };
   }
 
-  const allowed = isReadRequest(method)
-    ? readLimiter.check(ip)
-    : writeLimiter.check(ip);
+  try {
+    const now = Date.now();
+    const key = `ratelimit:${maxRequests}:${ip}`;
+    const cutoff = now - RATE_LIMIT_WINDOW_MS;
 
-  if (!allowed) {
-    const retryAfter = Math.ceil(
-      (isReadRequest(method) ? READ_WINDOW_MS : WRITE_WINDOW_MS) / 1000
-    );
-    return { allowed: false, retryAfter };
+    return await _redis.withClient(async (client: any) => {
+      const pipeline = client.multi();
+      pipeline.zAdd(key, { score: now, value: `${now}:${Math.random().toString(36).slice(2)}` });
+      pipeline.zRemRangeByScore(key, 0, cutoff);
+      pipeline.zCard(key);
+      pipeline.expire(key, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) + 1);
+      const results = await pipeline.exec();
+
+      const count = results?.[2] as number ?? 0;
+      if (count <= maxRequests) return { allowed: true };
+
+      return { allowed: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+    });
+  } catch (err: any) {
+    console.error('[rate-limit] Redis error, allowing request:', err.message);
+    return { allowed: true };
   }
-
-  return { allowed: true };
 }
 
-// Backward-compatible export for index.ts and types.ts
-// RATE_LIMIT_MAX = 10 (write limit) matches the old single-rate-limiter value
-export const RATE_LIMIT_MAX = WRITE_MAX;
+export function isReadRequest(method: string): boolean {
+  return method === 'GET' || method === 'HEAD' || method === 'OPTIONS';
+}
 
-export { READ_WINDOW_MS, READ_MAX, WRITE_WINDOW_MS, WRITE_MAX };
+export function isHeartbeatUrl(url: string): boolean {
+  return url.startsWith('/v1/kill-switch/health') || url.startsWith('/health');
+}
+
+export async function checkRateLimit(
+  ip: string,
+  method: string = 'GET',
+  url: string = '/',
+): Promise<{ allowed: boolean; retryAfter?: number }> {
+  if (isHeartbeatUrl(url)) return { allowed: true };
+
+  const maxRequests = isReadRequest(method) ? READ_RATE_LIMIT_MAX : WRITE_RATE_LIMIT_MAX;
+  return checkRateLimitRedis(ip, maxRequests);
+}

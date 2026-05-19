@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "type-check": "tsc --noEmit",
+    "test": "echo 'no tests yet'",
     "build": "next build",
     "start": "next start",
     "lint": "eslint ."

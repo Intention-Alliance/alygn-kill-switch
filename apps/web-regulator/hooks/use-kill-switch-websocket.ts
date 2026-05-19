@@ -20,7 +20,7 @@ import type {
 const BACKOFF_SCHEDULE = [1_000, 2_000, 4_000, 8_000, 16_000];
 const MAX_RETRIES = 5;
 const POLL_INTERVAL = 5_000;
-const HEARTBEAT_TIMEOUT = 10_000;
+const HEARTBEAT_TIMEOUT = 45_000; // 45s — must exceed backend's 30s WebSocket ping interval
 
 // ─── Backend Flag Shape ─────────────────────────────────────────
 
@@ -326,15 +326,6 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         break;
       }
 
-      case "heartbeat": {
-        // Respond with pong
-        wsRef.current?.send(JSON.stringify({ type: "pong" }));
-        if (wsRef.current) {
-          resetHeartbeatTimer(wsRef.current);
-        }
-        break;
-      }
-
       case "machine-registered":
       case "machine-updated":
       case "machine-removed":
@@ -355,7 +346,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       default:
         break;
     }
-  }, [resetHeartbeatTimer]);
+  }, []);
 
   // ─── WebSocket Connection ───────────────────────────────────
 
@@ -414,6 +405,8 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
     ws.onmessage = (event) => {
       if (!mountedRef.current) return;
+      // Any valid message means the WS is alive — reset heartbeat
+      resetHeartbeatTimer(ws);
       handleMessage(event);
     };
 
@@ -483,9 +476,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         wsRef.current = null;
       }
     };
-    // Only run on mount/unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [connect, clearHeartbeatTimer, stopPolling]);
 
   // ─── Reconnect on auth change ──────────────────────────────
 

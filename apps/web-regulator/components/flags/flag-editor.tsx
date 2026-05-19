@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,10 +14,47 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { apiPost, apiPut } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { Flag } from "@/types/shared";
+
+// ─── ADR-133 Predefined Flag Keys ──────────────────────────────────
+
+const PREDEFINED_FLAG_KEYS = [
+  {
+    key: "llm_interception_enabled",
+    type: "boolean",
+    description: "Master toggle for LLM request interception",
+  },
+  {
+    key: "auto_stop_threshold",
+    type: "number",
+    description: "Score threshold for automatic blocking (0.0–1.0)",
+  },
+  {
+    key: "damage_logging_level",
+    type: "string",
+    description: "Verbosity: minimal / standard / verbose",
+  },
+  {
+    key: "alert_on_critical_score",
+    type: "boolean",
+    description: "Desktop notification on critical events",
+  },
+  {
+    key: "request_sampling_rate",
+    type: "number",
+    description: "Percentage of requests to sample (0.0–1.0)",
+  },
+];
 
 interface FlagEditorProps {
   flag?: Flag;
@@ -97,6 +134,42 @@ export function FlagEditor({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Predefined Flag Selector — only shown when creating */}
+          {!isEditing && (
+            <div className="space-y-2">
+              <Label>Quick-Select Predefined Flag</Label>
+              <Select
+                onValueChange={(selected) => {
+                  const predefined = PREDEFINED_FLAG_KEYS.find((p) => p.key === selected);
+                  if (predefined) {
+                    setKey(predefined.key);
+                    setDescription(predefined.description);
+                    // Set sensible defaults per type
+                    if (predefined.type === "boolean") {
+                      setValue(true);
+                    } else if (predefined.type === "number") {
+                      setValue(false); // represent as boolean switch; value can be string later
+                    }
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose a predefined flag or type a custom key below…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PREDEFINED_FLAG_KEYS.map((pf) => (
+                    <SelectItem key={pf.key} value={pf.key}>
+                      <div className="flex items-center gap-2">
+                        <code className="text-xs font-mono">{pf.key}</code>
+                        <span className="text-xs text-muted-foreground">{pf.description.slice(0, 50)}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="flag-key">Key</Label>
             <Input

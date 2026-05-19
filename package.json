@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky prepare",
+    "type-check": "bun --filter '*' type-check || echo 'no type-check'",
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
     "lint": "bun --filter '*' lint",

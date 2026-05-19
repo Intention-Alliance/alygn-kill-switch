@@ -1,0 +1,102 @@
+/**
+ * WebSocket Manager — Real-time Event Broadcast
+ */
+import type { IncomingMessage } from 'node:http';
+import type { Socket } from 'node:net';
+import { createHash } from 'node:crypto';
+import { sqlite as sqliteDb } from '../db/index';
+
+const WS_GUID = '258EAFA5-E914-47DA-95CA-C8AB5DC85B11';
+const HEARTBEAT_INTERVAL_MS = 30_000;
+const HEARTBEAT_TIMEOUT_MS = 10_000;
+const MAX_CONNS_PER_IP = 5;
+const MAX_MESSAGE_SIZE = 64 * 1024;
+
+const REDIS_CHANNELS = [
+  'bcp:kill-switch:chaos',
+  'bcp:flags:updates',
+  'bcp:agents:events',
+  'bcp:machines:events',
+  'bcp:settings:updates',
+];
+
+interface WsClient {
+  socket: Socket;
+  userId: string;
+  ip: string;
+  lastPong: number;
+  heartbeatTimer: ReturnType<typeof setInterval> | null;
+  alive: boolean;
+}
+
+function encodeFrame(data: string): Buffer {
+  const payload = Buffer.from(data, 'utf-8');
+  const length = payload.length;
+  if (length > 0xFFFF) {
+    const frame = Buffer.alloc(10 + length);
+    frame[0] = 0x81; frame[1] = 127;
+    frame.writeBigUInt64BE(BigInt(length), 2);
+    payload.copy(frame, 10); return frame;
+  } else if (length > 125) {
+    const frame = Buffer.alloc(4 + length);
+    frame[0] = 0x81; frame[1] = 126;
+    frame.writeUInt16BE(length, 2);
+    payload.copy(frame, 4); return frame;
+  } else {
+    const frame = Buffer.alloc(2 + length);
+    frame[0] = 0x81; frame[1] = length;
+    payload.copy(frame, 2); return frame;
+  }
+}
+
+function decodeFrame(buffer: Buffer): string | null {
+  if (buffer.length < 2) return null;
+  const firstByte = buffer[0];
+  const opcode = firstByte & 0x0F;
+  if (opcode === 0x08) {
+    const code = buffer.length >= 4 ? buffer.readUInt16BE(2) : 1000;
+    return `__CLOSE__${code}`;
+  }
+  if (opcode !== 0x01) return null;
+  const secondByte = buffer[1];
+  const masked = (secondByte & 0x80) !== 0;
+  let length = secondByte & 0x7F;
+  let offset = 2;
+  if (length === 126) { length = buffer.readUInt16BE(2); offset = 4; }
+  else if (length === 127) { length = Number(buffer.readBigUInt64BE(2)); offset = 10; }
+  let mask: Buffer | null = null;
+  if (masked) { mask = buffer.subarray(offset, offset + 4); offset += 4; }
+  if (buffer.length < offset + length) return null;
+  const data = buffer.subarray(offset, offset + length);
+  if (mask) { for (let i = 0; i < data.length; i++) data[i] ^= mask[i % 4]; }
+  return data.toString('utf-8');
+}
+
+export class WebSocketManager {
+  private clients = new Map<string, Set<WsClient>>();
+  private ipCounts = new Map<string, number>();
+  private redisSubscribeFn: ((channel: string, handler: (msg: string) => void) => void) | null = null;
+
+  setRedisSubscribe(fn: (channel: string, handler: (msg: string) => void) => void): void {
+    this.redisSubscribeFn = fn;
+    for (const channel of REDIS_CHANNELS) {
+      fn(channel, (message: string) => { this.onRedisMessage(channel, message); });
+    }
+    console.log('[ws] Subscribed to Redis channels:', REDIS_CHANNELS.join(', '));
+  }
+
+  async validateWsToken(token: string): Promise<{ valid: boolean; userId?: string; email?: string }> {
+    if (!token || token.length < 10) return { valid: false };
+    try {
+      const row = sqliteDb.query('SELECT user_id, expires_at FROM session WHERE token = ?').get(token)
+        as { user_id: string; expires_at: number } | undefined;
+      if (!row) return { valid: false };
+      if (row.expires_at < Date.now()) return { valid: false };
+      const userRow = sqliteDb.query('SELECT email FROM user WHERE id = ?').get(row.user_id)
+        as { email: string } | undefined;
+      return { valid: true, userId: row.user_id, email: userRow?.email || 'unknown' };
+    } catch (err: any) {
+      console.error('[ws] Token validation error:', err.message);
+      return { valid: false };
+    }
+  }

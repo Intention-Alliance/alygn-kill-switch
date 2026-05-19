@@ -17,9 +17,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "./auth-client";
 
 // ─── Types ────────────────────────────────────────────────────────
@@ -61,6 +63,9 @@ const SESSION_POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes background refresh
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const isAuthenticated = user !== null;
+  const wasAuthenticatedRef = useRef(isAuthenticated);
 
   // Restore session on mount
   useEffect(() => {
@@ -151,13 +156,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
-      isAuthenticated: user !== null,
+      isAuthenticated,
       isLoading,
       login,
       logout,
     }),
-    [user, isLoading, login, logout],
+    [user, isAuthenticated, isLoading, login, logout],
   );
+
+  // ─── Redirect on auth state change ─────────────────────────
+  // When transitioning from authenticated → unauthenticated, redirect to login.
+  // This covers logout from any component, not just the logout page.
+  useEffect(() => {
+    if (isLoading) return; // Don't redirect during session restoration
+    if (wasAuthenticatedRef.current && !isAuthenticated) {
+      router.push("/login");
+    }
+    wasAuthenticatedRef.current = isAuthenticated;
+  }, [isAuthenticated, isLoading, router]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

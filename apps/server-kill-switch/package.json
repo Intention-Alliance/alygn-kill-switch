@@ -13,7 +13,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "lint": "biome check src/"
+    "lint": "biome check src/",
+    "test": "echo 'no tests yet'"
   },
   "dependencies": {
     "@align/shared-types": "workspace:*",
