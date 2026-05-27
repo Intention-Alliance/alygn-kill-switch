@@ -29,9 +29,9 @@ interface VCSearchResult {
   [key: string]: unknown;
 }
 
-// Notion database ID for VC outreach
-const getDatabaseId = () => {
-  return process.env.NOTION_VC_DATABASE_ID || '305334874af681ef983df57c7f70de33';
+// Notion datasource ID for VC outreach (formerly databaseId)
+const getDatasourceId = () => {
+  return process.env.NOTION_VC_DATASOURCE_ID || process.env.NOTION_VC_DATABASE_ID || '30533487-4af6-81e7-ad64-000bbd4829ff';
 };
 
 // Statuses that indicate already contacted (skip research)
@@ -58,7 +58,7 @@ export class VCResearchStrategy extends ResearchStrategy {
   }> {
     try {
       const notion = getClient();
-      const DATABASE_ID = getDatabaseId();
+      const DATABASE_ID = getDatasourceId();
       
       console.log(`   🔍 Checking Notion database for "${vcName}"...`);
       
@@ -139,6 +139,62 @@ export class VCResearchStrategy extends ResearchStrategy {
     // STEP 1: Check Notion database for duplicates
     const notionCheck = await this.checkNotionForVC(entity.name);
     
+    
+    // ═══════════════════════════════════════════════════════════
+    // SENT-TRACKER CHECK: Reconcile against IMAP sent folder
+    // (canonical ground truth), then skip if already contacted.
+    // Catches duplicates that slipped past Notion/Discovery checks.
+    // ═══════════════════════════════════════════════════════════
+    try {
+      const { reconcileSentState } = await import('../../lib/email/sent-inbox-canonical');
+      const canonical = await reconcileSentState();
+      const email = (entity.getEmail?.() || entity.email || '').toLowerCase();
+      const domain = email.split('@')[1] || '';
+      if (email && (canonical.sentEmails.has(email) || canonical.sentDomains.has(domain))) {
+        console.log(`   ⏭️  SKIP ${entity.name} (${email}) — already contacted (IMAP-verified, source=${canonical.source})`);
+        return {
+          success: true,
+          research: {
+            skipped: true,
+            reason: `Already contacted — email ${email} verified via ${canonical.source}`,
+          },
+          entity
+        };
+      }
+    } catch (err) {
+      console.warn(`   ⚠️  IMAP sent check failed: ${(err as Error).message} — continuing`);
+      // Fallback: raw file read
+      try {
+        const sentTrackerPath = path.join(
+          process.env.HOME || '/home/andlersrv',
+          '.openclaw/workspace/scripts/alygn/lib/sent-emails.json'
+        );
+        if (fs.existsSync(sentTrackerPath)) {
+          const tracker = JSON.parse(fs.readFileSync(sentTrackerPath, 'utf8'));
+          const sentEntries = tracker.vcs || [];
+          const sentEmails = new Set(sentEntries.map((s: { email?: string }) => (s.email || '').toLowerCase()));
+          const sentDomains = new Set(
+            sentEntries
+              .map((s: { email?: string }) => (s.email || '').toLowerCase().split('@')[1] || '')
+              .filter(Boolean)
+          );
+          const email = (entity.getEmail?.() || entity.email || '').toLowerCase();
+          const domain = email.split('@')[1] || '';
+          if (email && (sentEmails.has(email) || sentDomains.has(domain))) {
+            console.log(`   ⏭️  SKIP ${entity.name} (${email}) — already contacted (file-only match)`);
+            return {
+              success: true,
+              research: { skipped: true, reason: `Already contacted` },
+              entity
+            };
+          }
+        }
+      } catch (e2) {
+        console.warn(`   ⚠️  File fallback also failed: ${(e2 as Error).message}`);
+      }
+    }
+    // ═══════════════════════════════════════════════════════════
+
     if (!notionCheck.shouldResearch) {
       // Skip research - already contacted
       console.log(`   ⏭️  Skipping ${entity.name} - ${notionCheck.skipReason}`);

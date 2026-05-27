@@ -22,7 +22,9 @@ export class ValidationStrategy {
 
   constructor(config: Record<string, unknown> = {}) {
     this.config = config;
-    this.validatorType = (config.validatorType as string) || 'regex-mx';
+    // AUTO_ZEROBOUNCE: Use ZeroBounce when API key is available (prevents hallucinations)
+    this.validatorType = (config.validatorType as string) || 
+      (process.env.ZEROBOUNCE_API_KEY ? 'zerobounce' : 'regex-mx');
   }
 
   /**

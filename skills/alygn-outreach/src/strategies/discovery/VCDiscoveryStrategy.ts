@@ -424,7 +424,7 @@ export class VCDiscoveryStrategy extends DiscoveryStrategy {
    */
   private async convertResultsToEntities(results: VCSearchResult[], limit: number): Promise<VCEntity[]> {
     const entities: VCEntity[] = [];
-    
+
     // Use local validator
     const validator = new RegexMXValidator();
     
@@ -465,9 +465,70 @@ export class VCDiscoveryStrategy extends DiscoveryStrategy {
       
       entities.push(entity);
     }
+
+    // ═══════════════════════════════════════════════════════════
+    // SENT-TRACKER DEDUP: Reconcile sent-emails.json against IMAP
+    // sent folder (canonical ground truth), then filter out VCs
+    // whose email or domain was already contacted.
+    // ═══════════════════════════════════════════════════════════
+    if (entities.length > 0) {
+      let sentEmails = new Set<string>();
+      let sentDomains = new Set<string>();
+
+      try {
+        // Try IMAP canonical reconciliation first
+        const { reconcileSentState } = await import('../../lib/email/sent-inbox-canonical');
+        const canonical = await reconcileSentState();
+        sentEmails = canonical.sentEmails;
+        sentDomains = canonical.sentDomains;
+        console.log(`   📬 IMAP canonical: ${canonical.imapCount} sent, source=${canonical.source}, reconciled=${canonical.reconciled}`);
+      } catch (err) {
+        // Fallback: raw file read
+        console.warn(`   ⚠️  IMAP canonical unavailable: ${(err as Error).message} — using raw sent-emails.json`);
+        try {
+          const sentTrackerPath = path.join(
+            process.env.HOME || '/home/andlersrv',
+            '.openclaw/workspace/scripts/alygn/lib/sent-emails.json'
+          );
+          if (fs.existsSync(sentTrackerPath)) {
+            const tracker = JSON.parse(fs.readFileSync(sentTrackerPath, 'utf8'));
+            const sentEntries = tracker.vcs || [];
+            sentEmails = new Set(sentEntries.map((s: { email?: string }) => (s.email || '').toLowerCase()));
+            sentDomains = new Set(
+              sentEntries
+                .map((s: { email?: string }) => (s.email || '').toLowerCase().split('@')[1] || '')
+                .filter(Boolean)
+            );
+          }
+        } catch (e2) {
+          console.warn(`   ⚠️  Raw sent-tracker also failed: ${(e2 as Error).message}`);
+        }
+      }
+
+      if (sentEmails.size > 0) {
+        const before = entities.length;
+        const kept: VCEntity[] = [];
+        for (const e of entities) {
+          const email = (e.getEmail?.() || e.email || '').toLowerCase();
+          const domain = email.split('@')[1] || '';
+          if (email && (sentEmails.has(email) || sentDomains.has(domain))) {
+            console.log(`   ⏭️  SKIP ${e.name} (${email}) — already contacted`);
+          } else {
+            kept.push(e);
+          }
+        }
+        const removed = before - kept.length;
+        if (removed > 0) {
+          console.log(`   🧹 Removed ${removed} already-contacted VCs (IMAP-verified)`);
+        }
+        entities.length = 0;
+        entities.push(...kept);
+      }
+    }
+    // ═══════════════════════════════════════════════════════════
     
     console.log(`   ✅ Discovered ${entities.length} VC firms (after validation)`);
-    return entities;
+    return entities.slice(0, limit);
   }
 
   /**
