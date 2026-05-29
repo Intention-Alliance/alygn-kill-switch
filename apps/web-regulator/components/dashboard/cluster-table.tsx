@@ -11,13 +11,21 @@ import {
 } from "@/components/ui/table";
 import type { Cluster } from "@/types/supabase.types";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface ClusterTableProps {
   clusters: Cluster[];
   isLoading?: boolean;
+  onSelectMachine?: (machine: Cluster) => void;
+  selectedId?: string;
 }
 
-export function ClusterTable({ clusters, isLoading }: ClusterTableProps) {
+export function ClusterTable({
+  clusters,
+  isLoading,
+  onSelectMachine,
+  selectedId,
+}: ClusterTableProps) {
   const router = useRouter();
 
   return (
@@ -71,8 +79,17 @@ export function ClusterTable({ clusters, isLoading }: ClusterTableProps) {
             clusters.map((cluster) => (
               <TableRow
                 key={cluster.id}
-                className="cursor-pointer hover:bg-muted/50 transition-colors border-border/50"
-                onClick={() => router.push(`/clusters/${cluster.slug}`)}
+                className={cn(
+                  "cursor-pointer hover:bg-muted/50 transition-colors border-border/50",
+                  selectedId === cluster.id && "bg-primary/5 ring-1 ring-primary/20",
+                )}
+                onClick={() => {
+                  if (onSelectMachine) {
+                    onSelectMachine(cluster);
+                  } else {
+                    router.push(`/clusters/${cluster.slug}`);
+                  }
+                }}
               >
                 <TableCell className="font-medium">{cluster.name}</TableCell>
                 <TableCell className="text-muted-foreground">

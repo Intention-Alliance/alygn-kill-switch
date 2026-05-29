@@ -218,6 +218,31 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
     }
   }, []);
 
+  // ─── Initial Data Fetch ──────────────────────────────────────
+
+  const fetchInitialData = useCallback(async () => {
+    try {
+      const [statusData, flagsData] = await Promise.allSettled([
+        apiGet<KillSwitchStatus>("/api/kill-switch/status"),
+        apiGet<{ flags: BackendFlag[] }>("/api/flags"),
+      ]);
+
+      if (statusData.status === "fulfilled" && mountedRef.current) {
+        setStatus(statusData.value);
+      }
+
+      if (flagsData.status === "fulfilled" && mountedRef.current) {
+        const adapted = adaptFlags(flagsData.value.flags ?? []);
+        if (mountedRef.current) setFlags(adapted);
+      }
+
+      const machinesData = await apiGet<MachinesResponse>("/api/machines");
+      if (mountedRef.current) setMachines(machinesData.data ?? []);
+    } catch {
+      // Silent — polling fallback will pick up if WS auth fails
+    }
+  }, []);
+
   // ─── Message Handler ────────────────────────────────────────
 
   const handleMessage = useCallback((event: MessageEvent) => {
@@ -398,6 +423,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       attemptRef.current = 0;
       stopPolling();
       clearHeartbeatTimer();
+
+      // Fetch initial data on connect (WS doesn't push initial state)
+      fetchInitialData();
 
       // Start heartbeat watcher
       resetHeartbeatTimer(ws);

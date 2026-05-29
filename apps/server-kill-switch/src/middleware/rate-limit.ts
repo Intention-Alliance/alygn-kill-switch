@@ -41,7 +41,8 @@ async function checkRateLimitRedis(
     const key = `ratelimit:${maxRequests}:${ip}`;
     const cutoff = now - RATE_LIMIT_WINDOW_MS;
 
-    return await _redis.withClient(async (client: any) => {
+    const client = await _redis.getClient();
+    try {
       const pipeline = client.multi();
       pipeline.zAdd(key, { score: now, value: `${now}:${Math.random().toString(36).slice(2)}` });
       pipeline.zRemRangeByScore(key, 0, cutoff);
@@ -53,7 +54,9 @@ async function checkRateLimitRedis(
       if (count <= maxRequests) return { allowed: true };
 
       return { allowed: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
-    });
+    } finally {
+      _redis.release(client);
+    }
   } catch (err: any) {
     console.error('[rate-limit] Redis error, allowing request:', err.message);
     return { allowed: true };

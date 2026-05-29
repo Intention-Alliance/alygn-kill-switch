@@ -16,6 +16,7 @@ import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
 import { loadRedisPool } from './infra-loader';
+import { startMetricGeneration } from './services/system-metrics';
 import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
 import { validateEnvironment } from './config/validate-env';
@@ -83,7 +84,9 @@ function createHandler(service: KillSwitchService) {
       await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
       await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
-      await handleMachinesRoutes(method, url, req, res, null) ||
+      await handleMachinesRoutes(method, url, req, res,
+        async (channel, msg) => { try { await redis.publish(channel, msg); } catch {} },
+      ) ||
       await handleSettingsRoutes(method, url, req, res, userRole, null);
 
     if (!handled) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Not found' })); }
@@ -112,6 +115,16 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   if (typeof redis.subscribe === 'function') {
     wsManager.setRedisSubscribe((ch: string, h: (msg: string) => void) => redis.subscribe(ch, h));
   }
+
+  // Start periodic real system metrics collection (ADR-133: live telemetry)
+  // Collects CPU/RAM/GPU/Disk/Load from the host every 5s,
+  // publishes machine-metrics events via Redis pubsub → WebSocketManager → frontend
+  startMetricGeneration({
+    intervalMs: 5000,
+    publish: async (channel, msg) => {
+      try { await redis.publish(channel, msg); } catch { /* Redis unavailable — metrics update locally */ }
+    },
+  });
 
   service.onStateChange((entry: any) => wsManager.broadcastStateChange(entry));
 

@@ -1,2 +1,3 @@
 [install]
 workspaces = ["packages/*", "apps/*"]
+minimumReleaseAge = 259200 # 3 days in seconds
