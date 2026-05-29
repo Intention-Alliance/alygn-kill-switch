@@ -1,10 +1,13 @@
-import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Figtree } from "next/font/google";
-import { AuthProvider } from "@/lib/auth-context";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
+import { Figtree, Inter } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -31,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
       <body className={`${figtreeSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"

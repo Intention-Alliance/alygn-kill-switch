@@ -16,7 +16,8 @@
 
 import { eq, ne, desc, asc, and } from 'drizzle-orm';
 import { db } from '../db/index';
-import { machines, machineFlags, agents, featureFlags } from '../db/schema';
+import { machines, machineFlags, agents, featureFlags, killSwitchAuditLog } from '../db/schema';
+import { getMachineMetrics, collectSystemMetrics } from '../services/system-metrics';
 import type { Machine, MachineSpecs, MachineStatus, DpuInfo, AgentInfo, ActiveFlagInfo } from '@align/shared-types';
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ function validateRole(role: string): string | null {
 
 function serializeMachine(row: any): Machine {
   const specs = row.specs ? (typeof row.specs === 'string' ? JSON.parse(row.specs) : row.specs) : null;
+  const metrics = getMachineMetrics(row.id);
   return {
     id: row.id,
     name: row.name,
@@ -71,6 +73,8 @@ function serializeMachine(row: any): Machine {
     createdAt: row.createdAt ? new Date(row.createdAt).toISOString() : '',
     hasDpu: Boolean(row.hasDpu),
     specs: specs || { cpu: '', ram: '', gpu: '', dpu: null },
+    cpuUsage: metrics.cpuUsage,
+    memoryUsage: metrics.memoryUsage,
   };
 }
 
@@ -362,6 +366,85 @@ export async function handleMachinesRoutes(
         agents: agentList,
         activeFlags,
       });
+      return true;
+    }
+
+    // ─── GET /v1/machines/:id/metrics — Real-time system metrics ──
+    const metricsMatch = url.match(/^\/v1\/machines\/([^/]+)\/metrics$/);
+    if (method === 'GET' && metricsMatch) {
+      const id = metricsMatch[1];
+
+      const machine = await db
+        .select({ id: machines.id })
+        .from(machines)
+        .where(eq(machines.id, id))
+        .get();
+
+      if (!machine) {
+        json(res, 404, { error: 'Machine not found', id });
+        return true;
+      }
+
+      // Collect live system metrics from the host (real telemetry)
+      const metrics = await collectSystemMetrics();
+      json(res, 200, {
+        cpuUsage: metrics.cpuUsage,
+        memoryUsage: metrics.memoryUsage,
+        gpuUsage: metrics.gpuUsage,
+        gpuModel: metrics.gpuModel,
+        dpuStatus: metrics.dpuStatus,
+        loadAvg: metrics.loadAvg,
+        uptime: metrics.uptime,
+        diskUsage: metrics.diskUsage,
+        timestamp: new Date().toISOString(),
+      });
+      return true;
+    }
+
+    // ─── GET /v1/machines/:id/audit — Machine audit log ────────────
+    const auditMatch = url.match(/^\/v1\/machines\/([^/]+)\/audit$/);
+    if (method === 'GET' && auditMatch) {
+      const id = auditMatch[1];
+
+      // Verify machine exists
+      const machine = await db
+        .select({ id: machines.id })
+        .from(machines)
+        .where(eq(machines.id, id))
+        .get();
+
+      if (!machine) {
+        json(res, 404, { error: 'Machine not found', id });
+        return true;
+      }
+
+      const parsed = new URL(url, 'http://localhost');
+      const limit = parseInt(parsed.searchParams.get('limit') || '20', 10);
+      const offset = parseInt(parsed.searchParams.get('offset') || '0', 10);
+
+      const logs = await db
+        .select()
+        .from(killSwitchAuditLog)
+        .where(eq(killSwitchAuditLog.machineId, id))
+        .orderBy(desc(killSwitchAuditLog.timestamp))
+        .limit(limit)
+        .offset(offset)
+        .all();
+
+      const data = logs.map((row: any) => ({
+        id: row.id,
+        timestamp: row.timestamp ? new Date(row.timestamp).toISOString() : '',
+        userId: row.userId,
+        reason: row.reason,
+        previousState: row.previousState,
+        newState: row.newState,
+        traceId: row.traceId,
+        machineId: row.machineId,
+        severity: row.severity,
+        metadata: row.metadata ? JSON.parse(row.metadata) : null,
+      }));
+
+      json(res, 200, { data, limit, offset, machineId: id });
       return true;
     }
 

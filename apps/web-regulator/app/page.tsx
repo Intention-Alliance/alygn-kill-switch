@@ -1,16 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useAuth } from "@/lib/auth-context";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { ClusterTable } from "@/components/dashboard/cluster-table";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SystemHealthPanel } from "@/components/dashboard/system-health-panel";
+import { MachineDetailPanel } from "@/components/machines/machine-detail-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  useMachineSelection,
+} from "@/lib/machine-selection-context";
 import type { DashboardCluster } from "@/lib/dashboard-utils";
 import type { Cluster } from "@/types/supabase.types";
+import type { Machine, KillSwitchState } from "@/types/shared";
 import {
   adaptMachineToCluster,
   computeDashboardStats,
@@ -21,26 +25,27 @@ import {
   AlertTriangle,
   Clock,
   Download,
-  LogOut,
   Plus,
   Server,
   Shield,
-  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { apiPost } from "@/lib/api-client";
+import { toast } from "sonner";
 
 // ============================================================================
 // COMPONENT
 // ============================================================================
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const {
     status,
     machines,
     auditLog,
     isConnected,
   } = useKillSwitchWebSocket();
+  const { selectedMachine, selectMachine, deselectMachine } =
+    useMachineSelection();
 
   const [clusters, setClusters] = useState<DashboardCluster[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
@@ -50,6 +55,82 @@ export default function DashboardPage() {
     uptime: 99.97,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCluster, setSelectedCluster] =
+    useState<DashboardCluster | null>(null);
+
+  // Kill switch state change handler
+  const handleKillSwitchStateChange = useCallback(
+    async (newState: KillSwitchState) => {
+      try {
+        const result = await apiPost<{
+          current: KillSwitchState;
+          previous: KillSwitchState;
+          timestamp: number;
+        }>("/api/kill-switch/chaos", {
+          state: newState,
+          reason: `Dashboard-level override: ${newState}`,
+        });
+        toast.success(`State changed to ${result.current}`);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to change state";
+        toast.error(message);
+      }
+    },
+    [],
+  );
+
+  // Handle machine row click — show detail panel
+  const handleSelectMachine = useCallback(
+    (cluster: Cluster) => {
+      // Clusters are adapted from Machine data (DashboardCluster), so we know
+      // the runtime shape includes extended fields
+      const dc = cluster as unknown as DashboardCluster;
+      setSelectedCluster(dc);
+
+      // Find the underlying Machine for the sidebar context
+      const machine = machines.find((m: Machine) => m.id === dc.id);
+      if (machine) {
+        selectMachine(machine);
+      }
+    },
+    [machines, selectMachine],
+  );
+
+  // Handle panel close
+  const handleClosePanel = useCallback(() => {
+    setSelectedCluster(null);
+    deselectMachine();
+  }, [deselectMachine]);
+
+  // Build a fallback Machine from cluster data when the actual machine isn't in the registry
+  function getMachineForCluster(cluster: DashboardCluster): Machine {
+    const found = machines.find((m: Machine) => m.id === cluster.id);
+    if (found) return found;
+
+    return {
+      id: cluster.id,
+      name: cluster.name,
+      hostname: cluster.location,
+      status:
+        cluster.status === "operational"
+          ? "active"
+          : cluster.status === "degraded"
+            ? "offline"
+            : "inactive",
+      role: "Controller",
+      lastSeen: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      hasDpu: false,
+      specs: {
+        cpu: "—",
+        ram: "—",
+        gpu: cluster.gpus > 0 ? `${cluster.gpus} GPU(s)` : "—",
+        dpu: null,
+      },
+      cpuUsage: cluster.avg_latency ?? 0,
+    };
+  }
 
   // Adapt machines → clusters when data arrives
   useEffect(() => {
@@ -92,7 +173,7 @@ export default function DashboardPage() {
 
   // ─── Loading State ──────────────────────────────────────────
 
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return (
       <div className="p-8 space-y-8">
         <Skeleton className="h-12 w-64" />
@@ -102,25 +183,6 @@ export default function DashboardPage() {
           ))}
         </div>
         <Skeleton className="h-96 rounded-xl" />
-      </div>
-    );
-  }
-
-  // ─── Not Authenticated ──────────────────────────────────────
-
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Button
-          asChild
-          variant="default"
-          className="shadow-lg shadow-primary/20"
-        >
-          <Link href="/login">
-            <UserIcon className="size-4 mr-2" />
-            Sign In to Manage
-          </Link>
-        </Button>
       </div>
     );
   }
@@ -140,12 +202,6 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex flex-col items-end mr-2">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Authenticated Regulator
-            </p>
-            <p className="text-xs font-medium">{user.email}</p>
-          </div>
           <Button
             asChild
             variant="outline"
@@ -155,15 +211,6 @@ export default function DashboardPage() {
               <Plus className="size-4 mr-2" />
               Register Machine
             </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={logout}
-            className="text-muted-foreground hover:text-destructive transition-colors"
-            title="Sign Out"
-          >
-            <LogOut className="size-5" />
           </Button>
           <Button
             onClick={exportReport}
@@ -224,20 +271,37 @@ export default function DashboardPage() {
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-          {/* Detailed Table */}
-          <div className="xl:col-span-3">
-            <ClusterTable clusters={clusters as Cluster[]} isLoading={isLoading} />
-          </div>
+        {/* Machine Table or Detail Panel */}
+        {selectedCluster ? (
+          <MachineDetailPanel
+            key={selectedCluster.id}
+            machine={getMachineForCluster(selectedCluster)}
+            onClose={handleClosePanel}
+            auditLog={auditLog}
+            currentKillSwitchState={status?.state ?? "ARMED"}
+            onKillSwitchStateChange={handleKillSwitchStateChange}
+          />
+        ) : (
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            {/* Detailed Table */}
+            <div className="xl:col-span-3">
+              <ClusterTable
+                clusters={clusters as Cluster[]}
+                isLoading={isLoading}
+                onSelectMachine={handleSelectMachine}
+                selectedId={selectedMachine?.id}
+              />
+            </div>
 
-          {/* Side Info */}
-          <div className="xl:col-span-1">
-            <SystemHealthPanel
-              auditLog={auditLog}
-              killSwitchState={status?.state ?? null}
-            />
+            {/* Side Info */}
+            <div className="xl:col-span-1">
+              <SystemHealthPanel
+                auditLog={auditLog}
+                killSwitchState={status?.state ?? null}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

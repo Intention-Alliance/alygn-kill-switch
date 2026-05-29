@@ -7,6 +7,10 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { useAuth } from "@/lib/auth-context";
+import {
+  MachineSelectionProvider,
+  useMachineSelection,
+} from "@/lib/machine-selection-context";
 
 function AuthGuard({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -38,37 +42,67 @@ function AuthGuard({ children }: { children: ReactNode }) {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-
-  // Dashboard root page uses full-width (handles its own p-8).
-  // All other (dashboard) pages get the legacy max-w-6xl wrapper.
   const isDashboard = pathname === "/";
+
+  return (
+    <MachineSelectionProvider>
+      <DashboardLayoutInner isDashboard={isDashboard}>
+        {children}
+      </DashboardLayoutInner>
+    </MachineSelectionProvider>
+  );
+}
+
+function DashboardLayoutInner({
+  children,
+  isDashboard,
+}: {
+  children: ReactNode;
+  isDashboard: boolean;
+}) {
+  const { selectedMachine, deselectMachine } = useMachineSelection();
 
   return (
     <AuthGuard>
       <div className="flex h-screen overflow-hidden">
-      {/* Desktop sidebar — hidden on mobile */}
-      <AppSidebar className="hidden md:flex" />
+        {/* Desktop sidebar — always visible on md+ */}
+        <AppSidebar
+          selectedMachine={selectedMachine}
+          onMachineDeselect={deselectMachine}
+        />
 
-      {/* Mobile header with hamburger */}
-      <MobileSidebar />
+        {/* Mobile header with hamburger */}
+        <MobileSidebar />
 
-      <main className="flex-1 overflow-y-auto bg-background">
-        {isDashboard ? (
-          <ErrorBoundary>
-            <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" /></div>}>
-              {children}
-            </Suspense>
-          </ErrorBoundary>
-        ) : (
-          <div className="mx-auto max-w-6xl p-4 pt-14 md:pt-4 lg:p-8">
+        <main className="flex-1 overflow-y-auto bg-background">
+          {isDashboard ? (
             <ErrorBoundary>
-              <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" /></div>}>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-20">
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
+                  </div>
+                }
+              >
                 {children}
               </Suspense>
             </ErrorBoundary>
-          </div>
-        )}
-      </main>
+          ) : (
+            <div className="mx-auto max-w-6xl p-4 pt-14 md:pt-4 lg:p-8">
+              <ErrorBoundary>
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center py-20">
+                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
+                    </div>
+                  }
+                >
+                  {children}
+                </Suspense>
+              </ErrorBoundary>
+            </div>
+          )}
+        </main>
       </div>
     </AuthGuard>
   );

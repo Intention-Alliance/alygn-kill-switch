@@ -105,11 +105,11 @@ describe('rate limit constants', () => {
 describe('initRateLimiter', () => {
   it('accepts a RedisPool and does not throw', () => {
     const mockPool: RedisPool = {
-      acquire: async () => ({}),
+      getClient: async () => ({ multi: () => ({ zAdd() { return this; }, zRemRangeByScore() { return this; }, zCard() { return this; }, expire() { return this; }, exec: async () => [0, 0, 1, 1] }) }),
       release: () => {},
-      withClient: async <T>(fn: (client: any) => Promise<T>): Promise<T> => fn({}),
       get: async () => null,
       set: async () => null,
+      del: async () => 0,
       publish: async () => 0,
       subscribe: async () => {},
       healthCheck: async () => ({ redis: 'ok' }),
@@ -121,15 +121,13 @@ describe('initRateLimiter', () => {
   });
 
   it('after init, checkRateLimit no longer falls back to uninitialized path', async () => {
-    // Create a mock that throws so we hit the catch (not the uninitialized path)
+    // Create a mock whose getClient throws so we hit the catch (not the uninitialized path)
     const mockPool: RedisPool = {
-      acquire: async () => ({}),
+      getClient: async () => { throw new Error('Redis connection refused'); },
       release: () => {},
-      withClient: async <T>(_fn: (client: any) => Promise<T>): Promise<T> => {
-        throw new Error('Redis connection refused');
-      },
       get: async () => null,
       set: async () => null,
+      del: async () => 0,
       publish: async () => 0,
       subscribe: async () => {},
       healthCheck: async () => ({ redis: 'ok' }),

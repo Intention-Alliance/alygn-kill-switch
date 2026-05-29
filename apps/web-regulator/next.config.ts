@@ -100,8 +100,7 @@ const nextConfig: NextConfig = {
   },
 
   // ─── Experimental Features ──────────────────────────────────
-  cacheComponents: true,
-  
+
   // ─── Standalone Output for Production Deployment ───────────
   // Creates a standalone server bundle for deployment to /var/www/admin
   output: 'standalone',

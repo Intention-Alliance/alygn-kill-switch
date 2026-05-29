@@ -2,9 +2,8 @@
 // Matches infra/redis/redis-cluster-pool.mjs interface
 
 export interface RedisPool {
-  acquire(): Promise<any>;
+  getClient(): Promise<any>;
   release(client: any): void;
-  withClient<T>(fn: (client: any) => Promise<T>): Promise<T>;
   get(key: string): Promise<string | null>;
   set(key: string, value: string, ...args: any[]): Promise<string | null>;
   del(key: string): Promise<number>;

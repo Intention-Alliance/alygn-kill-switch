@@ -11,12 +11,14 @@ import {
   BookOpen,
   PanelLeftClose,
   PanelLeft,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +26,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/lib/auth-context";
+import { SystemMetricsBar } from "@/components/machines/system-metrics";
+import { MachineQuickActions } from "@/components/machines/machine-quick-actions";
+import type { Machine, KillSwitchState } from "@/types/shared";
 
 const NAV_ITEMS = [
   {
@@ -64,11 +69,30 @@ const NAV_ITEMS = [
   },
 ];
 
+const MACHINE_STATUS_CONFIG: Record<
+  Machine["status"],
+  { label: string; variant: "default" | "destructive" | "secondary" }
+> = {
+  active: { label: "Active", variant: "default" },
+  inactive: { label: "Inactive", variant: "secondary" },
+  offline: { label: "Offline", variant: "destructive" },
+};
+
 interface AppSidebarProps {
   className?: string;
+  selectedMachine?: Machine | null;
+  onMachineDeselect?: () => void;
+  currentKillSwitchState?: KillSwitchState;
+  onKillSwitchStateChange?: (state: KillSwitchState) => void;
 }
 
-export function AppSidebar({ className }: AppSidebarProps) {
+export function AppSidebar({
+  className,
+  selectedMachine,
+  onMachineDeselect,
+  currentKillSwitchState,
+  onKillSwitchStateChange,
+}: AppSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
@@ -85,7 +109,7 @@ export function AppSidebar({ className }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-screen flex-col border-r bg-card transition-all duration-300",
+        "md:flex h-screen flex-col border-r bg-card transition-all duration-300",
         collapsed ? "w-16" : "w-60",
         className,
       )}
@@ -149,6 +173,69 @@ export function AppSidebar({ className }: AppSidebarProps) {
       </nav>
 
       <Separator />
+
+      {/* Machine Context Panel */}
+      {selectedMachine && !collapsed && (
+        <>
+          <Separator />
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-3 space-y-3">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Server className="h-4 w-4 shrink-0 text-primary" />
+                  <span className="text-sm font-semibold truncate">
+                    {selectedMachine.name}
+                  </span>
+                </div>
+                {(() => {
+                  const cfg = MACHINE_STATUS_CONFIG[selectedMachine.status];
+                  return (
+                    <Badge
+                      variant={cfg?.variant ?? "secondary"}
+                      className="capitalize text-[10px] shrink-0"
+                    >
+                      {cfg?.label ?? selectedMachine.status}
+                    </Badge>
+                  );
+                })()}
+              </div>
+
+              {/* Compact System Metrics */}
+              <div className="rounded-md bg-muted/30 px-2 py-1.5">
+                <SystemMetricsBar machine={selectedMachine} />
+              </div>
+
+              {/* Compact Quick Actions */}
+              {currentKillSwitchState && onKillSwitchStateChange && (
+                <MachineQuickActions
+                  currentState={currentKillSwitchState}
+                  onStateChange={onKillSwitchStateChange}
+                />
+              )}
+
+              {/* View Details Link */}
+              <Link
+                href={`/machines/${selectedMachine.id}`}
+                className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-primary hover:bg-primary/5 transition-colors"
+              >
+                <span>View Details</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+
+              {/* Deselect */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs text-muted-foreground"
+                onClick={onMachineDeselect}
+              >
+                Clear Selection
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* User section */}
       <div className={cn("p-3", collapsed && "px-2")}>
