@@ -13,6 +13,7 @@ import type {
   FlagUpdateMessage,
   AgentEventMessage,
   AuditEntryMessage,
+  MachineMetricsMessage,
 } from "@/types/shared";
 
 // ─── Constants ──────────────────────────────────────────────────
@@ -107,6 +108,7 @@ export interface UseKillSwitchWebSocketReturn {
   auditLog: ActivationRecord[];
   isConnected: boolean;
   reconnectAttempt: number;
+  latestMetrics: MachineMetricsMessage["payload"] | null;
 }
 
 // ─── Hook ───────────────────────────────────────────────────────
@@ -121,6 +123,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const [auditLog, setAuditLog] = useState<ActivationRecord[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
+  const [latestMetrics, setLatestMetrics] = useState<MachineMetricsMessage["payload"] | null>(null);
 
   // Refs that survive re-renders and don't trigger them
   const wsRef = useRef<WebSocket | null>(null);
@@ -368,6 +371,12 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         break;
       }
 
+      case "machine-metrics": {
+        const payload = (msg as unknown as MachineMetricsMessage).payload;
+        setLatestMetrics(payload);
+        break;
+      }
+
       default:
         break;
     }
@@ -533,5 +542,6 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
     auditLog,
     isConnected,
     reconnectAttempt,
+    latestMetrics,
   };
 }

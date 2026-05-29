@@ -15,6 +15,7 @@ const REDIS_CHANNELS = [
   'bcp:flags:updates',
   'bcp:agents:events',
   'bcp:machines:events',
+  'bcp:machines:metrics',
   'bcp:settings:updates',
 ];
 
@@ -91,7 +92,9 @@ export class WebSocketManager {
         case 'bcp:agents:events': wsMessage = { type: 'agent-event', payload: parsed }; break;
         case 'bcp:machines:events': wsMessage = parsed.type ? parsed : { type: 'machine-event', payload: parsed }; break;
         case 'bcp:settings:updates': wsMessage = { type: 'settings-update', payload: parsed }; break;
-        default: wsMessage = { type: 'unknown', payload: parsed };
+      case 'bcp:machines:metrics':
+        wsMessage = parsed.type ? parsed : { type: 'machine-metrics', payload: parsed };
+        break;
       }
       this.broadcast(wsMessage);
     } catch {}
