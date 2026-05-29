@@ -2,8 +2,9 @@ FROM oven/bun:1.2-alpine
 
 WORKDIR /app
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+# Install curl (health checks) + pciutils (lspci for GPU detection)
+# No systemd/journalctl needed — we use nsenter to call host's journalctl
+RUN apk add --no-cache curl pciutils
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data
