@@ -172,7 +172,7 @@ describe('KillSwitchService — state machine transitions', () => {
   });
 
   // Scenario 7: ARM → STOPPING invalid (throws 409)
-  it('ARM → STOPPING invalid transition (throws 409)', async () => {
+  it('ARM → STOPPING invalid (throws 409) — must go via RUNNING or emergency STOPPED', async () => {
     internalState = 'ARMED';
     const service = createService();
 
@@ -183,6 +183,7 @@ describe('KillSwitchService — state machine transitions', () => {
       expect(err.statusCode).toBe(409);
       expect(err.current).toBe('ARMED');
       expect(err.allowed).toContain('RUNNING');
+      expect(err.allowed).toContain('STOPPED');
       expect(err.allowed).toContain('LOCKED');
       expect(err.message).toContain('Invalid transition');
       expect(err.message).toContain('ARMED');
@@ -192,21 +193,26 @@ describe('KillSwitchService — state machine transitions', () => {
     expect(internalState).toBe('ARMED');
   });
 
-  // Scenario 8: RUNNING → STOPPED skipping STOPPING (throws 409)
-  it('RUNNING → STOPPED skipping STOPPING (throws 409)', async () => {
+  // Scenario 7b: ARM → STOPPED emergency path (valid — direct emergency stop)
+  it('ARM → STOPPED emergency path (valid)', async () => {
+    internalState = 'ARMED';
+    const service = createService();
+    const result = await service.transitionTo('STOPPED');
+
+    expect(result.newState).toBe('STOPPED');
+    expect(result.previousState).toBe('ARMED');
+    expect(internalState).toBe('STOPPED');
+  });
+
+  // Scenario 8: RUNNING → STOPPED emergency path (valid — bypasses STOPPING)
+  it('RUNNING → STOPPED emergency path (valid)', async () => {
     internalState = 'RUNNING';
     const service = createService();
+    const result = await service.transitionTo('STOPPED');
 
-    try {
-      await service.transitionTo('STOPPED');
-      expect.unreachable('Should have thrown');
-    } catch (err: any) {
-      expect(err.statusCode).toBe(409);
-      expect(err.current).toBe('RUNNING');
-      expect(err.allowed).toContain('STOPPING');
-      expect(err.allowed).toContain('LOCKED');
-    }
-    expect(internalState).toBe('RUNNING');
+    expect(result.newState).toBe('STOPPED');
+    expect(result.previousState).toBe('RUNNING');
+    expect(internalState).toBe('STOPPED');
   });
 
   // Scenario 9: Same state → same state (throws)
