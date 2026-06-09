@@ -47,7 +47,7 @@ const NAV_ITEMS = [
     href: "/flags",
     label: "Flag Management",
     icon: Flag,
-    description: "Feature flags & rollout control",
+    description: "Global flags & per-machine overrides",
   },
   {
     href: "/machines",

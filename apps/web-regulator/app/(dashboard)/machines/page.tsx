@@ -14,9 +14,14 @@ import {
   WifiOff,
   Loader2,
   Pencil,
+  Flag,
+  AlertTriangle,
+  Shield,
 } from "lucide-react";
 import { DPUSecurityBanner } from "@/components/machines/dpu-security-banner";
 import { MachineEditor } from "@/components/machines/machine-editor";
+import { MachineFlagEditor } from "@/components/machines/machine-flag-editor";
+import { MachineQuickActions } from "@/components/machines/machine-quick-actions";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import {
   Card,
@@ -37,12 +42,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { apiGet } from "@/lib/api-client";
 import { toast } from "sonner";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type {
   Machine,
   MachineStatus as MachineStatusType,
+  KillSwitchState,
 } from "@/types/shared";
 
 // ─── Types ────────────────────────────────────────────────────────
@@ -75,8 +88,27 @@ interface MachinesResponse {
   offset: number;
 }
 
+// Per-machine flags payload (contract § 3.1). Kept local to this page;
+// the canonical type lives in `components/machines/machine-flag-editor.tsx`.
+interface MachineFlagEntry {
+  key: string;
+  value: boolean | number | string;
+  type: "boolean" | "number" | "string";
+  description: string;
+  overridden: boolean;
+}
+interface MachineFlagsResponse {
+  machineId: string;
+  flags: MachineFlagEntry[];
+  overrides: Array<{
+    flagKey: string;
+    value: string;
+    updatedAt: string;
+  }>;
+}
+
 export default function MachinesDashboardPage() {
-  const { machines: wsMachines, isConnected } = useKillSwitchWebSocket();
+  const { machines: wsMachines, isConnected, status } = useKillSwitchWebSocket();
 
   const [machines, setMachines] = useState<Machine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,6 +116,15 @@ export default function MachinesDashboardPage() {
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingMachine, setEditingMachine] = useState<Machine | undefined>();
+
+  // ─── v1.1: per-row action sheet/dialog state ──────────────────
+  const [actionsFor, setActionsFor] = useState<Machine | null>(null);
+  const [flagEditorFor, setFlagEditorFor] = useState<Machine | null>(null);
+
+  // ─── v1.1: resolved flag values for the selected machine ─────────
+  const [resolvedFlags, setResolvedFlags] = useState<MachineFlagEntry[]>([]);
+  const [flagsLoading, setFlagsLoading] = useState(false);
+  const [flagsError, setFlagsError] = useState<string | null>(null);
 
   // ─── Fetch machines on mount ──────────────────────────────────
 
@@ -112,6 +153,37 @@ export default function MachinesDashboardPage() {
       setMachines(wsMachines);
     }
   }, [wsMachines, isConnected]);
+
+  // ─── v1.1: fetch resolved flag values for the selected machine ─
+  useEffect(() => {
+    if (!selectedMachine) {
+      setResolvedFlags([]);
+      setFlagsError(null);
+      return;
+    }
+    let cancelled = false;
+    setFlagsLoading(true);
+    setFlagsError(null);
+    apiGet<MachineFlagsResponse>(
+      `/api/machines/${selectedMachine.id}/flags`,
+    )
+      .then((data) => {
+        if (!cancelled) setResolvedFlags(data.flags ?? []);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setFlagsError(
+            err instanceof Error ? err.message : "Failed to load flags",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setFlagsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedMachine]);
 
   // ─── Handlers ──────────────────────────────────────────────────
 
@@ -319,6 +391,9 @@ export default function MachinesDashboardPage() {
                             <TableHead className="w-44">
                               Last Seen
                             </TableHead>
+                            <TableHead className="w-56 text-right">
+                              Actions
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -375,6 +450,39 @@ export default function MachinesDashboardPage() {
                                     {formatTimeAgo(
                                       machine.lastSeen,
                                     )}
+                                  </div>
+                                </TableCell>
+                                <TableCell
+                                  className="text-right"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="flex items-center justify-end gap-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-7 gap-1 text-destructive border-destructive/40 hover:bg-destructive/10"
+                                      onClick={() => setActionsFor(machine)}
+                                      aria-label={`Emergency stop ${machine.name}`}
+                                      title="Open kill-switch Quick Actions for this machine"
+                                    >
+                                      <AlertTriangle className="h-3 w-3" />
+                                      <span className="hidden sm:inline">
+                                        Stop
+                                      </span>
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-7 gap-1"
+                                      onClick={() => setFlagEditorFor(machine)}
+                                      aria-label={`Manage flags for ${machine.name}`}
+                                      title="Open per-machine flag overrides"
+                                    >
+                                      <Flag className="h-3 w-3" />
+                                      <span className="hidden sm:inline">
+                                        Flags
+                                      </span>
+                                    </Button>
                                   </div>
                                 </TableCell>
                               </TableRow>
@@ -529,6 +637,65 @@ export default function MachinesDashboardPage() {
                         {formatTimeAgo(selectedMachine.lastSeen)}
                       </p>
                     </div>
+
+                    <Separator />
+
+                    {/* v1.1: Resolved per-machine flags */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                          <Flag className="h-3 w-3" /> Resolved Flags
+                        </p>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => setFlagEditorFor(selectedMachine)}
+                        >
+                          Manage
+                        </Button>
+                      </div>
+                      {flagsLoading ? (
+                        <div className="space-y-1.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Skeleton key={i} className="h-7 w-full" />
+                          ))}
+                        </div>
+                      ) : flagsError ? (
+                        <p className="text-xs text-destructive">{flagsError}</p>
+                      ) : resolvedFlags.length === 0 ||
+                        resolvedFlags.every((f) => !f.overridden) ? (
+                        <p className="text-xs text-muted-foreground italic">
+                          All flags using global values
+                        </p>
+                      ) : (
+                        <ul className="space-y-1.5">
+                          {resolvedFlags.map((f) => (
+                            <li
+                              key={f.key}
+                              className="flex items-center justify-between rounded-md border bg-muted/30 px-2 py-1.5 text-xs"
+                            >
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <code className="font-mono text-[11px] truncate">
+                                  {f.key}
+                                </code>
+                                {f.overridden && (
+                                  <Badge
+                                    variant="outline"
+                                    className="text-[9px] h-3.5 px-1 border-amber-500/40 text-amber-600 dark:text-amber-400"
+                                  >
+                                    override
+                                  </Badge>
+                                )}
+                              </div>
+                              <span className="font-mono text-foreground shrink-0">
+                                {String(f.value)}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </SectionErrorBoundary>
@@ -552,6 +719,65 @@ export default function MachinesDashboardPage() {
           onOpenChange={setEditorOpen}
           onSaved={handleSaved}
         />
+
+        {/* v1.1: per-row Quick Actions (kill-switch) sheet. Wraps
+            MachineQuickActions in a side panel so the user can review
+            the machine context while triggering a state change. State
+            changes are global (not per-machine) per contract § 9. */}
+        <Sheet
+          open={actionsFor !== null}
+          onOpenChange={(open) => {
+            if (!open) setActionsFor(null);
+          }}
+        >
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-md flex flex-col gap-4"
+          >
+            <SheetHeader>
+              <SheetTitle className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-primary" />
+                Kill-Switch Quick Actions
+              </SheetTitle>
+              <SheetDescription>
+                {actionsFor
+                  ? `Apply a global kill-switch state change. Currently viewing: ${actionsFor.name}.`
+                  : "Apply a global kill-switch state change."}
+              </SheetDescription>
+            </SheetHeader>
+            {actionsFor && (
+              <div className="rounded-md bg-muted/30 p-3 text-sm space-y-1">
+                <p className="font-medium">{actionsFor.name}</p>
+                <p className="text-xs text-muted-foreground font-mono">
+                  {actionsFor.hostname} · {actionsFor.role}
+                </p>
+              </div>
+            )}
+            <MachineQuickActions
+              currentState={status?.state ?? "ARMED"}
+              onStateChange={() => {
+                // The component already POSTs and toasts. Close the sheet
+                // on a successful state change so the user sees fresh data.
+                setActionsFor(null);
+              }}
+            />
+          </SheetContent>
+        </Sheet>
+
+        {/* v1.1: per-row Manage Flags dialog. Reuses MachineFlagEditor
+            (which renders its own <Dialog>). The component is mounted
+            only when a target machine is selected, so its internal fetch
+            triggers on open. */}
+        {flagEditorFor && (
+          <MachineFlagEditor
+            machineId={flagEditorFor.id}
+            machineName={flagEditorFor.name}
+            open={true}
+            onOpenChange={(o) => {
+              if (!o) setFlagEditorFor(null);
+            }}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );

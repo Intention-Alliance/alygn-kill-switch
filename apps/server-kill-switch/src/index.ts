@@ -19,6 +19,7 @@ import { loadRedisPool } from './infra-loader';
 import { startMetricGeneration } from './services/system-metrics';
 import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
+import { seedFeatureFlags } from './db/seed';
 import { validateEnvironment } from './config/validate-env';
 
 // ─── Node-style HTTP Handler ───────────────────────────────────────
@@ -129,6 +130,12 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   service.onStateChange((entry: any) => wsManager.broadcastStateChange(entry));
 
   await seedAdminUser();
+
+  try {
+    await seedFeatureFlags();
+  } catch (e) {
+    console.error('[seed] Feature flag seeding failed (non-fatal):', e);
+  }
 
   const port = opts.port || config.server.port;
 

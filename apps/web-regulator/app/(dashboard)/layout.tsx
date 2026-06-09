@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Suspense, useEffect } from "react";
+import { Suspense, useCallback, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
@@ -11,6 +11,10 @@ import {
   MachineSelectionProvider,
   useMachineSelection,
 } from "@/lib/machine-selection-context";
+import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
+import { apiPost } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { KillSwitchState } from "@/types/shared";
 
 function AuthGuard({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -61,6 +65,52 @@ function DashboardLayoutInner({
   isDashboard: boolean;
 }) {
   const { selectedMachine, deselectMachine } = useMachineSelection();
+  const { status } = useKillSwitchWebSocket();
+
+  // Debounce guard for rapid sidebar Quick Actions double-fires (plan § 10).
+  // 250ms is the v1.1 risk-mitigation value; a simple ref-captured timer is
+  // sufficient (no need to pull in lodash for one use site).
+  const killSwitchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+
+  const handleKillSwitchStateChange = useCallback(
+    async (newState: KillSwitchState) => {
+      // Drop the call if one is already in flight or just fired
+      if (killSwitchDebounceRef.current !== null) return;
+
+      killSwitchDebounceRef.current = setTimeout(() => {
+        killSwitchDebounceRef.current = null;
+      }, 250);
+
+      try {
+        const result = await apiPost<{
+          current: KillSwitchState;
+          previous: KillSwitchState;
+          timestamp: number;
+        }>("/api/kill-switch/chaos", {
+          state: newState,
+          reason: `Sidebar machine override: ${newState}`,
+        });
+        toast.success(`State changed to ${result.current}`);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to change state";
+        toast.error(message);
+      }
+    },
+    [],
+  );
+
+  // Clean up pending debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (killSwitchDebounceRef.current !== null) {
+        clearTimeout(killSwitchDebounceRef.current);
+        killSwitchDebounceRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <AuthGuard>
@@ -69,6 +119,8 @@ function DashboardLayoutInner({
         <AppSidebar
           selectedMachine={selectedMachine}
           onMachineDeselect={deselectMachine}
+          currentKillSwitchState={status?.state ?? "ARMED"}
+          onKillSwitchStateChange={handleKillSwitchStateChange}
         />
 
         {/* Mobile header with hamburger */}

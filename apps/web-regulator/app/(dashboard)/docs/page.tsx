@@ -128,6 +128,9 @@ const API_ENDPOINTS = [
   { method: "DELETE", path: "/v1/machines/:id", auth: "Admin", description: "Remove a machine" },
   { method: "POST", path: "/v1/machines/:id/heartbeat", auth: "Agent", description: "Machine health heartbeat" },
   { method: "GET", path: "/v1/machines/:id/status", auth: "Session", description: "Machine status + DPU info + active flags" },
+  { method: "GET", path: "/v1/machines/:id/flags", auth: "Admin", description: "Per-machine merged flag view (overrides + globals) — ADR-133" },
+  { method: "PUT", path: "/v1/machines/:id/flags/:key", auth: "Admin", description: "Set or update a per-machine flag override" },
+  { method: "DELETE", path: "/v1/machines/:id/flags/:key", auth: "Admin", description: "Clear a per-machine flag override (revert to global, 204)" },
   { method: "GET", path: "/v1/settings", auth: "Session", description: "Get all system settings" },
   { method: "POST", path: "/v1/settings", auth: "Admin", description: "Batch update settings" },
   { method: "GET", path: "/v1/settings/:key", auth: "Session", description: "Get single setting value" },
@@ -320,6 +323,99 @@ export default function DocsPage() {
                 <span className="text-xs text-muted-foreground">— Hardcoded fallback. Used when no global flag exists.</span>
               </div>
             </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-base mb-2">Per-Machine Flag Overrides (ADR-133)</h3>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Machine-level overrides let you apply stricter or looser flag values to
+              individual nodes without changing the global default. The resolution
+              order is strict:
+            </p>
+            <div className="rounded-lg border p-4 space-y-1 font-mono text-xs mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-emerald-500">RESOLVE</span>
+                <code className="text-muted-foreground">machine override → global → default</code>
+              </div>
+            </div>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              The per-machine override surface is exposed by three new endpoints (binding
+              contract:{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                docs/api-contracts/per-machine-flags-v1.md
+              </code>
+              ):
+            </p>
+            <div className="rounded-lg border overflow-hidden mb-3">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-20">Method</TableHead>
+                    <TableHead>Path</TableHead>
+                    <TableHead>Notes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <Badge variant="default" className="text-[10px]">GET</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">
+                      /api/machines/:id/flags
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      Returns the merged view: per-flag resolved value, type, and an
+                      <code className="text-[10px] bg-muted px-1 py-0.5 rounded mx-1">overridden</code>
+                      marker. Admin auth.
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Badge variant="destructive" className="text-[10px]">PUT</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">
+                      /api/machines/:id/flags/:key
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      Body: <code className="text-[10px] bg-muted px-1 py-0.5 rounded">{"{ value: ... }"}</code>.
+                      Idempotent set/update; value is coerced and validated per flag
+                      type. Admin auth.
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Badge variant="destructive" className="text-[10px]">DELETE</Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">
+                      /api/machines/:id/flags/:key
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      Clears the override; the machine falls back to the global value.
+                      204 on success (idempotent). Admin auth.
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Per-machine overrides persist in the{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">machine_flag</code>{" "}
+              table. The table is keyed by{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">(machine_id, flag_key)</code>{" "}
+              with{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                ON DELETE CASCADE
+              </code>{" "}
+              from <code className="text-xs bg-muted px-1 py-0.5 rounded">machine.id</code>{" "}
+              — deleting a machine also removes all of its overrides. When a global
+              flag is deleted via the existing{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                DELETE /v1/flags/:id
+              </code>{" "}
+              handler, all <code className="text-xs bg-muted px-1 py-0.5 rounded">machine_flag</code>{" "}
+              rows referencing the key are removed in the same change set (see
+              contract § 6.3).
+            </p>
           </div>
 
           <div>
