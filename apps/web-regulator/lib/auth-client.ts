@@ -10,8 +10,37 @@
 
 import { createAuthClient } from "better-auth/react";
 
-const baseURL =
-  process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "/api/auth";
+/**
+ * Resolve the auth base URL.
+ *
+ * Better-Auth requires an absolute URL with http:// or https:// protocol.
+ * We resolve it at MODULE LOAD time:
+ *   1. If NEXT_PUBLIC_BETTER_AUTH_URL is set (build-time, e.g. via .env.local),
+ *      use it. This must be the Next.js server origin (where the /api/auth
+ *      rewrite lives), NOT the backend origin. e.g. http://localhost:3001 in
+ *      dev or https://your-host.com in prod.
+ *   2. Otherwise, in the browser, use window.location.origin (always absolute).
+ *   3. Otherwise (SSR/build-time fallback), use http://localhost:3000 as a
+ *      last-resort placeholder — only the type matters for prerender; the
+ *      actual URL is consumed client-side at runtime.
+ *
+ * v1.1.1 dev-env-unlock: in local dev, set NEXT_PUBLIC_BETTER_AUTH_URL
+ * to the Next.js server origin (e.g. http://localhost:3001). The /api/auth
+ * path is added by Better-Auth automatically via withPath() and goes
+ * through the Next.js rewrite to the backend.
+ */
+function resolveAuthBaseURL(): string {
+  if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
+    return process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
+  }
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  // SSR/build-time fallback — placeholder, only the protocol matters here
+  return "http://localhost:3000";
+}
+
+const baseURL = resolveAuthBaseURL();
 
 // v1.1.1 dev-env-unlock: warn (not fail) if the auth client is pointed at a
 // non-localhost URL without a same-origin proxy. CSP 'self' will block the

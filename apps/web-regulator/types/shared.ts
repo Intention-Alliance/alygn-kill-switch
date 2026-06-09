@@ -166,12 +166,30 @@ export interface HeartbeatMessage extends BaseWebSocketMessage {
   payload: { timestamp: string };
 }
 
+// ─── Machine Metrics (server system-metrics.ts payload shape) ────
+
+export interface MachineMetricsMessage extends BaseWebSocketMessage {
+  type: "machine-metrics";
+  payload: {
+    cpuUsage: number;
+    memoryUsage: number;
+    gpuUsage: number;
+    gpuModel: string;
+    dpuStatus: string;
+    loadAvg: number;
+    uptime: number;
+    diskUsage: { total: number; used: number; free: number; usage: number } | null;
+    timestamp: number;
+  };
+}
+
 export type WebSocketMessage =
   | StateChangeMessage
   | FlagUpdateMessage
   | AgentEventMessage
   | AuditEntryMessage
-  | HeartbeatMessage;
+  | HeartbeatMessage
+  | MachineMetricsMessage;
 
 // ─── Settings Types ───────────────────────────────────────────────
 
