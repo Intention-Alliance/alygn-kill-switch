@@ -208,7 +208,7 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`
     CREATE TABLE IF NOT EXISTS flag_audit_log (
       id TEXT PRIMARY KEY,
-      flag_id TEXT NOT NULL REFERENCES feature_flag(id) ON DELETE CASCADE,
+      flag_id TEXT REFERENCES feature_flag(id) ON DELETE SET NULL,
       action TEXT NOT NULL,
       old_value TEXT,
       new_value TEXT,
@@ -223,6 +223,64 @@ export function initDatabase(dbPath: string = DB_PATH) {
   } catch (e) {
     // Column already exists — safe to ignore
     if (!(e instanceof Error) || !e.message.includes('duplicate column name')) {
+      throw e;
+    }
+  }
+
+  // v1.1.1 hotfix (2026-06-09): Migrate flag_audit_log.flag_id to nullable + ON DELETE SET NULL.
+  // Before: flag_id TEXT NOT NULL REFERENCES feature_flag(id) ON DELETE CASCADE.
+  //   Problem: deleting a flag silently erased all its audit history, undermining
+  //   tamper-evident governance claims on the kill-switch system.
+  // After: flag_id TEXT REFERENCES feature_flag(id) ON DELETE SET NULL.
+  //   Audit rows survive deletion with flag_id = NULL; FK becomes NULL on parent delete.
+  // Idempotent: checks PRAGMA table_info for NOT NULL flag, only migrates if needed.
+  try {
+    const cols = sqlite
+      .query("PRAGMA table_info(flag_audit_log)")
+      .all() as Array<{ name: string; notnull: number }>;
+    const flagIdCol = cols.find((c) => c.name === 'flag_id');
+    if (flagIdCol && flagIdCol.notnull === 1) {
+      console.log('[db] v1.1.1 migration: flag_audit_log.flag_id → nullable + SET NULL');
+
+      // SQLite table rebuild pattern (preserves all data + indexes)
+      sqlite.run('PRAGMA foreign_keys=OFF');
+      sqlite.run('BEGIN');
+      try {
+        sqlite.run(`
+          CREATE TABLE flag_audit_log_new (
+            id TEXT PRIMARY KEY,
+            flag_id TEXT REFERENCES feature_flag(id) ON DELETE SET NULL,
+            action TEXT NOT NULL,
+            old_value TEXT,
+            new_value TEXT,
+            user_id TEXT NOT NULL,
+            timestamp INTEGER NOT NULL,
+            machine_id TEXT
+          )
+        `);
+        sqlite.run(`
+          INSERT INTO flag_audit_log_new
+          SELECT id, flag_id, action, old_value, new_value, user_id, timestamp, machine_id
+          FROM flag_audit_log
+        `);
+        sqlite.run('DROP TABLE flag_audit_log');
+        sqlite.run('ALTER TABLE flag_audit_log_new RENAME TO flag_audit_log');
+        sqlite.run('COMMIT');
+        console.log('[db] v1.1.1 migration complete');
+      } catch (e) {
+        sqlite.run('ROLLBACK');
+        console.error('[db] v1.1.1 migration failed — rolled back:', e);
+        throw e;
+      } finally {
+        sqlite.run('PRAGMA foreign_keys=ON');
+      }
+    } else {
+      console.log('[db] v1.1.1 migration: already on nullable schema (skipped)');
+    }
+  } catch (e: any) {
+    // Flag_audit_log table may not exist yet (fresh DB): CREATE TABLE IF NOT EXISTS
+    // above will already be correct. Safe to ignore.
+    if (e.message && !e.message.includes('no such table')) {
       throw e;
     }
   }
