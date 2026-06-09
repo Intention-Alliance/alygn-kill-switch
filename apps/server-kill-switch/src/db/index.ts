@@ -217,6 +217,16 @@ export function initDatabase(dbPath: string = DB_PATH) {
     )
   `);
 
+  // v1.1: Add machine_id column to existing flag_audit_log tables (idempotent)
+  try {
+    sqlite.run(`ALTER TABLE flag_audit_log ADD COLUMN machine_id TEXT`);
+  } catch (e) {
+    // Column already exists — safe to ignore
+    if (!(e instanceof Error) || !e.message.includes('duplicate column name')) {
+      throw e;
+    }
+  }
+
   // ─── Indexes ───────────────────────────────────────────────────────
 
   // Auth indexes

@@ -9,7 +9,7 @@
 
 import { eq } from 'drizzle-orm';
 import { db } from './index';
-import { machines, settings } from './schema';
+import { machines, settings, featureFlags } from './schema';
 
 /**
  * Seed the default machine (andlersrv) if it doesn't exist.
@@ -71,4 +71,71 @@ export async function seedDefaults() {
   }
 
   console.log('[seed] Seed complete');
+}
+
+/**
+ * Seed the 5 predefined feature flags (ADR-133 Q5) on first startup.
+ * All operations are idempotent (safe to re-run).
+ */
+export async function seedFeatureFlags() {
+  const predefinedFlags = [
+    {
+      id: 'flag-interception-enabled',
+      key: 'interception_enabled',
+      value: true,
+      description: 'Master kill switch for LLM request interception',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-auto-stop-threshold',
+      key: 'auto_stop_threshold',
+      value: true,
+      description: 'Semantic score threshold for auto-stop (default: 0.85)',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-damage-logging-level',
+      key: 'damage_logging_level',
+      value: true,
+      description: 'Log level for damage events (default: warning)',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-alert-on-critical',
+      key: 'alert_on_critical_score',
+      value: true,
+      description: 'Emit alert when score exceeds threshold',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-sampling-rate',
+      key: 'sampling_rate',
+      value: true,
+      description: 'Fraction of requests to evaluate (0-1, default: 1.0)',
+      enabled: true,
+      createdBy: 'system',
+    },
+  ];
+
+  let seeded = 0;
+  for (const flag of predefinedFlags) {
+    const existing = await db
+      .select()
+      .from(featureFlags)
+      .where(eq(featureFlags.key, flag.key))
+      .get();
+
+    if (!existing) {
+      await db.insert(featureFlags).values(flag);
+      seeded++;
+    }
+  }
+
+  if (seeded > 0) {
+    console.log(`[seed] ${seeded} feature flags created`);
+  }
 }

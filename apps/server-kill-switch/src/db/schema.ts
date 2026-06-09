@@ -154,15 +154,19 @@ export const flagAuditLog = sqliteTable(
   {
     id: text('id').primaryKey(),
     flagId: text('flag_id').notNull().references(() => featureFlags.id, { onDelete: 'cascade' }),
-    action: text('action').notNull(),                        // 'created' | 'updated' | 'deleted'
+    action: text('action').notNull(),                        // 'created' | 'updated' | 'deleted' | 'override-set' | 'override-cleared' | 'override-rejected'
     oldValue: text('old_value'),
     newValue: text('new_value'),
     userId: text('user_id').notNull(),
     timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    // v1.1 (ADR-133 / § 8.2a): nullable; audit is append-only and must survive machine
+    // deletion, so intentionally NO FK to machines.id (one-way cascade only).
+    machineId: text('machine_id'),
   },
   (table) => ({
     flagIdIdx: index('flag_audit_flag_id_idx').on(table.flagId),
     actionTimeIdx: index('flag_audit_action_time_idx').on(table.action, table.timestamp),
+    machineIdIdx: index('flag_audit_machine_id_idx').on(table.machineId),
   }),
 );
 
