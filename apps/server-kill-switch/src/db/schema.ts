@@ -153,7 +153,8 @@ export const flagAuditLog = sqliteTable(
   'flag_audit_log',
   {
     id: text('id').primaryKey(),
-    flagId: text('flag_id').notNull().references(() => featureFlags.id, { onDelete: 'cascade' }),
+    // v1.1.1: nullable + ON DELETE SET NULL — preserves audit history after flag deletion
+    flagId: text('flag_id').references(() => featureFlags.id, { onDelete: 'set null' }),
     action: text('action').notNull(),                        // 'created' | 'updated' | 'deleted' | 'override-set' | 'override-cleared' | 'override-rejected'
     oldValue: text('old_value'),
     newValue: text('new_value'),
