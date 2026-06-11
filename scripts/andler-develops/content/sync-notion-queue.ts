@@ -20,7 +20,31 @@
  */
 
 import { readFile, writeFile } from 'node:fs/promises';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ScoredOutput, QueuedOutput, QueuedItem, ScoredItem } from './types.js';
+
+// ── Config loader ──────────────────────────────────────────────────────
+
+interface AppConfig {
+  notion: { contentQueueDbId: string; parentPageId?: string; centralHubId?: string; };
+  discord: { brandingChannelId: string; };
+}
+
+async function loadConfig(): Promise<AppConfig> {
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  const configPath = resolve(__dirname, '..', 'config.json');
+  try {
+    const raw = await readFile(configPath, 'utf-8');
+    return JSON.parse(raw);
+  } catch {
+    console.error('[sync-notion-queue] WARNING: config.json not found, using env fallback');
+    return {
+      notion: { contentQueueDbId: process.env.ANDLER_DEV_NOTION_DB_ID || '' },
+      discord: { brandingChannelId: process.env.DISCORD_BRANDING_CHANNEL || '1481025610192257134' },
+    };
+  }
+}
 
 // ── Arg parser ─────────────────────────────────────────────────────────
 
@@ -85,16 +109,18 @@ Queuing rules:
 
 // TODO(stub): Create pages in Notion database.
 // Real implementation will:
-//   1. Use @notionhq/client to connect to Notion API
-//   2. Database ID from process.env.ANDLER_DEV_NOTION_DB_ID
-//   3. Create page per queued draft with properties:
-//      - Name (title): draft topic
-//      - Platform (select): x-single, x-thread, linkedin, tiktok, youtube, instagram
+//   1. Use @notionhq/client or fetch() to connect to Notion API
+//   2. Database ID: 37c33487-4af6-81d7-bc9c-dc12acf7d993 (from config.json or ANDLER_DEV_NOTION_DB_ID)
+//   3. Create page per queued draft with 9 properties:
+//      - Title (title): draft topic
+//      - Platform (select): x-single, x-thread, linkedin, blog-brief, youtube, tiktok, ig-carousel
+//      - Draft (rich_text): full draft body
 //      - Score (number): 0-100
-//      - Body (rich_text): full draft body
-//      - Hashtags (multi_select): hashtag array
-//      - CTA (rich_text): call to action
-//      - Status (select): "Draft" (default)
+//      - Score Breakdown (rich_text): per-dimension breakdown
+//      - Status (select): draft, scored, queued, published, rejected
+//      - Scheduled For (date): scheduled publish date
+//      - Posted URL (url): link to published post
+//      - Notes (rich_text): additional notes
 //   4. Store notion_page_id back on queued item
 //   5. Update Supabase andlerDev_content row
 
@@ -165,7 +191,13 @@ async function main(): Promise<void> {
     byPlatform[item.platform] = (byPlatform[item.platform] || 0) + 1;
   }
 
-  const dbId = process.env.ANDLER_DEV_NOTION_DB_ID || 'stub-notion-db-id';
+  const config = await loadConfig();
+  const dbId = config.notion.contentQueueDbId || process.env.ANDLER_DEV_NOTION_DB_ID || '';
+
+  if (!dbId) {
+    console.error('[sync-notion-queue] ERROR: No Notion database ID configured. Set in config.json or ANDLER_DEV_NOTION_DB_ID.');
+    process.exit(1);
+  }
 
   const queued: QueuedItem[] = [];
   const now = new Date().toISOString();
