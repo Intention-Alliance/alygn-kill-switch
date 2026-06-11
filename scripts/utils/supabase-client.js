@@ -61,13 +61,15 @@ async function testConnection() {
   }
 }
 
+const config = {
+  url: supabaseUrl,
+  key: supabaseKey ? supabaseKey.substring(0, 8) + '...' : null,
+  serviceKey: supabaseServiceKey ? supabaseServiceKey.substring(0, 8) + '...' : null
+};
+
 export {
   supabase,
   supabaseAdmin,
   testConnection,
-  config: {
-    url: supabaseUrl,
-    key: supabaseKey ? supabaseKey.substring(0, 8) + '...' : null,
-    serviceKey: supabaseServiceKey ? supabaseServiceKey.substring(0, 8) + '...' : null
-  }
+  config
 };
