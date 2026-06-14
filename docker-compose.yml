@@ -6,12 +6,11 @@ services:
   # ============================================
   telemetry-handler:
     build:
-      context: ./apps/server-telemetry-handler
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/server-telemetry-handler/Dockerfile
     container_name: align-telemetry-handler
     restart: unless-stopped
     environment:
-      - SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING}
       - DPU_ID=${DPU_ID:-dpu-node-001}
       - DPU_SLUG=${DPU_SLUG:-austin-primary}
       - BATCH_SIZE=${BATCH_SIZE:-50}
@@ -19,6 +18,8 @@ services:
       - ENABLE_ZKP=${ENABLE_ZKP:-true}
       - ENABLE_METRICS=${ENABLE_METRICS:-true}
       - ENABLE_DEBUG=${ENABLE_DEBUG:-false}
+    ports:
+      - "127.0.0.1:3002:3002"
     networks:
       - align-network
     logging:
@@ -60,9 +61,6 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - DATA_DIR=/app/data
       - LOG_LEVEL=${LOG_LEVEL:-info}
-    extra_hosts:
-      - "redis:host-gateway"
-      - "otel-collector:host-gateway"
     networks:
       - align-network
       - phase0-net
@@ -93,6 +91,92 @@ services:
   #   networks:
   #     - align-network
   
+
+  # ============================================
+  # Redis Cluster (3 nodes, kill-switch pubsub, rate-limit, cache)
+  # Conf files: infra/redis/conf/node-{1,2,3}.conf
+  # Cluster client discovers all 3 via cluster-announce-ip once bootstrapped
+  # ============================================
+  redis-node-1:
+    image: redis:7-alpine
+    container_name: align-redis-node-1
+    command: ["redis-server", "/usr/local/etc/redis/node-1.conf"]
+    volumes:
+      - ./infra/redis/conf:/usr/local/etc/redis:ro
+      - redis-node-1-data:/data
+    networks:
+      align-network:
+        aliases:
+          - redis
+    ports:
+      - "127.0.0.1:6380:6379"
+      - "127.0.0.1:16380:16379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  redis-node-2:
+    image: redis:7-alpine
+    container_name: align-redis-node-2
+    command: ["redis-server", "/usr/local/etc/redis/node-2.conf"]
+    volumes:
+      - ./infra/redis/conf:/usr/local/etc/redis:ro
+      - redis-node-2-data:/data
+    networks:
+      - align-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  redis-node-3:
+    image: redis:7-alpine
+    container_name: align-redis-node-3
+    command: ["redis-server", "/usr/local/etc/redis/node-3.conf"]
+    volumes:
+      - ./infra/redis/conf:/usr/local/etc/redis:ro
+      - redis-node-3-data:/data
+    networks:
+      - align-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # One-shot cluster bootstrap. Waits for all 3 nodes healthy, then
+  # `redis-cli --cluster create` joins them and assigns 16384 slots.
+  # Exits 0 on success; restart: "no" so it doesn't loop on failure.
+  redis-cluster-init:
+    image: redis:7-alpine
+    container_name: align-redis-cluster-init
+    depends_on:
+      redis-node-1:
+        condition: service_healthy
+      redis-node-2:
+        condition: service_healthy
+      redis-node-3:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "[cluster-init] bootstrapping 3-node cluster..." &&
+        redis-cli --cluster create \
+          redis-node-1:6379 redis-node-2:6379 redis-node-3:6379 \
+          --cluster-replicas 0 --cluster-yes &&
+        echo "[cluster-init] done"
+    networks:
+      - align-network
+    restart: "no"
 
   # ============================================
   # Web Regulator (Next.js Kill Switch Admin UI)
@@ -146,4 +230,7 @@ networks:
 
 volumes:
   kill-switch-data:
+  redis-node-1-data:
+  redis-node-2-data:
+  redis-node-3-data:
 #   postgres_data:
