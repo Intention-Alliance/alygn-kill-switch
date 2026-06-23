@@ -1,0 +1,139 @@
+{
+  "salary": {
+    "minHourly": 60,
+    "minYearly": 120000
+  },
+  "stack": {
+    "_comment": "Primary = Andler's professional stack. Secondary = AI-assisted reading/analysis.",
+    "primary": [
+      "typescript", "javascript", "react", "node", "next.js", "nextjs",
+      "express", "vue", "angular", "svelte", "nest", "nestjs",
+      "deno", "bun", "electron", "react native"
+    ],
+    "primaryBonus": [
+      "full-stack", "full stack", "fullstack",
+      "system architecture", "software architecture",
+      "backend", "back-end", "back end",
+      "frontend", "front-end", "front end",
+      "api design", "api development",
+      "cloud", "aws", "gcp", "azure",
+      "microservices", "distributed systems",
+      "technical lead", "tech lead", "staff engineer", "senior engineer",
+      "software engineer", "platform engineer", "devops engineer", "sre",
+      "engineer", "developer"
+    ],
+    "secondary": [
+      "solidity", "rust", "blockchain", "web3", "smart contract",
+      "ethereum", "defi", "nft", "crypto", "evm",
+      "smart contracts", "dapp", "dapps", "decentralized",
+      "layer 2", "l2", "rollup", "zero knowledge", "zk",
+      "foundry", "hardhat"
+    ],
+    "matching": {
+      "_comment": "MUST_HAVE = at least one JS/TS ecosystem keyword OR role keyword. NICE_TO_HAVE = blockchain keywords. Score 0-100.",
+      "requirePrimary": true,
+      "requireAtLeastOneOf": [
+        "typescript", "javascript", "react", "node", "next.js", "nextjs",
+        "express", "vue", "angular", "svelte", "nest", "nestjs",
+        "deno", "bun", "electron", "react native",
+        "full-stack", "full stack", "fullstack",
+        "frontend", "front-end", "front end",
+        "backend", "back-end", "back end",
+        "engineer", "developer", "software", "devops", "sre", "platform"
+      ],
+      "points": {
+        "primary": 8,
+        "primaryBonus": 5,
+        "secondary": 4
+      },
+      "baseScore": 55,
+      "minScore": 60,
+      "maxPrimaryBonusPoints": 25,
+      "maxSecondaryPoints": 16
+    }
+  },
+  "filters": {
+    "maxAgeDays": 14,
+    "remoteOnly": true,
+    "locations": ["remote", "worldwide", "anywhere", "global", "distributed"]
+  },
+  "rateLimit": {
+    "delayMs": 3000,
+    "maxRetries": 3,
+    "retryDelayMs": 5000
+  },
+  "notification": {
+    "channel": "whatsapp",
+    "recipient": "+50662163355",
+    "discordChannel": "1117841083351711785/1466532145257255004",
+    "topN": 5
+  },
+  "platforms": {
+    "wellfound": {
+      "enabled": false,
+      "_comment": "DISABLED: Cloudflare blocks all automated requests. Needs real Chrome profile with auth cookies.",
+      "searchQueries": [
+        "typescript full-stack developer remote",
+        "javascript web3 developer remote",
+        "typescript blockchain engineer remote",
+        "full stack developer typescript",
+        "react node blockchain developer"
+      ]
+    },
+    "web3career": {
+      "enabled": true,
+      "apiToken": "",
+      "tags": ["typescript", "solidity", "rust", "react", "blockchain", "web3", "full-stack", "smart-contract"],
+      "searchQueries": [
+        "typescript solidity",
+        "javascript web3",
+        "full stack blockchain",
+        "react blockchain"
+      ]
+    },
+    "arcdev": {
+      "enabled": true,
+      "searchQueries": [
+        "typescript developer remote",
+        "full-stack engineer remote",
+        "javascript developer blockchain",
+        "react node web3"
+      ]
+    },
+    "linkedin": {
+      "enabled": true,
+      "maxAgeDays": 21,
+      "_comment": "3-week freshness — LinkedIn search results are often stale, shorter windows get nothing.",
+      "searchQueries": [
+        "typescript full stack developer",
+        "javascript blockchain developer",
+        "full stack engineer web3"
+      ],
+      "timeFilter": "r1814400"
+    },
+    "gunio": {
+      "enabled": false,
+      "_comment": "DISABLED: Gun.io has no public job board — operates as vetted talent marketplace only.",
+      "searchQueries": [
+        "full stack typescript",
+        "javascript blockchain",
+        "react solidity"
+      ]
+    }
+  },
+  "logging": {
+    "level": "info",
+    "file": "data/jobs/automation.log",
+    "maxSizeMB": 10,
+    "maxFiles": 5
+  },
+  "browser": {
+    "_comment": "Chrome DevTools Protocol port. OpenClaw's managed Chrome runs on 18801. Override via CHROME_DEBUG_PORT env var. Cron script (job-automation-cron.sh) reads the same env var.",
+    "debugPort": 18801,
+    "host": "127.0.0.1",
+    "launchIfMissing": false
+  },
+  "tracker": {
+    "path": "data/jobs/job-tracker.json"
+  }
+}
