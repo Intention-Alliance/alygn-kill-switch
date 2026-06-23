@@ -83,34 +83,58 @@ const REGION_ALLOW_OVERRIDE_PATTERNS = [
  * Returns { ok: true } if the job looks like real remote-from-anywhere,
  * or { ok: false, reason: string, pattern: string } if a deny pattern matched.
  *
+ * In b2b_mode (default false), deny patterns don't reject — they FLAG the job
+ * as B2B-viable (ok:true, b2b_viable:true, reason:...). B2B-viable means:
+ *   - The company is in a specific region (US, EU, etc.) that excludes W-2
+ *     direct hire
+ *   - BUT it can be served via Andler's CR S.A. as a B2B contractor
+ *     (W-8BEN-E invoicing) or via an EOR (Deel, Remote.com, Oyster)
+ *   - So it's a real lead, just needs a different application framing
+ *
+ * The downstream filter (filterJobs) emits a `b2b_viable: true` flag on the
+ * passed job and routes the same record to the audit log under
+ * `excludedRegion` (so Andler can still see what was originally flagged) but
+ * ALSO appends it to `filtered` (so it shows up in the shortlist).
+ *
  * @param {string} title       listing title (arc.dev encodes region in title)
  * @param {string} location    title-level location (e.g. "Remote (US, EU, UK)")
  * @param {string} description body text from the listing or detail page
- * @param {object} options     { strict: boolean, denyPatterns: RegExp[], allowOverrides: RegExp[] }
+ * @param {object} options     { strict, b2b_mode, denyPatterns, allowOverrides }
  */
 function passesRegionCheck(title, location, description, options = {}) {
   const strict = options.strict !== false; // default ON
   if (!strict) return { ok: true, reason: "strict-mode-disabled" };
 
+  const b2bMode = options.b2b_mode === true; // default OFF (safer)
   const denyPatterns = options.denyPatterns || REGION_DENY_PATTERNS;
   const allowPatterns = options.allowOverrides || REGION_ALLOW_OVERRIDE_PATTERNS;
   const text = `${title || ""} ${location || ""} ${description || ""}`.toLowerCase();
 
   // Allow-overrides win immediately — clear "FT-WW" / "Worldwide" signals
   // indicate the job is genuinely remote-from-anywhere regardless of the
-  // title tag that listed acceptable regions.
+  // title tag that listed acceptable regions. B2B-viable is false here.
   for (const pat of allowPatterns) {
     if (pat.test(text)) {
-      return { ok: true, reason: `region-allow: ${pat.source}` };
+      return { ok: true, b2b_viable: false, reason: `region-allow: ${pat.source}` };
     }
   }
 
   for (const pat of denyPatterns) {
     if (pat.test(text)) {
-      return { ok: false, reason: `region-deny: ${pat.source}`, pattern: pat.source };
+      // In b2b_mode, deny patterns become FLAGS, not failures. The job is
+      // a real lead under B2B-via-S.A. strategy; just needs different framing.
+      if (b2bMode) {
+        return {
+          ok: true,
+          b2b_viable: true,
+          reason: `region-flag-b2b: ${pat.source}`,
+          pattern: pat.source,
+        };
+      }
+      return { ok: false, b2b_viable: false, reason: `region-deny: ${pat.source}`, pattern: pat.source };
     }
   }
-  return { ok: true };
+  return { ok: true, b2b_viable: false };
 }
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -248,11 +272,13 @@ export function filterJobs(rawJobs, tracker, options = {}) {
   const { minHourly, minYearly } = cfg.salary;
   const { maxAgeDays, remoteOnly } = cfg.filters;
   const regionStrict = options.regionStrict !== false; // default ON
+  const b2bMode = options.b2bMode === true; // default OFF (safer)
 
-  log("info", `Filtering ${rawJobs.length} raw jobs (regionStrict=${regionStrict})`);
+  log("info", `Filtering ${rawJobs.length} raw jobs (regionStrict=${regionStrict}, b2bMode=${b2bMode})`);
 
   const filtered = [];
   const excludedRegion = [];
+  const b2bFlagged = []; // jobs that would be excluded in strict mode but pass in b2b mode
   let rejected = { noPrimary: 0, lowScore: 0, notRemote: 0, tooOld: 0, lowSalary: 0, duplicate: 0, regionDeny: 0 };
 
   for (const job of rawJobs) {
@@ -272,7 +298,15 @@ export function filterJobs(rawJobs, tracker, options = {}) {
     // isRemote() check has passed, so we don't burn regexes on the obvious
     // rejects. A job that says "US-based" in the body but "Remote" in the
     // title (the worst offender pattern) lands here.
-    const regionCheck = passesRegionCheck(job.title, job.location, job.description, { strict: regionStrict });
+    //
+    // In b2bMode, deny patterns FLIP the result: the job is allowed through
+    // with `b2b_viable: true` and a record of which pattern flagged it. The
+    // shortlist still gets the lead, but Andler sees the flag and applies
+    // with a B2B/S.A. framing instead of an employee framing.
+    const regionCheck = passesRegionCheck(job.title, job.location, job.description, {
+      strict: regionStrict,
+      b2b_mode: b2bMode,
+    });
     if (!regionCheck.ok) {
       rejected.regionDeny++;
       excludedRegion.push({
@@ -286,6 +320,23 @@ export function filterJobs(rawJobs, tracker, options = {}) {
         descriptionExcerpt: String(job.description || "").slice(0, 300),
       });
       continue;
+    }
+
+    // b2b_viable=true means the deny pattern fired but we let it through
+    // (b2bMode is on). Record it in the b2bFlagged audit list so Andler
+    // can see exactly which listings need a contractor pitch instead of
+    // an employee pitch, and so the count is visible in the run log.
+    if (regionCheck.b2b_viable) {
+      b2bFlagged.push({
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        platform: job.platform,
+        location: job.location,
+        url: job.url,
+        reason: regionCheck.reason,
+        descriptionExcerpt: String(job.description || "").slice(0, 300),
+      });
     }
 
     // Tiered stack match
@@ -304,25 +355,33 @@ export function filterJobs(rawJobs, tracker, options = {}) {
       primaryHits: match.primaryHits,
       primaryBonusHits: match.primaryBonusHits,
       secondaryHits: match.secondaryHits,
+      b2b_viable: regionCheck.b2b_viable === true,
+      b2b_reason: regionCheck.b2b_viable ? regionCheck.reason : null,
     });
   }
 
   // Sort: tier (high → medium → low) → score desc → date desc
+  // Within a tier, B2B-viable jobs sort LAST (lower priority than clean WW
+  // listings) but still ahead of the reject pile. The b2b_viable flag is
+  // also surfaced so the topJobs JSON output can carry it.
   const tierRank = { high: 0, medium: 1, low: 2 };
   filtered.sort((a, b) => {
     const tDiff = (tierRank[a.matchTier] ?? 3) - (tierRank[b.matchTier] ?? 3);
     if (tDiff) return tDiff;
+    // B2B-viable goes after clean listings within the same tier.
+    if (!!a.b2b_viable !== !!b.b2b_viable) return a.b2b_viable ? 1 : -1;
     if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore;
     return new Date(b.postedDate || 0) - new Date(a.postedDate || 0);
   });
 
   log("info", `Filtered: ${filtered.length} passed (${filtered.filter(j=>j.matchTier==='high').length} high, ${filtered.filter(j=>j.matchTier==='medium').length} medium, ${filtered.filter(j=>j.matchTier==='low').length} low)`);
+  log("info", `B2B-viable: ${filtered.filter(j => j.b2b_viable).length} of ${filtered.length} (need contractor pitch)`);
   log("info", `Rejected: ${JSON.stringify(rejected)}`);
   if (excludedRegion.length > 0) {
     log("info", `Region-excluded: ${excludedRegion.length} jobs (audit log: data/jobs/excluded-region.json)`);
   }
 
-  return { filtered, excludedRegion, rejected };
+  return { filtered, excludedRegion, b2bFlagged, rejected };
 }
 
 export default filterJobs;

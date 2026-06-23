@@ -147,10 +147,12 @@ async function main() {
   const useBrowser = !process.argv.includes("--script") && browserAvailable;
   const skipAnalyze = process.argv.includes("--no-analyze");
   const regionStrict = !process.argv.includes("--no-region-strict");
+  const b2bMode = process.argv.includes("--b2b");
   const mode = [
     useBrowser ? "browser" : "script",
     skipAnalyze ? "no-analyze" : "",
     regionStrict ? "" : "no-region-strict",
+    b2bMode ? "b2b" : "",
   ].filter(Boolean).join(", ");
   log("info", `=== Job Automation Started (${mode || "default"} mode) ===`);
 
@@ -167,29 +169,40 @@ async function main() {
       log("warn", `${errors.length} scraper(s) failed`, { errors });
     }
 
-    // 2. Filter (region-strict by default; override with --no-region-strict)
+    // 2. Filter (region-strict by default; override with --no-region-strict;
+    //    add --b2b to enable B2B-via-S.A. mode where US-only/etc. jobs pass
+    //    with a b2b_viable flag instead of being rejected)
     const regionStrict = !process.argv.includes("--no-region-strict");
-    const filterResult = filterJobs(rawJobs, tracker, { regionStrict });
+    const b2bMode = process.argv.includes("--b2b");
+    const filterResult = filterJobs(rawJobs, tracker, { regionStrict, b2bMode });
     const filtered = filterResult.filtered;
     const excludedRegion = filterResult.excludedRegion;
+    const b2bFlagged = filterResult.b2bFlagged || [];
 
-    // 2a. Persist region-excluded jobs for Andler's audit
-    if (excludedRegion.length > 0) {
-      const { writeFileSync, existsSync, mkdirSync } = await import("fs");
-      const { join } = await import("path");
-      const { fileURLToPath } = await import("url");
-      const __dirname = join(fileURLToPath(import.meta.url), "..");
-      const auditDir = join(__dirname, "../../data/jobs");
-      if (!existsSync(auditDir)) mkdirSync(auditDir, { recursive: true });
-      const auditPath = join(auditDir, "excluded-region.json");
-      const stamp = new Date().toISOString();
+    // 2a. Persist region-excluded jobs AND b2b-flagged jobs for Andler's audit.
+    // Two separate files so each run can be inspected independently:
+    //   - data/jobs/excluded-region.json  → hard rejects (region-deny, strict mode)
+    //   - data/jobs/b2b-flagged.json      → flagged for B2B/S.A. strategy (--b2b)
+    const { writeFileSync, existsSync, mkdirSync } = await import("fs");
+    const { join } = await import("path");
+    const { fileURLToPath } = await import("url");
+    const __dirname = join(fileURLToPath(import.meta.url), "..");
+    const auditDir = join(__dirname, "../../data/jobs");
+    if (!existsSync(auditDir)) mkdirSync(auditDir, { recursive: true });
+    const stamp = new Date().toISOString();
+
+    const writeAudit = (filename, jobs) => {
+      if (jobs.length === 0) return;
+      const auditPath = join(auditDir, filename);
       let existing = [];
       try { existing = JSON.parse(require ? require("fs").readFileSync(auditPath, "utf8") : "[]"); } catch {}
-      const entry = { runAt: stamp, total: excludedRegion.length, jobs: excludedRegion };
-      // overwrite the file each run with the latest run's list (avoids unbounded growth)
+      const entry = { runAt: stamp, total: jobs.length, jobs };
       writeFileSync(auditPath, JSON.stringify([entry, ...existing].slice(0, 30), null, 2));
-      log("info", `Region-excluded audit log written: ${auditPath} (${excludedRegion.length} jobs from this run)`);
-    }
+      log("info", `Audit log written: ${auditPath} (${jobs.length} jobs from this run)`);
+    };
+
+    writeAudit("excluded-region.json", excludedRegion);
+    writeAudit("b2b-flagged.json", b2bFlagged);
 
     // 3. Analyze (deep position + company analysis)
     let enriched = filtered;
@@ -228,6 +241,7 @@ async function main() {
       rawCount: rawJobs.length,
       filteredCount: filtered.length,
       regionExcludedCount: excludedRegion.length,
+      b2bFlaggedCount: b2bFlagged.length,
       scraperErrors: errors,
       stats,
       topJobs: enriched.slice(0, cfg.notification.topN).map((j) => ({
@@ -238,6 +252,8 @@ async function main() {
         matchScore: j.analysis?.match?.score ?? j.matchScore,
         analysisApproach: j.analysis?.strategy?.approach ?? "unknown",
         url: j.url,
+        b2b_viable: j.b2b_viable === true,
+        b2b_reason: j.b2b_reason || null,
       })),
     }, null, 2));
 
