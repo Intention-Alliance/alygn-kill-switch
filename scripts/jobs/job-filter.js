@@ -32,8 +32,8 @@ import { loadConfig, log } from "./scrapers/scraper-base.js";
 
 // ─── region deny-list (case-insensitive substring match) ────────────────────
 
-const REGION_DENY_PATTERNS = [
-  // US-only
+const REGION_DENY_PATTERNS_HARD = [
+  // US-only — these genuinely exclude non-US contractors even with S.A.
   /\bus[\s-]?based\b/i,
   /\b(us|u\.s\.|usa|u\.s\.a\.?)\s*only\b/i,
   /\bunited\s+states\s+only\b/i,
@@ -46,24 +46,41 @@ const REGION_DENY_PATTERNS = [
   /\b(onsite|on[\s-]?site)\s+(in|at)\s+(san\s+francisco|new\s+york|seattle|austin|boston)\b/i,
   /\bsan\s+francisco\s+(or|and)\s+(relocation|remote)\b/i,
 
-  // PST / EST overlap as a hard requirement (not just preference)
-  /\b(overlap|must\s+overlap)\s+(with\s+)?(pst|pacific|pdt|est|eastern|edt)\b/i,
-  /\b(pst|pdt|pacific)\s+(overlap|hours)\s+(required|mandatory)\b/i,
-
   // Hybrid/onsite (description often says "hybrid" only in body)
   /\b(hybrid\s+in|hybrid\s+role|in[\s-]?office\s+(role|position)|onsite\s+role|onsite\s+position)\b/i,
   /\b(office[\s-]?based|in[\s-]?person)\s+(role|position|only)\b/i,
 
-  // Generic regional restrictions
-  /\b(latam|emea|apac|na[\s-]?only|north\s+america\s+only)\b/i,
+  // EU/UK-only — these genuinely exclude CR (not in EU/UK)
+  /\b(eu|europe|uk|united\s+kingdom)[\s-]?only\b/i,
+  /\bmust\s+(be\s+)?(located|reside|live|work)\s+in\s+(the\s+)?(eu|europe|uk|united\s+kingdom)\b/i,
+
+  // Title-encoded HARD markers: "FT-US", "FT-UK", "FT-EU" — genuinely
+  // exclusive. "FT-LATAM" and "FT-LATAM/CANADA" go in SOFT (Andler is
+  // in LATAM, and latam-friendly rescues soft patterns).
+  /\bft\s*[-/]\s*(us|usa|uk|united\s+kingdom|eu|europe)\b/i,
+  /\bpt\s*[-/]\s*(us|usa|uk|united\s+kingdom|eu|europe)\b/i,
+  /\(\s*ft\s*[-/]\s*(us|usa|uk|united\s+kingdom|eu|europe)\b/i,
+
+  // Hard regional exclusion signals (not latam-friendly rescuable)
   /\b(costa\s+rica\s+is\s+not|outside\s+of\s+(us|usa|europe|eu))\b/i,
-  // Title-encoded region markers (arc.dev pattern: "(FT-LATAM/CANADA)", "FT - US")
-  // These appear in the title with no body text describing the constraint.
-  // The allow-override list below rescues "FT-WW" / "Worldwide" listings.
-  /\(\s*ft\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\b/i,
-  /\(\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\s*\)/i,
+];
+
+const REGION_DENY_PATTERNS_SOFT = [
+  // PST / EST overlap as a work-hours preference. Hard reject by default,
+  // but if the listing's location already includes LATAM/EMEA/Canada
+  // (via REGION_LATAM_FRIENDLY_PATTERNS below), the overlap is just a
+  // soft preference, not a hard exclusion — rescue under --latam-friendly.
+  /\b(overlap|must\s+overlap)\s+(with\s+)?(pst|pacific|pdt|est|eastern|edt)\b/i,
+  /\b(pst|pdt|pacific)\s+(overlap|hours)\s+(required|mandatory)\b/i,
+
+  // Title-encoded markers for LATAM/EMEA/Canada. SOFT because Andler is
+  // in Costa Rica (LATAM). "FT-LATAM" alone is a clean pass for him
+  // when --latam-friendly is on. The mixed-region title patterns
+  // ("(FT-LATAM/CANADA)") also live here.
   /\bft\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac|us[\s-]?based)\b/i,
   /\bpt\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac|us[\s-]?based)\b/i,
+  /\(\s*ft\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\b/i,
+  /\(\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\s*[-/]\s*(latam|latin\s+america|emea|na|us|usa|uk|eu|europe|canada|apac)\s*\)/i,
 ];
 
 /**
@@ -77,6 +94,33 @@ const REGION_ALLOW_OVERRIDE_PATTERNS = [
   /\b(ft[\s-]?ww|pt[\s-]?ww|worldwide|anywhere|global\s+remote|work\s+from\s+anywhere)\b/i,
   /\b(open\s+to\s+(?:candidates|applicants)\s+(?:in|across|from)\s+(?:anywhere|all\s+countries|any\s+country))\b/i,
 ];
+
+/**
+ * Latam-friendly positive signals — when --latam-friendly is ON, any of
+ * these patterns in the listing's title or location turns a SOFT deny
+ * (PST/EST overlap, FT-LATAM in title, etc.) into a clean pass. The
+ * signals are: the company explicitly accepts LATAM / EMEA / Canada /
+ * Latin America as a valid region. Used to rescue jobs like
+ * "Sr. AI-Native DevOps Engineer ... LATAM/EMEA/Canada - Overlap with PST"
+ * (the listing IS CR-friendly; the PST overlap is just a preference).
+ */
+const REGION_LATAM_FRIENDLY_PATTERNS = [
+  // Title / location tag with explicit CR-acceptable regions. We use
+  // individual country names (CR + LATAM neighbors) rather than the
+  // broad "latam|emea|europe|canada" pattern, because:
+  //   - "EMEA" alone excludes CR (not in EMEA). EMEA in a multi-region
+  //     list (e.g. "LATAM/EMEA/Canada") is fine, but our SOFT deny on
+  //     "FT-EMEA" alone should NOT be rescued by the "EMEA" in the same
+  //     listing.
+  //   - "Canada" in "Eastern Time (US & Canada)" is a timezone label,
+  //     not a region-accepts statement. We don't rescue on it.
+  // The 3 patterns below cover the explicit CR-acceptable signals we've
+  // seen in real listings: "LATAM"/"Latin America"/"Costa Rica" keyword,
+  // arc.dev's country-code location style, and individual LATAM countries.
+  /\b(latam|latin\s+america|costa\s+rica)\b/i,
+  /\bremote\s*\((ca|cr|cl|mx|co|pe|ve|uy|ar|br|bo|ec|py|pa|gt|hn|ni|sv|do|cu|pr|jm|tt)\b/i,
+  /\b(mexico|argentina|chile|colombia|brazil|peru|venezuela|uruguay|bolivia|ecuador|paraguay|panama)\b/i,
+]
 
 /**
  * Title+body region classifier.
@@ -99,15 +143,20 @@ const REGION_ALLOW_OVERRIDE_PATTERNS = [
  * @param {string} title       listing title (arc.dev encodes region in title)
  * @param {string} location    title-level location (e.g. "Remote (US, EU, UK)")
  * @param {string} description body text from the listing or detail page
- * @param {object} options     { strict, b2b_mode, denyPatterns, allowOverrides }
+ * @param {object} options     { strict, b2b_mode, latam_friendly,
+ *                               hardPatterns, softPatterns,
+ *                               allowOverrides, latamFriendlyPatterns }
  */
 function passesRegionCheck(title, location, description, options = {}) {
   const strict = options.strict !== false; // default ON
   if (!strict) return { ok: true, reason: "strict-mode-disabled" };
 
   const b2bMode = options.b2b_mode === true; // default OFF (safer)
-  const denyPatterns = options.denyPatterns || REGION_DENY_PATTERNS;
+  const latamFriendly = options.latam_friendly === true; // default OFF
+  const hardPatterns = options.hardPatterns || REGION_DENY_PATTERNS_HARD;
+  const softPatterns = options.softPatterns || REGION_DENY_PATTERNS_SOFT;
   const allowPatterns = options.allowOverrides || REGION_ALLOW_OVERRIDE_PATTERNS;
+  const latamPatterns = options.latamFriendlyPatterns || REGION_LATAM_FRIENDLY_PATTERNS;
   const text = `${title || ""} ${location || ""} ${description || ""}`.toLowerCase();
 
   // Allow-overrides win immediately — clear "FT-WW" / "Worldwide" signals
@@ -119,21 +168,54 @@ function passesRegionCheck(title, location, description, options = {}) {
     }
   }
 
-  for (const pat of denyPatterns) {
+  // 1. HARD deny: always reject (or always flag-b2b in b2bMode).
+  for (const pat of hardPatterns) {
     if (pat.test(text)) {
-      // In b2b_mode, deny patterns become FLAGS, not failures. The job is
-      // a real lead under B2B-via-S.A. strategy; just needs different framing.
       if (b2bMode) {
-        return {
-          ok: true,
-          b2b_viable: true,
-          reason: `region-flag-b2b: ${pat.source}`,
-          pattern: pat.source,
-        };
+        return { ok: true, b2b_viable: true, reason: `region-flag-b2b: ${pat.source}`, pattern: pat.source };
       }
       return { ok: false, b2b_viable: false, reason: `region-deny: ${pat.source}`, pattern: pat.source };
     }
   }
+
+  // 2. SOFT deny: PST/EST overlap, FT-LATAM in title, etc.
+  // 2a. latam-friendly rescue: if --latam-friendly is ON AND the listing
+  //     also includes LATAM/EMEA/Canada in its acceptable regions, the
+  //     soft deny is treated as a clean pass (the overlap is a work-hours
+  //     preference, not a regional block).
+  let softMatch = null;
+  for (const pat of softPatterns) {
+    if (pat.test(text)) {
+      softMatch = pat.source;
+      break;
+    }
+  }
+  if (softMatch) {
+    if (latamFriendly) {
+      for (const pat of latamPatterns) {
+        if (pat.test(text)) {
+          // Listing is latam-friendly AND has a soft deny → rescue as a
+          // clean pass. The latam-friendly pattern is what made the rescue
+          // possible, so we record it for the audit trail.
+          return {
+            ok: true,
+            b2b_viable: false,
+            reason: `latam-friendly rescue: ${pat.source} (rescued from ${softMatch})`,
+            rescuedFrom: softMatch,
+            rescuedBy: pat.source,
+          };
+        }
+      }
+    }
+    // 2b. Without --latam-friendly (or no latam-friendly pattern in
+    //     the listing), the soft deny fires: hard reject, or
+    //     b2b-viable flag in b2bMode.
+    if (b2bMode) {
+      return { ok: true, b2b_viable: true, reason: `region-flag-b2b: ${softMatch}`, pattern: softMatch };
+    }
+    return { ok: false, b2b_viable: false, reason: `region-deny: ${softMatch}`, pattern: softMatch };
+  }
+
   return { ok: true, b2b_viable: false };
 }
 
@@ -273,12 +355,14 @@ export function filterJobs(rawJobs, tracker, options = {}) {
   const { maxAgeDays, remoteOnly } = cfg.filters;
   const regionStrict = options.regionStrict !== false; // default ON
   const b2bMode = options.b2bMode === true; // default OFF (safer)
+  const latamFriendly = options.latamFriendly === true; // default OFF
 
-  log("info", `Filtering ${rawJobs.length} raw jobs (regionStrict=${regionStrict}, b2bMode=${b2bMode})`);
+  log("info", `Filtering ${rawJobs.length} raw jobs (regionStrict=${regionStrict}, b2bMode=${b2bMode}, latamFriendly=${latamFriendly})`);
 
   const filtered = [];
   const excludedRegion = [];
   const b2bFlagged = []; // jobs that would be excluded in strict mode but pass in b2b mode
+  const latamRescued = []; // jobs that would have been b2b-flagged in --b2b but pass cleanly under --latam-friendly
   let rejected = { noPrimary: 0, lowScore: 0, notRemote: 0, tooOld: 0, lowSalary: 0, duplicate: 0, regionDeny: 0 };
 
   for (const job of rawJobs) {
@@ -306,6 +390,7 @@ export function filterJobs(rawJobs, tracker, options = {}) {
     const regionCheck = passesRegionCheck(job.title, job.location, job.description, {
       strict: regionStrict,
       b2b_mode: b2bMode,
+      latam_friendly: latamFriendly,
     });
     if (!regionCheck.ok) {
       rejected.regionDeny++;
@@ -336,6 +421,25 @@ export function filterJobs(rawJobs, tracker, options = {}) {
         url: job.url,
         reason: regionCheck.reason,
         descriptionExcerpt: String(job.description || "").slice(0, 300),
+      });
+    }
+
+    // Latam-friendly rescue: the listing had a soft deny (PST/EST overlap
+    // or FT-LATAM tag) but --latam-friendly flipped it to a clean pass
+    // because the listing also accepts LATAM/EMEA/Canada. Record this so
+    // Andler can see exactly which listings got rescued (and which soft
+    // pattern would have flagged them without latam-friendly).
+    if (regionCheck.rescuedFrom) {
+      latamRescued.push({
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        platform: job.platform,
+        location: job.location,
+        url: job.url,
+        reason: regionCheck.reason,
+        rescuedFrom: regionCheck.rescuedFrom,
+        rescuedBy: regionCheck.rescuedBy,
       });
     }
 
@@ -376,12 +480,15 @@ export function filterJobs(rawJobs, tracker, options = {}) {
 
   log("info", `Filtered: ${filtered.length} passed (${filtered.filter(j=>j.matchTier==='high').length} high, ${filtered.filter(j=>j.matchTier==='medium').length} medium, ${filtered.filter(j=>j.matchTier==='low').length} low)`);
   log("info", `B2B-viable: ${filtered.filter(j => j.b2b_viable).length} of ${filtered.length} (need contractor pitch)`);
+  if (latamFriendly && latamRescued.length > 0) {
+    log("info", `Latam-rescued: ${latamRescued.length} (clean pass under --latam-friendly; would be b2b-flagged without it)`);
+  }
   log("info", `Rejected: ${JSON.stringify(rejected)}`);
   if (excludedRegion.length > 0) {
     log("info", `Region-excluded: ${excludedRegion.length} jobs (audit log: data/jobs/excluded-region.json)`);
   }
 
-  return { filtered, excludedRegion, b2bFlagged, rejected };
+  return { filtered, excludedRegion, b2bFlagged, latamRescued, rejected };
 }
 
 export default filterJobs;

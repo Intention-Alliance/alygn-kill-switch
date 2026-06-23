@@ -148,11 +148,13 @@ async function main() {
   const skipAnalyze = process.argv.includes("--no-analyze");
   const regionStrict = !process.argv.includes("--no-region-strict");
   const b2bMode = process.argv.includes("--b2b");
+  const latamFriendly = process.argv.includes("--latam-friendly");
   const mode = [
     useBrowser ? "browser" : "script",
     skipAnalyze ? "no-analyze" : "",
     regionStrict ? "" : "no-region-strict",
     b2bMode ? "b2b" : "",
+    latamFriendly ? "latam-friendly" : "",
   ].filter(Boolean).join(", ");
   log("info", `=== Job Automation Started (${mode || "default"} mode) ===`);
 
@@ -171,13 +173,17 @@ async function main() {
 
     // 2. Filter (region-strict by default; override with --no-region-strict;
     //    add --b2b to enable B2B-via-S.A. mode where US-only/etc. jobs pass
-    //    with a b2b_viable flag instead of being rejected)
+    //    with a b2b_viable flag instead of being rejected; add
+    //    --latam-friendly to rescue soft denies like PST/EST overlap when
+    //    the listing also includes LATAM/EMEA/Canada in its regions)
     const regionStrict = !process.argv.includes("--no-region-strict");
     const b2bMode = process.argv.includes("--b2b");
-    const filterResult = filterJobs(rawJobs, tracker, { regionStrict, b2bMode });
+    const latamFriendly = process.argv.includes("--latam-friendly");
+    const filterResult = filterJobs(rawJobs, tracker, { regionStrict, b2bMode, latamFriendly });
     const filtered = filterResult.filtered;
     const excludedRegion = filterResult.excludedRegion;
     const b2bFlagged = filterResult.b2bFlagged || [];
+    const latamRescued = filterResult.latamRescued || [];
 
     // 2a. Persist region-excluded jobs AND b2b-flagged jobs for Andler's audit.
     // Two separate files so each run can be inspected independently:
@@ -203,6 +209,7 @@ async function main() {
 
     writeAudit("excluded-region.json", excludedRegion);
     writeAudit("b2b-flagged.json", b2bFlagged);
+    writeAudit("latam-rescued.json", latamRescued);
 
     // 3. Analyze (deep position + company analysis)
     let enriched = filtered;
@@ -242,6 +249,7 @@ async function main() {
       filteredCount: filtered.length,
       regionExcludedCount: excludedRegion.length,
       b2bFlaggedCount: b2bFlagged.length,
+      latamRescuedCount: latamRescued.length,
       scraperErrors: errors,
       stats,
       topJobs: enriched.slice(0, cfg.notification.topN).map((j) => ({
