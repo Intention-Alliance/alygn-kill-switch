@@ -156,6 +156,9 @@
     "packages/db-schema": {
       "name": "@packages/db-schema",
       "version": "0.0.1",
+      "dependencies": {
+        "zod": "^3.25.76",
+      },
       "devDependencies": {
         "supabase": "^2.72.8",
         "supabase-to-zod": "1.0.5",
