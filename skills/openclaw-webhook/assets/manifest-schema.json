@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Event Manifest",
+  "description": "Generic event manifest schema for openclaw-webhook. Each event creates a manifest JSON file in OPENCLAW_MANIFEST_DIR.",
+  "type": "object",
+  "required": ["event_id", "event_type", "requester", "payload_sha256", "created_at", "expires_at", "status", "handler"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier (typically the slug or event ID from JWT sub claim)",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Event type for routing (e.g., blog-pipeline.request)",
+      "examples": ["blog-pipeline.request", "live-chat.message"]
+    },
+    "requester": {
+      "type": "string",
+      "description": "Issuer identity from JWT iss claim (e.g., vercel)"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "description": "SHA-256 hash of the request body",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the manifest was created"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the manifest expires (24h after creation)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "processing", "ready", "failed", "partial"],
+      "description": "Current status of the event"
+    },
+    "handler": {
+      "type": "string",
+      "description": "Handler that processed this event (event_type string)"
+    },
+    "assets": {
+      "type": "array",
+      "description": "Generated assets (present when status is ready or partial)",
+      "items": {
+        "type": "object",
+        "required": ["type", "path", "base64", "sha256", "mime", "size_bytes"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Asset type (cover, thumbnail, og_image, portrait, diagram, infographic, gif)"
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path for the asset"
+          },
+          "base64": {
+            "type": "string",
+            "description": "Base64-encoded asset bytes"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 hash of the asset bytes"
+          },
+          "mime": {
+            "type": "string",
+            "description": "MIME type (image/webp, image/gif)"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Size in bytes of the decoded asset"
+          }
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "Error details (present when status is failed)",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Error code (GENERATION_FAILED, HANDLER_ERROR)"
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error message"
+        },
+        "failed_assets": {
+          "type": "array",
+          "description": "List of assets that failed",
+          "items": {
+            "type": "object",
+            "required": ["type", "reason"],
+            "properties": {
+              "type": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the last manifest update"
+    }
+  }
+}
