@@ -28,7 +28,7 @@ Triggers: "blog pipeline", "blog image generation", "blog asset status", "blog-p
 - **First consumer of `openclaw-webhook`.** Registers as the handler for `event_type: "blog-pipeline.request"`. The webhook server routes incoming requests to this skill's handler.
 - **Orchestrates `nano-banana-pro`** for actual image generation. Calls `generate_image.py` with prompts derived from the article metadata (title, category, palette, excerpt).
 - **WebP quality preservation.** Encodes images using `sharp` with `effort: 6` (max CPU effort) and `preset: 'photo'` (photographic content optimization). File size reduction without quality loss. Falls back to quality reduction ONLY if effort-6 encoding still exceeds the asset size cap.
-- **GIFs as URL references.** GIF assets are tracked as URL references in the manifest, not base64-embedded. They are stored as static files and served by URL.
+- **GIFs as URL references.** GIF assets are tracked as URL references in the manifest, not base64-embedded. In v1, GIF generation is **deferred** — the handler returns a placeholder URL with `size_bytes: 0` and empty `sha256`. This satisfies the contract that GIFs are served as URLs. A future iteration will implement actual GIF generation once a suitable image-gen backend (producing true GIF bytes) is available. Reference: Andler's direction "gif links for their render on the articles".
 - **Idempotent processing.** The processor skips assets that already exist with matching SHA-256. Re-running on the same manifest is safe.
 - **Base64 delivery.** WebP assets are base64-encoded in the status response JSON. Vercel decodes and writes to Vercel Blob Storage.
 

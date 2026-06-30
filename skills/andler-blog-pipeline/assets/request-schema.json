@@ -39,7 +39,7 @@
           "type": {
             "type": "string",
             "enum": ["cover", "thumbnail", "og_image", "portrait", "diagram", "infographic", "gif"],
-            "description": "Asset type"
+            "description": "Asset type. Note: 'gif' returns a placeholder URL in v1 — generation is deferred to a future iteration."
           },
           "prompt": {
             "type": "string",

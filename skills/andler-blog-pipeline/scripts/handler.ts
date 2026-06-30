@@ -227,19 +227,18 @@ export async function handleBlogPipelineRequest(
       const isGif = asset.type === 'gif'
 
       if (isGif) {
-        // GIFs: generate as GIF, store as URL reference
+        // GIF generation not supported in v1 iteration — returning placeholder URL
+        // nano-banana-pro produces PNG bytes, not GIF. Deferred to a future iteration.
+        log('info', `GIF generation not supported in v1 iteration — returning placeholder URL for ${asset.type}`)
         const gifFilename = `${asset.type}.gif`
-        const gifPath = join(slugDir, gifFilename)
-        await generateImage(asset.prompt, gifFilename, asset.width, asset.height)
-        const { sha256, sizeBytes } = fileToBase64AndHash(gifPath)
 
         results.push({
           type: asset.type,
           path: asset.target_path,
-          base64: '', // GIFs are NOT base64-embedded
-          sha256,
+          base64: '',
+          sha256: '',
           mime: 'image/gif',
-          size_bytes: sizeBytes,
+          size_bytes: 0,
           url: `https://andlersrv.tail62d797.ts.net/blog-assets/${request.slug}/${gifFilename}`,
         })
       } else {
