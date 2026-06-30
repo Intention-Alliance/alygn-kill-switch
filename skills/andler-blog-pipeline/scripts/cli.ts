@@ -26,6 +26,7 @@ interface EventManifest {
   status: 'pending' | 'processing' | 'ready' | 'failed' | 'partial'
   handler: string
   updated_at: string
+  payload?: unknown // Full request payload stored in manifest
 }
 
 // ── Help ─────────────────────────────────────────────────────────────────────
@@ -92,8 +93,9 @@ async function processSingle(eventId: string): Promise<void> {
 
   try {
     const { handleBlogPipelineRequest } = await import('./handler.ts')
-    const payload = JSON.parse(readFileSync(manifestPath, 'utf8'))
-    const result = await handleBlogPipelineRequest(payload, manifest)
+    // Use the payload stored in the manifest (not the manifest itself)
+    const payload = manifest.payload ?? {}
+    const result = await handleBlogPipelineRequest(payload, manifest as unknown as Parameters<typeof handleBlogPipelineRequest>[1])
 
     manifest.status = result.status
     manifest.assets = result.assets

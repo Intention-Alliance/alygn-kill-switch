@@ -43,6 +43,7 @@ interface EventManifest {
   event_type: string
   requester: string
   payload_sha256: string
+  payload: unknown // Full request payload — canonical request record
   created_at: string
   expires_at: string
   status: 'pending' | 'processing' | 'ready' | 'failed' | 'partial'
@@ -232,11 +233,14 @@ function writeManifest(manifest: EventManifest): void {
 
 function createManifest(claims: JwtClaims, payload: unknown): EventManifest {
   const now = new Date().toISOString()
+  // Store the full payload in the manifest — canonical request record.
+  // Future iterations may move payloads to a separate store if they exceed 1MB.
   return {
     event_id: claims.sub,
     event_type: claims.event_type,
     requester: claims.iss,
     payload_sha256: claims.payload_sha256,
+    payload,
     created_at: now,
     expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     status: 'pending',

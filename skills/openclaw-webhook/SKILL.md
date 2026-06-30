@@ -28,7 +28,7 @@ Triggers: "webhook", "event routing", "cross-deployment", "openclaw-webhook", "J
 - **Event-routing fabric, not single-purpose.** This skill routes events by `event_type` to registered handlers. The first consumer is `andler-blog-pipeline` (blog image generation). Future consumers include `live-chat.message` (prospect communication).
 - **JWT-asymmetric auth.** Senders sign JWTs with their private key (RS256 or EdDSA). This server verifies with the corresponding public key from `OPENCLAW_TRUSTED_PUBLIC_KEYS_DIR`. No shared secret between deployment targets.
 - **Tailscale transport.** All traffic flows over the Tailscale mesh. The server binds to `127.0.0.1` only (MEMORY lesson 27). Tailscale provides transport-layer encryption; JWT provides application-layer auth.
-- **Manifest lifecycle.** Each event has a manifest JSON file in `OPENCLAW_MANIFEST_DIR`. The manifest tracks: event_type, event_id, requester, payload_sha256, status, handler, created_at, expires_at.
+- **Manifest lifecycle.** Each event has a manifest JSON file in `OPENCLAW_MANIFEST_DIR`. The manifest tracks: event_type, event_id, requester, payload_sha256, payload (full request body), status, handler, created_at, expires_at.
 - **In-process handler registry.** Handlers register themselves at startup. The registry maps `event_type` strings to handler functions. For now, this is a simple in-process module map — future versions may support dynamic loading.
 - **Boot entry point.** `scripts/boot.ts` starts the server AND dynamically imports handler modules so they register via `registerHandler()`. OpenClaw cron starts `boot.ts`, not `server.ts` directly. To add a new handler, add its dynamic import to `boot.ts`.
 

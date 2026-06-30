@@ -20,6 +20,7 @@ interface EventManifest {
   event_type: string
   requester: string
   payload_sha256: string
+  payload: unknown // Full request payload stored in manifest
   created_at: string
   expires_at: string
   status: 'pending' | 'processing' | 'ready' | 'failed' | 'partial'
@@ -93,15 +94,8 @@ async function main(): Promise<void> {
       // Dynamic import of handler
       const { handleBlogPipelineRequest } = await import('./handler.ts')
 
-      // Reconstruct the payload from the manifest
-      // In a real scenario, the payload would be stored alongside the manifest
-      // For now, we process based on what's in the manifest
-      const payload = {
-        slug: manifest.event_id,
-        title: manifest.event_id,
-        category: 'Engineering',
-        assets: [],
-      }
+      // Use the full payload stored in the manifest
+      const payload = manifest.payload
 
       const result = await handleBlogPipelineRequest(payload, manifest)
 

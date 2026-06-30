@@ -3,7 +3,7 @@
   "title": "Event Manifest",
   "description": "Generic event manifest schema for openclaw-webhook. Each event creates a manifest JSON file in OPENCLAW_MANIFEST_DIR.",
   "type": "object",
-  "required": ["event_id", "event_type", "requester", "payload_sha256", "created_at", "expires_at", "status", "handler"],
+  "required": ["event_id", "event_type", "requester", "payload_sha256", "payload", "created_at", "expires_at", "status", "handler"],
   "properties": {
     "event_id": {
       "type": "string",
@@ -23,6 +23,10 @@
       "type": "string",
       "description": "SHA-256 hash of the request body",
       "pattern": "^[a-f0-9]{64}$"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Full request payload — canonical request record. Future iterations may move payloads to a separate store if they exceed 1MB."
     },
     "created_at": {
       "type": "string",
