@@ -14,7 +14,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { SignJWT, jwtVerify, importSPKI, importPKCS8, exportSPKI } from 'jose'
+import { SignJWT, jwtVerify, importSPKI, importPKCS8 } from 'jose'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
