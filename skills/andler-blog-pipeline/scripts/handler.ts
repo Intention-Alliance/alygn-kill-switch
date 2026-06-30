@@ -153,7 +153,8 @@ function generateImage(prompt: string, filename: string, width?: number, height?
 async function encodeWebP(inputPath: string, outputPath: string): Promise<number> {
   const sharp = await import('sharp')
 
-  const stats = await sharp.default(inputPath)
+  // First pass: max quality, effort 6, photo preset
+  await sharp.default(inputPath)
     .webp({
       effort: 6,
       preset: 'photo',
@@ -161,28 +162,24 @@ async function encodeWebP(inputPath: string, outputPath: string): Promise<number
     })
     .toFile(outputPath)
 
-  const fileSize = stats.size
+  let fileSize = statSync(outputPath).size
   log('debug', `WebP encoded: ${outputPath} (${fileSize} bytes)`)
 
   // If over size cap, progressively reduce quality
   if (fileSize > MAX_ASSET_BYTES) {
     log('warn', `Asset exceeds size cap (${fileSize} > ${MAX_ASSET_BYTES}), reducing quality`)
     let quality = 90
-    while (quality >= 50 && fileSize > MAX_ASSET_BYTES) {
+    while (fileSize > MAX_ASSET_BYTES && quality >= 50) {
       await sharp.default(inputPath)
         .webp({ effort: 6, preset: 'photo', quality })
         .toFile(outputPath)
-      const newStats = await sharp.default(outputPath).metadata()
-      // Re-check file size
-      const { statSync } = await import('node:fs')
-      const newSize = statSync(outputPath).size
-      log('debug', `Quality ${quality}: ${newSize} bytes`)
-      if (newSize <= MAX_ASSET_BYTES) break
+      fileSize = statSync(outputPath).size // update from the new encode
+      log('debug', `Quality ${quality}: ${fileSize} bytes`)
+      if (fileSize <= MAX_ASSET_BYTES) break
       quality -= 10
     }
   }
 
-  const { statSync } = await import('node:fs')
   return statSync(outputPath).size
 }
 
