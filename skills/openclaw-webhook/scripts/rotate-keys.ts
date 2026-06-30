@@ -11,7 +11,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { generateKeyPairSync, exportSPKI, exportPKCS8 } from 'node:crypto'
+import { generateKeyPairSync, type KeyObject } from 'node:crypto'
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -52,8 +52,8 @@ function main(): void {
   // Generate new EdDSA keypair
   const { privateKey, publicKey } = generateKeyPairSync('ed25519')
 
-  const privatePem = exportPKCS8(privateKey)
-  const publicPem = exportSPKI(publicKey)
+  const privatePem = (privateKey as KeyObject).export({ type: 'pkcs8', format: 'pem' }) as string
+  const publicPem = (publicKey as KeyObject).export({ type: 'spki', format: 'pem' }) as string
 
   // Write new private key
   writeFileSync(PRIVATE_KEY_PATH, privatePem, 'utf8')
