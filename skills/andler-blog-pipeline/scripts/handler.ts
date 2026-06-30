@@ -10,9 +10,12 @@
  */
 
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawn } from 'node:child_process'
+
+// Register with openclaw-webhook at module load time
+import { registerHandler } from '../../openclaw-webhook/scripts/server.ts'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -83,6 +86,12 @@ function log(level: string, message: string, meta?: Record<string, unknown>): vo
   const metaStr = meta ? ` ${JSON.stringify(meta)}` : ''
   console.log(`[${timestamp}] [blog-pipeline] [${level.toUpperCase()}] ${message}${metaStr}`)
 }
+
+// ── Handler Registration ─────────────────────────────────────────────────────
+
+registerHandler('blog-pipeline.request', async (payload, manifest) => {
+  return handleBlogPipelineRequest(payload, manifest as EventManifest)
+})
 
 // ── Image Generation ──────────────────────────────────────────────────────────
 

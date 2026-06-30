@@ -11,14 +11,14 @@ export OPENCLAW_WEBHOOK_PRIVATE_KEY_PATH=~/.openclaw/workspace/.staging/webhook-
 export OPENCLAW_TRUSTED_PUBLIC_KEYS_DIR=~/.openclaw/workspace/.staging/webhook-keys/trusted/
 export OPENCLAW_MANIFEST_DIR=~/.openclaw/workspace/.staging/webhook-manifests/
 
-# Start the server
-bun run ~/.openclaw/workspace/skills/openclaw-webhook/scripts/server.ts
+# Start the server (use boot.ts so handlers are registered)
+bun run ~/.openclaw/workspace/skills/openclaw-webhook/scripts/boot.ts
 ```
 
 For OpenClaw cron, use `@reboot`:
 
 ```
-@reboot bun run ~/.openclaw/workspace/skills/openclaw-webhook/scripts/server.ts
+@reboot bun run ~/.openclaw/workspace/skills/openclaw-webhook/scripts/boot.ts
 ```
 
 ## Health Check
