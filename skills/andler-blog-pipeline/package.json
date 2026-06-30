@@ -1,0 +1,14 @@
+{
+  "name": "andler-blog-pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "process": "bun run scripts/processor.ts",
+    "process-once": "bun run scripts/processor.ts --once",
+    "cli": "bun run scripts/cli.ts",
+    "encode": "bun run scripts/encode-assets.ts"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
+  }
+}
