@@ -184,9 +184,9 @@ async function verifyJwt(token: string, body: string): Promise<JwtClaims> {
     for (const jti of toDelete) seenJti.delete(jti)
   }
 
-  // Verify payload hash
+  // Verify payload hash — skip for GET requests (empty body, nothing to hash)
   const bodyHash = createHash('sha256').update(body).digest('hex')
-  if (verifiedClaims.payload_sha256 !== bodyHash) {
+  if (body !== '' && verifiedClaims.payload_sha256 !== bodyHash) {
     throw new Error('payload_sha256 mismatch — body may have been tampered with')
   }
 
