@@ -150,7 +150,7 @@ function generateImage(prompt: string, filename: string, width?: number, height?
 
 // ── WebP Encoding ────────────────────────────────────────────────────────────
 
-async function encodeWebP(inputPath: string, outputPath: string): Promise<number> {
+export async function encodeWebP(inputPath: string, outputPath: string): Promise<number> {
   const sharp = await import('sharp')
 
   // First pass: max quality, effort 6, photo preset
