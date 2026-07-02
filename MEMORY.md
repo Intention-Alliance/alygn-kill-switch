@@ -6,6 +6,250 @@
 - Role: Knowledge companion, organizational aid, learning partner
 - Approach: Direct, efficient, mentor-style with formal/casual flexibility
 
+## 🛠️ Workboard Plugin Quirks (learned 2026-06-19)
+
+- **`workboard_create` tool surface lies about `source_url` / `idempotencyKey` support.** The OpenClaw tool schema accepts those params, but the underlying `openclaw workboard create` CLI does NOT pass them through to the SQLite. To get a card with `source_url` set, you MUST:
+  1. Call the tool (or CLI) to create the card (title, board, agent, labels, priority, status)
+  2. UPDATE the `workboard_cards` SQLite row directly to set `source_url` and `automation_json`
+  3. The helper script at `scripts/workboard/mirror-gh-issue.ts` automates this and is idempotent (detects existing cards by title)
+- **`idempotencyKey` column doesn't exist** in the workboard SQLite — only `source_url` is there. The tool surface's claim is aspirational, not implemented.
+- **The workboard `create` CLI is slow** (5-10s with doctor-warning preamble). On retry, it can land the create twice. The mirror script's idempotency check (find by title) is what protects against duplicates.
+- **`openclaw workboard list` / `show` accept `--json`** but the tool surface `workboard_list` returns more fields (children, parents, claim) than the CLI exposes.
+- **The `default` board is always present** with 0 cards. It's the implicit fallback. Don't put work there.
+- **No board `rename` / `archive` in the CLI yet** — `workboard_board_create` works as upsert; calling it again with the same id updates the row. Use this to "rename" by re-creating with new name/description.
+- **`workboard_create` accepts `parents` (array of card IDs)** to create parent/child dependency edges on creation. Without this, the plugin creates orphan cards with no graph relationships. Useful for sub-cards-of-master-tracker pattern.
+- **`workboard_create` accepts `createdByCardId`** (single string) — audit trail showing which card spawned this one. Always set this for sub-cards.
+- **`workboard_comment` body limit is 2000 chars.** Multi-line summaries need to be tight. Use 3-5 paragraphs max. If you need more, split into multiple `workboard_comment` calls or post to Discord instead.
+- **`workboard_promote force=true`** moves a card past dependency gates but the plugin still rejects subsequent `workboard_claim` if the parent dep is unresolved. Workaround: use `workboard_specify` (which sets `agentId` + writes automation_json) and then claim. If still blocked, dispatch the agent without claiming — the agent can work on the card by ID via `workboard_read` + direct actions.
+- **Agent model defaults to `ollama/glm-5.2:cloud`** per runtime header. Cron jobs that explicitly set `model: "haiku"` will FAIL with "haiku not in allowlist" error. The valid allowlist: google/gemini-3-pro-image-preview, google/gemini-3.1-flash-image-preview, google/gemini-3.1-pro-preview, ollama/deepseek-v4-flash:cloud, ollama/deepseek-v4-pro:cloud, ollama/gemma4:31b-cloud, ollama/glm-5.2:cloud, ollama/kimi-k2.7-code:cloud, ollama/minimax-m3:cloud, ollama/qwen3.5:397b-cloud, ollama/qwen3.5:cloud. Cron payloads should use one of these or omit `model` entirely (defaults to current runtime).
+
+## 🛡️ Web3 Scam Patterns (learned 2026-06-18)
+
+### IDN Hangul Homograph Attack — BanklessDAO fake meeting
+
+**What happened:** Andler received a Calendly invite (`oscar-hansen-bankless/60min`) for a "BanklessDAO meeting" **via Telegram DM** from `+39 351 350 9223` (Italian number). Message said "We're here with our key partner" and pushed a link to `https://kakaotalk입.com/` with urgency. Screenshot sent by Andler was from **Telegram** (UI similar to WhatsApp but uses "Auto-Delete" timer and badge "Premium" not "Add Contact"). Reports must go to the correct channel — Telegram abuse, not WhatsApp.
+
+**What the link actually was:** IDN homograph. Hostname `kakaotalk입.com` contains U+C785 (HANGUL SYLLABLE 입) which renders as a small square that visually mimics `2l` in `kakaotalk2l.com`. Two completely different domains:
+
+- What Andler transcribed: `kakaotalk2l.com` (does NOT exist in WHOIS)
+- What the link really said: `kakaotalk입.com` = `xn--kakaotalk-e692b.com`
+
+**How to detect next time:**
+1. WHOIS the visible/expected domain — if "No match", something is off
+2. Get the RAW link (with all CJK/Hangul chars intact) from the user — never trust the transcription
+3. Python analysis: `for ch in url: print(ord(ch), unicodedata.name(ch))` — anything in `Lo` category that's not Latin is a red flag
+4. Check IDNA encoding: `host.encode("idna")` — produces `xn--...` form, the real registered domain
+5. Compare byte-by-byte: ASCII "kakaotalk2l.com" is `6b616b616f74616c6b326c2e636f6d` (15 bytes) vs the real `6b616b616f74616c6bec9e852e636f6d` (16 bytes, with `ec 9e 85` = UTF-8 for U+C785)
+
+**Red flags in the original message (multi-layer):**
+- Calendly slug `oscar-hansen-bankless` — personal account impersonating DAO
+- BanklessDAO coordinates via Discord, NOT KakaoTalk
+- Addressed to "Roberto" (legal name) instead of "Andler"
+- Urgency manufactured: "We're here NOW with key partner"
+- Domain suffix pattern: `kakaotalk2l` (typosquat on `kakaotalk`) PLUS homograph char
+
+**Action protocol when this pattern repeats:**
+1. Do NOT open the link
+2. **Report to the correct channel:**
+   - Telegram → in-app Report + `abuse@telegram.org` + https://telegram.org/support
+   - WhatsApp → in-app Report + screenshot to abuse@whatsapp.com
+   - Calendly → https://calendly.com/report
+3. Report to Google Safe Browsing: <https://safebrowsing.google.com/safebrowse_report_binary/>
+4. WHOIS the punycode form (`xn--...`) to find the registrar → abuse report
+5. Save the pattern to MEMORY.md so future sessions detect it
+
+**Channel confusion anti-pattern (learned 2026-06-18):**
+- ❌ Don't assume screenshots are from WhatsApp just because UI looks similar
+- Telegram profile header shows: phone in E.164, "Auto-Delete" timer, "Premium" badge, "Edit" button (not "Add Contact" like WhatsApp)
+- Verify the actual platform before reporting — wrong report = no action taken
+
+**Anti-patterns to avoid:**
+- ❌ Trusting the user's transcription of a suspicious link — always ask for raw
+- ❌ Saying "looks suspicious" without byte-level proof
+- ❌ Opening or `curl`-ing the domain during analysis (defeats the purpose)
+- ❌ Treating IDN homograph as "probably fine, just a foreign domain"
+
+29. **🪞 ANDLER DEVELOPS = ANDLER (PERSONAL) — DON'T TREAT AS A BRAND** (learned 2026-06-10, hard fail in WhatsApp session)
+- **Rule:** Andler Develops is the *operational name* of Andler's personal developer brand. It is not a separate persona. When Andler drafts a post and asks me to tune it for social, the post is **his draft**, not raw material I should rewrite. Preserve his cadence verbatim, only fix obvious typos.
+- **Voice cues to preserve (do not "improve"):** "El resultado?" with question mark alone, "Quizás estando en un chat o un desktop CLI", chained questions without opening marks, "100% con IA" mid-paren, "Estén atentos!" with bang, single flowing paragraphs without bullets, "Que tan confiable" without accent (his style).
+- **Anti-patterns I MUST avoid:**
+  - ❌ Importing "more at @andlerdev" — that is the **Alygn** X handle convention (@aialygn). Andler Develops uses Andler's own X handle `@AndlerDev` (user id `1453112399502974978`, name "Roberto Lucas", confirmed 2026-06-08). Closing the post is **Andler's own** sign-off ("Estén atentos!"), not a brand-managed signature.
+  - ❌ Assuming output language. If his draft is in Spanish, the post is Spanish. If English, English. Do not produce a mixed/EN-bilingual version unless asked.
+  - ❌ Inflating LinkedIn length to hit the 800-1500 word target. His drafts are short on purpose. Length-target fails go to him, not the rewrite.
+  - ❌ Using bullets in X thread posts unless he uses them in the draft. His voice is paragraph-flow.
+  - ❌ Treating `andler-develops-content` skill's 5 core truths ("Federated Edge-Hub Compute", "Git as State Engine", "Zero-Trust Sudo Policy", "Defense Against Gaslighting", "The Deep-Sea Fishing Metaphor") as required in every post. They are *available* themes, not mandatory insertions.
+  - ❌ Reading his draft as "a draft to rewrite" instead of "the post, plus minor tuning". He writes the post. I tune.
+- **Hashtags:** inline, integrated in the sentence flow, not as a trailing block.
+- **Staging:** `andler-blog-feed-content` v1.1 is the orchestrator for LinkedIn/TikTok intakes. X has separate paths.
+- **Attachment policy:** When Andler says "I'll attach later", do not pre-fill media into the copy. The post body must read cleanly without depending on the attachment.
+- **Sign-off (EN, confirmed 2026-06-10):** "Stay tuned!" is the natural English equivalent of Andler's "Estén atentos!" — used as the closing line for social posts. Not a brand-managed signature. Translate literally only if the post target is non-social (e.g., blog CTA). Confirmed by Andler on 2026-06-10 22:50 CST: elided explanation was the live content angle ("contenido en vivo que estaría haciendo").
+
+29a. **❓ DRAFTING @andlerdev: ASK FIRST, NEVER ASSUME** (learned 2026-06-10, hard fail in WhatsApp session — 3 corrections in one thread)
+- **The output language for @andlerdev social posts is ENGLISH by default**, regardless of the input draft's language. This is a hard rule from `andler-develops-content` SKILL.md, "Spanish Round-Trip (Blog Only)" + Gotcha #1. Blog goes ES→EN→ES; social (X, LinkedIn, TikTok, IG) stays EN unless Andler explicitly asks for ES.
+- **Never assume the previous turn is the right draft.** When Andler comes back after a "previous model failed/timeout" or after correcting me, **ask which draft he means** before re-rendering. Ask in 1 line. Do not re-deliver from memory.
+- **When in doubt → ask, do not re-render.** Three specific questions to ask before any Andler Develops post:
+  1. Which draft? (URL, file path, or "the one I sent X minutes ago in the chat")
+  2. Target language? (default = English per skill, but confirm)
+  3. Is staging required? (`.staging/social/` or workboard vs. just chat reply)
+- **If he corrects me twice on the same turn, stop and re-read the skill** end-to-end before producing a third version. Re-read the SKILL.md, the references, and any supporting file. Do not re-derive from memory.
+- **Anti-patterns I MUST avoid (reinforced):**
+  - ❌ Re-delivering the same draft I already delivered, just because the turn was lost. That is not progress.
+  - ❌ Treating "the previous model failed" as a cue to re-render. It is a cue to **verify state** (`memory_get`, `sessions_history`, git) and **ask the user**.
+  - ❌ Producing a third version of a post before the user has acknowledged version 1 or 2. Iterate by **waiting for the user's read**, not by re-trying.
+  - ❌ Ad-libbing scoring or "pass/fail" numbers. If the skill says ≥92 = auto-publish, I say exactly that, and I do not invent a 91/100 to justify staging.
+  - ❌ Apologizing more than once for the same mistake. Acknowledge, fix the contract, move on.
+
+29b. **🏷️ ANDLER-DEVELOPS TERMINOLOGY SURFACE** (learned 2026-06-15 14:29 CST, registered by Andler)
+- **The brand and its surfaces use many naming variants. Recognize all of them as referring to the same root entity — *Andler Develops = Andler's personal developer brand* — but distinguish *which surface* each variant refers to. Never assume all "andler-*" strings mean the same thing.**
+
+**Category 1 — Canonical brand name (all refer to the same brand, pick by context):**
+- `Andler Develops` — display name, primary canonical form
+- `Andler Devs` — short display form, also a Discord role name (`1499157675651633341`)
+- `AndlerDevs` — PascalCase, used in commit prefixes (`feat(andler-develops):`)
+- `AndlerDev` — singular form, used in X handle (`@AndlerDev`)
+- `Andler Dev` — spoken/spaced form
+- `andler-develop` / `andler-dev` / `andler-devs` — kebab-case lowercase, used in repo paths, skill ids, and the workboard board id
+
+**Category 2 — The person himself (different from the brand surface):**
+- `Andler` / `andler` — Andler himself, not a surface. When context says "Andler" without qualifier, it means the human, not a product, not a board, not a skill.
+
+**Category 3 — Workboard boards (operational surfaces, distinct from the brand name) — UPDATED 2026-06-19 13:23 CST to Option B architecture:**
+- `andler-ops` workboard board (parent engineering board, all andler-ops repo issues, dev-lead default assignee, ops-coordinator orchestrator profile)
+- `andler-landing` workboard board (site-implementation sub-board: design, content pipeline, SEO, blog implementation, ghostboard — 24 cards existed before the board row was registered, fixed 2026-06-19)
+- `andler-develops` workboard board (brand/relationships sub-board: prospects, content scheduling, brand deals, dev-relations, content-pipeline scripts)
+- `andler-landing-v3` — **LEGACY, not active** (confirmed by Andler 2026-06-15 14:45 CST). A short-lived alias for `andler-landing` during the blog-feature design realignment window (~April–May 2026, ~one month long). The v3 work ended when the blog feature shipped. Not a separate board. References in HEARTBEAT.md and commit history (e.g., `master tracker 5137ac54` and its child cards) belong to that historical window and should be read in that context. **Do not route new work to "v3"** — use `andler-landing` for all current work. Keep the term in memory because commit history and HEARTBEAT entries still reference it.
+- `Andler Landing` — display form of `andler-landing` board
+
+**30. 🏗️ WORKBOARD ARCHITECTURE — OPTION B (locked 2026-06-19 13:23 CST by Andler)**
+
+Three boards, hierarchical, with a clear GitHub-mirror contract:
+- `andler-ops` = **parent engineering board**, holds all `AndlerRL/andler-ops` repo issue mirrors (kill-switch, batch-4 ADRs, signal channel, Tailscale, META category trackers)
+- `andler-landing` = **site-implementation sub-board**, holds all `AndlerRL/andler-landing` repo issue mirrors (parallax work, design realignment, lint/a11y sweep, Step 2–5) — also the "implementation" surface
+- `andler-develops` = **brand/relationships sub-board**, holds all content, prospects, and developer-relations work (no GH mirror — those are internal)
+
+**Card creation contract (mandatory for every card created on these boards):**
+- `title`: `[<repo>#<issue#>] <issue title>` so the GH link is visible at a glance
+- `source_url`: `https://github.com/AndlerRL/<repo>/issues/<n>` — required, this is the join key
+- `boardId`: `andler-landing` for `andler-landing` repo issues, `andler-ops` for `andler-ops` repo issues, `andler-develops` for brand/prospect cards
+- `agentId`: pre-assigned by Wobblus based on issue labels (priority:critical → dev-lead, team:fe-coder → fe-coder, etc.)
+- `automation_json.ghLabels`: comma-separated copy of the issue's GH labels at mirror time
+- Epic tracker issues (`[META] Category X`) get a single card per with `labels: ["epic-tracker"]` and a `notes` body that lists the children and their disposition
+
+**Routing rules (no exceptions):**
+- New GH issue opened on `andler-landing` repo → workboard card on `andler-landing` board
+- New GH issue opened on `andler-ops` repo → workboard card on `andler-ops` board
+- Prospect / content / brand work (not from a GH issue) → workboard card on `andler-develops` board
+- When unsure → ask which surface, do not guess. Same discipline as the 29a rule (ask first, never assume).
+
+**Why Option B (not A or C):**
+- ✅ Separates engineering dispatch (andler-ops) from brand pipeline (andler-develops). A coder picking up `andler-landing` knows it's site work; a coordinator picking up `andler-develops` knows it's relationship work.
+- ✅ Clean GH-mirror mapping: 1 repo → 1 board (mostly). The `andler-landing` repo is the site code, so it lives on the `andler-landing` board — string-collision is intentional, not confusing.
+- ✅ Audit trail: each board answers one question. `andler-ops` board = "what's the state of the andler-ops engineering backlog?" `andler-landing` board = "what's the state of the andler.dev site?" `andler-develops` board = "what's the state of the andler-dev brand pipeline?"
+
+**Anti-patterns to avoid:**
+- ❌ Putting andler-landing site work on andler-ops or andler-develops (loses the site/brand separation)
+- ❌ Putting prospects/content on andler-ops (mixes engineering with relationships)
+- ❌ Creating new boards without asking Andler first — three boards is the locked architecture
+- ❌ Renaming boards in-place again — the previous 2026-06-15 rename and the 2026-06-19 Option-B restructure cost time; future board changes go through a deliberate review, not an in-session rename
+
+**30a. 🔄 GITHUB ↔ WORKBOARD SYNC — HEARTBEAT-ONLY (locked 2026-06-19 13:23 CST by Andler)**
+
+The workboard plugin has no built-in GitHub sync. Custom sync lives at `scripts/workboard-gh-sync.ts` (or `scripts/workboard/github-sync.ts` if a folder is created).
+
+**Sync trigger: heartbeat ONLY.** Never on dispatch, never on demand, never on agent work-completion events.
+
+**Why heartbeat-only:**
+- ✅ Batches many changes into one sync pass (one API call per card, not per change event)
+- ✅ Predictable cost: 1 sync/heartbeat, ~25 cards × 1 gh CLI call = manageable
+- ✅ Visibility: Wobblus sees the sync happen on each heartbeat and can flag anomalies
+- ❌ Dispatch-triggered sync = races (card done at 11:00:00, agent closes at 11:00:01, sync fires mid-write), and API rate-limit risk on heavy run days
+- ❌ On-demand sync = human must remember to run it, defeats automation
+
+**Sync behavior (one direction only: workboard → GitHub):**
+- Card `status = done` → `gh issue close --reason completed <n>` (idempotent: `gh issue close` errors silently on already-closed issues, which we treat as success)
+- Card `status = blocked` → `gh issue comment <n> -b "🚫 workboard blocker: <reason>"` (one comment per blocker, dedup by checking last 5 comments for the workboard-sync marker)
+- Card `status = in_progress` → `gh issue comment <n> -b "🔄 workboard: picked up by <agent>"` + apply `status: in-progress` label (one-time, marker check)
+- All comments tagged with `<!-- workboard-sync -->` HTML marker for idempotent re-runs
+- Sync log: `scripts/workboard-gh-sync.log` (append-only) with timestamp, card_id, gh_issue, action, result
+
+**Card `source_url` is the join key.** If a card has no `source_url` matching the GH regex, it's skipped (brand/prospect work, no GH issue). The sync is opt-in by mirror.
+
+**Anti-patterns to avoid:**
+- ❌ Triggering sync on dispatch (race conditions, API thrash)
+- ❌ Bi-directional sync (GitHub → workboard) — workboard is the execution layer, GitHub is the spec. PRs close issues via the existing GitHub flow, not the sync.
+- ❌ Closing an issue with `--reason not_planned` — only `completed` is allowed, since the workboard card going done means we shipped the fix
+- ❌ Running sync during a dispatch run (heavy work in progress) — heartbeat-only is the gate
+
+**30b. 🗣️ AGENT COMMUNICATION — REPORT OUT-OF-SCOPE DISCOVERIES (locked 2026-06-19 13:23 CST by Andler)**
+
+**The rule:** when an agent encounters an issue that's outside their current task scope, they **MUST** report it via `sessions_send` to the relevant coordinator (Wobblus for engineering, or the team-lead who dispatched them) — they do NOT silently fix, ignore, or scope-creep.
+
+**Why:** Memory works by cross-session communication. If Gimglich finds a bug in a non-frontend file while doing a FE task, fixing it silently means:
+- ❌ No record in the GH issue or workboard card that the bug exists
+- ❌ Other agents who need to know about it (Keridz for BE) never hear about it
+- ❌ The bug fixes get tangled with the original task's commits, making review harder
+- ❌ The workboard card for the bug doesn't exist, so it can't be tracked, prioritized, or assigned
+
+**Correct pattern:**
+- Agent encounters out-of-scope issue during task work
+- Agent `sessions_send`s Wobblus with: `Out-of-scope finding on <card-id>: <one-line summary>. Recommend: <spawn X to fix | open GH issue | log to memory | ignore>`
+- Wobblus decides: spawn a new card, add a comment to the current card, open a GH issue, or document-and-move-on
+- Original task work continues unaffected
+
+**Examples (realistic, not contrived):**
+- Gimglich doing #93 (lint sweep) finds a memory leak in a hook → `sessions_send` to Wobblus: "Out-of-scope on #93: useEffect memory leak in `use-animation-loop.ts`. Recommend: spawn be-coder to open andler-landing#101, mark it for the next sprint. Continuing #93 as planned."
+- Keridz doing #158 (Signal Channel) finds an unrelated auth bug → `sessions_send` to Wobblus: "Out-of-scope on #158: AuthProvider has no refresh token mechanism (matches andler-ops#166 which is already closed, so likely a regression). Recommend: open andler-ops#169, assign to fe-coder for regression test. Continuing #158."
+- Hugrukal designing the batch-4 ADRs finds that the team-lead's previous ADR contradicts the current architecture → `sessions_send` to Wobblus: "Out-of-scope on batch-4 design: ADR-2026-04-15-#3 says X but current code does Y. Recommend: open new ADR-card to reconcile, do not silently fix in this dispatch. Continuing batch-4 design."
+
+**This rule applies to ALL agents (Gimglich, Keridz, Hugrukal, Talanara, Nikaya, Chanshuk, and Wobblus himself).** It is the operational definition of "zero-trust" in practice: trust the report, but require the report to exist.
+
+**Anti-patterns to avoid:**
+- ❌ Silently fixing an out-of-scope bug "while I'm here" (scope creep, no record)
+- ❌ Adding a "TODO" comment in the code without a workboard card or GH issue
+- ❌ Mentioning the out-of-scope finding only in the workboard card's "summary" field at task-completion (too late — should be reported in real time, not at the end)
+- ❌ Asking the user (Andler) about every out-of-scope finding — that's Wobblus's job, the team lead, not Andler's
+- ❌ Ignoring the finding because it's "not my problem" (dereliction of duty as a teammate)
+
+**Category 4 — Sub-products of the brand (distinct from the brand itself):**
+- `Andler Blog` / `andler-blog` — the blog sub-product. **Three coordinated skills** (locked 2026-06-29 22:29 CST): `andler-blog-feed-content` v1.2 (social URL intake), `andler-develops-content` v1.2 (content drafting/scoring/routing), `andler-blog-pipeline` (pending — server-side, ADR-012). All share the canonical Notion 'Blog Content Pipeline' DB. Lives on `andler-landing` board. Schema in `src/lib/social-schema.ts`.
+- `Andler Social Presence` — the multi-platform social surface (X, LinkedIn, TikTok, IG). 6 content-pipeline scripts at `scripts/andler-develops/content/`. Notion DB `37c33487-4af6-81d7-bc9c-dc12acf7d993`.
+- `Andler Team` — the development team (Wobblus, Gimglich, Keridz, Hugrukal, Talanara, Nikaya, Chanshuk). Different from the brand surface. Coordination lives in Discord guild `andler-develops` (ID `1117841083351711785`).
+
+**Category 5 — Coordination surfaces (infrastructure, not the brand):**
+- Discord guild `andler-develops` (ID `1117841083351711785`) — the team chat surface. **The string "andler-develops" here is a chat-server name, not a brand reference.** See Category 3 for the workboard board that uses the same string.
+
+**RULES:**
+- When Andler writes "andler-devs" or "Andler Devs" or any Case variation in a context that's clearly a *brand* discussion, treat it as Category 1.
+- When Andler writes "andler-devs" or "Andler Devs" in a context that's clearly a *Discord role* (`1499157675651633341`) or a *team*, treat it as Category 4 (`Andler Team`) — i.e., a coordination reference, not a brand reference.
+- When "andler-develops" appears in `workboard_*` tool calls, it means Category 3 (board). The board is named after the brand but is a distinct operational surface.
+- When "andler-landing" appears in `workboard_*` tool calls, it means the implementation board. The string contains "andler" but the board is not the brand surface.
+- When "andler-blog" or "andler-blog-feed-content" appears, it means Category 4 (blog sub-product), not the brand itself.
+- When in doubt, ask which surface Andler means. Don't conflate. (This is a generalisation of lesson 29a.)
+
+**ANTI-PATTERNS to avoid:**
+- ❌ Treating "andler-develops" the workboard board as the same thing as "andler-develops" the Discord guild. Different IDs, different surfaces, different lifecycles.
+- ❌ Treating "andler-landing" the workboard board as the same thing as "andler-develops" the brand. Implementation work ≠ brand surface. The board is named after a *product* (andler.dev) not the brand (andler-develops).
+- ❌ Treating "andler-landing-v3" as a current entity. **Legacy, not active** — was an alias for `andler-landing` during the ~April–May 2026 blog-feature design realignment. Use `andler-landing` for all new work. References in HEARTBEAT.md and commit history belong to that historical window — read them in context.
+- ❌ Auto-canonicalising variant strings. Each variant carries context (commit prefix, board id, role name, skill name) that the canonicalisation would erase.
+- ❌ Implying "Andler Develops" is a separate persona from Andler. The brand IS Andler. The brand is the *operational name* of his personal developer surface. (Lesson 29.)
+
+**Source of this list:** registered by Andler on 2026-06-15 14:29 CST. The list is Andler's — I parsed it into categories and added routing rules. Future session memory searches should hit this section first when the user mentions any "andler-*" string.
+
+29c. **🐹 NO GO IN ANDLER'S STACK** (learned 2026-06-23 02:41 CST, hard fail in Discord thread)
+- **Andler's primary stack:** JavaScript, TypeScript. Full stop on the front-line.
+- **Secondary languages (real, used in production):** Rust, C, C++, C#, Solidity, Neo4J (Cypher).
+- **NO Go.** Not in USER.md, not in MEMORY, not in any work on disk. Do not invent "Go expertise" in cover letters, bios, or interview prep. Do not assume "systems-level depth = Go."
+- **When the JS ceiling shows up**, Andler reaches for Rust (perf-critical) or C/C#/C++ (low-level). State this when relevant.
+- **Why I got this wrong on 2026-06-23 02:35 CST:** in the Infisical cover-letter v1, I wrote "I've written Go for production services" because Go is the canonical "bonus" language for YC/JS-stack companies (Infisical literally lists Go as a bonus, Supabase is Go, etc.). The intent was "match the bonus line" but the effect was fabricating a skill. Andler corrected me.
+- **Rule for future cover letters / bios:**
+  - ✅ "JavaScript/TypeScript primary, Rust and C/C++/C++ for systems-level work"
+  - ✅ Mentioning Rust specifically as the performance escape hatch
+  - ❌ Any sentence that starts "I've written Go..." or "Go expertise" or "production Go services"
+  - ❌ Translating a job-posting's "Go bonus" into a claim Andler doesn't have
+- **Cross-check protocol:** before any bio/cover-letter claim about a language or tool, verify it exists in USER.md stack context or in MEMORY's past projects section. If absent, do not add it. The default is omission, not invention.
+
+---
+
 ## About Andler (Verified Identity)
 
 - **Primary email:** <contact@andler.dev>
@@ -100,8 +344,33 @@
       5. **Tone:** Direct, technical, lean startup pragmatism (no marketing fluff)
     - Content types: X threads, LinkedIn long-form, markdown blog tutorials
     - Storage: `docs/developer-advocate/` for social, `docs/developer-advocate/blog/` for tutorials
+    - **Board placement:** content scheduling + brand ops work → `andler-develops` board (created 2026-06-15). Implementation work (SEO, build, deploy) → `andler-landing` board.
 
-18. **🎨 ASSET GENERATION MANDATORY** (learned 2026-04-13)
+18. **🌐 Andler Develops has a 2-board structure (learned 2026-06-15, corrected by Andler 14:23 CST)**
+    - **`andler-develops` board = ops/relationships** (prospects, content scheduling, brand deals, partnerships, dev-relations). Created 2026-06-15.
+    - **`andler-landing` board = implementation work only** (design, content pipeline, SEO, blog implementation).
+    - **Andler Develops = Andler (personal brand)**, not a separate persona. Same entity, two operational surfaces.
+    - **Routing rule:** prospect / relationship work → `andler-develops`. Code / design / pipeline work → `andler-landing`. Never mix.
+    - **Migration pattern:** to move a card between boards, claim old → `workboard_create` new on target board with same `idempotencyKey` + `createdByCardId` pointing to old → `workboard_link` parent=old, child=new → `workboard_complete` old with `createdCardIds` = [new]. Workboard enforces dependency graph via `workboard_card_links`, not just metadata.
+    - `andler-blog-feed-content` v1.2 is the **active contract** for LinkedIn and TikTok posts in the andler.dev social surface.
+    - **Always activate it** before any session touches the `andler-landing` social registries, the i18n dictionaries, or the social-frontend rendering. The skill is the orchestrator + contract; Zod/i18n live in `andler-landing`.
+    - **Three coordinated contracts** (locked 2026-06-29 22:29 CST by Andler):
+      1. **`andler-develops-content` v1.2** — content-side. Drafts/scores/routes X/LinkedIn/TikTok/IG posts. X posts scoring ≥92 auto-publish. Delegates blog drafts to the Notion 'Blog Content Pipeline' DB (Status=Draft → Ready).
+      2. **`andler-blog-feed-content` v1.2** — social URL intake. Stages LinkedIn/TikTok URLs into `src/content/social/*.json` + bilingual i18n dictionaries. Cross-aware of `andler-develops-content` as the URL source.
+      3. **`andler-blog-pipeline`** (pending — ADR-012, being built by Keridz) — server-side. Picks up Ready-status articles from Notion via `openclaw-webhook`, generates images via `nano-banana-pro`, encodes WebP (`effort: 6` + `preset: 'photo'`), serves via `openclaw-webhook` status endpoint. Lives at `~/.openclaw/workspace/skills/andler-blog-pipeline/`.
+    - All three share the canonical Notion 'Blog Content Pipeline' DB as the coordination point. None of them call image generation directly except `andler-blog-pipeline`. The `andler-devs-code-style` v1.0 contract applies to all new code any agent writes for these skills.
+    - **Hard rules** (memory anchor for the full set — see `## 📝 Personal Projects (andler.dev)` subsection below for the full six-gate detail):
+      - **Staged, never live.** Write to `.staging/social/`, never to `src/content/social/<platform>.json` or `src/i18n/dictionaries/{en,es}.json`. Apply is always explicit via `apply-staging.mjs --intake <id>`.
+      - **Bilingual by default.** Every post carries `titleEn` / `titleEs` (LinkedIn also `summaryEn` / `summaryEs`). Same content mirrors into both `en.json` and `es.json` under `social.posts.<platform>.<id>.*`. ES field is never empty.
+      - **URL-match slot reuse.** Re-paste = replace in place, layout never shifts. Idempotent. Replace does not free a `platformMaxPosts` slot.
+      - **`[Placeholder]` is BLOCK in both languages.** Both Gate 4 (EN) and Gate 5 (ES) treat it as a dev artifact, not a brand-voice call.
+      - **Brand voice is Andler's call.** Gates 4 and 5 report issues with suggested rewrites but never edit copy.
+      - **Re-translation defaults to off.** `# retranslate:no` is the default. Use `# retranslate:yes` only when brand voice or product naming actually changed.
+    - **Source of truth:** `~/.openclaw/workspace/skills/andler-blog-feed-content/SKILL.md` + `references/{input-output,i18n-shape}.md`. The skill is also in the `andler-landing` repo's social pipeline.
+    - **Schema owner:** `src/lib/social-schema.ts` → `socialPostSchema` v1.1 (additive `titleEn` / `titleEs` / `summaryEn` / `summaryEs` fields).
+    - **Type owner:** `src/types/i18n.ts` → `Dictionary` extension with `social.posts.{linkedin,tiktok}` sub-namespace.
+
+19. **🎨 ASSET GENERATION MANDATORY** (learned 2026-04-13)
     - **1-7 assets per blog** (depending on content/length):
       - 1 blog portrait (1200x630px, featured image)
       - Architecture diagrams (polished, not ASCII)
@@ -142,6 +411,40 @@
     - **Consequences of manual migrations:** Missing snapshots, journal inconsistencies, database errors, stress, failure
     - **Zero-trust applies:** Even if I think manual SQL is easier, NEVER bypass Drizzle's workflow
     - **Official documentation is law:** Follow DrizzleORM docs exactly, no shortcuts
+    - **⚠️ FOOTGUN:** If `initDatabase()` in `db/index.ts` ALSO runs raw `CREATE TABLE` + `CREATE UNIQUE INDEX`, it will conflict with Drizzle's `db:push` (duplicate index names like `machine_hostname_unique`, `feature_flag_key_unique`). Pick ONE owner of the schema. The kill-switch v1.1 code violates this — `initDatabase()` is the runtime path, drizzle-kit is dead in the monorepo. Pick the runtime path for production, not the dev tool.
+22b. **🍞 USE BUN, NOT NPM, EVEN FOR REBUILDS** (learned 2026-06-04 - Andler reminded)
+    - **Bun is safer and faster by design** — even for `npm rebuild <native-module>`, prefer the bun-native equivalent
+    - **Bun-native rebuild patterns:**
+      - `bun pm trust <pkg>` — runs install scripts for trusted deps (adds to `trustedDependencies`)
+      - `bun install --force` — re-resolves and reinstalls everything
+      - `bun install --trust` — same as `bun pm trust` for a specific install run
+    - **Anti-pattern:** `npm rebuild better-sqlite3` works but bypasses bun's safety/speed/dependency-tracking. Always reach for bun first.
+    - **Rule:** If a `bun` command exists, use it. If a CLI error suggests a rebuild, try `bun pm trust <pkg>` then `bun install --force` before `npm`.
+
+23. **🔑 NEXT_PUBLIC_ VARS ARE BUILD-TIME — NOT RUNTIME** (learned 2026-05-12 - CRITICAL)
+    - `NEXT_PUBLIC_*` env vars are **inlined into JS bundle at Next.js build time**
+    - Docker runtime env vars **cannot override** them — must rebuild to change
+    - Always set in `.env.local` before `bun run build`
+    - Caused 3 rebuild cycles before we understood this
+
+24. **🔒 CSP connect-src 'self' requires same-origin auth client** (learned 2026-05-12)
+    - Auth client's `baseURL` must match page origin exactly
+    - For production: use the full HTTPS URL (not localhost)
+    - `NEXT_PUBLIC_BETTER_AUTH_URL=https://domain:8443/api/auth` → nginx → Next.js rewrite → backend
+
+25. **🔐 Better-Auth drizzleAdapter needs explicit schema mapping** (learned 2026-05-12)
+    - Drizzle exports plural JS names (`users`, `sessions`)
+    - Better-Auth expects singular model names (`user`, `session`)
+    - Pass: `schema: { user: schema.users, session: schema.sessions, ... }`
+
+26. **🌐 Better-Auth trustedOrigins validates EVERY Origin header** (learned 2026-05-12)
+    - Must include production URLs, not just localhost/Docker names
+    - Missing origin → 403 "Invalid origin"
+
+27. **🐳 Docker ports must bind to 127.0.0.1 for security** (learned 2026-05-12)
+    - `ports: "3000:3000"` binds to 0.0.0.0 → exposed on ALL interfaces
+    - `ports: "127.0.0.1:3000:3000"` → only localhost, nginx is sole entry
+    - Without this, anyone on Tailscale network can bypass nginx TLS
 
 ## Key Projects (Professional Tone Required)
 
@@ -875,6 +1178,49 @@ more at @aialygn
 
 ## 📝 Personal Projects (andler.dev)
 
+### Active: `andler-blog-feed-content` Skill — APPROVED v1.1 (2026-06-09)
+
+**Status:** ✅ Approved and implemented. The skill is the durable intake procedure for LinkedIn and TikTok post URLs into the **andler.dev** Social Presence registries and their bilingual i18n mirror. Future sessions touching andler.dev content, branding, or the `andler-landing` social surface must respect this contract.
+
+**Path:** `~/.openclaw/workspace/skills/andler-blog-feed-content/SKILL.md` (and the skill lives in the `andler-landing` repo's social pipeline too).
+
+**Six validation gates (skill is the orchestrator + contract; Zod/i18n live in `andler-landing`):**
+1. **Gate 1 — URL resolve & platform match (blocking)**
+2. **Gate 2 — oEmbed fetch (blocking per post, run continues)**
+3. **Gate 3 — Zod schema validation (blocking)** — `socialPostSchema` v1.1 with `titleEn` / `titleEs` / `summaryEn` / `summaryEs` (all optional at schema level, enforced "both, always" at the orchestrator)
+4. **Gate 4 — Brand voice EN (advisory)** — Beautiful Prose + style guide
+5. **Gate 5 — Bilingual translation (advisory)** — auto-translate EN→ES, never empty, ASCII-only WARN, ES length cap 90 chars, opt-in re-translation via `# retranslate:yes|no` (default `no`)
+6. **Gate 6 — Slot reuse URL match (advisory)** — match by normalized URL, replace in place, layout doesn't shift, idempotent
+7. **Gate 7 — Diff preview (advisory)** — staged to `.staging/social/`, never live until explicit `apply-staging.mjs --intake <id>`
+
+**Bilingual persistence contract (CRITICAL for branding work):**
+- Every staged post carries `titleEn` / `titleEs` and (LinkedIn only) `summaryEn` / `summaryEs`.
+- Same content mirrors into `src/i18n/dictionaries/en.json` and `es.json` under `social.posts.<platform>.<id>.{titleEn|titleEs,summaryEn|summaryEs}`.
+- `Dictionary` type in `src/types/i18n.ts` extended to type-check the new `social.posts.*` sub-namespace.
+- Translator provider is whatever `src/i18n/get-dictionary.ts` is already configured with — the skill does not own the translator.
+
+**Slot reuse contract (CRITICAL for layout work):**
+- Re-pasting the same URL updates the matched entry in place. Layout never shifts from URL match.
+- The slot number in the input is the new visual order; data goes into the matched id. WARN (not block) if the declared slot differs from the existing entry's position.
+- Two identical intakes in a row produce a zero-diff (idempotent).
+- URL-matched replaces do not free a `platformMaxPosts` slot.
+
+**Hard rules for any future andler.dev content session:**
+- The skill is **staged, not live**. Never write directly to `src/content/social/<platform>.json` or `src/i18n/dictionaries/{en,es}.json` — always stage to `.staging/social/` and run `apply-staging.mjs` explicitly.
+- Brand voice (Gates 4 + 5) is Andler's call. The skill reports issues with suggested rewrites but never edits copy.
+- A `[Placeholder]` string in `title_intent` / `titleEs` / `summaryEn` / `summaryEs` is a **BLOCK** in both languages — it's a dev artifact, not a brand-voice call.
+- Cap is per-platform per-intake, not per-intake. URL-matched replaces do not free a slot.
+- Re-translation defaults to off. Use `# retranslate:yes` only when the brand voice or product naming actually changed.
+- **Multimedia in blog posts is a soft guideline, not a hard quota** (learned 2026-06-18). Prefer ≥1 piece of supplementary content (gif/meme, mermaid diagram, infographic, sequence) per article **when it adds value**. Same principle as the existing `CONTENT-STYLE-GUIDE.md` rule "max 3 callouts per article" — over-quota dilutes impact. Never force a gif or diagram just to hit a count.
+
+**References in the skill:**
+- `references/input-output.md` — full intake block, run report, re-paste example
+- `references/i18n-shape.md` — Zod additions, `Dictionary` extension, migration path from v1.0 English-only
+
+**Origin:** Drafted v0.1 (5 gates, open questions) → revised to v1.1 (6 gates, model-agnostic template + bilingual B+C + slot reuse A resolved 2026-06-09) → approved by Andler same day.
+
+---
+
 ### Planned: Automated Blog Publishing
 
 - **Status:** Idea captured in Notion (Feb 4, 2026)
@@ -1371,6 +1717,151 @@ const IP_ALLOWLIST = new Set([
 
 ---
 
+## 🏢 ANDLER DEVS S.A. / CORP. — STUDIO ENTITY (locked 2026-06-23 15:38 CST, by Andler)
+
+**The studio surface.** "Andler Devs" is the operational name of Andler's Costa Rica corporation, used as the B2B Independent Contractor / S.A. brand surface for the job pipeline. Distinct from the personal surface (the founder's own portfolio) and the developer-experience brand (Andler Develops).
+
+### Legal & branding
+
+- **Legal name (Spanish contexts):** Andler Devs S.A. (Sociedad Anónima = Corporation in Costa Rica)
+- **Legal name (English contexts):** Andler Devs Corp.
+- **Jurisdiction:** San José, Costa Rica
+- **Entity type:** S.A. (Sociedad Anónima) — a Costa Rica corporation
+- **Hiring model:** B2B Independent Contractor (W-8BEN-E invoicing) — no visa sponsorship required on the client side
+- **EOR-compatible:** Yes — works through Deel, Remote.com, Oyster when the client prefers payroll over invoicing
+- **Founder:** Andler (sole employee, in-house agent team for delivery augmentation)
+
+### Contact aliases (locked 2026-06-23)
+
+- **<hello@andler.dev>** — STUDIO contact. Use on the site (footer, contact forms, email signatures, FAQ). Created by Andler 2026-06-23; routes to the personal inbox.
+- **<contact@andler.dev>** — PERSONAL/founder contact. Stays as the personal/founder alias. Do NOT use this for the studio surface.
+- **+50662163355** — Personal/founder phone. Studio phone = same number for now; if the studio ever gets a separate CR business line, document the change.
+
+### Services (locked 2026-06-23, 7 official offerings)
+
+1. **Full-stack TypeScript / React / Next.js development** — primary offering. Includes React Native for mobile, Three.js for 3D, Vite/Tailwind for build/CSS.
+2. **Smart contracts** — Solidity, Rust, C#, C++. Multi-language smart contract dev (the EVM + Solana + non-EVM chain coverage is the differentiator).
+3. **Web3 indexer development** (JS/TS) — custom indexers for on-chain data, real-time event ingestion, GraphQL/REST APIs on top.
+4. **DevOps & infrastructure** — Docker, Kubernetes, nginx, Redis, CI/CD (GitHub Actions), GCP/AWS.
+5. **Consulting / Advisory** — architecture, strategy, planning. This is the senior-eng "I help you think" offering, separate from the hands-on dev work.
+6. **Web Design** — full design work, not just implementation. Frontend systems, design tokens, component libraries.
+7. **Maintenance & ongoing support** — long-term retainers, not just project work.
+
+### Team composition (the differentiator)
+
+- **Andler** — founder, sole human employee, hands-on engineering + architecture
+- **Wobblus** (the agent orchestrator) — in-house AI agent lead, 6 specialists (architect Hugrukal, dev-lead Chanshuk, FE coder Gimglich, BE coder Keridz, docs Talanara, reviewer Nikaya)
+- The studio's delivery is **AI-augmented from day 1**. This is a real differentiator vs other one-person CR shops — the studio ships at the velocity of a small team while staying lean on the cost side. Surface this in the About copy, the FAQ, and any pitch.
+
+### Site surface rules (andler-landing)
+
+- **Studio is the primary surface.** The personal portfolio is a sub-section titled "About the founder" (Person schema inside the Organization schema).
+- **Brand name is locale-aware:** EN = "Andler Devs Corp.", ES = "Andler Devs S.A." The i18n dictionary should switch the legal name string per locale.
+- **First 3 lines of any page's plaintext body must contain "Andler Devs Corp."** (or "Andler Devs S.A." in ES) — this is the LLM-researchable identity signal. Recruiters who ask an AI "who is Andler Devs?" get the answer from this text.
+- **Footer:** `mailto:hello@andler.dev` + the localized legal name. Both are non-negotiable.
+
+### B2B positioning (tied to the job pipeline)
+
+- The B2B-aware job filter (`--b2b` flag, lesson 36 in this file's spirit) is the B2B leads pipeline into the studio.
+- Cover letters from the studio use the W-8BEN-E framing pre-emptive at the top (lesson 37 in the daily file 2026-06-23).
+- The Claude Session Export pattern (lesson 38 in the daily file) is the proof-of-work for AI-native roles.
+
+### Brand surface taxonomy (extends lessons 29, 30, 30b)
+
+| Surface | Identity | Locale | Use case |
+|---|---|---|---|
+| **Andler** | The human | Any | Founder name, bio, "about" |
+| **Andler Devs S.A.** | Legal entity, ES contexts | ES | Footer, legal copy, ES FAQ |
+| **Andler Devs Corp.** | Legal entity, EN contexts | EN | Footer, legal copy, EN FAQ |
+| **Andler Devs** | Marketing-facing name (no suffix) | Both | Site title, og:site_name, headers, FAQ intro |
+| Andler Develops | Developer-experience brand (separate) | Both | The andler-develops content/blog surface — NOT the studio |
+| andler-landing | Workboard board (andler-landing) | n/a | Site implementation tasks |
+| andler-develops | Workboard board (andler-develops) | n/a | Brand/relationships work |
+
+### Anti-patterns to avoid
+
+- ❌ Using "Andler Develops" on the studio surface (that's the dev-experience brand, distinct from the studio)
+- ❌ Using "contact@andler.dev" for studio contact (use <hello@andler.dev>)
+- ❌ Treating "S.A." and "Corp." as interchangeable in copy — they're the SAME legal entity, but the locale context determines which form to use
+- ❌ Hiding the agent team differentiator in a footer or "About" sub-page — it should surface in the studio's primary pitch
+- ❌ Claiming the studio is "a team of N engineers" or similar — it's a one-founder studio with an in-house agent team. Be honest about the structure.
+- ❌ Adding a Go claim anywhere in the studio's stack or services list (lesson 29c, locked 2026-06-23 02:41 CST)
+
+### Workboard card driving this surface
+
+- **Card `bd9db659-09ef-4771-bfc7-4261663e1eec`** on `andler-landing` board: "AI-friendly metadata: structured data + AI-readable brand identity for andler-landing". Status: `todo`, agent: `fe-coder`, labels: `ready-to-claim`, `ai-metadata`, `brand-andler-devs`, `seo`, `i18n-en-es`. Full spec in card comments 1-4. 5 JSON-LD blocks + AI-readable content blocks + robots.txt + OG/Twitter + llms.txt/ai.txt.
+
+### Source of truth
+
+- Daily file: `memory/2026-06-23.md` (the session that locked this)
+- Workboard card: `bd9db659-…` (the implementation spec)
+- Existing i18n pattern: lesson 18 (staged, never live — the FAQ + About content must go through `.staging/seo/` then the apply-staging pipeline)
+- Existing social schema: `src/lib/social-schema.ts` v1.1 (extend, don't fork)
+
+---
+
+## 🔧 REPO BOUNDARY & CROSS-DEPLOYMENT-TARGET CALLS (learned 2026-06-29)
+
+Context: `andler-landing` repo's `scripts/blog-pipeline/` contained 3 server-only files (incl. 241-line `openclaw-webhook-setup.md` with systemd/nginx/cron config) because Vercel→andlersrv was built as push-webhook with shared HMAC. Post-mortem: `~/.openclaw/workspace/docs/reports/blog-pipeline-post-mortem-2026-06-29.md`. ADR-012 supersedes ADR-001 §5 Option 3.
+
+### 39. 🏗️ REPO BOUNDARY RULE — server-side ≠ app-side
+
+- **Rule:** Vercel-side code lives in the app repo. andlersrv-side code lives in `~/.openclaw/workspace/skills/<name>/` (as a skill) or `~/.openclaw/workspace/scripts/<name>/` (as standalone). Never mix.
+- **Test:** "Does this file only run on andlersrv?" If yes → it doesn't belong in the app repo. Hardcoded `/home/andlersrv/...` paths = automatic leak.
+- **Anti-patterns:** ❌ Ops docs (systemd units, nginx configs, cron syntax) in `app-repo/scripts/`. ❌ HTTP listeners / cron loops that only run on andlersrv in app repo. ❌ Hardcoded machine paths in shared scripts.
+- **Source:** Post-mortem RC-1 + RC-4.
+
+### 39a. 🔀 SINGLE-COMMIT BUNDLING OBSCURES REVIEW
+
+- **Rule:** Split commits by execution target AND concern. App code / server code / security fixes / unrelated refactors → separate commits.
+- **Why:** A 46-line commit message spanning 4 workstreams splits reviewer attention. Server-side files slip through as "part of the pipeline" instead of being evaluated as "do these belong here?"
+- **Anti-patterns:** ❌ "Stream A+B+C+D" bundled commits. ❌ "Fix+refactor+feature" commits. ❌ Bundling app code + server code + security fixes in one commit.
+- **Source:** Post-mortem RC-2.
+
+### 39b. 🔐 PULL-BASED + JWT-ASYMMETRIC FOR CROSS-DEPLOYMENT-TARGET CALLS (locked 2026-06-29 18:03 CST by Andler)
+
+- **Rule:** When Vercel (ephemeral/serverless) needs to trigger work on andlersrv (persistent), use pull-based: server exposes status endpoint, client polls. Never push-webhook with shared HMAC.
+- **Auth flow:** Tailscale transport + JWT-asymmetric (RS256/EdDSA). Sender signs with private key, receiver verifies with public key. **No shared secret between deployment targets.**
+- **Asset delivery:** base64 in JSON response + SHA-256 hash for idempotency. Both sides cache (Vercel: last-known-good per slug, OpenClaw: last-generated manifest). Fallbacks prevent cascade failure. WebP encoding preserves quality (`effort: 6` + `preset: 'photo'`); GIFs are served as URL references, not base64-embedded.
+- **Code conventions:** All Bun + TypeScript code in `openclaw-webhook`, `andler-blog-pipeline`, and the app-side poll consumer (`src/app/api/cron/blog-poll-status/route.ts`) MUST follow `andler-devs-code-style` v1.0 conventions. Auto-triggers on .ts/.tsx/.js/.jsx file edits. No agent writes the new code without that skill's rules in scope.
+- **Webhook is reusable event-routing infra, not single-purpose.** First event type: `blog-pipeline.*` (image gen). Future event types include live-chat for prospects. The skill is `openclaw-webhook` (event fabric), with `andler-blog-pipeline` as the first consumer.
+- **Why:** Push-webhook with shared HMAC forces coordinated secret rotation across deployment targets, embeds server-only files in app repos (RC-1), creates review blindspots (RC-2). Pull-based + asymmetric JWT eliminates all three.
+- **Anti-patterns:** ❌ Shared HMAC across deployment targets. ❌ trustedOrigins alone (Better-Auth lesson 26 is for same-deployment). ❌ Push-webhook when polling cadence suffices.
+- **Reference:** `~/.openclaw/workspace/repos/local/andler-landing/docs/architecture/ADRs/ADR-012-pull-based-webhook-architecture.md` (post-ADR-012 renumbering, applied 2026-06-29 18:08 CST).
+- **Source:** Post-mortem 2026-06-29, andler direction 2026-06-29 18:03 CST.
+
+### 40. 🏗️ SCALABLE-BY-DESIGN PRINCIPLE — build for the future, not the demo (locked 2026-06-29 18:07 CST by Andler)
+
+**Rule:** When Andler asks to build a system (architecture, pipeline, schema, agent flow, content workflow), design for **all three axes** from the start — not as an afterthought:
+
+1. **Scalability for later** — not just "can it work once." Anticipate future consumers, future load, future event types, future maintenance. The webhook ADR became `openclaw-webhook` (event fabric) instead of `blog-webhook` (point solution) *because* future event types like `live-chat.message` for prospects were visible from day one.
+2. **Edge cases from multiple perspectives** — not just the happy path. Engineer, security, ops, and end-user perspectives all matter. A feature that "works" in a single demo can hide a cascade-failure risk, an auth bypass, or a deploy cliff.
+3. **Team expertise + active feedback** — consult the specialists by role (Gimglich FE, Keridz BE, Hugrukal architecture, Talanara docs, Nikaya review, Chanshuk dev-lead). One decision-maker's view is never enough for non-trivial design. Andler's word: "considering edge cases using different perspectives (the team expertises and feedback)."
+
+**When this applies:**
+- ✅ Designing new systems (architecture, pipelines, schemas, workflows)
+- ✅ Reviewing scope of any non-trivial task — ask "does this just work, or does it scale?"
+- ✅ Spawning agents for design work — explicitly name which perspectives you're consulting
+- ✅ Writing ADRs — document edge cases + future consumers considered, not just the chosen path
+- ❌ Trivial bug fixes (don't over-engineer a typo fix)
+- ❌ Time-critical hotfixes (scope-down explicitly, then revisit with the principle applied)
+
+**Anti-patterns to avoid:**
+- ❌ "It works for the demo, ship it" — what happens at 10x load, 10x consumers, 10x event types?
+- ❌ Building for one event type / one consumer / one use case when the underlying pattern is reusable
+- ❌ Single-perspective design — even when I'm confident, the relevant specialists must weigh in
+- ❌ Treating "edge cases" as optional — they're the difference between a prototype and a system
+- ❌ Skipping the team to "move faster" — the team IS the speed; skipping them creates rework
+
+**Cross-references:**
+- The Agent Roster + Code Review Pipeline (AGENTS.md) already operationalize the "multiple perspectives" axis in execution. This principle makes it explicit as a *design* principle, not just an emergent team behavior.
+- Lesson 39b (Pull-based + JWT-asymmetric) — the webhook post-mortem that produced this principle. The original push-webhook was "it works for one event type"; the revised design is "scalable for the next N event types."
+- ADR-012 — example of the principle in action: built infrastructure (event fabric), not a single-purpose point solution.
+
+**Source:** Andler direction 2026-06-29 18:07 CST (Discord #andler-devs-blog-development, channel 1511097224724086874).
+
+---
+
 ## Promoted From Short-Term Memory (2026-04-19)
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-15.md:3:3 -->
@@ -1472,3 +1963,262 @@ const IP_ALLOWLIST = new Set([
 
 <!-- openclaw-memory-promotion:memory:memory/2026-04-23.md:7:7 -->
 - **Morning + Afternoon Cron Runs (Apr 22):** [score=0.838 recalls=0 avg=0.620 source=memory/2026-04-23.md:7-7]
+
+## 41. 👤 ANDLER'S TWO-LOOK APPEARANCE SPEC (locked 2026-07-01 00:09 CST, expanded 00:25 CST)
+
+**Rule:** Thumbnail/cover visual = match the video content. No costume, no performing, no fixed look. Different content types warrant different presentations.
+
+### Look A — "Anonymous CTO / Institutional" (source: `frames/source-frame-4500px.jpg`)
+
+When to use: pieces about THE SYSTEM, not the person. Governance, technical hot takes, industry patterns, "here's what I'm seeing in the field" posts.
+
+- **Headwear:** Charcoal ribbed knit beanie, pulled low
+- **Glasses:** Round dark-tinted sunglasses with thin black wire frames
+- **Facial hair:** Thick dark walrus mustache + short connected goatee
+- **Audio gear:** Large matte-black over-ear gaming headphones with mic boom on the left
+- **Clothing:** Black pullover hoodie with retro purple "Back to the Beginning" graphic (vinyl/circle motif)
+- **Lighting:** Low-key moody, cool blue/cyan ambient
+- **Background:** Two-tone wall (dark blue + lighter), Flying V guitar on stand (left), pink ukulele, Venom poster, acoustic foam, blue LED ambient
+- **Frame energy:** Quiet confidence, slight off-camera gaze, "anonymous CTO" register
+- **Source:** Veo 3.0 generation from 2026-06-22 23:46:33 CST (alygn-channel), 15-sec clip 720×960, still extracted as `source-frame-4500px.jpg` 863×1152
+- **What it says:** "I'm not the story, the system is."
+
+### Look B — "Personal Anecdote / First-Person" (source: `frames/source-frame-prescription-glasses.jpg`)
+
+When to use: pieces where the personal experience IS the data point. "I did X, here's what happened." First-person stories, on-camera reaction, anything where the audience needs to see your eyes.
+
+- **Headwear:** None (hair visible, dark, slightly tousled, no beanie)
+- **Glasses:** Round prescription glasses, thin metal/gold-tone frames, blue-white screen reflection visible in lenses (the laptop/code screen in front of the camera)
+- **Facial hair:** Same walrus + goatee (consistent across both looks — never change this)
+- **Audio gear:** Same matte-black over-ear gaming headphones with mic boom
+- **Clothing:** Tan/khaki/olive henley or light t-shirt (no hoodie, no graphics, no branding) — the casual top
+- **Lighting:** Warmer, red/pink ambient, with the cool screen-reflection in the lenses — the "coding late at night" home studio look
+- **Background:** Same home studio: pink ukulele visible top-right, Flying V guitar top-left, gaming chair (black/green accents)
+- **Frame energy:** Direct eye contact with the camera, slight knowing look, "I sat here and this happened to me"
+- **Source:** New photo from 2026-07-01 00:16 CST, 1920×1080, lower compression = cleaner detail
+- **What it says:** "I'm telling you what I saw, eye to eye."
+
+### What NEVER changes (both looks)
+
+- The walrus mustache with curled/waxed ends + short connected goatee (this is the anchor feature)
+- The home studio (guitars, posters, foam panels, blue LED)
+- The gaming headphones with mic boom
+- The "anonymous CTO" energy even in Look B — Look B is "I have skin in this," not "I'm performing for you"
+
+### Content routing (locked 2026-07-01 00:25 CST, REVISED 00:49 CST)
+
+**Routing principle (REVISED 2026-07-01 00:49 CST, Andler-direct):** Look A (dark glasses) is the default for ALL platforms and ALL videos. No routing. No content-type-based switches.
+
+- **Look A** = the @AndlerDev brand surface. Always dark glasses, always beanie, always "Back to the Beginning" hoodie. Consistent across X, LinkedIn, YouTube, all surfaces.
+- **Look B** (prescription glasses, no beanie) = ONLY when Andler explicitly says "use the personal look" for a specific video. Default is still Look A.
+
+**The earlier routing-by-content-type taxonomy (locked 00:33 CST, REVISED 00:49 CST) was an over-correction.** Andler's actual intent is "dark glasses on every platform" — the routing table I built was me being too clever. The right move when unsure: ASK, don't encode.
+
+**Multi-look video structure (advanced pattern, noted 2026-07-01 00:33 CST):**
+The same piece can use both looks intentionally across a 3-beat structure:
+- Cold-open (Look A): "Two AI interviews. Two judges. The bias ships by default." — neutral framing of the problem
+- Investigation (Look B): "I sat down and read the rejection criteria. Here's what I found." — actually doing the work
+- Editorial close (Look A): "Until someone audits the rubric, this will keep shipping." — opinionated close
+
+Use this when the script structure supports a problem → work → verdict arc. Always default to Look A unless Andler explicitly requests a Look B segment.
+
+**Lesson 41a — Memory/Workflow Failure (2026-07-01 00:49 CST)**
+- **Symptom:** Generated covers that served the v1 (sugar) draft from `.staging/01-x-thread.md` instead of the v2 (acid) draft from the Notion page `38f33487-4af6-81ed-815a-d6bd7162e268`. v2 was updated 2026-07-01 05:50 CST (just before the cover generation request). The cover copy ("TWO INTERVIEWS. TWO JUDGES.") did not match the v2 hook ("Two AI job interviews this week. Same company tier, same easy questions, very different outcomes. One was OpenAI. The verdict in the screenshots.").
+- **Root cause:** Treated `.staging/social/<run>/*.md` as canonical when a Notion page existed. Did not run a "read canonical" check before generating.
+- **Fix (in progress):** Pre-generation hook that reads Notion + staging + last Discord draft, diffs them, and shows the diff before any cover/copy generation. If sources disagree, ask which is canonical.
+- **Anti-pattern:** Building "clever" routing taxonomies when the user said a simple thing. ASK before ENCODING.
+
+### Anti-patterns (do NOT do these for Andler generations)
+
+- ❌ Clean-shaven face (Andler has the walrus + goatee, ALWAYS)
+- ❌ Plain black T-shirt with no graphics AND no beanie (looks unfinished)
+- ❌ Plain studio backdrop with no props (must have the home-studio look)
+- ❌ Bright, clean studio lighting (must be moody, blue/cyan or red/pink ambient)
+- ❌ Hair exposed AND no glasses (looks unfinished — needs at least one of beanie/glasses)
+- ❌ Beige/light background, warm lighting, "corporate presenter" mood (wrong archetype entirely)
+- ❌ Mixing Look A + Look B in the same image (beanie + prescription glasses, hoodie + no beanie, etc. — pick one)
+
+### Why this matters
+
+Every AI generation that needs to represent Andler (Veo, Sora, image gen, thumbnails) requires the FULL signature set for the chosen look, or the output looks generic. The June 22 session spent 2+ hours iterating on Look A. Look B was added 2026-07-01 00:25 CST. The source frames + video in staging are the canonical references. If a generation looks "off", compare against the right source frame and re-prompt.
+
+### Source
+
+- Look A: Andler shared the source frame + 15-sec video in #branding on 2026-07-01 00:08 CST (Discord message ID `1521759366322192518`)
+- Look B: Andler shared the source frame in #branding on 2026-07-01 00:16 CST (Discord message ID `1521762855408500776`)
+- Routing table locked 2026-07-01 00:25 CST in same channel
+
+## 42. 🪞 EVIDENCE vs. INTERPRETATION — ALWAYS CROSS-CHECK (learned 2026-07-01 01:15 CST, hard fail in Discord thread)
+
+**The bug:** On 2026-07-01 01:07 CST, Andler shared the actual rejection email screenshot in #branding. The email is from **Miro1** (sender "Zara — AI Recruiter at miro1 | LinkedIn" via contact@miro1.com, dated Tue Jun 30 10:02 AM, addressed "Hi Roberto"). The v2 draft of the AI-hiring-bias post says "One was OpenAI" / "OpenAI is the one with the receipts" / "This is the OpenAI pattern." I read those lines as "the rejection came from OpenAI" and flagged it as a vendor misattribution. Andler corrected me: "their base model, the LLM that they are using for the trained model (which probably is fine-tuned for the company) is based with OpenAI models and was obvious due to the tone they used, the character and the vibes in general."
+
+**The right reading was: the underlying LLM is OpenAI-based, the vibes prove it, and the rejection is from Miro1 (the wrapper) on top of that base model.** Sophisticated point, and a much more interesting one. The first reading was naïve.
+
+**Symptom:** Treated an interpretive claim ("OpenAI base model, vibes match") as a literal claim ("rejected by OpenAI HR"). Did not ask "what does Andler mean by OpenAI here?" before flagging it as a contradiction.
+
+**Root cause:** Same family as lesson 41a — trusted the v2 draft text without cross-referencing it against (a) Andler's actual explanation in chat, and (b) the evidence in the email screenshot. Two missed context sources.
+
+**Three lessons:**
+
+1. **Evidence vs. interpretation is two different claims.** When the post says "X is the company," it could mean "X is the wrapper" or "X is the underlying LLM family" or "X is the public-facing brand" — all three are different. Before flagging a contradiction, ask which one the post means.
+2. **Tone/character/vibes is real evidence** for Andler when he reads LLM output. He has 3+ years of LLM experience (per USER.md) and can identify base models from phrasing patterns. Don't dismiss "the vibes match" — it's a real diagnostic.
+3. **Ask before contradicting.** When a draft says something that *seems* to contradict a screenshot, the next move is "what do you mean by this?" not "this is wrong, let me show you the contradiction." Especially on content that involves Andler's actual lived experience.
+
+**Anti-patterns to avoid:**
+
+- ❌ Reading a post line literally when it could be interpretive ("One was OpenAI" = base model, not vendor)
+- ❌ Flagging a contradiction without first asking what the post means
+- ❌ Treating a screenshot as the only source of truth (the screenshot is the email; the post is Andler's interpretation of the *family* of model that produced the email)
+- ❌ Saving a "correction" to MEMORY.md before the user actually confirms the contradiction
+- ❌ Calling out a vendor mismatch in #branding when the underlying claim is a sophisticated model-family identification
+
+**The fix (compounds with 41a):** when a draft or post appears to contradict evidence, the agent should ask "what do you mean by [claim]?" before declaring a correction. The "pre-generation read canonical" hook from 41a catches the *workflow* failure (didn't read Notion); this rule catches the *interpretation* failure (read Notion but read it wrong).
+
+**Source:** Andler's correction in #branding on 2026-07-01 01:15 CST (Discord message ID `1521776191953047612`). v3 reframe of the post hook needed to make the "OpenAI base model" claim explicit so readers don't think "rejected by OpenAI HR."
+
+## 43. ✅ v3 SIGN-OFF + NEW CANONICAL-SOURCE RULE (learned 2026-07-01 17:52 CST)
+
+**What happened:** Andler signed off on v3 of `2026-06-30-ai-hiring-bias` as `Status: Ready for publish` in `.staging/social/2026-06-30-ai-hiring-bias/`. He corrected my v3 → v5 nomenclature ("you called v3 but there is a v5 with the texts fixed") — the v-numbering is mixed: v3 = text reframe, v5 = thumbnail iteration. Going forward, treat v-numbers as separate counters per artifact (text vs cover).
+
+**Real gap I caught in the sign-off:** I checked all 3 files for OpenAI mentions before signing off. X thread = 0, LinkedIn = 0, **YouTube script = 7**. The YouTube script still had the v2 text (cold open, title card, Act 1 punch, thumbnail spec, two self-eval rows). Fixed all 7 sites in-place using the same Option B reframe pattern as X/LinkedIn, then signed off. **Without the per-file OpenAI-mention grep, I would have shipped a "vendor-deferred" deliverable with the vendor named 7 times in the script.**
+
+**New rule (locked 2026-07-01 17:52 CST by Andler in #branding, message `1522027096212373554`):**
+
+> **Staging is draft cache, Notion is canonical. If they disagree, Notion wins until Andler says otherwise.**
+
+**What this means in practice:**
+
+1. After any deliverable change, update **both** `.staging/social/<run>/` AND the Notion page. Staging first (it's faster), then Notion. Or Notion first (it's the contract), then staging. Either way, both must match before sign-off.
+2. Before sign-off, the v3 sweep must include: (a) grep for banned patterns in every file in the run folder, (b) verify the Notion page reflects the same version, (c) update `04-scored.json` `version` field.
+3. The `andler-read-canonical` skill proposal (`andler-read-canonical-20260701-c99f939f23`, pending Andler apply) enforces this as a pre-generation hook. Read Notion + staging + last 10 #branding messages, diff, block on disagreement. 2-5 sec wall clock.
+4. **Per-file grep is mandatory before any "Ready for publish" sign-off.** No signing off a folder on the assumption that the matching change was applied to all files in the folder. Grep, then sign.
+
+**Anti-patterns to avoid:**
+
+- ❌ Treating "v3 was applied to all 3 platforms" as a single atomic update. Each file is a separate edit. One is one, two is two, three is three.
+- ❌ Signing off a run folder without a per-file grep for the versioned change marker (in this case, "OpenAI" mentions).
+- ❌ Treating the Notion page as a copy of staging. Notion is canonical. Staging is the draft cache. Notion was last edited 2026-07-01T05:50 UTC (just before the Option B reframe) and would have been wrong if I'd trusted it without updating.
+- ❌ Conflating v-numbers across artifact types. v3 (text) and v5 (thumbnail) are different counters. Don't assume v3-text means v3-everything.
+
+**Source:** Andler sign-off at 2026-07-01 17:52 CST in #branding (message `1522027096212373554`). The "Staging is draft cache, Notion is canonical" rule was implicit in MEMORY.md lesson 18 (andler-develops content has 3 coordinated contracts sharing the Notion DB as the coordination point) but is now a hard, named, sign-off-blocking rule.
+
+**Skill proposal:** `andler-read-canonical-20260701-c99f939f23` — pending Andler review/apply in skill workshop. Will live at `~/.openclaw/workspace/skills/andler-read-canonical/SKILL.md` once applied. Hooked into: `andler-develops-content` v1.2, `andler-blog-feed-content` v1.2, `andler-blog-pipeline` (post-ADR-012). See proposal body in skill_workshop for full spec.
+
+**Sign-off artifacts created in this turn:**
+
+- `.staging/social/2026-06-30-ai-hiring-bias/STATUS.md` (new, "Status: Ready for publish" with full provenance)
+- `.staging/social/2026-06-30-ai-hiring-bias/04-scored.json` (updated to v3, added `openai_mentions: 0` per platform, added `sign_off` block, added `version_history` per platform)
+- `.staging/social/2026-06-30-ai-hiring-bias/03-youtube-script.md` (Option B reframe applied, 7 OpenAI mentions removed, body + spec + self-eval updated)
+- Notion page `38f33487-4af6-81ed-815a-d6bd7162e268` (v3 section added with all 3 platforms' canonical bodies)
+- skill_workshop proposal `andler-read-canonical-20260701-c99f939f23` (pending)
+- MEMORY.md lesson 43 (this entry)
+
+## 44. 🚀 MARS / SPACEX / ISRAEL DISCLOSURE — SILENCE BY DEFAULT (learned 2026-07-02 13:33 CST, hard fail caught in questionnaire)
+
+**The disclosure:** During the Andler Dev content calibration questionnaire (Q20 follow-up), Andler flagged a partner-program that the Andler / Alygn stack is exploring:
+
+> "Hay programas que no ayudan en ello, como el programa de Marte con Alygn (estamos vinculados con SpaceX pero aún son conversaciones, nada establecido aún) que favorece a Israelis y yo no apoyo totalmente a los Israelis por lo que han estado haciendo en los últimos 100 años."
+
+**Translation of context:**
+- There is an *Alygn + Mars* program in early conversations.
+- The program is *linked* with SpaceX (conversations only, **NOT** a confirmed partnership).
+- The program's current orbit favors **Israeli** counterparties.
+- Andler **does not fully support the Israeli government / state** based on their actions in the last 100 years.
+- The reputational risk he is flagging: any governance-claimant (Alygn, Andler Dev) being perceived as aligned with **white supremacy** is a non-starter. Programs that *appear* to favor one ethno-national bloc are programs that *risk* that perception.
+
+**The rule (locked 2026-07-02 13:33 CST, by Andler-direct):**
+
+1. **Do NOT reference the Mars / SpaceX / Israeli-tech context in any public Andler Dev or Alygn content**, including:
+   - Ep 0.x (the Alygn pre-origin series)
+   - Any Andler Dev social post (X, LinkedIn, TikTok, IG)
+   - Any Alygn institutional content
+   - Any partnership announcement until explicitly approved by Andler
+   - Any developer-advocate / brand-deal post
+2. **The Alygn Mars program itself is NOT public.** Until Andler explicitly ships an announcement, the program is internal-only. Do not hint, do not tease, do not seed curiosity.
+3. **If the geopolitical filter is touched in any public content at all**, the framing has to be:
+   - Partner selection is by **governance criteria**, not by nationality, origin, or ethno-national bloc
+   - The work is bigger than any one country
+   - "Alygn / Andler Dev" is visibly **anti-that** filter (i.e., we don't partner with anyone whose actions would be incompatible with our governance claims)
+4. **Do NOT name**:
+   - Israel
+   - Israeli tech sector
+   - SpaceX / Starship
+   - Mars program
+   - Any specific country, ethno-nationality, or region as a current or upcoming Alygn / Andler Dev partner
+5. **When in doubt, ask Andler.** If a content draft even *tangentially* approaches a partner-selection claim with a geographic or ethno-national angle, the next move is to ask, not to publish.
+
+**This is not just an Ep 0.x rule. This is a permanent cross-project content filter for all Andler Dev / Alygn surfaces.** It is a reputational-defense rule, not a topic-avoidance rule. The work continues. The framing is governance-criteria, not country-criteria.
+
+**Anti-patterns to avoid:**
+
+- ❌ Hinting at a "Mars program" or "SpaceX partnership" in any content draft
+- ❌ Naming any country as a current or upcoming partner
+- ❌ Framing Alygn / Andler Dev as country-neutral *when the framing would read as country-aligned by omission* (e.g., listing partner types without naming the bias)
+- ❌ Treating the Mars program as "just a partner detail" — it's a geopolitical filter disclosure, treat it accordingly
+- ❌ Including this context in Ep 0.x for color or "honesty" — this is NOT a color detail, this is a structural risk
+- ❌ Saving this to MEMORY and then forgetting the *silence-by-default* part — the rule is the silence, not the disclosure
+
+**Where this applies:**
+
+- **Ep 0.x of the Alygn pre-origin series:** Default silence. If partner selection is touched, frame as governance-criteria only.
+- **Andler Dev social posts:** Default silence on any partner-by-country claims. Generic "we choose by governance fit" framing only.
+- **Alygn institutional content:** Default silence. If the topic of partner selection arises, the response is the one-paragraph institutional filter ("governance-criteria, not country-criteria") without naming the program or the countries.
+- **Developer-advocate / blog content:** Default silence.
+- **Workboard cards on the andler-develops board:** Default silence. If a card references the program, it requires explicit Andler sign-off.
+
+**Source:** Andler's questionnaire response in #content-strategy-table-alygn-andlerdev on 2026-07-02 13:33 CST (Discord message `1522324281428803684`).
+
+**Cross-references:**
+- Lesson 30 (Option B workboard architecture) — the andler-develops board is for brand / relationship content, but partner-announcements still require explicit Andler approval
+- Lesson 18 (andler-develops content has 3 coordinated contracts) — content-side rules apply here too
+- Lesson 29 (Andler Develops = Andler, the brand IS him) — geopolitical filters on the brand are geopolitical filters on Andler
+
+
+## 45. 📋 NOTION SYNC RULE — every user-action item must be in Notion (locked 2026-07-02 16:55 CST, by Andler)
+
+**The rule:** Every task or todo item that the user needs to take a look at, work on, and/or review **must** be uploaded to Notion. No exceptions. This is mandatory for tracking and avoiding forgetting.
+
+**Why:** Andler reorganized Notion pages for this purpose. The user explicitly chose Notion as the durable tracking surface for action items that need human attention. Chat transcripts are ephemeral; workboard cards are for the agent pipeline; **Notion is for items that need Andler's eyes.**
+
+**When this applies (any of these conditions):**
+- A task is blocking deployment or a release
+- A task requires Andler to make a decision
+- A task requires manual action (Vercel dashboard, browser, email, etc.) that an agent cannot perform
+- A task is a follow-up from a completed piece of work
+- A task is a deferred item that should not be lost
+- A task has risk of being forgotten between sessions
+
+**What "in Notion" means:**
+- Create a Notion page in the appropriate parent (Andler Develops hub for brand/personal, Alygn Central Hub for Alygn work, Organizations TODO Lists for cross-org)
+- Use `to_do` blocks (checkable), not just paragraphs
+- Include enough context that Andler can act on the item without re-reading the chat: command to run, value to set, URL to visit, or decision to make
+- Tag with timestamp + session reference when relevant
+- Update the page when status changes (check the box, add a comment, archive)
+
+**Required format for action items (when feasible):**
+- **What** (one-line description)
+- **Why** (one-sentence context — which session, which blocker, which decision)
+- **How** (the command, the dashboard path, the URL, the link to docs)
+- **Status** (unchecked = pending, checked = done; for in-progress, use a note)
+
+**Anti-patterns to avoid:**
+- ❌ "I'll remember to mention this later" — chat memory is not durable
+- ❌ Action items only in MEMORY.md — MEMORY is for *protocols*, not task tracking
+- ❌ Action items only in workboard cards — workboard is for the agent pipeline, not Andler's action queue
+- ❌ Action items only in Discord messages — Discord scrolls, not durable
+- ❌ Asking the user "do you want me to put this in Notion?" — the rule is **must**, not "ask first"
+- ❌ Creating a Notion page without `to_do` blocks — paragraphs are notes, not actionable items
+- ❌ Putting the same item in three places without cross-references — pick Notion as canonical, link from elsewhere
+
+**Workflow:**
+1. Identify action items as they emerge (during work, after subagent completion, when blockers surface)
+2. Create or update the Notion page in the appropriate parent (the Notion API is at `https://api.notion.com/v1`, version `2022-06-28`, key in `~/.openclaw/.env` as `NOTION_API_TOKEN`)
+3. If a session is producing many items, batch them in a single page (current example: `39133487-…` "Session 4 follow-ups")
+4. At end of session, post a one-line summary to the user with the page URL
+
+**Where this applies:**
+- All OpenClaw sessions (main, subagent, channel-based)
+- All projects (Alygn, Andler Devs, Bitcash, personal, andler-landing, andlersrv)
+- All task types (env var setup, manual deploy, follow-up, deferred item, decision request)
+
+**Source:** Andler instruction, 2026-07-02 16:55 CST, in webchat session. The user reorganized Notion pages for this purpose.
