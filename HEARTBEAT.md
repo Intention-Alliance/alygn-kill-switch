@@ -203,8 +203,55 @@ If changes detected → Update:
 
 ---
 
-_Updated: March 24, 2026_
+_Updated: July 4, 2026 01:40 CST_
 _Contact: contact@alyygn.com_
+
+---
+
+## 🎯 LANDING RE-LAYOUT STRATEGY (2026-07-04 01:40 CST — ACTIVE)
+
+**Source:** `docs/andler dev - Landing Upgrade Re-Layout.md` (Andler-authored, 2026-07-02 23:05, Spanish, status=Planning).
+
+**Workboard master:** `1ab430d1-f7dc-4496-9256-cbdd229cd84e` (board `andler-landing`).
+
+**5 phase cards (sequential) + 1 new Block 4 sibling:**
+| # | Card | Agent | Scope | Status |
+|---|------|-------|-------|--------|
+| 0 | `d71de28f-…` | architect | ADR-016 architecture spec | ✅ DONE 2026-07-04 01:57 CST (`14d85ec`, 979 lines) |
+| 1 | `0d8037f6-…` | fe-coder | Act 1 (vignette + hero + sub-hero + GPGPU) | 🔄 **DISPATCHED 11:37 CST** (Gimblich `aac5dae2-…`) |
+| 2 | `c4f68a5a-…` | fe-coder | Act 2 (Timeline + Team with 3D logo + cards) | blocked on 1 |
+| 3 | `32bc3773-…` | fe-coder | Act 3 (depth-gallery Projects/Social/Blog) | blocked on 2 |
+| 4 | `b03d75fe-…` | fe-coder | Footer + i18n sweep + Nikaya sign-off | blocked on 3 |
+| 4b | `98dd32f1-…` | fe-coder | **Block 4 — Live Chat Bridge** (new, andler-approved 2026-07-04 11:37 CST) | blocked on 4 |
+
+**Heartbeat cron:** `andler-landing-relayout-heartbeat` (every 30 min, systemEvent → main session, ID `d7170517-…`). Fires `bun run scripts/workboard/landing-relayout-heartbeat.ts --dry-run` + prompts Wobblus to claim + dispatch the next unblocked phase.
+
+**Dispatch rules (locked):**
+- Phase 0 ✅ done 2026-07-04 01:57 CST (commit `14d85ec`).
+- Phase 1 🔄 **DISPATCHED 2026-07-04 11:37 CST** — Gimblich `aac5dae2-…`, ETA 1-2 days, branch `feat/landing-relayout-phase-1-act1`. Claim token `1e7f8fa1-…`.
+- Phases 2-4 only after Phase 1 merges. Block 4 only after Phase 4 merges.
+- Atomic PR per phase. Each PR goes through Stage 1 (Chanshuk) + Stage 2 (Nikaya, 3 gates per lesson 47) before merge.
+- Andler pushes. Agents don't push (AGENTS.md).
+- **Block 4 (`98dd32f1-…`) added 2026-07-04 11:37 CST** by Andler request: real-time bidirectional chat bridge replacing webhook-only `/api/contact`. Full spec at `docs/architecture/ADR-016-block-4-live-chat-bridge-spec.md` (6784 bytes). 10 hard requirements + 3 implementation paths (A: Discord thread bridge default, B: Tailscale Funnel, C: WhatsApp). Path selection at code review per Andler.
+
+**Hard constraints (MEMORY):**
+- Lesson 46: ServerFooter OUTSIDE client shell. depth-gallery uses Track B (measured min-height). No regression on `bd9db659-…` R3.
+- Lesson 18: staged i18n via `.staging/i18n/` + `apply-staging.mjs`. EN+ES populated together.
+- Lesson 29c: no Go claims. Boutique voice (post-PR #108).
+- Lesson 43: per-file grep before sign-off. Notion is canonical.
+- Lesson 47: Stage 2 = score ≥92 + proof artifact + external comments.
+
+**Orchestration strategy (locked 2026-07-04 11:37 CST by Andler):**
+- Sequential dispatch, dependency-aware. No parallel phases (the 3 acts build on the same scene graph).
+- WB-1 (about-page 5-phase restoration) is an INDEPENDENT track. About-page ships first (no GPGPU), then Re-Layout adopts the contracts.
+- Cross-track shared contracts: ServerFooter 2-track (lesson 46), staged i18n (lesson 18), Stage 2 3-gate (lesson 47), workboard Option B architecture (lesson 30).
+- Block 4 isolated on its own card (NOT absorbed into Phase 4) to keep atomic-PR-per-phase discipline. Phase 4 ships static Footer (1d); Block 4 ships the real-time chat panel that mounts on top (1-2d).
+- "Further analysis would be done at final code review and tests" (Andler 2026-07-04) — Block 4 path selection (Discord vs Tailscale vs WhatsApp) deferred to Stage 1 + Stage 2 review, not a new ADR.
+
+**Next dispatch (already in flight):**
+- ✅ Phase 0 (architect ADR-016) — done 2026-07-04 01:57 CST, commit `14d85ec`.
+- 🔄 Phase 1 (fe-coder Act 1) — DISPATCHED 2026-07-04 11:37 CST to Gimblich `aac5dae2-…`. Waiting on completion event (ETA 1-2d). After Phase 1 merges → spawn Phase 2.
+- ⏸ Phase 2/3/4 + Block 4 — queued behind Phase 1.
 
 ---
 
@@ -243,6 +290,47 @@ _Contact: contact@alyygn.com_
 4. Post-cutover verification
 
 Report by Keridz ⚙️
+
+---
+
+## 🎯 STAGE 1+2+CONTENT-SPLIT (2026-07-03 16:23 CST — Wobblus 🔧)
+
+**Status:** ✅ Stage 1 re-pass ready, content split isolated on its own PR.
+
+### WB-FIX-2: P1 scope creep fixed
+
+Chanshuk's Stage 1 review (PASS WITH NOTES) found 6 unrelated brand-voice content lines ("frontier" → "boutique", 829+ commits, 85+ repos, San José CR) mixed into the 3-bug fix commit `5bf1752`. Atomic-commit hygiene violation.
+
+**Gimblich's split (3m, 2 branches, 2 PRs):**
+- **Fix branch (atomic, ready for Stage 2):** `fix/pr-105-server-footer-bugs` → `fbe35ee` (force-pushed). Diff vs foundation: 8 files, +124 / -16. 3 bug fixes + 8 sitemap lines, **0 content rewrites**.
+- **Content branch (rebased onto main):** `feat/content-boutique-voice-2026-07-03` → `0019e68`. Diff vs main: **2 files, +6 / -6 lines** — the 6 content lines only.
+
+**PRs:**
+- PR #105 (foundation + fix, blocked) — re-review comment posted
+- PR #106 (content) — **closed** (was incorrectly based on fix branch, showed 21 files / +751 / -71)
+- PR #108 (content) — **open, clean** (rebased onto main, shows ONLY 6 content lines)
+
+**Wobblus cleanup:** Detected PR #106 was based on the fix branch (showing 750+ lines of unrelated foundation changes), closed #106, recreated the content branch from main, applied just the 6 content lines as a fresh commit, opened PR #108. Net result: PR #108 shows 2 files / 6 lines.
+
+**Verification (all clean):**
+- `bun tsc --noEmit` → 0 errors
+- `bun test` → 16/16
+- `bun run build` → TS compiles
+
+### Stage gate (post-split)
+
+- 🔄 **Chanshuk Stage 1 second pass** ready to spawn on `fix/pr-105-server-footer-bugs` (new SHA `fbe35ee`)
+- ⏸ **Nikaya Stage 2** blocked until Chanshuk second pass
+- 📋 3 P2 follow-up cards queued (footerRef, missing trailing newlines, pre-existing EN hardcoded fallbacks)
+
+### References
+
+- Workboard card `41175066-…` (WB-FIX-1, parent)
+- Workboard card `08961b5d-…` (WB-FIX-2, this)
+- PR #105: https://github.com/AndlerRL/andler-landing/pull/105
+- PR #108: https://github.com/AndlerRL/andler-landing/pull/108
+
+Report by Wobblus 🔧
 
 ---
 
@@ -551,6 +639,84 @@ Keridz (#92: Schema) → Gimglich (#83-85: Core components) → Gimglich (#90-91
 
 ---
 
+## 🚀 SAFE-BRANCH STRATEGY EXECUTED (2026-07-03 14:57 CST — Wobblus 🔧)
+
+**Status:** ✅ Foundation branch is clean, on top of fresh `origin/main @ 80d356f`, **PUSHED + PR #105 OPENED** (15:00 CST).
+
+**Safe branch:**
+- Name: `feat/dynamic-scroll-foundation`
+- Base: `origin/main @ 80d356f` (includes #102 + #103 + #104)
+- Ahead: 3 commits, all by `Wobblus 🔧 <wobblus@andler.dev>`
+- Working tree: clean (0 uncommitted, no WIP contamination)
+- **PR:** https://github.com/AndlerRL/andler-landing/pull/105
+
+**Commits (chronological):**
+| SHA | Author | Message |
+|-----|--------|---------|
+| `a6769b9` | Wobblus 🔧 | `feat(andler-landing): render 4 missing mermaid diagrams for /about (8 SVGs)` |
+| `d2f8af9` | Wobblus 🔧 | `chore(andler-landing): fix hard-coded path in render-mermaid-diagrams.sh` |
+| `eeea02e` | Wobblus 🔧 | `feat(andler-landing): add useMeasuredContentHeight v2 + ServerFooter split for /about` |
+
+**Cherry-pick rationale:** the WIP branch `fix/issue-93-biome-lint-sweep` had 93 uncommitted files (74 biome-sweep modifications + my 3 new commits on top). The biome sweep was done against outdated `main` (pre-#102). Pulling latest main would have produced 74+ merge conflicts in biome-noise. Cherry-picking the 3 atomic foundation commits onto a fresh `origin/main` branch gives clean, attributable, reviewable history with zero conflicts.
+
+**What landed in foundation:**
+- `useMeasuredContentHeight` v2 (additive, no breaking) — `includeFooter?`, `onMeasured?`, `refit()`, `FOOTER_FACTOR`
+- `ServerFooter` + `FooterClientIsland` — mailto + sitemap + company info in SSG (resolves bd9db659-… R3)
+- `/about` Track B wired — measured `min-height: calc(...)`, Footer is sibling not child
+- 8 Mermaid SVGs in `public/diagrams/` (unblocks 4 failing diagrams in /about)
+- Render script path fix (cd to repo root, sources from src/content/diagrams/)
+- 16/16 hook tests pass
+
+**Verification:** `bun tsc --noEmit` 0 errors, `bun test` 16/16, 8 SVGs in public/diagrams/, working tree clean.
+
+**Snapshot of the WIP branch (for reference):**
+- `git branch foundation-snapshot` (HEAD = 61c7ab7, the original 3-commit WIP state)
+- `fix/issue-93-biome-lint-sweep` still exists with 93 uncommitted modifications — Andler's call on whether to discard the WIP or rebase it
+
+**Next steps:**
+1. Andler reviews the 3 commits (`git log --oneline origin/main..HEAD`, `git show` each)
+2. Andler pushes: `git push -u origin feat/dynamic-scroll-foundation`
+3. Andler opens PR: `gh pr create --base main --title 'feat(andler-landing): dynamic scroll foundation (hook v2 + ServerFooter + Mermaid SVGs)'`
+4. Parallel: Talanara dispatches on WB-14 (ADR-015 + MEMORY update, 1h, no #93 blocker)
+5. After foundation merges: Gimblich picks up WB-10 → WB-1 Phases 2-5 → WB-11 (~9h, fresh from updated main)
+6. Andler decides #93 sequence: recommend option (c) — discard the WIP, re-run biome on fresh main as a single commit
+
+**Notion EXEC page:** `https://app.notion.com/p/EXEC-Safe-branch-strategy-for-dynamic-scroll-foundation-2026-07-03-14-57-CST-392334874af68190b632f1eb6c40878d` (70 blocks, full execution log + team alignment + communications plan)
+
+Report by Wobblus 🔧
+
+---
+
+## 📐 DYNAMIC SCROLL/VIEWPORT FOUNDATION (2026-07-03 14:25 CST — IN PROGRESS)
+
+**Status:** Foundation shipped (commit 05f62c0), 5 workboard cards queued, waiting on #93 rebase before next-phase work begins.
+
+**Commit (NOT pushed):**
+| SHA | Repo | Scope |
+|-----|------|-------|
+| `05f62c0` | andler-landing | `feat(andler-landing): add useMeasuredContentHeight v2 + ServerFooter split for /about` (superseded by cherry-pick eeea02e on safe branch) |
+
+**What landed:**
+- `useMeasuredContentHeight` v2 — additive (no breaking). New: `includeFooter?`, `onMeasured?`, `refit()`, `FOOTER_FACTOR` constant. 16/16 tests pass.
+- `ServerFooter` + `FooterClientIsland` split. mailto + sitemap + company info + copyright all in SSG. Resolves the Footer-in-client-Shell bug from card `bd9db659-…` R3.
+- `/about` Track B wired: `AboutPageClient` measures content, computes `min-height: calc(...)` on `<main>`. `page.tsx` composes `<AboutPageClient>` + `<ServerFooter>`. Footer is now a sibling of the content wrapper, not a child.
+- TS check: 0 errors. Tests: 16/16 pass.
+
+**Workboard cards queued (foundation phase):**
+- `8f234fc9-…` Render missing Mermaid SVGs (8 files, 30m) — be-coder
+- `8801efb6-…` /about 5-phase restoration (WB-1 master) — fe-coder
+- `0e2552e0-…` /blog index + move Footer out (WB-10) — fe-coder
+- `80885f7a-…` /projects + move Footer out (WB-11) — fe-coder
+- `c6d1953f-…` ADR-015 Server Footer pattern (WB-14) — docs-writer
+
+**Coordination gate (R5):** all cards labeled `blocked-on-93-rebase`. The about-hero.tsx, diagram-container.tsx, team-grid.tsx files are in #93's WIP (799cbc1, 74 stashed files). Critical finding: #93's biome sweep renamed `titleSpring` → `_titleSpring` but did NOT fix the underlying dead-code issue. WB-1 Phase 2 should remove the useSpring import entirely or bind the springs to JSX.
+
+**Next:** Spawn be-coder on `8f234fc9-…` (render diagrams, 30m, no #93 conflict) — can run immediately. Other cards wait on the #93 rebase.
+
+Report by Wobblus 🔧
+
+---
+
 ## 📋 TODAY'S ACHIEVEMENTS (2026-04-22)
 
 **34 GitHub issues completed, 14 commits, ~10,000+ lines of production code.**
@@ -772,7 +938,7 @@ The plugin's `ON DELETE CASCADE` schema on `workboard_card_links` made the delet
 
 - `5137ac54` (Design Realignment master tracker) — closes when 4 step cards complete. They all did, so it should be promotable to done via close-out pass.
 - `75693537` (Andler Landing v3 master meta) — 7/9 P0/P1 issues already addressed. Re-verify the remaining 2 to close.
-- `8e02c5d2` (Initial social presence content release) — blocked on missing .env creds, separate from this work.
+- `8e02c5d2` (Initial social presence content release) — creds ARE present in `.env` (`X_API_BEARER_TOKEN`, `X_CUSTOMER_SECRET`, `X_CUSTOMER_ID`, `NOTION_API_KEY`), per Andler correction 2026-07-04 11:39 CST. The card is **not** blocked on missing creds. Original `9edf507 feat(social): runtime fetcher with ISR, DNS pinning, and signed manual JSON` already exists in the repo on `feat/social-presence-v2-rewrite`. Re-verify the card's actual state before re-flagging.
 
 ### Heartbeat Pickup Logic (next session)
 
