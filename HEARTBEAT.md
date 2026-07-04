@@ -203,7 +203,7 @@ If changes detected → Update:
 
 ---
 
-_Updated: July 4, 2026 01:40 CST_
+_Updated: July 4, 2026 11:55 CST_
 _Contact: contact@alyygn.com_
 
 ---
@@ -879,7 +879,7 @@ Report by Wobblus 🔧
 |--------|-------|-------|
 | `done` | 18 | All implementation cards closed (8 new this session) |
 | `todo` | 3 | Meta tracker cards (5137ac54, 75693537, 8e02c5d2) — only the blocked one is real work |
-| `blocked` | 1 | `8e02c5d2` (Initial social presence content release — needs .env creds, separately tracked) |
+| `blocked` | 0 | (none — `8e02c5d2` was unblocked 2026-07-04 11:55 CST, see notes) |
 
 ### What landed this session (2026-06-10 22:17–23:11 CST)
 
@@ -938,7 +938,7 @@ The plugin's `ON DELETE CASCADE` schema on `workboard_card_links` made the delet
 
 - `5137ac54` (Design Realignment master tracker) — closes when 4 step cards complete. They all did, so it should be promotable to done via close-out pass.
 - `75693537` (Andler Landing v3 master meta) — 7/9 P0/P1 issues already addressed. Re-verify the remaining 2 to close.
-- `8e02c5d2` (Initial social presence content release) — creds ARE present in `.env` (`X_API_BEARER_TOKEN`, `X_CUSTOMER_SECRET`, `X_CUSTOMER_ID`, `NOTION_API_KEY`), per Andler correction 2026-07-04 11:39 CST. The card is **not** blocked on missing creds. Original `9edf507 feat(social): runtime fetcher with ISR, DNS pinning, and signed manual JSON` already exists in the repo on `feat/social-presence-v2-rewrite`. Re-verify the card's actual state before re-flagging.
+- `8e02c5d2` (Initial social presence content release) — **unblocked 2026-07-04 11:55 CST, moved to `todo`**. Andler correction 11:39 CST was partially right: script-readable creds ARE in `.env` (`X_API_BEARER_TOKEN`, `X_CUSTOMER_ID`, `X_CUSTOMER_SECRET`, `NOTION_API_KEY`, `YOUTUBE_CHANNEL_ID`, `YOUTUBE_PLAYLIST_IDS`). But 3 Twitch vars (`TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`, `TWITCH_USER_ID`) are still EMPTY. Other real blockers: (a) X API token is app-only OAuth 2.0; `/2/users/me` returns 403; need User Context OR use `/2/users/by/username/andlerdev` bypass + numeric id 1453112399502974978; (b) LinkedIn + TikTok have no public API. `9edf507 feat(social): runtime fetcher with ISR, DNS pinning, and signed manual JSON` is on `origin/feat/social-presence-v2-rewrite` (pushed). Recommended next: be-coder spawns X-script-fix (bypass + username lookup); Andler fills Twitch creds for the refresh script.
 
 ### Heartbeat Pickup Logic (next session)
 
