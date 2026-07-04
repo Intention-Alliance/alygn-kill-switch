@@ -601,12 +601,12 @@ Keridz (#92: Schema) → Gimglich (#83-85: Core components) → Gimglich (#90-91
 
 ---
 
-### Stream 4: ✅ GRANT MONITORING — STABLE
+### Stream 4: 🟡 GRANT MONITORING — SCHMIDT FORFEIT
 
-**Status:** ✅ STABLE
+**Status:** 🟡 **FORFEIT 2026-07-04 13:17 CST (Andler-direct)**
 
-- Schmidt Sciences: May 17, 2026 (~25 days) — No alert
-- Coefficient Giving: Dec 31, 2026 — No alert
+- Schmidt Sciences: ~~May 17, 2026 (passed ~7 weeks ago)~~ **FORFEIT** — Tania did not report back. Notion page `32c33487-4af6-8199-9dc7-c451648af462` → Status: Closed/Skipped, Next Action: forfeit note.
+- Coefficient Giving: Dec 31, 2026 — still Ready for outreach, not affected
 - No Tania emails pending
 - No status changes detected
 
