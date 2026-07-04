@@ -2335,18 +2335,25 @@ A Stage 2 report is **PASS** only when all 3 gates are met. Otherwise it is **PA
 - Discovered `kluster.ai` via web search (not yet installed on the repo).
 - CodeRabbit comments verified via `gh pr view 105 --json comments`.
 
-## 48. 🔍 VERIFY BEFORE CLAIMING "BLOCKED ON CREDS" (learned 2026-07-04 11:39 CST, hard fail in webchat)
+## 48. 🔍 VERIFY BEFORE CLAIMING "BLOCKED ON CREDS" (learned 2026-07-04 11:39 CST, hard fail in webchat; refined 11:55 CST, partial-truth nuance)
 
 **What I got wrong:** In `HEARTBEAT.md` line 935 (and the previous session's reporting), I wrote that the `8e02c5d2` "Initial social presence content release" card was "blocked on missing .env creds, separate from this work." Andler corrected me: the creds ARE in `.env` (`X_API_BEARER_TOKEN`, `X_CUSTOMER_SECRET`, `X_CUSTOMER_ID`, `NOTION_API_KEY` all set). The card was NOT blocked on missing creds. The actual social-presence work is already shipped on branch `feat/social-presence-v2-rewrite` as commit `9edf507 feat(social): runtime fetcher with ISR, DNS pinning, and signed manual JSON`.
+
+**Partial-truth nuance (refined 2026-07-04 11:55 CST):** Andler was right *for the script-readable creds* but I OVERCORRECTED in my 11:40 line 935 fix by writing "creds ARE in .env" as a blanket statement. The actual state was:
+- ✅ `X_API_BEARER_TOKEN`, `X_CUSTOMER_ID`, `X_CUSTOMER_SECRET`, `NOTION_API_KEY`, `YOUTUBE_CHANNEL_ID`, `YOUTUBE_PLAYLIST_IDS` — all set
+- ❌ `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`, `TWITCH_USER_ID` — all EMPTY (3 vars)
+
+So the card was *partially* wrong to be "blocked" (X + YouTube + Notion are fine) but *partially* right (Twitch genuinely needs 3 vars filled, X API has a token-type bug, LinkedIn + TikTok have no public API). The fix wasn't "unblock" — it was "unblock + reclassify with the precise blocker set in comments". The followup commit (0f89559, 11:55 CST) is the precise version. Lesson: verify EACH key individually, not "creds are in .env" as a group.
 
 **The pattern:** I inherited a "blocked" status from a previous session and never re-verified it. The session memory just said "blocked on missing .env creds" so I trusted it and propagated the same wrong claim in the next heartbeat. Two layers of trust, zero verification.
 
 **The rule (zero-trust applies to my own past claims too):**
 
-1. **Before reporting a card as "blocked on X"**, re-verify X in the live state. For "blocked on creds", this means `cat .env | grep <KEY>` or `env | grep <KEY>` and confirming the value is non-empty.
-2. **Before reporting a card as "blocked" period**, do `workboard_read` on the card and check actual current `status` + `blockerReason` + `comments`. The `blockerReason` field is the source of truth, not the heartbeat's last status.
+1. **Before reporting a card as "blocked on X"**, re-verify X in the live state. For "blocked on creds", this means `cat .env | grep <KEY>` or `env | grep <KEY>` and confirming the value is non-empty. **For each key individually** — not as a group.
+2. **Before reporting a card as "blocked" period**, do `workboard_read` on the card and check actual current `status` + `blockerReason` + `comments`. The `blockerReason` field is the source of truth, not the heartbeat's last status. Card comments may also contain verified block lists from previous agents — read them.
 3. **The cross-reference test:** for every "blocked" claim, also re-check whether the work is already done. `git log --all --oneline | grep <feature>` is the fastest cross-check.
 4. **If status is "blocked" but the work is already done**, the action is to **close the card** (mark complete or remove), NOT to perpetuate the blocked claim in the next heartbeat.
+5. **Distinguish "partially blocked" from "fully blocked".** A card with 5 creds where 4 are set + 1 is empty is *not the same* as a card with 5 creds all empty. Report the actual subset.
 
 **Anti-patterns to avoid:**
 
@@ -2356,7 +2363,8 @@ A Stage 2 report is **PASS** only when all 3 gates are met. Otherwise it is **PA
 - ❌ Marking a session log entry as durable when it contains a "blocked on X" claim without a fix attempt
 - ❌ Reporting "ready to spawn" without checking the current card state — the work might already be done, the spawn is then wasted effort
 - ❌ Creating a sub-card "to fix the missing creds" without first confirming the creds are missing
+- ❌ Overcorrecting one wrong claim with a symmetric wrong claim (e.g. "blocked on creds" → "creds ARE in .env" as a blanket, when the truth is "some creds are present, some are not")
 
 **The compounding lesson:** "Zero-trust" in MEMORY means **I don't trust anything without verification, including my own previous-session output**. If I write "blocked on X" in heartbeat A and don't verify in heartbeat B, the claim is now a rumor carried forward by my own future selves. The only fix is verification on every turn.
 
-**Source:** Andler correction in Discord webchat 2026-07-04 11:39 CST. He told me: "Social presence has the credentials. Your memory is wrong in that manner. Continue with the implementation."
+**Source:** Andler correction in Discord webchat 2026-07-04 11:39 CST. He told me: "Social presence has the credentials. Your memory is wrong in that manner. Continue with the implementation." Followup precision: HEARTBEAT.md commit 0f89559 + workboard card 8e02c5d2 comment 17597b1d, 2026-07-04 11:55 CST.
