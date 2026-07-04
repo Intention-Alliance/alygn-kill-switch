@@ -2222,3 +2222,141 @@ Every AI generation that needs to represent Andler (Veo, Sora, image gen, thumbn
 - All task types (env var setup, manual deploy, follow-up, deferred item, decision request)
 
 **Source:** Andler instruction, 2026-07-02 16:55 CST, in webchat session. The user reorganized Notion pages for this purpose.
+
+---
+
+## 46. 🏗️ SERVER FOOTER PATTERN — 2-track rule + ServerFooter/FooterClientIsland split (locked 2026-07-03, PR #105)
+
+**The rule:** Every page that ends in `<Footer>` MUST use one of two tracks. No exceptions. If a page renders `<Footer>` inside `<ParallaxShell>`, the mailto link and sitemap disappear from SSG output (the Footer-in-client-Shell bug, card `bd9db659-…` R3).
+
+### The 2-track rule
+
+- **Track A (Parallax pages):** Page uses `<ParallaxShell>`. `useMeasuredContentHeight` with `includeFooter: true` computes `pages`. `<ServerFooter>` rendered as a sibling AFTER `</ParallaxShell>`. Used by: `/blog`, `/projects`, `/blog/[slug]`.
+- **Track B (flat pages):** Page does NOT use `<ParallaxShell>`. `useMeasuredContentHeight` measures the content wrapper. `min-height: calc(<measured-height>px + <FOOTER_FACTOR × 100>vh + <BUFFER × 100>vh)` on `<main>`. `<ServerFooter>` inline at end of `<main>`. Used by: `/about`.
+
+### The ServerFooter + FooterClientIsland split
+
+- `ServerFooter` (server component): mailto link, sitemap, company info, copyright — must be in SSG output.
+- `FooterClientIsland` (client component): contact form, chat dialog, scroll-driven bg decoration — hydrates as a client island.
+- Caller renders `<ServerFooter>` outside `<ParallaxShell>` so structural chrome is in SSG.
+
+### Page math formula
+
+```ts
+pages = HERO_OFFSET (0.75) + contentFactor + CTA_FACTOR (1) + BUFFER (1) [+ FOOTER_FACTOR (1) if includeFooter]
+```
+
+- `HERO_OFFSET = 0.75` — scroll room for the hero section
+- `contentFactor` — measured content height / viewport height (min 2, max 20)
+- `CTA_FACTOR = 1` — call-to-action section
+- `BUFFER = 1` — safety margin for reflows
+- `FOOTER_FACTOR = 1` — footer scroll room (only when `includeFooter: true`)
+
+### Hard rule
+
+Every page that ends in `<Footer>` MUST use Track A or Track B. No exceptions. A page without a track reintroduces the R3 bug (mailto only in post-hydration DOM).
+
+### Code review checklist
+
+- [ ] Does the page use `useMeasuredContentHeight` or compute its own `min-height`?
+- [ ] Is `<Footer>` / `<ServerFooter>` outside any `<ParallaxShell>`?
+- [ ] Does the `deps` array include `[locale]`?
+- [ ] Does the `initialEstimate` account for dominant content (hero, team grid, etc.)?
+- [ ] Are image refs sized (width/height or aspect-ratio CSS) for accurate first-paint?
+
+### References
+
+- **PR #105:** https://github.com/AndlerRL/andler-landing/pull/105 (commit `eeea02e`)
+- **Workboard card:** `bd9db659-…` R3 (Footer-in-client-Shell bug)
+- **WB-14 card:** `c6d1953f-…`
+- **ADR:** `docs/adr/ADR-015-server-footer-pattern.md`
+- **Dynamic scroll plan:** `memory/2026-07-03-dynamic-scroll-plan.md`
+- **Audit:** `docs/AUDIT-ABOUT-LANDING-2026-06-26.md`
+- **Notion design page:** linked from workboard card `bd9db659-…`
+- **Hook source:** `src/hooks/use-measured-content-height.ts`
+
+**Source:** PR #105 foundation by Wobblus 🔧, ADR-015 by Talanara 📝, 2026-07-03.
+
+## 47. 🛡️ STAGE 2 REVIEW GATES — 3-gate rule (locked 2026-07-03 17:39 CST by Andler)
+
+**The rule:** A clean Stage 2 (Nikaya) PASS requires **all 3 gates**. Missing any → return **PASS WITH NOTES** with specific follow-up items, NOT a clean PASS.
+
+### Gate 1 — Score ≥ 92
+
+Same as before. Use the 0-100 rubric:
+- UI/UX (25) + Functionality (25) + Performance (15) + Accessibility (15) + Standards (10) + i18n (10) = 100
+
+Below 92 = follow-up card for the gap.
+
+### Gate 2 — PR-visible proof artifact (NEW 2026-07-03)
+
+**Required:** A screenshot, demo link, video, JSON snapshot, or `view-source:` extract posted to the workboard card OR a PR comment. The proof must show the bug fixes working in **actual HTML output**, not just source code review.
+
+Acceptable forms:
+- Playwright/Puppeteer screenshot of `/en/about` + `/es/about` rendering the fix
+- `view-source:https://...` extract showing `mailto:hello@andler.dev` in raw HTML (BEFORE any JS runs)
+- `curl -s` output of the rendered page
+- Demo video / Loom link
+- JSON snapshot of the rendered DOM
+
+**Why:** Code review can miss runtime issues. The ServerFooter bug was a runtime issue (mailto missing from SSG). The proof artifact catches what source review can't.
+
+### Gate 3 — External PR comments addressed (NEW 2026-07-03)
+
+**Required:** Stage 2 reviewer must read and address all external PR comments before signing off. The current active external reviewers on `andler-landing`:
+
+- **CodeRabbit (`coderabbitai`)** — AI code review bot, Free plan, currently rate-limited (~58 min between reviews). On PR #105, CodeRabbit has posted high-level walkthroughs but no line-level findings yet.
+- **Vercel deploy bot** — Posts deploy status. Currently failing on all PRs because `@wobblus` is not a member of the `andler's projects` Vercel team. Not a blocker for the PR review, but a separate issue worth noting.
+- **kluster.ai / "klu.rapid.ai"** — Mentioned by Andler 2026-07-03 17:39 CST. https://docs.kluster.ai/code-reviews/pr-reviews/github/ — NOT yet installed on the repo. If installed in the future, must be addressed.
+
+**Action protocol:**
+- For each external comment, summarize the finding in the workboard report
+- For each blocker, address it (open a follow-up card or fix inline)
+- For non-blockers (Vercel deploy failures), note as a separate concern
+- For new external comments during the review, request the bot's review explicitly with `@coderabbitai review` (Free plan, 1 review per ~58 min)
+
+**Why:** Internal comments only catch what the team sees. External reviewers (CodeRabbit, kluster) catch blind spots. Skipping them risks shipping code with findings the team never saw.
+
+### Hard rule
+
+A Stage 2 report is **PASS** only when all 3 gates are met. Otherwise it is **PASS WITH NOTES** with explicit follow-up items per missing gate. A **FAIL** is reserved for genuine blockers (security, data loss, broken core functionality).
+
+### Anti-patterns to avoid
+
+- ❌ Reporting "PASS" with score 91 because it's "close enough" — 92 is the gate, 91 is a follow-up
+- ❌ Reporting "PASS" without a proof artifact — code review alone is not enough for runtime-sensitive changes
+- ❌ Skipping CodeRabbit/kluster comments because they're rate-limited — read what they posted, even if it's a walkthrough
+- ❌ Inflating the score to pass the gate — score honestly, route to follow-up cards for the gaps
+- ❌ Forgetting to update this lesson when a new external reviewer is added
+
+### Source
+
+- Andler instruction, 2026-07-03 17:39 CST, in webchat session. Triggered by Stage 2 dispatch on PR #105 fix branch.
+- Discovered `kluster.ai` via web search (not yet installed on the repo).
+- CodeRabbit comments verified via `gh pr view 105 --json comments`.
+
+## 48. 🔍 VERIFY BEFORE CLAIMING "BLOCKED ON CREDS" (learned 2026-07-04 11:39 CST, hard fail in webchat)
+
+**What I got wrong:** In `HEARTBEAT.md` line 935 (and the previous session's reporting), I wrote that the `8e02c5d2` "Initial social presence content release" card was "blocked on missing .env creds, separate from this work." Andler corrected me: the creds ARE in `.env` (`X_API_BEARER_TOKEN`, `X_CUSTOMER_SECRET`, `X_CUSTOMER_ID`, `NOTION_API_KEY` all set). The card was NOT blocked on missing creds. The actual social-presence work is already shipped on branch `feat/social-presence-v2-rewrite` as commit `9edf507 feat(social): runtime fetcher with ISR, DNS pinning, and signed manual JSON`.
+
+**The pattern:** I inherited a "blocked" status from a previous session and never re-verified it. The session memory just said "blocked on missing .env creds" so I trusted it and propagated the same wrong claim in the next heartbeat. Two layers of trust, zero verification.
+
+**The rule (zero-trust applies to my own past claims too):**
+
+1. **Before reporting a card as "blocked on X"**, re-verify X in the live state. For "blocked on creds", this means `cat .env | grep <KEY>` or `env | grep <KEY>` and confirming the value is non-empty.
+2. **Before reporting a card as "blocked" period**, do `workboard_read` on the card and check actual current `status` + `blockerReason` + `comments`. The `blockerReason` field is the source of truth, not the heartbeat's last status.
+3. **The cross-reference test:** for every "blocked" claim, also re-check whether the work is already done. `git log --all --oneline | grep <feature>` is the fastest cross-check.
+4. **If status is "blocked" but the work is already done**, the action is to **close the card** (mark complete or remove), NOT to perpetuate the blocked claim in the next heartbeat.
+
+**Anti-patterns to avoid:**
+
+- ❌ Carrying forward a "blocked" claim from a previous session's heartbeat without re-verifying
+- ❌ Trusting the workboard card title or the heartbeat's status snapshot as ground truth — they are *claims*, not *facts*. Verify the underlying state.
+- ❌ Saying "X is blocked" in a user-facing message without a `workboard_read` or equivalent verification in the same turn
+- ❌ Marking a session log entry as durable when it contains a "blocked on X" claim without a fix attempt
+- ❌ Reporting "ready to spawn" without checking the current card state — the work might already be done, the spawn is then wasted effort
+- ❌ Creating a sub-card "to fix the missing creds" without first confirming the creds are missing
+
+**The compounding lesson:** "Zero-trust" in MEMORY means **I don't trust anything without verification, including my own previous-session output**. If I write "blocked on X" in heartbeat A and don't verify in heartbeat B, the claim is now a rumor carried forward by my own future selves. The only fix is verification on every turn.
+
+**Source:** Andler correction in Discord webchat 2026-07-04 11:39 CST. He told me: "Social presence has the credentials. Your memory is wrong in that manner. Continue with the implementation."
