@@ -1,0 +1,18 @@
+{
+  "label": "live-chat-bridge-resume",
+  "schedule": "*/5 * * * *",
+  "timezone": "America/Costa_Rica",
+  "description": "Every 5 min: reads /tmp/live-chat-bridge-resume-*.json state files, fetches #annotations Discord thread for each paused pipeline, parses APPROVE/EDIT/DENY from Andler, resumes lobster pipeline.",
+  "run": "bun $HOME/.openclaw/workspace/scripts/live-chat-bridge-resume-cron.ts",
+  "env": {
+    "DISCORD_BOT_TOKEN": "${DISCORD_BOT_TOKEN}",
+    "DISCORD_ANNOTATIONS_CHANNEL_ID": "1466532145257255004",
+    "LIVE_CHAT_BRIDGE_DRY_RUN": "false"
+  },
+  "timeout_seconds": 120,
+  "max_retries": 0,
+  "notify_on_error": {
+    "channel": "discord",
+    "channel_id": "1466532145257255004"
+  }
+}
