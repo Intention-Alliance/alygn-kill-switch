@@ -71,7 +71,7 @@ steps:
   - id: step1-validate-jwt
     name: Validate JWT signature and extract payload claims
     command: |
-      bun $HOME/.openclaw/workspace/bin/prospect-intake-verify-webhook.mjs \
+      bun $HOME/.openclaw/workspace/repos/local/andler-landing/bin/prospect-intake-verify-webhook.mjs \
         --headers "$JWT_HEADERS" \
         --body "$PAYLOAD_BODY"
     description: "Verify the live-chat.message JWT signature and extract claims"
@@ -204,7 +204,7 @@ steps:
   - id: step6-hand-off-notion
     name: Write Notion row in Prospect Triage DB with Andler decision
     command: |
-      bun $HOME/.openclaw/workspace/bin/prospect-intake-write-row.mjs \
+      bun $HOME/.openclaw/workspace/repos/local/andler-landing/bin/prospect-intake-write-row.mjs \
         --input '{"name":"'"$display_name"'","handle":"'"$channel_handle"'","channel":"'"$channel"'","channel_session_id":"'"$channel_session_id"'","flag":"'"$flag"'","conversation_started_at":"'"$conversation_started_at"'","verdict_at":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)'","conversation_transcript":"'"$transcript_truncated"'","investigation_summary":"'"$summary"'","ghost_stalled_closing_message":"'"$final_closing_message"'","andler_decision":"'"$andler_decision"'","calendar_slots_proposed":"","handoff_channel":"discord"}'
     description: "Write Notion row in Prospect Triage DB with Andler's decision"
     after: step5-await-andler-approval
@@ -223,7 +223,7 @@ steps:
   - id: step7-post-discord
     name: Post verdict and decision confirmation to Discord annotations thread
     command: |
-      bun $HOME/.openclaw/workspace/bin/prospect-intake-thread-post.mjs \
+      bun $HOME/.openclaw/workspace/repos/local/andler-landing/bin/prospect-intake-thread-post.mjs \
         --input '{"channel_id":"1466532145257255004","thread_name":"Prospect: '"$display_name"' ('"$channel_handle"')","verdict_post":"'"$verdict_post_body"'","existing_thread_id":"'"$ic_thread_id"'"}'
     description: "Post verdict to #annotations thread with Andler's decision result"
     after: step6-hand-off-notion
@@ -242,7 +242,7 @@ steps:
   - id: step8-release-reply
     name: Release approved closing message back to prospect channel
     command: |
-      bun $HOME/.openclaw/workspace/bin/prospect-intake-release-reply.mjs \
+      bun $HOME/.openclaw/workspace/repos/local/andler-landing/bin/prospect-intake-release-reply.mjs \
         --input '{"channel":"'"$channel"'","channel_session_id":"'"$channel_session_id"'","message":"'"$final_closing_message"'","event_id":"'"$conversation_id"'-release"}'
     description: "Send the approved closing message back to the prospect via the safe messaging agent"
     after: step7-post-discord

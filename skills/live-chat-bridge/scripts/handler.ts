@@ -174,7 +174,7 @@ async function listCalendarSlots(
   payload: Extract<LiveChatPayload, { action: 'list_slots' }>,
   manifest: EventManifest,
 ): Promise<HandlerResult> {
-  const scriptPath = `${process.env.HOME}/.repos/local/andler-landing/bin/prospect-intake-list-slots.mjs`
+  const scriptPath = `${process.env.HOME}/.openclaw/workspace/repos/local/andler-landing/bin/prospect-intake-list-slots.mjs`
   const inputJson = JSON.stringify({
     lookahead_days: payload.lookahead_days,
     window_start_hour: 8,
