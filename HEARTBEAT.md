@@ -208,50 +208,78 @@ _Contact: contact@alyygn.com_
 
 ---
 
-## 🎯 LANDING RE-LAYOUT STRATEGY (2026-07-04 01:40 CST — ACTIVE)
+## 🎯 LANDING RE-LAYOUT STRATEGY — **DEPRECATED 2026-07-04 22:28 CST** (Andler-direct: "Card `1ab430d1` is legacy. That is done already.")
 
-**Source:** `docs/andler dev - Landing Upgrade Re-Layout.md` (Andler-authored, 2026-07-02 23:05, Spanish, status=Planning).
+**Source:** `docs/andler dev - Landing Upgrade Re-Layout.md` (Andler-authored, 2026-07-02 23:05, Spanish, **status=Planning**).
 
-**Workboard master:** `1ab430d1-f7dc-4496-9256-cbdd229cd84e` (board `andler-landing`).
+**Status: DEPRECATED.** Andler-direct at 22:28 CST: the work was never an "execute this now" task. The strategy doc was a *vision document*, not a *task*. The workboard card `1ab430d1` was marked "done" by an architect agent that only wrote the ADR — Phase 1 was never approved.
 
-**5 phase cards (sequential) + 1 new Block 4 sibling:**
-| # | Card | Agent | Scope | Status |
-|---|------|-------|-------|--------|
-| 0 | `d71de28f-…` | architect | ADR-016 architecture spec | ✅ DONE 2026-07-04 01:57 CST (`14d85ec`, 979 lines) |
-| 1 | `0d8037f6-…` | fe-coder | Act 1 (vignette + hero + sub-hero + GPGPU) | 🔄 **DISPATCHED 11:37 CST** (Gimblich `aac5dae2-…`) |
-| 2 | `c4f68a5a-…` | fe-coder | Act 2 (Timeline + Team with 3D logo + cards) | blocked on 1 |
-| 3 | `32bc3773-…` | fe-coder | Act 3 (depth-gallery Projects/Social/Blog) | blocked on 2 |
-| 4 | `b03d75fe-…` | fe-coder | Footer + i18n sweep + Nikaya sign-off | blocked on 3 |
-| 4b | `98dd32f1-…` | fe-coder | **Block 4 — Live Chat Bridge** (new, andler-approved 2026-07-04 11:37 CST) | blocked on 4 |
+**Discarded branches (all 4+ hours of work, 7 atomic commits, 1095+ net lines):**
+- `feat/landing-relayout-phase-0-architecture` (was `14d85ec`, 979-line ADR doc)
+- `feat/landing-relayout-phase-1-act1` (was `ac65118`, 5 components + page wiring)
+- `feat/landing-relayout-r6-webgl-hardening` (was `9d5a36a`, R6 WebGL context loss)
 
-**Heartbeat cron:** `andler-landing-relayout-heartbeat` (every 30 min, systemEvent → main session, ID `d7170517-…`). Fires `bun run scripts/workboard/landing-relayout-heartbeat.ts --dry-run` + prompts Wobblus to claim + dispatch the next unblocked phase.
+All branches deleted at 2026-07-04 22:32 CST. Orphan commits in reflog will auto-prune in 30+ days. `main` is at `d446366` (biome round 4 #112). MEMORY lesson 50 documents the failure mode ("never execute from a Planning-status doc or unconfirmed workboard epic").
 
-**Dispatch rules (locked):**
-- Phase 0 ✅ done 2026-07-04 01:57 CST (commit `14d85ec`).
-- Phase 1 🔄 **DISPATCHED 2026-07-04 11:37 CST** — Gimblich `aac5dae2-…`, ETA 1-2 days, branch `feat/landing-relayout-phase-1-act1`. Claim token `1e7f8fa1-…`.
-- Phases 2-4 only after Phase 1 merges. Block 4 only after Phase 4 merges.
-- Atomic PR per phase. Each PR goes through Stage 1 (Chanshuk) + Stage 2 (Nikaya, 3 gates per lesson 47) before merge.
-- Andler pushes. Agents don't push (AGENTS.md).
-- **Block 4 (`98dd32f1-…`) added 2026-07-04 11:37 CST** by Andler request: real-time bidirectional chat bridge replacing webhook-only `/api/contact`. Full spec at `docs/architecture/ADR-016-block-4-live-chat-bridge-spec.md` (6784 bytes). 10 hard requirements + 3 implementation paths (A: Discord thread bridge default, B: Tailscale Funnel, C: WhatsApp). Path selection at code review per Andler.
+**Lesson:** "Strategy = Done ≠ Implementation = Approved" — see MEMORY lesson 50. A workboard card with `Status: done` + `epic-tracker` label can mean 3 different things; only #3 ("Implementation merged to main") means downstream work is approved. Default to (1) and verify by reading the source on main.
 
-**Hard constraints (MEMORY):**
-- Lesson 46: ServerFooter OUTSIDE client shell. depth-gallery uses Track B (measured min-height). No regression on `bd9db659-…` R3.
-- Lesson 18: staged i18n via `.staging/i18n/` + `apply-staging.mjs`. EN+ES populated together.
-- Lesson 29c: no Go claims. Boutique voice (post-PR #108).
-- Lesson 43: per-file grep before sign-off. Notion is canonical.
-- Lesson 47: Stage 2 = score ≥92 + proof artifact + external comments.
+**If the relayout vision doc is ever re-opened:** the existing `src/components/landing/` folder is the right place to extend, NOT a new `landing-relayout/` folder. The strategy doc's "vignette hero + protoplanet 3D + depth-gallery" ideas are good but not approved.
 
-**Orchestration strategy (locked 2026-07-04 11:37 CST by Andler):**
-- Sequential dispatch, dependency-aware. No parallel phases (the 3 acts build on the same scene graph).
-- WB-1 (about-page 5-phase restoration) is an INDEPENDENT track. About-page ships first (no GPGPU), then Re-Layout adopts the contracts.
-- Cross-track shared contracts: ServerFooter 2-track (lesson 46), staged i18n (lesson 18), Stage 2 3-gate (lesson 47), workboard Option B architecture (lesson 30).
-- Block 4 isolated on its own card (NOT absorbed into Phase 4) to keep atomic-PR-per-phase discipline. Phase 4 ships static Footer (1d); Block 4 ships the real-time chat panel that mounts on top (1-2d).
-- "Further analysis would be done at final code review and tests" (Andler 2026-07-04) — Block 4 path selection (Discord vs Tailscale vs WhatsApp) deferred to Stage 1 + Stage 2 review, not a new ADR.
+---
 
-**Next dispatch (already in flight):**
-- ✅ Phase 0 (architect ADR-016) — done 2026-07-04 01:57 CST, commit `14d85ec`.
-- 🔄 Phase 1 (fe-coder Act 1) — DISPATCHED 2026-07-04 11:37 CST to Gimblich `aac5dae2-…`. Waiting on completion event (ETA 1-2d). After Phase 1 merges → spawn Phase 2.
-- ⏸ Phase 2/3/4 + Block 4 — queued behind Phase 1.
+## 🎯 ABOUT-PAGE WORK (2026-07-04 22:28 CST — ACTIVE)
+
+**Source:** `docs/AUDIT-ABOUT-LANDING-2026-06-26.md` + Andler-direct 2026-07-04 22:28 CST re-scope.
+
+**Branch:** `fix/about-page-regression` (based on `origin/main` @ `d446366`).
+**Workboard card:** `8801efb6-…` "[andler-landing] /about: 5-phase restoration" (`andler-landing` board).
+
+**Goal:** Fix the about-page regression introduced in PR #92 (projects system overhaul, 2026-06-20) and improve UI/UX per brandkit. About-team-grid is the only component that ships as-is per Andler-direct.
+
+**5 atomic commits shipped 2026-07-04 22:32–23:12 CST:**
+| SHA | File(s) | Change | Lines |
+|---|---|---|---|
+| `7b9527a` | `src/app/[locale]/about/page.tsx` | Update metadata description to "Andler Devs is a Frontier Engineering Studio" (Andler-direct copy) | +2 / -2 |
+| `4db6636` | `src/i18n/dictionaries/{en,es}.json` + `src/types/i18n.ts` | Add `about.diagramCaptions` (4 strings × 2 locales) + `AboutDiagramCaptionsDict` type | +22 / -2 |
+| `844c6b7` | `src/components/about/about-team.tsx` | Replace 4 inline ternary captions with `dict.about.diagramCaptions.*` references | +4 / -16 |
+| `e63e576` | `src/app/[locale]/about/about-page-client.tsx` | Swap AboutTeam/AboutFounder order (founder bio now flows before "How We Work") | +1 / -1 |
+| `5e0d9b0` | `src/components/about/about-hero.tsx` | Remove dead `useSpring` code, convert to server component | +6 / -17 |
+
+**Net: 5 commits, 5 files, +35 / -38 lines. Zero new folders, zero new agents, zero new dependencies.**
+
+**Proof of work per commit:**
+- `bunx tsc --noEmit` exit 0 (only pre-existing motion/react errors in unrelated files)
+- `curl http://127.0.0.1:3011/{en,es}/about` for metadata + caption verification (byte-for-byte)
+- Playwright screenshots with 15s wait + scroll-trigger for lazy loads (v3 pre-change, v4 mid-change, v5 post-change)
+- See `.staging/screenshots/about-{en,es}-2026-07-04-v5.png` for final state
+
+**Hard constraints honored (MEMORY lessons):**
+- Lesson 18: i18n via dict.about.*, both locales populated together, never empty
+- Lesson 29c: no Go claims, frontier voice per Andler-direct (not boutique — Andler's branding choice for meta description)
+- Lesson 46: ServerFooter is sibling of measured content, NOT child (already in about-page-client, not touched)
+- Lesson 47: per-commit verification (tsc + curl + screenshot), not blind commit-and-pray
+- Lesson 50: explicit Andler approval on scope (22:28 CST re-scope), no auto-dispatch
+
+**What I did NOT touch (per Andler-direct or scope discipline):**
+- ❌ `src/components/about/about-team-grid.tsx` — only component correct as-is, leave alone
+- ❌ `src/components/about/about-founder.tsx` — first-person bio is appropriate in a founder card (not a regression)
+- ❌ Landing page (`src/app/[locale]/page.tsx`) — separate workstream
+- ❌ `/contact` page removal — separate audit item
+- ❌ Footer — separate workstream
+- ❌ Any new folder or directory
+
+**Remaining work on the about-page track (in priority order, awaiting Andler go):**
+1. **#6** — audit fix: `src/lib/constants/contact.ts` (description + social URL alignment)
+2. **#7** — UI/UX: typography pass (the `*` `clamp(0.75rem, 2.5vw, 1.1rem)` rule in `global.css` makes everything tiny)
+3. **#8** — UI/UX: diagram legend below each Mermaid SVG (currently zero captions / alt-only)
+4. **#9** — UI/UX: section background alternation (current all-foundation-dark blends together; use surface for AboutTeam, background for AboutFounder, etc.)
+5. **#10** — UI/UX: Featured Projects section (currently heading + "Browse →" link only — needs 3-6 project cards)
+6. **#11** — content: ES copy on SubscribeBanner (`/es/about` shows English subtitle on Stay Current heading — needs verification)
+
+**Heartbeat pickup logic (next session):**
+- If Andler says "continue" without further scoping → spawn #6 (lowest-risk audit fix, ~15 min, 1 file)
+- If Andler says "go all-in on UI/UX" → batch #7+#8+#9 as a single 1-hour workstream on the same branch
+- If Andler says "stop" → close out the branch with a PR or `git checkout main && git branch -D fix/about-page-regression`
 
 ---
 
@@ -773,10 +801,10 @@ Report by Wobblus 🔧
 
 ### Stream 4: Grant Monitoring (Ongoing)
 
-**Status:** ✅ STABLE
+**Status:** 🟡 **SCHMIDT FORFEIT 2026-07-04 13:17 CST (Andler-direct)**
 
-- Schmidt Sciences: May 17, 2026 (~25 days) — No alert
-- Coefficient Giving: Dec 31, 2026 — No alert
+- Schmidt Sciences: ~~May 17, 2026~~ **FORFEIT** — Tania did not report back. Notion `32c33487-4af6-8199-9dc7-c451648af462` → Closed/Skipped.
+- Coefficient Giving: Dec 31, 2026 — still Ready for outreach
 - No Tania emails pending
 - No status changes detected
 
