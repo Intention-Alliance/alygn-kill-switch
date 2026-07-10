@@ -318,7 +318,7 @@ function composeReply(action: ReplyAction, context: { state: string; title: stri
   ].join("\n");
 }
 
-function inferUnderstanding(body: string, reaction: { emoji: string; reason: string }): string {
+function inferUnderstanding(body: string, _reaction: { emoji: string; reason: string }): string {
   // Surface what I understood the ask to be, derived from the AndlerRL body.
   // This is pattern-matching, not magic — for unknown cases we fall back to
   // a generic "will action this in the next team tick" line.
