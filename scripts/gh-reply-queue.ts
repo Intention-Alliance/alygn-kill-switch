@@ -226,43 +226,51 @@ interface ReplyAction {
   andlerBody: string; // The AndlerRL comment body, for context in composeReply
 }
 
-function postReply(action: ReplyAction): void {
+function postReply(action: ReplyAction, state: ReplyState): void {
   if (DRY_RUN) {
     logWork(
       `[DRY-RUN] would reply on ${action.repo}#${action.issueNumber} comment ${action.commentId} with reaction ${action.reaction.emoji} (${action.reaction.reason})`,
     );
+    markReplied(state, action.commentId);
     return;
   }
-  // 1. Post the reply on the same thread. The /issues/{n}/comments endpoint
-  // covers BOTH issue comments AND PR-conversation comments (PRs are issues
-  // under the hood). For PR review thread replies (inline code review on a
-  // diff line), use /pulls/{n}/comments with `in_reply_to` instead — out of
-  // scope for v1, we focus on issue-level + PR-conversation comments.
-  // Note: GH REST API does not support nested threading on issue/PR-conversation
-  // comments (`in_reply_to_id` is silently dropped on POST). For PR review thread
-  // replies (inline code review on a diff line), use /pulls/{n}/comments with
-  // `in_reply_to` instead — out of scope for v1, we focus on issue-level +
-  // PR-conversation comments. The body still references the AndlerRL comment URL
-  // so the human reader can find it.
+  // 1. Post the reply on the same thread.
   const replyJson = gh(
     `api repos/${action.repo}/issues/${action.issueNumber}/comments ` +
       `-f body=${JSON.stringify(action.body)} ` +
       `-X POST`,
   );
   const reply = JSON.parse(replyJson) as { id: number; html_url: string };
-  // 2. React to the AndlerRL comment with the matching reaction.
+
+  // 2. Mark this comment as replied BEFORE the reaction POST (Bug 3 fix).
+  //    If the reaction POST fails below, the reply was still posted successfully.
+  //    Without this, a failed reaction would make the comment invisible to future
+  //    scans (lastRunIso advances, comment never re-processed).
+  markReplied(state, action.commentId);
+
+  // 3. React to the AndlerRL comment with the matching reaction.
   // Reaction API: /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions
   // Body: { content: <reaction_name> }
   // Reaction name is the gh API enum (eyes, hooray, etc.), not the emoji.
-  gh(
-    `api repos/${action.repo}/issues/comments/${action.commentId}/reactions ` +
-      `-f content=${JSON.stringify(reactionToName(action.reaction.emoji))} ` +
-      `-X POST`,
-  );
-  logWork(
-    `Replied to ${action.repo}#${action.issueNumber} (AndlerRL comment ${action.commentId} → Wobblus comment ${reply.id}). Reaction: ${action.reaction.emoji} ${action.reaction.reason}`,
-  );
-  logWork(`  URL: ${reply.html_url}`);
+  // If the reaction POST fails, log it as partial success (Bug 3 fix) — the reply
+  // was still posted, so we announce to #annotations via logWork.
+  try {
+    gh(
+      `api repos/${action.repo}/issues/comments/${action.commentId}/reactions ` +
+        `-f content=${JSON.stringify(reactionToName(action.reaction.emoji))} ` +
+        `-X POST`,
+    );
+    logWork(
+      `Replied to ${action.repo}#${action.issueNumber} (AndlerRL comment ${action.commentId} → Wobblus comment ${reply.id}). Reaction: ${action.reaction.emoji} ${action.reaction.reason}`,
+    );
+    logWork(`  URL: ${reply.html_url}`);
+  } catch (reactionErr: any) {
+    logWork(
+      `Replied to ${action.repo}#${action.issueNumber} (AndlerRL comment ${action.commentId} → Wobblus comment ${reply.id}). ⚠️ Reaction ${action.reaction.emoji} failed: ${reactionErr.message ?? reactionErr}`,
+    );
+    logWork(`  URL: ${reply.html_url}`);
+    log(`reaction POST failed for comment ${action.commentId}: ${reactionErr.message ?? reactionErr}`);
+  }
 }
 
 function reactionToName(emoji: string): string {
@@ -445,8 +453,7 @@ function main(): number {
       );
       const issueCtx = JSON.parse(issueJson) as { state: string; title: string };
       action.body = composeReply(action, { ...issueCtx, andlerBody: action.andlerBody });
-      postReply(action);
-      markReplied(state, action.commentId);
+      postReply(action, state);
       totalActions++;
     } catch (err: any) {
       log(`post reply for ${action.repo}#${action.issueNumber} comment ${action.commentId} failed: ${err.message ?? err}`);
