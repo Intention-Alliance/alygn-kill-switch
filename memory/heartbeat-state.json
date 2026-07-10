@@ -4,7 +4,7 @@
     "calendar": null,
     "weather": null,
     "workboard-gh-plan": 1752043200,
-    "heartbeat-poll": 1783676880,
+    "heartbeat-poll": 1783683501,
     "pr-reply-queue": 1783637414
   },
   "lastObserved": {
@@ -20,55 +20,68 @@
       "oldestReadyAgeMs": 102041916
     },
     "activeSubagents": 0,
-    "hour": "03:48 CST (Fri 2026-07-10, after-hours gate 00:00-08:00, tick 17, 8th no-op since PR #129 ownership)",
+    "hour": "07:18 CST (Fri 2026-07-10, after-hours gate 00:00-08:00, tick 18, PR #115 MERGED at 07:29:18Z = 01:29 CST breaking 43h43m quiet window, PR #125 + #128 now CONFLICTING)",
     "prs": {
       "#115": {
         "head": "eb57d27",
-        "mergeable": "MERGEABLE",
-        "checks": "Vercel \u2705 GitGuardian \u2705 CodeRabbit \u2705"
+        "mergeable": "MERGED at 07:29:18Z by AndlerRL",
+        "checks": "MERGED ✅",
+        "mergedAt": "2026-07-10T07:29:18Z"
       },
       "#125": {
         "head": "f8aeafd",
-        "mergeable": "MERGEABLE",
-        "checks": "Vercel \u2705 GitGuardian \u2705 CodeRabbit \u2705"
+        "mergeable": "CONFLICTING (was MERGEABLE — broke when #115 merged)",
+        "checks": "Vercel ✅ GitGuardian ✅ CodeRabbit ✅"
       },
       "#128": {
         "head": "61c3e37",
-        "mergeable": "MERGEABLE",
-        "checks": "Vercel \u274c (team-membership blocker) GitGuardian \u2705 CodeRabbit \u2705"
+        "mergeable": "CONFLICTING (was MERGEABLE — broke when #115 merged)",
+        "checks": "Vercel ❌ (team-membership blocker) GitGuardian ✅ CodeRabbit ✅"
       },
       "#129": {
         "head": "0ce6ba3",
         "mergeable": "MERGEABLE",
-        "checks": "Vercel \u274c (team-membership blocker) GitGuardian \u2705 CodeRabbit \u2705",
-        "note": "NEW 20:13 CST \u2014 ownership action (lesson 59), 2-line i18n drift fix from c25c8dc3 card"
+        "checks": "Vercel ❌ (team-membership blocker) GitGuardian ✅ CodeRabbit ✅",
+        "note": "NEW 20:13 CST — ownership action (lesson 59), 2-line i18n drift fix from c25c8dc3 card"
       }
     },
-    "commentsSinceLastTick": 1,
+    "commentsSinceLastTick": 0,
     "lastRepliedTag": "PR #129 / comment 4931524715 (Wobblus ownership action reply)",
     "pendingAndlerItems": [
-      "2 stray husky-test commits on main (5deea5c + 272ffc8) (29h+ parked)",
-      "align-core-infra 404 on master workspace remote (24h+ parked)",
-      "andler-ops 404 + 17 stranded cards (10h+ parked)",
-      "PR #115 + #125 merge order push decision (clean now)",
-      "PR #128 Vercel team-membership blocker \u2014 Andler adds wobblus@andler.dev to 'andler's projects' team",
-      "PR #129 Vercel team-membership blocker (NEW) \u2014 same blocker as #128",
+      "PR #125 CONFLICTING after #115 merge — Andler's branch, 5 conflict points, his call on rebase",
+      "PR #128 CONFLICTING after #115 merge — my branch, awaiting Andler-direct on rebase",
+      "PR #128 Vercel team-membership blocker — Andler adds wobblus@andler.dev to 'andler's projects' team",
+      "PR #129 Vercel team-membership blocker — same blocker as #128; one-click team-invite URL in Vercel bot comment",
       "PR #128: ADR-016 + BLOCK-4-IMPLEMENTATION report keep/remove",
+      "2 stray husky-test commits on main (5deea5c + 272ffc8) (32h+ parked, options b/c only per lesson 55)",
+      "align-core-infra 404 on master workspace remote (26h+ parked, NOT landing repo)",
+      "andler-ops 404 + 17 stranded cards (12h+ parked)",
       "7 R-items (#118-#123 + #127) ready, awaiting dispatch decision",
       "c25c8dc3 close-out option: if Andler merges #129, close card with proof (audit-trail bookkeeping, lesson 59)"
     ],
     "channelEngagement": {
       "core_channel_1481025340842446898": {
-        "last_andler_message": "2026-07-08T18:35:56+00:00 (12:35 CST Wed, 32h13m ago)",
-        "last_wobblus_message": "2026-07-08T18:37:40+00:00 (12:37 CST Wed, 32h11m ago)"
+        "last_andler_message": "2026-07-08T18:35:56+00:00 (12:35 CST Wed, 42h43m ago)",
+        "last_wobblus_message": "2026-07-08T18:37:40+00:00 (12:37 CST Wed, 42h41m ago)"
+      },
+      "pr115_merge": {
+        "at": "2026-07-10T07:29:18Z (01:29 CST Fri, 43h54m after last #core surface)",
+        "by": "AndlerRL",
+        "details": "merged feat/social-presence-v2-rewrite to main as 609268f"
       }
     },
     "cwd": "/home/andlersrv/.openclaw/workspace",
     "currentBranch": "master",
-    "currentHead": "6f8c8d0607626b5cd1b6b26c2a9e3c99bfe3d78e",
-    "ticksThisCycle": "10:18 -> 10:48 -> 11:18 -> 11:48 -> 13:18 -> 13:48 -> 14:48 -> 15:18 -> 16:49 -> 17:18 -> 17:48 -> 18:18 -> 18:30 -> 18:48 -> 19:40 -> 19:48 -> 20:48 -> 21:18 -> 22:48 -> 23:48 -> 00:48 -> 03:18 -> 03:48 (17th tick, after-hours)"
+    "currentHead": "8c8a0b991517cae3e1c44d70f1a3d2b6f9e7d8c0",
+    "landingMainHead": "609268f26b1098d8390235255d52155bdcd68711 (post-#115-merge, fast-forwarded locally)",
+    "ticksThisCycle": "10:18 -> 10:48 -> 11:18 -> 11:48 -> 13:18 -> 13:48 -> 14:48 -> 15:18 -> 16:49 -> 17:18 -> 17:48 -> 18:18 -> 18:30 -> 18:48 -> 19:40 -> 19:48 -> 20:48 -> 21:18 -> 22:48 -> 23:48 -> 00:48 -> 03:18 -> 03:48 -> 07:18 (18th tick, PR #115 MERGED breaking 43h43m quiet window)"
   },
   "ticks": [
+    {
+      "at": "07:18 CST (Fri 2026-07-10, tick 18)",
+      "tick": 18,
+      "delta": "PR #115 MERGED at 07:29:18Z = 01:29 CST by AndlerRL; main now at 609268f; PR #125 + #128 now CONFLICTING (5 conflict points in #125, my-branch #128 needs rebase); local main fast-forwarded; no Wobblus commits; awaiting Andler-direct on PR #125 rebase (his branch), PR #128 rebase (my branch), PR #129 Vercel team fix, parked items"
+    },
     {
       "at": "03:48 CST (Fri 2026-07-10, tick 17)",
       "tick": 17,
