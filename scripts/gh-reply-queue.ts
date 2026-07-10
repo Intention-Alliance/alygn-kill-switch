@@ -266,19 +266,22 @@ function postReply(action: ReplyAction): void {
 }
 
 function reactionToName(emoji: string): string {
-  // Map our short emoji back to gh API's reaction content names
+  // Map our short emoji to gh API's reaction content names.
+  // GH REST API only accepts: +1, -1, laugh, confused, heart, hooray, rocket, eyes.
+  // (Bug 2 fix: previous map returned invalid names like "construction",
+  // "bulb", "tada", "rewind", "salute" → HTTP 422.)
   const map: Record<string, string> = {
-    "👀": "eyes",
-    "✅": "hooray",
-    "🚧": "construction",
-    "🚨": "rotating_light",
-    "❓": "confused", // GH API doesn't support "question" — closest semantic is "confused" (genuine question, not answered)
-    "💡": "bulb",
-    "🎉": "tada",
-    "↩️": "rewind",
-    "🫡": "salute",
-    "❤️": "heart",
-    "👍🏼": "thumbs_up",
+    "👀": "eyes",       // ack
+    "✅": "+1",        // fixed (was "hooray", but +1 is closer to "approved/fixed")
+    "🚧": "rocket",    // in-progress (rocket = working/launched)
+    "🚨": "confused",  // conflict/blocker (alert needs attention)
+    "❓": "confused",   // question (genuine question, not answered)
+    "💡": "eyes",       // FYI/informational (eyes = noted/seen)
+    "🎉": "hooray",    // closed/resolved (celebration)
+    "↩️": "-1",        // reverted (negative/undo)
+    "🫡": "+1",        // salute/review requested (acknowledged)
+    "❤️": "heart",     // heart
+    "👍🏼": "+1",        // thumbs up
   };
   return map[emoji] ?? "eyes";
 }
