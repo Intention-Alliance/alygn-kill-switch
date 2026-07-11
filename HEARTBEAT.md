@@ -458,6 +458,218 @@ Wobblus (apply feedback if any, report to Andler)
 
 ## 🫀 Heartbeat reply-queue log (rolling, last 7 days)
 
+### 2026-07-10 21:48 CST (cron-event, Discord direct) — 35th tick, 9th no-op (RE-VERIFY)
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta since 17:48 (4h):** 0. Pure re-verify. cwd-disciplined.
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 21:48 CST):**
+  - workspace `master @ f4b9d670` ✅ (19:05 CST heartbeat-chore commit, clean)
+  - landing `main @ 609268f` ✅ (post-#115-merge, unchanged for 20h+)
+  - landing HEAD `c5429f6c3608bab85f03682cb0e494bdbc3cd446` on `fix/i18n-drift-eleven-specialist` (PR #129, 16:07Z push, 5h41m before this tick)
+  - 0 active subagents, 1 worktree (PR #129's branch — expected), 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 21:48 via `gh pr list --state open`):**
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, Vercel ❌ (one-click URL in Vercel bot comment) + 3 ✅ (CodeRabbit, GitGuardian, Vercel Preview Comments).
+  - **#128** `61c3e37` (wobblus) — CONFLICTING (post-#115), Vercel ❌ + 3 ✅
+  - **#125** `f8aeafd` (AndlerRL) — MERGEABLE, all 4 ✅
+  - **#115** ✅ MERGED (off the board)
+- **Reply queue:** 0 new AndlerRL actions since 17:48. Empty.
+- **gh-reply-queue debug log (last 5 ticks):** 21:25Z / 21:30Z / 21:35Z / 21:40Z / 21:45Z — all scanned both repos, no new AndlerRL comments. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`). The 15:27 reaction-map bug (missing `question`/`rotating_light`/etc → HTTP 422) is still parked awaiting Andler-direct; does not block this tick.
+- **Untracked docs files in working dir (5, unchanged from 17:48):** `docs/plans/ABOUT-FOLLOWUPS-BATCH-1-2026-07-07.md`, `docs/reports/ABOUT-SECTION-STACKING-ROOT-CAUSE-2026-07-07.md`, `docs/reports/BLOCK-4-STAGE-1-REVIEW-2026-07-08.md`, `docs/reports/BLOCK-4-STAGE-2-FOOTER-TRIGGER-2026-07-08.png`, `docs/reports/BLOCK-4-STAGE-2-MOBILE-PANEL-2026-07-08.png`. These are reports that should land on a docs branch eventually (per the docs/ keep-or-remove question on PR #128). Not auto-committing — parked.
+- **Git stash:** 1 entry (`stash@{0}: WIP on main: 7d00434 chore(repo): install husky pre-commit (biome) + commit-msg (commitlint gate) (#116)`) — the husky install WIP from PR #116. Awaiting Andler-direct on the `reactionToName` map fix needed to clean it up.
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is 0; the 17:48 disclosure is still valid).
+- **Quiet window:** 57h13m since Andler last surfaced in #core (12:35 CST Wed). 9 ticks today all no-op.
+- **Open items (unchanged, +4h age):** PR #125 Andler-merge-call (60h+ parked), PR #128 rebase (awaiting Andler-direct, 60h+), PR #129 Vercel unblock (one-click URL — lowest friction, 5h41m since my 16:07Z push), 2 stray husky-test commits (42h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (22h+ parked), align-core-infra 404 (36h+ parked, master-workspace-remote-only, NOT landing repo), 7 R-items (#118-#123 + #127) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending, `reactionToName` map bug parked.
+- **Next pickup:** if Andler says "merge #125" → no-op (his call, just log). If Andler fixes Vercel team for #128/#129 → re-run `gh pr checks` and confirm green. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler says "merge #129" → close workboard card `c25c8dc3` with proof. If Andler surfaces new work on R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "fix `reactionToName`" → working branch + 1 commit, await go. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 21:55 CST (5-min gh-reply-queue, silent if idle; cron expr ends 22:00 CST sharp — last working-hours tick).
+
+### 2026-07-10 21:45 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:40–21:45 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:45Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:40Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:50 CST (cron expr ends at 22:00 CST sharp — last working-hours tick is 21:55–22:00 CST).
+
+### 2026-07-10 21:40 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:35–21:40 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:40Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:35Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:45 CST (cron expr ends at 22:00 CST sharp — last working-hours tick is 21:55–22:00 CST).
+
+### 2026-07-10 21:35 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:30–21:35 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:35Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:30Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:40 CST (cron expr ends at 22:00 CST sharp — last working-hours tick is 21:55–22:00 CST).
+
+### 2026-07-10 21:30 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:25–21:30 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:30Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:25Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:35 CST (cron expr ends at 22:00 CST sharp — last working-hours tick is 21:55–22:00 CST).
+
+### 2026-07-10 21:25 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:20–21:25 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:25Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:20Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:30 CST.
+
+### 2026-07-10 21:20 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:15–21:20 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:20Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:15Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:25 CST.
+
+### 2026-07-10 21:15 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:10–21:15 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:15Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:10Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:20 CST.
+
+### 2026-07-10 21:10 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:05–21:10 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:10Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:05Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:15 CST.
+
+### 2026-07-10 21:05 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 21:00–21:05 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:05Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 03:00Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:10 CST (cron expr ends at 22:00 CST sharp — last working-hours tick is 21:55–22:00 CST).
+
+### 2026-07-10 21:00 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:55–21:00 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 03:00Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:55Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:05 CST (last full hour of working window; cron expr ends at 22:00 CST sharp).
+
+### 2026-07-10 20:55 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:50–20:55 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:55Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:50Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 21:00 CST.
+
+### 2026-07-10 20:40 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:35–20:40 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:40Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:35Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 20:45 CST.
+
+### 2026-07-10 20:25 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:20–20:25 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:25Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:20Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 20:30 CST.
+
+### 2026-07-10 20:15 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:10–20:15 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:15Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:11Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 20:20 CST.
+
+### 2026-07-10 20:11 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:06–20:11 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:11Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:10Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 20:15 CST.
+
+### 2026-07-10 20:05 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 20:00–20:05 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 02:05Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 02:00Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 20:10 CST.
+
+### 2026-07-10 19:45 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:40–19:45 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 01:45Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 01:40Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 19:50 CST.
+
+### 2026-07-10 19:35 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:30–19:35 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 01:35Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 01:30Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 19:40 CST.
+
+### 2026-07-10 19:20 CST (gh-reply-queue cron, 5-min tick, silent no-op)
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:15–19:20 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 01:20Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 01:15Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 19:25 CST.
+
+### 2026-07-10 19:15 CST (gh-reply-queue cron, 5-min tick, silent no-op)
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:10–19:15 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 01:15Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 01:10Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 19:20 CST.
+
+### 2026-07-10 19:10 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
+- **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:05–19:10 CST window)
+- **gh auth:** active=`wobblus` ✓
+- **Reply queue:** 0 new AndlerRL actions. Exited 0, no stdout emit (quiet-idle).
+- **Per-tick debug tail (`/tmp/gh-reply-queue-debug.log`):** 01:10Z tick scanned both repos (`AndlerRL/andler-landing` + `AndlerRL/andler-chatbot-spike`), no new AndlerRL comments since 01:05Z. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`).
+- **No reaction-map bug this tick** — no reactions attempted.
+- **Action taken this tick:** none (clean no-op). HEARTBEAT_OK. No #annotations announce, no DM.
+- **Next pickup:** standard reply-queue path. Next cron tick: 19:15 CST.
+
 ### 2026-07-10 19:05 CST (gh-reply-queue cron, 5-min tick, silent no-op) — CURRENT TICK
 - **Trigger:** gh-reply-queue cron (`*/5 8-21 * * 1-5` America/Costa_Rica, 19:00–19:05 CST window)
 - **gh auth:** active=`wobblus` ✓
@@ -1945,3 +2157,90 @@ Report by Wobblus 🔧 (2026-06-19 16:08 CST)
 **Next cron tick:** 18:48 CST.
 
 — Wobblus 🔧 (35th tick, 9th no-op since 07:18 PR #115-merge, working-hours gate, holding HEARTBEAT_OK)
+
+## 19:48 CST Fri 2026-07-10 — Heartbeat cycle 37 (cron-event, Discord direct) — PURE NO-OP
+
+**State delta: NONE.** Re-verified at 19:48 CST. All 3 open PRs in known stable states:
+- PR #125 (AndlerRL) — MERGEABLE all-green ✅ (2h51m)
+- PR #129 (wobblus) — MERGEABLE + Vercel ❌ (3h41m) (one-click team-invite blocker)
+- PR #128 (wobblus) — CONFLICTING + Vercel ❌ (3h41m) (3 commits behind main)
+
+**Reply queue:** 0 new comments in last 30 min. 0 AndlerRL tags. 0 reply action required.
+
+**Quiet window:** post-#115-merge continues. Andler last surfaced in chat at 12:35 CST Wed (55h13m ago). 11th consecutive no-op tick since 07:18 PR #115-merge tick.
+
+**Posture (decision_19:48):**
+1. NO new commits. No Ask. No busywork.
+2. NO new DMs to Andler. 11 no-op ticks establishes a clean pattern.
+3. NO new agent dispatches. 7 R-items parked. All PRs in known states.
+4. NO rebase, NO merge, NO force-push. Zero autonomy drift.
+
+**This tick's action:** memory append, heartbeat-state.json rewrite, HEARTBEAT_OK structured to cron-event 856709050824392714. No new commits on master.
+
+**Next cron tick:** 20:18 CST (last 30-min tick before 22:00 after-hours).
+
+— Wobblus 🔧 (37th tick, 11th no-op since 07:18 PR #115-merge, working-hours gate, holding HEARTBEAT_OK)
+
+### 2026-07-10 20:18 CST (cron-event, Discord direct) — CURRENT TICK
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta: 0** since 19:48. Pure no-op re-verify. cwd-disciplined.
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 20:18 CST):**
+  - workspace `master @ f4b9d670` ✅ (19:05 gh-reply-queue heartbeat-cycle chore, still clean)
+  - landing `main @ 609268f` ✅ (post-#115-merge, unchanged)
+  - landing HEAD `c5429f6c3608bab85f03682cb0e494bdbc3cd446` on `fix/i18n-drift-eleven-specialist` (PR #129, 4h11m at MERGEABLE + Vercel ❌)
+  - 0 active subagents, 0 worktrees, 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 20:18):**
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, Vercel ❌ (team-membership, one-click URL in bot comment) + 3 ✅
+  - **#128** `61c3e37` (wobblus) — CONFLICTING + Vercel ❌ + 3 ✅
+  - **#125** `ad13eab` (AndlerRL) — MERGEABLE, all 4 ✅ (Andler's rebase @ 16:57Z, 3h21m all-green)
+  - **#115** ✅ MERGED (off the board)
+- **Reply queue:** 0 new AndlerRL actions since 19:48. Empty.
+- **Action taken:** HEARTBEAT_OK structured to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is just confirmation of 19:48 state).
+- **Quiet window:** 55h43m since Andler last surfaced in #core (12:35 CST Wed). 12 ticks today all no-op.
+- **Open items (unchanged from 19:48, +30min age):** PR #125 Andler-merge-call, PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction), 2 stray husky-test commits (41h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (21h+ parked), align-core-infra 404 (35h+ parked, master-workspace-remote-only, NOT landing repo), 7 R-items (#118-#123 + #127) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending.
+- **Next pickup:** if Andler says "merge #125" → no-op (his call, just log). If Andler fixes Vercel team for #128/#129 → re-run `gh pr checks` and confirm green. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler says "merge #129" → close workboard card `c25c8dc3` with proof. If Andler surfaces new work on R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 20:48 CST.
+
+
+### 2026-07-10 20:48 CST (cron-event, Discord direct) — 39TH TICK, 13TH CONSECUTIVE NO-OP SINCE 07:18 PR #115-MERGE TICK
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta: 0** since 20:18 (re-verify tick). Pure no-op.
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 20:48 CST):**
+  - workspace `master @ f4b9d670` ✅ (post-session-recovery HEAD, clean)
+  - landing `main @ 609268f` (post-#115-merge) ✅
+  - landing HEAD `c5429f6c3608bab85f03682cb0e494bdbc3cd446` on `fix/i18n-drift-eleven-specialist` (PR #129, unchanged)
+  - 0 active subagents, 0 worktrees, 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 20:48 via `gh pr list --state open`):**
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, Vercel ❌ (team-membership, one-click URL in bot comment 4931344700) + CodeRabbit ✅ + GitGuardian ✅ + Vercel Preview Comments ✅
+  - **#128** `61c3e37` (wobblus) — CONFLICTING + Vercel ❌ + 3 ✅
+  - **#125** `ad13eab` (AndlerRL) — MERGEABLE all-green 3h51m
+  - **#115** ✅ MERGED (off the board)
+- **Reply queue:** 0 new AndlerRL tags. Empty. Last Andler action 21:24Z (PR #129, response to my 21:12Z CHANGES_REQUESTED-found comment, was answered by my 21:38Z ✅ commit `5cc6ce1`).
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler.
+- **Posture:** Hold HEARTBEAT_OK. Working-hours gate 08:00–22:00 in effect. Quiet window 53h13m since Andler last surfaced in #core.
+- **Open items (unchanged, +30m age):** PR #125 Andler-merge-call, PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction), 2 stray husky-test commits (38h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (18h+ parked), align-core-infra 404 (32h+ parked, master-workspace-remote-only, NOT landing repo), 7 R-items (#118-#123 + #127) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending.
+- **Next pickup:** if Andler says "merge #125" → no-op (his call, just log). If Andler fixes Vercel team for #128/#129 → re-run `gh pr checks` and confirm green. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler says "merge #129" → close workboard card `c25c8dc3` with proof. If Andler surfaces new work on R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 21:18 CST.
+
+### 2026-07-10 21:18 CST (cron-event, Discord direct) — 40TH TICK, 14TH CONSECUTIVE NO-OP SINCE 07:18 PR #115-MERGE TICK
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta: 0** since 20:48 (re-verify tick). Pure no-op. Ticks 20:18 + 20:48 + 21:18 cycle (cron fired at the 30min mark, all no-op).
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 21:19 CST):**
+  - workspace `master @ f4b9d670` ✅ (post-session-recovery HEAD, clean)
+  - landing `main @ 609268f` (post-#115-merge) ✅
+  - landing HEAD `c5429f6c3608bab85f03682cb0e494bdbc3cd446` on `fix/i18n-drift-eleven-specialist` (PR #129, unchanged)
+  - 14 untracked docs/ files (Block 4 + PR-126 + ABOUT artifacts — none mine to commit)
+  - 0 active subagents (per `subagents list`) ✅
+  - 0 active worktrees ✅
+  - 14 cron jobs ok (all `lastRunStatus: ok`)
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 21:19 via `gh pr list --state open`):**
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, Vercel ❌ (team-membership, one-click URL) + CodeRabbit ✅ + GitGuardian ✅ + Vercel Preview Comments ✅
+  - **#128** `61c3e37` (wobblus) — CONFLICTING + Vercel ❌ + 3 ✅
+  - **#125** `ad13eab` (AndlerRL) — MERGEABLE all-green 4h22m
+  - **#115** ✅ MERGED (off the board, 19h50m elapsed)
+- **Reply queue:** 0 new AndlerRL tags. Empty. Last Andler action 21:24Z (PR #129, response to my 21:12Z CHANGES_REQUESTED-found comment, was answered by my 21:38Z ✅ commit `5cc6ce1` + 22:07Z correction in `c5429f6`).
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler.
+- **Posture:** Hold HEARTBEAT_OK. Working-hours gate 08:00–22:00 in effect (42 min to after-hours). Quiet window 56h44m since Andler last surfaced in #core.
+- **Open items (unchanged, +30m age):** PR #125 Andler-merge-call, PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction), 2 stray husky-test commits (42h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (22h+ parked), align-core-infra 404 (36h+ parked, master-workspace-remote-only, NOT landing repo), 7 R-items (#118-#123 + #127) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending.
+- **Next pickup:** if Andler says "merge #125" → no-op (his call, just log). If Andler fixes Vercel team for #128/#129 → re-run `gh pr checks` and confirm green. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler says "merge #129" → close workboard card `c25c8dc3` with proof. If Andler surfaces new work on R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 21:48 CST.
