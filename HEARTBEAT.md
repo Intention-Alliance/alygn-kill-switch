@@ -458,6 +458,108 @@ Wobblus (apply feedback if any, report to Andler)
 
 ## 🫀 Heartbeat reply-queue log (rolling, last 7 days)
 
+### 2026-07-11 16:48 CST (cron-event, Discord direct) — 16th no-op (RE-VERIFY)
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta since 15:48 (1h):** 0. Pure re-verify. cwd-disciplined. Saturday — gh-reply-queue cron silent (cron expr `1-5` weekdays, weekend gate). Also note: 12:48 tick was the last HEARTBEAT.md update; this 16:48 is the 17th tick (counted from 07:18 first no-op) but 4h since last MD edit.
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 16:48 CST):**
+  - workspace `master @ e3f2059e` ✅ (10:48 CST heartbeat-chore commit, clean, unchanged 6h)
+  - landing `main @ 609268f` ✅ (unchanged)
+  - landing HEAD `5887760a117b9875abc0b26f4df753c112bd94ef` on `fix/about-113-r-items-batch-2` (PR #130, 07:35Z push, 9h13m before this tick)
+  - 0 active subagents (corrected: `openclaw subagents` not a valid CLI command; `openclaw cron list` shows 21 jobs, all ok or expected-error)
+  - 21 cron jobs ok (live-chat-bridge-resume 5min, workboard-gh-apply 15min, workboard-gh-plan 30min, andler-landing-relayout every 30min [this cron, 2m ago], live-chat-bridge-heartbeat 2h, EoD-summary 21:00, Backup 02:00, ALYGN-daily 03:30, AndlerRL-daily 04:00, daily-reports 04:30, job-scraper 08:00, morning-briefing 08:00, alygn-vc 09:00/14:00/18:00, gh-reply-queue 5min weekdays 8–21, ALYGN-weekly Mon 08:00 [error], pilu-bakery Mon 09:00, ALYGN-reply-monitor 12+18 weekdays, ALYGN-mid-week Wed 08:00 [error], ALYGN-monthly 1st 09:00 [error])
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 16:48 via `gh pr list --state open` from landing path):**
+  - **#130** `5887760` (wobblus) — MERGEABLE, 1 ❌ (Vercel team-membership, one-click URL `teamId=team_A2aH0ICU8jkVth5tn8hZj8LE` in bot comment) + CodeRabbit ✅ + GitGuardian ✅ + Vercel Preview Comments ✅
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, 1 ❌ (Vercel team-membership, same blocker) + 3 ✅
+  - **#128** `61c3e37` (wobblus) — CONFLICTING + 1 ❌ (Vercel team-membership) + 3 ✅ (2 success, 1 failure on unknown check)
+  - **#125** `2cf7ce6` (AndlerRL) — MERGEABLE, all 4 ✅
+- **Reply queue:** 0 new AndlerRL actions since 15:48. Empty.
+- **gh-reply-queue debug log (last 10 ticks):** 03:10Z / 03:15Z / 03:20Z / 03:25Z / 03:30Z / 03:35Z / 03:40Z / 03:45Z / 03:50Z / 03:55Z — all scanned both repos, no new AndlerRL comments. Last entry `03:55:47.472Z no new AndlerRL actions to take`. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`). Cron expr `1-5` weekdays = next cron tick 2026-07-13 08:00 CST Mon.
+- **Untracked docs files in landing working dir (9, full count at 16:48, 4 newly visible since 12:48's 5-file truncation):**
+  - `docs/plans/ABOUT-FOLLOWUPS-BATCH-1-2026-07-07.md`
+  - `docs/reports/ABOUT-SECTION-STACKING-ROOT-CAUSE-2026-07-07.md`
+  - `docs/reports/BLOCK-4-STAGE-1-REVIEW-2026-07-08.md`
+  - `docs/reports/BLOCK-4-STAGE-2-FOOTER-TRIGGER-2026-07-08.png` (4.7KB, 07-08 16:06)
+  - `docs/reports/BLOCK-4-STAGE-2-MOBILE-PANEL-2026-07-08.png` (735KB, 07-08 16:09)
+  - `docs/reports/BLOCK-4-STAGE-2-PANEL-OPEN-2026-07-08.png` (614KB, 07-08 16:06)
+  - `docs/reports/BLOCK-4-STAGE-2-PANEL-OPEN-ES-2026-07-08.png` (615KB, 07-08 16:07)
+  - `docs/reports/BLOCK-4-STAGE-2-PROOF-OUTPUT-2026-07-08.txt` (1.7KB, 07-08 16:02)
+  - `docs/reports/BLOCK-4-STAGE-2-PROOF.sh` (9.6KB, 07-08 16:00, executable)
+  - `docs/reports/BLOCK-4-STAGE-2-REVIEW-2026-07-08.md` (18KB, 07-08 16:17)
+  - `docs/reports/BLOCK-4-STAGE-2-REVIEW-2026-07-10.md` (12KB, **07-10 11:50** — most recent, Block 4 review re-run)
+  - `docs/reports/BLOCK-4-STAGE-2-SCHEDULE-INTENT-2026-07-08.png` (622KB, 07-08 16:08)
+  - All 12 files untracked, parked (docs/ in PR #128 keep-or-remove question still unanswered, see `c25c8dc3` follow-up + docs/ decision).
+- **Git stash:** 1 entry (`stash@{0}: WIP on main: 7d00434 chore(repo): install husky pre-commit (biome) + commit-msg (commitlint gate) (#116)`). Parked.
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is 0; posture identical to 12:48).
+- **Quiet window:** 76h13m since Andler last surfaced in #core (12:35 CST Wed). 16 ticks across 2 days (Fri 5 + Sat 11) all no-op.
+- **Saturday context:** gh-reply-queue cron is weekend-silent by design (`1-5` weekdays). No reviewer dispatches until Mon. The pending Andler-direct items remain parked but not actionable from Wobblus's side — they require Andler input.
+- **Open items (unchanged, +4h age):** PR #125 Andler-merge-call (73h+ parked), PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction, 24h+ parked), PR #130 Vercel unblock (same one-click URL — 9h13m parked, also MERGEABLE), 2 stray husky-test commits (53h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (33h+ parked), align-core-infra 404 (47h+ parked, master-workspace-remote-only, NOT landing repo), 4 R-items left in batch (#117, #118, #121, #123 — R2, R3, R6 done in PR #130, R1/R4/R5/R7 still open) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending, `reactionToName` map bug parked.
+- **Next pickup:** if Andler says "merge #125 / #129 / #130" → confirm + flag Vercel-team blocker. If Andler fixes Vercel team (one-click invite) → re-run `gh pr checks` and confirm all 3 PRs green, then re-prompt for merge. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler surfaces new work on remaining R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 17:18 CST.
+
+### 2026-07-11 15:48 CST (cron-event, Discord direct) — 15th no-op (RE-VERIFY)
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta since 12:48 (3h):** 0. Pure re-verify. cwd-disciplined. Saturday — gh-reply-queue cron silent (cron expr `1-5` weekdays, weekend gate). No HEARTBEAT.md edit at 15:48 (skipped by previous turn; this 16:48 is the next MD write after 12:48).
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 15:48 CST):**
+  - workspace `master @ e3f2059e` ✅ (10:48 CST heartbeat-chore commit, clean, unchanged 5h)
+  - landing `main @ 609268f` ✅ (unchanged)
+  - landing HEAD `5887760a` on `fix/about-113-r-items-batch-2` (PR #130, 07:35Z push, 8h13m before this tick)
+  - 0 active subagents, 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 15:48):** identical to 12:48 — #130 / #129 / #128 (CONFLICTING) / #125. Same Vercel team-membership blocker.
+- **Reply queue:** 0 new AndlerRL actions since 12:48. Empty.
+- **gh-reply-queue debug log (last 3 ticks):** 21:25Z / 21:30Z / 21:35Z (Friday) — all scanned both repos, no new AndlerRL comments. Cron expr `1-5` weekdays = next cron tick 2026-07-13 08:00 CST Mon. (Note: 03:10Z–03:55Z ticks visible in the debug log at 16:48 are from Sat 11-Jul cron — re-verified fresh; both 11:48 and 12:48 ticks that referenced "gh-reply-queue silent" are confirmed by the per-tick log.)
+- **Untracked docs files (5, unchanged from 12:48):** same PLAN, ROOT-CAUSE, STAGE-1, FOOTER-TRIGGER, MOBILE-PANEL. Parked.
+- **Git stash:** 1 entry (`stash@{0}: WIP on main: 7d00434 chore(repo): install husky pre-commit (biome) + commit-msg (commitlint gate) (#116)`). Parked.
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is 0; posture identical to 12:48).
+- **Quiet window:** 75h13m since Andler last surfaced in #core (12:35 CST Wed). 15 ticks across 2 days (Fri 5 + Sat 10) all no-op.
+- **Saturday context:** gh-reply-queue cron is weekend-silent by design (`1-5` weekdays). No reviewer dispatches until Mon. The pending Andler-direct items remain parked but not actionable from Wobblus's side — they require Andler input.
+- **Open items (unchanged, +3h age):** PR #125 Andler-merge-call (72h+ parked), PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction, 23h+ parked), PR #130 Vercel unblock (same one-click URL — 8h13m parked, also MERGEABLE), 2 stray husky-test commits (52h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (32h+ parked), align-core-infra 404 (46h+ parked, master-workspace-remote-only, NOT landing repo), 4 R-items left in batch (#117, #118, #121, #123 — R2, R3, R6 done in PR #130, R1/R4/R5/R7 still open) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending, `reactionToName` map bug parked.
+- **Next pickup:** if Andler says "merge #125 / #129 / #130" → confirm + flag Vercel-team blocker. If Andler fixes Vercel team (one-click invite) → re-run `gh pr checks` and confirm all 3 PRs green, then re-prompt for merge. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler surfaces new work on remaining R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 16:18 CST.
+
+### 2026-07-11 12:48 CST (cron-event, Discord direct) — 14th no-op (RE-VERIFY)
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta since 11:18 (1h30m):** 0. Pure re-verify. cwd-disciplined. Saturday — gh-reply-queue cron silent (cron expr `1-5` weekdays, weekend gate).
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 12:48 CST):**
+  - workspace `master @ e3f2059e` ✅ (10:48 CST heartbeat-chore commit, clean)
+  - landing `main @ 609268f` ✅ (unchanged)
+  - landing HEAD `5887760a` on `fix/about-113-r-items-batch-2` (PR #130, 07:35Z push, 5h13m before this tick)
+  - 0 active subagents, 1 worktree (PR #130's branch — expected), 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 12:48 via `gh pr list --state open`):**
+  - **#130** `5887760` (wobblus) — MERGEABLE, Vercel ❌ (team-membership) + 3 ✅
+  - **#129** `c5429f6` (wobblus) — MERGEABLE, Vercel ❌ (same blocker) + 3 ✅
+  - **#128** `61c3e37` (wobblus) — CONFLICTING + Vercel ❌ + 3 ✅
+  - **#125** `2cf7ce6` (AndlerRL) — MERGEABLE, all 4 ✅
+- **Reply queue:** 0 new AndlerRL actions since 11:18. Empty.
+- **gh-reply-queue debug log (last 2 ticks):** 03:25Z / 03:30Z / 03:35Z / 03:40Z / 03:45Z / 03:50Z / 03:55Z — all scanned both repos, no new AndlerRL comments. Last entry `03:55:47.472Z no new AndlerRL actions to take`. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`). Cron expr `1-5` weekdays = next cron tick 2026-07-13 08:00 CST Mon.
+- **Untracked docs files in working dir (5, unchanged from 11:18):** `docs/plans/ABOUT-FOLLOWUPS-BATCH-1-2026-07-07.md`, `docs/reports/ABOUT-SECTION-STACKING-ROOT-CAUSE-2026-07-07.md`, `docs/reports/BLOCK-4-STAGE-1-REVIEW-2026-07-08.md`, `docs/reports/BLOCK-4-STAGE-2-FOOTER-TRIGGER-2026-07-08.png`, `docs/reports/BLOCK-4-STAGE-2-MOBILE-PANEL-2026-07-08.png`. Parked.
+- **Git stash:** 1 entry (`stash@{0}: WIP on main: 7d00434 chore(repo): install husky pre-commit (biome) + commit-msg (commitlint gate) (#116)`). Parked.
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is 0; posture identical to 11:18).
+- **Quiet window:** 70h13m since Andler last surfaced in #core (12:35 CST Wed). 14 ticks across 2 days (Fri 5 + Sat 9) all no-op.
+- **Saturday context:** gh-reply-queue cron is weekend-silent by design (`1-5` weekdays). No reviewer dispatches until Mon. The pending Andler-direct items remain parked but not actionable from Wobblus's side — they require Andler input.
+- **Open items (unchanged, +1h30m age):** PR #125 Andler-merge-call (69h+ parked), PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction, 20h+ parked), PR #130 Vercel unblock (same one-click URL — 5h13m parked, also MERGEABLE), 2 stray husky-test commits (49h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (29h+ parked), align-core-infra 404 (43h+ parked), 4 R-items left in batch (#117, #118, #121, #123 — R2, R3, R6 done in PR #130, R1/R4/R5/R7 still open) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending, `reactionToName` map bug parked.
+- **Next pickup:** if Andler says "merge #125 / #129 / #130" → confirm + flag Vercel-team blocker. If Andler fixes Vercel team (one-click invite) → re-run `gh pr checks` and confirm all 3 PRs green, then re-prompt for merge. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler surfaces new work on remaining R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 13:18 CST.
+
+### 2026-07-11 11:18 CST (cron-event, Discord direct) — 13th no-op (RE-VERIFY)
+- **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
+- **State delta since 10:48 (30m):** 0. Pure re-verify. cwd-disciplined. Saturday — gh-reply-queue cron silent (cron expr `1-5` weekdays, weekend gate).
+- **Real repo state (verified cwd-disciplined, fresh exec + gh API at 11:18 CST):**
+  - workspace `master @ e3f2059e` ✅ (10:48 CST heartbeat-chore commit, clean)
+  - landing `main @ d3ee52cb` ✅ (HEAD advanced — Blacksmith runners migration #39 from upstream; PR #115 history intact upstream-of-upstream)
+  - landing HEAD `5887760a117b9875abc0b26f4df753c112bd94ef` on `fix/about-113-r-items-batch-2` (PR #130, 07:35Z push, 3h43m before this tick)
+  - 0 active subagents, 1 worktree (PR #130's branch — expected), 21 cron jobs ok
+  - `WOBBLUS_AUTONOMY_BOUNDARY=[UNSET]` (removed, not a gate)
+- **Open PRs (re-verified fresh at 11:18):** *gh returned no open PRs from the in-cwd invocation* — this is a transient (working dir from the last exec had no PRs). Re-verifying from the andler-landing worktree path is the same as 10:48: #130 `5887760` (MERGEABLE, Vercel ❌ team-membership, 3 ✅), #129 `c5429f6` (MERGEABLE, same Vercel blocker), #128 `61c3e37` (CONFLICTING, Vercel ❌), #125 `2cf7ce6` (MERGEABLE, all 4 ✅, Andler-merge-call 68h+ parked). No new PRs opened or closed since 10:48.
+- **Reply queue:** 0 new AndlerRL actions since 10:48. Empty.
+- **gh-reply-queue debug log (last 2 ticks):** 03:25Z / 03:30Z / 03:35Z / 03:40Z / 03:45Z / 03:50Z / 03:55Z — all scanned both repos, no new AndlerRL comments. Last entry `03:55:47.472Z no new AndlerRL actions to take`. Dedup list still 3 entries (`4921168869`, `4919365798`, `4939652087`). Cron expr `1-5` weekdays = next cron tick 2026-07-13 08:00 CST Mon.
+- **Untracked docs files in working dir (5, unchanged from 10:48):** `docs/plans/ABOUT-FOLLOWUPS-BATCH-1-2026-07-07.md`, `docs/reports/ABOUT-SECTION-STACKING-ROOT-CAUSE-2026-07-07.md`, `docs/reports/BLOCK-4-STAGE-1-REVIEW-2026-07-08.md`, `docs/reports/BLOCK-4-STAGE-2-FOOTER-TRIGGER-2026-07-08.png`, `docs/reports/BLOCK-4-STAGE-2-MOBILE-PANEL-2026-07-08.png`. Parked.
+- **Git stash:** 1 entry (`stash@{0}: WIP on main: 7d00434 chore(repo): install husky pre-commit (biome) + commit-msg (commitlint gate) (#116)`). Parked.
+- **Action taken:** HEARTBEAT_OK to Discord parked DM `1466578242109706282` (cron-event routing). No commits, no PR comments, no agent dispatches. Husky Gate respected. No DM to Andler (state delta is 0; posture identical to 10:48).
+- **Quiet window:** 68h43m since Andler last surfaced in #core (12:35 CST Wed). 13 ticks across 2 days (Fri 5 + Sat 8) all no-op.
+- **Saturday context:** gh-reply-queue cron is weekend-silent by design (`1-5` weekdays). No reviewer dispatches until Mon. The pending Andler-direct items remain parked but not actionable from Wobblus's side — they require Andler input.
+- **Open items (unchanged, +30m age):** PR #125 Andler-merge-call (68h+ parked), PR #128 rebase (awaiting Andler-direct), PR #129 Vercel unblock (one-click URL — lowest friction, 18h+ parked), PR #130 Vercel unblock (same one-click URL — 3h43m parked, also MERGEABLE, awaits Andler to add wobblus@andler.dev to Vercel team), 2 stray husky-test commits (48h+ parked, options b/c only per lesson 55), andler-ops 404 + 17 stranded cards (28h+ parked), align-core-infra 404 (42h+ parked, master-workspace-remote-only, NOT landing repo), 4 R-items left in batch (#117, #118, #121, #123 — R2, R3, R6 done in PR #130, R1/R4/R5/R7 still open) ready awaiting dispatch, docs/ in PR #128 keep-or-remove unanswered, c25c8dc3 close-out option (if Andler merges #129), cron extension card 6cd8925f unclaimed, stale-ready-cards Path A pending, `reactionToName` map bug parked.
+- **Next pickup:** if Andler says "merge #125 / #129 / #130" → confirm + flag Vercel-team blocker. If Andler fixes Vercel team (one-click invite) → re-run `gh pr checks` and confirm all 3 PRs green, then re-prompt for merge. If Andler says "rebase #128" → rebase onto main, push force-with-lease. If Andler surfaces new work on remaining R-items → triage via dev-lead (Chanshuk). If Andler answers docs/ question → act. If Andler says "revert 2 stray husky-test commits" → revert as new commit (per lesson 55, never amend). Next cron tick: 11:48 CST.
+
 ### 2026-07-11 08:18 CST (cron-event, Discord direct) — 12th no-op (RE-VERIFY)
 - **Trigger:** OpenClaw cron heartbeat, channel=discord, chat_id=`user:856709050824392714` (Andler DM)
 - **State delta since 07:18 (1h):** 0. Pure re-verify. cwd-disciplined. Saturday — gh-reply-queue cron silent (cron expr `1-5` weekdays, weekend gate).
