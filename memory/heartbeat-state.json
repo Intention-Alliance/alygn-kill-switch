@@ -1,17 +1,19 @@
 {
-  "lastHeartbeatPoll": 1783776056713,
-  "lastHeartbeatPollIso": "2026-07-11T13:18:00Z",
-  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783770503966",
-  "tick": 41,
-  "tickLocal": "07:18 CST Sat 2026-07-11",
+  "lastHeartbeatPoll": 1783788504118,
+  "lastHeartbeatPollIso": "2026-07-11T16:48:00Z",
+  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783788504118",
+  "tick": 46,
+  "tickLocal": "10:48 CST Sat 2026-07-11",
   "posture": "hold_heartbeat_ok",
-  "afterHoursGate": true,
-  "workingHoursGate": false,
+  "afterHoursGate": false,
+  "workingHoursGate": true,
   "quietWindowMins": 0,
   "stateSnapshot": {
-    "workspaceMaster": "54181b58",
+    "workspaceMaster": "ff3e07f6",
+    "workspaceCurrentBranch": "fix/gh-reply-queue-cron-bugs",
+    "workspaceCurrentHead": "2dc0555d",
     "landingMain": "609268f",
-    "landingHead": "58877600c2cfa59e90dbf36dcb1bbf26db4ad9ed",
+    "landingHead": "5887760a117b9875abc0b26f4df753c112bd94ef",
     "landingHeadBranch": "fix/about-113-r-items-batch-2",
     "activeSubagents": 0,
     "activeWorktrees": 0,
@@ -34,8 +36,7 @@
       "mergeable": "MERGEABLE",
       "vercel": "FAIL",
       "other": "ok",
-      "reviewDecision": "COMMENTED (resolved by c5429f6 push 22:07Z; awaiting re-review)",
-      "note": "Andler-direct: click one-click Vercel team-invite URL to unblock Vercel"
+      "note": "Vercel team-membership blocker (one-click URL in bot comment) — lowest-friction next step"
     },
     {
       "number": 128,
@@ -44,7 +45,7 @@
       "mergeable": "CONFLICTING",
       "vercel": "FAIL",
       "other": "ok",
-      "note": "3 commits behind main, rebase awaits Andler-direct"
+      "note": "post-#115-merge conflict; awaiting Andler-direct rebase go-ahead"
     },
     {
       "number": 125,
@@ -53,22 +54,9 @@
       "mergeable": "MERGEABLE",
       "vercel": "ok",
       "other": "ok",
-      "note": "AndlerRL rebase + 3 follow-up commits (2cf7ce6); MERGEABLE all-green; Andler's call to merge"
+      "note": "all-green; Andler-merge-call (67h+ parked)"
     }
   ],
-  "mergedPrs": [
-    {
-      "number": 115,
-      "mergedAt": "2026-07-10T07:29:18Z",
-      "mergeCommit": "609268f",
-      "by": "AndlerRL"
-    }
-  ],
-  "replyQueue": [],
-  "actionTakenThisTick": "HEARTBEAT_OK to cron-event 856709050824392714 (no DM to Andler; 41st overall tick; state delta: 0; pure no-op re-verify; after-hours gate in effect; 42m to working-hours)",
-  "deliverables": {
-    "heartbeatMd": "appended 07:18 entry (41st tick)",
-    "memoryMd": "appended 07:18 entry to memory/2026-07-11.md (4th tick of new day)",
-    "heartbeatState": "rewritten /home/andlersrv/.openclaw/workspace/memory/heartbeat-state.json (tick 41)"
-  }
+  "merged": [115],
+  "nextTick": "11:18 CST Sat 2026-07-11"
 }
