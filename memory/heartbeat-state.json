@@ -1,15 +1,15 @@
 {
-  "lastHeartbeatPoll": 1783822704396,
-  "lastHeartbeatPollIso": "2026-07-11T20:18:00-06:00",
-  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783822704396",
-  "tick": 56,
-  "tickLocal": "19:48 CST Sat 2026-07-11",
+  "lastHeartbeatPoll": 1783824504411,
+  "lastHeartbeatPollIso": "2026-07-11T20:48:00-06:00",
+  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783824504411",
+  "tick": 57,
+  "tickLocal": "20:48 CST Sat 2026-07-11",
   "posture": "hold_heartbeat_ok",
   "afterHoursGate": false,
-  "workingHoursGate": true,
-  "quietWindowMins": 108,
+  "workingHoursGate": false,
+  "quietWindowMins": 80,
   "stateSnapshot": {
-    "workspaceMaster": "ff3e07f6",
+    "workspaceMaster": "d42781bf",
     "workspaceCurrentBranch": "fix/gh-reply-queue-cron-bugs",
     "workspaceCurrentHead": "d42781bf",
     "landingMain": "609268f",
@@ -37,7 +37,7 @@
       "mergeable": "MERGEABLE",
       "vercel": "FAIL",
       "other": "ok",
-      "note": "Vercel team-membership blocker (one-click URL in bot comment) — lowest-friction next step, 21h41m+ parked"
+      "note": "Vercel team-membership blocker (one-click URL in bot comment) \u2014 lowest-friction next step, 22h41m+ parked"
     },
     {
       "number": 128,
@@ -58,12 +58,30 @@
       "note": "all-green (Vercel re-ran 04:24:14Z post-AndlerRL rebase); Andler-merge-call (75h+ parked)"
     }
   ],
-  "merged": [115],
-  "cronErrors": [
-    {"id": "e71fa5f1-6f8e-440f-b4bc-87055cc9c4d8", "name": "alygn-vc-evening", "issue": "delivery-route-mismatch"},
-    {"id": "8acf6537-e9bd-4cad-af2c-7e8afdf74c9f", "name": "ALYGN: Weekly Team Recap", "issue": "delivery-target-mismatch"},
-    {"id": "72f7e20f-2f95-4698-9ed8-5563ee9280c2", "name": "ALYGN: Mid-Week Update", "issue": "delivery-target-mismatch"},
-    {"id": "c439ca5a-8aa1-4dcd-8642-369d38551e78", "name": "ALYGN: Monthly Recon", "issue": "delivery-route-missing"}
+  "merged": [
+    115
   ],
-  "nextTick": "20:48 CST Sat 2026-07-11"
+  "cronErrors": [
+    {
+      "id": "e71fa5f1-6f8e-440f-b4bc-87055cc9c4d8",
+      "name": "alygn-vc-evening",
+      "issue": "delivery-route-mismatch"
+    },
+    {
+      "id": "8acf6537-e9bd-4cad-af2c-7e8afdf74c9f",
+      "name": "ALYGN: Weekly Team Recap",
+      "issue": "delivery-target-mismatch"
+    },
+    {
+      "id": "72f7e20f-2f95-4698-9ed8-5563ee9280c2",
+      "name": "ALYGN: Mid-Week Update",
+      "issue": "delivery-target-mismatch"
+    },
+    {
+      "id": "c439ca5a-8aa1-4dcd-8642-369d38551e78",
+      "name": "ALYGN: Monthly Recon",
+      "issue": "delivery-route-missing"
+    }
+  ],
+  "nextTick": "21:18 CST Sat 2026-07-11"
 }
