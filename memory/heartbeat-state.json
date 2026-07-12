@@ -1,87 +1,27 @@
 {
-  "lastHeartbeatPoll": 1783824504411,
-  "lastHeartbeatPollIso": "2026-07-11T20:48:00-06:00",
-  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783824504411",
-  "tick": 57,
-  "tickLocal": "20:48 CST Sat 2026-07-11",
+  "lastHeartbeatPoll": 1783860494000,
+  "lastHeartbeatPollIso": "2026-07-12T06:48:14-06:00",
+  "sessionKey": "agent:main:cron:d7170517-8dc6-4112-a94d-bc5b9236ec37:run:1783860504709",
+  "tick": 61,
+  "tickLocal": "06:48 CST Sun 2026-07-12",
   "posture": "hold_heartbeat_ok",
-  "afterHoursGate": false,
+  "afterHoursGate": true,
   "workingHoursGate": false,
-  "quietWindowMins": 80,
+  "quietWindowMins": 210,
+  "reason": "deep-night 06:48 CST weekend; no active subagents/worktrees; 4 open PRs parked awaiting Andler-direct; 4 cron errors (delivery routing) parked; gh-reply-queue silent until Mon 08:00 CST; nothing actionable without human",
   "stateSnapshot": {
-    "workspaceMaster": "d42781bf",
+    "workspaceMaster": "842cf6d6",
     "workspaceCurrentBranch": "fix/gh-reply-queue-cron-bugs",
-    "workspaceCurrentHead": "d42781bf",
-    "landingMain": "609268f",
-    "landingHead": "5887760a117b9875abc0b26f4df753c112bd94ef",
-    "landingHeadBranch": "fix/about-113-r-items-batch-2",
+    "workspaceCurrentHead": "77738037",
+    "landingMain": "609268f26b1098d8390235255d52155bdcd68711",
+    "landingHead": "907382930c67fc14de16c01ce6f4a3f18b2de0b3",
+    "landingHeadBranch": "feat/upt-landing-timeline",
     "activeSubagents": 0,
     "activeWorktrees": 0,
     "cronJobsOk": 21,
     "cronJobsError": 4
   },
-  "openPrs": [
-    {
-      "number": 130,
-      "head": "5887760",
-      "author": "wobblus",
-      "mergeable": "MERGEABLE",
-      "vercel": "FAIL",
-      "other": "ok",
-      "note": "R2/R3/R6 batch 2; Vercel same one-click URL as #129; awaiting Andler Vercel team fix + working-hours merge call"
-    },
-    {
-      "number": 129,
-      "head": "c5429f6",
-      "author": "wobblus",
-      "mergeable": "MERGEABLE",
-      "vercel": "FAIL",
-      "other": "ok",
-      "note": "Vercel team-membership blocker (one-click URL in bot comment) \u2014 lowest-friction next step, 22h41m+ parked"
-    },
-    {
-      "number": 128,
-      "head": "61c3e37",
-      "author": "wobblus",
-      "mergeable": "CONFLICTING",
-      "vercel": "FAIL",
-      "other": "ok",
-      "note": "post-#115-merge conflict; awaiting Andler-direct rebase go-ahead"
-    },
-    {
-      "number": 125,
-      "head": "2cf7ce6",
-      "author": "AndlerRL",
-      "mergeable": "MERGEABLE",
-      "vercel": "ok",
-      "other": "ok",
-      "note": "all-green (Vercel re-ran 04:24:14Z post-AndlerRL rebase); Andler-merge-call (75h+ parked)"
-    }
-  ],
-  "merged": [
-    115
-  ],
-  "cronErrors": [
-    {
-      "id": "e71fa5f1-6f8e-440f-b4bc-87055cc9c4d8",
-      "name": "alygn-vc-evening",
-      "issue": "delivery-route-mismatch"
-    },
-    {
-      "id": "8acf6537-e9bd-4cad-af2c-7e8afdf74c9f",
-      "name": "ALYGN: Weekly Team Recap",
-      "issue": "delivery-target-mismatch"
-    },
-    {
-      "id": "72f7e20f-2f95-4698-9ed8-5563ee9280c2",
-      "name": "ALYGN: Mid-Week Update",
-      "issue": "delivery-target-mismatch"
-    },
-    {
-      "id": "c439ca5a-8aa1-4dcd-8642-369d38551e78",
-      "name": "ALYGN: Monthly Recon",
-      "issue": "delivery-route-missing"
-    }
-  ],
-  "nextTick": "21:18 CST Sat 2026-07-11"
+  "openPrs": [128, 129, 130, 125],
+  "cronErrors": 4,
+  "nextTick": "07:18 CST Sun 2026-07-12 (weekend; continue quiet until Mon morning)"
 }
