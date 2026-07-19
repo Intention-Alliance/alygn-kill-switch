@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-07-18T18:19:00-06:00",
+  "defaults": {
+    "patch": "12.0.7",
+    "upcoming_patch": "12.1.0",
+    "expansion": "Midnight",
+    "season": "Season 1 → Season 2 incoming",
+    "language": "spanglish",
+    "max_description_chars_twitch": 140,
+    "template_lut": {
+      "world_pvp_arena": "pvp",
+      "arena_pvp": "pvp",
+      "world_pvp": "pvp",
+      "raid": "atmos",
+      "dungeon": "explore",
+      "competitive_pve": "explore"
+    },
+    "content_type_enum": [
+      "world_pvp_arena",
+      "arena_pvp",
+      "world_pvp",
+      "raid",
+      "dungeon",
+      "competitive_pve"
+    ],
+    "output_dir": "media/andlerGM/thumbnails/{template}/{champion}/",
+    "filename_pattern": "andlerGM-thumb-{template}-{champion}-{date}-phantom-v10.png",
+    "output_dimensions": {
+      "youtube_twitch": [1280, 720],
+      "shorts_reels": [1080, 1920]
+    }
+  },
+  "test_runs": {
+    "test_a_2026-07-17": {
+      "date": "2026-07-17",
+      "champion": "Gimglich",
+      "content_type": "world_pvp_arena",
+      "title": "Día 26, Noche de PvP y Ranking Con Talanara | Temporada 1 | #wow #wowretail #pvpwow #wowpvp",
+      "description": "En esta noche estare con mi Frost Mage Talanara continuando la aventura con batallas PvP y Rankeando en Rival I y ver tanto haremos hoy ;)",
+      "hashtags": ["#wow", "#wowretail", "#pvpwow", "#wowpvp"],
+      "patch": "12.0.7",
+      "zone": "PENDING_RESEARCH",
+      "zone_research_query": "WoW Midnight 12.0.7 world PvP hotspots, Naital, Ashenvale, current patch 12.0.7 world PvP activity zones",
+      "shorts": false,
+      "notes": "Reference example from Andler; actual champion is Gimglich, but content_type was corrected to world_pvp_arena (compound world PvP + BG/arena ranking)."
+    },
+    "test_b_2026-07-17": {
+      "date": "2026-07-17",
+      "champion": "Chanshuk",
+      "content_type": "raid",
+      "title": "Día 28, Liberando Ala del Alba con Chanshuk | Progresión Mítica",
+      "description": "Progresión Mítica en el ala del amanecer del raid de Midnight, venga que esta noche la rompemos!",
+      "hashtags": ["#wow", "#wowmidnight", "#mythicraid", "#wowpve"],
+      "patch": "12.0.7",
+      "zone": "PENDING_RESEARCH",
+      "zone_research_query": "WoW Midnight 12.0.7 raid Dawnbreaker wing, Mythic raid progression, current tier",
+      "shorts": false
+    }
+  },
+  "queue": {}
+}
