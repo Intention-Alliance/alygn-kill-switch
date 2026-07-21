@@ -17,6 +17,7 @@ interface SecretRowProps {
   isLocked: boolean;
   isRotating: boolean;
   onRotate: (secret: SecretInfo) => void;
+  rotateButtonRef?: (name: string, el: HTMLButtonElement | null) => void;
 }
 
 export function SecretRow({
@@ -24,6 +25,7 @@ export function SecretRow({
   isLocked,
   isRotating,
   onRotate,
+  rotateButtonRef,
 }: SecretRowProps) {
   const ageText = formatAge(secret.lastRotatedAt);
   const filesText = `${secret.dependentConfigs.length} file${secret.dependentConfigs.length === 1 ? "" : "s"}`;
@@ -105,6 +107,7 @@ export function SecretRow({
               size="sm"
               disabled={isLocked || isRotating}
               onClick={() => onRotate(secret)}
+              ref={(el) => rotateButtonRef?.(secret.name, el)}
               aria-label={isLocked ? "Rotate disabled, secret is locked" : `Rotate ${secret.name}`}
               className="disabled:opacity-70"
             >

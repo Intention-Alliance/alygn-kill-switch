@@ -19,6 +19,7 @@ interface SecretsListProps {
   lockedNames: Set<string>;
   onRotate: (secret: SecretInfo) => void;
   isLoading?: boolean;
+  rotateButtonRef?: (name: string, el: HTMLButtonElement | null) => void;
 }
 
 export function SecretsList({
@@ -27,6 +28,7 @@ export function SecretsList({
   lockedNames,
   onRotate,
   isLoading,
+  rotateButtonRef,
 }: SecretsListProps) {
   return (
     <Card className="rounded-md border">
@@ -66,6 +68,7 @@ export function SecretsList({
                     isLocked={lockedNames.has(secret.name)}
                     isRotating={rotatingName === secret.name}
                     onRotate={onRotate}
+                    rotateButtonRef={rotateButtonRef}
                   />
                 ))
               )}

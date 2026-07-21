@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { SecretsList } from "./secrets-list";
 import { StatusBar } from "./status-bar";
@@ -29,6 +29,8 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [dismissedLockouts, setDismissedLockouts] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
+  const [focusedRowIndex, setFocusedRowIndex] = useState<number>(-1);
+  const rotateButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const lockedNames = useMemo(() => {
     const locked = new Set<string>();
@@ -96,6 +98,16 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const focusRotateButton = useCallback((index: number) => {
+    const secret = secrets[index];
+    if (!secret) return;
+    const btn = rotateButtonRefs.current.get(secret.name);
+    if (btn) {
+      btn.focus();
+      setFocusedRowIndex(index);
+    }
+  }, [secrets]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -107,14 +119,38 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
       if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key === "?") {
         e.preventDefault();
         setHelpOpen(true);
+        return;
+      }
+
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      const isEditable = (e.target as HTMLElement)?.isContentEditable;
+      const typing = tag === "input" || tag === "textarea" || isEditable;
+      if (secrets.length === 0 || typing) return;
+
+      if (e.key === "j" || e.key === "k") {
+        e.preventDefault();
+        const nextIndex =
+          e.key === "j"
+            ? (focusedRowIndex + 1) % secrets.length
+            : (focusedRowIndex - 1 + secrets.length) % secrets.length;
+        focusRotateButton(nextIndex);
+        return;
+      }
+
+      if (e.key === "r") {
+        const active = document.activeElement;
+        const matchingSecret = secrets.find(
+          (s) => rotateButtonRefs.current.get(s.name) === active,
+        );
+        if (matchingSecret && matchingSecret.state !== "locked") {
+          e.preventDefault();
+          handleRotate(matchingSecret);
+        }
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
-  useEffect(() => {
-    if (!highlightedId) return;
     const t = setTimeout(() => setHighlightedId(null), 2500);
     return () => clearTimeout(t);
   }, [highlightedId]);
@@ -155,6 +191,10 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
             lockedNames={lockedNames}
             onRotate={handleRotate}
             isLoading={isLoading}
+            rotateButtonRef={(name, el) => {
+              if (el) rotateButtonRefs.current.set(name, el);
+              else rotateButtonRefs.current.delete(name);
+            }}
           />
 
           <StatusBar health={health} />
