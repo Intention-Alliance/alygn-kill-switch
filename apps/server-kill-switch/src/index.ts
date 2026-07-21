@@ -15,6 +15,9 @@ import { handleMachinesRoutes } from './routes/machines';
 import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
+import { handleAdminSecretsRoutes, initAuditLogFromDb } from './routes/admin-secrets';
+import { SecretsLoader } from './lib/secrets-loader';
+import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
 import { startMetricGeneration } from './services/system-metrics';
 import { getConfig, isFeatureEnabled } from './config';
@@ -45,6 +48,10 @@ function createHandler(service: KillSwitchService) {
       const lb = await handleLbHealthRoutes(method, url, req, res, service);
       if (lb) return;
     }
+
+    // ── Admin secrets routes (separate auth: ADMIN_UI_API_KEY) ──
+    const secretsHandled = await handleAdminSecretsRoutes(method, url, req, res, secretsLoader, lockoutState);
+    if (secretsHandled) return;
 
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
@@ -98,6 +105,26 @@ function createHandler(service: KillSwitchService) {
 
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
   const config = getConfig();
+
+  // ─── Secrets Loader (startup-load, throw on missing) ─────────────
+  const secretsLoader = new SecretsLoader({
+    onReload: (result) => {
+      console.log(`[secrets-loader] reload: ${result.skipped ? 'skipped (' + (result.reason || 'unchanged') + ')' : result.loaded.length + ' keys loaded'}`);
+    },
+  });
+  await secretsLoader.load();
+  secretsLoader.startWatchers();
+  console.log(`[secrets-loader] loaded ${secretsLoader.getLoadedKeys().length} Tailscale secret(s)`);
+
+  // ─── Lockout State Machine ──────────────────────────────────────
+  const lockoutState = new LockoutStateMachine();
+  await lockoutState.load();
+  lockoutState.startWatchers();
+  console.log(`[lockout-state] state: ${lockoutState.getLockoutLabel()}`);
+
+  // ─── Secrets Audit Log: load recent entries from DB ─────────────
+  await initAuditLogFromDb();
+
   const RedisPool = await loadRedisPool() as any;
   const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls });
   await redis.connect();

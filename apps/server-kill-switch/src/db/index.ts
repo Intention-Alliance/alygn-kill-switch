@@ -13,6 +13,7 @@ import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
 import { mkdirSync } from 'node:fs';
 import * as schema from './schema';
+import { secretsAuditLog } from './schema';
 
 const DATA_DIR = process.env.DATA_DIR || './data';
 const DB_PATH = `${DATA_DIR}/kill-switch.sqlite`;
@@ -284,6 +285,23 @@ export function initDatabase(dbPath: string = DB_PATH) {
       throw e;
     }
   }
+
+  // ─── Secrets Audit Log (S-A1) ────────────────────────────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS secrets_audit_log (
+      id TEXT PRIMARY KEY,
+      ts INTEGER NOT NULL,
+      key_name TEXT NOT NULL,
+      action TEXT NOT NULL,
+      source_ip TEXT,
+      result TEXT NOT NULL,
+      actor TEXT,
+      meta TEXT
+    )
+  `);
+
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_key_time_idx ON secrets_audit_log(key_name, ts)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_action_time_idx ON secrets_audit_log(action, ts)`);
 
   // ─── Indexes ───────────────────────────────────────────────────────
 

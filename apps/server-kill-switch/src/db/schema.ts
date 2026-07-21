@@ -220,6 +220,26 @@ export const machineFlags = sqliteTable(
   }),
 );
 
+// ─── Secrets Audit Log (S-A1 — persisted audit trail for secret rotations/401s/lockouts) ──
+
+export const secretsAuditLog = sqliteTable(
+  'secrets_audit_log',
+  {
+    id: text('id').primaryKey(),
+    ts: integer('ts', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    keyName: text('key_name').notNull(),
+    action: text('action').notNull(),         // 'rotate' | 'view' | '401' | 'lockout' | 'unlock' | 'reload' | 'rotate-consumer'
+    sourceIp: text('source_ip'),
+    result: text('result').notNull(),          // 'ok' | 'error' | 'blocked' | 'unauthorized' | 'locked'
+    actor: text('actor'),
+    meta: text('meta'),                         // JSON string
+  },
+  (table) => ({
+    keyTimeIdx: index('secrets_audit_key_time_idx').on(table.keyName, table.ts),
+    actionTimeIdx: index('secrets_audit_action_time_idx').on(table.action, table.ts),
+  }),
+);
+
 // ─── Per-Machine Agent Registry (New — ADR-133) ──────────────────────────
 
 export const agents = sqliteTable(
