@@ -137,27 +137,28 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
         />
       )}
 
-      <div className="flex items-center justify-between gap-3">
-        <LoaderHealthBadge state={health.state} />
+      {secrets.length === 0 ? (
         <EmptyState />
-      </div>
+      ) : (
+        <>
+          <SecretsList
+            secrets={secrets}
+            rotatingName={rotatingName}
+            lockedNames={lockedNames}
+            onRotate={handleRotate}
+            isLoading={isLoading}
+          />
 
-      <SecretsList
-        secrets={secrets}
-        rotatingName={rotatingName}
-        lockedNames={lockedNames}
-        onRotate={handleRotate}
-        isLoading={isLoading}
-      />
+          <StatusBar health={health} />
 
-      <StatusBar health={health} />
-
-      <AuditLogPanel
-        events={audit}
-        filter={auditFilter}
-        onFilterChange={setAuditFilter}
-        highlightedId={highlightedId}
-      />
+          <AuditLogPanel
+            events={audit}
+            filter={auditFilter}
+            onFilterChange={setAuditFilter}
+            highlightedId={highlightedId}
+          />
+        </>
+      )}
 
       <RotateConfirmDialog
         secret={rotateTarget}
