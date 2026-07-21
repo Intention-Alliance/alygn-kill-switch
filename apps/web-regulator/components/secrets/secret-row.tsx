@@ -109,7 +109,10 @@ export function SecretRow({
               onClick={() => onRotate(secret)}
               ref={(el) => rotateButtonRef?.(secret.name, el)}
               aria-label={isLocked ? "Rotate disabled, secret is locked" : `Rotate ${secret.name}`}
-              className="disabled:opacity-70"
+              className={cn(
+                "disabled:opacity-70",
+                "focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
+              )}
             >
               {isRotating ? (
                 <RefreshCw className="mr-1 h-3 w-3 motion-safe:animate-spin" aria-hidden="true" />

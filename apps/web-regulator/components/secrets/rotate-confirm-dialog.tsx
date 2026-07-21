@@ -89,6 +89,7 @@ export function RotateConfirmDialog({
             variant="ghost"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
+            className="focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           >
             Cancel
           </Button>
@@ -96,6 +97,7 @@ export function RotateConfirmDialog({
             variant="destructive"
             onClick={onConfirm}
             disabled={isPending}
+            className="focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           >
             {isPending ? "Rotating…" : "Rotate now"}
           </Button>

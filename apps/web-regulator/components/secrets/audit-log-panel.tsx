@@ -76,7 +76,7 @@ export function AuditLogPanel({
           <Input
             id="audit-filter"
             placeholder="Filter by secret name…"
-            className="h-7 w-40 text-xs"
+            className="h-7 w-40 text-xs focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
             value={filter}
             onChange={(e) => onFilterChange(e.target.value)}
             aria-describedby="audit-filter-help"
@@ -108,7 +108,7 @@ export function AuditLogPanel({
                     <TableRow
                       key={entry.id}
                       className={cn(
-                        "h-8 transition-colors",
+                        "h-8 transition-colors focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
                         isHighlighted && "bg-success/5 motion-safe:animate-fade-in",
                       )}
                       tabIndex={0}
