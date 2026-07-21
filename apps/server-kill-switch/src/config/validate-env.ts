@@ -84,6 +84,10 @@ const REQUIRED_ENV = {
     minLength: 16,
     description: 'API key for kill switch chaos operations',
   },
+  ADMIN_UI_API_KEY: {
+    minLength: 32,
+    description: 'Bearer token for /api/admin/secrets/* endpoints (rotate, view, audit)',
+  },
 } as const;
 
 // ─── Validation ──────────────────────────────────────────────────
@@ -100,6 +104,7 @@ export function validateEnvironment(): void {
     { name: 'BETTER_AUTH_SECRET', minLength: 32, description: REQUIRED_ENV.BETTER_AUTH_SECRET.description },
     { name: 'KILL_SWITCH_AUTH_TOKEN', minLength: 16, description: REQUIRED_ENV.KILL_SWITCH_AUTH_TOKEN.description },
     { name: 'KILL_SWITCH_API_KEY', minLength: 16, description: REQUIRED_ENV.KILL_SWITCH_API_KEY.description },
+    { name: 'ADMIN_UI_API_KEY', minLength: 32, description: REQUIRED_ENV.ADMIN_UI_API_KEY.description },
   ];
 
   for (const secret of secrets) {
@@ -130,6 +135,7 @@ export function validateAndGetEnv() {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET!,
     KILL_SWITCH_AUTH_TOKEN: process.env.KILL_SWITCH_AUTH_TOKEN!,
     KILL_SWITCH_API_KEY: process.env.KILL_SWITCH_API_KEY!,
+    ADMIN_UI_API_KEY: process.env.ADMIN_UI_API_KEY!,
     REDIS_URL: process.env.REDIS_URL!,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@alygn.com',
   };

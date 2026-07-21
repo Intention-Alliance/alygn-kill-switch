@@ -106,6 +106,9 @@ function createHandler(service: KillSwitchService) {
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
   const config = getConfig();
 
+  // ─── Validate environment BEFORE secrets loader (S-A2 — loud, no silent 401s) ──
+  validateEnvironment();
+
   // ─── Secrets Loader (startup-load, throw on missing) ─────────────
   const secretsLoader = new SecretsLoader({
     onReload: (result) => {
@@ -274,6 +277,5 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
 }
 
 if (import.meta.path.endsWith('index.ts') || import.meta.path.endsWith('index.mjs')) {
-  try { validateEnvironment(); } catch (err: any) { console.error(err.message); process.exit(1); }
   startServer().catch((err: any) => { console.error('Failed:', err); process.exit(1); });
 }
