@@ -10,6 +10,7 @@ import { RotateConfirmDialog } from "./rotate-confirm-dialog";
 import { CommandPalette } from "./command-palette";
 import { EmptyState } from "./empty-state";
 import { LoaderHealthBadge } from "./secrets-loader-badge";
+import { HelpOverlay } from "./help-overlay";
 import type { SecretInfo, SecretsPageData, SecretsAuditEvent } from "@/types/secrets";
 
 interface SecretsPageClientProps {
@@ -23,6 +24,7 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
   const [rotatingName, setRotatingName] = useState<string | null>(null);
   const [rotateTarget, setRotateTarget] = useState<SecretInfo | null>(null);
   const [commandOpen, setCommandOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [auditFilter, setAuditFilter] = useState("");
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const [dismissedLockouts, setDismissedLockouts] = useState<Set<string>>(new Set());
@@ -99,6 +101,12 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setCommandOpen((open) => !open);
+        return;
+      }
+
+      if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key === "?") {
+        e.preventDefault();
+        setHelpOpen(true);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -176,6 +184,8 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
         secrets={secrets}
         onRotate={handleRotate}
       />
+
+      <HelpOverlay open={helpOpen} onOpenChange={setHelpOpen} />
     </div>
   );
 }
