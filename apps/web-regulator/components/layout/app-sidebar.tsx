@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Shield,
   LayoutDashboard,
+  Key,
   Flag,
   Server,
   Settings,
@@ -42,6 +43,12 @@ const NAV_ITEMS = [
     label: "Kill Switch",
     icon: Shield,
     description: "Emergency stop & state control",
+  },
+  {
+    href: "/admin/secrets",
+    label: "Secrets",
+    icon: Key,
+    description: "Tailscale secret rotation & audit",
   },
   {
     href: "/flags",
