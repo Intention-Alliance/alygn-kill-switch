@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { AlertTriangle } from "lucide-react";
 import {
   Dialog,
@@ -27,6 +28,7 @@ export function RotateConfirmDialog({
   onConfirm,
   isPending,
 }: RotateConfirmDialogProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
   if (!secret) return null;
 
   return (
@@ -37,6 +39,10 @@ export function RotateConfirmDialog({
         aria-labelledby="rotate-title"
         aria-describedby="rotate-body"
         showCloseButton={false}
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          cancelRef.current?.focus();
+        }}
       >
         <DialogHeader className="gap-3">
           <div className="flex items-center gap-2">
@@ -87,6 +93,7 @@ export function RotateConfirmDialog({
         <DialogFooter className="mt-4">
           <Button
             variant="ghost"
+            ref={cancelRef}
             onClick={() => onOpenChange(false)}
             disabled={isPending}
             className="focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { History } from "lucide-react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,12 @@ export function AuditLogPanel({
           <History className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <CardTitle className="text-sm font-semibold">Audit log</CardTitle>
           <Badge variant="secondary" className="text-xs">{filtered.length}</Badge>
+          <Link
+            href="/admin/secrets/audit"
+            className="ml-auto text-xs text-muted-foreground hover:text-foreground"
+          >
+            View all →
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <label htmlFor="audit-filter" className="sr-only">
@@ -79,6 +86,12 @@ export function AuditLogPanel({
             className="h-7 w-40 text-xs focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
             value={filter}
             onChange={(e) => onFilterChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && filter) {
+                e.preventDefault();
+                onFilterChange("");
+              }
+            }}
             aria-describedby="audit-filter-help"
           />
           <span id="audit-filter-help" className="sr-only">
