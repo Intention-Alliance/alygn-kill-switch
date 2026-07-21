@@ -13,7 +13,6 @@ import { drizzle } from 'drizzle-orm/bun-sqlite';
 import { Database } from 'bun:sqlite';
 import { mkdirSync } from 'node:fs';
 import * as schema from './schema';
-import { secretsAuditLog } from './schema';
 
 const DATA_DIR = process.env.DATA_DIR || './data';
 const DB_PATH = `${DATA_DIR}/kill-switch.sqlite`;

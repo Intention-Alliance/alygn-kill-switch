@@ -18,7 +18,7 @@
  */
 
 import { watch, type FSWatcher } from 'node:fs';
-import { readFile, writeFile, mkdir, chmod, rename, fsync } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, chmod, rename } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { EventEmitter } from 'node:events';
@@ -100,7 +100,7 @@ export async function atomicWriteFile(path: string, content: string): Promise<vo
   await mkdir(dir, { recursive: true });
 
   const tmpPath = `${path}.tmp.${process.pid}.${Date.now()}`;
-  const fh = await writeFile(tmpPath, content, { encoding: 'utf-8', mode: 0o600 });
+  await writeFile(tmpPath, content, { encoding: 'utf-8', mode: 0o600 });
   // fsync via a separate handle — Bun supports openSync/fsync
   const { openSync, fsyncSync, closeSync } = await import('node:fs');
   const fd = openSync(tmpPath, 'r');
