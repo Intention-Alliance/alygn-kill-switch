@@ -90,9 +90,9 @@ async function countDbEntries(): Promise<number> {
   return rows.length;
 }
 
-async function countDbEntriesByAction(action: string): Promise<number> {
+async function countDbEntriesByAction(event: string): Promise<number> {
   const rows = await db.select().from(secretsAuditLog).where(
-    require('drizzle-orm').eq(secretsAuditLog.action, action)
+    require('drizzle-orm').eq(secretsAuditLog.event, event)
   );
   return rows.length;
 }
@@ -131,9 +131,9 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
 
     // Check DB has the rotate entry
     const { eq } = await import('drizzle-orm');
-    const rotateRows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.action, 'rotate'));
+    const rotateRows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.event, 'rotate'));
     expect(rotateRows.length).toBeGreaterThanOrEqual(1);
-    expect(rotateRows[0].keyName).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
+    expect(rotateRows[0].name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
     expect(rotateRows[0].result).toBe('ok');
   });
 
@@ -146,7 +146,7 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
     expect(res.status).toBe(401);
 
     const { eq } = await import('drizzle-orm');
-    const rows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.action, '401'));
+    const rows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.event, '401'));
     expect(rows.length).toBeGreaterThanOrEqual(1);
     expect(rows[0].result).toBe('unauthorized');
   });
@@ -165,20 +165,20 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
     expect(res.status).toBe(423);
 
     const { eq } = await import('drizzle-orm');
-    const rotateRows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.action, 'rotate'));
+    const rotateRows = await db.select().from(secretsAuditLog).where(eq(secretsAuditLog.event, 'rotate'));
     // The rotate entry should have result='locked'
     const lockedEntry = rotateRows.find((r) => r.result === 'locked');
     expect(lockedEntry).toBeDefined();
-    expect(lockedEntry!.keyName).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
+    expect(lockedEntry!.name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
   });
 
   it('FIFO eviction still works on hot cache (100 entries)', async () => {
     // Insert 120 entries directly
     for (let i = 0; i < 120; i++) {
       await appendAuditEntry({
-        ts: new Date().toISOString(),
-        action: 'view',
-        keyName: `KEY_${i}`,
+        at: new Date().toISOString(),
+        event: 'view',
+        name: `KEY_${i}`,
         sourceIp: '127.0.0.1',
         actor: 'admin',
         result: 'ok',
@@ -190,7 +190,7 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
     expect(entries.length).toBe(100);
 
     // The first 20 should be evicted, KEY_20 should be the oldest
-    expect(entries[0].keyName).toBe('KEY_20');
+    expect(entries[0].name).toBe('KEY_20');
 
     // But DB should have all 120
     const dbCount = await countDbEntries();
@@ -201,9 +201,9 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
     // Write 5 entries to both in-memory cache and DB
     for (let i = 0; i < 5; i++) {
       await appendAuditEntry({
-        ts: new Date().toISOString(),
-        action: 'rotate',
-        keyName: `KEY_${i}`,
+        at: new Date().toISOString(),
+        event: 'rotate',
+        name: `KEY_${i}`,
         sourceIp: '127.0.0.1',
         actor: 'admin',
         result: 'ok',
@@ -223,12 +223,12 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
 
     const { entries } = getAuditEntries({ limit: 100 });
     expect(entries.length).toBe(5);
-    // All entries should have keyName matching KEY_*
+    // All entries should have name matching KEY_*
     for (const e of entries) {
-      expect(e.keyName).toMatch(/^KEY_\d$/);
+      expect(e.name).toMatch(/^KEY_\d$/);
     }
     // Verify all 5 keys are present
-    const keyNames = entries.map((e) => e.keyName).sort();
-    expect(keyNames).toEqual(['KEY_0', 'KEY_1', 'KEY_2', 'KEY_3', 'KEY_4']);
+    const names = entries.map((e) => e.name).sort();
+    expect(names).toEqual(['KEY_0', 'KEY_1', 'KEY_2', 'KEY_3', 'KEY_4']);
   });
 });

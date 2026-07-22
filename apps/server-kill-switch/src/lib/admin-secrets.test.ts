@@ -150,10 +150,27 @@ describe('/api/admin/secrets endpoints', () => {
 
     expect(res.status).toBe(200);
     const data = res.json;
-    expect(data.keys).toBeInstanceOf(Array);
-    expect(data.keys.length).toBe(1);
-    expect(data.keys[0].name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
-    expect(data.keys[0].maskedValue).toContain('••••');
+    expect(data.secrets).toBeInstanceOf(Array);
+    expect(data.secrets.length).toBe(1);
+    expect(data.secrets[0].name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN');
+    expect(data.secrets[0].maskedValue).toContain('••••');
+    expect(data.secrets[0].previewSuffix).toBeDefined();
+    expect(data.secrets[0].previewSuffix.length).toBe(4);
+    expect(data.secrets[0].dependentConfigs).toBeInstanceOf(Array);
+    expect(data.secrets[0].reloadTargets).toBeInstanceOf(Array);
+    expect(data.secrets[0].state).toMatch(/^(armed|locked)$/);
+  });
+
+  it('GET /api/admin/secrets returns "secrets" key (not "keys")', async () => {
+    const req = makeReq('GET', '/api/admin/secrets', undefined, TEST_API_KEY);
+    const res = makeRes();
+
+    await handleAdminSecretsRoutes('GET', '/api/admin/secrets', req, res, loader, lockout);
+
+    expect(res.status).toBe(200);
+    const data = res.json;
+    expect(data.secrets).toBeDefined();
+    expect(data.keys).toBeUndefined();
   });
 
   it('never returns full secret value in response body', async () => {
@@ -181,6 +198,22 @@ describe('/api/admin/secrets endpoints', () => {
     expect(data.maskedValue).toContain('••••');
     expect(data.maskedValue.startsWith('tsau')).toBe(true);
     expect(data.writtenToConfigs).toBeInstanceOf(Array);
+    expect(data.dependentConfigs).toBeInstanceOf(Array);
+    expect(data.reloadTargets).toBeInstanceOf(Array);
+  });
+
+  it('POST /rotate returns filesWritten and appsReloaded', async () => {
+    const req = makeReq('POST', '/api/admin/secrets/OLLAMA_TAILSCALE_AUTH_TOKEN/rotate', '', TEST_API_KEY);
+    const res = makeRes();
+
+    await handleAdminSecretsRoutes('POST', '/api/admin/secrets/OLLAMA_TAILSCALE_AUTH_TOKEN/rotate', req, res, loader, lockout);
+
+    expect(res.status).toBe(200);
+    const data = res.json;
+    expect(typeof data.filesWritten).toBe('number');
+    expect(typeof data.appsReloaded).toBe('number');
+    expect(data.filesWritten).toBe(data.dependentConfigs.length);
+    expect(data.appsReloaded).toBe(data.reloadTargets.length);
   });
 
   it('never returns the rotated value in response body', async () => {
@@ -240,9 +273,9 @@ describe('/api/admin/secrets endpoints', () => {
   it('returns audit log entries', async () => {
     // Add some audit entries
     await appendAuditEntry({
-      ts: new Date().toISOString(),
-      action: 'rotate',
-      keyName: 'OLLAMA_TAILSCALE_AUTH_TOKEN',
+      at: new Date().toISOString(),
+      event: 'rotate',
+      name: 'OLLAMA_TAILSCALE_AUTH_TOKEN',
       sourceIp: '127.0.0.1',
       actor: 'admin',
       result: 'ok',
@@ -257,36 +290,38 @@ describe('/api/admin/secrets endpoints', () => {
     const data = res.json;
     expect(data.entries).toBeInstanceOf(Array);
     expect(data.total).toBeGreaterThan(0);
-    expect(data.entries[0].action).toBe('rotate');
+    expect(data.entries[0].event).toBe('rotate');
+    expect(data.entries[0].at).toBeDefined();
+    expect(data.entries[0].name).toBeDefined();
   });
 
   it('supports filtering audit log by keyName', async () => {
     await appendAuditEntry({
-      ts: new Date().toISOString(),
-      action: 'rotate',
-      keyName: 'KEY_A',
+      at: new Date().toISOString(),
+      event: 'rotate',
+      name: 'KEY_A',
       sourceIp: '127.0.0.1',
       actor: 'admin',
       result: 'ok',
     });
     await appendAuditEntry({
-      ts: new Date().toISOString(),
-      action: 'rotate',
-      keyName: 'KEY_B',
+      at: new Date().toISOString(),
+      event: 'rotate',
+      name: 'KEY_B',
       sourceIp: '127.0.0.1',
       actor: 'admin',
       result: 'ok',
     });
 
-    const req = makeReq('GET', '/api/admin/secrets/audit?keyName=KEY_A', undefined, TEST_API_KEY);
+    const req = makeReq('GET', '/api/admin/secrets/audit?name=KEY_A', undefined, TEST_API_KEY);
     const res = makeRes();
 
-    await handleAdminSecretsRoutes('GET', '/api/admin/secrets/audit?keyName=KEY_A', req, res, loader, lockout);
+    await handleAdminSecretsRoutes('GET', '/api/admin/secrets/audit?name=KEY_A', req, res, loader, lockout);
 
     expect(res.status).toBe(200);
     const data = res.json;
     expect(data.total).toBe(1);
-    expect(data.entries[0].keyName).toBe('KEY_A');
+    expect(data.entries[0].name).toBe('KEY_A');
   });
 
   // ── Audit entries from auth failures ──
@@ -299,9 +334,31 @@ describe('/api/admin/secrets endpoints', () => {
 
     expect(res.status).toBe(401);
     // The 401 should be in the audit log
-    const { entries } = getAuditEntries({ action: '401' });
+    const { entries } = getAuditEntries({ event: '401' });
     expect(entries.length).toBeGreaterThan(0);
-    expect(entries[entries.length - 1].action).toBe('401');
+    expect(entries[entries.length - 1].event).toBe('401');
+  });
+
+  // ── Audit log entry shape (v1 contract) ──
+
+  it('audit log entries have at/event/name fields', async () => {
+    await appendAuditEntry({
+      at: new Date().toISOString(),
+      event: 'rotate',
+      name: 'TEST_KEY',
+      sourceIp: '127.0.0.1',
+      actor: 'admin',
+      result: 'ok',
+    });
+
+    const { entries } = getAuditEntries({ limit: 10 });
+    const entry = entries[entries.length - 1];
+    expect(entry.at).toBeDefined();
+    expect(entry.event).toBe('rotate');
+    expect(entry.name).toBe('TEST_KEY');
+    expect(entry.ts).toBeUndefined();
+    expect(entry.action).toBeUndefined();
+    expect(entry.keyName).toBeUndefined();
   });
 
   // ── Unmatched routes ──
