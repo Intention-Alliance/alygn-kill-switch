@@ -123,3 +123,9 @@ export async function rotateSecret(name: string): Promise<RotateResult> {
     appsReloaded: MOCK_SECRET.reloadTargets.length,
   };
 }
+
+export async function fetchFullAudit(): Promise<SecretsAuditEvent[]> {
+  // TODO(keridz): replace with GET /api/admin/secrets/audit?limit=200
+  await new Promise((r) => setTimeout(r, 120));
+  return MOCK_AUDIT;
+}
