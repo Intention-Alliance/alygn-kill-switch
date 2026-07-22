@@ -30,6 +30,8 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [focusedRowIndex, setFocusedRowIndex] = useState<number>(-1);
   const rotateButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingGoKeyRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const lockedNames = useMemo(() => {
     const locked = new Set<string>();
@@ -60,7 +62,7 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
             ? {
                 ...s,
                 lastRotatedAt: result.rotatedAt,
-                previewSuffix: result.previewSuffix ?? rollPreviewSuffix(),
+                previewSuffix: result.previewSuffix,
               }
             : s,
         ),
@@ -78,6 +80,10 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
         ...prev,
       ]);
       toast.success(`${name} rotated`);
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+      highlightTimerRef.current = setTimeout(() => setHighlightedId(null), 2500);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Rotation failed";
       toast.error(message);
@@ -145,14 +151,49 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
           e.preventDefault();
           handleRotate(matchingSecret);
         }
+        return;
+      }
+
+      // Navigation prefix: g → s/k within 1.5s
+      if (e.key.toLowerCase() === "g" && !pendingGoKeyRef.current) {
+        e.preventDefault();
+        pendingGoKeyRef.current = setTimeout(() => {
+          pendingGoKeyRef.current = null;
+        }, 1500);
+        toast.info("Go to: s = Secrets, k = Kill Switch");
+        return;
+      }
+
+      if (pendingGoKeyRef.current) {
+        pendingGoKeyRef.current = null;
+        const next = e.key.toLowerCase();
+        if (next === "s") {
+          e.preventDefault();
+          window.location.href = "/admin/secrets";
+          return;
+        }
+        if (next === "k") {
+          e.preventDefault();
+          window.location.href = "/kill-switch";
+          return;
+        }
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+  }, [secrets, focusedRowIndex, focusRotateButton, handleRotate]);
 
-    const t = setTimeout(() => setHighlightedId(null), 2500);
-    return () => clearTimeout(t);
-  }, [highlightedId]);
+  // Clear navigation-prefix and highlight timers on unmount / page navigation.
+  useEffect(() => {
+    return () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+      if (pendingGoKeyRef.current) {
+        clearTimeout(pendingGoKeyRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setSecrets(initial.secrets);
@@ -227,8 +268,4 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
       <HelpOverlay open={helpOpen} onOpenChange={setHelpOpen} />
     </div>
   );
-}
-
-function rollPreviewSuffix(): string {
-  return Math.random().toString(36).slice(2, 6);
 }

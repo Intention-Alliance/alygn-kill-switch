@@ -8,6 +8,7 @@ const ACTION_BADGES: Record<
   "default" | "destructive" | "secondary" | "outline" | null
 > = {
   rotate: "default",
+  "rotate-consumer": "default",
   view: "secondary",
   "401-block": "destructive",
   "401-storm": "outline",

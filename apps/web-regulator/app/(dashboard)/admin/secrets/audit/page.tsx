@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { fetchFullAudit } from "../actions";
-import { AuditLogRow, formatTime } from "@/components/secrets/audit-log-row";
+import { AuditLogRow } from "@/components/secrets/audit-log-row";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {

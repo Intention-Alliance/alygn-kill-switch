@@ -46,7 +46,17 @@ export interface SecretsLoaderHealth {
 export interface SecretsAuditEvent {
   id: string;
   at: string;
-  event: "rotate" | "view" | "401" | "401-block" | "401-storm" | "sighup" | "poll" | "lock" | "unlock";
+  event:
+    | "rotate"
+    | "rotate-consumer"
+    | "view"
+    | "401"
+    | "401-block"
+    | "401-storm"
+    | "sighup"
+    | "poll"
+    | "lock"
+    | "unlock";
   name: string;
   actor: string;
   result?: string;
