@@ -9,7 +9,6 @@ import { LockoutBanner } from "./lockout-banner";
 import { RotateConfirmDialog } from "./rotate-confirm-dialog";
 import { CommandPalette } from "./command-palette";
 import { EmptyState } from "./empty-state";
-import { LoaderHealthBadge } from "./secrets-loader-badge";
 import { HelpOverlay } from "./help-overlay";
 import type { SecretInfo, SecretsPageData, SecretsAuditEvent } from "@/types/secrets";
 
