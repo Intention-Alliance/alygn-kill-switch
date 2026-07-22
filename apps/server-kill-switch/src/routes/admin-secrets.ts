@@ -17,7 +17,7 @@
 import type { SecretsLoader } from '../lib/secrets-loader';
 import { maskSecret } from '../lib/secrets-loader';
 import type { LockoutStateMachine } from '../lib/lockout-state';
-import { getConsumers, getConsumerNames, writeToAllConsumers } from '../lib/secrets-consumers';
+import { getConsumers, writeToAllConsumers, type ConsumerConfig } from '../lib/secrets-consumers';
 import { secureCompare } from '../utils/secure-compare';
 import { db } from '../db';
 import { secretsAuditLog } from '../db/schema';
@@ -194,6 +194,44 @@ function checkAdminAuth(req: any): boolean {
   return secureCompare(token, expected);
 }
 
+// ─── PID Lookup Helper ─────────────────────────────────────────────────
+
+/**
+ * Look up a real PID for a consumer's reload target.
+ * - 'sighup' consumers: read PID file if available, else use process.pid (self)
+ * - 'nginx-reload' consumers: try `pgrep -f nginx` fallback to 0
+ * - 'none' consumers: 0 (fs.watch, no process to signal)
+ */
+function lookupPid(consumer: ConsumerConfig): number {
+  if (consumer.reloadMethod === 'none') return 0;
+
+  // For sighup consumers with a PID file, we could read it synchronously
+  // but to keep this simple and non-blocking-ish, we use process.pid as
+  // a reasonable fallback for self-managed consumers.
+  if (consumer.reloadMethod === 'sighup') {
+    // Try to read PID file synchronously
+    try {
+      const fs = require('node:fs');
+      const pidPath = consumer.reloadTarget;
+      if (pidPath && fs.existsSync(pidPath)) {
+        const content = fs.readFileSync(pidPath, 'utf-8').trim();
+        const pid = parseInt(content, 10);
+        if (!isNaN(pid) && pid > 0) return pid;
+      }
+    } catch {}
+    // Fallback: self PID (the kill-switch process itself)
+    return process.pid;
+  }
+
+  if (consumer.reloadMethod === 'nginx-reload') {
+    // We can't synchronously pgrep without spawning, so fallback to 0
+    // The FE only needs the number for display/counting purposes
+    return 0;
+  }
+
+  return 0;
+}
+
 // ─── Route Handler ─────────────────────────────────────────────────────
 
 export async function handleAdminSecretsRoutes(
@@ -233,18 +271,28 @@ export async function handleAdminSecretsRoutes(
   // ── GET /api/admin/secrets — list all *_TAILSCALE_* keys ──
   if (method === 'GET' && url === '/api/admin/secrets') {
     const loadedKeys = secretsLoader.getLoadedKeys();
-    const consumerNames = getConsumerNames();
-    const consumerPaths = getConsumers().map((c) => ({ name: c.name, type: 'service' as const, path: c.path }));
+    const consumers = getConsumers();
 
-    const keys = loadedKeys.map((name) => {
+    const secrets = loadedKeys.map((name) => {
       const value = process.env[name] || '';
+      const masked = maskSecret(value);
       const lockoutLabel = lockoutState.getLockoutLabel();
       return {
         name,
-        maskedValue: maskSecret(value),
+        maskedValue: masked,
         lastRotatedAt: null, // TODO: track rotation timestamps per key
-        lockoutState: lockoutLabel,
-        dependentConfigs: consumerNames,
+        state: lockoutLabel === 'ok' ? 'armed' : 'locked',
+        previewSuffix: masked.slice(-4),
+        dependentConfigs: consumers.map((c) => ({
+          name: c.name,
+          type: 'service',
+          path: c.path,
+        })),
+        reloadTargets: consumers.map((c) => ({
+          name: c.name,
+          pid: lookupPid(c),
+          method: c.reloadMethod === 'none' ? 'fs.watch' : 'sighup',
+        })),
       };
     });
 
@@ -261,7 +309,7 @@ export async function handleAdminSecretsRoutes(
     await lockoutState.record200();
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ keys }));
+    res.end(JSON.stringify({ secrets }));
     return true;
   }
 
@@ -335,22 +383,30 @@ export async function handleAdminSecretsRoutes(
 
       // Build response — NEVER includes the full value
       const consumers = getConsumers();
+      const dependentConfigs = consumers.map((c) => ({
+        name: c.name,
+        type: 'service' as const,
+        path: c.path,
+      }));
+      const reloadTargets = writeResults
+        .filter((r) => r.reloaded)
+        .map((r) => {
+          const consumer = consumers.find((c) => c.name === r.consumer)!;
+          return {
+            name: r.consumer,
+            pid: lookupPid(consumer),
+            method: consumer.reloadMethod === 'none' ? 'fs.watch' as const : 'sighup' as const,
+          };
+        });
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         name: keyName,
         rotatedAt,
         maskedValue,
-        dependentConfigs: consumers.map((c) => ({
-          name: c.name,
-          type: 'service',
-          path: c.path,
-        })),
-        reloadTargets: writeResults
-          .filter((r) => r.reloaded)
-          .map((r) => ({
-            name: r.consumer,
-            method: r.reloadError ? 'none' : 'sighup',
-          })),
+        dependentConfigs,
+        reloadTargets,
+        filesWritten: dependentConfigs.length,
+        appsReloaded: reloadTargets.length,
         writtenToConfigs: writeResults
           .filter((r) => r.result === 'ok')
           .map((r) => r.path),
