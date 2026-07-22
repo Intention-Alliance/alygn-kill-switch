@@ -289,9 +289,9 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`
     CREATE TABLE IF NOT EXISTS secrets_audit_log (
       id TEXT PRIMARY KEY,
-      ts INTEGER NOT NULL,
-      key_name TEXT NOT NULL,
-      action TEXT NOT NULL,
+      at INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      event TEXT NOT NULL,
       source_ip TEXT,
       result TEXT NOT NULL,
       actor TEXT,
@@ -299,8 +299,8 @@ export function initDatabase(dbPath: string = DB_PATH) {
     )
   `);
 
-  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_key_time_idx ON secrets_audit_log(key_name, ts)`);
-  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_action_time_idx ON secrets_audit_log(action, ts)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_name_time_idx ON secrets_audit_log(name, at)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_event_time_idx ON secrets_audit_log(event, at)`);
 
   // ─── Indexes ───────────────────────────────────────────────────────
 

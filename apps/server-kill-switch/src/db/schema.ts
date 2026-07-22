@@ -226,17 +226,17 @@ export const secretsAuditLog = sqliteTable(
   'secrets_audit_log',
   {
     id: text('id').primaryKey(),
-    ts: integer('ts', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-    keyName: text('key_name').notNull(),
-    action: text('action').notNull(),         // 'rotate' | 'view' | '401' | 'lockout' | 'unlock' | 'reload' | 'rotate-consumer'
+    at: integer('at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    name: text('name').notNull(),
+    event: text('event').notNull(),         // 'rotate' | 'view' | '401' | 'lockout' | 'unlock' | 'reload' | 'rotate-consumer'
     sourceIp: text('source_ip'),
     result: text('result').notNull(),          // 'ok' | 'error' | 'blocked' | 'unauthorized' | 'locked'
     actor: text('actor'),
     meta: text('meta'),                         // JSON string
   },
   (table) => ({
-    keyTimeIdx: index('secrets_audit_key_time_idx').on(table.keyName, table.ts),
-    actionTimeIdx: index('secrets_audit_action_time_idx').on(table.action, table.ts),
+    nameTimeIdx: index('secrets_audit_name_time_idx').on(table.name, table.at),
+    eventTimeIdx: index('secrets_audit_event_time_idx').on(table.event, table.at),
   }),
 );
 

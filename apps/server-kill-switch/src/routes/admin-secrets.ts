@@ -27,9 +27,9 @@ import { desc, eq, and, gte, lte, sql } from 'drizzle-orm';
 
 export interface SecretsAuditEntry {
   id: string;
-  ts: string;
-  action: 'rotate' | 'view' | '401' | '401-block' | 'sighup' | 'poll' | 'lock' | 'unlock' | 'rotate-consumer';
-  keyName: string;
+  at: string;
+  event: 'rotate' | 'view' | '401' | '401-block' | 'sighup' | 'poll' | 'lock' | 'unlock' | 'rotate-consumer';
+  name: string;
   sourceIp: string;
   actor: string;
   result: string;
@@ -71,16 +71,16 @@ export async function initAuditLogFromDb(): Promise<void> {
   try {
     const rows = await db.select()
       .from(secretsAuditLog)
-      .orderBy(desc(secretsAuditLog.ts))
+      .orderBy(desc(secretsAuditLog.at))
       .limit(STARTUP_LOAD_COUNT);
 
     // Reverse to chronological order (oldest first)
     for (const row of rows.reverse()) {
       auditLog.push({
         id: row.id,
-        ts: new Date(row.ts).toISOString(),
-        action: row.action as SecretsAuditEntry['action'],
-        keyName: row.keyName,
+        at: new Date(row.at).toISOString(),
+        event: row.event as SecretsAuditEntry['event'],
+        name: row.name,
         sourceIp: row.sourceIp || 'unknown',
         actor: row.actor || 'unknown',
         result: row.result,
@@ -115,9 +115,9 @@ export async function appendAuditEntry(entry: Omit<SecretsAuditEntry, 'id'>): Pr
   try {
     await db.insert(secretsAuditLog).values({
       id: full.id,
-      ts: new Date(full.ts),
-      keyName: full.keyName,
-      action: full.action,
+      at: new Date(full.at),
+      name: full.name,
+      event: full.event,
       sourceIp: full.sourceIp,
       result: full.result,
       actor: full.actor,
@@ -131,8 +131,8 @@ export async function appendAuditEntry(entry: Omit<SecretsAuditEntry, 'id'>): Pr
 }
 
 export function getAuditEntries(opts: {
-  keyName?: string;
-  action?: string;
+  name?: string;
+  event?: string;
   from?: number;
   to?: number;
   limit?: number;
@@ -140,17 +140,17 @@ export function getAuditEntries(opts: {
 }): { entries: SecretsAuditEntry[]; total: number } {
   let filtered = auditLog;
 
-  if (opts.keyName) {
-    filtered = filtered.filter((e) => e.keyName === opts.keyName);
+  if (opts.name) {
+    filtered = filtered.filter((e) => e.name === opts.name);
   }
-  if (opts.action) {
-    filtered = filtered.filter((e) => e.action === opts.action);
+  if (opts.event) {
+    filtered = filtered.filter((e) => e.event === opts.event);
   }
   if (opts.from) {
-    filtered = filtered.filter((e) => new Date(e.ts).getTime() >= opts.from!);
+    filtered = filtered.filter((e) => new Date(e.at).getTime() >= opts.from!);
   }
   if (opts.to) {
-    filtered = filtered.filter((e) => new Date(e.ts).getTime() <= opts.to!);
+    filtered = filtered.filter((e) => new Date(e.at).getTime() <= opts.to!);
   }
 
   const total = filtered.length;
@@ -258,9 +258,9 @@ export async function handleAdminSecretsRoutes(
     // Record the 401 in the lockout state machine
     await lockoutState.record401(ip);
     await appendAuditEntry({
-      ts: new Date().toISOString(),
-      action: '401',
-      keyName: 'admin-secrets-api',
+      at: new Date().toISOString(),
+      event: '401',
+      name: 'admin-secrets-api',
       sourceIp: ip,
       actor: ip,
       result: 'unauthorized',
@@ -297,9 +297,9 @@ export async function handleAdminSecretsRoutes(
     });
 
     await appendAuditEntry({
-      ts: new Date().toISOString(),
-      action: 'view',
-      keyName: '*',
+      at: new Date().toISOString(),
+      event: 'view',
+      name: '*',
       sourceIp: ip,
       actor: 'admin',
       result: 'ok',
@@ -329,9 +329,9 @@ export async function handleAdminSecretsRoutes(
     const lockoutCheck = lockoutState.getCheckResult();
     if (lockoutCheck.locked) {
       await appendAuditEntry({
-        ts: new Date().toISOString(),
-        action: 'rotate',
-        keyName,
+        at: new Date().toISOString(),
+        event: 'rotate',
+        name: keyName,
         sourceIp: ip,
         actor: 'admin',
         result: 'locked',
@@ -356,9 +356,9 @@ export async function handleAdminSecretsRoutes(
 
       // Audit: rotation event
       await appendAuditEntry({
-        ts: rotatedAt,
-        action: 'rotate',
-        keyName,
+        at: rotatedAt,
+        event: 'rotate',
+        name: keyName,
         sourceIp: ip,
         actor: 'admin',
         result: 'ok',
@@ -368,9 +368,9 @@ export async function handleAdminSecretsRoutes(
       // Audit: per-consumer write events
       for (const wr of writeResults) {
         await appendAuditEntry({
-          ts: rotatedAt,
-          action: 'rotate-consumer',
-          keyName,
+          at: rotatedAt,
+          event: 'rotate-consumer',
+          name: keyName,
           sourceIp: ip,
           actor: 'admin',
           result: wr.result,
@@ -415,9 +415,9 @@ export async function handleAdminSecretsRoutes(
       return true;
     } catch (err) {
       await appendAuditEntry({
-        ts: new Date().toISOString(),
-        action: 'rotate',
-        keyName,
+        at: new Date().toISOString(),
+        event: 'rotate',
+        name: keyName,
         sourceIp: ip,
         actor: 'admin',
         result: 'error',
@@ -454,8 +454,8 @@ export async function handleAdminSecretsRoutes(
   // ── GET /api/admin/secrets/audit — queryable audit log ──
   if (method === 'GET' && url.startsWith('/api/admin/secrets/audit')) {
     const parsedUrl = new URL(url, 'http://localhost');
-    const keyName = parsedUrl.searchParams.get('keyName') || undefined;
-    const action = parsedUrl.searchParams.get('action') || undefined;
+    const keyName = parsedUrl.searchParams.get('name') || parsedUrl.searchParams.get('keyName') || undefined;
+    const event = parsedUrl.searchParams.get('event') || parsedUrl.searchParams.get('action') || undefined;
     const fromStr = parsedUrl.searchParams.get('from');
     const toStr = parsedUrl.searchParams.get('to');
     const limitStr = parsedUrl.searchParams.get('limit');
@@ -466,7 +466,7 @@ export async function handleAdminSecretsRoutes(
     const limit = limitStr ? parseInt(limitStr, 10) : 50;
     const offset = offsetStr ? parseInt(offsetStr, 10) : 0;
 
-    const result = getAuditEntries({ keyName, action, from, to, limit, offset });
+    const result = getAuditEntries({ name: keyName, event, from, to, limit, offset });
 
     await lockoutState.record200();
 
