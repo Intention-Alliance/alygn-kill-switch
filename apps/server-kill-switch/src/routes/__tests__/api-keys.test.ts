@@ -194,6 +194,14 @@ mock.module(dbPath, () => {
       }),
       transaction: async (fn: any) => {
         return fn({
+          query: {
+            webhookApiKeys: {
+              findFirst: async ({ where: cond }: any) => {
+                const eqVal = getEqValue(cond)
+                return state.keys.find((k) => k.id === eqVal) || undefined
+              },
+            },
+          },
           update: (table: any) => ({
             set: (patch: any) => ({
               where: (cond: any) => {

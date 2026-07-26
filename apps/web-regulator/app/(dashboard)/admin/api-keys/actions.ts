@@ -65,7 +65,9 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
 function isMockMode(): boolean {
   // If the kill-switch-api isn't reachable or ADMIN_UI_API_KEY isn't set,
   // fall back to mock data so the UI is still usable in dev.
-  return !ADMIN_UI_API_KEY;
+  // In production, NEVER mock — a missing ADMIN_UI_API_KEY should error loudly,
+  // not silently return fake keys + success toasts.
+  return process.env.NODE_ENV !== 'production' && !ADMIN_UI_API_KEY;
 }
 
 // ─── Mocks (used when kill-switch-api is unreachable) ───────────

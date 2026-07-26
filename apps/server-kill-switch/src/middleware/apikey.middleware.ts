@@ -103,6 +103,7 @@ export async function verifyApiKey(
 		await audit(null, 'use_failed', `request:${ip}`, {
 			reason: 'malformed',
 			requiredScope,
+			prefix: rawKey.slice(0, 8),
 		})
 		return { ok: false, reason: 'malformed' }
 	}
@@ -116,6 +117,7 @@ export async function verifyApiKey(
 		await audit(null, 'use_failed', `request:${ip}`, {
 			reason: 'unknown_prefix',
 			requiredScope,
+			prefix: rawKey.slice(0, 8),
 		})
 		return { ok: false, reason: 'unknown' }
 	}

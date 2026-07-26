@@ -72,6 +72,31 @@ function internalKeyMatches(req: Req): boolean {
 	return false
 }
 
+// ─── Internal endpoint rate limiter (spec §7: 10 req/min/key) ────────────
+// In-memory sliding window since internal endpoints are localhost-only.
+// Prevents a runaway caller from hammering the lookup endpoint.
+const INTERNAL_RATE_LIMIT_MAX = 10
+const INTERNAL_RATE_LIMIT_WINDOW_MS = 60_000
+const internalRateBuckets = new Map<string, number[]>()
+
+function checkInternalRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
+	const now = Date.now()
+	const cutoff = now - INTERNAL_RATE_LIMIT_WINDOW_MS
+	const bucket = internalRateBuckets.get(ip) ?? []
+	const recent = bucket.filter((t) => t > cutoff)
+	if (recent.length >= INTERNAL_RATE_LIMIT_MAX) {
+		return { allowed: false, retryAfter: Math.ceil(INTERNAL_RATE_LIMIT_WINDOW_MS / 1000) }
+	}
+	recent.push(now)
+	internalRateBuckets.set(ip, recent)
+	return { allowed: true }
+}
+
+function rateLimited(res: Res): boolean {
+	writeJson(res, 429, { error: 'rate limit exceeded', limit: INTERNAL_RATE_LIMIT_MAX, retryAfter: 60 })
+	return true
+}
+
 function writeJson(res: Res, status: number, body: unknown) {
 	res.writeHead(status, { 'Content-Type': 'application/json' })
 	res.end(JSON.stringify(body))
@@ -250,30 +275,32 @@ async function createKey(req: Req, res: Res): Promise<boolean> {
 
 /** POST /v1/admin/api-keys/:id/rotate */
 async function rotateKey(res: Res, id: string): Promise<boolean> {
-	const existing = await db.query.webhookApiKeys.findFirst({
-		where: eq(webhookApiKeys.id, id),
-	})
-	if (!existing) {
-		notFound(res)
-		return true
-	}
-	if (existing.revokedAt) {
-		writeJson(res, 409, {
-			error: 'cannot rotate a revoked key — create a new one',
-		})
-		return true
-	}
+	// Use a transaction to prevent TOCTOU race: two concurrent rotations
+	// could both read the key as active and both proceed. By doing the
+	// read + check + write inside a single transaction, the second one
+	// will see the row as revoked and abort.
+	let result: { status: number; body: Record<string, unknown> } | null = null
 
-	const newPlaintext = hashingService.generateApiKey()
-	const newPrefix = newPlaintext.slice(0, 8)
-	const newHash = hashingService.hashApiKey(newPlaintext)
-	const newId = newKeyId()
-
-	// Mark old as revoked (with a tiny grace: expiresAt=now so even an in-flight
-	// request with the old key fails closed), then create new. Use a transaction
-	// to keep this atomic.
-	const oldId = existing.id
 	await db.transaction(async (tx) => {
+		const existing = await tx.query.webhookApiKeys.findFirst({
+			where: eq(webhookApiKeys.id, id),
+		})
+		if (!existing) {
+			result = { status: 404, body: { error: 'not found' } }
+			return
+		}
+		if (existing.revokedAt) {
+			result = { status: 409, body: { error: 'cannot rotate a revoked key — create a new one' } }
+			return
+		}
+
+		const newPlaintext = hashingService.generateApiKey()
+		const newPrefix = newPlaintext.slice(0, 8)
+		const newHash = hashingService.hashApiKey(newPlaintext)
+		const newId = newKeyId()
+		const oldId = existing.id
+
+		// Mark old as revoked, then create new — both inside the transaction.
 		await tx
 			.update(webhookApiKeys)
 			.set({ revokedAt: new Date(), revokedBy: 'admin', expiresAt: new Date() })
@@ -289,31 +316,41 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 			expiresAt: existing.expiresAt,
 			notes: existing.notes,
 		})
+
+		// Audit entries inside the transaction too.
+		await tx.insert(webhookApiKeyAudit).values({
+			keyId: oldId,
+			action: 'rotate',
+			actor: 'admin',
+			at: new Date(),
+			meta: JSON.stringify({ newKeyId: newId, oldKeyPrefix: existing.keyPrefix }),
+		})
+		await tx.insert(webhookApiKeyAudit).values({
+			keyId: newId,
+			action: 'create',
+			actor: 'admin',
+			at: new Date(),
+			meta: JSON.stringify({ rotatedFrom: oldId, source: 'rotate' }),
+		})
+
+		result = {
+			status: 201,
+			body: {
+				id: newId,
+				keyPrefix: newPrefix,
+				name: existing.name,
+				scopes: existing.scopes.split(',').map((s) => s.trim()).filter(Boolean),
+				key: newPlaintext,
+				revokedKeyId: oldId,
+			},
+		}
 	})
 
-	await db.insert(webhookApiKeyAudit).values({
-		keyId: oldId,
-		action: 'rotate',
-		actor: 'admin',
-		at: new Date(),
-		meta: JSON.stringify({ newKeyId: newId, oldKeyPrefix: existing.keyPrefix }),
-	})
-	await db.insert(webhookApiKeyAudit).values({
-		keyId: newId,
-		action: 'create',
-		actor: 'admin',
-		at: new Date(),
-		meta: JSON.stringify({ rotatedFrom: oldId, source: 'rotate' }),
-	})
-
-	writeJson(res, 201, {
-		id: newId,
-		keyPrefix: newPrefix,
-		name: existing.name,
-		scopes: existing.scopes.split(','),
-		key: newPlaintext, // shown ONCE
-		revokedKeyId: oldId,
-	})
+	if (!result) {
+		writeJson(res, 500, { error: 'rotation failed' })
+		return true
+	}
+	writeJson(res, result.status, result.body)
 	return true
 }
 
@@ -464,10 +501,14 @@ export async function handleApiKeysRoutes(
 	// ─── Internal routes (openclaw-webhook) ────────────────────────
 	if (path === '/v1/internal/api-keys/lookup' && method === 'GET') {
 		if (!internalKeyMatches(req)) return unauthorized(res)
+		const rl = checkInternalRateLimit(ip)
+		if (!rl.allowed) return rateLimited(res)
 		return internalLookup(req, res)
 	}
 	if (path === '/v1/internal/api-keys/verify' && method === 'POST') {
 		if (!internalKeyMatches(req)) return unauthorized(res)
+		const rl = checkInternalRateLimit(ip)
+		if (!rl.allowed) return rateLimited(res)
 		return internalVerify(req, res, ip)
 	}
 

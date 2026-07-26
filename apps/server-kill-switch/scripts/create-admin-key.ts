@@ -23,6 +23,8 @@ import { db } from '../src/db'
 import { hashingService } from '../src/services/hashing'
 import { webhookApiKeyAudit, webhookApiKeys } from '../src/db/schema'
 import { randomBytes } from 'node:crypto'
+import { chmodSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 // ─── Argument parsing ─────────────────────────────────────────────
 
@@ -88,6 +90,16 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 	const name = args.name || DEFAULT_NAME
 	const scopes = args.scopes || DEFAULT_SCOPES
 	const force = !!args.force
+
+	// 0. Ensure DB file has secure permissions (spec §9: 0640)
+	const dbPath = join(import.meta.dir, '..', 'data', 'kill-switch.sqlite')
+	if (existsSync(dbPath)) {
+		try {
+			chmodSync(dbPath, 0o640)
+		} catch (e) {
+			console.warn(`[security] could not chmod ${dbPath} to 0640:`, e instanceof Error ? e.message : e)
+		}
+	}
 
 	// 1. Idempotency check: do we already have a key with this name?
 	const existing = await db.query.webhookApiKeys.findFirst({

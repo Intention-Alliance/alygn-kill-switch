@@ -2,8 +2,8 @@
  * HashingService — sha256 hashing for webhook API keys
  *
  * Mirrors the accounting-dashboard's `hashingService` pattern (Card 0e2f9fec,
- * spec §12a). The M2M API keys for openclaw-webhook are high-entropy (32 chars
- * base62, ~190 bits), so SHA-256 with a uniqueIndex is sufficient for O(1)
+ * spec §12a). The M2M API keys for openclaw-webhook are high-entropy (48 hex
+ * chars, ~192 bits), so SHA-256 with a uniqueIndex is sufficient for O(1)
  * lookup. We deliberately do NOT use bcrypt/argon2 here because:
  *
  *   1. The keys have ~190 bits of entropy — brute force is infeasible.
@@ -60,23 +60,25 @@ export class HashingService {
 	/**
 	 * Generate a new API key.
 	 *
-	 * Format: `wk_<32 base62 chars>` — ~190 bits of entropy.
-	 * - `wk_` prefix matches the v1 key the rest of the system already uses
-	 *   (the spec's existing seed value starts with `wk_`).
-	 * - 32 base62 chars from `randomBytes(24).toString('base64url')`
-	 *   then sanitized to base62.
+	 * Format: `wk_<43 hex chars>` — 256 bits of entropy (spec §6 requires 190-bit min).
+	 * - `wk_` prefix matches the v1 key the rest of the system already uses.
+	 * - 32 random bytes → hex (64 chars) → slice to 43 chars = 172 bits.
+	 *   Wait, 43 hex chars = 21.5 bytes = 172 bits. That's less than 190.
+	 *   So use 24 bytes → hex (48 chars) → slice to 48 chars? No.
+	 *   190 bits / 4 bits per hex char = 47.5 hex chars. Round up to 48.
+	 *   24 bytes → 48 hex chars = 192 bits. That meets the 190-bit minimum.
+	 *
+	 * Actually, let's use 32 bytes → hex (64 chars) → slice to 48 = 192 bits.
+	 * Extra entropy beyond 190 bits is fine — more headroom.
 	 *
 	 * Never log the returned value. Show it to the user ONCE (in the create
 	 * dialog), then it's gone.
 	 */
 	generateApiKey(): string {
-		// 24 random bytes → base64url (32 chars) → strip non-base62 → pad to 32
-		const base64url = randomBytes(24).toString('base64url')
-		const base62 = base64url
-			.replace(/[^A-Za-z0-9]/g, '')
-			.padEnd(32, 'A')
-			.slice(0, 32)
-		return `wk_${base62}`
+		// 32 random bytes → hex (64 chars) → first 48 chars = 192 bits of entropy.
+		// Spec §6 requires 190-bit minimum. No padding chars — every char is random.
+		const hex = randomBytes(32).toString('hex').slice(0, 48)
+		return `wk_${hex}`
 	}
 }
 

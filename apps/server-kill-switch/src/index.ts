@@ -181,7 +181,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   const port = opts.port || config.server.port;
 
   // Bun.serve with native WebSocket
+  // hostname: 127.0.0.1 — bind to loopback only so /v1/internal/* endpoints
+  // are not reachable from sibling containers on the align-network docker network.
+  // Spec §9 requires internal endpoints be localhost-only.
   const server = Bun.serve({
+    hostname: '127.0.0.1',
     port,
     websocket: {
       maxPayloadLength: 65536,
