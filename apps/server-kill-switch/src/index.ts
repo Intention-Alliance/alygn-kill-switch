@@ -16,6 +16,7 @@ import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
 import { handleAdminSecretsRoutes, initAuditLogFromDb } from './routes/admin-secrets';
+import { handleApiKeysRoutes } from './routes/api-keys';
 import { SecretsLoader } from './lib/secrets-loader';
 import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
@@ -52,6 +53,16 @@ function createHandler(service: KillSwitchService) {
     // ── Admin secrets routes (separate auth: ADMIN_UI_API_KEY) ──
     const secretsHandled = await handleAdminSecretsRoutes(method, url, req, res, secretsLoader, lockoutState);
     if (secretsHandled) return;
+
+    // ── Webhook API Key admin + internal routes (separate auth) ──
+    // Must run BEFORE checkAuth because:
+    //   - /v1/internal/* is called by the openclaw-webhook over loopback
+    //     with KILL_SWITCH_INTERNAL_KEY, NOT a user session.
+    //   - /v1/admin/api-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user session
+    //     (mirrors admin-secrets.ts above).
+    // The handler does its own auth checks (adminKeyMatches / internalKeyMatches).
+    const apiKeysHandled = await handleApiKeysRoutes(method, url, req, res, ip);
+    if (apiKeysHandled) return;
 
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
