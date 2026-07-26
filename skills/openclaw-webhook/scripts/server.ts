@@ -11,7 +11,7 @@
  *   bun run scripts/server.ts --dry-run  # Verify config + exit
  */
 
-import { createHash } from 'node:crypto'
+import { createHash, timingSafeEqual } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { SignJWT, jwtVerify, importSPKI, importPKCS8 } from 'jose'
@@ -75,6 +75,121 @@ const MANIFEST_DIR = process.env.OPENCLAW_MANIFEST_DIR ?? join(process.env.HOME 
 const JWT_EXPIRY_SECONDS = Number(process.env.OPENCLAW_JWT_EXPIRY_SECONDS ?? 300)
 const RATE_LIMIT_MAX = Number(process.env.OPENCLAW_RATE_LIMIT_MAX ?? 10)
 const RATE_LIMIT_WINDOW_MS = Number(process.env.OPENCLAW_RATE_LIMIT_WINDOW_MS ?? 60_000)
+
+// ── DB-backed API key auth (Card 0e2f9fec) ────────────────────────
+//
+// The kill-switch-api exposes a read-only HTTP lookup endpoint that
+// returns the sha256 hash + scopes for a key prefix. We use it for M2M
+// auth instead of the env-var string compare (which had three sources of
+// truth and was producing 401s — see spec §1).
+//
+// KILL_SWITCH_API_URL — base URL of the kill-switch-api (default: http://127.0.0.1:3000)
+// KILL_SWITCH_INTERNAL_KEY — shared secret for the internal endpoint
+const KILL_SWITCH_API_URL = process.env.KILL_SWITCH_API_URL ?? 'http://127.0.0.1:3000'
+const KILL_SWITCH_INTERNAL_KEY = process.env.KILL_SWITCH_INTERNAL_KEY ?? ''
+
+type DbAuthResult =
+  | { ok: true; keyPrefix: string; scopes?: string[] }
+  | {
+      ok: false
+      error:
+        | 'missing-internal-key'
+        | 'malformed-key'
+        | 'kill-switch-unreachable'
+        | 'lookup-failed'
+        | 'unauthorized' // kill-switch returned 401 (bad internal key)
+        | 'not-found' // no row for that prefix
+        | 'hash-mismatch' // sha256 didn't match
+        | 'revoked' // revoked_at is set
+        | 'expired' // expires_at passed
+        | 'scope-mismatch' // requiredScope not in scopes
+    }
+
+/**
+ * Verify an X-Webhook-Key against the kill-switch-api's internal lookup.
+ *
+ * Two-step verification (acceptance #5/6/7):
+ *  1. HTTP GET ?prefix=<first 8 chars> — O(1) index lookup, returns the row
+ *  2. sha256 the request key, compare to the returned hash in constant time
+ *
+ * If the lookup fails because the kill-switch-api is down (network error,
+ * ECONNREFUSED, 5xx), we return 'kill-switch-unreachable' so the caller
+ * can fall back to the env-var compare (acceptance #10 — 30-day safety net).
+ *
+ * @param apiKey  Plaintext key from X-Webhook-Key header
+ * @param requiredScope  Scope to check (e.g. 'live-chat')
+ * @returns Verification result with `ok: true` + keyPrefix on success, or `ok: false` + reason
+ */
+async function verifyApiKeyViaDbLookup(apiKey: string, requiredScope: string): Promise<DbAuthResult> {
+  if (!KILL_SWITCH_INTERNAL_KEY) {
+    // No internal key configured — skip DB lookup. The caller will fall
+    // through to env-var (if set) or JWT.
+    return { ok: false, error: 'missing-internal-key' }
+  }
+  if (!apiKey || apiKey.length < 16) {
+    return { ok: false, error: 'malformed-key' }
+  }
+  const prefix = apiKey.slice(0, 8)
+
+  let response: Response
+  try {
+    const url = `${KILL_SWITCH_API_URL}/v1/internal/api-keys/lookup?prefix=${encodeURIComponent(prefix)}`
+    response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-Internal-Key': KILL_SWITCH_INTERNAL_KEY,
+        Accept: 'application/json',
+      },
+      // Tight timeout — the kill-switch-api is on localhost, anything >2s is wrong.
+      signal: AbortSignal.timeout(2000),
+    })
+  } catch (e) {
+    // Network error / timeout / kill-switch down. Caller will try env-var.
+    return { ok: false, error: 'kill-switch-unreachable' }
+  }
+
+  if (response.status === 401) {
+    return { ok: false, error: 'unauthorized' }
+  }
+  if (response.status === 404) {
+    // No row for that prefix — the key is definitely not valid.
+    return { ok: false, error: 'not-found' }
+  }
+  if (!response.ok) {
+    return { ok: false, error: 'lookup-failed' }
+  }
+
+  let body: { id?: string; apiKeyHash?: string; scopes?: string[]; revokedAt?: string; expiresAt?: string }
+  try {
+    body = await response.json()
+  } catch {
+    return { ok: false, error: 'lookup-failed' }
+  }
+
+  if (!body.apiKeyHash) {
+    return { ok: false, error: 'lookup-failed' }
+  }
+  if (body.revokedAt) {
+    return { ok: false, error: 'revoked' }
+  }
+  if (body.expiresAt && new Date(body.expiresAt) < new Date()) {
+    return { ok: false, error: 'expired' }
+  }
+
+  // Constant-time hash compare (defence-in-depth; the lookup already proved
+  // the prefix is unique, but a hash compare is the textbook pattern).
+  const expected = Buffer.from(body.apiKeyHash, 'hex')
+  const actual = createHash('sha256').update(apiKey, 'utf8').digest()
+  if (expected.length !== actual.length || !timingSafeEqual(expected, actual)) {
+    return { ok: false, error: 'hash-mismatch' }
+  }
+
+  if (requiredScope && !(body.scopes || []).includes(requiredScope)) {
+    return { ok: false, error: 'scope-mismatch' }
+  }
+
+  return { ok: true, keyPrefix: prefix, scopes: body.scopes }
+}
 
 // ── Logger ──────────────────────────────────────────────────────────────────
 
@@ -446,6 +561,135 @@ const server = Bun.serve({
           { status: 500 },
         )
       }
+    }
+
+    // ── POST /webhook/live-chat (OpenClaw direct inference path) ──────────────
+    // Replaces the deprecated /webhook/forward (2026-07-23). Single-hop:
+    // Vercel (or any JWT-authed caller) posts a chat message in standard
+    // Ollama /api/chat format. The webhook verifies the JWT, calls Ollama
+    // locally as part of the handler, and returns the Ollama JSON response.
+    // The webhook is the ONLY public face on the Tailscale-served port;
+    // Ollama stays on :11434 (localhost only), reachable from this process.
+    if (path === '/webhook/live-chat' && method === 'POST') {
+      try {
+        const body = await request.text()
+
+        // ── Auth: API key via DB lookup (preferred) or env-var fallback ──
+        // Card 0e2f9fec / spec §6 / acceptance #5, #6, #7, #10.
+        //
+        // Order of checks:
+        //  1. X-Webhook-Key header is present
+        //  2. Try HTTP lookup against kill-switch-api's /v1/internal/api-keys/lookup
+        //     (KILL_SWITCH_API_URL + X-Internal-Key) — primary path
+        //  3. On lookup error (kill-switch down, network, 5xx), fall back to
+        //     WEBHOOK_API_KEY env-var compare. This is the 30-day safety net.
+        //  4. JWT as final fallback for callers that already have keypairs.
+        const apiKey = request.headers.get('x-webhook-key')
+
+        let authed = false
+        if (apiKey) {
+          // Try the DB-backed lookup first
+          const dbAuthed = await verifyApiKeyViaDbLookup(apiKey, 'live-chat')
+          if (dbAuthed.ok) {
+            authed = true
+            log('info', `live-chat auth: db-lookup key=${dbAuthed.keyPrefix} scopes=${dbAuthed.scopes?.join(',')}`)
+          } else if (dbAuthed.error === 'kill-switch-unreachable' || dbAuthed.error === 'lookup-failed') {
+            // Safety-net: try the env-var fallback (acceptance #10).
+            const expectedApiKey = process.env.WEBHOOK_API_KEY?.trim()
+            if (expectedApiKey && apiKey.length === expectedApiKey.length) {
+              const a = Buffer.from(apiKey, 'utf8')
+              const b = Buffer.from(expectedApiKey, 'utf8')
+              if (timingSafeEqual(a, b)) {
+                authed = true
+                log('warn', `live-chat auth: env-var fallback (kill-switch unreachable: ${dbAuthed.error})`)
+              } else {
+                log('warn', `live-chat auth: env-var fallback rejected (db lookup error=${dbAuthed.error})`)
+              }
+            } else if (expectedApiKey) {
+              // Env-var is set but doesn't match — treat as 401, not env-var-ok.
+              log('warn', `live-chat auth: env-var fallback rejected (db lookup error=${dbAuthed.error})`)
+            }
+          } else {
+            // db lookup returned 401/404 (the key is bad, not the lookup).
+            // Don't fall through to env-var — that's a different auth model.
+            log('info', `live-chat auth: db-lookup rejected reason=${dbAuthed.error}`)
+          }
+        }
+
+        if (!authed) {
+          // Fall through to JWT auth
+          const authHeader = request.headers.get('authorization')
+          if (!authHeader?.startsWith('Bearer ')) {
+            return Response.json(
+              { error: { code: 'UNAUTHORIZED', message: 'Missing X-Webhook-Key or Authorization header' } },
+              { status: 401 },
+            )
+          }
+
+          const token = authHeader.slice(7)
+
+          let claims: JwtClaims
+          try {
+            claims = await verifyJwt(token, body)
+          } catch (err) {
+            const message = err instanceof Error ? err.message : 'Unknown error'
+            log('warn', `JWT verification failed on /webhook/live-chat: ${message}`)
+            return Response.json(
+              { error: { code: 'INVALID_JWT', message } },
+              { status: 400 },
+            )
+          }
+
+          if (claims.iss !== 'vercel' && claims.iss !== 'openclaw') {
+            return Response.json(
+              { error: { code: 'UNAUTHORIZED', message: `Issuer '${claims.iss}' not allowed for /webhook/live-chat` } },
+              { status: 401 },
+            )
+          }
+          log('info', `live-chat auth: jwt iss=${claims.iss}`)
+        }
+
+        // Call local Ollama (same box, no tailnet needed).
+        const ollamaUrl = process.env.OLLAMA_LOCAL_URL ?? 'http://127.0.0.1:11434'
+        const ollamaRes = await fetch(`${ollamaUrl}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+          signal: AbortSignal.timeout(55_000),
+        })
+
+        if (!ollamaRes.ok) {
+          const errBody = await ollamaRes.text().catch(() => '')
+          log('error', `Ollama /api/chat returned ${ollamaRes.status}: ${errBody.slice(0, 500)}`)
+          return Response.json(
+            { error: { code: 'OLLAMA_ERROR', message: `Ollama returned ${ollamaRes.status}`, body: errBody.slice(0, 1000) } },
+            { status: 502 },
+          )
+        }
+
+        const ollamaData = await ollamaRes.json()
+        log('info', `live-chat inference: model=${ollamaData.model} tokens=${ollamaData.eval_count ?? 0}`)
+        return Response.json(ollamaData)
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Unknown error'
+        log('error', `/webhook/live-chat error: ${message}`)
+        return Response.json(
+          { error: { code: 'INTERNAL', message } },
+          { status: 500 },
+        )
+      }
+    }
+
+    // DEPRECATED: /webhook/forward (2026-07-22 → 2026-07-23).
+    // Replaced by /webhook/live-chat above. The Ollama-as-public-proxy
+    // design assumed Vercel would call Ollama through the webhook; the
+    // new design makes the webhook the inference point itself. No active
+    // callers remain. Kept for rollback safety; remove after 7 days.
+    if (path === '/webhook/forward' && method === 'POST') {
+      return Response.json(
+        { error: { code: 'DEPRECATED', message: '/webhook/forward was replaced by /webhook/live-chat on 2026-07-23' } },
+        { status: 410 },
+      )
     }
 
     // ── 404 ──────────────────────────────────────────────────────────────
