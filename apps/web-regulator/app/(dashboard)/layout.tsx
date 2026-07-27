@@ -14,6 +14,7 @@ import {
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import type { KillSwitchState } from "@/types/shared";
 
 function AuthGuard({ children }: { children: ReactNode }) {
@@ -50,7 +51,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <MachineSelectionProvider>
-      <DashboardLayoutInner isDashboard={isDashboard}>
+      <DashboardLayoutInner isDashboard={isDashboard} pathname={pathname}>
         {children}
       </DashboardLayoutInner>
     </MachineSelectionProvider>
@@ -60,9 +61,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 function DashboardLayoutInner({
   children,
   isDashboard,
+  pathname,
 }: {
   children: ReactNode;
   isDashboard: boolean;
+  pathname: string;
 }) {
   const { selectedMachine, deselectMachine } = useMachineSelection();
   const { status } = useKillSwitchWebSocket();
@@ -140,7 +143,7 @@ function DashboardLayoutInner({
               </Suspense>
             </ErrorBoundary>
           ) : (
-            <div className="mx-auto max-w-6xl p-4 pt-14 md:pt-4 lg:p-8">
+            <div className={cn("mx-auto max-w-6xl p-4 pt-14 md:pt-4", pathname.startsWith("/admin/secrets") ? "lg:p-6" : "lg:p-8")}>
               <ErrorBoundary>
                 <Suspense
                   fallback={

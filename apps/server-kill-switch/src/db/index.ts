@@ -285,6 +285,64 @@ export function initDatabase(dbPath: string = DB_PATH) {
     }
   }
 
+  // ─── Secrets Audit Log (S-A1) ────────────────────────────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS secrets_audit_log (
+      id TEXT PRIMARY KEY,
+      at INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      event TEXT NOT NULL,
+      source_ip TEXT,
+      result TEXT NOT NULL,
+      actor TEXT,
+      meta TEXT
+    )
+  `);
+
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_name_time_idx ON secrets_audit_log(name, at)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS secrets_audit_event_time_idx ON secrets_audit_log(event, at)`);
+
+  // ─── Webhook API Keys (Card 0e2f9fec) ─────────────────────────
+  // sha256-hashed M2M keys for the openclaw-webhook gateway.
+  // Mirror of accounting-dashboard's `stores.apiKeyHash` pattern.
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS webhook_api_keys (
+      id TEXT PRIMARY KEY,
+      key_prefix TEXT NOT NULL,
+      api_key_hash TEXT NOT NULL,
+      name TEXT NOT NULL,
+      scopes TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      created_by TEXT NOT NULL DEFAULT 'system',
+      last_used_at INTEGER,
+      last_used_ip TEXT,
+      revoked_at INTEGER,
+      revoked_by TEXT,
+      expires_at INTEGER,
+      notes TEXT
+    )
+  `);
+
+  sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS webhook_api_keys_apiKeyHash_unique ON webhook_api_keys(api_key_hash)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_keys_prefix_idx ON webhook_api_keys(key_prefix)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_keys_active_idx ON webhook_api_keys(revoked_at, expires_at)`);
+
+  // Append-only audit log (id INTEGER PRIMARY KEY AUTOINCREMENT to match spec §5)
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS webhook_api_key_audit (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      key_id TEXT,
+      action TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      at INTEGER NOT NULL,
+      meta TEXT
+    )
+  `);
+
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_key_id_idx ON webhook_api_key_audit(key_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_at_idx ON webhook_api_key_audit(at)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_action_at_idx ON webhook_api_key_audit(action, at)`);
+
   // ─── Indexes ───────────────────────────────────────────────────────
 
   // Auth indexes

@@ -15,6 +15,10 @@ import { handleMachinesRoutes } from './routes/machines';
 import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
+import { handleAdminSecretsRoutes, initAuditLogFromDb } from './routes/admin-secrets';
+import { handleApiKeysRoutes } from './routes/api-keys';
+import { SecretsLoader } from './lib/secrets-loader';
+import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
 import { startMetricGeneration } from './services/system-metrics';
 import { getConfig, isFeatureEnabled } from './config';
@@ -45,6 +49,20 @@ function createHandler(service: KillSwitchService) {
       const lb = await handleLbHealthRoutes(method, url, req, res, service);
       if (lb) return;
     }
+
+    // ── Admin secrets routes (separate auth: ADMIN_UI_API_KEY) ──
+    const secretsHandled = await handleAdminSecretsRoutes(method, url, req, res, secretsLoader, lockoutState);
+    if (secretsHandled) return;
+
+    // ── Webhook API Key admin + internal routes (separate auth) ──
+    // Must run BEFORE checkAuth because:
+    //   - /v1/internal/* is called by the openclaw-webhook over loopback
+    //     with KILL_SWITCH_INTERNAL_KEY, NOT a user session.
+    //   - /v1/admin/api-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user session
+    //     (mirrors admin-secrets.ts above).
+    // The handler does its own auth checks (adminKeyMatches / internalKeyMatches).
+    const apiKeysHandled = await handleApiKeysRoutes(method, url, req, res, ip);
+    if (apiKeysHandled) return;
 
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
@@ -98,6 +116,29 @@ function createHandler(service: KillSwitchService) {
 
 export async function startServer(opts: { redisUrls?: string[]; authToken?: string; apiKey?: string; port?: number } = {}) {
   const config = getConfig();
+
+  // ─── Validate environment BEFORE secrets loader (S-A2 — loud, no silent 401s) ──
+  validateEnvironment();
+
+  // ─── Secrets Loader (startup-load, throw on missing) ─────────────
+  const secretsLoader = new SecretsLoader({
+    onReload: (result) => {
+      console.log(`[secrets-loader] reload: ${result.skipped ? 'skipped (' + (result.reason || 'unchanged') + ')' : result.loaded.length + ' keys loaded'}`);
+    },
+  });
+  await secretsLoader.load();
+  secretsLoader.startWatchers();
+  console.log(`[secrets-loader] loaded ${secretsLoader.getLoadedKeys().length} Tailscale secret(s)`);
+
+  // ─── Lockout State Machine ──────────────────────────────────────
+  const lockoutState = new LockoutStateMachine();
+  await lockoutState.load();
+  lockoutState.startWatchers();
+  console.log(`[lockout-state] state: ${lockoutState.getLockoutLabel()}`);
+
+  // ─── Secrets Audit Log: load recent entries from DB ─────────────
+  await initAuditLogFromDb();
+
   const RedisPool = await loadRedisPool() as any;
   const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls });
   await redis.connect();
@@ -140,7 +181,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   const port = opts.port || config.server.port;
 
   // Bun.serve with native WebSocket
+  // hostname: 127.0.0.1 — bind to loopback only so /v1/internal/* endpoints
+  // are not reachable from sibling containers on the align-network docker network.
+  // Spec §9 requires internal endpoints be localhost-only.
   const server = Bun.serve({
+    hostname: '127.0.0.1',
     port,
     websocket: {
       maxPayloadLength: 65536,
@@ -247,6 +292,5 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
 }
 
 if (import.meta.path.endsWith('index.ts') || import.meta.path.endsWith('index.mjs')) {
-  try { validateEnvironment(); } catch (err: any) { console.error(err.message); process.exit(1); }
   startServer().catch((err: any) => { console.error('Failed:', err); process.exit(1); });
 }
