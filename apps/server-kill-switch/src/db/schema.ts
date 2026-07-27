@@ -220,6 +220,26 @@ export const machineFlags = sqliteTable(
   }),
 );
 
+// ─── Secrets Audit Log (S-A1 — persisted audit trail for secret rotations/401s/lockouts) ──
+
+export const secretsAuditLog = sqliteTable(
+  'secrets_audit_log',
+  {
+    id: text('id').primaryKey(),
+    at: integer('at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    name: text('name').notNull(),
+    event: text('event').notNull(),         // 'rotate' | 'view' | '401' | 'lockout' | 'unlock' | 'reload' | 'rotate-consumer'
+    sourceIp: text('source_ip'),
+    result: text('result').notNull(),          // 'ok' | 'error' | 'blocked' | 'unauthorized' | 'locked'
+    actor: text('actor'),
+    meta: text('meta'),                         // JSON string
+  },
+  (table) => ({
+    nameTimeIdx: index('secrets_audit_name_time_idx').on(table.name, table.at),
+    eventTimeIdx: index('secrets_audit_event_time_idx').on(table.event, table.at),
+  }),
+);
+
 // ─── Per-Machine Agent Registry (New — ADR-133) ──────────────────────────
 
 export const agents = sqliteTable(
@@ -237,5 +257,61 @@ export const agents = sqliteTable(
   (table) => ({
     machineIdx: index('agent_machine_idx').on(table.machineId),
     heartbeatIdx: index('agent_heartbeat_idx').on(table.lastHeartbeat),
+  }),
+);
+
+// ─── Webhook API Keys (Card 0e2f9fec — DB-backed key management for openclaw-webhook) ──
+//
+// Single source of truth for the M2M keys that authenticate requests to
+// the openclaw-webhook gateway. Replaces the env-var-only model that had
+// three sources of truth (nginx, openclaw-webhook env, Vercel) and was
+// producing 401s because the openclaw-webhook process had no key in env.
+//
+// Mirror of accounting-dashboard's `stores.apiKeyHash` pattern (camelCase,
+// sha256 hex, Drizzle uniqueIndex). M2M auth, not user auth.
+//
+// Card 0e2f9fec / spec: docs/webhook-api-keys-db-spec.md §5, §12a
+export const webhookApiKeys = sqliteTable(
+  'webhook_api_keys',
+  {
+    id: text('id').primaryKey(),                              // ulid
+    keyPrefix: text('key_prefix', { length: 8 }).notNull(),   // first 8 chars of the key (lookup + display)
+    apiKeyHash: text('api_key_hash', { length: 64 }).notNull(), // sha256 hex of the full key
+    name: text('name').notNull(),                              // human label, e.g. "bootstrap"
+    scopes: text('scopes').notNull(),                          // csv: "live-chat,blog-pipeline,webhook-request"
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    createdBy: text('created_by').notNull().default('system'),
+    lastUsedAt: integer('last_used_at', { mode: 'timestamp' }),
+    lastUsedIp: text('last_used_ip'),
+    revokedAt: integer('revoked_at', { mode: 'timestamp' }),
+    revokedBy: text('revoked_by'),
+    expiresAt: integer('expires_at', { mode: 'timestamp' }),
+    notes: text('notes'),
+  },
+  (table) => ({
+    apiKeyHashUnique: uniqueIndex('webhook_api_keys_apiKeyHash_unique').on(table.apiKeyHash),
+    prefixIdx: index('webhook_api_keys_prefix_idx').on(table.keyPrefix),
+    activeIdx: index('webhook_api_keys_active_idx').on(table.revokedAt, table.expiresAt),
+  }),
+);
+
+// Append-only audit log for every key lifecycle event + every use attempt.
+// SOC signal: who created/rotated/revoked what, and which keys are being
+// brute-forced (use_failed rate per key). Mirrors secrets_audit_log shape.
+export const webhookApiKeyAudit = sqliteTable(
+  'webhook_api_key_audit',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    keyId: text('key_id'),                                     // nullable: 'unknown' for unknown-prefix attempts
+    action: text('action').notNull(),                          // 'create' | 'rotate' | 'revoke' | 'use' | 'use_failed'
+    actor: text('actor').notNull(),                            // admin id, 'system', or 'request:<ip>'
+    at: integer('at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    meta: text('meta'),                                        // JSON string, action-specific
+    webhookPath: text('webhook_path'),                          // request pathname for use/use_failed audit entries
+  },
+  (table) => ({
+    keyIdIdx: index('webhook_api_key_audit_key_id_idx').on(table.keyId),
+    atIdx: index('webhook_api_key_audit_at_idx').on(table.at),
+    actionAtIdx: index('webhook_api_key_audit_action_at_idx').on(table.action, table.at),
   }),
 );

@@ -1,0 +1,1 @@
+ALTER TABLE `webhook_api_key_audit` ADD `webhook_path` text;
