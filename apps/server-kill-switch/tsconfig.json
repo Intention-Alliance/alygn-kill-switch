@@ -13,9 +13,10 @@
     "allowJs": true,
     "types": ["node", "bun"],
     "outDir": "./dist",
+    "rootDir": "../..",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../infra/redis/*.mjs", "../infra/tracing/*.mjs"]
 }
