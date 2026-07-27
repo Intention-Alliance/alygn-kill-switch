@@ -462,7 +462,7 @@ async function internalVerify(
 	}
 	const requiredScope =
 		typeof body.requiredScope === 'string' ? body.requiredScope : undefined
-	const result = await verifyApiKey(rawKey, ip, requiredScope)
+	const result = await verifyApiKey(rawKey, ip, requiredScope, req.url ? new URL(req.url, 'http://localhost').pathname : null)
 	if (!result.ok) {
 		writeJson(res, 401, { error: 'unauthorized', reason: result.reason })
 		return true

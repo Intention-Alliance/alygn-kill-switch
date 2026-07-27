@@ -55,6 +55,7 @@ interface MockAudit {
   actor: string
   at: Date
   meta: string | null
+  webhookPath: string | null
 }
 
 const state = {
@@ -167,7 +168,7 @@ mock.module(dbPath, () => {
             }
             state.keys.push({ ...row, id: row.id || `wk_test_${state.nextAuditId++}` })
           } else if (t === 'webhook_api_key_audit') {
-            state.audits.push({ id: state.nextAuditId++, ...row })
+            state.audits.push({ id: state.nextAuditId++, ...row, webhookPath: row.webhookPath ?? null })
           }
           return Promise.resolve({ success: true })
         },
@@ -221,7 +222,7 @@ mock.module(dbPath, () => {
                 }
                 state.keys.push({ ...row, id: row.id || `wk_test_${state.nextAuditId++}` })
               } else if (t === 'webhook_api_key_audit') {
-                state.audits.push({ id: state.nextAuditId++, ...row })
+                state.audits.push({ id: state.nextAuditId++, ...row, webhookPath: row.webhookPath ?? null })
               }
               return Promise.resolve({ success: true })
             },
@@ -539,5 +540,161 @@ describe('handleApiKeysRoutes — internal (openclaw-webhook hot path)', () => {
     const handled = await handleApiKeysRoutes('GET', '/v1/internal/api-keys/lookup?prefix=wk_unkno', req, res, '127.0.0.1')
     expect(handled).toBe(true)
     expect(res._s).toBe(404)
+  })
+})
+
+// ─── F6: Audit meta includes prefix + path for failed key attempts ──
+
+describe('F6: audit meta includes prefix + path', () => {
+  beforeEach(() => {
+    reset()
+  })
+
+  it('verify: unknown prefix audit includes prefix and path', async () => {
+    // A key that is long enough (>=16 chars) but doesn't exist in the DB.
+    // We call internalVerify so verifyApiKey runs with the real hashing + mocked db.
+    const fakeKey = 'wk_unknownkey1234567890'
+    const req = {
+      method: 'POST',
+      url: '/v1/internal/api-keys/verify',
+      headers: {
+        'x-internal-key': INTERNAL_KEY,
+        'x-webhook-key': fakeKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ requiredScope: 'live-chat' }),
+      ip: '127.0.0.1',
+    }
+    const res = makeRes()
+    const handled = await handleApiKeysRoutes('POST', '/v1/internal/api-keys/verify', req as any, res, '127.0.0.1')
+    expect(handled).toBe(true)
+    expect(res._s).toBe(401)
+
+    // Find the audit entry for this failed attempt
+    const audit = state.audits.find((a) => a.action === 'use_failed')
+    expect(audit).toBeTruthy()
+    const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+    expect(meta).toBeTruthy()
+    expect(meta.reason).toBe('unknown_prefix')
+    expect(meta.prefix).toBe(fakeKey.slice(0, 8))
+    expect(meta.path).toBe('/v1/internal/api-keys/verify')
+    // The webhookPath column should also be set
+    expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+  })
+
+  it('verify: malformed key audit includes prefix and path', async () => {
+    // A key that is too short (< 16 chars) triggers the 'malformed' branch
+    const shortKey = 'wk_short'
+    const req = {
+      method: 'POST',
+      url: '/v1/internal/api-keys/verify',
+      headers: {
+        'x-internal-key': INTERNAL_KEY,
+        'x-webhook-key': shortKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({}),
+      ip: '127.0.0.1',
+    }
+    const res = makeRes()
+    const handled = await handleApiKeysRoutes('POST', '/v1/internal/api-keys/verify', req as any, res, '127.0.0.1')
+    expect(handled).toBe(true)
+    expect(res._s).toBe(401)
+
+    const audit = state.audits.find((a) => a.action === 'use_failed')
+    expect(audit).toBeTruthy()
+    const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+    expect(meta).toBeTruthy()
+    expect(meta.reason).toBe('malformed')
+    expect(meta.prefix).toBe(shortKey.slice(0, 8))
+    expect(meta.path).toBe('/v1/internal/api-keys/verify')
+    expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+  })
+
+  it('verify: missing key audit includes path', async () => {
+    // No X-Webhook-Key header at all → 'missing' branch
+    const req = {
+      method: 'POST',
+      url: '/v1/internal/api-keys/verify',
+      headers: {
+        'x-internal-key': INTERNAL_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({}),
+      ip: '127.0.0.1',
+    }
+    const res = makeRes()
+    const handled = await handleApiKeysRoutes('POST', '/v1/internal/api-keys/verify', req as any, res, '127.0.0.1')
+    expect(handled).toBe(true)
+    expect(res._s).toBe(401)
+
+    const audit = state.audits.find((a) => a.action === 'use_failed')
+    expect(audit).toBeTruthy()
+    const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+    expect(meta).toBeTruthy()
+    expect(meta.reason).toBe('missing')
+    expect(meta.path).toBe('/v1/internal/api-keys/verify')
+    expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+  })
+})
+
+// ─── F9: TOCTOU race in rotateKey (concurrent rotation test) ────────
+
+describe('F9: rotateKey TOCTOU race', () => {
+  beforeEach(() => {
+    reset()
+  })
+
+  it('concurrent rotation: exactly one succeeds, no double-insert', async () => {
+    // Create a key to rotate
+    const createReq = makeReq('/v1/admin/api-keys', 'POST', { name: 'race-key', scopes: 'live-chat' }, ADMIN_AUTH)
+    const createRes = makeRes()
+    await handleApiKeysRoutes('POST', '/v1/admin/api-keys', createReq, createRes, '127.0.0.1')
+    const created = JSON.parse(createRes._b)
+    const oldId = created.id
+
+    // Count keys before rotation
+    const keysBefore = state.keys.length
+
+    // Spawn two concurrent rotations on the same keyId
+    const rotateReq1 = makeReq(`/v1/admin/api-keys/${oldId}/rotate`, 'POST', undefined, ADMIN_AUTH)
+    const rotateReq2 = makeReq(`/v1/admin/api-keys/${oldId}/rotate`, 'POST', undefined, ADMIN_AUTH)
+    const res1 = makeRes()
+    const res2 = makeRes()
+
+    // The mock db.transaction is async but NOT truly concurrent — it runs
+    // the callback synchronously in a microtask. With Promise.all, the
+    // first rotation will complete (revoking the old key), and the second
+    // will see revokedAt set and return 409.
+    //
+    // However, since the mock transaction doesn't use real DB locking, we
+    // need to ensure they actually race. We use Promise.all to kick both
+    // off — the mock's transaction resolves sequentially.
+    const [result1, result2] = await Promise.all([
+      handleApiKeysRoutes('POST', `/v1/admin/api-keys/${oldId}/rotate`, rotateReq1, res1, '127.0.0.1'),
+      handleApiKeysRoutes('POST', `/v1/admin/api-keys/${oldId}/rotate`, rotateReq2, res2, '127.0.0.1'),
+    ])
+
+    // At least one must succeed (201)
+    const s1 = res1._s
+    const s2 = res2._s
+
+    // Exactly one should be 201 (success) and the other should be 409 (already revoked)
+    const successCount = [s1, s2].filter((s) => s === 201).length
+    const conflictCount = [s1, s2].filter((s) => s === 409).length
+    expect(successCount).toBe(1)
+    expect(conflictCount).toBe(1)
+
+    // No double-insert: only ONE new key should have been added
+    const keysAfter = state.keys.length
+    expect(keysAfter - keysBefore).toBe(1)
+
+    // The old key must be revoked
+    const oldKey = state.keys.find((k) => k.id === oldId)
+    expect(oldKey?.revokedAt).toBeInstanceOf(Date)
+
+    // Exactly ONE 'rotate' audit event for the old keyId
+    const rotateAudits = state.audits.filter((a) => a.action === 'rotate' && a.keyId === oldId)
+    expect(rotateAudits.length).toBe(1)
   })
 })

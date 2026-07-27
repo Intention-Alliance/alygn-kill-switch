@@ -55,6 +55,7 @@ async function audit(
 	action: 'use' | 'use_failed',
 	actor: string,
 	meta: Record<string, unknown>,
+	webhookPath?: string | null,
 ): Promise<void> {
 	try {
 		await db.insert(webhookApiKeyAudit).values({
@@ -63,6 +64,7 @@ async function audit(
 			actor,
 			at: new Date(),
 			meta: JSON.stringify(meta),
+			webhookPath: webhookPath ?? null,
 		})
 	} catch (e) {
 		console.error('[apikey.middleware] audit write failed:', e)
@@ -86,17 +88,21 @@ async function audit(
  * @param ip      The client IP (for audit + last_used_ip update)
  * @param requiredScope  Scope required for this call (e.g. 'live-chat').
  *                       Omit to skip the scope check.
+ * @param requestPath  The request pathname (for audit column + meta).
+ *                     Omit when called outside a request context.
  */
 export async function verifyApiKey(
 	rawKey: string | null | undefined,
 	ip: string,
 	requiredScope?: string,
+	requestPath?: string | null,
 ): Promise<VerifyResult> {
 	if (!rawKey) {
 		await audit(null, 'use_failed', `request:${ip}`, {
 			reason: 'missing',
 			requiredScope,
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'missing' }
 	}
 	if (rawKey.length < 16) {
@@ -104,7 +110,8 @@ export async function verifyApiKey(
 			reason: 'malformed',
 			requiredScope,
 			prefix: rawKey.slice(0, 8),
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'malformed' }
 	}
 
@@ -118,7 +125,8 @@ export async function verifyApiKey(
 			reason: 'unknown_prefix',
 			requiredScope,
 			prefix: rawKey.slice(0, 8),
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'unknown' }
 	}
 
@@ -130,7 +138,8 @@ export async function verifyApiKey(
 		await audit(row.id, 'use_failed', `request:${ip}`, {
 			reason: 'hash_mismatch',
 			requiredScope,
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'hash_mismatch' }
 	}
 
@@ -138,14 +147,16 @@ export async function verifyApiKey(
 		await audit(row.id, 'use_failed', `request:${ip}`, {
 			reason: 'revoked',
 			requiredScope,
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'revoked' }
 	}
 	if (row.expiresAt && row.expiresAt < new Date()) {
 		await audit(row.id, 'use_failed', `request:${ip}`, {
 			reason: 'expired',
 			requiredScope,
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'expired' }
 	}
 
@@ -158,7 +169,8 @@ export async function verifyApiKey(
 			reason: 'scope_mismatch',
 			requiredScope,
 			actualScopes: scopes,
-		})
+			path: requestPath ?? null,
+		}, requestPath)
 		return { ok: false, reason: 'scope_mismatch' }
 	}
 
@@ -167,7 +179,7 @@ export async function verifyApiKey(
 		.update(webhookApiKeys)
 		.set({ lastUsedAt: new Date(), lastUsedIp: ip })
 		.where(eq(webhookApiKeys.id, row.id))
-		.then(() => audit(row.id, 'use', `request:${ip}`, { requiredScope }))
+		.then(() => audit(row.id, 'use', `request:${ip}`, { requiredScope, path: requestPath ?? null }, requestPath))
 		.catch((e) =>
 			console.error('[apikey.middleware] last_used update failed:', e),
 		)

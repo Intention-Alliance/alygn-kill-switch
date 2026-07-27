@@ -307,6 +307,7 @@ export const webhookApiKeyAudit = sqliteTable(
     actor: text('actor').notNull(),                            // admin id, 'system', or 'request:<ip>'
     at: integer('at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
     meta: text('meta'),                                        // JSON string, action-specific
+    webhookPath: text('webhook_path'),                          // request pathname for use/use_failed audit entries
   },
   (table) => ({
     keyIdIdx: index('webhook_api_key_audit_key_id_idx').on(table.keyId),
