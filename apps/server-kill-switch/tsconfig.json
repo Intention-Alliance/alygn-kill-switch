@@ -13,7 +13,6 @@
     "allowJs": true,
     "types": ["node", "bun"],
     "outDir": "./dist",
-    "rootDir": "../..",
     "paths": {
       "@/*": ["./src/*"]
     }

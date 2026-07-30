@@ -44,14 +44,14 @@ CREATE UNIQUE INDEX `feature_flag_key_unique` ON `feature_flag` (`key`);--> stat
 CREATE UNIQUE INDEX `feature_flag_key_idx` ON `feature_flag` (`key`);--> statement-breakpoint
 CREATE TABLE `flag_audit_log` (
 	`id` text PRIMARY KEY NOT NULL,
-	`flag_id` text,
+	`flag_id` text NOT NULL,
 	`action` text NOT NULL,
 	`old_value` text,
 	`new_value` text,
 	`user_id` text NOT NULL,
 	`timestamp` integer NOT NULL,
 	`machine_id` text,
-	FOREIGN KEY (`flag_id`) REFERENCES `feature_flag`(`id`) ON UPDATE no action ON DELETE set null
+	FOREIGN KEY (`flag_id`) REFERENCES `feature_flag`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE INDEX `flag_audit_flag_id_idx` ON `flag_audit_log` (`flag_id`);--> statement-breakpoint
@@ -108,19 +108,6 @@ CREATE TABLE `machine` (
 CREATE UNIQUE INDEX `machine_hostname_unique` ON `machine` (`hostname`);--> statement-breakpoint
 CREATE UNIQUE INDEX `machine_hostname_idx` ON `machine` (`hostname`);--> statement-breakpoint
 CREATE INDEX `machine_status_idx` ON `machine` (`status`);--> statement-breakpoint
-CREATE TABLE `secrets_audit_log` (
-	`id` text PRIMARY KEY NOT NULL,
-	`at` integer NOT NULL,
-	`name` text NOT NULL,
-	`event` text NOT NULL,
-	`source_ip` text,
-	`result` text NOT NULL,
-	`actor` text,
-	`meta` text
-);
---> statement-breakpoint
-CREATE INDEX `secrets_audit_name_time_idx` ON `secrets_audit_log` (`name`,`at`);--> statement-breakpoint
-CREATE INDEX `secrets_audit_event_time_idx` ON `secrets_audit_log` (`event`,`at`);--> statement-breakpoint
 CREATE TABLE `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
