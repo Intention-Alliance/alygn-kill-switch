@@ -3,19 +3,15 @@
 -- as a proper forward migration so environments that already ran 0000_great_owl
 -- can apply these changes incrementally.
 
--- 1. flag_audit_log: allow NULL flag_id (orphaned audit rows after flag deletion)
-ALTER TABLE `flag_audit_log` MODIFY `flag_id` text;--> statement-breakpoint
+-- 1. flag_audit_log: flag_id nullable + FK ON DELETE SET NULL
+-- SQLite does not support ALTER COLUMN to change nullability or FK actions.
+-- A full table rebuild is required (CREATE new → copy → DROP old → RENAME).
+-- This is deferred to a future migration with the table rebuild pattern.
+-- For new environments, 0000_great_owl.sql has the original CASCADE FK with
+-- NOT NULL flag_id. The intended schema change (nullable + SET NULL) is
+-- documented here for tracking purposes.
 
--- 2. flag_audit_log: change FK from ON DELETE CASCADE to ON DELETE SET NULL
---    (preserve audit history when a flag is deleted)
--- SQLite does not support ALTER TABLE ... DROP CONSTRAINT; rebuild the FK:
--- Note: SQLite < 3.35 does not support ALTER COLUMN. For environments that
--- already have the CASCADE FK, this is a no-op (the constraint stays CASCADE).
--- For new environments, 0000_great_owl.sql already has CASCADE; this migration
--- documents the intent. A full table rebuild is needed to change the FK action
--- and is deferred to a future migration if required.
-
--- 3. Create secrets_audit_log table (moved out of baseline migration)
+-- 2. Create secrets_audit_log table (moved out of baseline migration)
 CREATE TABLE `secrets_audit_log` (
 	`id` text PRIMARY KEY NOT NULL,
 	`at` integer NOT NULL,
