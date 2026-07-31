@@ -8,7 +8,7 @@ on:
 
 jobs:
   type-check:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -18,7 +18,7 @@ jobs:
       - run: bun run type-check || echo "type-check script not found — please add to package.json"
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -29,7 +29,7 @@ jobs:
 
   test:
     needs: [type-check]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     services:
       redis:
         image: redis:7-alpine
@@ -46,7 +46,7 @@ jobs:
 
   build:
     needs: [type-check, lint]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
