@@ -279,20 +279,14 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 	// could both read the key as active and both proceed. By doing the
 	// read + check + write inside a single transaction, the second one
 	// will see the row as revoked and abort.
-	let result: { status: number; body: Record<string, unknown> } | null = null
+	type RotateResult = { status: number; body: Record<string, unknown> }
 
-	await db.transaction(async (tx) => {
+	const result = await db.transaction(async (tx): Promise<RotateResult> => {
 		const existing = await tx.query.webhookApiKeys.findFirst({
 			where: eq(webhookApiKeys.id, id),
 		})
-		if (!existing) {
-			result = { status: 404, body: { error: 'not found' } }
-			return
-		}
-		if (existing.revokedAt) {
-			result = { status: 409, body: { error: 'cannot rotate a revoked key — create a new one' } }
-			return
-		}
+		if (!existing) return { status: 404, body: { error: 'not found' } }
+		if (existing.revokedAt) return { status: 409, body: { error: 'cannot rotate a revoked key — create a new one' } }
 
 		const newPlaintext = hashingService.generateApiKey()
 		const newPrefix = newPlaintext.slice(0, 8)
@@ -333,7 +327,7 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 			meta: JSON.stringify({ rotatedFrom: oldId, source: 'rotate' }),
 		})
 
-		result = {
+		return {
 			status: 201,
 			body: {
 				id: newId,
@@ -346,10 +340,6 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 		}
 	})
 
-	if (!result) {
-		writeJson(res, 500, { error: 'rotation failed' })
-		return true
-	}
 	writeJson(res, result.status, result.body)
 	return true
 }
