@@ -26,11 +26,19 @@ import { seedAdminUser } from './lib/auth';
 import { seedFeatureFlags } from './db/seed';
 import { validateEnvironment } from './config/validate-env';
 
+// ─── Redis client type (mirrors RedisPool from infra/redis/redis-cluster-pool.mjs) ──
+
+interface RedisClient {
+  publish(channel: string, message: string): Promise<number>;
+  subscribe(channel: string, handler: (message: string) => void): Promise<void>;
+  connect(): Promise<void>;
+}
+
 // ─── Node-style HTTP Handler ───────────────────────────────────────
 
 function createHandler(
   service: KillSwitchService,
-  ctx: { secretsLoader: SecretsLoader; lockoutState: LockoutStateMachine; redis: any },
+  ctx: { secretsLoader: SecretsLoader; lockoutState: LockoutStateMachine; redis: RedisClient },
 ) {
   const authRateLimiter = new AuthRateLimiter();
   const config = getConfig();
@@ -108,10 +116,10 @@ function createHandler(
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
       await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
       await handleMachinesRoutes(method, url, req, res,
-        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { /* Redis unavailable — drop event */ } },
+        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       ) ||
       await handleSettingsRoutes(method, url, req, res, userRole,
-        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { /* Redis unavailable — drop event */ } },
+        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       );
 
     if (!handled) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Not found' })); }
@@ -190,7 +198,7 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // hostname: 127.0.0.1 — bind to loopback only so /v1/internal/* endpoints
   // are not reachable from sibling containers on the align-network docker network.
   // Spec §9 requires internal endpoints be localhost-only.
-  const server = Bun.serve({
+  const server = Bun.serve<{ userId: string; ip: string }>({
     hostname: '127.0.0.1',
     port,
     websocket: {
