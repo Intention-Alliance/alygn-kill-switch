@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './auth/AuthProvider';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { LoginPage } from './auth/LoginPage';
 import { SessionMonitor } from './auth/SessionMonitor';
@@ -13,12 +12,10 @@ import { useState } from 'react';
 import type { Flag } from './features/flags/types';
 
 function AppRoutes(): React.ReactElement {
-  const { isAuthenticated } = useAuth();
   const [editingFlag, setEditingFlag] = useState<Flag | null>(null);
 
   return (
-    <>
-      {isAuthenticated && <SessionMonitor><></></SessionMonitor>}
+    <SessionMonitor>
       <ErrorBoundaryWithTrace>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -74,7 +71,7 @@ function AppRoutes(): React.ReactElement {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ErrorBoundaryWithTrace>
-    </>
+    </SessionMonitor>
   );
 }
 
