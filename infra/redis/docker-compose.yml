@@ -73,7 +73,7 @@ services:
     image: oliver006/redis_exporter:latest
     container_name: redis-exporter
     ports:
-      - "9121:9121"
+      - "127.0.0.1:9121:9121"
     networks:
       - phase0-net
     environment:
