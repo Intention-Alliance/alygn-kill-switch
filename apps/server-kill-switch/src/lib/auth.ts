@@ -84,14 +84,10 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://alygn-kill-switch:3000',
-    'http://alygn-web-regulator:3000',
-    'http://localhost:3001',
-    'https://andlersrv.tail62d797.ts.net:8443',
-  ],
+  trustedOrigins: (process.env.TRUSTED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://alygn-kill-switch:3000,http://alygn-web-regulator:3000,http://localhost:3001,https://andlersrv.tail62d797.ts.net:8443')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
 });
 
 // ─── Constants ───────────────────────────────────────────────────────────
