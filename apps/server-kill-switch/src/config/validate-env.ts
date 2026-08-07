@@ -43,9 +43,29 @@ function checkEnv(name: string): string | null {
   return val.trim();
 }
 
+/**
+ * Placeholder markers that must never reach production.
+ * .env.example ships with these so devs know what to generate.
+ */
+const PLACEHOLDER_PATTERNS: RegExp[] = [
+  /^change/i, // 'change-me', 'changeme', 'change-this' …
+  /^<generate-with-/, // .env.example: <generate-with-openssl-rand-base64-64>
+  /^<.*>$/, // any angle-bracket placeholder
+  /^your[-_ ]/i, // 'your-secret-here', 'your_api_key'
+  /^example[-_ ]/i, // 'example-secret'
+];
+
+function isPlaceholder(value: string): boolean {
+  return PLACEHOLDER_PATTERNS.some((re) => re.test(value));
+}
+
 function checkSecretEnv(name: string, minLength: number): string | null {
   const val = checkEnv(name);
   if (val === null) return `Missing environment variable: ${name}`;
+
+  if (isPlaceholder(val)) {
+    return `${name} is still a placeholder value ("${val.slice(0, 24)}…"). Generate a strong secret — never run with .env.example defaults.`;
+  }
 
   if (val.length < minLength) {
     return `${name} is too short (${val.length} chars). Minimum: ${minLength} chars. Generate a strong secret.`;

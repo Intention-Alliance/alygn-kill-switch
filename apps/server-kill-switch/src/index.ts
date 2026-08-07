@@ -256,7 +256,7 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
           if (conns >= 5) return new Response(JSON.stringify({ error: 'Too many connections', code: 4003 }), { status: 429, headers: { 'content-type': 'application/json' } });
 
           console.log('[ws] Upgrading: ' + userId + ' from ' + ip);
-          const ok = srv.upgrade(req, { data: { userId, ip } });
+          const ok = srv.upgrade(req, { data: { userId, ip } } as unknown as undefined);
           return ok ? undefined : new Response('Upgrade failed', { status: 500 });
         } catch (e: any) {
           console.error('[ws] token validation error:', e.message);

@@ -1,13 +1,14 @@
 {
+	"name": "@packages/db-schema",
+	"version": "0.0.1",
 	"author": "AndlerRL",
-	"description": "supabase module for align system",
+	"main": "./src/index.ts",
 	"devDependencies": {
 		"supabase": "^2.72.8",
 		"supabase-to-zod": "1.0.5"
 	},
+	"description": "supabase module for align system",
 	"license": "MIT",
-	"main": "./src/index.ts",
-	"name": "@packages/db-schema",
 	"private": true,
 	"scripts": {
 		"db:pull": "supabase db pull --local",
@@ -25,5 +26,7 @@
 	},
 	"type": "module",
 	"types": "./src/index.ts",
-	"version": "0.0.1"
+	"dependencies": {
+		"zod": "^3.25.76"
+	}
 }
