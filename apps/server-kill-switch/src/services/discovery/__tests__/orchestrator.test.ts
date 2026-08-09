@@ -9,7 +9,10 @@
  */
 
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
-import type { HardwareFingerprint } from '@align/shared-types'
+import type {
+	HardwareFingerprint,
+	IntegritySignature,
+} from '@align/shared-types'
 
 // ─── In-memory stores ───────────────────────────────────────────
 
@@ -261,12 +264,14 @@ mock.module('../providers/registry', () => ({
 
 let DiscoveryOrchestrator: any
 let collectHardwareFingerprint: any
+let signFingerprint: (fp: HardwareFingerprint) => IntegritySignature
 
 beforeEach(async () => {
 	const mod = await import('../orchestrator')
 	DiscoveryOrchestrator = mod.DiscoveryOrchestrator
 	const fpMod = await import('../fingerprint')
 	collectHardwareFingerprint = fpMod.collectHardwareFingerprint
+	signFingerprint = fpMod.signFingerprint
 })
 
 describe('DiscoveryOrchestrator', () => {
@@ -313,6 +318,46 @@ describe('DiscoveryOrchestrator', () => {
 		// Integrity event persisted
 		expect(integrityStore.length).toBe(1)
 		expect(integrityStore[0].event).toBe('swap')
+	})
+
+	it('falls back to signature-only drift when no fingerprint snapshot exists', async () => {
+		const orchestrator = new DiscoveryOrchestrator()
+		const baseline = collectHardwareFingerprint()
+		const baselineSignature = signFingerprint(baseline)
+
+		// Pre-existing row with only an integrity signature (no snapshot)
+		machinesStore.push({
+			id: 'machine-legacy',
+			hostname: 'worker-legacy',
+			ip: null,
+			source: 'heartbeat',
+			state: 'NEW_MACHINE',
+			fingerprint: null,
+			integritySignature: JSON.stringify(baselineSignature),
+			firstSeen: new Date(),
+			lastSeen: new Date(),
+			confirmedAt: null,
+			confirmedBy: null,
+		})
+
+		const tampered: HardwareFingerprint = {
+			...baseline,
+			macs: ['11:22:33:44:55:66'],
+			collectedAt: new Date().toISOString(),
+		}
+		const result = await orchestrator.handleHeartbeat({
+			machineId: 'machine-legacy',
+			hostname: 'worker-legacy',
+			fingerprint: tampered,
+		})
+
+		expect(result.drift).not.toBeNull()
+		expect(result.drift!.event).toBe('tamper')
+		expect(result.drift!.severity).toBe('high')
+		expect(result.drift!.driftedFields).toEqual([])
+		// Integrity event persisted
+		expect(integrityStore.length).toBe(1)
+		expect(integrityStore[0].event).toBe('tamper')
 	})
 
 	it('persists detected providers and models for a machine', async () => {

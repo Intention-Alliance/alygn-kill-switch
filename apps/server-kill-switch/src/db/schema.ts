@@ -333,7 +333,7 @@ export const discoveredMachines = sqliteTable(
     hostname: text('hostname').notNull(),
     ip: text('ip'),
     source: text('source').notNull(),                    // mdns | arp-sweep | heartbeat
-    state: text('state').notNull().default('NEW_MACHINE'), // NEW_MACHINE | PENDING_CONFIRMATION | CONFIRMED | DENIED
+    state: text('state').notNull().default('NEW_MACHINE'), // NEW_MACHINE | PENDING_CONFIRMATION | CONFIRMED | DENIED — NEW_MACHINE is the provisional state (covers PENDING_CONFIRMATION; no code path writes it, retained for forward-compat, ADR-138)
     fingerprint: text('fingerprint'),                     // JSON HardwareFingerprint
     integritySignature: text('integrity_signature'),      // JSON IntegritySignature
     firstSeen: integer('first_seen', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),

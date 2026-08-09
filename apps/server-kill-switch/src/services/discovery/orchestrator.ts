@@ -31,6 +31,7 @@ import {
 import {
 	collectHardwareFingerprint,
 	compareFingerprints,
+	detectFingerprintDrift,
 	signFingerprint,
 } from './fingerprint'
 import { runNetworkDiscovery } from './machine-discovery'
@@ -130,16 +131,26 @@ export class DiscoveryOrchestrator {
 				: null
 			if (baseline) {
 				drift = compareFingerprints(current, baseline, machineId)
-				if (drift) {
-					await db.insert(integrityEvents).values({
-						id: crypto.randomUUID(),
-						machineId,
-						event: drift.event,
-						severity: drift.severity,
-						driftedFields: JSON.stringify(drift.driftedFields),
-						detectedAt: now,
-					})
+			} else {
+				// No stored fingerprint snapshot (e.g. a row written before
+				// snapshots existed) — fall back to signature-only drift
+				// detection against the persisted integrity signature.
+				const baselineSignature = existing.integritySignature
+					? parseJson<IntegritySignature>(String(existing.integritySignature))
+					: null
+				if (baselineSignature) {
+					drift = detectFingerprintDrift(current, baselineSignature, machineId)
 				}
+			}
+			if (drift) {
+				await db.insert(integrityEvents).values({
+					id: crypto.randomUUID(),
+					machineId,
+					event: drift.event,
+					severity: drift.severity,
+					driftedFields: JSON.stringify(drift.driftedFields),
+					detectedAt: now,
+				})
 			}
 			await db
 				.update(discoveredMachines)
