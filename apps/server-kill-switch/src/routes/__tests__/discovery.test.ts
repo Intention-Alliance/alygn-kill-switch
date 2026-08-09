@@ -191,6 +191,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(false)
@@ -204,6 +205,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -221,6 +223,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -240,6 +243,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq({}),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -254,6 +258,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq({ machineId: 'machine-1', hostname: 'worker-01' }),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -272,6 +277,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -291,6 +297,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -308,6 +315,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq({ approve: true }),
 			res,
 			'admin@alygn.com',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -325,6 +333,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq({ approve: false }),
 			res,
 			'admin@alygn.com',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)
@@ -332,6 +341,53 @@ describe('handleDiscoveryRoutes', () => {
 		const body = getJson(res)
 		expect(body.state).toBe('DENIED')
 		expect(body.note).toContain('zero authority')
+	})
+
+	it('POST /v1/discovery/:id/confirm rejects non-admin (403, ADR-138)', async () => {
+		const res = createMockRes()
+		const handled = await handleDiscoveryRoutes(
+			'POST',
+			'/v1/discovery/machine-1/confirm',
+			createMockReq({ approve: true }),
+			res,
+			'viewer@alygn.com',
+			'viewer',
+			withOrchestrator(),
+		)
+		expect(handled).toBe(true)
+		expect(res.statusCode).toBe(403)
+		const body = getJson(res)
+		expect(body.error).toContain('Admin role required')
+	})
+
+	it('POST /v1/discovery/sweep rejects non-admin (403)', async () => {
+		const res = createMockRes()
+		const handled = await handleDiscoveryRoutes(
+			'POST',
+			'/v1/discovery/sweep',
+			createMockReq(null),
+			res,
+			'viewer@alygn.com',
+			'viewer',
+			withOrchestrator(),
+		)
+		expect(handled).toBe(true)
+		expect(res.statusCode).toBe(403)
+	})
+
+	it('POST /v1/discovery/:id/probe rejects non-admin (403)', async () => {
+		const res = createMockRes()
+		const handled = await handleDiscoveryRoutes(
+			'POST',
+			'/v1/discovery/machine-1/probe',
+			createMockReq(null),
+			res,
+			'viewer@alygn.com',
+			'viewer',
+			withOrchestrator(),
+		)
+		expect(handled).toBe(true)
+		expect(res.statusCode).toBe(403)
 	})
 
 	it('GET /v1/discovery/integrity-events returns the drift log', async () => {
@@ -342,6 +398,7 @@ describe('handleDiscoveryRoutes', () => {
 			createMockReq(null),
 			res,
 			'api',
+			'admin',
 			withOrchestrator(),
 		)
 		expect(handled).toBe(true)

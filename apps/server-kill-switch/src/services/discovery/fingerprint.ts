@@ -12,7 +12,7 @@
  */
 
 import { createHash } from 'node:crypto'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { cpus, homedir, networkInterfaces, release, totalmem } from 'node:os'
 import type {
 	GpuFingerprint,
@@ -146,7 +146,8 @@ function collectGpus(): GpuFingerprint[] {
 	const pciDevicesPath = '/sys/bus/pci/devices'
 	if (existsSync(pciDevicesPath)) {
 		try {
-			const devices = readFileSync(pciDevicesPath, 'utf-8').trim().split('\n')
+			// Each entry is a symlink named by PCI slot (e.g. 0000:01:00.0)
+			const devices = readdirSync(pciDevicesPath)
 			const gpus: GpuFingerprint[] = []
 			for (const dev of devices) {
 				const classHex = readFileSafe(`${pciDevicesPath}/${dev}/class`)
