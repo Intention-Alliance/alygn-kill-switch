@@ -11,3 +11,4 @@ export * from "./telemetry";
 export * from "./auth";
 export * from "./kill-switch";
 export * from "./flags";
+export * from "./discovery";

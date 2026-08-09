@@ -343,6 +343,75 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_at_idx ON webhook_api_key_audit(at)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_action_at_idx ON webhook_api_key_audit(action, at)`);
 
+  // ─── AI-Agnostic Discovery tables (ADR-135) ───────────────────────
+  // Provisional registry — nothing is authoritative until human
+  // confirmation (NO auto-admission, ADR-135 §5).
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS discovered_machine (
+      id TEXT PRIMARY KEY,
+      hostname TEXT NOT NULL,
+      ip TEXT,
+      source TEXT NOT NULL,
+      state TEXT NOT NULL DEFAULT 'NEW_MACHINE',
+      fingerprint TEXT,
+      integrity_signature TEXT,
+      first_seen INTEGER NOT NULL,
+      last_seen INTEGER NOT NULL,
+      confirmed_at INTEGER,
+      confirmed_by TEXT
+    )
+  `);
+
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS discovered_provider (
+      id TEXT PRIMARY KEY,
+      machine_id TEXT NOT NULL REFERENCES discovered_machine(id) ON DELETE CASCADE,
+      provider_id TEXT NOT NULL,
+      base_url TEXT,
+      version TEXT,
+      status TEXT NOT NULL DEFAULT 'detected',
+      detected_at INTEGER NOT NULL,
+      last_healthy_at INTEGER
+    )
+  `);
+
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS discovered_model (
+      id TEXT PRIMARY KEY,
+      machine_id TEXT NOT NULL REFERENCES discovered_machine(id) ON DELETE CASCADE,
+      provider_id TEXT NOT NULL,
+      model_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      size_bytes INTEGER,
+      quantization TEXT,
+      family TEXT,
+      served INTEGER NOT NULL DEFAULT 0,
+      detected_at INTEGER NOT NULL
+    )
+  `);
+
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS integrity_event (
+      id TEXT PRIMARY KEY,
+      machine_id TEXT NOT NULL REFERENCES discovered_machine(id) ON DELETE CASCADE,
+      event TEXT NOT NULL,
+      severity TEXT NOT NULL DEFAULT 'low',
+      drifted_fields TEXT,
+      detected_at INTEGER NOT NULL
+    )
+  `);
+
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_machine_hostname_idx ON discovered_machine(hostname)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_machine_state_idx ON discovered_machine(state)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_machine_last_seen_idx ON discovered_machine(last_seen)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_provider_machine_idx ON discovered_provider(machine_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_provider_provider_idx ON discovered_provider(provider_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_model_machine_idx ON discovered_model(machine_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_model_provider_idx ON discovered_model(provider_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS discovered_model_model_idx ON discovered_model(model_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS integrity_event_machine_idx ON integrity_event(machine_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS integrity_event_time_idx ON integrity_event(detected_at)`);
+
   // ─── Indexes ───────────────────────────────────────────────────────
 
   // Auth indexes
