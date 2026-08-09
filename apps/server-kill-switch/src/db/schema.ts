@@ -315,3 +315,93 @@ export const webhookApiKeyAudit = sqliteTable(
     actionAtIdx: index('webhook_api_key_audit_action_at_idx').on(table.action, table.at),
   }),
 );
+
+// ─── AI-Agnostic Discovery (ADR-135) ────────────────────────────────
+//
+// Provisional discovery registry. NOTHING here is authoritative until a
+// human confirms the machine (ADR-135 §5 — NO auto-admission, ADR-138
+// onboarding). Tables:
+//   discovered_machine   — machines seen via heartbeat/mDNS/sweep
+//   discovered_provider  — provider adapters detected per machine
+//   discovered_model     — models enumerated per machine/provider
+//   integrity_event      — tamper/swap events from fingerprint drift
+
+export const discoveredMachines = sqliteTable(
+  'discovered_machine',
+  {
+    id: text('id').primaryKey(),
+    hostname: text('hostname').notNull(),
+    ip: text('ip'),
+    source: text('source').notNull(),                    // mdns | arp-sweep | heartbeat
+    state: text('state').notNull().default('NEW_MACHINE'), // NEW_MACHINE | PENDING_CONFIRMATION | CONFIRMED | DENIED
+    fingerprint: text('fingerprint'),                     // JSON HardwareFingerprint
+    integritySignature: text('integrity_signature'),      // JSON IntegritySignature
+    firstSeen: integer('first_seen', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    lastSeen: integer('last_seen', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    confirmedAt: integer('confirmed_at', { mode: 'timestamp' }),
+    confirmedBy: text('confirmed_by'),
+  },
+  (table) => ({
+    hostnameIdx: index('discovered_machine_hostname_idx').on(table.hostname),
+    stateIdx: index('discovered_machine_state_idx').on(table.state),
+    lastSeenIdx: index('discovered_machine_last_seen_idx').on(table.lastSeen),
+  }),
+);
+
+export const discoveredProviders = sqliteTable(
+  'discovered_provider',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => discoveredMachines.id, { onDelete: 'cascade' }),
+    providerId: text('provider_id').notNull(),            // ollama | huggingface | llamaindex | vllm | openai-compatible
+    baseUrl: text('base_url'),
+    version: text('version'),
+    status: text('status').notNull().default('detected'), // detected | healthy | unhealthy
+    detectedAt: integer('detected_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    lastHealthyAt: integer('last_healthy_at', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    machineIdx: index('discovered_provider_machine_idx').on(table.machineId),
+    providerIdx: index('discovered_provider_provider_idx').on(table.providerId),
+  }),
+);
+
+export const discoveredModels = sqliteTable(
+  'discovered_model',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => discoveredMachines.id, { onDelete: 'cascade' }),
+    providerId: text('provider_id').notNull(),
+    modelId: text('model_id').notNull(),
+    name: text('name').notNull(),
+    sizeBytes: integer('size_bytes'),
+    quantization: text('quantization'),
+    family: text('family'),
+    served: integer('served', { mode: 'boolean' }).notNull().default(false),
+    detectedAt: integer('detected_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    machineIdx: index('discovered_model_machine_idx').on(table.machineId),
+    providerIdx: index('discovered_model_provider_idx').on(table.providerId),
+    modelIdx: index('discovered_model_model_idx').on(table.modelId),
+  }),
+);
+
+export const integrityEvents = sqliteTable(
+  'integrity_event',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => discoveredMachines.id, { onDelete: 'cascade' }),
+    event: text('event').notNull(),                       // tamper | swap | reconfirmed
+    severity: text('severity').notNull().default('low'),  // low | medium | high
+    driftedFields: text('drifted_fields'),                // JSON string[]
+    detectedAt: integer('detected_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    machineIdx: index('integrity_event_machine_idx').on(table.machineId),
+    timeIdx: index('integrity_event_time_idx').on(table.detectedAt),
+  }),
+);
