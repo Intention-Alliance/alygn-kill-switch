@@ -119,7 +119,7 @@ function createHandler(
       await handleMachinesRoutes(method, url, req, res,
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       ) ||
-      await handleDiscoveryRoutes(method, url, req, res, uid || 'api') ||
+      await handleDiscoveryRoutes(method, url, req, res, uid || 'api', userRole) ||
       await handleSettingsRoutes(method, url, req, res, userRole,
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       );

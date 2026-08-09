@@ -85,6 +85,7 @@ export async function handleDiscoveryRoutes(
 	req: any,
 	res: any,
 	actor: string,
+	userRole: string | null,
 	orchestrator?: DiscoveryOrchestrator,
 ): Promise<boolean> {
 	if (!url.startsWith('/v1/discovery')) return false
@@ -119,6 +120,10 @@ export async function handleDiscoveryRoutes(
 
 		// ─── POST /v1/discovery/sweep — Opportunistic network sweep ────
 		if (method === 'POST' && url === '/v1/discovery/sweep') {
+			if (userRole !== 'admin') {
+				json(res, 403, { error: 'Admin role required' })
+				return true
+			}
 			const result = await discovery.runNetworkSweep()
 			json(res, 200, {
 				discovered: result.discovered,
@@ -162,6 +167,10 @@ export async function handleDiscoveryRoutes(
 		// ─── POST /v1/discovery/:machineId/probe — Probe providers ─────
 		const probeMatch = url.match(/^\/v1\/discovery\/([^/]+)\/probe$/)
 		if (method === 'POST' && probeMatch) {
+			if (userRole !== 'admin') {
+				json(res, 403, { error: 'Admin role required' })
+				return true
+			}
 			const machineId = probeMatch[1]
 			const results = await discovery.detectProvidersForMachine(machineId)
 			json(res, 200, {
@@ -194,6 +203,10 @@ export async function handleDiscoveryRoutes(
 		// ─── POST /v1/discovery/:machineId/confirm — Human confirmation ─
 		const confirmMatch = url.match(/^\/v1\/discovery\/([^/]+)\/confirm$/)
 		if (method === 'POST' && confirmMatch) {
+			if (userRole !== 'admin') {
+				json(res, 403, { error: 'Admin role required' })
+				return true
+			}
 			const machineId = confirmMatch[1]
 			const body = await parseJsonBody(req)
 			const approve = body?.approve === true
