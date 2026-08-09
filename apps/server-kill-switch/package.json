@@ -15,7 +15,7 @@
     "db:seed": "bun run src/db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "lint": "biome check src/",
-    "test": "bun test src/lib/secrets-loader.test.ts src/lib/lockout-state.test.ts src/lib/admin-secrets.test.ts src/routes/__tests__/api-keys.test.ts src/services/__tests__/hashing.test.ts"
+    "test": "bun test src/"
   },
   "dependencies": {
     "@align/shared-types": "workspace:*",

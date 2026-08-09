@@ -107,8 +107,11 @@ export type DiscoverySource = 'mdns' | 'arp-sweep' | 'heartbeat';
 /**
  * NO auto-admission (ADR-135 §5): a newly detected machine enters
  * NEW_MACHINE and requires human confirmation before gaining any
- * kill-switch authority. PENDING_CONFIRMATION is the provisional
- * state while the admin reviews the fingerprint + inventory.
+ * kill-switch authority. NEW_MACHINE is the provisional state while
+ * the admin reviews the fingerprint + inventory (it covers what was
+ * originally envisioned as PENDING_CONFIRMATION — no code path
+ * transitions to PENDING_CONFIRMATION; it is retained in the union
+ * for forward-compatibility with multi-stage onboarding, ADR-138).
  */
 export type MachineDiscoveryState =
   | 'NEW_MACHINE'
