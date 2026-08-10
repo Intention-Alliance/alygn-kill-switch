@@ -28,6 +28,7 @@ import {
 	discoveredProviders,
 	integrityEvents,
 } from '../../db/schema'
+import { OnboardingService } from '../onboarding'
 import {
 	collectHardwareFingerprint,
 	compareFingerprints,
@@ -151,6 +152,13 @@ export class DiscoveryOrchestrator {
 					driftedFields: JSON.stringify(drift.driftedFields),
 					detectedAt: now,
 				})
+				// ADR-138 §4: high-severity tamper/swap returns an ADMITTED
+				// machine to PENDING_REVIEW — re-confirmation required before
+				// it can operate normally again. No-op for non-admitted machines.
+				if (drift.severity === 'high') {
+					const onboarding = new OnboardingService()
+					await onboarding.flagForReview(machineId)
+				}
 			}
 			await db
 				.update(discoveredMachines)
@@ -401,40 +409,29 @@ export class DiscoveryOrchestrator {
 
 	/**
 	 * Human confirmation (ADR-138). Only a full-privilege admin may move a
-	 * machine out of NEW_MACHINE/PENDING_CONFIRMATION. Denial keeps the
-	 * machine provisional with zero authority.
+	 * machine out of NEW_MACHINE/PENDING_CONFIRMATION/PENDING_REVIEW.
+	 * Delegates to the OnboardingService so approval creates the managed
+	 * machine tenant (monitoring-only) and denial records the block + raises
+	 * rogue-device alerts on repeated attempts. Denial keeps the machine
+	 * provisional with zero authority.
 	 */
 	async confirmMachine(
 		machineId: string,
 		confirmedBy: string,
 		approve: boolean,
 	): Promise<DiscoveredMachine | null> {
-		const machine = await db
-			.select()
-			.from(discoveredMachines)
-			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		if (!machine) return null
-
-		const now = new Date()
-		await db
-			.update(discoveredMachines)
-			.set({
-				state: approve ? 'CONFIRMED' : 'DENIED',
-				confirmedAt: now,
-				confirmedBy,
+		const onboarding = new OnboardingService()
+		if (approve) {
+			const decision = await onboarding.approve({
+				machineId,
+				reviewedBy: confirmedBy,
 			})
-			.where(eq(discoveredMachines.id, machineId))
-
-		const updated = await db
-			.select()
-			.from(discoveredMachines)
-			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		return updated
-			? serializeDiscoveredMachine(
-					updated as unknown as Record<string, unknown>,
-				)
-			: null
+			return decision?.machine ?? null
+		}
+		const decision = await onboarding.deny({
+			machineId,
+			reviewedBy: confirmedBy,
+		})
+		return decision?.machine ?? null
 	}
 }

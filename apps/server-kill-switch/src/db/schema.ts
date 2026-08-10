@@ -183,6 +183,12 @@ export const machines = sqliteTable(
     role: text('role').notNull(),
     hasDpu: integer('has_dpu', { mode: 'boolean' }).notNull().default(false),
     specs: text('specs'),                                      // JSON: { cpu, ram, gpu, dpu }
+    // ADR-138: monitoring-only until onboarding is fully completed — the
+    // machine may report telemetry but cannot receive active responses.
+    monitoringOnly: integer('monitoring_only', { mode: 'boolean' }).notNull().default(true),
+    // ADR-137/138: zone assignment (default 'unassigned' until the admin
+    // places the machine during onboarding).
+    zone: text('zone').notNull().default('unassigned'),
     lastSeen: integer('last_seen', { mode: 'timestamp' }),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
   },
@@ -333,7 +339,7 @@ export const discoveredMachines = sqliteTable(
     hostname: text('hostname').notNull(),
     ip: text('ip'),
     source: text('source').notNull(),                    // mdns | arp-sweep | heartbeat
-    state: text('state').notNull().default('NEW_MACHINE'), // NEW_MACHINE | PENDING_CONFIRMATION | CONFIRMED | DENIED — NEW_MACHINE is the provisional state (covers PENDING_CONFIRMATION; no code path writes it, retained for forward-compat, ADR-138)
+    state: text('state').notNull().default('NEW_MACHINE'), // ADR-138 lifecycle: NEW_MACHINE → PENDING_CONFIRMATION → ADMITTED | DENIED; ADMITTED → PENDING_REVIEW on high-severity integrity drift (re-onboarding). NEW_MACHINE is the provisional state (covers PENDING_CONFIRMATION for sweep-discovered hosts without an agent identity).
     fingerprint: text('fingerprint'),                     // JSON HardwareFingerprint
     integritySignature: text('integrity_signature'),      // JSON IntegritySignature
     firstSeen: integer('first_seen', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
@@ -403,5 +409,53 @@ export const integrityEvents = sqliteTable(
   (table) => ({
     machineIdx: index('integrity_event_machine_idx').on(table.machineId),
     timeIdx: index('integrity_event_time_idx').on(table.detectedAt),
+  }),
+);
+
+// ─── Onboarding & Multi-Tenant Registration (ADR-138) ───────────────
+//
+// Human-in-the-loop registration: a discovered machine requests
+// registration, a full-privilege admin reviews the discovery report and
+// APPROVEs (→ ADMITTED, machine tenant created) or DENies (→ DENIED,
+// zero authority). Every decision is recorded here and in the audit log.
+// Repeated denials from the same hostname/IP raise a rogue-device alert.
+
+export const registrationRequests = sqliteTable(
+  'registration_request',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => discoveredMachines.id, { onDelete: 'cascade' }),
+    requestedBy: text('requested_by').notNull().default('system'), // agent hostname / sweep source
+    status: text('status').notNull().default('PENDING'),           // PENDING | APPROVED | DENIED
+    denialReason: text('denial_reason'),
+    reviewedBy: text('reviewed_by'),
+    reviewedAt: integer('reviewed_at', { mode: 'timestamp' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    machineIdx: index('registration_request_machine_idx').on(table.machineId),
+    statusIdx: index('registration_request_status_idx').on(table.status),
+    createdAtIdx: index('registration_request_created_at_idx').on(table.createdAt),
+  }),
+);
+
+export const rogueDeviceAlerts = sqliteTable(
+  'rogue_device_alert',
+  {
+    id: text('id').primaryKey(),
+    hostname: text('hostname').notNull(),
+    ip: text('ip'),
+    denialCount: integer('denial_count').notNull().default(1),
+    lastDeniedAt: integer('last_denied_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    resolved: integer('resolved', { mode: 'boolean' }).notNull().default(false),
+    resolvedBy: text('resolved_by'),
+    resolvedAt: integer('resolved_at', { mode: 'timestamp' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    hostnameIdx: index('rogue_device_alert_hostname_idx').on(table.hostname),
+    ipIdx: index('rogue_device_alert_ip_idx').on(table.ip),
+    resolvedIdx: index('rogue_device_alert_resolved_idx').on(table.resolved),
   }),
 );

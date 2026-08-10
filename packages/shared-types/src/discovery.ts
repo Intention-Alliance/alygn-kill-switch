@@ -112,11 +112,16 @@ export type DiscoverySource = 'mdns' | 'arp-sweep' | 'heartbeat';
  * originally envisioned as PENDING_CONFIRMATION — no code path
  * transitions to PENDING_CONFIRMATION; it is retained in the union
  * for forward-compatibility with multi-stage onboarding, ADR-138).
+ *
+ * ADR-138 lifecycle: NEW_MACHINE → PENDING_CONFIRMATION → ADMITTED | DENIED.
+ * ADMITTED machines return to PENDING_REVIEW on high-severity integrity
+ * drift (tamper/swap) and must be re-confirmed before operating again.
  */
 export type MachineDiscoveryState =
   | 'NEW_MACHINE'
   | 'PENDING_CONFIRMATION'
-  | 'CONFIRMED'
+  | 'ADMITTED'
+  | 'PENDING_REVIEW'
   | 'DENIED';
 
 export interface DiscoveredMachine {
@@ -160,7 +165,7 @@ export interface DiscoveredModel {
 /**
  * Full per-machine discovery report — what the admin reviews during
  * onboarding (ADR-138). Nothing in here is authoritative until the
- * machine is CONFIRMED.
+ * machine is ADMITTED.
  */
 export interface DiscoveryReport {
   machine: DiscoveredMachine;
@@ -170,4 +175,47 @@ export interface DiscoveryReport {
     signature: IntegritySignature | null;
     drift: IntegrityDrift | null;
   };
+}
+
+// ─── Onboarding & Multi-Tenant Registration (ADR-138) ─────────────
+
+export type RegistrationRequestStatus = 'PENDING' | 'APPROVED' | 'DENIED';
+
+export interface RegistrationRequest {
+  id: string;
+  machineId: string;
+  requestedBy: string;
+  status: RegistrationRequestStatus;
+  denialReason: string | null;
+  reviewedBy: string | null;
+  reviewedAt: string | null; // ISO timestamp
+  createdAt: string; // ISO timestamp
+}
+
+export interface RogueDeviceAlert {
+  id: string;
+  hostname: string;
+  ip: string | null;
+  denialCount: number;
+  lastDeniedAt: string; // ISO timestamp
+  resolved: boolean;
+  resolvedBy: string | null;
+  resolvedAt: string | null; // ISO timestamp
+  createdAt: string; // ISO timestamp
+}
+
+/**
+ * Result of an onboarding decision (approve/deny).
+ */
+export interface OnboardingDecision {
+  machine: DiscoveredMachine;
+  registration: RegistrationRequest;
+  machineRecord: {
+    id: string;
+    name: string;
+    hostname: string;
+    monitoringOnly: boolean;
+    zone: string;
+  } | null;
+  rogueAlert: RogueDeviceAlert | null;
 }

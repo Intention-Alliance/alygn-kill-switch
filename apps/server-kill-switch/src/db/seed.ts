@@ -37,6 +37,10 @@ export async function seedDefaults() {
         gpu: 'NVIDIA RTX 4090',
         dpu: null,
       }),
+      // ADR-138: the main tenant (kill-switch admin host) is the controller,
+      // not a managed machine — it is never monitoring-only.
+      monitoringOnly: false,
+      zone: 'control-plane',
       lastSeen: new Date(),
     });
     console.log('[seed] Default machine "andlersrv" created');

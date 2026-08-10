@@ -178,8 +178,8 @@ function tableName(table: any): string {
 	return table?.[Symbol.for('drizzle:Name')] ?? table?.name ?? ''
 }
 
-mock.module('../../../db/index', () => ({
-	db: {
+mock.module('../../../db/index', () => {
+	const dbMock = {
 		select: () => ({
 			from: (table: any) => {
 				resetEqValues()
@@ -217,8 +217,13 @@ mock.module('../../../db/index', () => ({
 				return makeTableProxy(modelsStore, name).update()
 			return makeTableProxy([], name).update()
 		},
-	},
-}))
+		// ADR-138: onboarding decisions run inside a transaction. The mock
+		// executes the callback against the same in-memory db object so
+		// reads/writes share the same stores.
+		transaction: async (cb: (tx: any) => Promise<unknown>) => cb(dbMock),
+	}
+	return { db: dbMock }
+})
 
 // ─── Mock provider registry ─────────────────────────────────────
 
@@ -320,6 +325,82 @@ describe('DiscoveryOrchestrator', () => {
 		expect(integrityStore[0].event).toBe('swap')
 	})
 
+	it('high-severity drift on an ADMITTED machine → PENDING_REVIEW (ADR-138 §4)', async () => {
+		const orchestrator = new DiscoveryOrchestrator()
+		const baseline = collectHardwareFingerprint()
+
+		// An already-admitted machine (onboarding completed).
+		machinesStore.push({
+			id: 'machine-1',
+			hostname: 'worker-01',
+			ip: null,
+			source: 'heartbeat',
+			state: 'ADMITTED',
+			fingerprint: JSON.stringify(baseline),
+			integritySignature: JSON.stringify(signFingerprint(baseline)),
+			firstSeen: new Date(),
+			lastSeen: new Date(),
+			confirmedAt: new Date(),
+			confirmedBy: 'admin@alygn.com',
+		})
+
+		const tampered: HardwareFingerprint = {
+			...baseline,
+			macs: ['11:22:33:44:55:66'],
+			collectedAt: new Date().toISOString(),
+		}
+		const result = await orchestrator.handleHeartbeat({
+			machineId: 'machine-1',
+			hostname: 'worker-01',
+			fingerprint: tampered,
+		})
+
+		// High-severity drift detected and persisted.
+		expect(result.drift).not.toBeNull()
+		expect(result.drift!.severity).toBe('high')
+		expect(integrityStore.length).toBe(1)
+
+		// flagForReview fired: the ADMITTED machine returned to
+		// PENDING_REVIEW — re-confirmation required (ADR-138 §4).
+		expect(machinesStore[0].state).toBe('PENDING_REVIEW')
+	})
+
+	it('high-severity drift on a NEW_MACHINE is a no-op for flagForReview', async () => {
+		const orchestrator = new DiscoveryOrchestrator()
+		const baseline = collectHardwareFingerprint()
+
+		// Not yet admitted — flagForReview must not change the state.
+		machinesStore.push({
+			id: 'machine-1',
+			hostname: 'worker-01',
+			ip: null,
+			source: 'heartbeat',
+			state: 'NEW_MACHINE',
+			fingerprint: JSON.stringify(baseline),
+			integritySignature: JSON.stringify(signFingerprint(baseline)),
+			firstSeen: new Date(),
+			lastSeen: new Date(),
+			confirmedAt: null,
+			confirmedBy: null,
+		})
+
+		const tampered: HardwareFingerprint = {
+			...baseline,
+			macs: ['11:22:33:44:55:66'],
+			collectedAt: new Date().toISOString(),
+		}
+		const result = await orchestrator.handleHeartbeat({
+			machineId: 'machine-1',
+			hostname: 'worker-01',
+			fingerprint: tampered,
+		})
+
+		expect(result.drift).not.toBeNull()
+		expect(result.drift!.severity).toBe('high')
+		// Still NEW_MACHINE — flagForReview no-ops for non-admitted machines.
+		expect(machinesStore[0].state).toBe('NEW_MACHINE')
+	})
+
 	it('falls back to signature-only drift when no fingerprint snapshot exists', async () => {
 		const orchestrator = new DiscoveryOrchestrator()
 		const baseline = collectHardwareFingerprint()
@@ -416,7 +497,7 @@ describe('DiscoveryOrchestrator', () => {
 			true,
 		)
 		expect(confirmed).not.toBeNull()
-		expect(confirmed!.state).toBe('CONFIRMED')
+		expect(confirmed!.state).toBe('ADMITTED')
 		expect(confirmed!.confirmedBy).toBe('admin@alygn.com')
 		expect(confirmed!.confirmedAt).not.toBeNull()
 	})

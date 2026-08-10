@@ -13,6 +13,7 @@ import { handleKillSwitchRoutes } from './routes/kill-switch';
 import { handleFlagsRoutes } from './routes/flags';
 import { handleMachinesRoutes } from './routes/machines';
 import { handleDiscoveryRoutes } from './routes/discovery';
+import { handleOnboardingRoutes } from './routes/onboarding';
 import { handleSettingsRoutes } from './routes/settings';
 import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
@@ -120,6 +121,7 @@ function createHandler(
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       ) ||
       await handleDiscoveryRoutes(method, url, req, res, uid || 'api', userRole) ||
+      await handleOnboardingRoutes(method, url, req, res, uid || 'api', userRole) ||
       await handleSettingsRoutes(method, url, req, res, userRole,
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
       );
