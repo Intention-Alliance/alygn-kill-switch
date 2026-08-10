@@ -75,6 +75,9 @@ function serializeMachine(row: any): Machine {
     specs: specs || { cpu: '', ram: '', gpu: '', dpu: null },
     cpuUsage: metrics.cpuUsage,
     memoryUsage: metrics.memoryUsage,
+    // ADR-138: monitoring-only + zone are part of the machine tenant contract.
+    monitoringOnly: row.monitoringOnly !== undefined ? Boolean(row.monitoringOnly) : undefined,
+    zone: row.zone !== undefined ? String(row.zone) : undefined,
   };
 }
 
@@ -528,6 +531,18 @@ export async function handleMachinesRoutes(
       }
       if (body.specs !== undefined) {
         updates.specs = JSON.stringify(body.specs);
+      }
+      // ADR-138: onboarding completion — clearing monitoring_only enables
+      // active responses; zone assignment places the machine tenant.
+      if (body.monitoringOnly !== undefined) {
+        updates.monitoringOnly = Boolean(body.monitoringOnly);
+      }
+      if (body.zone !== undefined) {
+        if (typeof body.zone !== 'string' || body.zone.length < 1 || body.zone.length > 64) {
+          json(res, 400, { error: 'zone must be 1-64 characters' });
+          return true;
+        }
+        updates.zone = body.zone;
       }
 
       await db.update(machines)

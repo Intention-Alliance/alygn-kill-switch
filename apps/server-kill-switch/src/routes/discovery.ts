@@ -21,6 +21,7 @@ import { desc, eq } from 'drizzle-orm'
 import { db } from '../db/index'
 import { discoveredMachines, integrityEvents } from '../db/schema'
 import { DiscoveryOrchestrator } from '../services/discovery/orchestrator'
+import { OnboardingStateError } from '../services/onboarding'
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -224,7 +225,7 @@ export async function handleDiscoveryRoutes(
 				machine,
 				state: machine.state,
 				note: approve
-					? 'Machine confirmed — onboarding complete (ADR-138).'
+					? 'Machine admitted — monitoring-only until onboarding completes (ADR-138).'
 					: 'Machine denied — zero authority granted. Repeated denials raise a rogue-device alert.',
 			})
 			return true
@@ -255,6 +256,15 @@ export async function handleDiscoveryRoutes(
 
 		return false
 	} catch (err: unknown) {
+		// State-machine guard violations surfaced from OnboardingService
+		// (e.g. a second approve on an ADMITTED machine) are client errors
+		// — 409 Conflict, not 500.
+		if (err instanceof OnboardingStateError) {
+			json(res, err.statusCode, {
+				error: err.message,
+			})
+			return true
+		}
 		const message = err instanceof Error ? err.message : 'Unknown error'
 		console.error('[discovery] Error:', message)
 		json(res, 500, { error: 'Internal server error', detail: message })

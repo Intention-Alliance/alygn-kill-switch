@@ -7,6 +7,7 @@
  */
 
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { OnboardingStateError } from '../../services/onboarding'
 
 // ─── Mock orchestrator ──────────────────────────────────────────
 
@@ -97,7 +98,7 @@ const mockOrchestrator = {
 		hostname: 'worker-01',
 		ip: null,
 		source: 'heartbeat',
-		state: approve ? 'CONFIRMED' : 'DENIED',
+		state: approve ? 'ADMITTED' : 'DENIED',
 		fingerprint: null,
 		integritySignature: null,
 		firstSeen: '2026-08-08T00:00:00.000Z',
@@ -321,7 +322,7 @@ describe('handleDiscoveryRoutes', () => {
 		expect(handled).toBe(true)
 		expect(res.statusCode).toBe(200)
 		const body = getJson(res)
-		expect(body.state).toBe('CONFIRMED')
+		expect(body.state).toBe('ADMITTED')
 		expect(body.machine.confirmedBy).toBe('admin@alygn.com')
 	})
 
@@ -358,6 +359,29 @@ describe('handleDiscoveryRoutes', () => {
 		expect(res.statusCode).toBe(403)
 		const body = getJson(res)
 		expect(body.error).toContain('Admin role required')
+	})
+
+	it('POST /v1/discovery/:id/confirm maps state-guard errors to 409 (Conflict)', async () => {
+		const res = createMockRes()
+		const handled = await handleDiscoveryRoutes(
+			'POST',
+			'/v1/discovery/machine-1/confirm',
+			createMockReq({ approve: true }),
+			res,
+			'admin@alygn.com',
+			'admin',
+			{
+				...withOrchestrator(),
+				confirmMachine: async () => {
+					throw new OnboardingStateError(
+						'Cannot approve machine in state ADMITTED',
+					)
+				},
+			},
+		)
+		expect(handled).toBe(true)
+		expect(res.statusCode).toBe(409)
+		expect(getJson(res).error).toContain('Cannot approve machine in state ADMITTED')
 	})
 
 	it('POST /v1/discovery/sweep rejects non-admin (403)', async () => {

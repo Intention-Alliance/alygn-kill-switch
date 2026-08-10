@@ -55,6 +55,11 @@ export interface Machine {
   specs: MachineSpecs;
   cpuUsage?: number;
   memoryUsage?: number;
+  // ADR-138: monitoring-only until onboarding is fully completed — the
+  // machine may report telemetry but cannot receive active responses.
+  monitoringOnly?: boolean;
+  // ADR-137/138: zone assignment (default 'unassigned').
+  zone?: string;
 }
 
 export interface DpuInfo {

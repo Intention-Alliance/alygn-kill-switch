@@ -442,6 +442,53 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS agent_machine_idx ON agent(machine_id)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS agent_heartbeat_idx ON agent(last_heartbeat)`);
 
+  // ─── ADR-138: Onboarding & Multi-Tenant Registration ───────────────
+  // monitoring_only + zone on the machine table (idempotent ALTER TABLE).
+  try {
+    sqlite.run(`ALTER TABLE machine ADD COLUMN monitoring_only INTEGER NOT NULL DEFAULT 1`);
+  } catch (e) {
+    if (!(e instanceof Error) || !e.message.includes('duplicate column name')) throw e;
+  }
+  try {
+    sqlite.run(`ALTER TABLE machine ADD COLUMN zone TEXT NOT NULL DEFAULT 'unassigned'`);
+  } catch (e) {
+    if (!(e instanceof Error) || !e.message.includes('duplicate column name')) throw e;
+  }
+
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS registration_request (
+      id TEXT PRIMARY KEY,
+      machine_id TEXT NOT NULL REFERENCES discovered_machine(id) ON DELETE CASCADE,
+      requested_by TEXT NOT NULL DEFAULT 'system',
+      status TEXT NOT NULL DEFAULT 'PENDING',
+      denial_reason TEXT,
+      reviewed_by TEXT,
+      reviewed_at INTEGER,
+      created_at INTEGER NOT NULL
+    )
+  `);
+
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS rogue_device_alert (
+      id TEXT PRIMARY KEY,
+      hostname TEXT NOT NULL,
+      ip TEXT,
+      denial_count INTEGER NOT NULL DEFAULT 1,
+      last_denied_at INTEGER NOT NULL,
+      resolved INTEGER NOT NULL DEFAULT 0,
+      resolved_by TEXT,
+      resolved_at INTEGER,
+      created_at INTEGER NOT NULL
+    )
+  `);
+
+  sqlite.run(`CREATE INDEX IF NOT EXISTS registration_request_machine_idx ON registration_request(machine_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS registration_request_status_idx ON registration_request(status)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS registration_request_created_at_idx ON registration_request(created_at)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS rogue_device_alert_hostname_idx ON rogue_device_alert(hostname)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS rogue_device_alert_ip_idx ON rogue_device_alert(ip)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS rogue_device_alert_resolved_idx ON rogue_device_alert(resolved)`);
+
   const db = drizzle(sqlite, { schema });
 
   console.log(`[db] SQLite initialized: ${dbPath} (WAL mode, tables verified)`);
