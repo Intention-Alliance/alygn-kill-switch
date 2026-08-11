@@ -1,0 +1,1 @@
+await import('./handler.ts')
