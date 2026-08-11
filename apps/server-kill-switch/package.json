@@ -24,6 +24,7 @@
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.53.0",
     "@opentelemetry/sdk-node": "^0.53.0",
     "@opentelemetry/semantic-conventions": "^1.26.0",
+    "@simplewebauthn/server": "^13.3.2",
     "better-auth": "^1.6.9",
     "drizzle-orm": "^0.45.2",
     "redis": "^4.7.0",

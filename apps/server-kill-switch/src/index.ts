@@ -9,7 +9,9 @@ import { checkRateLimit, isReadRequest, initRateLimiter, READ_RATE_LIMIT_MAX, WR
 import { checkAuth } from './middleware/auth';
 import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
+import { handleWebAuthnRoutes } from './routes/webauthn';
 import { handleKillSwitchRoutes } from './routes/kill-switch';
+import { handleKillAuthorizationRoutes } from './routes/kill-authorization';
 import { handleFlagsRoutes } from './routes/flags';
 import { handleMachinesRoutes } from './routes/machines';
 import { handleDiscoveryRoutes } from './routes/discovery';
@@ -106,7 +108,14 @@ function createHandler(
 
     let uid: string | null = null;
     let userRole: string | null = null;
-    if (url !== '/v1/kill-switch/health' && !isAuth) {
+    // ADR-136: kill authorization (assertion-token) paths bypass the
+    // Bearer/session check — they carry their own WebAuthn assertion
+    // token. The chaos endpoint is included: it no longer accepts Bearer
+    // tokens (human WebAuthn assertion only).
+    const isKillAuthPath =
+      url.startsWith('/v1/kill-authorization/') ||
+      (method === 'POST' && url === '/v1/kill-switch/chaos');
+    if (url !== '/v1/kill-switch/health' && !isAuth && !isKillAuthPath) {
       const ar = await checkAuth(service, req);
       if (!ar.authenticated) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Authentication required' })); return; }
       uid = ar.user?.email ?? null;
@@ -114,8 +123,10 @@ function createHandler(
     }
 
     const handled =
+      await handleWebAuthnRoutes(method, url, req, res) ||
       await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
+      await handleKillAuthorizationRoutes(method, url, req, res, service) ||
       await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
       await handleMachinesRoutes(method, url, req, res,
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },

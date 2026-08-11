@@ -57,6 +57,18 @@ export const TelemetryConfigSchema = z.object({
   sampleRate: z.number().min(0).max(1).default(1.0),
 });
 
+// ADR-136: WebAuthn (FIDO2) relying-party configuration for
+// human-signature kill authorization. rpID must be the effective
+// domain (no scheme), origin the full https origin the authenticator
+// binds assertions to.
+export const WebAuthnConfigSchema = z.object({
+  rpName: z.string().min(1).default('Alygn Kill Switch'),
+  rpID: z.string().min(1).default('localhost'),
+  origin: z.string().min(1).default('http://localhost:3000'),
+  challengeTtlMs: z.number().int().min(1000).default(300_000),
+  assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
+});
+
 export const AppConfigSchema = z.object({
   env: z.enum(['development', 'staging', 'production']),
   redis: RedisConfigSchema,
@@ -66,6 +78,7 @@ export const AppConfigSchema = z.object({
   features: FeatureFlagsSchema,
   server: ServerConfigSchema,
   telemetry: TelemetryConfigSchema,
+  webauthn: WebAuthnConfigSchema.default({}),
 });
 
 export type AppConfig = z.infer<typeof AppConfigSchema>;
@@ -76,3 +89,4 @@ export type LoggingConfig = z.infer<typeof LoggingConfigSchema>;
 export type FeatureFlags = z.infer<typeof FeatureFlagsSchema>;
 export type ServerConfig = z.infer<typeof ServerConfigSchema>;
 export type TelemetryConfig = z.infer<typeof TelemetryConfigSchema>;
+export type WebAuthnConfig = z.infer<typeof WebAuthnConfigSchema>;
