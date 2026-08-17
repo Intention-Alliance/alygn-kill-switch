@@ -7,6 +7,7 @@ import { sqlite as sqliteDb } from './db/index';
 import { isIpAllowed, startDnsRefresh } from './services/ip-allowlist';
 import { checkRateLimit, isReadRequest, initRateLimiter, READ_RATE_LIMIT_MAX, WRITE_RATE_LIMIT_MAX, RATE_LIMIT_MAX } from './middleware/rate-limit';
 import { checkAuth } from './middleware/auth';
+import { isKillAuthBypassPath } from './middleware/kill-auth-bypass';
 import { AuthRateLimiter } from './middleware/auth-rate-limit';
 import { handleAuthRoutes } from './routes/auth';
 import { handleWebAuthnRoutes } from './routes/webauthn';
@@ -108,13 +109,7 @@ function createHandler(
 
     let uid: string | null = null;
     let userRole: string | null = null;
-    // ADR-136: kill authorization (assertion-token) paths bypass the
-    // Bearer/session check — they carry their own WebAuthn assertion
-    // token. The chaos endpoint is included: it no longer accepts Bearer
-    // tokens (human WebAuthn assertion only).
-    const isKillAuthPath =
-      url.startsWith('/v1/kill-authorization/') ||
-      (method === 'POST' && url === '/v1/kill-switch/chaos');
+    const isKillAuthPath = isKillAuthBypassPath(method, url);
     if (url !== '/v1/kill-switch/health' && !isAuth && !isKillAuthPath) {
       const ar = await checkAuth(service, req);
       if (!ar.authenticated) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Authentication required' })); return; }

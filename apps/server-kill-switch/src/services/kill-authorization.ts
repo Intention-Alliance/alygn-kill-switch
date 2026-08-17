@@ -141,8 +141,16 @@ function toRequest(row: typeof killAuthorizationRequests.$inferSelect): KillAuth
   };
 }
 
-async function loadRequest(requestId: string): Promise<KillAuthorizationRequest | null> {
-  const row = await db
+// A minimal structural handle for the DB or a transaction — both the
+// global `db` (BunSQLiteDatabase) and a `db.transaction` callback's `tx`
+// (SQLiteTransaction) expose the same select/update builders used here.
+type DbLike = {
+  select: typeof db.select;
+  update: typeof db.update;
+};
+
+async function loadRequest(requestId: string, dbLike: DbLike = db): Promise<KillAuthorizationRequest | null> {
+  const row = await dbLike
     .select()
     .from(killAuthorizationRequests)
     .where(eq(killAuthorizationRequests.id, requestId))
@@ -150,8 +158,8 @@ async function loadRequest(requestId: string): Promise<KillAuthorizationRequest 
   return row ? toRequest(row) : null;
 }
 
-async function saveRequest(request: KillAuthorizationRequest): Promise<void> {
-  await db
+async function saveRequest(request: KillAuthorizationRequest, dbLike: DbLike = db): Promise<void> {
+  await dbLike
     .update(killAuthorizationRequests)
     .set({
       status: request.status,
@@ -347,28 +355,36 @@ export async function approve(
 
   const threshold = await getQuorumThreshold();
   if (isThresholdMet(request, threshold)) {
-    request.status = 'EXECUTED';
-    request.executedAt = new Date();
-    await saveRequest(request);
+    // ADR-136 atomicity: the status update (EXECUTED) and the executor
+    // side-effect (kill transition / policy change) must be atomic. If the
+    // executor fails, the transaction rolls back — the request stays
+    // PENDING_QUORUM with its signatures preserved, so a retry can
+    // re-attempt. Without this, a failure would leave the request marked
+    // EXECUTED while the kill was never applied.
+    return await db.transaction(async (tx): Promise<ApproveResult> => {
+      request.status = 'EXECUTED';
+      request.executedAt = new Date();
+      await saveRequest(request, tx);
 
-    if (request.action === 'kill') {
-      const initiator = request.signatures[0];
-      await executor.executeKill({
-        state: initiator.state ?? 'STOPPED',
-        reason: initiator.reason ?? 'Quorum kill authorization',
-        userId: params.userId,
-        ip: params.ip ?? 'unknown',
-      });
-    } else {
-      const initiator = request.signatures[0];
-      await executor.applyPolicyChange({
-        flagKey: request.target,
-        value: initiator.proposedValue ?? '',
-        userId: params.userId,
-      });
-    }
+      if (request.action === 'kill') {
+        const initiator = request.signatures[0];
+        await executor.executeKill({
+          state: initiator.state ?? 'STOPPED',
+          reason: initiator.reason ?? 'Quorum kill authorization',
+          userId: params.userId,
+          ip: params.ip ?? 'unknown',
+        });
+      } else {
+        const initiator = request.signatures[0];
+        await executor.applyPolicyChange({
+          flagKey: request.target,
+          value: initiator.proposedValue ?? '',
+          userId: params.userId,
+        });
+      }
 
-    return { request, executed: true, threshold };
+      return { request, executed: true, threshold };
+    });
   }
 
   await saveRequest(request);

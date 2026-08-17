@@ -36,6 +36,13 @@ interface MockSetting {
 let requestStore: MockRequest[] = [];
 let settingStore: MockSetting[] = [];
 
+// When true, the next db.transaction() callback runs and then the
+// transaction "rolls back" — all stores are restored to their pre-
+// transaction snapshots and the transaction rejects. Lets tests assert
+// that approve() is atomic: an executor failure leaves the request
+// PENDING_QUORUM (not EXECUTED) so a retry can re-attempt.
+let rollbackNextTransaction = false;
+
 function setSetting(key: string, value: string) {
   const existing = settingStore.find((s) => s.key === key);
   if (existing) existing.value = value;
@@ -45,6 +52,7 @@ function setSetting(key: string, value: string) {
 beforeEach(() => {
   requestStore = [];
   settingStore = [];
+  rollbackNextTransaction = false;
   // Defaults per ADR-136: single mode, quorum 2, timeout 10 min
   setSetting('kill.authorization.mode', 'single');
   setSetting('kill.authorization.quorum', '2');
@@ -158,13 +166,51 @@ mock.module('../../db/index', () => {
     };
   }
 
-  return {
-    db: {
-      select: makeSelect,
-      insert: makeInsert,
-      update: makeUpdate,
+  // The mock db object. Annotated explicitly so the self-referential
+  // `transaction` callback type (which receives the mock db as `tx`)
+  // doesn't trigger TS7022 (implicit circular type inference).
+  interface MockDb {
+    select: typeof makeSelect;
+    insert: typeof makeInsert;
+    update: typeof makeUpdate;
+    transaction: (cb: (tx: MockDb) => Promise<unknown>) => Promise<unknown>;
+  }
+
+  const dbMock: MockDb = {
+    select: makeSelect,
+    insert: makeInsert,
+    update: makeUpdate,
+    // ADR-136 atomicity: approve() runs the status update + executor
+    // side-effect inside a transaction. The mock executes the callback
+    // against the same in-memory db object so reads/writes share the
+    // same stores. When rollbackNextTransaction is set, the stores are
+    // restored to their pre-transaction state and the transaction
+    // rejects — simulating a rolled-back approve (executor failure).
+    transaction: async (cb: (tx: MockDb) => Promise<unknown>) => {
+      const snapshot = {
+        requests: requestStore.map((r) => ({ ...r })),
+        settings: settingStore.map((s) => ({ ...s })),
+      };
+      try {
+        const result = await cb(dbMock);
+        if (rollbackNextTransaction) {
+          rollbackNextTransaction = false;
+          requestStore = snapshot.requests;
+          settingStore = snapshot.settings;
+          throw new Error('transaction rolled back');
+        }
+        return result;
+      } catch (e) {
+        // Any throw inside the callback (e.g. executor failure) rolls the
+        // transaction back — stores are restored to their pre-transaction
+        // state, mirroring real SQLite rollback semantics.
+        requestStore = snapshot.requests;
+        settingStore = snapshot.settings;
+        throw e;
+      }
     },
   };
+  return { db: dbMock };
 });
 
 // ─── Import service after mocks ───────────────────────────────────
@@ -314,6 +360,41 @@ describe('KillAuthorizationService — quorum mode', () => {
         executor,
       ),
     ).rejects.toThrow();
+  });
+
+  it('quorum: executor failure rolls back — request stays PENDING_QUORUM (atomicity)', async () => {
+    setSetting('kill.authorization.mode', 'quorum');
+    const { executor } = createExecutor();
+    // Make the executor throw on the second signature (threshold met).
+    executor.executeKill = async () => { throw new Error('kill transition failed'); };
+
+    const initiated = await killAuth.initiateKill(
+      {
+        action: 'kill',
+        target: 'fleet',
+        state: 'STOPPED',
+        reason: 'fleet kill',
+        userId: 'human-a',
+        credentialId: 'cred-a',
+      },
+      executor,
+    );
+
+    // Human B approves → threshold met → executor runs inside a
+    // transaction. The executor throws → transaction rolls back → the
+    // request must NOT be left EXECUTED.
+    await expect(
+      killAuth.approve(
+        { requestId: initiated.request.id, userId: 'human-b', credentialId: 'cred-b' },
+        executor,
+      ),
+    ).rejects.toThrow('kill transition failed');
+
+    const row = requestStore.find((r) => r.id === initiated.request.id)!;
+    expect(row.status).toBe('PENDING_QUORUM');
+    expect(row.executedAt).toBeNull();
+    // Signatures preserved so a retry can re-attempt.
+    expect(JSON.parse(row.signatures).length).toBe(1);
   });
 
   it('quorum: timeout — request expires after timeoutMs', async () => {

@@ -228,13 +228,19 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => {
     };
   }
 
-  return {
-    db: {
-      select: makeSelect,
-      insert: makeInsert,
-      update: makeUpdate,
+  const dbMock = {
+    select: makeSelect,
+    insert: makeInsert,
+    update: makeUpdate,
+    // ADR-136 atomicity: approve() runs the status update + executor
+    // side-effect inside a transaction. The mock executes the callback
+    // against the same in-memory db object so reads/writes share the
+    // same stores.
+    transaction: async (cb: (tx: any) => Promise<unknown>) => {
+      return cb(dbMock);
     },
   };
+  return { db: dbMock };
 });
 
 // ─── Mock KillSwitchService ───────────────────────────────────────
