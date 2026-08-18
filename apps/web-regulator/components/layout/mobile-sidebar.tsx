@@ -2,7 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Shield, Flag, Server, Settings, Menu } from "lucide-react";
+import {
+  Shield,
+  LayoutDashboard,
+  Key,
+  Flag,
+  Server,
+  Settings,
+  BookOpen,
+  CreditCard,
+  Menu,
+} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,9 +29,19 @@ import { useAuth } from "@/lib/auth-context";
 
 const NAV_ITEMS = [
   {
+    href: "/",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
     href: "/kill-switch",
     label: "Kill Switch",
     icon: Shield,
+  },
+  {
+    href: "/admin/secrets",
+    label: "Secrets",
+    icon: Key,
   },
   {
     href: "/flags",
@@ -37,6 +57,16 @@ const NAV_ITEMS = [
     href: "/settings",
     label: "Settings",
     icon: Settings,
+  },
+  {
+    href: "/billing",
+    label: "Billing",
+    icon: CreditCard,
+  },
+  {
+    href: "/docs",
+    label: "Documentation",
+    icon: BookOpen,
   },
 ];
 
@@ -145,7 +175,7 @@ export function MobileSidebar() {
         </Sheet>
 
         {/* Mobile brand */}
-        <Link href="/kill-switch" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
           <span className="text-sm font-bold tracking-tight">ALYGN</span>
         </Link>
