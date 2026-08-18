@@ -5,6 +5,7 @@ import type { KillSwitchState } from '@align/shared-types';
 import type { RedisPool } from '../types/redis-pool';
 import { secureCompare } from '../utils/secure-compare';
 import { loadTracing } from '../infra-loader';
+import { pauseInferenceTraffic, resumeInferenceTraffic } from './traffic-pause';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -18,7 +19,7 @@ export const VALID_TRANSITIONS: Record<KillSwitchState, KillSwitchState[]> = {
   ARMED: [STATES.RUNNING, STATES.STOPPED, STATES.LOCKED],
   RUNNING: [STATES.STOPPING, STATES.STOPPED, STATES.LOCKED],
   STOPPING: [STATES.STOPPED, STATES.LOCKED],
-  STOPPED: [STATES.ARMED, STATES.LOCKED],
+  STOPPED: [STATES.ARMED, STATES.LOCKED, STATES.RUNNING],
   LOCKED: [STATES.STOPPED],
 };
 
@@ -93,6 +94,17 @@ export class KillSwitchService {
       }
 
       await this.redis.set(this.redis.chaosKillSwitchKey(), newState);
+
+      // ─── Traffic pause hook (ADR-141) ───────────────────────────
+      // The missing 5th kill-switch piece: when state → STOPPED, pause
+      // inference traffic; when state → RUNNING, resume it. Gated by the
+      // kill_switch_traffic_pause_enabled feature flag so the demo can
+      // disable it if needed. Idempotent + race-safe (see traffic-pause.ts).
+      if (newState === STATES.STOPPED) {
+        await pauseInferenceTraffic();
+      } else if (currentState === STATES.STOPPED && newState === STATES.RUNNING) {
+        await resumeInferenceTraffic();
+      }
 
       const message = {
         previousState: currentState,

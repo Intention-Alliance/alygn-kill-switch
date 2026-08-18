@@ -22,6 +22,7 @@ export interface KillSwitchStatus {
   activatedAt: string | null;
   reason: string | null;
   recentTransitions?: unknown[];
+  pausedRequestCount?: number;
 }
 
 export interface ActivationRecord {

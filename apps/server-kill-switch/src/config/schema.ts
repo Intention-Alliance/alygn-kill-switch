@@ -46,6 +46,10 @@ export const FeatureFlagsSchema = z.object({
 	enableResourceMonitor: z.boolean().default(false),
 	enableIncidentResponse: z.boolean().default(false),
 	enableLbHealth: z.boolean().default(true),
+	// Phase 1 traffic-pause gate (ADR-141): when enabled, a STOPPED
+	// kill-switch state pauses inference traffic via the in-memory
+	// inference-gate middleware. Disable to bypass if the demo breaks.
+	killSwitchTrafficPauseEnabled: z.boolean().default(true),
 })
 
 export const ServerConfigSchema = z.object({

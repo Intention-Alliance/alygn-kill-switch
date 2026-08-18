@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
-import { Shield, Activity, Wifi, WifiOff, Loader2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Shield, Activity, Wifi, WifiOff, Loader2, Play } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import { StatusIndicator } from "@/components/kill-switch/status-indicator";
 import { EmergencyStopButton } from "@/components/kill-switch/emergency-stop-button";
@@ -11,6 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
+import { Button } from "@/components/ui/button";
+import { apiPost } from "@/lib/api-client";
+import { toast } from "sonner";
 import type { KillSwitchState } from "@/types/shared";
 
 export default function KillSwitchDashboardPage() {
@@ -141,10 +144,17 @@ export default function KillSwitchDashboardPage() {
             </CardHeader>
             <CardContent>
               {status ? (
-                <EmergencyStopButton
-                  currentState={status.state}
-                  onStateChange={handleStateChange}
-                />
+                <div className="space-y-4">
+                  <EmergencyStopButton
+                    currentState={status.state}
+                    onStateChange={handleStateChange}
+                  />
+                  {status.state === "STOPPED" && (
+                    <ResumeButton
+                      onResumed={() => handleStateChange("RUNNING")}
+                    />
+                  )}
+                </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
                   Status unavailable — controls disabled.
@@ -163,6 +173,52 @@ export default function KillSwitchDashboardPage() {
         </SectionErrorBoundary>
       </div>
     </ErrorBoundary>
+  );
+}
+
+// ─── Resume Button ────────────────────────────────────────────────
+
+function ResumeButton({ onResumed }: { onResumed: () => void }) {
+  const [isResuming, setIsResuming] = useState(false);
+
+  const handleResume = useCallback(async () => {
+    setIsResuming(true);
+    try {
+      await apiPost("/api/kill-switch/chaos", {
+        state: "RUNNING",
+        reason: "Manual resume from dashboard",
+      });
+      toast.success("Kill Switch resumed — inference traffic flowing");
+      onResumed();
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to resume kill switch",
+      );
+    } finally {
+      setIsResuming(false);
+    }
+  }, [onResumed]);
+
+  return (
+    <Button
+      onClick={handleResume}
+      disabled={isResuming}
+      variant="default"
+      className="w-full sm:w-auto"
+      aria-label="Resume inference traffic"
+    >
+      {isResuming ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+          Resuming…
+        </>
+      ) : (
+        <>
+          <Play className="mr-2 h-4 w-4" aria-hidden="true" />
+          Resume Inference Traffic
+        </>
+      )}
+    </Button>
   );
 }
 

@@ -6,6 +6,7 @@ import { WebSocketManager } from './services/websocket-manager';
 import { sqlite as sqliteDb } from './db/index';
 import { isIpAllowed, startDnsRefresh } from './services/ip-allowlist';
 import { checkRateLimit, isReadRequest, initRateLimiter, READ_RATE_LIMIT_MAX, WRITE_RATE_LIMIT_MAX, RATE_LIMIT_MAX } from './middleware/rate-limit';
+import { checkInferenceGate, INFERENCE_GATE_RETRY_AFTER_SECONDS } from './middleware/inference-gate';
 import { checkAuth } from './middleware/auth';
 import { isKillAuthBypassPath } from './middleware/kill-auth-bypass';
 import { AuthRateLimiter } from './middleware/auth-rate-limit';
@@ -112,6 +113,23 @@ function createHandler(
     if (!rate.allowed) {
       res.writeHead(429, { 'Content-Type': 'application/json', 'Retry-After': String(rate.retryAfter || 60) });
       res.end(JSON.stringify({ error: 'Rate limit exceeded', limit: RATE_LIMIT_MAX }));
+      return;
+    }
+
+    // ── Inference gate (ADR-141) ─────────────────────────────────
+    // While the kill-switch is STOPPED, reject POST /v1/inference/* with
+    // 503 + Retry-After so no new inference requests flow. This is the
+    // Phase 1 traffic-pause enforcement (swappable via PauseMechanism).
+    const gate = checkInferenceGate(req.method || 'GET', req.url || '/');
+    if (gate.gated) {
+      res.writeHead(503, {
+        'Content-Type': 'application/json',
+        'Retry-After': String(gate.retryAfter ?? INFERENCE_GATE_RETRY_AFTER_SECONDS),
+      });
+      res.end(JSON.stringify({
+        error: 'Inference traffic paused (kill-switch STOPPED)',
+        retryAfter: gate.retryAfter ?? INFERENCE_GATE_RETRY_AFTER_SECONDS,
+      }));
       return;
     }
 

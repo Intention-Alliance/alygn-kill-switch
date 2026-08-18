@@ -10,6 +10,7 @@
 import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
 import { KillSwitchService } from '../kill-switch';
 import type { RedisPool } from '../../types/redis-pool';
+import { isTrafficPaused, resetTrafficPauseState } from '../traffic-pause';
 
 // ─── Mock setup ─────────────────────────────────────────────────
 
@@ -62,6 +63,9 @@ function createService(overrides: { authToken?: string; apiKey?: string } = {}) 
 
 beforeEach(() => {
   internalState = null;
+  // Reset the traffic-pause module so the integration test below starts
+  // from a clean, unpaused baseline regardless of prior test files.
+  resetTrafficPauseState();
 });
 
 // ─── State Machine Transitions ──────────────────────────────────
@@ -202,6 +206,28 @@ describe('KillSwitchService — state machine transitions', () => {
     expect(result.newState).toBe('STOPPED');
     expect(result.previousState).toBe('ARMED');
     expect(internalState).toBe('STOPPED');
+  });
+
+  // P2-2: State-machine integration test — real transitionTo() drives the
+  // traffic-pause hook. This is the regression test for P1-1: it would have
+  // caught the dead resume path (STOPPED → RUNNING was invalid, so the
+  // resume hook never fired).
+  it('integration: transitionTo(STOPPED) pauses traffic and transitionTo(RUNNING) resumes it', async () => {
+    internalState = 'ARMED';
+    const service = createService();
+
+    // Start: ARMED → traffic not paused.
+    expect(isTrafficPaused()).toBe(false);
+
+    // ARMED → STOPPED: traffic pauses.
+    await service.transitionTo('STOPPED');
+    expect(internalState).toBe('STOPPED');
+    expect(isTrafficPaused()).toBe(true);
+
+    // STOPPED → RUNNING: traffic resumes (regression for P1-1).
+    await service.transitionTo('RUNNING');
+    expect(internalState).toBe('RUNNING');
+    expect(isTrafficPaused()).toBe(false);
   });
 
   // Scenario 8: RUNNING → STOPPED emergency path (valid — bypasses STOPPING)
