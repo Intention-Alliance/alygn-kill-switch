@@ -72,17 +72,23 @@ export interface ChainVerifyResult {
 
 /**
  * The server HMAC key for audit entries. Stored in env (AUDIT_HMAC_KEY),
- * NOT in the SQLite file (ADR-140 §6.2 — key protection). Falls back to
- * BETTER_AUTH_SECRET for dev/test convenience, but production must set
- * AUDIT_HMAC_KEY explicitly.
+ * NOT in the SQLite file (ADR-140 §6.2 — key protection). validate-env.ts
+ * enforces AUDIT_HMAC_KEY is set (minLength 32) at startup, so there is no
+ * fallback — a silent swap to another secret would collapse key spaces
+ * under failure (Phase 4 Stage 2 fix).
  */
 export function auditHmacKey(): string {
-	const key = process.env.AUDIT_HMAC_KEY || process.env.BETTER_AUTH_SECRET
+	const key = process.env.AUDIT_HMAC_KEY
 	if (!key) {
 		throw new Error(
-			'Missing AUDIT_HMAC_KEY (or BETTER_AUTH_SECRET) for audit chain signing',
+			'Missing AUDIT_HMAC_KEY for audit chain signing (ADR-140 §6.2)',
 		)
 	}
+	// TODO (ADR-140 §6.2 — HMAC key protection): migrate from env-var to
+	// TPM/HSM/key-server (AWS KMS, GCP KMS, HashiCorp Vault). This file
+	// currently reads from process.env, which leaks the key into process
+	// listings, container env dumps, and crash reports. Tracked for a
+	// follow-up card.
 	return key
 }
 
@@ -262,65 +268,76 @@ function getChainHead(): typeof killSwitchAuditLog.$inferSelect | null {
 export async function appendAuditEntry(
 	params: AppendAuditParams,
 ): Promise<AuditChainEntry> {
-	const head = getChainHead()
+	// BEGIN IMMEDIATE acquires a write lock — prevents TOCTOU between the
+	// prev_hash lookup and the INSERT in concurrent processes (ADR-140
+	// chain integrity). Without it, two concurrent appends could both read
+	// the same head and produce colliding prev_hash links.
+	sqlite.exec('BEGIN IMMEDIATE')
+	try {
+		const head = getChainHead()
 
-	const prevHash = head?.selfHash || 'GENESIS'
+		const prevHash = head?.selfHash || 'GENESIS'
 
-	const base = {
-		id: crypto.randomUUID(),
-		timestamp: new Date(),
-		userId: params.userId,
-		reason: params.reason,
-		previousState: params.previousState,
-		newState: params.newState,
-		traceId: params.traceId ?? crypto.randomUUID(),
-		machineId: params.machineId ?? null,
-		severity: params.severity ?? 'info',
-		metadata: params.metadata ?? null,
-		prevHash,
-		actorSignature: params.actorSignature ?? null,
-		plainExplanation: params.plainExplanation,
-	}
+		const base = {
+			id: crypto.randomUUID(),
+			timestamp: new Date(),
+			userId: params.userId,
+			reason: params.reason,
+			previousState: params.previousState,
+			newState: params.newState,
+			traceId: params.traceId ?? crypto.randomUUID(),
+			machineId: params.machineId ?? null,
+			severity: params.severity ?? 'info',
+			metadata: params.metadata ?? null,
+			prevHash,
+			actorSignature: params.actorSignature ?? null,
+			plainExplanation: params.plainExplanation,
+		}
 
-	const selfHash = computeSelfHash(base)
-	const serverHmac = computeServerHmac({ ...base, selfHash })
+		const selfHash = computeSelfHash(base)
+		const serverHmac = computeServerHmac({ ...base, selfHash })
 
-	const row = {
-		...base,
-		selfHash,
-		serverHmac,
-	}
+		const row = {
+			...base,
+			selfHash,
+			serverHmac,
+		}
 
-	// Raw SQL insert (not drizzle's query builder) so the service is immune
-	// to the global `drizzle-orm` mocks that other test files install
-	// (which replace `sql.identifier` and break drizzle's insert builder).
-	sqlite
-		.query(
-			`INSERT INTO kill_switch_audit_log
+		// Raw SQL insert (not drizzle's query builder) so the service is immune
+		// to the global `drizzle-orm` mocks that other test files install
+		// (which replace `sql.identifier` and break drizzle's insert builder).
+		sqlite
+			.query(
+				`INSERT INTO kill_switch_audit_log
 			 (id, timestamp, user_id, reason, previous_state, new_state, trace_id,
 			  machine_id, severity, metadata, prev_hash, self_hash, actor_signature,
 			  server_hmac, plain_explanation)
 			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		)
-		.run(
-			row.id,
-			Math.floor(row.timestamp.getTime() / 1000),
-			row.userId,
-			row.reason,
-			row.previousState,
-			row.newState,
-			row.traceId,
-			row.machineId,
-			row.severity,
-			row.metadata,
-			row.prevHash,
-			row.selfHash,
-			row.actorSignature,
-			row.serverHmac,
-			row.plainExplanation,
-		)
+			)
+			.run(
+				row.id,
+				Math.floor(row.timestamp.getTime() / 1000),
+				row.userId,
+				row.reason,
+				row.previousState,
+				row.newState,
+				row.traceId,
+				row.machineId,
+				row.severity,
+				row.metadata,
+				row.prevHash,
+				row.selfHash,
+				row.actorSignature,
+				row.serverHmac,
+				row.plainExplanation,
+			)
 
-	return toEntry(row)
+		sqlite.exec('COMMIT')
+		return toEntry(row)
+	} catch (e) {
+		sqlite.exec('ROLLBACK')
+		throw e
+	}
 }
 
 // ─── Chain verification ─────────────────────────────────────────────
@@ -366,6 +383,11 @@ export async function verifyChain(): Promise<ChainVerifyResult> {
 			actorSignature: entry.actorSignature,
 			plainExplanation: entry.plainExplanation,
 		})
+		// TODO (ADR-140 §6.3 — tamper-detection response): when brokenAt is
+		// non-null, freeze the audit log to read-only + transition the kill
+		// switch to LOCKED state. Currently we only surface brokenAt via
+		// /v1/audit/verify. Real fail-closed requires a coordination call into
+		// KillSwitchService. Tracked for a follow-up card.
 		if (recomputed !== entry.selfHash) {
 			return {
 				ok: false,

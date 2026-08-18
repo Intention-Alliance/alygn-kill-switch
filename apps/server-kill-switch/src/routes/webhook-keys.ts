@@ -292,8 +292,9 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 	const newId = newKeyId()
 	const adminId = 'admin'
 
-	// Raw SQL transaction (immune to the global `drizzle-orm` mocks).
-	sqlite.run('BEGIN')
+	// BEGIN IMMEDIATE acquires a write lock — prevents TOCTOU between the
+	// old-key lookup and the revoke+insert in concurrent processes.
+	sqlite.run('BEGIN IMMEDIATE')
 	try {
 		sqlite
 			.query(
