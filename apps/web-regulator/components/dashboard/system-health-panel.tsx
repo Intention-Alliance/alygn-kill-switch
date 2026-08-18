@@ -24,7 +24,7 @@ export function SystemHealthPanel({
     : killSwitchState === "STOPPING" || killSwitchState === "STOPPED" ? "Low"
     : "Critical";
 
-  const isPaused = killSwitchState !== null && killSwitchState !== "RUNNING";
+  const isPaused = killSwitchState === "STOPPED";
 
   return (
     <div className="border border-border/50 bg-card/30 rounded-xl p-6 backdrop-blur-md space-y-6">

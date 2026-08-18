@@ -134,11 +134,13 @@ export async function pauseInferenceTraffic(): Promise<void> {
 /**
  * Resume inference traffic. Idempotent: calling while already running is
  * a no-op. Resets the paused-request counter.
+ *
+ * Note: resume is intentionally NOT gated by the feature flag. The flag
+ * controls whether traffic *pausing* is enabled; once traffic is paused,
+ * resume must always work so a mid-pause flag flip can never leave
+ * inference traffic permanently paused (P2-1).
  */
 export async function resumeInferenceTraffic(): Promise<void> {
-  if (!isFeatureEnabled('killSwitchTrafficPauseEnabled')) {
-    return;
-  }
   if (!_paused) return; // already running — idempotent
 
   await _activeMechanism.resume();

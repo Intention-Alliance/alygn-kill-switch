@@ -10,10 +10,20 @@ import {
   getActiveMechanismName,
   type PauseMechanism,
 } from '../traffic-pause';
+import { getConfig } from '../../config';
 
 // The feature flag is read from config at call time. Default is enabled,
 // so these tests exercise the real pause/resume path. We reset module
 // state between tests.
+
+// ─── Feature-flag control (P2-1) ────────────────────────────────
+// isFeatureEnabled reads getConfig().features[flag] at call time. We
+// mutate the config singleton's features object directly to flip the
+// flag per-test — no module mocking needed, and it works regardless of
+// test-file execution order.
+function setFlag(enabled: boolean) {
+  getConfig().features.killSwitchTrafficPauseEnabled = enabled;
+}
 
 beforeEach(() => {
   // Force-reset module state (bypasses the feature-flag guard) so prior
@@ -26,6 +36,8 @@ beforeEach(() => {
     pause() {},
     resume() {},
   });
+  // Default the feature flag back to enabled for each test.
+  setFlag(true);
 });
 
 describe('pauseInferenceTraffic / resumeInferenceTraffic', () => {
@@ -107,5 +119,40 @@ describe('swappable pause mechanism', () => {
     await pauseInferenceTraffic();
     await resumeInferenceTraffic();
     expect(calls).toEqual(['pause', 'resume']);
+  });
+});
+
+describe('config-disabled path (P2-1)', () => {
+  it('pauseInferenceTraffic is a no-op when the feature flag is disabled', async () => {
+    setFlag(false);
+    expect(isTrafficPaused()).toBe(false);
+
+    await pauseInferenceTraffic();
+
+    // No paused flip, no counter increment.
+    expect(isTrafficPaused()).toBe(false);
+    expect(getPausedRequestCount()).toBe(0);
+  });
+
+  it('disabled → enabled: pause works normally once the flag is re-enabled', async () => {
+    setFlag(false);
+    await pauseInferenceTraffic();
+    expect(isTrafficPaused()).toBe(false);
+
+    setFlag(true);
+    await pauseInferenceTraffic();
+    expect(isTrafficPaused()).toBe(true);
+  });
+
+  it('enabled → disabled mid-pause: resume still works', async () => {
+    setFlag(true);
+    await pauseInferenceTraffic();
+    expect(isTrafficPaused()).toBe(true);
+
+    // Disable the flag while paused, then resume.
+    setFlag(false);
+    await resumeInferenceTraffic();
+    expect(isTrafficPaused()).toBe(false);
+    expect(getPausedRequestCount()).toBe(0);
   });
 });

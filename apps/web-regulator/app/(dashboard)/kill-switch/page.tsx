@@ -184,7 +184,7 @@ function ResumeButton({ onResumed }: { onResumed: () => void }) {
   const handleResume = useCallback(async () => {
     setIsResuming(true);
     try {
-      await apiPost("/api/kill-switch/activate", {
+      await apiPost("/api/kill-switch/chaos", {
         state: "RUNNING",
         reason: "Manual resume from dashboard",
       });
