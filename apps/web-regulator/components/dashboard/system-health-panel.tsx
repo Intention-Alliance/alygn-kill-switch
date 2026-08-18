@@ -7,11 +7,13 @@ import { computeNetworkLoad } from "@/lib/dashboard-utils";
 interface SystemHealthPanelProps {
   auditLog: ActivationRecord[];
   killSwitchState: KillSwitchState | null;
+  pausedRequestCount?: number;
 }
 
 export function SystemHealthPanel({
   auditLog,
   killSwitchState,
+  pausedRequestCount = 0,
 }: SystemHealthPanelProps) {
   const networkLoadPercent = computeNetworkLoad(killSwitchState);
 
@@ -21,6 +23,8 @@ export function SystemHealthPanel({
     : killSwitchState === "ARMED" ? "Normal"
     : killSwitchState === "STOPPING" || killSwitchState === "STOPPED" ? "Low"
     : "Critical";
+
+  const isPaused = killSwitchState === "STOPPED";
 
   return (
     <div className="border border-border/50 bg-card/30 rounded-xl p-6 backdrop-blur-md space-y-6">
@@ -46,6 +50,21 @@ export function SystemHealthPanel({
           />
         </div>
       </div>
+
+      {/* Paused Request Count — shown when traffic is paused (ADR-141) */}
+      {isPaused && (
+        <div className="flex items-center justify-between rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-destructive animate-pulse" />
+            <span className="text-sm font-medium text-destructive">
+              Inference traffic paused
+            </span>
+          </div>
+          <span className="text-sm font-bold text-destructive">
+            {pausedRequestCount} request{pausedRequestCount === 1 ? "" : "s"} held
+          </span>
+        </div>
+      )}
 
       <div className="h-px w-full bg-border/50" />
 

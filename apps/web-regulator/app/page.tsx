@@ -223,6 +223,7 @@ export default function DashboardPage() {
             <SystemHealthPanel
               auditLog={auditLog}
               killSwitchState={status?.state ?? null}
+              pausedRequestCount={status?.pausedRequestCount ?? 0}
             />
           </div>
         </div>

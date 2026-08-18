@@ -2,6 +2,7 @@
 
 import { STATES } from '../services/kill-switch';
 import type { KillSwitchService } from '../services/kill-switch';
+import { getPausedRequestCount } from '../services/traffic-pause';
 import { parseBody } from '../utils/body-parser';
 import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
 import { killActionForTarget } from './kill-authorization';
@@ -75,6 +76,9 @@ export async function handleKillSwitchRoutes(
         activatedAt: lastActivation.timestamp,
         reason: lastActivation.reason,
         recentTransitions,
+        // ADR-141: expose the paused-request counter so the dashboard can
+        // surface how many inference requests were rejected while paused.
+        pausedRequestCount: getPausedRequestCount(),
       };
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
