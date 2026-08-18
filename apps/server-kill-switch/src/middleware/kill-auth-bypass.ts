@@ -16,6 +16,9 @@
 export function isKillAuthBypassPath(method: string, url: string): boolean {
   return (
     (method === 'POST' && url.startsWith('/v1/kill-authorization/')) ||
-    (method === 'POST' && url === '/v1/kill-switch/chaos')
+    (method === 'POST' && url === '/v1/kill-switch/chaos') ||
+    // ADR-140 §6: audit verify/anchor carry their own WebAuthn assertion
+    // token (admin-only), so they bypass the normal Bearer/session check.
+    (method === 'POST' && url.startsWith('/v1/audit/'))
   );
 }

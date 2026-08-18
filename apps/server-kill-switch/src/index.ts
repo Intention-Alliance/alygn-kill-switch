@@ -22,6 +22,8 @@ import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
 import { handleAdminSecretsRoutes, initAuditLogFromDb } from './routes/admin-secrets';
 import { handleApiKeysRoutes } from './routes/api-keys';
+import { handleWebhookKeysRoutes } from './routes/webhook-keys';
+import { handleAuditRoutes } from './routes/audit';
 import { SecretsLoader } from './lib/secrets-loader';
 import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
@@ -81,6 +83,12 @@ function createHandler(
     const apiKeysHandled = await handleApiKeysRoutes(method, url, req, res, ip);
     if (apiKeysHandled) return;
 
+    // ── Webhook Keys admin routes (ADR-139) — separate auth ──
+    // /v1/admin/webhook-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user
+    // session (mirrors api-keys.ts). Runs BEFORE checkAuth.
+    const webhookKeysHandled = await handleWebhookKeysRoutes(method, url, req, res);
+    if (webhookKeysHandled) return;
+
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
 
@@ -122,6 +130,7 @@ function createHandler(
       await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
       await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
       await handleKillAuthorizationRoutes(method, url, req, res, service) ||
+      await handleAuditRoutes(method, url, req, res) ||
       await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
       await handleMachinesRoutes(method, url, req, res,
         async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },

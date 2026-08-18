@@ -112,6 +112,10 @@ const REQUIRED_ENV = {
     minLength: 32,
     description: 'Shared secret for /v1/internal/api-keys/* (the openclaw-webhook uses this to look up keys)',
   },
+  AUDIT_HMAC_KEY: {
+    minLength: 32,
+    description: 'Server-side HMAC key for the immutable audit chain (ADR-140 §6.2 — must NOT live in the SQLite file)',
+  },
 } as const;
 
 // ─── Validation ──────────────────────────────────────────────────
@@ -130,6 +134,7 @@ export function validateEnvironment(): void {
     { name: 'KILL_SWITCH_API_KEY', minLength: 16, description: REQUIRED_ENV.KILL_SWITCH_API_KEY.description },
     { name: 'ADMIN_UI_API_KEY', minLength: 32, description: REQUIRED_ENV.ADMIN_UI_API_KEY.description },
     { name: 'KILL_SWITCH_INTERNAL_KEY', minLength: 32, description: REQUIRED_ENV.KILL_SWITCH_INTERNAL_KEY.description },
+    { name: 'AUDIT_HMAC_KEY', minLength: 32, description: REQUIRED_ENV.AUDIT_HMAC_KEY.description },
   ];
 
   for (const secret of secrets) {
@@ -162,6 +167,7 @@ export function validateAndGetEnv() {
     KILL_SWITCH_API_KEY: process.env.KILL_SWITCH_API_KEY!,
     ADMIN_UI_API_KEY: process.env.ADMIN_UI_API_KEY!,
     KILL_SWITCH_INTERNAL_KEY: process.env.KILL_SWITCH_INTERNAL_KEY!,
+    AUDIT_HMAC_KEY: process.env.AUDIT_HMAC_KEY!,
     REDIS_URL: process.env.REDIS_URL!,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@alygn.com',
   };

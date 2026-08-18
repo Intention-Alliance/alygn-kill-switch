@@ -8,20 +8,22 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { validateEnvironment } from './validate-env'
 
-const SECRET_KEYS = [
+const SECRET_KEYS: string[] = [
 	'BETTER_AUTH_SECRET',
 	'KILL_SWITCH_AUTH_TOKEN',
 	'KILL_SWITCH_API_KEY',
 	'ADMIN_UI_API_KEY',
 	'KILL_SWITCH_INTERNAL_KEY',
-] as const
+	'AUDIT_HMAC_KEY',
+]
 
-const STRONG_SECRETS: Record<(typeof SECRET_KEYS)[number], string> = {
+const STRONG_SECRETS: Record<string, string> = {
 	BETTER_AUTH_SECRET: `${'x'.repeat(64)}A1!`,
 	KILL_SWITCH_AUTH_TOKEN: `aB3$${'x'.repeat(20)}`,
 	KILL_SWITCH_API_KEY: `cD4#${'y'.repeat(20)}`,
 	ADMIN_UI_API_KEY: `eF5@${'z'.repeat(36)}`,
 	KILL_SWITCH_INTERNAL_KEY: `gH6%${'w'.repeat(36)}`,
+	AUDIT_HMAC_KEY: `iJ7&${'v'.repeat(36)}`,
 }
 
 function setEnv(overrides: Record<string, string>) {
@@ -49,17 +51,17 @@ describe('validateEnvironment — placeholder guard (K6)', () => {
 		expect(() => validateEnvironment()).not.toThrow()
 	})
 
-	it.each(SECRET_KEYS)('rejects "change-me" placeholder for %s', (key) => {
+	it.each(SECRET_KEYS)('rejects "change-me" placeholder for %s', (key: string) => {
 		setEnv({ [key]: 'change-me' })
 		expect(() => validateEnvironment()).toThrow(/placeholder/i)
 	})
 
-	it.each(SECRET_KEYS)('rejects "<generate-with-…>" placeholder for %s', (key) => {
+	it.each(SECRET_KEYS)('rejects "<generate-with-…>" placeholder for %s', (key: string) => {
 		setEnv({ [key]: '<generate-with-openssl-rand-hex-32>' })
 		expect(() => validateEnvironment()).toThrow(/placeholder/i)
 	})
 
-	it.each(SECRET_KEYS)('rejects "your-secret-here" placeholder for %s', (key) => {
+	it.each(SECRET_KEYS)('rejects "your-secret-here" placeholder for %s', (key: string) => {
 		setEnv({ [key]: 'your-secret-here' })
 		expect(() => validateEnvironment()).toThrow(/placeholder/i)
 	})
