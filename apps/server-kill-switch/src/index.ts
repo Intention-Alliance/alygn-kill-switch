@@ -22,6 +22,8 @@ import { handleLbHealthRoutes } from './middleware/lb-health';
 import { handleAdminRoutes } from './routes/admin';
 import { handleAdminSecretsRoutes, initAuditLogFromDb } from './routes/admin-secrets';
 import { handleApiKeysRoutes } from './routes/api-keys';
+import { handleWebhookKeysRoutes } from './routes/webhook-keys';
+import { handleAuditRoutes } from './routes/audit';
 import { SecretsLoader } from './lib/secrets-loader';
 import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
@@ -81,6 +83,12 @@ function createHandler(
     const apiKeysHandled = await handleApiKeysRoutes(method, url, req, res, ip);
     if (apiKeysHandled) return;
 
+    // ── Webhook Keys admin routes (ADR-139) — separate auth ──
+    // /v1/admin/webhook-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user
+    // session (mirrors api-keys.ts). Runs BEFORE checkAuth.
+    const webhookKeysHandled = await handleWebhookKeysRoutes(method, url, req, res);
+    if (webhookKeysHandled) return;
+
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
 
@@ -117,20 +125,39 @@ function createHandler(
       userRole = ar.user?.role ?? null;
     }
 
-    const handled =
-      await handleWebAuthnRoutes(method, url, req, res) ||
-      await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
-      await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
-      await handleKillAuthorizationRoutes(method, url, req, res, service) ||
-      await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
-      await handleMachinesRoutes(method, url, req, res,
-        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
-      ) ||
-      await handleDiscoveryRoutes(method, url, req, res, uid || 'api', userRole) ||
-      await handleOnboardingRoutes(method, url, req, res, uid || 'api', userRole) ||
-      await handleSettingsRoutes(method, url, req, res, userRole,
-        async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
-      );
+    // Wrap the dispatcher chain in try/catch so a throw in any handler
+    // does NOT leak the stack trace + Drizzle SQL error to the HTTP
+    // response (Phase 4 Stage 2 fix — info-leak). Log full detail
+    // server-side, return a generic 500 with a request_id to the caller.
+    let handled = false
+    try {
+      handled =
+        await handleWebAuthnRoutes(method, url, req, res) ||
+        await handleAuthRoutes(method, url, req, res, service, authRateLimiter) ||
+        await handleKillSwitchRoutes(method, url, req, res, service, ip) ||
+        await handleKillAuthorizationRoutes(method, url, req, res, service) ||
+        await handleAuditRoutes(method, url, req, res) ||
+        await handleFlagsRoutes(method, url, req, res, uid || 'api', userRole) ||
+        await handleMachinesRoutes(method, url, req, res,
+          async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
+        ) ||
+        await handleDiscoveryRoutes(method, url, req, res, uid || 'api', userRole) ||
+        await handleOnboardingRoutes(method, url, req, res, uid || 'api', userRole) ||
+        await handleSettingsRoutes(method, url, req, res, userRole,
+          async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
+        );
+    } catch (err) {
+      // Log full detail server-side, return generic 500 to caller.
+      const requestId = crypto.randomUUID()
+      console.error(`[server] unhandled error ${requestId}:`, err)
+      if (!res.headersSent) {
+        res.writeHead(500, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'internal_error', request_id: requestId }))
+      } else {
+        try { res.end() } catch { /* already ended */ }
+      }
+      return
+    }
 
     if (!handled) { res.writeHead(404, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Not found' })); }
   };

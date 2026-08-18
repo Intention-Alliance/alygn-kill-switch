@@ -343,6 +343,59 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_at_idx ON webhook_api_key_audit(at)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_api_key_audit_action_at_idx ON webhook_api_key_audit(action, at)`);
 
+  // ─── ADR-139: Webhook Keys (per-org vault, per-machine scope) ────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS webhook_keys (
+      id TEXT PRIMARY KEY,
+      org_id TEXT NOT NULL,
+      hashed_secret TEXT NOT NULL,
+      key_prefix TEXT NOT NULL,
+      name TEXT NOT NULL,
+      allowed_machines TEXT NOT NULL DEFAULT '[]',
+      allowed_zones TEXT NOT NULL DEFAULT '[]',
+      allowed_models TEXT NOT NULL DEFAULT '[]',
+      ip_map TEXT NOT NULL DEFAULT '[]',
+      created_by_admin_id TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      rotated_at INTEGER,
+      revoked_at INTEGER,
+      last_used_at INTEGER
+    )
+  `);
+  sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS webhook_keys_hashed_secret_unique ON webhook_keys(hashed_secret)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_keys_org_idx ON webhook_keys(org_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_keys_prefix_idx ON webhook_keys(key_prefix)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webhook_keys_active_idx ON webhook_keys(revoked_at)`);
+
+  // ─── ADR-139 §4: First-Access Verification (semi-rigid) ──────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS first_access (
+      id TEXT PRIMARY KEY,
+      key_id TEXT NOT NULL REFERENCES webhook_keys(id) ON DELETE CASCADE,
+      ip TEXT NOT NULL,
+      device_fp TEXT NOT NULL,
+      verified_at INTEGER,
+      challenge_id TEXT,
+      created_at INTEGER NOT NULL
+    )
+  `);
+  sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS first_access_key_ip_device_unique ON first_access(key_id, ip, device_fp)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS first_access_key_idx ON first_access(key_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS first_access_verified_idx ON first_access(verified_at)`);
+
+  // ─── ADR-140 §6.1: Chain Anchors (daily head anchor) ─────────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS chain_anchor (
+      id TEXT PRIMARY KEY,
+      date TEXT NOT NULL UNIQUE,
+      chain_head_hash TEXT NOT NULL,
+      entry_count INTEGER NOT NULL DEFAULT 0,
+      signed_payload TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    )
+  `);
+  sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS chain_anchor_date_unique ON chain_anchor(date)`);
+
   // ─── AI-Agnostic Discovery tables (ADR-135) ───────────────────────
   // Provisional registry — nothing is authoritative until human
   // confirmation (NO auto-admission, ADR-135 §5).
@@ -425,6 +478,45 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS ks_audit_severity_time_idx ON kill_switch_audit_log(severity, timestamp)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS ks_audit_machine_time_idx ON kill_switch_audit_log(machine_id, timestamp)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS ks_audit_state_time_idx ON kill_switch_audit_log(new_state, timestamp)`);
+
+  // ─── ADR-140: Immutable Audit Log — hash-chain columns (idempotent ALTER) ──
+  // prev_hash, self_hash, actor_signature, server_hmac, plain_explanation.
+  // Each ALTER is wrapped in try/catch for 'duplicate column name' (idempotent).
+  const auditCols = [
+    ['prev_hash', "TEXT NOT NULL DEFAULT 'GENESIS'"],
+    ['self_hash', "TEXT NOT NULL DEFAULT ''"],
+    ['actor_signature', 'TEXT'],
+    ['server_hmac', "TEXT NOT NULL DEFAULT ''"],
+    ['plain_explanation', "TEXT NOT NULL DEFAULT ''"],
+  ] as const;
+  for (const [col, def] of auditCols) {
+    try {
+      sqlite.run(`ALTER TABLE kill_switch_audit_log ADD COLUMN ${col} ${def}`);
+    } catch (e) {
+      if (!(e instanceof Error) || !e.message.includes('duplicate column name')) throw e;
+    }
+  }
+  sqlite.run(`CREATE INDEX IF NOT EXISTS ks_audit_self_hash_idx ON kill_switch_audit_log(self_hash)`);
+
+  // ─── ADR-140: INSERT-only triggers on the audit log (no UPDATE/DELETE) ──
+  // SQLite has no per-statement trigger type, so we use INSTEAD OF triggers
+  // on a view is not possible for a base table; instead we enforce via
+  // BEFORE UPDATE / BEFORE DELETE triggers that RAISE(ABORT). This makes the
+  // append-only guarantee structural, not conventional.
+  sqlite.run(`
+    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_update
+    BEFORE UPDATE ON kill_switch_audit_log
+    BEGIN
+      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): UPDATE forbidden');
+    END
+  `);
+  sqlite.run(`
+    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_delete
+    BEFORE DELETE ON kill_switch_audit_log
+    BEGIN
+      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): DELETE forbidden');
+    END
+  `);
 
   // Feature flag indexes
   sqlite.run(`CREATE INDEX IF NOT EXISTS feature_flag_key_idx ON feature_flag(key)`);
