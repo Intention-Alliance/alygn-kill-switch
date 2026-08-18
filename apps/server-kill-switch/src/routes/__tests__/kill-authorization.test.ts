@@ -77,7 +77,12 @@ beforeEach(() => {
 });
 
 // ─── Mock @simplewebauthn/server (never called by these tests) ────
+// Scope the mock to this file by preserving the real module's exports so it
+// does not leak into other test files that import the real module.
+const realSimpleWebAuthn = await import('@simplewebauthn/server');
+
 mock.module('@simplewebauthn/server', () => ({
+  ...realSimpleWebAuthn,
   generateRegistrationOptions: async () => ({ challenge: 'x' }),
   verifyRegistrationResponse: async () => ({ verified: false }),
   generateAuthenticationOptions: async () => ({ challenge: 'x' }),
@@ -85,8 +90,16 @@ mock.module('@simplewebauthn/server', () => ({
 }));
 
 // ─── Mock drizzle-orm ─────────────────────────────────────────────
+//
+// Scope the drizzle-orm mock to this file by preserving the real module's
+// exports and overriding only the query-builder helpers this service uses.
+// This prevents the mock from leaking into other test files that need the
+// real drizzle-orm exports (e.g. inArray/desc/asc) when the suite runs in
+// a single process — keeping the suite order-independent.
+const realDrizzleOrm = await import('drizzle-orm');
 
 mock.module('drizzle-orm', () => ({
+  ...realDrizzleOrm,
   eq: (left: any, right: any) => ({ __eq: right, __leftName: left?.name }),
   and: (...args: any[]) => ({ __and: args }),
   isNull: (col: any) => ({ __isNull: true, __col: col?.name }),
@@ -418,14 +431,24 @@ describe('POST /v1/kill-authorization/requests/:id/approve — quorum approval',
     expect(mockTransitionTo).toHaveBeenCalledTimes(1);
   });
 
-  it('approve on unknown request → 404', async () => {
+  it('approve on unknown request → 404 (valid token for generic action)', async () => {
     const res = createMockRes();
-    const req = createMockReq('{}', { authorization: `Assertion ${assertionToken('human-b', 'cred-b', 'kill:fleet')}` });
+    const req = createMockReq('{}', { authorization: `Assertion ${assertionToken('human-b', 'cred-b', 'kill:unknown')}` });
 
     const handled = await handleKillAuthorizationRoutes('POST', '/v1/kill-authorization/requests/nope/approve', req, res, mockService);
 
     expect(handled).toBe(true);
     expect(res.statusCode).toBe(404);
+  });
+
+  it('approve on unknown request with a BAD token → 403 (no request-ID enumeration)', async () => {
+    const res = createMockRes();
+    const req = createMockReq('{}', { authorization: 'Assertion not-a-valid-token' });
+
+    const handled = await handleKillAuthorizationRoutes('POST', '/v1/kill-authorization/requests/nope/approve', req, res, mockService);
+
+    expect(handled).toBe(true);
+    expect(res.statusCode).toBe(403);
   });
 });
 

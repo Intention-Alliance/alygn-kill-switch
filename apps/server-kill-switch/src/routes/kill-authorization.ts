@@ -233,15 +233,23 @@ export async function handleKillAuthorizationRoutes(
     if (method === 'POST' && approveMatch) {
       const requestId = approveMatch[1];
       const request = await getRequest(requestId);
+
+      // Verify the assertion token BEFORE the request-not-found check so a
+      // bad token returns 403 regardless of whether the request exists
+      // (prevents request-ID enumeration via 404 vs 403). For an unknown
+      // request we cannot know the exact action, so we verify against a
+      // generic action; a valid token then falls through to the 404 below.
+      const action = request
+        ? (request.action === 'kill'
+            ? killActionForTarget(request.target)
+            : policyChangeActionForFlag(request.target))
+        : 'kill:unknown';
+      const { userId, credentialId } = requireAssertion(req, action);
+
       if (!request) {
         json(res, 404, { error: 'Authorization request not found' });
         return true;
       }
-
-      const action = request.action === 'kill'
-        ? killActionForTarget(request.target)
-        : policyChangeActionForFlag(request.target);
-      const { userId, credentialId } = requireAssertion(req, action);
 
       const result = await approve(
         { requestId, userId, credentialId, ip: req.ip },

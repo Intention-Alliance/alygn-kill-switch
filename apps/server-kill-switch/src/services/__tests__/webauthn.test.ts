@@ -75,7 +75,14 @@ const mockVerifyAuthenticationResponse = mock(async () => ({
   },
 }));
 
+// Scope the @simplewebauthn/server mock to this file by preserving the real
+// module's exports and overriding only the four ceremony functions. This
+// prevents the mock from leaking into other test files that import the real
+// module when the suite runs in a single process.
+const realSimpleWebAuthn = await import('@simplewebauthn/server');
+
 mock.module('@simplewebauthn/server', () => ({
+  ...realSimpleWebAuthn,
   generateRegistrationOptions: mockGenerateRegistrationOptions,
   verifyRegistrationResponse: mockVerifyRegistrationResponse,
   generateAuthenticationOptions: mockGenerateAuthenticationOptions,
@@ -201,8 +208,16 @@ mock.module('../../db/index', () => {
 });
 
 // ─── Mock drizzle-orm eq/isNull/and ──────────────────────────────
+//
+// Scope the drizzle-orm mock to this file by preserving the real module's
+// exports and overriding only the query-builder helpers this service uses.
+// This prevents the mock from leaking into other test files that need the
+// real drizzle-orm exports (e.g. inArray/desc/asc) when the suite runs in
+// a single process — keeping the suite order-independent.
+const realDrizzleOrm = await import("drizzle-orm");
 
 mock.module('drizzle-orm', () => ({
+  ...realDrizzleOrm,
   eq: (left: any, right: any) => ({ __eq: right, __leftName: left?.name }),
   isNull: (col: any) => ({ __isNull: true, __col: col?.name }),
   and: (...args: any[]) => ({ __and: args }),
