@@ -89,6 +89,18 @@ function buildEnvOverrides(): Partial<AppConfig> {
     (overrides as any).telemetry = { ...((overrides as any).telemetry || {}), serviceName: env.OTEL_SERVICE_NAME };
   }
 
+  // WebAuthn (ADR-136)
+  const webauthnOverrides: Partial<AppConfig['webauthn']> = {};
+  if (env.WEBAUTHN_RP_NAME) webauthnOverrides.rpName = env.WEBAUTHN_RP_NAME;
+  if (env.WEBAUTHN_RP_ID) webauthnOverrides.rpID = env.WEBAUTHN_RP_ID;
+  if (env.WEBAUTHN_ORIGIN) webauthnOverrides.origin = env.WEBAUTHN_ORIGIN;
+  if (Object.keys(webauthnOverrides).length > 0) {
+    (overrides as Record<string, unknown>).webauthn = {
+      ...((overrides as Record<string, unknown>).webauthn as Record<string, unknown> | undefined),
+      ...webauthnOverrides,
+    };
+  }
+
   return overrides;
 }
 

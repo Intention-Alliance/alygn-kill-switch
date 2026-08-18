@@ -123,6 +123,38 @@ export async function seedFeatureFlags() {
       enabled: true,
       createdBy: 'system',
     },
+    // ─── ADR-136: Human-Signature Kill Authorization flags ─────────
+    // Stored as feature_flag rows (value column is boolean; the actual
+    // policy values live in the `setting` table via the settings API):
+    //   kill.authorization.mode      = 'single' | 'quorum'  (setting)
+    //   kill.authorization.quorum    = 2 (of 3) | 3 (of 3)  (setting)
+    //   kill.authorization.timeoutMs = quorum window        (setting)
+    // The feature_flag rows gate whether the WebAuthn kill-authorization
+    // pipeline is enabled at all (ADR-137: authorization policy as flags).
+    {
+      id: 'flag-kill-auth-mode',
+      key: 'kill.authorization.mode',
+      value: true,
+      description: 'Kill authorization mode: single | quorum (value in settings)',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-kill-auth-quorum',
+      key: 'kill.authorization.quorum',
+      value: true,
+      description: 'Quorum threshold for kill authorization (value in settings)',
+      enabled: true,
+      createdBy: 'system',
+    },
+    {
+      id: 'flag-kill-auth-timeout',
+      key: 'kill.authorization.timeoutMs',
+      value: true,
+      description: 'Quorum window in ms (value in settings)',
+      enabled: true,
+      createdBy: 'system',
+    },
   ];
 
   let seeded = 0;

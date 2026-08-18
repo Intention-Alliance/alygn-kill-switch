@@ -3,6 +3,43 @@
 import { STATES } from '../services/kill-switch';
 import type { KillSwitchService } from '../services/kill-switch';
 import { parseBody } from '../utils/body-parser';
+import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
+import { killActionForTarget } from './kill-authorization';
+
+/**
+ * Extract and verify the WebAuthn assertion token required for kill
+ * authorization (ADR-136). The token must be bound to the exact kill
+ * action being requested. Bearer tokens / API keys are structurally
+ * rejected here — only a human WebAuthn assertion can authorize a kill
+ * (ADR-136 §4 defense against autonomous self-deactivation).
+ */
+function requireKillAssertion(req: any, target: string): { userId: string; credentialId: string } {
+  const header = req.headers?.['authorization'] ?? '';
+  if (!header.startsWith('Assertion ')) {
+    const err = new Error('Kill authorization requires a WebAuthn assertion token (Authorization: Assertion <token>)');
+    (err as any).statusCode = 403;
+    (err as any).code = 'ASSERTION_REQUIRED';
+    throw err;
+  }
+  const token = header.slice('Assertion '.length).trim();
+  if (!token) {
+    const err = new Error('Empty assertion token');
+    (err as any).statusCode = 403;
+    (err as any).code = 'ASSERTION_REQUIRED';
+    throw err;
+  }
+  try {
+    return verifyAssertionTokenForAction({ token, action: killActionForTarget(target) });
+  } catch (err: any) {
+    if (err instanceof WebAuthnError) {
+      const wrapped = new Error(err.message);
+      (wrapped as any).statusCode = 403;
+      (wrapped as any).code = err.code;
+      throw wrapped;
+    }
+    throw err;
+  }
+}
 
 export async function handleKillSwitchRoutes(
   method: string,
@@ -53,7 +90,9 @@ export async function handleKillSwitchRoutes(
       return true;
     }
 
-    // POST /v1/kill-switch/chaos
+    // POST /v1/kill-switch/chaos — ADR-136: requires a human WebAuthn
+    // assertion token bound to the kill action. The legacy Bearer token
+    // path is REMOVED for this endpoint (kept for non-kill routes).
     if (method === 'POST' && url === '/v1/kill-switch/chaos') {
       const body = await parseBody(req);
 
@@ -66,8 +105,11 @@ export async function handleKillSwitchRoutes(
         return true;
       }
 
+      const target = body.target && typeof body.target === 'string' ? body.target : 'fleet';
+      const { userId } = requireKillAssertion(req, target);
+
       const result = await service.transitionTo(body.state, {
-        userId: body.userId || 'api',
+        userId,
         reason: body.reason || 'API request',
         ip,
       });
@@ -83,6 +125,7 @@ export async function handleKillSwitchRoutes(
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       error: err.message,
+      code: err.code,
       current: err.current,
       allowed: err.allowed,
     }));
