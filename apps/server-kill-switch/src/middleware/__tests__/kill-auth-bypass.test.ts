@@ -23,6 +23,18 @@ describe('isKillAuthBypassPath', () => {
     expect(isKillAuthBypassPath('POST', '/v1/kill-switch/chaos')).toBe(true);
   });
 
+  it('POST to /v1/audit/verify bypasses auth (carries its own assertion token)', () => {
+    expect(isKillAuthBypassPath('POST', '/v1/audit/verify')).toBe(true);
+  });
+
+  it('POST to /v1/audit/anchor bypasses auth (carries its own assertion token)', () => {
+    expect(isKillAuthBypassPath('POST', '/v1/audit/anchor')).toBe(true);
+  });
+
+  it('GET to /v1/audit/* does NOT bypass auth (read endpoints)', () => {
+    expect(isKillAuthBypassPath('GET', '/v1/audit/verify')).toBe(false);
+  });
+
   it('GET to /v1/kill-authorization/requests does NOT bypass auth (read endpoint)', () => {
     expect(isKillAuthBypassPath('GET', '/v1/kill-authorization/requests')).toBe(false);
   });

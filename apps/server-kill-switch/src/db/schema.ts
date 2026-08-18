@@ -122,11 +122,23 @@ export const killSwitchAuditLog = sqliteTable(
     machineId: text('machine_id'),
     severity: text('severity').notNull().default('info'),
     metadata: text('metadata'), // JSON string
+    // ─── ADR-140: Immutable Audit Log (hash chain + signatures) ───
+    // prev_hash: sha256 of the previous entry's self_hash (chain link).
+    // self_hash: sha256(canonical_json(entry) + prev_hash) — tamper-evident.
+    // actor_signature: WebAuthn assertion (humans) or HMAC (services).
+    // server_hmac: server-side HMAC over the canonical entry (non-repudiation).
+    // plain_explanation: human-readable string (Dignity Test #6 reviewable reasoning).
+    prevHash: text('prev_hash').notNull().default('GENESIS'),
+    selfHash: text('self_hash').notNull().default(''),
+    actorSignature: text('actor_signature'),
+    serverHmac: text('server_hmac').notNull().default(''),
+    plainExplanation: text('plain_explanation').notNull().default(''),
   },
   (table) => ({
     severityTimeIdx: index('ks_audit_severity_time_idx').on(table.severity, table.timestamp),
     machineTimeIdx: index('ks_audit_machine_time_idx').on(table.machineId, table.timestamp),
     stateTimeIdx: index('ks_audit_state_time_idx').on(table.newState, table.timestamp),
+    selfHashIdx: index('ks_audit_self_hash_idx').on(table.selfHash),
   }),
 );
 
@@ -518,5 +530,88 @@ export const killAuthorizationRequests = sqliteTable(
     statusIdx: index('kill_authorization_request_status_idx').on(table.status),
     initiatedAtIdx: index('kill_authorization_request_initiated_at_idx').on(table.initiatedAt),
     targetIdx: index('kill_authorization_request_target_idx').on(table.target),
+  }),
+);
+
+// ─── Webhook Keys (ADR-139) — Per-Org Vault, Per-Machine Scope ────────
+//
+// Webhook API keys authorize AI EXECUTION calls (MCP, org chats, tool
+// invocations). They are structurally SEPARATE from human WebAuthn
+// credentials (ADR-136): a webhook key can NEVER authorize a kill.
+// Enforced in the middleware layer (webhookAuth), not by convention.
+//
+// Scope is configured by humans (full-privilege admin) via the Settings
+// UI (Phase 5 / ADR-141 — extension point only, no UI built here).
+// Each key is bound to an allowed IP map + machine/zone/model scope.
+export const webhookKeys = sqliteTable(
+  'webhook_keys',
+  {
+    id: text('id').primaryKey(),                              // ulid-ish, opaque
+    orgId: text('org_id').notNull(),                          // owning organization
+    hashedSecret: text('hashed_secret', { length: 64 }).notNull(), // sha256 hex of the full key
+    keyPrefix: text('key_prefix', { length: 8 }).notNull(),   // first 8 chars (lookup + display)
+    name: text('name').notNull(),                             // human label
+    allowedMachines: text('allowed_machines').notNull().default('[]'), // JSON string[] — machine ids
+    allowedZones: text('allowed_zones').notNull().default('[]'),       // JSON string[] — zone names
+    allowedModels: text('allowed_models').notNull().default('[]'),     // JSON string[] — model ids
+    ipMap: text('ip_map').notNull().default('[]'),            // JSON string[] — allowed source IPs
+    createdByAdminId: text('created_by_admin_id').notNull(),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    rotatedAt: integer('rotated_at', { mode: 'timestamp' }),
+    revokedAt: integer('revoked_at', { mode: 'timestamp' }),
+    lastUsedAt: integer('last_used_at', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    hashedSecretUnique: uniqueIndex('webhook_keys_hashed_secret_unique').on(table.hashedSecret),
+    orgIdx: index('webhook_keys_org_idx').on(table.orgId),
+    prefixIdx: index('webhook_keys_prefix_idx').on(table.keyPrefix),
+    activeIdx: index('webhook_keys_active_idx').on(table.revokedAt),
+  }),
+);
+
+// ─── First-Access Verification (ADR-139 §4 — semi-rigid) ──────────────
+//
+// Tracks which IP/device has been human-verified for a given key. On
+// first access from a NEW IP/device the call is HELD and a verification
+// challenge is raised (OTP to admin's registered channel + optional
+// passkey). On verification → verified_at set → subsequent calls from
+// that IP/device proceed directly. New IP/device → re-challenge.
+export const firstAccess = sqliteTable(
+  'first_access',
+  {
+    id: text('id').primaryKey(),
+    keyId: text('key_id').notNull()
+      .references(() => webhookKeys.id, { onDelete: 'cascade' }),
+    ip: text('ip').notNull(),
+    deviceFp: text('device_fp').notNull(),                    // device fingerprint (from request)
+    verifiedAt: integer('verified_at', { mode: 'timestamp' }),
+    challengeId: text('challenge_id'),                        // pending OTP/passkey challenge
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    keyIpDeviceIdx: uniqueIndex('first_access_key_ip_device_unique').on(table.keyId, table.ip, table.deviceFp),
+    keyIdx: index('first_access_key_idx').on(table.keyId),
+    verifiedIdx: index('first_access_verified_idx').on(table.verifiedAt),
+  }),
+);
+
+// ─── Chain Anchors (ADR-140 §6.1 — daily head anchor) ─────────────────
+//
+// One row per day: the daily chain-head hash signed by the server HMAC
+// key. This is the trusted verification point — a verifier with the
+// anchored head can re-walk the chain independently. External publish
+// (notary / WORM / blockchain) is a stub (out of scope for this card).
+export const chainAnchors = sqliteTable(
+  'chain_anchor',
+  {
+    id: text('id').primaryKey(),
+    date: text('date').notNull().unique(),                    // YYYY-MM-DD
+    chainHeadHash: text('chain_head_hash').notNull(),          // self_hash of the last entry that day
+    entryCount: integer('entry_count').notNull().default(0),
+    signedPayload: text('signed_payload').notNull(),           // JSON: { date, chainHeadHash, entryCount } + HMAC
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    dateIdx: uniqueIndex('chain_anchor_date_unique').on(table.date),
   }),
 );
