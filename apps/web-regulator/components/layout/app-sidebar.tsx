@@ -10,6 +10,7 @@ import {
   Server,
   Settings,
   BookOpen,
+  CreditCard,
   PanelLeftClose,
   PanelLeft,
   ArrowRight,
@@ -67,6 +68,12 @@ const NAV_ITEMS = [
     label: "Settings",
     icon: Settings,
     description: "System configuration",
+  },
+  {
+    href: "/billing",
+    label: "Billing",
+    icon: CreditCard,
+    description: "Subscription & payment methods",
   },
   {
     href: "/docs",

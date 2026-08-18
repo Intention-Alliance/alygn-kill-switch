@@ -1,9 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Settings, Shield, Loader2 } from "lucide-react";
+import { Settings, Shield, Loader2, Lock, UserCog } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import { useSettingsSync } from "@/hooks/use-settings-sync";
+import { useAuth } from "@/lib/auth-context";
+import {
+  canWriteSettings,
+  canManageRbac,
+  ROLE_LABELS,
+  roleDescription,
+} from "@/lib/rbac";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -89,10 +97,17 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 export default function SettingsPage() {
+  const { user } = useAuth();
   const [settings, setSettings] =
     useState<AppSettings>(DEFAULT_SETTINGS);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+
+  // ─── RBAC (ADR-141) ────────────────────────────────────────
+  // The backend enforces admin-only writes (403 otherwise). Mirror that
+  // here so non-admin users see read-only controls instead of failing saves.
+  const canWrite = canWriteSettings(user?.role);
+  const canManage = canManageRbac(user?.role);
 
   // ─── Fetch settings on mount ──────────────────────────────────
 
@@ -142,6 +157,13 @@ export default function SettingsPage() {
       key: K,
       value: AppSettings[K],
     ) => {
+      // RBAC guard (ADR-141): non-admin users cannot write settings.
+      if (!canWrite) {
+        toast.error("Settings are read-only for your role");
+        fetchSettings();
+        return;
+      }
+
       setSettings((prev) => ({ ...prev, [key]: value }));
 
       const apiKey = KEY_MAP[key];
@@ -168,7 +190,7 @@ export default function SettingsPage() {
         fetchSettings();
       }
     },
-    [fetchSettings, broadcastSetting],
+    [fetchSettings, broadcastSetting, canWrite],
   );
 
   // ─── Batch save all settings ──────────────────────────────────
@@ -177,6 +199,10 @@ export default function SettingsPage() {
   const [failedKeys, setFailedKeys] = useState<Set<string>>(new Set());
 
   async function handleSaveAll() {
+    if (!canWrite) {
+      toast.error("Settings are read-only for your role");
+      return;
+    }
     setIsSaving(true);
     setFailedKeys(new Set());
 
@@ -258,6 +284,20 @@ export default function SettingsPage() {
             <h1 className="text-2xl font-bold tracking-tight">
               Settings
             </h1>
+            {user?.role && (
+              <Badge
+                variant={canWrite ? "default" : "secondary"}
+                className="ml-1 capitalize"
+                title={`Role: ${ROLE_LABELS[user.role]}`}
+              >
+                {canWrite ? (
+                  <UserCog className="mr-1 h-3 w-3" aria-hidden="true" />
+                ) : (
+                  <Lock className="mr-1 h-3 w-3" aria-hidden="true" />
+                )}
+                {ROLE_LABELS[user.role]}
+              </Badge>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             System configuration and preferences
@@ -265,6 +305,62 @@ export default function SettingsPage() {
         </div>
 
         <Separator />
+
+        {/* RBAC Notice (ADR-141) */}
+        <SectionErrorBoundary title="Access Control">
+          <Card className="bg-muted/30">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm font-semibold">
+                  Role-Based Access Control
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  {canWrite ? (
+                    <UserCog className="h-5 w-5 text-primary mt-0.5" aria-hidden="true" />
+                  ) : (
+                    <Lock className="h-5 w-5 text-muted-foreground mt-0.5" aria-hidden="true" />
+                  )}
+                  <div>
+                    <p className="text-sm font-medium">
+                      {user?.role
+                        ? `Signed in as ${ROLE_LABELS[user.role]}`
+                        : "Signed in as unknown role"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {user?.role
+                        ? roleDescription(user.role)
+                        : "Unable to determine your role."}
+                    </p>
+                  </div>
+                </div>
+                {!canWrite && (
+                  <Badge variant="secondary" className="shrink-0">
+                    <Lock className="mr-1 h-3 w-3" aria-hidden="true" />
+                    Read-only
+                  </Badge>
+                )}
+              </div>
+              {!canWrite && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Settings writes require the <strong>admin</strong> role. You
+                  can view current values but changes are disabled. Contact an
+                  admin to modify configuration.
+                </p>
+              )}
+              {canManage && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  As an admin you can modify all settings. Role management is
+                  handled by the backend (Better-Auth).
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </SectionErrorBoundary>
 
         {/* General Settings */}
         <SectionErrorBoundary title="General Settings">
@@ -296,6 +392,7 @@ export default function SettingsPage() {
                   min={1000}
                   max={60000}
                   step={1000}
+                  disabled={!canWrite}
                   value={settings.autoPollInterval}
                   onChange={(e) => {
                     const n = parseInt(e.target.value, 10);
@@ -327,6 +424,7 @@ export default function SettingsPage() {
                 <Switch
                   id="enable-notifications"
                   checked={settings.enableNotifications}
+                  disabled={!canWrite}
                   onCheckedChange={(checked) =>
                     updateSetting("enableNotifications", checked)
                   }
@@ -352,6 +450,7 @@ export default function SettingsPage() {
                   className="w-24"
                   min={1}
                   max={365}
+                  disabled={!canWrite}
                   value={settings.auditLogRetentionDays}
                   onChange={(e) => {
                     const n = parseInt(e.target.value, 10);
@@ -400,6 +499,7 @@ export default function SettingsPage() {
                   className="w-24"
                   min={5}
                   max={480}
+                  disabled={!canWrite}
                   value={settings.sessionTimeoutMinutes}
                   onChange={(e) => {
                     const n = parseInt(e.target.value, 10);
@@ -431,6 +531,7 @@ export default function SettingsPage() {
                 <Switch
                   id="ip-allowlist"
                   checked={settings.ipAllowlistEnabled}
+                  disabled={!canWrite}
                   onCheckedChange={(checked) =>
                     updateSetting("ipAllowlistEnabled", checked)
                   }
@@ -456,6 +557,7 @@ export default function SettingsPage() {
                   className="w-24"
                   min={10}
                   max={1000}
+                  disabled={!canWrite}
                   value={settings.rateLimitPerMinute}
                   onChange={(e) => {
                     const n = parseInt(e.target.value, 10);
@@ -503,7 +605,8 @@ export default function SettingsPage() {
         <div className="flex justify-end">
           <Button
             onClick={handleSaveAll}
-            disabled={isSaving || isLoading}
+            disabled={isSaving || isLoading || !canWrite}
+            title={!canWrite ? "Read-only for your role" : undefined}
           >
             {isSaving ? (
               <>
