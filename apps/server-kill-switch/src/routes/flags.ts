@@ -21,6 +21,7 @@
 import { eq, and } from 'drizzle-orm';
 import { db } from '../db/index';
 import { featureFlags, flagAuditLog, machineFlags, machines } from '../db/schema';
+import { getAuthorizationMode, isKillAuthorizationFlag } from '../services/kill-authorization';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -143,6 +144,29 @@ function coerceIncomingValue(raw: unknown, type: 'boolean' | 'number' | 'string'
   return { ok: true, value: String(raw) };
 }
 
+/**
+ * ADR-136 §6 (amendment 2026-08-10): Quorum-gated policy changes.
+ *
+ * Changes to `kill.authorization.*` flags require the SAME threshold as
+ * the operations they govern. When the current mode is `quorum`, a
+ * single-signature request via the plain flag endpoint is REJECTED — the
+ * caller must use POST /v1/kill-authorization/policy-change with a
+ * WebAuthn assertion token instead.
+ */
+async function assertKillAuthorizationFlagChangeAllowed(flagKey: string): Promise<void> {
+  if (!isKillAuthorizationFlag(flagKey)) return;
+  const mode = await getAuthorizationMode();
+  if (mode === 'quorum') {
+    const err = new Error(
+      `Changing ${flagKey} requires quorum authorization (current mode: quorum). ` +
+      `Use POST /v1/kill-authorization/policy-change with a WebAuthn assertion token.`,
+    );
+    (err as any).statusCode = 403;
+    (err as any).code = 'QUORUM_REQUIRED';
+    throw err;
+  }
+}
+
 export async function handleFlagsRoutes(
   method: string,
   url: string,
@@ -252,6 +276,15 @@ export async function handleFlagsRoutes(
         return true;
       }
 
+      // ADR-136 §6: quorum-gated policy changes — reject single-signature
+      // changes to kill.authorization.* flags when mode is quorum.
+      try {
+        await assertKillAuthorizationFlagChangeAllowed(existing.key);
+      } catch (gateErr: any) {
+        json(res, gateErr.statusCode || 403, { error: gateErr.message, code: gateErr.code });
+        return true;
+      }
+
       const updates: Record<string, unknown> = {
         updatedAt: new Date(),
       };
@@ -307,6 +340,15 @@ export async function handleFlagsRoutes(
 
       if (!existing) {
         json(res, 404, { error: `Flag not found: ${flagId}` });
+        return true;
+      }
+
+      // ADR-136 §6: deleting a kill.authorization.* flag is a policy
+      // change — quorum-gated when mode is quorum.
+      try {
+        await assertKillAuthorizationFlagChangeAllowed(existing.key);
+      } catch (gateErr: any) {
+        json(res, gateErr.statusCode || 403, { error: gateErr.message, code: gateErr.code });
         return true;
       }
 

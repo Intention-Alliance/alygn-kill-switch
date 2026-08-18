@@ -459,3 +459,64 @@ export const rogueDeviceAlerts = sqliteTable(
     resolvedIdx: index('rogue_device_alert_resolved_idx').on(table.resolved),
   }),
 );
+
+// ─── Human-Signature Kill Authorization (ADR-136) ──────────────────
+//
+// WebAuthn (FIDO2) hardware authenticator credentials. Private keys
+// never leave the authenticator; only the public key is stored here.
+// Each row is one registered authenticator (YubiKey / passkey / roaming
+// security key) bound to a user. `credentialId` is the base64url
+// credential ID, `publicKey` is the base64url-encoded COSE public key
+// bytes, `counter` is the authenticator signature counter used for
+// replay detection (monotonic per credential).
+
+export const webauthnCredentials = sqliteTable(
+  'webauthn_credential',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    credentialId: text('credential_id').notNull().unique(), // base64url
+    publicKey: text('public_key').notNull(),               // base64url COSE bytes
+    counter: integer('counter').notNull().default(0),
+    transports: text('transports'),                        // JSON string[]
+    name: text('name'),                                    // human label, e.g. "YubiKey 5C"
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    revokedAt: integer('revoked_at', { mode: 'timestamp' }),
+  },
+  (table) => ({
+    userIdIdx: index('webauthn_credential_user_id_idx').on(table.userId),
+    credentialIdUnique: uniqueIndex('webauthn_credential_credential_id_unique').on(table.credentialId),
+    activeIdx: index('webauthn_credential_active_idx').on(table.revokedAt),
+  }),
+);
+
+// ─── Kill Authorization Requests (ADR-136 §3) ──────────────────────
+//
+// Quorum workflow state. A request is created when a human initiates a
+// kill (or a quorum-gated policy change) with their WebAuthn signature.
+// In `single` mode the request executes immediately; in `quorum` mode
+// it enters PENDING_QUORUM until the configured threshold of DISTINCT
+// approvers is met (initiator cannot be the sole approver).
+// `signatures` is a JSON array of { userId, credentialId, at } entries.
+
+export const killAuthorizationRequests = sqliteTable(
+  'kill_authorization_request',
+  {
+    id: text('id').primaryKey(),
+    action: text('action').notNull(),          // 'kill' | 'policy-change'
+    target: text('target').notNull(),          // machine id | 'fleet' | flag key
+    initiatedBy: text('initiated_by').notNull(),
+    initiatedByCredentialId: text('initiated_by_credential_id').notNull(),
+    initiatedAt: integer('initiated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    status: text('status').notNull().default('PENDING_QUORUM'), // PENDING_QUORUM | EXECUTED | EXPIRED | REJECTED
+    signatures: text('signatures').notNull().default('[]'),     // JSON array
+    executedAt: integer('executed_at', { mode: 'timestamp' }),
+    timeoutMs: integer('timeout_ms').notNull().default(600_000),
+  },
+  (table) => ({
+    statusIdx: index('kill_authorization_request_status_idx').on(table.status),
+    initiatedAtIdx: index('kill_authorization_request_initiated_at_idx').on(table.initiatedAt),
+    targetIdx: index('kill_authorization_request_target_idx').on(table.target),
+  }),
+);
