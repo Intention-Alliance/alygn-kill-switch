@@ -444,12 +444,11 @@ export async function verifyChain(): Promise<ChainVerifyResult> {
 		prevSelfHash = entry.selfHash
 	}
 
-	// Check the head against the latest daily anchor (if any)
+	// Check the head against the latest daily anchor (if any — any date, not just today)
 	const head = fromRawRow(rawRows[rawRows.length - 1])
-	const today = new Date().toISOString().slice(0, 10)
 	const anchor = sqlite
-		.query('SELECT * FROM chain_anchor WHERE date = ?')
-		.get(today) as Record<string, unknown> | undefined
+		.query('SELECT * FROM chain_anchor ORDER BY date DESC LIMIT 1')
+		.get() as Record<string, unknown> | undefined
 
 	let anchoredAt: string | null = null
 	if (anchor && anchor.chain_head_hash === head.selfHash) {
