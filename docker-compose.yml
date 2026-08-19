@@ -44,6 +44,7 @@ services:
       - "127.0.0.1:3000:3000"
     volumes:
       - kill-switch-data:/app/data
+      - ${SECRETS_FILE:-/home/andlersrv/.openclaw/secrets.json}:/root/.openclaw/secrets.json:ro
       - /proc:/host/proc:ro
       - /run/log/journal:/run/log/journal:ro
       - /:/host-root:ro
@@ -64,6 +65,7 @@ services:
     networks:
       - align-network
       - phase0-net
+      - infra-align-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
@@ -226,6 +228,9 @@ networks:
   align-network:
     driver: bridge
   phase0-net:
+    external: true
+  infra-align-network:
+    name: infrastructure_align-network
     external: true
 
 volumes:
