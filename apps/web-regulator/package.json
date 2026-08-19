@@ -28,7 +28,6 @@
     "@radix-ui/react-slot": "^1.2.2",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@simplewebauthn/browser": "^13.3.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "better-auth": "^1.6.9",

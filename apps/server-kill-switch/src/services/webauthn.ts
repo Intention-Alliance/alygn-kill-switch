@@ -171,66 +171,13 @@ async function findActiveCredential(credentialId: string): Promise<StoredCredent
   return row ? toStoredCredential(row) : null;
 }
 
-export async function listActiveCredentialsForUser(userId: string): Promise<StoredCredential[]> {
+async function listActiveCredentialsForUser(userId: string): Promise<StoredCredential[]> {
   const rows = await db
     .select()
     .from(webauthnCredentials)
     .where(and(eq(webauthnCredentials.userId, userId), isNull(webauthnCredentials.revokedAt)))
     .all();
   return rows.map(toStoredCredential);
-}
-
-/**
- * Rename a credential's human label (e.g. "YubiKey 5C — Andler").
- * The `name` field is display text only — never used for auth decisions.
- * Returns the updated credential, or null when the credential does not
- * exist or is not owned by the given user.
- */
-export async function renameCredential(
-  id: string,
-  userId: string,
-  name: string,
-): Promise<StoredCredential | null> {
-  const existing = await db
-    .select()
-    .from(webauthnCredentials)
-    .where(and(eq(webauthnCredentials.id, id), eq(webauthnCredentials.userId, userId)))
-    .get();
-  if (!existing) return null;
-
-  await db
-    .update(webauthnCredentials)
-    .set({ name })
-    .where(eq(webauthnCredentials.id, id))
-    .run();
-
-  return toStoredCredential({ ...existing, name });
-}
-
-/**
- * Revoke a credential by setting `revokedAt`. Revoked credentials are
- * excluded from list/assertion lookups (isNull(revokedAt)). Returns the
- * revoked credential, or null when the credential does not exist or is
- * not owned by the given user.
- */
-export async function revokeCredential(
-  id: string,
-  userId: string,
-): Promise<StoredCredential | null> {
-  const existing = await db
-    .select()
-    .from(webauthnCredentials)
-    .where(and(eq(webauthnCredentials.id, id), eq(webauthnCredentials.userId, userId)))
-    .get();
-  if (!existing) return null;
-
-  await db
-    .update(webauthnCredentials)
-    .set({ revokedAt: new Date() })
-    .where(eq(webauthnCredentials.id, id))
-    .run();
-
-  return toStoredCredential({ ...existing, revokedAt: new Date() });
 }
 
 // ─── Registration ceremony ──────────────────────────────────────────
