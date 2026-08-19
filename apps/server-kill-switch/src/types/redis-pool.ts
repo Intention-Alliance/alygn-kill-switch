@@ -1,5 +1,5 @@
 // Redis Pool type — local definition to avoid cross-rootDir imports
-// Matches infra/redis/redis-cluster-pool.mjs interface
+// Matches src/infra/redis-cluster-pool.mjs interface
 
 export interface RedisPool {
   getClient(): Promise<any>;

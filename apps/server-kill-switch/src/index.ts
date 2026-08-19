@@ -34,7 +34,7 @@ import { seedAdminUser } from './lib/auth';
 import { seedFeatureFlags } from './db/seed';
 import { validateEnvironment } from './config/validate-env';
 
-// ─── Redis client type (mirrors RedisPool from infra/redis/redis-cluster-pool.mjs) ──
+// ─── Redis client type (mirrors RedisPool from src/infra/redis-cluster-pool.mjs) ──
 
 interface RedisClient {
   publish(channel: string, message: string): Promise<number>;
