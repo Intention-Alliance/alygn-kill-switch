@@ -46,8 +46,19 @@ const nextConfig: NextConfig = {
   // All /api/* paths are proxied to the kill-switch backend,
   // masking the internal backend URL from the client.
   async rewrites() {
+    // The backend URL is baked into the build output at build time. In local
+    // dev the backend runs on the host (localhost), but in the production
+    // Docker deployment the web-regulator and kill-switch are separate
+    // containers on the same compose network, so the backend is reached by its
+    // service name. Defaulting to "localhost" in a production build silently
+    // breaks every /api/* proxy (the container would call itself), which
+    // manifests as auth failures and 500s. Use the Docker service name as the
+    // production default unless KILL_SWITCH_BACKEND_URL is explicitly set.
     const backendUrl =
-      process.env.KILL_SWITCH_BACKEND_URL || "http://localhost:3000";
+      process.env.KILL_SWITCH_BACKEND_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "http://alygn-kill-switch:3000"
+        : "http://localhost:3000");
 
     return [
       {
