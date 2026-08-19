@@ -6,7 +6,6 @@ import {
   Shield,
   LayoutDashboard,
   Key,
-  Fingerprint,
   Flag,
   Server,
   Settings,
@@ -41,7 +40,7 @@ const NAV_ITEMS = [
     description: "Compliance monitoring overview",
   },
   {
-    href: "/?tab=kill-switch",
+    href: "/kill-switch",
     label: "Kill Switch",
     icon: Shield,
     description: "Emergency stop & state control",
@@ -51,12 +50,6 @@ const NAV_ITEMS = [
     label: "Secrets",
     icon: Key,
     description: "Tailscale secret rotation & audit",
-  },
-  {
-    href: "/admin/security/fido2",
-    label: "FIDO2 Keys",
-    icon: Fingerprint,
-    description: "Hardware security key management",
   },
   {
     href: "/flags",
@@ -173,11 +166,6 @@ export function AppSidebar({
               pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <li key={item.href}>
-                {item.href === "/admin/security/fido2" && !collapsed && (
-                  <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                    Security
-                  </p>
-                )}
                 <Link
                   href={item.href}
                   className={cn(
