@@ -30,12 +30,12 @@ import { isoBase64URL } from '@simplewebauthn/server/helpers';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '../db/index';
-import { webauthnCredentials } from '../db/schema';
+import { sessions, users, webauthnCredentials } from '../db/schema';
 import { getConfig } from '../config';
 
 // ─── Types ──────────────────────────────────────────────────────────
 
-export type WebAuthnPurpose = 'register' | 'assert';
+export type WebAuthnPurpose = 'register' | 'assert' | 'login';
 
 export interface PendingChallenge {
   id: string;
@@ -144,6 +144,68 @@ function mintAssertionToken(userId: string, credentialId: string, action: string
     jti: randomBytes(16).toString('hex'),
   };
   return { token: signAssertionToken(payload), payload };
+}
+
+// ─── Better-Auth session minting (login assertion) ────────────────────
+//
+// A successful login assertion proves the user owns a registered WebAuthn
+// credential. We then mint a real Better-Auth session so the rest of the
+// app (AuthGuard, /api/auth/get-session, etc.) treats the user as signed
+// in — exactly as if they had typed email + password.
+//
+// The session cookie format mirrors Better-Auth's own `setSignedCookie`:
+//   better-auth.session_token = <token>.<base64(hmac-sha256(token, secret))>
+// The token is a random opaque string stored in the `session` table.
+
+function betterAuthSecret(): string {
+  const secret = process.env.BETTER_AUTH_SECRET;
+  if (!secret) {
+    throw new WebAuthnError('Missing BETTER_AUTH_SECRET', 'CONFIG_MISSING');
+  }
+  return secret;
+}
+
+function signSessionToken(token: string): string {
+  const sig = createHmac('sha256', betterAuthSecret())
+    .update(token)
+    .digest('base64');
+  return `${token}.${sig}`;
+}
+
+/**
+ * Create a Better-Auth session row for the given user and return the
+ * signed session cookie value (the value placed in the
+ * `better-auth.session_token` cookie).
+ */
+export async function mintSessionCookie(userId: string): Promise<string> {
+  const token = randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h, matches auth.ts session.expiresIn
+  const now = new Date();
+
+  await db.insert(sessions).values({
+    id: crypto.randomUUID(),
+    userId,
+    token,
+    expiresAt,
+    createdAt: now,
+    updatedAt: now,
+  }).run();
+
+  return signSessionToken(token);
+}
+
+/**
+ * Resolve a user by email (used when the login assertion is scoped to a
+ * specific username). Returns null when no user matches.
+ */
+export async function findUserByEmail(email: string): Promise<{ id: string; email: string; name: string } | null> {
+  const row = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .get();
+  if (!row) return null;
+  return { id: row.id, email: row.email, name: row.name ?? row.email };
 }
 
 // ─── Credential persistence ─────────────────────────────────────────
@@ -473,6 +535,143 @@ export async function finishAssertion({
     assertionToken,
     userId: credential.userId,
     credentialId: credential.credentialId,
+  };
+}
+
+// ─── Login assertion ceremony (sign-in with security key) ─────────────
+//
+// Unlike the kill-authorization assertion above, the login assertion runs
+// BEFORE the user has a session — it is the second factor (or sole factor)
+// that signs them in. It does NOT require a session cookie.
+
+export interface StartLoginAssertionParams {
+  username?: string; // optional email — scopes allowCredentials to that user's keys
+}
+
+export interface StartLoginAssertionResult {
+  options: Record<string, unknown>;
+  challengeId: string;
+}
+
+export async function startLoginAssertion({
+  username,
+}: StartLoginAssertionParams): Promise<StartLoginAssertionResult> {
+  const config = getConfig().webauthn;
+
+  let allowCredentials: { id: string; transports: string[] }[] | undefined;
+  if (username) {
+    const user = await findUserByEmail(username);
+    if (!user) {
+      throw new WebAuthnError('Unknown user', 'USER_NOT_FOUND');
+    }
+    const creds = await listActiveCredentialsForUser(user.id);
+    allowCredentials = creds.map((c) => ({
+      id: c.credentialId,
+      transports: c.transports ?? [],
+    }));
+    if (allowCredentials.length === 0) {
+      throw new WebAuthnError('No registered authenticators for this user', 'NO_CREDENTIALS');
+    }
+  }
+
+  const options = await generateAuthenticationOptions({
+    rpID: config.rpID,
+    allowCredentials: allowCredentials as { id: string; transports?: ('usb' | 'nfc' | 'ble' | 'internal' | 'hybrid' | 'cable' | 'smart-card')[] }[] | undefined,
+    timeout: 60_000,
+    userVerification: 'required',
+  });
+
+  const challengeId = randomBytes(16).toString('hex');
+  storeChallenge({
+    id: challengeId,
+    challenge: options.challenge,
+    purpose: 'login',
+    userId: '',
+    action: 'login',
+    createdAt: Date.now(),
+  });
+
+  return { options: options as unknown as Record<string, unknown>, challengeId };
+}
+
+export interface FinishLoginAssertionParams {
+  challengeId: string;
+  response: Record<string, unknown>;
+}
+
+export interface FinishLoginAssertionResult {
+  verified: boolean;
+  userId: string;
+  email: string;
+  name: string;
+  credentialId: string;
+  sessionCookie: string; // signed better-auth.session_token cookie value
+}
+
+export async function finishLoginAssertion({
+  challengeId,
+  response,
+}: FinishLoginAssertionParams): Promise<FinishLoginAssertionResult> {
+  const config = getConfig().webauthn;
+  const pending = takeChallenge(challengeId, 'login');
+  if (!pending) {
+    throw new WebAuthnError('Login challenge missing, expired, or already used', 'CHALLENGE_INVALID');
+  }
+
+  const authResponse = response as unknown as Parameters<typeof verifyAuthenticationResponse>[0]['response'];
+  const credential = await findActiveCredential(authResponse.id);
+  if (!credential) {
+    throw new WebAuthnError('Unknown or revoked credential', 'CREDENTIAL_UNKNOWN');
+  }
+
+  const verification = await verifyAuthenticationResponse({
+    response: authResponse,
+    expectedChallenge: pending.challenge,
+    expectedOrigin: config.origin,
+    expectedRPID: config.rpID,
+    credential: {
+      id: credential.credentialId,
+      publicKey: isoBase64URL.toBuffer(credential.publicKey),
+      counter: credential.counter,
+      transports: (credential.transports ?? []) as ('usb' | 'nfc' | 'ble' | 'internal' | 'hybrid' | 'cable' | 'smart-card')[],
+    },
+    requireUserVerification: true,
+  });
+
+  if (!verification.verified) {
+    throw new WebAuthnError('Login assertion verification failed', 'VERIFICATION_FAILED');
+  }
+
+  // Replay detection: authenticator counter must advance.
+  const { newCounter } = verification.authenticationInfo;
+  if (newCounter <= credential.counter) {
+    throw new WebAuthnError('Credential counter did not advance — possible replay', 'REPLAY_DETECTED');
+  }
+
+  await db
+    .update(webauthnCredentials)
+    .set({ counter: newCounter })
+    .where(eq(webauthnCredentials.id, credential.id))
+    .run();
+
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, credential.userId))
+    .get();
+  if (!user) {
+    throw new WebAuthnError('Credential owner no longer exists', 'USER_NOT_FOUND');
+  }
+
+  const sessionCookie = await mintSessionCookie(credential.userId);
+
+  return {
+    verified: true,
+    userId: credential.userId,
+    email: user.email,
+    name: user.name ?? user.email,
+    credentialId: credential.credentialId,
+    sessionCookie,
   };
 }
 

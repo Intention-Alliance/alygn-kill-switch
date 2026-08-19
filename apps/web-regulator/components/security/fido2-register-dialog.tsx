@@ -13,7 +13,8 @@
  * endpoints and the real browser WebAuthn API.
  */
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Usb,
@@ -61,10 +62,29 @@ export function Fido2RegisterDialog({
   onOpenChange,
   onRegistered,
 }: Fido2RegisterDialogProps) {
+  const router = useRouter();
   const [step, setStep] = useState<Step>("ready");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // After a successful registration, show the success state for 2 seconds
+  // then redirect to the login page with ?webauthn=registered so the user
+  // can immediately sign in with their new key.
+  useEffect(() => {
+    if (step === "success") {
+      redirectTimer.current = setTimeout(() => {
+        router.push("/login?webauthn=registered");
+      }, 2000);
+    }
+    return () => {
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+        redirectTimer.current = null;
+      }
+    };
+  }, [step, router]);
 
   function reset() {
     setStep("ready");
@@ -198,12 +218,12 @@ export function Fido2RegisterDialog({
           <div className="flex flex-col items-center gap-3 py-6 text-center">
             <CheckCircle2 className="h-10 w-10 text-success" aria-hidden="true" />
             <div>
-              <p className="text-sm font-medium">Key registered successfully</p>
+              <p className="text-sm font-medium">✓ Registered. Use your security key to sign in.</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 <Badge variant="secondary" className="font-normal">
                   {name.trim()}
                 </Badge>{" "}
-                is now active.
+                is now active. Redirecting to sign-in…
               </p>
             </div>
           </div>

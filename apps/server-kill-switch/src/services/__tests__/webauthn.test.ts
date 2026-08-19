@@ -105,8 +105,30 @@ interface MockCredential {
 
 let credentialStore: MockCredential[] = [];
 
+// Mock user + session stores for the login-assertion flow
+interface MockUser {
+  id: string;
+  email: string;
+  name: string | null;
+}
+interface MockSession {
+  id: string;
+  userId: string;
+  token: string;
+  expiresAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+let userStore: MockUser[] = [];
+let sessionStore: MockSession[] = [];
+
 beforeEach(() => {
   credentialStore = [];
+  userStore = [
+    { id: 'user-1', email: 'admin@alygn.com', name: 'Admin' },
+    { id: 'user-2', email: 'other@alygn.com', name: 'Other' },
+  ];
+  sessionStore = [];
   mockGenerateRegistrationOptions.mockClear();
   mockVerifyRegistrationResponse.mockClear();
   mockGenerateAuthenticationOptions.mockClear();
@@ -129,7 +151,9 @@ mock.module('../../db/index', () => {
       from(table: any) {
         const tableName = resolveTableName(table);
         const isCredential = tableName.includes('webauthn_credential');
-        const store = isCredential ? credentialStore : [];
+        const isUser = tableName === 'user';
+        const isSession = tableName === 'session';
+        const store = isCredential ? credentialStore : isUser ? userStore : isSession ? sessionStore : [];
 
         return {
           all() {
@@ -144,7 +168,7 @@ mock.module('../../db/index', () => {
               }
             }
             const filtered = eqValue !== null
-              ? store.filter((c: any) => c.credentialId === eqValue || c.id === eqValue || c.userId === eqValue)
+              ? store.filter((c: any) => c.credentialId === eqValue || c.id === eqValue || c.userId === eqValue || c.email === eqValue)
               : [...store];
             return {
               all() { return filtered; },
@@ -161,17 +185,28 @@ mock.module('../../db/index', () => {
       values(data: any) {
         return {
           run() {
-            credentialStore.push({
-              id: data.id,
-              userId: data.userId,
-              credentialId: data.credentialId,
-              publicKey: data.publicKey,
-              counter: data.counter ?? 0,
-              transports: data.transports ?? null,
-              name: data.name ?? null,
-              createdAt: data.createdAt ?? new Date(),
-              revokedAt: data.revokedAt ?? null,
-            });
+            if (data.credentialId !== undefined) {
+              credentialStore.push({
+                id: data.id,
+                userId: data.userId,
+                credentialId: data.credentialId,
+                publicKey: data.publicKey,
+                counter: data.counter ?? 0,
+                transports: data.transports ?? null,
+                name: data.name ?? null,
+                createdAt: data.createdAt ?? new Date(),
+                revokedAt: data.revokedAt ?? null,
+              });
+            } else if (data.token !== undefined) {
+              sessionStore.push({
+                id: data.id,
+                userId: data.userId,
+                token: data.token,
+                expiresAt: data.expiresAt,
+                createdAt: data.createdAt ?? new Date(),
+                updatedAt: data.updatedAt ?? new Date(),
+              });
+            }
           },
         };
       },
@@ -381,6 +416,90 @@ describe('WebAuthnService — assertion ceremony', () => {
       webauthn.finishAssertion({
         challengeId: started.challengeId,
         response: { id: FAKE_CREDENTIAL_ID },
+      }),
+    ).rejects.toThrow();
+  });
+});
+
+describe('WebAuthnService — login assertion (sign-in with security key)', () => {
+  it('login: begin (no username) → finish → session cookie minted', async () => {
+    // Seed a credential for user-1
+    const reg = await webauthn.startRegistration({ userId: 'user-1', userName: 'admin@alygn.com' });
+    await webauthn.finishRegistration({
+      userId: 'user-1',
+      challengeId: reg.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    const started = await webauthn.startLoginAssertion({});
+    expect(started.options.challenge).toBe(FAKE_CHALLENGE);
+    expect(started.challengeId).toBeDefined();
+
+    const finished = await webauthn.finishLoginAssertion({
+      challengeId: started.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID, type: 'public-key' },
+    });
+
+    expect(finished.verified).toBe(true);
+    expect(finished.userId).toBe('user-1');
+    expect(finished.credentialId).toBe(FAKE_CREDENTIAL_ID);
+    expect(finished.sessionCookie).toContain('.'); // <token>.<signature>
+  });
+
+  it('login: begin with username scopes to that user\'s keys', async () => {
+    const reg = await webauthn.startRegistration({ userId: 'user-1', userName: 'admin@alygn.com' });
+    await webauthn.finishRegistration({
+      userId: 'user-1',
+      challengeId: reg.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    const started = await webauthn.startLoginAssertion({ username: 'admin@alygn.com' });
+    expect(started.options.allowCredentials).toBeDefined();
+    expect(started.options.allowCredentials[0].id).toBe(FAKE_CREDENTIAL_ID);
+  });
+
+  it('login: begin with unknown username rejected', async () => {
+    await expect(
+      webauthn.startLoginAssertion({ username: 'nobody@alygn.com' }),
+    ).rejects.toThrow();
+  });
+
+  it('login: challenge is single-use', async () => {
+    const reg = await webauthn.startRegistration({ userId: 'user-1', userName: 'admin@alygn.com' });
+    await webauthn.finishRegistration({
+      userId: 'user-1',
+      challengeId: reg.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    const started = await webauthn.startLoginAssertion({});
+    await webauthn.finishLoginAssertion({
+      challengeId: started.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    await expect(
+      webauthn.finishLoginAssertion({
+        challengeId: started.challengeId,
+        response: { id: FAKE_CREDENTIAL_ID },
+      }),
+    ).rejects.toThrow();
+  });
+
+  it('login: unknown credential rejected', async () => {
+    const reg = await webauthn.startRegistration({ userId: 'user-1', userName: 'admin@alygn.com' });
+    await webauthn.finishRegistration({
+      userId: 'user-1',
+      challengeId: reg.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    const started = await webauthn.startLoginAssertion({});
+    await expect(
+      webauthn.finishLoginAssertion({
+        challengeId: started.challengeId,
+        response: { id: 'unknown-credential' },
       }),
     ).rejects.toThrow();
   });

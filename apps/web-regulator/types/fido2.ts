@@ -55,6 +55,19 @@ export interface Fido2AssertFinishResponse {
   credentialId: string;
 }
 
+export interface Fido2LoginBeginResponse {
+  options: PublicKeyCredentialRequestOptionsJSON;
+  challengeId: string;
+}
+
+export interface Fido2LoginFinishResponse {
+  verified: boolean;
+  userId: string;
+  email: string;
+  name: string;
+  credentialId: string;
+}
+
 export interface Fido2RevokeResponse {
   revoked: true;
   id: string;
