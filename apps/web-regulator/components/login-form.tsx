@@ -42,9 +42,21 @@ function LoginFormInner({
 	const searchParams = useSearchParams();
 	const webauthnRegistered = searchParams.get("webauthn") === "registered";
 
+	// Resolve where to send the user after a successful sign-in. Honour an
+	// explicit ?callbackUrl (set by the dashboard AuthGuard when it bounced an
+	// unauthenticated visitor off a protected route) but only for same-origin,
+	// internal paths — never an external URL (open-redirect guard).
+	const getCallbackUrl = () => {
+		const raw = searchParams.get("callbackUrl");
+		if (raw && raw.startsWith("/") && !raw.startsWith("//")) {
+			return raw;
+		}
+		return "/";
+	};
+
 	// Redirect if already authenticated
 	useEffect(() => {
-		if (isAuthenticated) router.push("/");
+		if (isAuthenticated) router.push(getCallbackUrl());
 	}, [isAuthenticated, router]);
 
 	const handleLogin = async (e: React.FormEvent) => {
@@ -54,7 +66,7 @@ function LoginFormInner({
 
 		try {
 			await login(email, password);
-			router.push("/");
+			router.push(getCallbackUrl());
 		} catch (error: unknown) {
 			setError(error instanceof Error ? error.message : "Login failed");
 		} finally {
@@ -119,7 +131,7 @@ function LoginFormInner({
 							<span className="text-xs text-muted-foreground">or</span>
 							<div className="h-px flex-1 bg-border" />
 						</div>
-						<SecurityKeySignInButton redirectTo="/kill-switch" />
+						<SecurityKeySignInButton redirectTo={getCallbackUrl()} />
 						<div className="mt-4 text-center text-sm">
 							Don&apos;t have an account?{" "}
 							<Link
