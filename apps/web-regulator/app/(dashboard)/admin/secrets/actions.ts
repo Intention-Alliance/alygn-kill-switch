@@ -9,123 +9,110 @@ import type {
 } from "@/types/secrets";
 
 /**
- * Mock server action layer for /admin/secrets.
+ * Server actions for /admin/secrets.
  *
- * This file is intentionally shaped like the real Keridz handlers so that the
- * swap is mechanical when the backend endpoints land:
- *   - replace the body of fetchInitialSecrets() with a call to GET /api/admin/secrets
- *   - replace rotateSecret() with a call to POST /api/admin/secrets/:name/rotate
- * The UI components never depend on these mocks.
+ * These functions wrap the kill-switch-api's `/api/admin/secrets/*` endpoints.
+ * They run server-side (so we can read the ADMIN_UI_API_KEY from env without
+ * exposing it to the browser). The rotated secret value NEVER leaves the
+ * server — none of the response shapes contain the raw value.
+ *
+ * The kill-switch-api lives at the same host as web-regulator (the Tailscale
+ * mesh). KILL_SWITCH_API_URL defaults to the loopback for server-side fetches.
+ * The admin UI calls the actions; the actions call the kill-switch-api with
+ * the bearer token.
+ *
+ * @author Keridz ⚙️ (be-coder)
  */
 
-const MOCK_SECRET: SecretInfo = {
-  name: "OLLAMA_TAILSCALE_AUTH_TOKEN",
-  maskedValue: "tsau_••••••••aaaa",
-  lastRotatedAt: "2026-07-19T12:04:33.000Z",
-  state: "armed",
-  previewSuffix: "aaaa",
-  dependentConfigs: [
-    {
-      name: "openclaw-webhook",
-      type: "service",
-      path: "/etc/openclaw/secrets.env",
-    },
-    {
-      name: "nginx 11435",
-      type: "service",
-      path: "/etc/nginx/secrets-11435.env",
-    },
-    {
-      name: "nginx 8080",
-      type: "service",
-      path: "/etc/nginx/secrets-8080.env",
-    },
-  ],
-  reloadTargets: [
-    { name: "openclaw-webhook", pid: 12345, method: "sighup" },
-    { name: "nginx", pid: 12340, method: "sighup" },
-  ],
-};
+// ─── Configuration ───────────────────────────────────────────────
 
-const MOCK_HEALTH: SecretsLoaderHealth = {
-  state: "ok",
-  fsWatch: "ok",
-  sighup: "armed",
-  lastPollAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
-  nextPollInSeconds: 6 * 60 * 60,
-  uptimeSeconds: 4 * 24 * 60 * 60 + 3 * 60 * 60,
-  lockouts: 0,
-};
+const KILL_SWITCH_API_URL =
+  process.env.KILL_SWITCH_API_URL ?? "http://127.0.0.1:3000";
+const ADMIN_UI_API_KEY = process.env.ADMIN_UI_API_KEY ?? "";
 
-const MOCK_AUDIT: SecretsAuditEvent[] = [
-  {
-    id: "evt-1",
-    at: "2026-07-21T12:04:33.000Z",
-    event: "rotate",
-    name: "OLLAMA_TAILSCALE_AUTH_TOKEN",
-    actor: "andler@tail-andler-dev",
-    result: "ok",
-    meta: { filesWritten: 3, appsReloaded: 2 },
-  },
-  {
-    id: "evt-2",
-    at: "2026-07-21T12:01:08.000Z",
-    event: "view",
-    name: "OLLAMA_TAILSCALE_AUTH_TOKEN",
-    actor: "andler@tail-andler-dev",
-  },
-  {
-    id: "evt-3",
-    at: "2026-07-21T11:58:14.000Z",
-    event: "401-storm",
-    name: "OLLAMA_TAILSCALE_AUTH_TOKEN",
-    actor: "system",
-    result: "N=12, 60s",
-  },
-  {
-    id: "evt-4",
-    at: "2026-07-21T11:30:00.000Z",
-    event: "sighup",
-    name: "nginx 11435",
-    actor: "fs.watch",
-    result: "reloaded",
-  },
-  {
-    id: "evt-5",
-    at: "2026-07-21T11:29:55.000Z",
-    event: "poll",
-    name: "3 config files",
-    actor: "cron",
-    result: "unchanged",
-  },
-];
+// ─── Helpers ─────────────────────────────────────────────────────
+
+function authHeaders(extra?: Record<string, string>): Record<string, string> {
+  if (!ADMIN_UI_API_KEY) {
+    throw new Error("ADMIN_UI_API_KEY is not configured on web-regulator");
+  }
+  return {
+    Authorization: `Bearer ${ADMIN_UI_API_KEY}`,
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    ...extra,
+  };
+}
+
+async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
+  const url = `${KILL_SWITCH_API_URL}${path}`;
+  const res = await fetch(url, {
+    ...init,
+    headers: { ...authHeaders(), ...(init?.headers as Record<string, string> | undefined) },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(
+      `kill-switch-api ${init?.method ?? "GET"} ${path} → ${res.status}: ${body.slice(0, 200)}`,
+    );
+  }
+  return (await res.json()) as T;
+}
+
+/**
+ * Neutral loader-health placeholder.
+ *
+ * The kill-switch-api currently exposes list/rotate/audit endpoints but no
+ * dedicated secrets-loader health endpoint. Rather than fabricate a fake
+ * "ok" health payload, we return a neutral "checking" state so the UI shows
+ * a loading/unknown state instead of invented numbers. When a real health
+ * endpoint lands, swap this for a call to it.
+ */
+function neutralHealth(): SecretsLoaderHealth {
+  return {
+    state: "checking",
+    fsWatch: "error",
+    sighup: "disarmed",
+    lastPollAt: "",
+    nextPollInSeconds: 0,
+    uptimeSeconds: 0,
+    lockouts: 0,
+  };
+}
+
+// ─── Public actions ─────────────────────────────────────────────
 
 export async function fetchInitialSecrets(): Promise<SecretsPageData> {
-  // TODO(keridz): replace with GET /api/admin/secrets
-  await new Promise((r) => setTimeout(r, 120));
+  const { secrets } = await callApi<{ secrets: SecretInfo[] }>("/api/admin/secrets");
+  const audit = await fetchFullAudit();
   return {
-    secrets: [MOCK_SECRET],
-    health: MOCK_HEALTH,
-    audit: MOCK_AUDIT,
+    secrets,
+    health: neutralHealth(),
+    audit,
   };
 }
 
 export async function rotateSecret(name: string): Promise<RotateResult> {
-  // TODO(keridz): replace with POST /api/admin/secrets/:name/rotate
-  await new Promise((r) => setTimeout(r, 400));
-  const rotatedAt = new Date().toISOString();
+  const res = await callApi<RotateResult & { maskedValue?: string }>(
+    `/api/admin/secrets/${encodeURIComponent(name)}/rotate`,
+    { method: "POST" },
+  );
+  // The backend returns maskedValue; the RotateResult type doesn't carry it.
+  // Return only the fields the UI expects.
   return {
-    name,
-    rotatedAt,
-    dependentConfigs: MOCK_SECRET.dependentConfigs,
-    reloadTargets: MOCK_SECRET.reloadTargets,
-    filesWritten: MOCK_SECRET.dependentConfigs.length,
-    appsReloaded: MOCK_SECRET.reloadTargets.length,
+    name: res.name,
+    rotatedAt: res.rotatedAt,
+    dependentConfigs: res.dependentConfigs,
+    reloadTargets: res.reloadTargets,
+    filesWritten: res.filesWritten,
+    appsReloaded: res.appsReloaded,
   };
 }
 
 export async function fetchFullAudit(): Promise<SecretsAuditEvent[]> {
-  // TODO(keridz): replace with GET /api/admin/secrets/audit?limit=200
-  await new Promise((r) => setTimeout(r, 120));
-  return MOCK_AUDIT;
+  const { entries } = await callApi<{ entries: SecretsAuditEvent[] }>(
+    "/api/admin/secrets/audit?limit=200",
+  );
+  return entries;
 }
