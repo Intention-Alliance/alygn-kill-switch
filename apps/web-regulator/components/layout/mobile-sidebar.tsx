@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Shield,
   LayoutDashboard,
@@ -34,7 +34,7 @@ const NAV_ITEMS = [
     icon: LayoutDashboard,
   },
   {
-    href: "/kill-switch",
+    href: "/?tab=kill-switch",
     label: "Kill Switch",
     icon: Shield,
   },
@@ -72,6 +72,7 @@ const NAV_ITEMS = [
 
 export function MobileSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -117,9 +118,20 @@ export function MobileSidebar() {
             <nav className="flex-1 overflow-y-auto py-3">
               <ul className="space-y-0.5 px-2">
                 {NAV_ITEMS.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    pathname.startsWith(item.href + "/");
+                  // Same active-state logic as app-sidebar: account for query
+                  // strings so /?tab=kill-switch highlights Kill Switch, not
+                  // Dashboard.
+                  const [itemPath, itemQuery] = item.href.split("?");
+                  const itemTab = itemQuery
+                    ? new URLSearchParams(itemQuery).get("tab")
+                    : null;
+                  const currentTab = searchParams.get("tab");
+                  const pathMatches =
+                    pathname === itemPath ||
+                    pathname.startsWith(itemPath + "/");
+                  const tabMatches =
+                    itemTab === null || currentTab === itemTab;
+                  const isActive = pathMatches && tabMatches;
                   return (
                     <li key={item.href}>
                       <Link

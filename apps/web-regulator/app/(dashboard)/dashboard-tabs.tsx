@@ -197,89 +197,16 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
 
         {/* ─── Overview tab (current / dashboard) ─────────────── */}
         <TabsContent value="overview" className="space-y-8">
-          {isLoading ? (
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-28 rounded-xl" />
-                ))}
-              </div>
-              <Skeleton className="h-96 rounded-xl" />
-            </div>
-          ) : (
-            <>
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <StatCard
-                  icon={<Activity className="size-5" />}
-                  label="Total Enforcement Events"
-                  value={stats.totalEvents.toLocaleString()}
-                  trend="+12%"
-                  trendUp
-                />
-                <StatCard
-                  icon={<AlertTriangle className="size-5" />}
-                  label="Active Violations"
-                  value={stats.violations.toString()}
-                  trend={
-                    stats.violations > 0
-                      ? "Critical Action"
-                      : "No active breaches"
-                  }
-                  trendUp={false}
-                  alert={stats.violations > 0}
-                />
-                <StatCard
-                  icon={<Clock className="size-5" />}
-                  label="Avg Cross-Cluster Latency"
-                  value={`${stats.avgLatency.toFixed(2)}ms`}
-                  trend="Target < 5ms"
-                  trendUp={stats.avgLatency < 5}
-                />
-                <StatCard
-                  icon={<Shield className="size-5" />}
-                  label="Global Network Uptime"
-                  value={`${stats.uptime}%`}
-                  trend="Tier-1 reliability"
-                  trendUp
-                />
-              </div>
-
-              {/* Main Content */}
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Server className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-bold tracking-tight">
-                      Active Cluster Registry
-                    </h2>
-                  </div>
-                  <Badge variant="outline" className="font-mono text-xs py-1">
-                    {clusters.length} NODES DISCOVERED
-                  </Badge>
-                </div>
-
-                <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-                  <div className="xl:col-span-3">
-                    <ClusterTable
-                      clusters={clusters as Cluster[]}
-                      isLoading={isLoading}
-                      onSelectMachine={handleSelectMachine}
-                      selectedId={selectedMachine?.id}
-                    />
-                  </div>
-
-                  <div className="xl:col-span-1">
-                    <SystemHealthPanel
-                      auditLog={auditLog}
-                      killSwitchState={status?.state ?? null}
-                      pausedRequestCount={status?.pausedRequestCount ?? 0}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+          <OverviewTab
+            isLoading={isLoading}
+            stats={stats}
+            clusters={clusters}
+            selectedMachine={selectedMachine}
+            onSelectMachine={handleSelectMachine}
+            auditLog={auditLog}
+            killSwitchState={status?.state ?? null}
+            pausedRequestCount={status?.pausedRequestCount ?? 0}
+          />
         </TabsContent>
 
         {/* ─── Kill Switch tab (current /kill-switch content) ── */}
@@ -299,6 +226,116 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+// ============================================================================
+// Overview tab — extracted from the former / dashboard page
+// ============================================================================
+
+function OverviewTab({
+  isLoading,
+  stats,
+  clusters,
+  selectedMachine,
+  onSelectMachine,
+  auditLog,
+  killSwitchState,
+  pausedRequestCount,
+}: {
+  isLoading: boolean;
+  stats: DashboardStats;
+  clusters: DashboardCluster[];
+  selectedMachine?: Machine | null;
+  onSelectMachine: (cluster: Cluster) => void;
+  auditLog: ActivationRecord[];
+  killSwitchState: KillSwitchState | null;
+  pausedRequestCount: number;
+}) {
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
+        </div>
+        <Skeleton className="h-96 rounded-xl" />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <StatCard
+          icon={<Activity className="size-5" />}
+          label="Total Enforcement Events"
+          value={stats.totalEvents.toLocaleString()}
+          trend="+12%"
+          trendUp
+        />
+        <StatCard
+          icon={<AlertTriangle className="size-5" />}
+          label="Active Violations"
+          value={stats.violations.toString()}
+          trend={
+            stats.violations > 0 ? "Critical Action" : "No active breaches"
+          }
+          trendUp={false}
+          alert={stats.violations > 0}
+        />
+        <StatCard
+          icon={<Clock className="size-5" />}
+          label="Avg Cross-Cluster Latency"
+          value={`${stats.avgLatency.toFixed(2)}ms`}
+          trend="Target < 5ms"
+          trendUp={stats.avgLatency < 5}
+        />
+        <StatCard
+          icon={<Shield className="size-5" />}
+          label="Global Network Uptime"
+          value={`${stats.uptime}%`}
+          trend="Tier-1 reliability"
+          trendUp
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Server className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold tracking-tight">
+              Active Cluster Registry
+            </h2>
+          </div>
+          <Badge variant="outline" className="font-mono text-xs py-1">
+            {clusters.length} NODES DISCOVERED
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          <div className="xl:col-span-3">
+            <ClusterTable
+              clusters={clusters as Cluster[]}
+              isLoading={isLoading}
+              onSelectMachine={onSelectMachine}
+              selectedId={selectedMachine?.id}
+            />
+          </div>
+
+          <div className="xl:col-span-1">
+            <SystemHealthPanel
+              auditLog={auditLog}
+              killSwitchState={killSwitchState}
+              pausedRequestCount={pausedRequestCount}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 

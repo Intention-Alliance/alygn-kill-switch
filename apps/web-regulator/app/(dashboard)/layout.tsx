@@ -11,7 +11,6 @@ import {
   MachineSelectionProvider,
   useMachineSelection,
 } from "@/lib/machine-selection-context";
-import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -68,7 +67,6 @@ function DashboardLayoutInner({
   pathname: string;
 }) {
   const { selectedMachine, deselectMachine } = useMachineSelection();
-  const { status } = useKillSwitchWebSocket();
 
   // Debounce guard for rapid sidebar Quick Actions double-fires (plan § 10).
   // 250ms is the v1.1 risk-mitigation value; a simple ref-captured timer is
@@ -122,7 +120,7 @@ function DashboardLayoutInner({
         <AppSidebar
           selectedMachine={selectedMachine}
           onMachineDeselect={deselectMachine}
-          currentKillSwitchState={status?.state ?? "ARMED"}
+          currentKillSwitchState={"ARMED"}
           onKillSwitchStateChange={handleKillSwitchStateChange}
         />
 
