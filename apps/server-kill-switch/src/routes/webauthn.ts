@@ -33,6 +33,7 @@ import {
   startLoginAssertion,
   finishLoginAssertion,
   listActiveCredentialsForUser,
+  hasAnyRegisteredCredential,
   renameCredential,
   revokeCredential,
   WebAuthnError,
@@ -134,6 +135,13 @@ export async function handleWebAuthnRoutes(
         typeof body?.username === 'string' && body.username.trim()
           ? body.username.trim()
           : undefined;
+      // Discoverable sign-in (no username): if no user has registered a
+      // key, the ceremony cannot succeed — return 404 so the client hides
+      // the "Sign in with security key" button.
+      if (!username && !(await hasAnyRegisteredCredential())) {
+        json(res, 404, { error: 'No registered security keys', code: 'NO_CREDENTIALS' });
+        return true;
+      }
       const result = await startLoginAssertion({ username });
       json(res, 200, {
         options: result.options,
@@ -155,9 +163,10 @@ export async function handleWebAuthnRoutes(
         challengeId: body.challengeId,
         response: body.response,
       });
-      // Set the Better-Auth session cookie (httpOnly, sameSite=lax, path=/).
+      // Set the Better-Auth session cookie (httpOnly, sameSite=lax, Secure, path=/).
+      // Secure is mandatory: the demo runs over HTTPS in production.
       res.setHeader('Set-Cookie', [
-        `better-auth.session_token=${result.sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`,
+        `better-auth.session_token=${result.sessionCookie}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600`,
       ]);
       json(res, 200, {
         verified: result.verified,

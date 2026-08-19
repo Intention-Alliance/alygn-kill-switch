@@ -242,6 +242,76 @@ async function listActiveCredentialsForUser(userId: string): Promise<StoredCrede
   return rows.map(toStoredCredential);
 }
 
+/**
+ * True when at least one non-revoked credential exists across all users.
+ * Used by the discoverable sign-in flow (login/begin with no username) to
+ * decide whether the "Sign in with security key" button should be shown:
+ * if no user has registered a key, the ceremony cannot succeed, so the
+ * endpoint returns 404 and the client hides the button.
+ */
+export async function hasAnyRegisteredCredential(): Promise<boolean> {
+  const row = await db
+    .select({ id: webauthnCredentials.id })
+    .from(webauthnCredentials)
+    .where(isNull(webauthnCredentials.revokedAt))
+    .limit(1)
+    .get();
+  return Boolean(row);
+}
+
+/**
+ * Rename a credential's human label (e.g. "YubiKey 5C — Andler").
+ * The `name` field is display text only — never used for auth decisions.
+ * Returns the updated credential, or null when the credential does not
+ * exist or is not owned by the given user.
+ */
+export async function renameCredential(
+  id: string,
+  userId: string,
+  name: string,
+): Promise<StoredCredential | null> {
+  const existing = await db
+    .select()
+    .from(webauthnCredentials)
+    .where(and(eq(webauthnCredentials.id, id), eq(webauthnCredentials.userId, userId)))
+    .get();
+  if (!existing) return null;
+
+  await db
+    .update(webauthnCredentials)
+    .set({ name })
+    .where(eq(webauthnCredentials.id, id))
+    .run();
+
+  return toStoredCredential({ ...existing, name });
+}
+
+/**
+ * Revoke a credential by setting `revokedAt`. Revoked credentials are
+ * excluded from list/assertion lookups (isNull(revokedAt)). Returns the
+ * revoked credential, or null when the credential does not exist or is
+ * not owned by the given user.
+ */
+export async function revokeCredential(
+  id: string,
+  userId: string,
+): Promise<StoredCredential | null> {
+  const existing = await db
+    .select()
+    .from(webauthnCredentials)
+    .where(and(eq(webauthnCredentials.id, id), eq(webauthnCredentials.userId, userId)))
+    .get();
+  if (!existing) return null;
+
+  await db
+    .update(webauthnCredentials)
+    .set({ revokedAt: new Date() })
+    .where(eq(webauthnCredentials.id, id))
+    .run();
+
+  return toStoredCredential({ ...existing, revokedAt: new Date() });
+}
+
 // ─── Registration ceremony ──────────────────────────────────────────
 
 export interface StartRegistrationParams {

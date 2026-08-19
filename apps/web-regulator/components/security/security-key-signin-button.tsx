@@ -15,12 +15,12 @@
  * cookie-free by design).
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Fingerprint, Loader2 } from "lucide-react";
 import { startAuthentication } from "@simplewebauthn/browser";
-import { apiPost } from "@/lib/api-client";
+import { apiPost, ApiError } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import type {
   Fido2LoginBeginResponse,
@@ -37,6 +37,36 @@ export function SecurityKeySignInButton({
 }: SecurityKeySignInButtonProps) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  // Whether any user has a registered security key. The button is hidden
+  // until we confirm a key exists (discoverable sign-in: login/begin with
+  // no body returns 404 when no user has a key).
+  const [available, setAvailable] = useState<boolean | null>(null);
+
+  // Gate the button on the existence of at least one registered key.
+  // Runs client-side so the UI updates after a key is registered.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        await apiPost<Fido2LoginBeginResponse>(
+          "/api/auth/webauthn/login/begin",
+        );
+        if (!cancelled) setAvailable(true);
+      } catch (err) {
+        // 404 = no user has a registered key → hide the button.
+        const is404 = err instanceof ApiError && err.status === 404;
+        if (!cancelled) setAvailable(!is404);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // While the availability check is in flight, render nothing so the
+  // button never flashes before we know a key exists.
+  if (available === null) return null;
+  if (!available) return null;
 
   async function handleSignIn() {
     if (busy) return;
