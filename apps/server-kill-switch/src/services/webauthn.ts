@@ -243,6 +243,23 @@ export async function listActiveCredentialsForUser(userId: string): Promise<Stor
 }
 
 /**
+ * True when at least one non-revoked credential exists across all users.
+ * Used by the discoverable sign-in flow (login/begin with no username) to
+ * decide whether the "Sign in with security key" button should be shown:
+ * if no user has registered a key, the ceremony cannot succeed, so the
+ * endpoint returns 404 and the client hides the button.
+ */
+export async function hasAnyRegisteredCredential(): Promise<boolean> {
+  const row = await db
+    .select({ id: webauthnCredentials.id })
+    .from(webauthnCredentials)
+    .where(isNull(webauthnCredentials.revokedAt))
+    .limit(1)
+    .get();
+  return Boolean(row);
+}
+
+/**
  * Rename a credential's human label (e.g. "YubiKey 5C — Andler").
  * The `name` field is display text only — never used for auth decisions.
  * Returns the updated credential, or null when the credential does not

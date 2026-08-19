@@ -6,7 +6,7 @@
  * the parent to refresh the list.
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { apiPatch } from "@/lib/api-client";
@@ -37,12 +37,15 @@ export function Fido2RenameDialog({
   const [name, setName] = useState(credential?.name ?? "");
   const [busy, setBusy] = useState(false);
 
-  // Sync the input when a different credential is opened.
+  // Sync the input when a different credential is opened. Runs in an
+  // effect (not the render phase) to avoid setState-during-render.
   const [lastId, setLastId] = useState<string | null>(null);
-  if (credential && credential.id !== lastId) {
-    setLastId(credential.id);
-    setName(credential.name ?? "");
-  }
+  useEffect(() => {
+    if (credential && credential.id !== lastId) {
+      setLastId(credential.id);
+      setName(credential.name ?? "");
+    }
+  }, [credential, lastId]);
 
   async function handleSave() {
     if (!credential || !name.trim()) return;
