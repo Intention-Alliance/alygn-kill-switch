@@ -88,13 +88,3 @@ export async function apiDelete<T>(path: string): Promise<T> {
   });
   return handleResponse<T>(response);
 }
-
-export async function apiPatch<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(path, {
-    method: "PATCH",
-    headers: getHeaders(),
-    credentials: "include",
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  return handleResponse<T>(response);
-}
