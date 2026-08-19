@@ -14,8 +14,8 @@ ENV NODE_ENV=production
 # Copy standalone output (includes server.js at deep path + layered node_modules)
 COPY apps/web-regulator/.next/standalone/ /app/
 
-# Working directory where server.js lives
-WORKDIR /app/repos/alygn/infrastructure/apps/web-regulator
+# Working directory where server.js lives (standalone output mirrors host path)
+WORKDIR /app/.openclaw/workspace/repos/alygn-core-infra/apps/web-regulator
 
 # Copy static assets (CSS/JS chunks — not bundled in standalone output)
 COPY apps/web-regulator/.next/static/ ./.next/static/
