@@ -467,7 +467,7 @@ export async function handleMachinesRoutes(
         return true;
       }
 
-      json(res, 200, { data: serializeMachine(machine) });
+      json(res, 200, serializeMachine(machine));
       return true;
     }
 
