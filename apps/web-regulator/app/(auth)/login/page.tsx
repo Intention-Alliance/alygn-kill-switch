@@ -52,10 +52,22 @@ function LoginPageInner() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const webauthnRegistered = searchParams.get("webauthn") === "registered";
 
+  // Resolve where to send the user after a successful sign-in. We honour an
+  // explicit ?callbackUrl (set by the dashboard AuthGuard when it bounced an
+  // unauthenticated visitor off a protected route) but only for same-origin,
+  // internal paths — never an external URL (open-redirect guard).
+  const getCallbackUrl = () => {
+    const raw = searchParams.get("callbackUrl");
+    if (raw && raw.startsWith("/") && !raw.startsWith("//")) {
+      return raw;
+    }
+    return "/kill-switch";
+  };
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.replace("/kill-switch");
+      router.replace(getCallbackUrl());
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -74,7 +86,7 @@ function LoginPageInner() {
 
     try {
       await login(values.email, values.password);
-      router.push("/kill-switch");
+      router.push(getCallbackUrl());
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Authentication failed";
@@ -192,7 +204,7 @@ function LoginPageInner() {
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          <SecurityKeySignInButton redirectTo="/kill-switch" />
+          <SecurityKeySignInButton redirectTo={getCallbackUrl()} />
 
           <div className="mt-4 text-center text-xs text-muted-foreground">
             <Link

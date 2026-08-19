@@ -20,12 +20,19 @@ import type { KillSwitchState } from "@/types/shared";
 function AuthGuard({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace("/login");
+      // Preserve the originally-requested route so the login page can
+      // redirect back here after a successful sign-in. Without this, a
+      // deep link to a protected route (e.g. /admin/security/fido2)
+      // bounces the user to /login and then to the default landing page,
+      // never returning them to where they were headed.
+      const callbackUrl = pathname !== "/" ? encodeURIComponent(pathname) : "";
+      router.replace(callbackUrl ? `/login?callbackUrl=${callbackUrl}` : "/login");
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, pathname, router]);
 
   if (isLoading) {
     return (
