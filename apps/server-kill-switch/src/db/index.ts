@@ -581,6 +581,43 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS rogue_device_alert_ip_idx ON rogue_device_alert(ip)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS rogue_device_alert_resolved_idx ON rogue_device_alert(resolved)`);
 
+  // ─── ADR-143: WebAuthn credential storage ─────────────────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS webauthn_credential (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+      credential_id TEXT NOT NULL UNIQUE,
+      public_key TEXT NOT NULL,
+      counter INTEGER NOT NULL DEFAULT 0,
+      transports TEXT,
+      name TEXT,
+      created_at INTEGER NOT NULL,
+      revoked_at INTEGER
+    )
+  `);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webauthn_credential_user_id_idx ON webauthn_credential(user_id)`);
+  sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS webauthn_credential_credential_id_unique ON webauthn_credential(credential_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS webauthn_credential_active_idx ON webauthn_credential(revoked_at)`);
+
+  // ─── ADR-136 §3: Kill authorization requests ────────────────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS kill_authorization_request (
+      id TEXT PRIMARY KEY,
+      initiated_by TEXT NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+      target TEXT,
+      reason TEXT,
+      status TEXT NOT NULL DEFAULT 'PENDING',
+      signature_credential_id TEXT,
+      quorum_approvals TEXT,
+      executed_at INTEGER,
+      initiated_at INTEGER NOT NULL,
+      completed_at INTEGER
+    )
+  `);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS kill_authorization_request_status_idx ON kill_authorization_request(status)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS kill_authorization_request_initiated_at_idx ON kill_authorization_request(initiated_at)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS kill_authorization_request_target_idx ON kill_authorization_request(target)`);
+
   const db = drizzle(sqlite, { schema });
 
   console.log(`[db] SQLite initialized: ${dbPath} (WAL mode, tables verified)`);
