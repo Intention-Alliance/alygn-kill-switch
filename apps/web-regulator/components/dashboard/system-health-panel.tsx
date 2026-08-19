@@ -26,14 +26,34 @@ export function SystemHealthPanel({
 
   const isPaused = killSwitchState === "STOPPED";
 
+  // Dynamic health summary derived from real state — never fabricate
+  // nominal/latency claims. The text reflects the actual kill-switch state
+  // and the most recent security event, so the panel shows live truth.
+  const healthSummary = (() => {
+    if (isPaused) {
+      return "Inference traffic is paused by the kill switch. No new requests are being processed until the state is cleared.";
+    }
+    switch (killSwitchState) {
+      case "RUNNING":
+        return "Kill switch is RUNNING. Inference traffic is flowing within the configured policy gates.";
+      case "ARMED":
+        return "Kill switch is ARMED. Traffic is being monitored; a human signature is required to authorize a stop.";
+      case "STOPPING":
+        return "Kill switch is STOPPING. Traffic is being drained and held pending authorization.";
+      case "LOCKED":
+        return "Kill switch is LOCKED. Traffic is held and requires operator intervention to clear.";
+      default:
+        return "Kill-switch state unknown. Waiting for live telemetry from the API.";
+    }
+  })();
+
   return (
     <div className="border border-border/50 bg-card/30 rounded-xl p-6 backdrop-blur-md space-y-6">
       {/* System Health */}
       <div className="space-y-2">
         <h3 className="font-semibold text-lg">System Health</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          All ALYGN nodes are currently reporting within nominal parameters.
-          Average kill-switch latency is performing at 140% above target threshold.
+          {healthSummary}
         </p>
       </div>
 

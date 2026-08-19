@@ -62,6 +62,10 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - DATA_DIR=/app/data
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      # ADR-136: WebAuthn (FIDO2) relying party — production Tailscale mesh
+      # hostname + Nginx SSL listener. Overrides the schema defaults.
+      - WEBAUTHN_RP_ID=${WEBAUTHN_RP_ID:-andlersrv.tail62d797.ts.net}
+      - WEBAUTHN_ORIGIN=${WEBAUTHN_ORIGIN:-https://andlersrv.tail62d797.ts.net:8443}
     networks:
       - align-network
       - phase0-net

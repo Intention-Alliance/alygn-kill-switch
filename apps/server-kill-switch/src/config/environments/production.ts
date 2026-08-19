@@ -51,4 +51,12 @@ export const productionConfig: Partial<AppConfig> = {
     serviceName: 'kill-switch-api',
     sampleRate: 0.1,
   },
+  // ADR-136: WebAuthn (FIDO2) — production relying party binds to the
+  // Tailscale mesh hostname + Nginx SSL listener. Overridable via the
+  // WEBAUTHN_RP_ID / WEBAUTHN_ORIGIN env vars (see config/index.ts).
+  webauthn: {
+    rpName: 'Alygn Kill Switch',
+    rpID: 'andlersrv.tail62d797.ts.net',
+    origin: 'https://andlersrv.tail62d797.ts.net:8443',
+  },
 };

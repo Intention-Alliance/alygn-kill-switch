@@ -46,13 +46,22 @@ export function computeDashboardStats(
     log => log.newState === "STOPPED" || log.newState === "LOCKED",
   ).length;
 
+  // Real uptime: average of the per-cluster uptime values reported by the
+  // API. Never fabricate a nominal figure — if there is no real data, report 0
+  // (the UI renders a loading/unknown state rather than a fake number).
+  const realUptimes = clusters
+    .map(c => c.uptime)
+    .filter((u): u is number => typeof u === "number" && u > 0);
+
   return {
     totalEvents: auditLog.length,
     violations,
     avgLatency: clusters.length > 0
       ? clusters.reduce((sum, c) => sum + (c.avg_latency ?? 0), 0) / clusters.length
       : 0,
-    uptime: clusters.length > 0 ? 99.97 : 0,
+    uptime: realUptimes.length > 0
+      ? realUptimes.reduce((a, b) => a + b, 0) / realUptimes.length
+      : 0,
   };
 }
 
@@ -69,8 +78,10 @@ export function adaptMachineToCluster(m: Machine): DashboardCluster {
       : m.status === "inactive" ? "offline"
       : "degraded",
     gpus: m.specs?.gpu ? 1 : 0,
-    avg_latency: m.cpuUsage ?? 0,
-    uptime: m.status === "active" ? 99.9 : m.status === "inactive" ? 0 : 50,
+    // Real values only — never fabricate. avg_latency is 0 when the API
+    // doesn't report latency; the UI renders a loading/unknown state.
+    avg_latency: 0,
+    uptime: 0,
     cluster_gpus: [{ model: gpuModel, memory_gb: 0, cores: 0 }],
     slug: m.id,
     total_requests: 0,

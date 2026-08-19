@@ -69,10 +69,21 @@ export const TelemetryConfigSchema = z.object({
 // human-signature kill authorization. rpID must be the effective
 // domain (no scheme), origin the full https origin the authenticator
 // binds assertions to.
+//
+// Production defaults are the Tailscale mesh hostname + the Nginx SSL
+// listener (:8443). They can be overridden per-deployment via the
+// WEBAUTHN_RP_ID / WEBAUTHN_ORIGIN env vars (see config/index.ts).
+// The `localhost` fallback is only safe for local development.
 export const WebAuthnConfigSchema = z.object({
 	rpName: z.string().min(1).default('Alygn Kill Switch'),
-	rpID: z.string().min(1).default('localhost'),
-	origin: z.string().min(1).default('http://localhost:3000'),
+	rpID: z
+		.string()
+		.min(1)
+		.default('andlersrv.tail62d797.ts.net'),
+	origin: z
+		.string()
+		.min(1)
+		.default('https://andlersrv.tail62d797.ts.net:8443'),
 	challengeTtlMs: z.number().int().min(1000).default(300_000),
 	assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
 })
