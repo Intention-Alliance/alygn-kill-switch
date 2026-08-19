@@ -13,10 +13,23 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { Fingerprint } from "lucide-react";
+import { SecurityKeySignInButton } from "@/components/security/security-key-signin-button";
 
 export function LoginForm({
+	className,
+	...props
+}: React.ComponentPropsWithoutRef<"div">) {
+	return (
+		<Suspense fallback={null}>
+			<LoginFormInner className={className} {...props} />
+		</Suspense>
+	);
+}
+
+function LoginFormInner({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -26,6 +39,8 @@ export function LoginForm({
 	const [isLoading, setIsLoading] = useState(false);
 	const { login, isAuthenticated } = useAuth();
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const webauthnRegistered = searchParams.get("webauthn") === "registered";
 
 	// Redirect if already authenticated
 	useEffect(() => {
@@ -57,6 +72,12 @@ export function LoginForm({
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
+					{webauthnRegistered && (
+						<div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-primary">
+							<Fingerprint className="h-4 w-4 shrink-0" aria-hidden="true" />
+							<span>Welcome. Touch your security key to sign in.</span>
+						</div>
+					)}
 					<form onSubmit={handleLogin}>
 						<div className="flex flex-col gap-6">
 							<div className="grid gap-2">
@@ -93,6 +114,12 @@ export function LoginForm({
 								{isLoading ? "Logging in..." : "Login"}
 							</Button>
 						</div>
+						<div className="my-4 flex items-center gap-3">
+							<div className="h-px flex-1 bg-border" />
+							<span className="text-xs text-muted-foreground">or</span>
+							<div className="h-px flex-1 bg-border" />
+						</div>
+						<SecurityKeySignInButton redirectTo="/kill-switch" />
 						<div className="mt-4 text-center text-sm">
 							Don&apos;t have an account?{" "}
 							<Link
