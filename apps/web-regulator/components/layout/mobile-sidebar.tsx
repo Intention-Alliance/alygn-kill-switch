@@ -6,6 +6,7 @@ import {
   Shield,
   LayoutDashboard,
   Key,
+  Fingerprint,
   Flag,
   Server,
   Settings,
@@ -42,6 +43,11 @@ const NAV_ITEMS = [
     href: "/admin/secrets",
     label: "Secrets",
     icon: Key,
+  },
+  {
+    href: "/admin/security/fido2",
+    label: "FIDO2 Keys",
+    icon: Fingerprint,
   },
   {
     href: "/flags",
