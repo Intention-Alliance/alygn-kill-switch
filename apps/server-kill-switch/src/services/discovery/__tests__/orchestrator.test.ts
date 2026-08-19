@@ -81,6 +81,11 @@ mock.module('drizzle-orm', () => ({
 	eq: (left: any, right: any) => ({ __eq: right, __leftName: left?.name }),
 	and: (...conds: any[]) => conds,
 	desc: (col: any) => ({ __desc: col?.name }),
+	asc: (col: any) => ({ __asc: col?.name }),
+	inArray: (col: any, values: any[]) => ({
+		__in: values,
+		__leftName: col?.name,
+	}),
 }))
 
 // ─── Mock db module ─────────────────────────────────────────────
@@ -254,16 +259,21 @@ const fakeProviderResult = {
 	},
 }
 
-mock.module('../providers/registry', () => ({
-	ProviderRegistry: class {
-		async discoverProviders() {
-			return [fakeProviderResult]
-		}
-		async probeProvider() {
-			return fakeProviderResult
-		}
-	},
-}))
+// Stub registry injected via constructor (dependency injection) instead of
+// module mocking. The orchestrator already accepts a `providerRegistry`
+// constructor arg, so we avoid `mock.module('../providers/registry', ...)`
+// entirely — that module-scope mock leaked into providers.test.ts (which runs
+// after this file alphabetically in the full sweep), replacing the real
+// ProviderRegistry and causing 4 false failures (e.g. probeProvider returning
+// a fake result instead of null for unknown ids).
+class StubProviderRegistry {
+	async discoverProviders() {
+		return [fakeProviderResult]
+	}
+	async probeProvider() {
+		return fakeProviderResult
+	}
+}
 
 // ─── Tests ──────────────────────────────────────────────────────
 
@@ -281,7 +291,7 @@ beforeEach(async () => {
 
 describe('DiscoveryOrchestrator', () => {
 	it('registers a new machine via heartbeat in NEW_MACHINE state (NO auto-admission)', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const fp = collectHardwareFingerprint()
 		const result = await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
@@ -297,7 +307,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('detects drift on heartbeat when hardware changed', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const baseline = collectHardwareFingerprint()
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
@@ -326,7 +336,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('high-severity drift on an ADMITTED machine → PENDING_REVIEW (ADR-138 §4)', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const baseline = collectHardwareFingerprint()
 
 		// An already-admitted machine (onboarding completed).
@@ -366,7 +376,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('high-severity drift on a NEW_MACHINE is a no-op for flagForReview', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const baseline = collectHardwareFingerprint()
 
 		// Not yet admitted — flagForReview must not change the state.
@@ -402,7 +412,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('falls back to signature-only drift when no fingerprint snapshot exists', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const baseline = collectHardwareFingerprint()
 		const baselineSignature = signFingerprint(baseline)
 
@@ -442,7 +452,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('persists detected providers and models for a machine', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
 			hostname: 'worker-01',
@@ -459,7 +469,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('builds a full discovery report for onboarding review', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
 			hostname: 'worker-01',
@@ -478,13 +488,13 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('returns null report for unknown machine', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const report = await orchestrator.getDiscoveryReport('machine-unknown')
 		expect(report).toBeNull()
 	})
 
 	it('confirms a machine (human approval, ADR-138)', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
 			hostname: 'worker-01',
@@ -503,7 +513,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('denies a machine (zero authority granted)', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
 			hostname: 'worker-01',
@@ -520,7 +530,7 @@ describe('DiscoveryOrchestrator', () => {
 	})
 
 	it('returns null when confirming an unknown machine', async () => {
-		const orchestrator = new DiscoveryOrchestrator()
+		const orchestrator = new DiscoveryOrchestrator({ providerRegistry: new StubProviderRegistry() })
 		const result = await orchestrator.confirmMachine(
 			'machine-unknown',
 			'admin@alygn.com',
