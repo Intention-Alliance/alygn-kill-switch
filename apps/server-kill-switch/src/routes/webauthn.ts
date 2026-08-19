@@ -9,12 +9,19 @@
  *   POST /v1/auth/webauthn/register/finish — complete registration
  *   POST /v1/auth/webauthn/assert/begin    — start assertion ceremony
  *   POST /v1/auth/webauthn/assert/finish   — complete assertion → assertion token
+ *   POST /v1/auth/webauthn/login/begin     — start sign-in assertion (no session)
+ *   POST /v1/auth/webauthn/login/finish    — complete sign-in → mints session cookie
  *
  * The assertion token returned by assert/finish is the ONLY credential
  * the kill endpoint and quorum-gated policy endpoint accept. It is
  * HMAC-signed, short-lived, and bound to the exact action being
  * authorized — an API key / service account can never mint one
  * (ADR-136 §4 defense against autonomous self-deactivation).
+ *
+ * The login/begin + login/finish pair is the sign-in-with-security-key
+ * flow (ADR-143 follow-up). It runs BEFORE the user has a session, so it
+ * does NOT require a cookie. On success, login/finish mints a real
+ * Better-Auth session cookie for the credential's owner.
  */
 
 import { auth } from '../lib/auth';
@@ -23,6 +30,11 @@ import {
   finishRegistration,
   startAssertion,
   finishAssertion,
+  startLoginAssertion,
+  finishLoginAssertion,
+  listActiveCredentialsForUser,
+  renameCredential,
+  revokeCredential,
   WebAuthnError,
 } from '../services/webauthn';
 import { parseBody } from '../utils/body-parser';
@@ -109,6 +121,51 @@ export async function handleWebAuthnRoutes(
         name: body.name,
       });
       json(res, 201, { credential: result.credential });
+      return true;
+    }
+
+    // ─── POST /v1/auth/webauthn/login/begin ──────────────────────
+    // Sign-in with a security key (second factor / sole factor). Does NOT
+    // require a session cookie — the user is not yet authenticated. An
+    // optional `username` scopes the assertion to that user's keys.
+    if (method === 'POST' && url === '/v1/auth/webauthn/login/begin') {
+      const body = await parseBody(req);
+      const username =
+        typeof body?.username === 'string' && body.username.trim()
+          ? body.username.trim()
+          : undefined;
+      const result = await startLoginAssertion({ username });
+      json(res, 200, {
+        options: result.options,
+        challengeId: result.challengeId,
+      });
+      return true;
+    }
+
+    // ─── POST /v1/auth/webauthn/login/finish ─────────────────────
+    // Completes the login assertion and mints a Better-Auth session
+    // cookie. Does NOT require a session cookie.
+    if (method === 'POST' && url === '/v1/auth/webauthn/login/finish') {
+      const body = await parseBody(req);
+      if (!body?.challengeId || !body?.response) {
+        json(res, 400, { error: 'Missing required fields: challengeId, response' });
+        return true;
+      }
+      const result = await finishLoginAssertion({
+        challengeId: body.challengeId,
+        response: body.response,
+      });
+      // Set the Better-Auth session cookie (httpOnly, sameSite=lax, path=/).
+      res.setHeader('Set-Cookie', [
+        `better-auth.session_token=${result.sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=3600`,
+      ]);
+      json(res, 200, {
+        verified: result.verified,
+        userId: result.userId,
+        email: result.email,
+        name: result.name,
+        credentialId: result.credentialId,
+      });
       return true;
     }
 

@@ -3,14 +3,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Shield, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { Shield, Loader2, Fingerprint } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { SecurityKeySignInButton } from "@/components/security/security-key-signin-button";
 import {
   Form,
   FormControl,
@@ -36,10 +37,20 @@ const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, isAuthenticated, isLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const webauthnRegistered = searchParams.get("webauthn") === "registered";
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -88,6 +99,13 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {webauthnRegistered && (
+            <div className="mb-4 flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-primary">
+              <Fingerprint className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span>Welcome. Touch your security key to sign in.</span>
+            </div>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
@@ -167,6 +185,14 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
+
+          <div className="my-4 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <SecurityKeySignInButton redirectTo="/kill-switch" />
 
           <div className="mt-4 text-center text-xs text-muted-foreground">
             <Link
