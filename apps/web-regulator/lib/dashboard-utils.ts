@@ -78,10 +78,11 @@ export function adaptMachineToCluster(m: Machine): DashboardCluster {
       : m.status === "inactive" ? "offline"
       : "degraded",
     gpus: m.specs?.gpu ? 1 : 0,
-    // Real values only — never fabricate. avg_latency is 0 when the API
-    // doesn't report latency; the UI renders a loading/unknown state.
-    avg_latency: 0,
-    uptime: 0,
+    // Real values only — never fabricate. Map the machine's reported CPU and
+    // memory usage where the API provides them; otherwise leave 0 so the UI
+    // renders a loading/unknown state instead of an invented number.
+    avg_latency: typeof m.cpuUsage === "number" ? m.cpuUsage : 0,
+    uptime: typeof m.memoryUsage === "number" ? m.memoryUsage : 0,
     cluster_gpus: [{ model: gpuModel, memory_gb: 0, cores: 0 }],
     slug: m.id,
     total_requests: 0,
