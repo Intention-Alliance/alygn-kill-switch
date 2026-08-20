@@ -6,6 +6,10 @@
  * Reload each consumer (nginx -s reload, SIGHUP for openclaw-webhook).
  * Audit log per consumer.
  *
+ * Agent/VPN-agnostic: the env var name that maps to each consumer is
+ * configurable via `SECRETS_CONSUMER_ENV_VAR` (default `OLLAMA_TAILSCALE_AUTH_TOKEN`
+ * for backward compatibility). Snippet filenames are generic (no vendor name).
+ *
  * @author Keridz ⚙️
  */
 
@@ -35,6 +39,14 @@ export interface ConsumerWriteResult {
 
 // ─── Consumer Registry ────────────────────────────────────────────────
 
+/**
+ * Env var name that maps to each consumer's secret. Configurable via
+ * `SECRETS_CONSUMER_ENV_VAR`; defaults to the legacy name for backward
+ * compatibility with existing deployments.
+ */
+const CONSUMER_ENV_VAR =
+  process.env.SECRETS_CONSUMER_ENV_VAR || 'OLLAMA_TAILSCALE_AUTH_TOKEN';
+
 const CONSUMERS: ConsumerConfig[] = [
   {
     name: 'openclaw-webhook',
@@ -42,21 +54,21 @@ const CONSUMERS: ConsumerConfig[] = [
     reloadMethod: 'sighup',
     reloadTarget: '/var/run/openclaw-webhook.pid',
     format: 'env',
-    envVarName: 'OLLAMA_TAILSCALE_AUTH_TOKEN',
+    envVarName: CONSUMER_ENV_VAR,
   },
   {
     name: 'nginx-11435',
-    path: '/etc/nginx/snippets/tailscale-auth-11435.conf',
+    path: '/etc/nginx/snippets/auth-11435.conf',
     reloadMethod: 'nginx-reload',
     format: 'nginx-conf',
-    envVarName: 'OLLAMA_TAILSCALE_AUTH_TOKEN',
+    envVarName: CONSUMER_ENV_VAR,
   },
   {
     name: 'nginx-8080',
-    path: '/etc/nginx/snippets/tailscale-auth-8080.conf',
+    path: '/etc/nginx/snippets/auth-8080.conf',
     reloadMethod: 'nginx-reload',
     format: 'nginx-conf',
-    envVarName: 'OLLAMA_TAILSCALE_AUTH_TOKEN',
+    envVarName: CONSUMER_ENV_VAR,
   },
 ];
 

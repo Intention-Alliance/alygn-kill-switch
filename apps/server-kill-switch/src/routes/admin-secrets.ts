@@ -4,7 +4,7 @@
  * Auth: Bearer <ADMIN_UI_API_KEY> (env var, throw on missing)
  *
  * Endpoints:
- *  - GET  /api/admin/secrets          — list all *_TAILSCALE_* keys (masked)
+ *  - GET  /api/admin/secrets          — list all managed keys (masked)
  *  - POST /api/admin/secrets/:name/rotate — server-generated rotation
  *  - GET  /api/admin/secrets/:name/lockout — lockout state for a key
  *  - GET  /api/admin/secrets/audit    — queryable audit log
@@ -268,7 +268,7 @@ export async function handleAdminSecretsRoutes(
     return rejectAuth();
   }
 
-  // ── GET /api/admin/secrets — list all *_TAILSCALE_* keys ──
+  // ── GET /api/admin/secrets — list all managed keys ──
   if (method === 'GET' && url === '/api/admin/secrets') {
     const loadedKeys = secretsLoader.getLoadedKeys();
     const consumers = getConsumers();
@@ -318,10 +318,10 @@ export async function handleAdminSecretsRoutes(
   if (method === 'POST' && rotateMatch) {
     const keyName = decodeURIComponent(rotateMatch[1]);
 
-    // Validate key name pattern (only *_TAILSCALE_* keys)
-    if (!keyName.includes('_TAILSCALE_')) {
+    // Validate key name — must be a managed (loaded) secret key
+    if (!secretsLoader.getLoadedKeys().includes(keyName)) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: `Key '${keyName}' is not a *_TAILSCALE_* key` }));
+      res.end(JSON.stringify({ error: `Key '${keyName}' is not a managed secret key` }));
       return true;
     }
 

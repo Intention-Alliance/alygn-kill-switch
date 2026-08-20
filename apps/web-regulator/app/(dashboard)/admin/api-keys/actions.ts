@@ -11,7 +11,7 @@
  * the create/rotate response — the createKey action returns it ONCE.
  *
  * In v1, the kill-switch-api lives at the same host as web-regulator (the
- * Tailscale mesh). KILL_SWITCH_API_URL defaults to the loopback for
+ * private mesh). KILL_SWITCH_API_URL defaults to the loopback for
  * server-side fetches. The admin UI calls the actions; the actions call
  * the kill-switch-api with the bearer token.
  *

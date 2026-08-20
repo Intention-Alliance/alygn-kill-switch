@@ -16,7 +16,7 @@ import type {
  * exposing it to the browser). The rotated secret value NEVER leaves the
  * server — none of the response shapes contain the raw value.
  *
- * The kill-switch-api lives at the same host as web-regulator (the Tailscale
+ * The kill-switch-api lives at the same host as web-regulator (the private
  * mesh). KILL_SWITCH_API_URL defaults to the loopback for server-side fetches.
  * The admin UI calls the actions; the actions call the kill-switch-api with
  * the bearer token.
