@@ -57,7 +57,7 @@ export function SecretsList({
               ) : secrets.length === 0 ? (
                 <TableRow className="h-24">
                   <TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
-                    No Tailscale secrets yet.
+                    No managed secrets yet.
                   </TableCell>
                 </TableRow>
               ) : (

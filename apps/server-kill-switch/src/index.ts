@@ -197,7 +197,7 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   });
   await secretsLoader.load();
   secretsLoader.startWatchers();
-  console.log(`[secrets-loader] loaded ${secretsLoader.getLoadedKeys().length} Tailscale secret(s)`);
+  console.log(`[secrets-loader] loaded ${secretsLoader.getLoadedKeys().length} managed secret(s)`);
 
   // ─── Lockout State Machine ──────────────────────────────────────
   const lockoutState = new LockoutStateMachine();

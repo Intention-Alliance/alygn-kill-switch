@@ -2,7 +2,7 @@
  * Secrets Loader — the heart of the kill-switch secret rotation system.
  *
  * Responsibilities:
- *  - On startup, load ~/.openclaw/secrets.json (mode 600) → set process.env for all *_TAILSCALE_* keys
+ *  - On startup, load ~/.openclaw/secrets.json (mode 600) → set process.env for all managed keys
  *  - Throw on startup if file missing OR required env var missing (loud, no silent 401s)
  *  - SIGHUP handler re-reads file, updates process.env, logs reload to audit log
  *  - fs.watch on secrets.json re-reads on change, dedup by content hash
@@ -10,11 +10,15 @@
  *  - Config-file write side: after rotation, write new value to each dependent config file
  *
  * Locked decisions:
- *  - Env var: OLLAMA_TAILSCALE_AUTH_TOKEN (forward-compat all *_TAILSCALE_* keys)
+ *  - Env var: OLLAMA_TAILSCALE_AUTH_TOKEN (legacy name, forward-compat)
  *  - Server-generated only (tsauth_<base64url-32-bytes> 256-bit)
  *  - Reload: fs.watch + SIGHUP + 24h poll, all three, dedup by content hash
  *
- * @author Keridz ⚙️
+ * Agent/VPN-agnostic: which keys the loader manages is driven by a configurable
+ * key marker (default `_SECRET_`), NOT a hardcoded vendor name. Legacy
+ * `_TAILSCALE_` keys are still recognized for backward compatibility.
+ *
+ * @author Keridz ⚙️ (be-coder)
  */
 
 import { watch, type FSWatcher } from 'node:fs';
@@ -43,6 +47,13 @@ export interface SecretsLoaderOptions {
   enableFsWatch?: boolean;
   enableSighup?: boolean;
   pollIntervalMs?: number;
+  /**
+   * Substring marker that identifies which keys the loader manages.
+   * Defaults to `_SECRET_` (agent/VPN-agnostic). Legacy `_TAILSCALE_` keys
+   * are always recognized for backward compatibility. Overridable via the
+   * `SECRETS_KEY_MARKER` env var.
+   */
+  keyMarker?: string;
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────
@@ -53,6 +64,18 @@ const DEFAULT_SECRETS_PATH = resolve(
 );
 
 const DEFAULT_POLL_INTERVAL = 24 * 60 * 60 * 1000; // 24h
+
+/**
+ * Default key marker that identifies managed secrets. Agent/VPN-agnostic.
+ * Overridable via the `SECRETS_KEY_MARKER` env var.
+ */
+const DEFAULT_KEY_MARKER = process.env.SECRETS_KEY_MARKER || '_SECRET_';
+
+/**
+ * Legacy marker still recognized for backward compatibility so existing
+ * `*_TAILSCALE_*` deployments keep working during the transition.
+ */
+const LEGACY_KEY_MARKER = '_TAILSCALE_';
 
 /**
  * Mask a secret value: first 4 + last 4 visible, middle bullets.
@@ -69,6 +92,9 @@ export function maskSecret(value: string): string {
 /**
  * Generate a new 256-bit server-side secret.
  * Format: tsauth_<base64url-32-bytes>
+ *
+ * The `tsauth_` prefix is retained for backward compatibility with existing
+ * consumers that key off it; the secret itself is vendor-agnostic.
  */
 export function generateSecret(): string {
   const bytes = new Uint8Array(32);
@@ -125,6 +151,7 @@ export class SecretsLoader extends EventEmitter {
   private pollIntervalMs: number;
   private onReloadCallback: ((result: SecretsReloadResult) => void) | null;
   private loadedKeys: string[] = [];
+  private keyMarker: string;
 
   constructor(opts: SecretsLoaderOptions = {}) {
     super();
@@ -134,6 +161,15 @@ export class SecretsLoader extends EventEmitter {
     this.enableSighup = opts.enableSighup !== false;
     this.pollIntervalMs = opts.pollIntervalMs ?? DEFAULT_POLL_INTERVAL;
     this.onReloadCallback = opts.onReload || null;
+    this.keyMarker = opts.keyMarker || DEFAULT_KEY_MARKER;
+  }
+
+  /**
+   * Whether a key is managed by this loader. Matches the configured marker
+   * OR the legacy `_TAILSCALE_` marker (backward compat).
+   */
+  private isManagedKey(key: string): boolean {
+    return key.includes(this.keyMarker) || key.includes(LEGACY_KEY_MARKER);
   }
 
   /**
@@ -147,7 +183,7 @@ export class SecretsLoader extends EventEmitter {
     } catch {
       throw new Error(
         `[secrets-loader] FATAL: secrets file not found at ${this.secretsPath}. ` +
-        'Create it with mode 600 and the required *_TAILSCALE_* keys.',
+        'Create it with mode 600 and the required managed secret keys.',
       );
     }
 
@@ -163,10 +199,10 @@ export class SecretsLoader extends EventEmitter {
       );
     }
 
-    // Set all *_TAILSCALE_* keys into process.env
+    // Set all managed keys into process.env
     const loaded: string[] = [];
     for (const [key, value] of Object.entries(secrets)) {
-      if (key.includes('_TAILSCALE_') && typeof value === 'string') {
+      if (this.isManagedKey(key) && typeof value === 'string') {
         process.env[key] = value;
         loaded.push(key);
       }
@@ -236,10 +272,10 @@ export class SecretsLoader extends EventEmitter {
       return result;
     }
 
-    // Update process.env for all *_TAILSCALE_* keys
+    // Update process.env for all managed keys
     const loaded: string[] = [];
     for (const [key, value] of Object.entries(secrets)) {
-      if (key.includes('_TAILSCALE_') && typeof value === 'string') {
+      if (this.isManagedKey(key) && typeof value === 'string') {
         process.env[key] = value;
         loaded.push(key);
       }
@@ -331,7 +367,7 @@ export class SecretsLoader extends EventEmitter {
   }
 
   /**
-   * Get the list of currently loaded *_TAILSCALE_* key names.
+   * Get the list of currently loaded managed key names.
    */
   getLoadedKeys(): string[] {
     return [...this.loadedKeys];
