@@ -63,7 +63,9 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
     totalEvents: 0,
     violations: 0,
     avgLatency: 0,
-    uptime: 99.97,
+    // No fabricated uptime — 0 renders a loading/unknown state until real
+    // machine data arrives via computeDashboardStats.
+    uptime: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
