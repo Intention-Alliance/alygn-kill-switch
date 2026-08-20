@@ -40,12 +40,6 @@ const NAV_ITEMS = [
     description: "Compliance monitoring overview",
   },
   {
-    href: "/kill-switch",
-    label: "Kill Switch",
-    icon: Shield,
-    description: "Emergency stop & state control",
-  },
-  {
     href: "/admin/secrets",
     label: "Secrets",
     icon: Key,

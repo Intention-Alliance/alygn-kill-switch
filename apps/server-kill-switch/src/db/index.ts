@@ -527,6 +527,23 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_hostname_idx ON machine(hostname)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_status_idx ON machine(status)`);
 
+  // ─── Seed local machine ────────────────────────────────────────────
+  // Ensure the dashboard always has at least the local host registered so
+  // the web-regulator never renders an empty machine inventory. Uses
+  // INSERT OR IGNORE (hostname is UNIQUE) so it is safe on every restart.
+  sqlite.run(`
+    INSERT OR IGNORE INTO machine (id, name, hostname, status, role, specs, created_at)
+    VALUES (
+      'andlersrv-local',
+      'andlersrv',
+      'andlersrv.tail62d797.ts.net',
+      'active',
+      'primary',
+      '{"gpu":"none","cpu":"arch","cores":8}',
+      strftime('%s','now') * 1000
+    )
+  `);
+
   // Machine flag index
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_flag_key_idx ON machine_flag(flag_key)`);
 
