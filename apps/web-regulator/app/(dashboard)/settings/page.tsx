@@ -96,6 +96,50 @@ const DEFAULT_SETTINGS: AppSettings = {
   rateLimitPerMinute: 100,
 };
 
+/** ADR entries shown in the About section. */
+const ABOUT_ADRS: Array<{
+  adr: string;
+  name: string;
+  description: string;
+  status: "Implemented" | "Planned" | "Proposed";
+}> = [
+  {
+    adr: "ADR-136",
+    name: "Kill Authorization",
+    description:
+      "Human-only kill authorization via WebAuthn (FIDO2) signature + quorum for fleet-wide actions.",
+    status: "Implemented",
+  },
+  {
+    adr: "ADR-143",
+    name: "WebAuthn / FIDO2",
+    description:
+      "Hardware authenticator registration and assertion for operator identity and kill actions.",
+    status: "Implemented",
+  },
+  {
+    adr: "ADR-140",
+    name: "Audit Chain",
+    description:
+      "Immutable, tamper-evident audit chain for all kill-switch and compliance events.",
+    status: "Planned",
+  },
+  {
+    adr: "ADR-142",
+    name: "DPU-Native OS",
+    description:
+      "Move kill-switch enforcement onto an NVIDIA BlueField DPU hardware data path.",
+    status: "Proposed",
+  },
+  {
+    adr: "ADR-141",
+    name: "Portal & Knowledge",
+    description:
+      "Consolidated operator dashboard, RBAC, and the OpenUI org-knowledge fine-tuning loop.",
+    status: "Implemented",
+  },
+];
+
 export default function SettingsPage() {
   const { user } = useAuth();
   const [settings, setSettings] =
@@ -581,8 +625,12 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">About</CardTitle>
+              <CardDescription>
+                ALYGN Regulator — Sovereign Compliance Infrastructure for AI
+                Safety
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
                 <Shield className="h-5 w-5 text-primary mt-0.5" />
                 <div>
@@ -590,12 +638,45 @@ export default function SettingsPage() {
                     ALYGN Regulator v2.0.0
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Sovereign Compliance Infrastructure for AI
-                    Safety. Backend: Bun + Elysia + Better-Auth +
-                    SQLite. Frontend: Next.js 16 + shadcn/ui +
-                    Tailwind CSS v4.
+                    Backend: Bun + Elysia + Better-Auth + SQLite. Frontend:
+                    Next.js 16 + shadcn/ui + Tailwind CSS v4.
                   </p>
                 </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Architecture Decision Records
+                </p>
+                <ul className="space-y-3">
+                  {ABOUT_ADRS.map((adr) => (
+                    <li key={adr.adr} className="flex items-start gap-3">
+                      <Badge
+                        variant={
+                          adr.status === "Implemented"
+                            ? "default"
+                            : "secondary"
+                        }
+                        className="mt-0.5 shrink-0 capitalize"
+                      >
+                        {adr.status}
+                      </Badge>
+                      <div>
+                        <p className="text-sm font-medium">
+                          {adr.name}{" "}
+                          <span className="font-mono text-xs text-muted-foreground">
+                            ({adr.adr})
+                          </span>
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {adr.description}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </CardContent>
           </Card>
