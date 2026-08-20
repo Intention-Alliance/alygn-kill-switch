@@ -54,13 +54,25 @@ const PREDEFINED_FLAG_KEYS = [
     type: "number",
     description: "Percentage of requests to sample (0.0–1.0)",
   },
-];
+] as const;
 
 interface FlagEditorProps {
   flag?: Flag;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved: (flag: Flag) => void;
+}
+
+type FlagValue = boolean | string | number;
+
+// Resolve the flag's value type. For predefined flags we know the type
+// explicitly; for custom flags we infer it from the current value.
+function resolveFlagType(key: string, value: FlagValue | undefined): "boolean" | "number" | "string" {
+  const predefined = PREDEFINED_FLAG_KEYS.find((p) => p.key === key);
+  if (predefined) return predefined.type;
+  if (typeof value === "boolean") return "boolean";
+  if (typeof value === "number") return "number";
+  return "string";
 }
 
 export function FlagEditor({
@@ -72,9 +84,11 @@ export function FlagEditor({
   const isEditing = !!flag;
   const [key, setKey] = useState(flag?.key ?? "");
   const [description, setDescription] = useState(flag?.description ?? "");
-  const [value, setValue] = useState(Boolean(flag?.value) ?? false);
+  const [value, setValue] = useState<FlagValue>(flag?.value ?? false);
   const [enabled, setEnabled] = useState(flag?.enabled ?? true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const flagType = resolveFlagType(key, value);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -148,7 +162,9 @@ export function FlagEditor({
                     if (predefined.type === "boolean") {
                       setValue(true);
                     } else if (predefined.type === "number") {
-                      setValue(false); // represent as boolean switch; value can be string later
+                      setValue(0.9);
+                    } else {
+                      setValue("standard");
                     }
                   }
                 }}
@@ -193,21 +209,48 @@ export function FlagEditor({
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-md border p-3">
-            <div>
-              <Label htmlFor="flag-value" className="font-medium">
-                Value
-              </Label>
-              <p className="text-xs text-muted-foreground">
-                Boolean flag state
-              </p>
-            </div>
-            <Switch
-              id="flag-value"
-              checked={value}
-              onCheckedChange={setValue}
-              disabled={isSubmitting}
-            />
+          <div className="space-y-2">
+            <Label htmlFor="flag-value" className="font-medium">
+              Value
+            </Label>
+            <p className="text-xs text-muted-foreground">
+              {flagType === "boolean"
+                ? "Boolean flag state"
+                : flagType === "number"
+                  ? "Numeric flag value (0.0–1.0)"
+                  : "String flag value"}
+            </p>
+            {flagType === "boolean" ? (
+              <div className="flex items-center justify-between rounded-md border p-3">
+                <Switch
+                  id="flag-value"
+                  checked={Boolean(value)}
+                  onCheckedChange={(c) => setValue(c)}
+                  disabled={isSubmitting}
+                />
+              </div>
+            ) : flagType === "number" ? (
+              <Input
+                id="flag-value"
+                type="number"
+                min={0}
+                max={1}
+                step={0.05}
+                value={String(value)}
+                onChange={(e) => setValue(Number(e.target.value))}
+                disabled={isSubmitting}
+                className="font-mono"
+              />
+            ) : (
+              <Input
+                id="flag-value"
+                type="text"
+                value={String(value)}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={isSubmitting}
+                className="font-mono"
+              />
+            )}
           </div>
 
           <div className="flex items-center justify-between rounded-md border p-3">

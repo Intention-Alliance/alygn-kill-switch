@@ -131,6 +131,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const attemptRef = useRef(0);
   const heartbeatTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
+  // Persist the audit log across tab switches / remounts so it isn't lost
+  // when the user navigates away and back. Restored on mount below.
+  const auditLogRef = useRef<ActivationRecord[]>([]);
 
   // ─── Polling Fallback ────────────────────────────────────────
 
@@ -173,8 +176,10 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
           const activationsData = await apiGet<{
             data: ActivationRecord[];
           }>(`/api/kill-switch/activations?limit=50`);
+          const history = activationsData.data ?? [];
+          auditLogRef.current = history;
           if (mountedRef.current) {
-            setAuditLog(activationsData.data ?? []);
+            setAuditLog(history);
           }
         } catch {
           // Activations may not be available
@@ -241,6 +246,22 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
       const machinesData = await apiGet<MachinesResponse>("/api/machines");
       if (mountedRef.current) setMachines(machinesData.data ?? []);
+
+      // Load the full audit history from the DB on mount so the logs tab
+      // shows real events (not just what the WS delivered since connect).
+      try {
+        const activationsData = await apiGet<{
+          data: ActivationRecord[];
+        }>(`/api/kill-switch/activations?limit=200`);
+        const history = activationsData.data ?? [];
+        auditLogRef.current = history;
+        if (mountedRef.current) setAuditLog(history);
+      } catch {
+        // Audit history may be unavailable; keep the cached ref if present
+        if (mountedRef.current && auditLogRef.current.length > 0) {
+          setAuditLog(auditLogRef.current);
+        }
+      }
     } catch {
       // Silent — polling fallback will pick up if WS auth fails
     }
@@ -286,7 +307,11 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
           newState: payload.state,
           traceId: `ws-trace-${Date.now()}`,
         };
-        setAuditLog((prev) => [record, ...prev].slice(0, 200));
+        setAuditLog((prev) => {
+          const next = [record, ...prev].slice(0, 200);
+          auditLogRef.current = next;
+          return next;
+        });
 
         if (
           payload.state === "STOPPED" ||
@@ -350,7 +375,11 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
       case "audit-entry": {
         const payload = (msg as unknown as AuditEntryMessage).payload;
-        setAuditLog((prev) => [payload, ...prev].slice(0, 200));
+        setAuditLog((prev) => {
+          const next = [payload, ...prev].slice(0, 200);
+          auditLogRef.current = next;
+          return next;
+        });
         break;
       }
 
@@ -498,6 +527,14 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
   useEffect(() => {
     mountedRef.current = true;
+
+    // Restore any cached audit log immediately so the logs tab isn't empty
+    // while the async history fetch runs. Without this, tab switches would
+    // flash an empty log before the DB fetch resolves.
+    if (auditLogRef.current.length > 0) {
+      setAuditLog(auditLogRef.current);
+    }
+
     connect();
 
     return () => {
