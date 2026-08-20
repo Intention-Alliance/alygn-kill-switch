@@ -36,11 +36,11 @@ function IdentityPill() {
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1.5 rounded-full border bg-card px-2 py-1 text-xs text-card-foreground">
           <Check className="h-3 w-3 text-success" aria-hidden="true" />
-          <span className="font-mono">andler@tail-andler-dev</span>
+          <span className="font-mono">andler@regulator</span>
         </div>
       </TooltipTrigger>
       <TooltipContent side="bottom">
-        <p className="text-xs">Tailscale identity verified</p>
+        <p className="text-xs">Operator identity verified</p>
         <p className="text-[10px] text-muted-foreground">Esc ? Cmd+K</p>
       </TooltipContent>
     </Tooltip>

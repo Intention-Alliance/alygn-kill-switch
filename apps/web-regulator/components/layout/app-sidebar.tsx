@@ -49,7 +49,7 @@ const NAV_ITEMS = [
     href: "/admin/secrets",
     label: "Secrets",
     icon: Key,
-    description: "Tailscale secret rotation & audit",
+    description: "Secret rotation & audit",
   },
   {
     href: "/flags",

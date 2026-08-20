@@ -142,7 +142,7 @@ describe('/api/admin/secrets endpoints', () => {
 
   // ── GET /api/admin/secrets — list ──
 
-  it('lists all *_TAILSCALE_* keys with masked values', async () => {
+  it('lists all managed keys with masked values', async () => {
     const req = makeReq('GET', '/api/admin/secrets', undefined, TEST_API_KEY);
     const res = makeRes();
 
@@ -228,14 +228,14 @@ describe('/api/admin/secrets endpoints', () => {
     expect(bodyStr).not.toContain(newValue);
   });
 
-  it('rejects rotation of non-_TAILSCALE_ keys', async () => {
+  it('rejects rotation of keys that are not loaded/managed', async () => {
     const req = makeReq('POST', '/api/admin/secrets/SOME_OTHER_KEY/rotate', '', TEST_API_KEY);
     const res = makeRes();
 
     await handleAdminSecretsRoutes('POST', '/api/admin/secrets/SOME_OTHER_KEY/rotate', req, res, loader, lockout);
 
     expect(res.status).toBe(400);
-    expect(res.json?.error).toContain('not a *_TAILSCALE_* key');
+    expect(res.json?.error).toContain('not a managed secret key');
   });
 
   it('returns 423 when key is locked', async () => {
