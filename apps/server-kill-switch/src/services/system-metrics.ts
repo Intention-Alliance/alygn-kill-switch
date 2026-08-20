@@ -10,15 +10,16 @@
  *   - Load avg & uptime: os.loadavg() / os.uptime()
  *
  * Periodic broadcast via Redis pubsub → WebSocketManager → frontend.
- * Audit entries are written to SQLite and published on bcp:machines:events.
  *
  * ADR-134: Accurate System Metrics & Journal Log Streaming.
+ *
+ * NOTE: This collector does NOT write audit entries. Mock/fabricated
+ * audit entries were removed — only real events logged by the
+ * kill-switch service (state transitions, flag changes) are recorded.
  */
 
 import { cpus, totalmem, freemem, loadavg, uptime } from 'node:os';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { db } from '../db/index';
-import { machines, killSwitchAuditLog } from '../db/schema';
 
 // ─── Types ────────────────────────────────────────────────────────
 
@@ -307,67 +308,7 @@ export function getMachineMetrics(_machineId: string): {
   };
 }
 
-// ─── Audit Entry Generation & Broadcast ──────────────────────────
-
-const SEVERITIES = ['info', 'warning', 'critical'] as const;
-const STATES = ['ARMED', 'RUNNING', 'STOPPING', 'STOPPED', 'LOCKED'] as const;
-const REASONS = [
-  'Scheduled inference check',
-  'DPU attestation verified',
-  'Redline threshold exceeded',
-  'Model drift detected',
-  'Resource usage spike',
-  'Compliance audit',
-  'Policy enforcement triggered',
-  'Heartbeat timeout recovery',
-];
-
-export interface MockAuditEntry {
-  userId: string;
-  reason: string;
-  previousState: string;
-  newState: string;
-  traceId: string;
-  severity: string;
-}
-
-function hashString(s: string): number {
-  let h = 5381;
-  for (let i = 0; i < s.length; i++) {
-    h = ((h << 5) + h + s.charCodeAt(i)) & 0xffffffff;
-  }
-  return (h >>> 0) / 0xffffffff;
-}
-
-export function generateMockAuditEntry(machineId: string): MockAuditEntry {
-  const tick = Date.now();
-  const sevHash = hashString(`${machineId}_sev_${tick}`);
-  const stHash = hashString(`${machineId}_st_${tick}`);
-  const prevStHash = hashString(`${machineId}_ps_${tick}`);
-  const reasonHash = hashString(`${machineId}_r_${tick}`);
-
-  const severity = SEVERITIES[Math.floor(sevHash * SEVERITIES.length)];
-  const isViolation =
-    severity === 'critical' || (severity === 'warning' && hashString(`${machineId}_viol_${tick}`) > 0.4);
-
-  const newState = isViolation
-    ? 'STOPPING'
-    : STATES[Math.floor(stHash * 3)];
-  const prevState = isViolation
-    ? 'RUNNING'
-    : STATES[Math.floor(prevStHash * 2)];
-
-  return {
-    userId: 'system-metrics',
-    reason: REASONS[Math.floor(reasonHash * REASONS.length)],
-    previousState: prevState,
-    newState,
-    traceId: `trace-${tick.toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
-    severity,
-  };
-}
-
-// ─── Periodic Metrics + Audit Generation ─────────────────────────
+// ─── Periodic Metrics Collection ─────────────────────────────────
 
 let _interval: ReturnType<typeof setInterval> | null = null;
 let _publish: ((channel: string, msg: string) => Promise<void>) | null = null;
@@ -379,14 +320,17 @@ export interface MetricCollectionOpts {
 }
 
 /**
- * Start periodic metrics collection + audit log generation.
+ * Start periodic metrics collection.
  *
  * Every intervalMs (default 5s):
  *   1. Collects real system metrics via collectRealMetrics()
- *   2. Queries registered machines from SQLite
- *   3. For each machine: generates audit entry + inserts into kill_switch_audit_log
- *   4. Publishes machine-metrics + audit-entry events via Redis pubsub
+ *   2. Broadcasts real-time metrics via Redis pubsub
  *      → WebSocketManager → frontend use-kill-switch-websocket handler
+ *
+ * NOTE: Audit entries are NOT generated here. Only real events logged by
+ * the kill-switch service (state transitions, flag changes) are recorded
+ * in the audit log. Mock/fabricated audit entries were removed so the UI
+ * shows honest "No activity yet" when no real events have occurred.
  */
 export function startMetricGeneration(opts: MetricCollectionOpts = {}): void {
   if (_interval) return;
@@ -414,50 +358,6 @@ export function startMetricGeneration(opts: MetricCollectionOpts = {}): void {
             payload: metrics,
           }));
         } catch { /* Redis unavailable */ }
-      }
-
-      // Generate audit entries for registered machines
-      const allMachines = await db
-        .select({ id: machines.id, name: machines.name })
-        .from(machines)
-        .all();
-
-      for (const machine of allMachines) {
-        const entry = generateMockAuditEntry(machine.id);
-        const now = new Date();
-
-        await db.insert(killSwitchAuditLog).values({
-          id: crypto.randomUUID(),
-          timestamp: now,
-          userId: entry.userId,
-          reason: entry.reason,
-          previousState: entry.previousState,
-          newState: entry.newState,
-          traceId: entry.traceId,
-          machineId: machine.id,
-          severity: entry.severity,
-          metadata: JSON.stringify(metrics),
-        });
-
-        if (_publish) {
-          try {
-            await _publish('bcp:machines:events', JSON.stringify({
-              type: 'audit-entry',
-              payload: {
-                id: machine.id,
-                timestamp: now.toISOString(),
-                user: entry.userId,
-                reason: entry.reason,
-                previousState: entry.previousState,
-                newState: entry.newState,
-                traceId: entry.traceId,
-                machineId: machine.id,
-                severity: entry.severity,
-                machineName: machine.name,
-              },
-            }));
-          } catch { /* Redis unavailable */ }
-        }
       }
     } catch (err: any) {
       console.error('[metrics] Collection error:', err.message);

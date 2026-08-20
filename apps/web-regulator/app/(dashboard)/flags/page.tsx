@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Flag, Plus, Pencil, Trash2, Loader2, Shield, WifiOff, Wifi } from "lucide-react";
+import { Flag, Plus, Pencil, Trash2, Loader2, Shield, WifiOff, Wifi, AlertTriangle } from "lucide-react";
 import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary";
 import { FlagEditor } from "@/components/flags/flag-editor";
 import { FlagStatusBadge } from "@/components/flags/flag-status-badge";
@@ -71,6 +71,14 @@ const PREDEFINED_FLAGS = [
       "Percentage of requests to sample (0.0–1.0). At 1.0 every request is scored. Lower values reduce CPU load but create blind spots.",
   },
 ];
+
+// The scoring engine is not implemented. These flags are stored/editable but
+// have no runtime effect. Flagged in the UI so admins aren't misled.
+const SCORING_FLAG_KEYS = new Set([
+  "auto_stop_threshold",
+  "alert_on_critical_score",
+  "request_sampling_rate",
+]);
 
 // The backend returns flags with a slightly different shape
 interface BackendFlag {
@@ -270,9 +278,31 @@ export default function FlagsDashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
+            <div
+              className="mb-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400"
+              role="note"
+              aria-label="Scoring engine not implemented"
+            >
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>
+                <strong>Scoring engine: Not implemented.</strong> The
+                scoring-related flags below (
+                <code className="font-mono">auto_stop_threshold</code>,{" "}
+                <code className="font-mono">alert_on_critical_score</code>,{" "}
+                <code className="font-mono">request_sampling_rate</code>) are
+                stored and editable, but no scoring engine evaluates them yet.
+                They have no runtime effect until the engine ships.
+              </span>
+            </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {PREDEFINED_FLAGS.map((pf) => (
-                <div key={pf.key} className="rounded-md border bg-background p-3">
+                <div
+                  key={pf.key}
+                  className={cn(
+                    "rounded-md border bg-background p-3",
+                    SCORING_FLAG_KEYS.has(pf.key) && "border-dashed border-amber-500/50",
+                  )}
+                >
                   <div className="flex items-center gap-1.5 mb-1">
                     <code className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-mono font-semibold">
                       {pf.key}
@@ -280,6 +310,15 @@ export default function FlagsDashboardPage() {
                     <Badge variant="secondary" className="text-[10px] h-4 px-1">
                       {pf.type}
                     </Badge>
+                    {SCORING_FLAG_KEYS.has(pf.key) && (
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] h-4 px-1 border-amber-500/40 text-amber-600 dark:text-amber-400"
+                        title="This flag is not evaluated by any scoring engine"
+                      >
+                        no engine
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {pf.description}
