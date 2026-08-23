@@ -21,6 +21,7 @@ import { desc, eq } from 'drizzle-orm'
 import { db } from '../db/index'
 import { discoveredMachines, integrityEvents } from '../db/schema'
 import { DiscoveryOrchestrator } from '../services/discovery/orchestrator'
+import { HeartbeatCollector } from '../services/discovery/heartbeat-collector'
 import { OnboardingStateError } from '../services/onboarding'
 
 // ─── Helpers ────────────────────────────────────────────────────
@@ -149,10 +150,19 @@ export async function handleDiscoveryRoutes(
 				return true
 			}
 
-			const result = await discovery.handleHeartbeat({
+			// Route through the HeartbeatCollector (spec §a.3) so agent
+			// registration + liveness bookkeeping happen alongside the
+			// orchestrator's fingerprint/integrity check. The response
+			// contract is preserved.
+			const collector = new HeartbeatCollector(discovery)
+			const result = await collector.handleAgentHeartbeat({
 				machineId,
 				hostname,
 				fingerprint: body?.fingerprint ?? undefined,
+				agentId: body?.agentId ?? undefined,
+				agentName: body?.agentName ?? undefined,
+				agentVersion: body?.agentVersion ?? undefined,
+				capabilities: body?.capabilities ?? undefined,
 			})
 
 			json(res, 200, {
@@ -161,6 +171,7 @@ export async function handleDiscoveryRoutes(
 				signature: result.signature,
 				drift: result.drift,
 				state: result.drift ? 'INTEGRITY_DRIFT' : 'OK',
+				agentRegistered: result.agentRegistered,
 			})
 			return true
 		}

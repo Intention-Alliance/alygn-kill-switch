@@ -172,3 +172,72 @@ export function validateAndGetEnv() {
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@alygn.com',
   };
 }
+
+// ─── Inference Verification Config Validation ───────────────────
+//
+// KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §c.2. These are called at startup
+// (before Bun.serve) when verification is enabled. They validate the
+// verification config shape and probe the verifier model for reachability.
+// A degraded/unreachable verifier logs a warning but does NOT crash startup —
+// the system boots with verification effectively disabled (safe default).
+
+import type { VerificationConfig } from './schema';
+
+/**
+ * Validate the verification config shape. Returns a list of problems (empty
+ * if valid). Does not throw — callers decide whether to warn or fail.
+ */
+export function validateVerifierConfig(
+  cfg: VerificationConfig | undefined,
+): string[] {
+  const problems: string[] = [];
+  if (!cfg) {
+    problems.push('verification config is missing');
+    return problems;
+  }
+  if (cfg.verifyMode !== 'async' && cfg.verifyMode !== 'sync') {
+    problems.push(`verifyMode must be 'async' or 'sync', got '${cfg.verifyMode}'`);
+  }
+  if (!cfg.verifierModel || cfg.verifierModel.trim().length === 0) {
+    problems.push('verifierModel must not be empty');
+  }
+  if (!cfg.verifierBaseUrl || !/^https?:\/\//.test(cfg.verifierBaseUrl)) {
+    problems.push(`verifierBaseUrl must be an http(s) URL, got '${cfg.verifierBaseUrl}'`);
+  }
+  if (!Number.isInteger(cfg.verifierTimeoutMs) || cfg.verifierTimeoutMs < 1) {
+    problems.push(`verifierTimeoutMs must be a positive integer, got ${cfg.verifierTimeoutMs}`);
+  }
+  return problems;
+}
+
+/**
+ * Probe the verifier model for reachability. Returns true if reachable.
+ * Never throws — on any error returns false (caller logs a warning).
+ */
+export async function validateVerifierReachability(
+  cfg: VerificationConfig | undefined,
+): Promise<boolean> {
+  if (!cfg) return false;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), cfg.verifierTimeoutMs || 500);
+    try {
+      const res = await fetch(`${cfg.verifierBaseUrl}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: cfg.verifierModel,
+          prompt: 'SAFE',
+          stream: false,
+          options: { num_predict: 1 },
+        }),
+        signal: controller.signal,
+      });
+      return res.ok;
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch {
+    return false;
+  }
+}
