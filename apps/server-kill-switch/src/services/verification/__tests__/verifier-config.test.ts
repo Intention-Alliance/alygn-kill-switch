@@ -84,9 +84,9 @@ describe('loadConfig — verification section', () => {
 		expect(config.verification.verifierSystemPromptPath).toBe('docs/specs/verifier-system-prompt.md')
 	})
 
-	it('development enables verification by default', () => {
+	it('development disables verification by default (P2-5: off until verifier confirmed reachable)', () => {
 		const config = loadConfig('development')
-		expect(config.verification.verifyEnabled).toBe(true)
+		expect(config.verification.verifyEnabled).toBe(false)
 	})
 
 	it('production disables verification by default', () => {
@@ -94,9 +94,9 @@ describe('loadConfig — verification section', () => {
 		expect(config.verification.verifyEnabled).toBe(false)
 	})
 
-	it('staging enables verification by default', () => {
+	it('staging disables verification by default (P2-5: off until verifier confirmed reachable)', () => {
 		const config = loadConfig('staging')
-		expect(config.verification.verifyEnabled).toBe(true)
+		expect(config.verification.verifyEnabled).toBe(false)
 	})
 
 	it('applies env var overrides', () => {
