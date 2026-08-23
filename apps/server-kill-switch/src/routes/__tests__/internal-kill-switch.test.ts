@@ -15,7 +15,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import { handleInternalKillSwitchRoutes } from '../internal-kill-switch';
+import { handleInternalKillSwitchRoutes, resetTransitionRateLimiter } from '../internal-kill-switch';
 
 const INTERNAL_KEY = 'test-internal-key-0123456789abcdef';
 
@@ -79,6 +79,7 @@ function makeReq(overrides: Partial<{
 
 beforeEach(() => {
   process.env.KILL_SWITCH_INTERNAL_KEY = INTERNAL_KEY;
+  resetTransitionRateLimiter();
 });
 
 afterEach(() => {
@@ -205,6 +206,45 @@ describe('handleInternalKillSwitchRoutes — transitions', () => {
     });
   });
 
+  it('threads machineId from the request body into transition metadata (P2-A)', async () => {
+    const r = makeRes();
+    const service = makeService({ currentState: 'RUNNING' });
+    const handled = await handleInternalKillSwitchRoutes(
+      'POST',
+      '/v1/internal/kill-switch/transition',
+      makeReq({
+        headers: { 'x-internal-key': INTERNAL_KEY },
+        body: JSON.stringify({ state: 'STOPPED', machineId: 'machine-abc-123' }),
+      }),
+      r.res,
+      service as any,
+    );
+    expect(handled).toBe(true);
+    expect(r.status).toBe(200);
+    expect(r.body as { machineId?: string | null }).toMatchObject({ machineId: 'machine-abc-123' });
+    expect(service.transitions).toHaveLength(1);
+    expect(service.transitions[0].metadata).toMatchObject({ machineId: 'machine-abc-123' });
+  });
+
+  it('omits machineId from metadata when not provided (P2-A)', async () => {
+    const r = makeRes();
+    const service = makeService({ currentState: 'RUNNING' });
+    const handled = await handleInternalKillSwitchRoutes(
+      'POST',
+      '/v1/internal/kill-switch/transition',
+      makeReq({
+        headers: { 'x-internal-key': INTERNAL_KEY },
+        body: JSON.stringify({ state: 'STOPPED' }),
+      }),
+      r.res,
+      service as any,
+    );
+    expect(handled).toBe(true);
+    expect(r.status).toBe(200);
+    expect(r.body as { machineId?: string | null }).toMatchObject({ machineId: null });
+    expect(service.transitions[0].metadata.machineId).toBeUndefined();
+  });
+
   it('already-STOPPED is idempotent (409, no double-transition)', async () => {
     const r = makeRes();
     const service = makeService({
@@ -261,5 +301,84 @@ describe('handleInternalKillSwitchRoutes — transitions', () => {
     );
     expect(handled).toBe(true);
     expect(r.status).toBe(405);
+  });
+});
+
+describe('handleInternalKillSwitchRoutes — rate limiting (P2-C)', () => {
+  it('allows 10 transitions then returns 429 on the 11th (per IP)', async () => {
+    const service = makeService({ currentState: 'RUNNING' });
+
+    // First 10 requests pass.
+    for (let i = 0; i < 10; i++) {
+      const r = makeRes();
+      const handled = await handleInternalKillSwitchRoutes(
+        'POST',
+        '/v1/internal/kill-switch/transition',
+        makeReq({
+          headers: { 'x-internal-key': INTERNAL_KEY },
+          body: JSON.stringify({ state: 'STOPPED' }),
+          ip: '10.0.0.1',
+        }),
+        r.res,
+        service as any,
+      );
+      expect(handled).toBe(true);
+      expect(r.status).toBe(200);
+    }
+
+    // 11th request is rate-limited.
+    const r = makeRes();
+    const handled = await handleInternalKillSwitchRoutes(
+      'POST',
+      '/v1/internal/kill-switch/transition',
+      makeReq({
+        headers: { 'x-internal-key': INTERNAL_KEY },
+        body: JSON.stringify({ state: 'STOPPED' }),
+        ip: '10.0.0.1',
+      }),
+      r.res,
+      service as any,
+    );
+    expect(handled).toBe(true);
+    expect(r.status).toBe(429);
+    expect((r.body as { error?: string }).error).toBe('rate limit exceeded');
+    // No transition was performed for the rate-limited request.
+    expect(service.transitions).toHaveLength(10);
+  });
+
+  it('tracks rate limits per IP independently', async () => {
+    const service = makeService({ currentState: 'RUNNING' });
+
+    // Exhaust the limit for IP A.
+    for (let i = 0; i < 10; i++) {
+      const r = makeRes();
+      await handleInternalKillSwitchRoutes(
+        'POST',
+        '/v1/internal/kill-switch/transition',
+        makeReq({
+          headers: { 'x-internal-key': INTERNAL_KEY },
+          body: JSON.stringify({ state: 'STOPPED' }),
+          ip: '10.0.0.1',
+        }),
+        r.res,
+        service as any,
+      );
+    }
+
+    // IP B is unaffected.
+    const r = makeRes();
+    const handled = await handleInternalKillSwitchRoutes(
+      'POST',
+      '/v1/internal/kill-switch/transition',
+      makeReq({
+        headers: { 'x-internal-key': INTERNAL_KEY },
+        body: JSON.stringify({ state: 'STOPPED' }),
+        ip: '10.0.0.2',
+      }),
+      r.res,
+      service as any,
+    );
+    expect(handled).toBe(true);
+    expect(r.status).toBe(200);
   });
 });
