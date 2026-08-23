@@ -26,6 +26,9 @@ import { desc, eq, and, gte, lte, sql } from 'drizzle-orm';
 // ─── Audit Log (in-memory hot cache + DB persistence) ───────────────────
 
 export interface SecretsAuditEntry {
+  /** @deprecated alias for .at */ ts?: string;
+  /** @deprecated alias for .name */ keyName?: string;
+  /** @deprecated alias for .event */ action?: string;
   id: string;
   at: string;
   event: 'rotate' | 'view' | '401' | '401-block' | 'sighup' | 'poll' | 'lock' | 'unlock' | 'rotate-consumer';

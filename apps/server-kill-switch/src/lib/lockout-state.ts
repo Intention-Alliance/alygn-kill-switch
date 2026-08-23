@@ -14,7 +14,7 @@
  */
 
 import { watch, type FSWatcher } from 'node:fs';
-import { readFile, writeFile, chmod, rename, mkdir, fsync } from 'node:fs/promises';
+import { readFile, writeFile, chmod, rename, mkdir } from 'node:fs/promises';
 import { openSync, fsyncSync, closeSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { EventEmitter } from 'node:events';
@@ -42,6 +42,7 @@ export interface LockoutPersistedState {
 export interface LockoutCheckResult {
   state: LockoutState;
   consecutive401s: number;
+  recent401s: number;
   autoUnlockAt: number | null;
   last401Source: string | null;
   lastEventAt: number | null;

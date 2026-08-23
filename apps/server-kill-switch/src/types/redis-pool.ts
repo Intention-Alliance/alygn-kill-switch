@@ -12,4 +12,7 @@ export interface RedisPool {
   healthCheck(): Promise<{ redis: string }>;
   chaosKillSwitchKey(): string;
   connect(): Promise<void>;
+  withClient?(fn: (client: any) => any): any;
+  acquire?(): Promise<any>;
+  releaseClient?(client: any): void;
 }

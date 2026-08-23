@@ -59,6 +59,8 @@ export const productionConfig: Partial<AppConfig> = {
     rpName: 'Alygn Kill Switch',
     rpID: 'andlersrv.tail62d797.ts.net',
     origin: 'https://andlersrv.tail62d797.ts.net:8443',
+    challengeTtlMs: 300_000,
+    assertionTokenTtlMs: 600_000,
   },
   // ADR-2026-08-23: verification DISABLED by default in production.
   // Andler enables it manually (via KILL_SWITCH_VERIFY_ENABLED=true)
