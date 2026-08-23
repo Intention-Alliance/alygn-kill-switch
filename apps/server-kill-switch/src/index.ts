@@ -29,10 +29,16 @@ import { SecretsLoader } from './lib/secrets-loader';
 import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
 import { startMetricGeneration } from './services/system-metrics';
+import { startRegistryScheduler } from './services/discovery/registry-scheduler';
+import { InferenceVerifier } from './services/verification/verifier';
+import { VerificationService } from './services/verification/verification-service';
+import { checkInferenceVerification } from './middleware/inference-verification';
+import { handleRegistryRoutes } from './routes/registry';
+import { handleInternalKillSwitchRoutes } from './routes/internal-kill-switch';
 import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
 import { seedFeatureFlags } from './db/seed';
-import { validateEnvironment } from './config/validate-env';
+import { validateEnvironment, validateVerifierConfig, validateVerifierReachability } from './config/validate-env';
 
 // ─── Redis client type (mirrors RedisPool from src/infra/redis-cluster-pool.mjs) ──
 
@@ -47,6 +53,7 @@ interface RedisClient {
 function createHandler(
   service: KillSwitchService,
   ctx: { secretsLoader: SecretsLoader; lockoutState: LockoutStateMachine; redis: RedisClient },
+  verification?: VerificationService,
 ) {
   const authRateLimiter = new AuthRateLimiter();
   const config = getConfig();
@@ -89,6 +96,13 @@ function createHandler(
     // session (mirrors api-keys.ts). Runs BEFORE checkAuth.
     const webhookKeysHandled = await handleWebhookKeysRoutes(method, url, req, res);
     if (webhookKeysHandled) return;
+
+    // ── Internal kill-switch transition (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §d.1) ──
+    // Automated (non-human) STOPPED triggers. Loopback-only + KILL_SWITCH_INTERNAL_KEY,
+    // accepts only STOPPING/STOPPED. Runs BEFORE checkAuth (service-authenticated,
+    // not a user session). Mirrors the /v1/internal/* webhook pattern.
+    const internalKsHandled = await handleInternalKillSwitchRoutes(method, url, req, res, service);
+    if (internalKsHandled) return;
 
     const admin = await handleAdminRoutes(method, url, req, res, service);
     if (admin) return;
@@ -143,6 +157,32 @@ function createHandler(
       userRole = ar.user?.role ?? null;
     }
 
+    // ── Inference verification (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b.4) ──
+    // Runs AFTER the gate (paused → 503 short-circuits first) and after auth,
+    // but BEFORE the route dispatcher. Reads the inference body, fires the
+    // VerificationService. ASYNC mode passes through immediately; SYNC mode
+    // awaits and rejects UNSAFE with 403.
+    if (verification) {
+      const requestId = crypto.randomUUID();
+      let body: { prompt?: string; output?: string } | null = null;
+      if (method === 'POST' && url.startsWith('/v1/inference/')) {
+        try {
+          body = req.body ? JSON.parse(req.body) : null;
+        } catch {
+          body = null;
+        }
+      }
+      const v = checkInferenceVerification(method, url, body, verification, requestId);
+      if (v.awaitDecision) {
+        const decision = await v.awaitDecision;
+        if (decision.reject) {
+          res.writeHead(decision.reject.status, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(decision.reject.body));
+          return;
+        }
+      }
+    }
+
     // Wrap the dispatcher chain in try/catch so a throw in any handler
     // does NOT leak the stack trace + Drizzle SQL error to the HTTP
     // response (Phase 4 Stage 2 fix — info-leak). Log full detail
@@ -160,6 +200,7 @@ function createHandler(
           async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
         ) ||
         await handleDiscoveryRoutes(method, url, req, res, uid || 'api', userRole) ||
+        await handleRegistryRoutes(method, url, res) ||
         await handleOnboardingRoutes(method, url, req, res, uid || 'api', userRole) ||
         await handleSettingsRoutes(method, url, req, res, userRole,
           async (channel, msg) => { try { await redis.publish(channel, msg); } catch (e: any) { console.warn('[ws] redis publish dropped', { channel, err: e.message }); } },
@@ -238,6 +279,66 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   });
 
   service.onStateChange((entry: any) => wsManager.broadcastStateChange(entry));
+
+  // ── Inference Verification Service (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b) ──
+  // Instantiate the verifier + verification service. Config values
+  // (KILL_SWITCH_VERIFIER_MODEL, KILL_SWITCH_VERIFIER_BASE_URL,
+  // KILL_SWITCH_VERIFIER_TIMEOUT_MS, KILL_SWITCH_VERIFY_ENABLED,
+  // KILL_SWITCH_VERIFY_MODE) are provided via `getConfig().verification`.
+  // Defaults keep the system safe: verification is a no-op unless BOTH the
+  // `killSwitchVerificationEnabled` feature flag AND `verification.verifyEnabled`
+  // are true (spec §c.2 — default off until the verifier model is confirmed
+  // reachable).
+  const verificationConfig = getConfig().verification;
+  const verificationEnabled =
+    isFeatureEnabled('killSwitchVerificationEnabled') &&
+    (verificationConfig?.verifyEnabled ?? false);
+
+  // P2-1: validate the verification config + probe verifier reachability at
+  // startup (before Bun.serve). If verification is enabled but the verifier is
+  // unreachable, log a warning and continue with a degraded (no-op) verifier —
+  // the spec says fail-fast, but we allow startup with a degraded warning.
+  if (verificationEnabled) {
+    const problems = validateVerifierConfig(verificationConfig);
+    if (problems.length > 0) {
+      console.warn('[verification] Config problems (verification will be degraded):', problems);
+    }
+    const reachable = await validateVerifierReachability(verificationConfig);
+    if (!reachable) {
+      console.warn(
+        `[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
+        `'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
+        `(REVIEW + no auto-kill) until the model is reachable.`,
+      );
+    }
+  }
+
+  const verificationService = verificationEnabled
+    ? new VerificationService({
+        verifier: new InferenceVerifier({
+          model: verificationConfig?.verifierModel,
+          baseUrl: verificationConfig?.verifierBaseUrl,
+          timeoutMs: verificationConfig?.verifierTimeoutMs,
+        }),
+        mode: verificationConfig?.verifyMode ?? 'async',
+        // autoKillOnUnsafe is intentionally NOT read from config — the spec
+        // mandates that an UNSAFE verdict always auto-triggers STOPPED. The
+        // VerificationService defaults autoKillOnUnsafe to true.
+        killSwitch: service,
+        publish: async (channel, msg) => {
+          try { await redis.publish(channel, msg); } catch { /* Redis unavailable */ }
+        },
+      })
+    : undefined;
+
+  // ── Live Registry Scheduler (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §a) ──
+  // Drives the discovery orchestrator on intervals so the dashboard shows
+  // real machines/agents/providers/models.
+  startRegistryScheduler({
+    publish: async (channel, msg) => {
+      try { await redis.publish(channel, msg); } catch { /* Redis unavailable */ }
+    },
+  });
 
   await seedAdminUser();
 
@@ -352,7 +453,7 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
           },
         };
 
-        createHandler(service, { secretsLoader, lockoutState, redis })(nodeReq, nodeRes);
+        createHandler(service, { secretsLoader, lockoutState, redis }, verificationService)(nodeReq, nodeRes);
       });
     },
   });

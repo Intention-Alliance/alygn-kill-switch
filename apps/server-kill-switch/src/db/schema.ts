@@ -16,7 +16,7 @@
  * ADR-133: Kill Switch dashboard rebuild — extended schema.
  */
 
-import { sqliteTable, text, integer, uniqueIndex, index, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real, uniqueIndex, index, primaryKey } from 'drizzle-orm/sqlite-core';
 
 // ─── Better-Auth v2 Required Tables ──────────────────────────────────────
 
@@ -613,5 +613,35 @@ export const chainAnchors = sqliteTable(
   },
   (table) => ({
     dateIdx: uniqueIndex('chain_anchor_date_unique').on(table.date),
+  }),
+);
+
+// ─── Inference Verification Events (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §e.3) ──
+//
+// Durable review trail for inference verification results. Stores HASHES of
+// prompt/output (not raw content) to keep the audit trail tamper-evident
+// without persisting sensitive inference content. Written by the
+// verification service on every verification; published to
+// `bcp:verification:events` for the dashboard.
+export const verificationEvents = sqliteTable(
+  'verification_event',
+  {
+    id: text('id').primaryKey(),
+    requestId: text('request_id').notNull(),
+    machineId: text('machine_id'),
+    verdict: text('verdict').notNull(),          // SAFE | UNSAFE | REVIEW
+    confidence: real('confidence'),
+    reason: text('reason'),
+    model: text('model').notNull(),
+    degraded: integer('degraded', { mode: 'boolean' }).notNull().default(false),
+    promptHash: text('prompt_hash'),             // sha256 of prompt (avoid storing raw prompt)
+    outputHash: text('output_hash'),             // sha256 of output (avoid storing raw output)
+    triggeredKill: integer('triggered_kill', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    requestIdx: index('verification_event_request_idx').on(table.requestId),
+    verdictIdx: index('verification_event_verdict_idx').on(table.verdict),
+    timeIdx: index('verification_event_time_idx').on(table.createdAt),
   }),
 );

@@ -396,6 +396,29 @@ export function initDatabase(dbPath: string = DB_PATH) {
   `);
   sqlite.run(`CREATE UNIQUE INDEX IF NOT EXISTS chain_anchor_date_unique ON chain_anchor(date)`);
 
+  // ─── Inference Verification Events (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §e.3) ──
+  // Durable review trail for inference verification results. Stores HASHES of
+  // prompt/output (not raw content). Written by the verification service.
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS verification_event (
+      id TEXT PRIMARY KEY,
+      request_id TEXT NOT NULL,
+      machine_id TEXT,
+      verdict TEXT NOT NULL,
+      confidence REAL,
+      reason TEXT,
+      model TEXT NOT NULL,
+      degraded INTEGER NOT NULL DEFAULT 0,
+      prompt_hash TEXT,
+      output_hash TEXT,
+      triggered_kill INTEGER NOT NULL DEFAULT 0,
+      created_at INTEGER NOT NULL
+    )
+  `);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS verification_event_request_idx ON verification_event(request_id)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS verification_event_verdict_idx ON verification_event(verdict)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS verification_event_time_idx ON verification_event(created_at)`);
+
   // ─── AI-Agnostic Discovery tables (ADR-135) ───────────────────────
   // Provisional registry — nothing is authoritative until human
   // confirmation (NO auto-admission, ADR-135 §5).

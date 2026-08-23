@@ -101,6 +101,26 @@ function buildEnvOverrides(): Partial<AppConfig> {
     };
   }
 
+  // Inference verification (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §c.2)
+  const verificationOverrides: Partial<AppConfig['verification']> = {};
+  if (env.KILL_SWITCH_VERIFY_ENABLED) {
+    verificationOverrides.verifyEnabled = env.KILL_SWITCH_VERIFY_ENABLED === 'true';
+  }
+  if (env.KILL_SWITCH_VERIFIER_MODEL) verificationOverrides.verifierModel = env.KILL_SWITCH_VERIFIER_MODEL;
+  if (env.KILL_SWITCH_VERIFIER_BASE_URL) verificationOverrides.verifierBaseUrl = env.KILL_SWITCH_VERIFIER_BASE_URL;
+  if (env.KILL_SWITCH_VERIFIER_TIMEOUT_MS) {
+    verificationOverrides.verifierTimeoutMs = parseInt(env.KILL_SWITCH_VERIFIER_TIMEOUT_MS, 10);
+  }
+  if (env.KILL_SWITCH_VERIFY_MODE) {
+    verificationOverrides.verifyMode = env.KILL_SWITCH_VERIFY_MODE === 'sync' ? 'sync' : 'async';
+  }
+  if (Object.keys(verificationOverrides).length > 0) {
+    (overrides as Record<string, unknown>).verification = {
+      ...((overrides as Record<string, unknown>).verification as Record<string, unknown> | undefined),
+      ...verificationOverrides,
+    };
+  }
+
   return overrides;
 }
 
