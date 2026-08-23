@@ -170,7 +170,7 @@ function fingerprintToSpecs(
 	return JSON.stringify({
 		cpu: fingerprint.cpuModel,
 		ram: `${fingerprint.memoryMb}MB`,
-		gpu: fingerprint.gpus.map((gpu) => gpu.name).join(', ') || null,
+		gpu: fingerprint.gpus.map((gpu: any) => gpu.name).join(', ') || null,
 		dpu: null,
 	})
 }
@@ -325,7 +325,7 @@ export class OnboardingService {
 			// 4. Seed tenant flags from the org/zone defaults (ADR-138 §4).
 			// Runs on the tx handle so flag seeding rolls back with the
 			// decision — no orphaned machine_flag rows on rollback.
-			await seedDefaultFlags(tx, machineRecordId)
+			await seedDefaultFlags(tx as any, machineRecordId)
 
 			// 5. Audit log (ADR-140 — append-only).
 			await tx.insert(killSwitchAuditLog).values({

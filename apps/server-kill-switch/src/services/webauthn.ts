@@ -233,7 +233,7 @@ async function findActiveCredential(credentialId: string): Promise<StoredCredent
   return row ? toStoredCredential(row) : null;
 }
 
-async function listActiveCredentialsForUser(userId: string): Promise<StoredCredential[]> {
+export async function listActiveCredentialsForUser(userId: string): Promise<StoredCredential[]> {
   const rows = await db
     .select()
     .from(webauthnCredentials)

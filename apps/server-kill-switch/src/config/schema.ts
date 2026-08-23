@@ -50,6 +50,10 @@ export const FeatureFlagsSchema = z.object({
 	// kill-switch state pauses inference traffic via the in-memory
 	// inference-gate middleware. Disable to bypass if the demo breaks.
 	killSwitchTrafficPauseEnabled: z.boolean().default(true),
+	// ADR-2026-08-23: master switch for the inference verification layer.
+	// Default OFF until the verifier model is confirmed reachable. The
+	// demo can toggle this to exercise the verification path.
+	killSwitchVerificationEnabled: z.boolean().default(false),
 })
 
 export const ServerConfigSchema = z.object({
@@ -88,6 +92,30 @@ export const WebAuthnConfigSchema = z.object({
 	assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
 })
 
+// ADR-2026-08-23: Inference verification layer config.
+// The verifier calls a lightweight model (Ollama by default) to classify
+// inference output as SAFE | UNSAFE | REVIEW. `verifyEnabled` is the master
+// switch — OFF until the verifier model is confirmed reachable.
+//
+// Env overrides (see config/index.ts):
+//   KILL_SWITCH_VERIFIER_MODEL              -> verifierModel
+//   KILL_SWITCH_VERIFIER_BASE_URL           -> verifierBaseUrl
+//   KILL_SWITCH_VERIFIER_TIMEOUT_MS         -> verifierTimeoutMs
+//   KILL_SWITCH_VERIFY_ENABLED              -> verifyEnabled
+//   KILL_SWITCH_VERIFY_MODE                 -> verifyMode
+//   KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH -> verifierSystemPromptPath
+export const VerificationConfigSchema = z.object({
+	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
+	verifierBaseUrl: z.string().url().default('http://localhost:11434'),
+	verifierTimeoutMs: z.number().int().min(1).default(500),
+	verifyEnabled: z.boolean().default(false),
+	verifyMode: z.enum(['async', 'sync']).default('async'),
+	verifierSystemPromptPath: z
+		.string()
+		.min(1)
+		.default('docs/specs/verifier-system-prompt.md'),
+})
+
 export const AppConfigSchema = z.object({
 	env: z.enum(['development', 'staging', 'production']),
 	redis: RedisConfigSchema,
@@ -98,6 +126,7 @@ export const AppConfigSchema = z.object({
 	server: ServerConfigSchema,
 	telemetry: TelemetryConfigSchema,
 	webauthn: WebAuthnConfigSchema.default({}),
+	verification: VerificationConfigSchema.default({}),
 })
 
 export type AppConfig = z.infer<typeof AppConfigSchema>
@@ -109,3 +138,4 @@ export type FeatureFlags = z.infer<typeof FeatureFlagsSchema>
 export type ServerConfig = z.infer<typeof ServerConfigSchema>
 export type TelemetryConfig = z.infer<typeof TelemetryConfigSchema>
 export type WebAuthnConfig = z.infer<typeof WebAuthnConfigSchema>
+export type VerificationConfig = z.infer<typeof VerificationConfigSchema>

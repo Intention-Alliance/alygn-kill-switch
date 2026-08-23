@@ -43,13 +43,13 @@ beforeEach(() => {
 });
 
 // ─── Mock crypto.randomUUID ─────────────────────────────────────
-let origUUID: () => string;
+let origUUID: () => `${string}-${string}-${string}-${string}-${string}`;
 
 beforeAll(() => {
   origUUID = crypto.randomUUID;
   crypto.randomUUID = () => {
     uuidCounter++;
-    return `mock-uuid-${uuidCounter.toString().padStart(3, '0')}`;
+    return `mock-uuid-${uuidCounter.toString().padStart(3, '0')}` as `${string}-${string}-${string}-${string}-${string}`;
   };
 });
 

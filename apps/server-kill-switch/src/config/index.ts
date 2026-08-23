@@ -101,6 +101,29 @@ function buildEnvOverrides(): Partial<AppConfig> {
     };
   }
 
+  // Verification (ADR-2026-08-23)
+  const verificationOverrides: Partial<AppConfig['verification']> = {};
+  if (env.KILL_SWITCH_VERIFIER_MODEL) verificationOverrides.verifierModel = env.KILL_SWITCH_VERIFIER_MODEL;
+  if (env.KILL_SWITCH_VERIFIER_BASE_URL) verificationOverrides.verifierBaseUrl = env.KILL_SWITCH_VERIFIER_BASE_URL;
+  if (env.KILL_SWITCH_VERIFIER_TIMEOUT_MS) {
+    verificationOverrides.verifierTimeoutMs = parseInt(env.KILL_SWITCH_VERIFIER_TIMEOUT_MS, 10);
+  }
+  if (env.KILL_SWITCH_VERIFY_ENABLED) {
+    verificationOverrides.verifyEnabled = env.KILL_SWITCH_VERIFY_ENABLED === 'true';
+  }
+  if (env.KILL_SWITCH_VERIFY_MODE) {
+    verificationOverrides.verifyMode = env.KILL_SWITCH_VERIFY_MODE as AppConfig['verification']['verifyMode'];
+  }
+  if (env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH) {
+    verificationOverrides.verifierSystemPromptPath = env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH;
+  }
+  if (Object.keys(verificationOverrides).length > 0) {
+    (overrides as Record<string, unknown>).verification = {
+      ...((overrides as Record<string, unknown>).verification as Record<string, unknown> | undefined),
+      ...verificationOverrides,
+    };
+  }
+
   return overrides;
 }
 
