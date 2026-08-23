@@ -283,6 +283,7 @@ describe('ProviderRegistry', () => {
 		const registry = new ProviderRegistry({
 			ollamaBaseUrl: 'http://127.0.0.1:1',
 			vllmBaseUrl: 'http://127.0.0.1:1',
+			huggingFaceCacheDir: '/tmp/empty-hf-cache-nonexistent',
 			huggingFaceTgiUrl: 'http://127.0.0.1:1',
 			llamaIndexServerUrl: 'http://127.0.0.1:1',
 		})
