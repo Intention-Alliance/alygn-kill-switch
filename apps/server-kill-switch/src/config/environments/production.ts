@@ -60,4 +60,16 @@ export const productionConfig: Partial<AppConfig> = {
     rpID: 'andlersrv.tail62d797.ts.net',
     origin: 'https://andlersrv.tail62d797.ts.net:8443',
   },
+  // ADR-2026-08-23: verification DISABLED by default in production.
+  // Andler enables it manually (via KILL_SWITCH_VERIFY_ENABLED=true)
+  // only after the verifier model is confirmed reachable at the
+  // production Ollama endpoint. Safe default — behaves as today.
+  verification: {
+    verifierModel: 'qwen2.5:0.5b',
+    verifierBaseUrl: 'http://localhost:11434',
+    verifierTimeoutMs: 500,
+    verifyEnabled: false,
+    verifyMode: 'async',
+    verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+  },
 };
