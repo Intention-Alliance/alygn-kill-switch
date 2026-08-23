@@ -85,7 +85,7 @@ export class WebSocketManager {
   private onRedisMessage(channel: string, message: string): void {
     try {
       const parsed = JSON.parse(message);
-      let wsMessage: Record<string, unknown>;
+      let wsMessage: Record<string, unknown> = {} as Record<string, unknown>;
       switch (channel) {
         case 'bcp:kill-switch:chaos': wsMessage = { type: 'state-change', payload: parsed }; break;
         case 'bcp:flags:updates': wsMessage = { type: 'flag-update', payload: parsed }; break;

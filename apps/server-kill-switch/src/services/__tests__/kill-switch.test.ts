@@ -27,11 +27,19 @@ mock.module('../../infra-loader', () => ({
   }),
 }));
 
+// Mock config so isFeatureEnabled returns true for traffic pause
+mock.module("../../config", () => ({
+  getConfig: () => ({ server: { port: 3000, host: "0.0.0.0" }, env: "test", redis: { urls: [] } }),
+  isFeatureEnabled: (key: string) => key === "killSwitchTrafficPauseEnabled",
+}));
+
 // Track the internal Redis state for get/set
 let internalState: string | null = null;
 
 function createMockRedis(): RedisPool {
   return {
+    getClient: async () => ({}),
+    releaseClient: () => {},
     chaosKillSwitchKey: () => 'ks:state',
     get: async (key: string) => internalState,
     set: async (key: string, val: string) => {
@@ -421,6 +429,8 @@ describe('KillSwitchService — healthCheck', () => {
   it('healthCheck reports degraded when Redis is unhealthy', async () => {
     // Create a service with a mock RedisPool that returns degraded health
     const degradedRedis: RedisPool = {
+      getClient: async () => ({}),
+      releaseClient: () => {},
       chaosKillSwitchKey: () => 'ks:state',
       get: async (key: string) => null,
       set: async (key: string, val: string) => 'OK',
@@ -631,6 +641,6 @@ describe('KillSwitchService — subscribeToStateChanges', () => {
     await service.subscribeToStateChanges(handler);
 
     expect(subscribedChannel).toBe('bcp:kill-switch:chaos');
-    expect(subscribedHandler).toBe(handler);
+    expect(subscribedHandler).toBe(handler as any);
   });
 });

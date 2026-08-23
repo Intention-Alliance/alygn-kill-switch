@@ -28,7 +28,7 @@ function makeTestSecrets(): Record<string, string> {
     OLLAMA_TAILSCALE_AUTH_TOKEN: 'tsauth_test_value_12345678',
     OTHER_TAILSCALE_KEY: 'tsauth_other_value_87654321',
     PLAIN_API_KEY: 'should_not_be_loaded',
-    PLAIN_API_KEY: 'also_not_loaded',
+    
   };
 }
 

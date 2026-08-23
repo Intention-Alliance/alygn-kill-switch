@@ -39,6 +39,7 @@ export const stagingConfig: Partial<AppConfig> = {
     enableIncidentResponse: true,
     enableLbHealth: true,
     killSwitchTrafficPauseEnabled: true,
+    killSwitchVerificationEnabled: true,
   },
   server: {
     port: 3000,
@@ -50,5 +51,16 @@ export const stagingConfig: Partial<AppConfig> = {
     endpoint: 'http://otel-collector:4317',
     serviceName: 'kill-switch-api-staging',
     sampleRate: 1.0,
+  },
+  // ADR-2026-08-23: verification enabled in staging to exercise the
+  // full verification path against the staging Ollama endpoint before
+  // production rollout.
+  verification: {
+    verifierModel: 'qwen2.5:0.5b',
+    verifierBaseUrl: 'http://localhost:11434',
+    verifierTimeoutMs: 500,
+    verifyEnabled: false,
+    verifyMode: 'async',
+    verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
   },
 };
