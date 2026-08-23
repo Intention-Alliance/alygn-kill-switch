@@ -50,6 +50,11 @@ export const FeatureFlagsSchema = z.object({
 	// kill-switch state pauses inference traffic via the in-memory
 	// inference-gate middleware. Disable to bypass if the demo breaks.
 	killSwitchTrafficPauseEnabled: z.boolean().default(true),
+	// KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §c.2: master switch for the
+	// inference verification layer. Default OFF until the verifier model is
+	// confirmed reachable. Both this flag AND verification.verifyEnabled must
+	// be true for verification to activate.
+	killSwitchVerificationEnabled: z.boolean().default(false),
 })
 
 export const ServerConfigSchema = z.object({
@@ -74,6 +79,18 @@ export const TelemetryConfigSchema = z.object({
 // listener (:8443). They can be overridden per-deployment via the
 // WEBAUTHN_RP_ID / WEBAUTHN_ORIGIN env vars (see config/index.ts).
 // The `localhost` fallback is only safe for local development.
+// KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §c.2 — inference verification config.
+// Field names mirror the env vars (KILL_SWITCH_VERIFIER_* / KILL_SWITCH_VERIFY_*).
+// Defaults keep the system safe: verification is a no-op unless verifyEnabled
+// is true AND the killSwitchVerificationEnabled feature flag is on.
+export const VerificationConfigSchema = z.object({
+	verifyEnabled: z.boolean().default(false),
+	verifierModel: z.string().default('qwen2.5:0.5b'),
+	verifierBaseUrl: z.string().url().default('http://127.0.0.1:11434'),
+	verifierTimeoutMs: z.number().int().min(1).default(500),
+	verifyMode: z.enum(['async', 'sync']).default('async'),
+})
+
 export const WebAuthnConfigSchema = z.object({
 	rpName: z.string().min(1).default('Alygn Kill Switch'),
 	rpID: z
@@ -98,6 +115,7 @@ export const AppConfigSchema = z.object({
 	server: ServerConfigSchema,
 	telemetry: TelemetryConfigSchema,
 	webauthn: WebAuthnConfigSchema.default({}),
+	verification: VerificationConfigSchema.default({}),
 })
 
 export type AppConfig = z.infer<typeof AppConfigSchema>
@@ -109,3 +127,4 @@ export type FeatureFlags = z.infer<typeof FeatureFlagsSchema>
 export type ServerConfig = z.infer<typeof ServerConfigSchema>
 export type TelemetryConfig = z.infer<typeof TelemetryConfigSchema>
 export type WebAuthnConfig = z.infer<typeof WebAuthnConfigSchema>
+export type VerificationConfig = z.infer<typeof VerificationConfigSchema>

@@ -38,7 +38,7 @@ import { handleInternalKillSwitchRoutes } from './routes/internal-kill-switch';
 import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
 import { seedFeatureFlags } from './db/seed';
-import { validateEnvironment } from './config/validate-env';
+import { validateEnvironment, validateVerifierConfig, validateVerifierReachability } from './config/validate-env';
 
 // ─── Redis client type (mirrors RedisPool from src/infra/redis-cluster-pool.mjs) ──
 
@@ -284,20 +284,46 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // Instantiate the verifier + verification service. Config values
   // (KILL_SWITCH_VERIFIER_MODEL, KILL_SWITCH_VERIFIER_BASE_URL,
   // KILL_SWITCH_VERIFIER_TIMEOUT_MS, KILL_SWITCH_VERIFY_ENABLED,
-  // KILL_SWITCH_VERIFY_MODE) are provided by Rokthar's config work via
-  // `getConfig().verification`. Defaults keep the system safe: verification
-  // is a no-op unless KILL_SWITCH_VERIFY_ENABLED is true.
-  const verificationConfig = (getConfig() as any).verification ?? {};
-  const verificationEnabled = verificationConfig.enabled ?? false;
+  // KILL_SWITCH_VERIFY_MODE) are provided via `getConfig().verification`.
+  // Defaults keep the system safe: verification is a no-op unless BOTH the
+  // `killSwitchVerificationEnabled` feature flag AND `verification.verifyEnabled`
+  // are true (spec §c.2 — default off until the verifier model is confirmed
+  // reachable).
+  const verificationConfig = getConfig().verification;
+  const verificationEnabled =
+    isFeatureEnabled('killSwitchVerificationEnabled') &&
+    (verificationConfig?.verifyEnabled ?? false);
+
+  // P2-1: validate the verification config + probe verifier reachability at
+  // startup (before Bun.serve). If verification is enabled but the verifier is
+  // unreachable, log a warning and continue with a degraded (no-op) verifier —
+  // the spec says fail-fast, but we allow startup with a degraded warning.
+  if (verificationEnabled) {
+    const problems = validateVerifierConfig(verificationConfig);
+    if (problems.length > 0) {
+      console.warn('[verification] Config problems (verification will be degraded):', problems);
+    }
+    const reachable = await validateVerifierReachability(verificationConfig);
+    if (!reachable) {
+      console.warn(
+        `[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
+        `'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
+        `(REVIEW + no auto-kill) until the model is reachable.`,
+      );
+    }
+  }
+
   const verificationService = verificationEnabled
     ? new VerificationService({
         verifier: new InferenceVerifier({
-          model: verificationConfig.model,
-          baseUrl: verificationConfig.baseUrl,
-          timeoutMs: verificationConfig.timeoutMs,
+          model: verificationConfig?.verifierModel,
+          baseUrl: verificationConfig?.verifierBaseUrl,
+          timeoutMs: verificationConfig?.verifierTimeoutMs,
         }),
-        mode: verificationConfig.mode ?? 'async',
-        autoKillOnUnsafe: verificationConfig.autoKillOnUnsafe ?? true,
+        mode: verificationConfig?.verifyMode ?? 'async',
+        // autoKillOnUnsafe is intentionally NOT read from config — the spec
+        // mandates that an UNSAFE verdict always auto-triggers STOPPED. The
+        // VerificationService defaults autoKillOnUnsafe to true.
         killSwitch: service,
         publish: async (channel, msg) => {
           try { await redis.publish(channel, msg); } catch { /* Redis unavailable */ }

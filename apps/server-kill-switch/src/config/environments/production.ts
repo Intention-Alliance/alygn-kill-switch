@@ -39,6 +39,7 @@ export const productionConfig: Partial<AppConfig> = {
     enableIncidentResponse: true,
     enableLbHealth: true,
     killSwitchTrafficPauseEnabled: true,
+    killSwitchVerificationEnabled: false,
   },
   server: {
     port: 3000,

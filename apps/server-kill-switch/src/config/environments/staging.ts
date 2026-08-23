@@ -39,6 +39,7 @@ export const stagingConfig: Partial<AppConfig> = {
     enableIncidentResponse: true,
     enableLbHealth: true,
     killSwitchTrafficPauseEnabled: true,
+    killSwitchVerificationEnabled: false,
   },
   server: {
     port: 3000,
@@ -50,5 +51,14 @@ export const stagingConfig: Partial<AppConfig> = {
     endpoint: 'http://otel-collector:4317',
     serviceName: 'kill-switch-api-staging',
     sampleRate: 1.0,
+  },
+  // KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §c.2: default OFF until the
+  // verifier model is confirmed reachable. Enable via KILL_SWITCH_VERIFY_ENABLED=true.
+  verification: {
+    verifyEnabled: false,
+    verifierModel: 'qwen2.5:0.5b',
+    verifierBaseUrl: 'http://127.0.0.1:11434',
+    verifierTimeoutMs: 500,
+    verifyMode: 'async',
   },
 };

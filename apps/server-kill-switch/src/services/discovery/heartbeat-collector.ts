@@ -11,7 +11,7 @@
 
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/index';
-import { agents } from '../../db/schema';
+import { agents, machines } from '../../db/schema';
 import type { DiscoveryOrchestrator } from './orchestrator';
 import type {
   HardwareFingerprint,
@@ -59,11 +59,37 @@ export class HeartbeatCollector {
   }
 
   /**
-   * Upsert the agent row for a machine. If an agent with the given id exists,
-   * update its name/version/capabilities/lastHeartbeat; otherwise insert it.
+   * Upsert the agent row for a machine, but ONLY if the machine exists in the
+   * `machines` inventory table (i.e. it has been admitted/onboarded).
+   *
+   * `agents.machineId` FKs to `machines.id` (the inventory table), NOT to
+   * `discovered_machine.id`. For discovered-but-not-admitted machines, the
+   * machineId is a `discovered_machine.id` that has no matching `machines`
+   * row, so an agent upsert would throw a foreign-key violation. In that case
+   * we skip the agent upsert (log a debug message) — the heartbeat still
+   * updates `discovered_machines.lastSeen` via the orchestrator.
    */
   private async upsertAgent(hb: AgentHeartbeat): Promise<boolean> {
     const agentId = hb.agentId as string;
+
+    // Only admit agent rows for machines present in the inventory table.
+    const machine = await db
+      .select({ id: machines.id })
+      .from(machines)
+      .where(eq(machines.id, hb.machineId))
+      .get();
+
+    if (!machine) {
+      // Discovered-but-not-admitted machine — skip agent upsert to avoid the
+      // agents.machineId → machines.id FK violation. The heartbeat still
+      // touched discovered_machines.lastSeen via the orchestrator.
+      console.debug(
+        `[heartbeat-collector] Skipping agent upsert for machine '${hb.machineId}' — ` +
+        `machine not admitted to inventory (no machines row). Agent '${agentId}' not registered.`,
+      );
+      return false;
+    }
+
     const now = new Date();
     const capabilities = hb.capabilities ? JSON.stringify(hb.capabilities) : null;
 
