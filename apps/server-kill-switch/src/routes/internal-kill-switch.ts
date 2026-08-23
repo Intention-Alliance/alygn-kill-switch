@@ -54,6 +54,17 @@ function internalKeyMatches(req: Req): boolean {
 }
 
 /**
+ * True if the request carries ANY internal credential (header or bearer).
+ * Used to distinguish 401 (no credential) from 403 (wrong credential).
+ */
+function hasInternalCredential(req: Req): boolean {
+  const hdr = req.headers?.['x-internal-key'] || req.headers?.['X-Internal-Key'];
+  if (typeof hdr === 'string' && hdr.length > 0) return true;
+  const auth = req.headers?.authorization || '';
+  return /^Bearer\s+.+$/i.test(String(auth));
+}
+
+/**
  * POST /v1/internal/kill-switch/transition
  * body: { state: 'STOPPING' | 'STOPPED', reason?, machineId?, initiatedBy? }
  *
@@ -75,7 +86,8 @@ export async function handleInternalKillSwitchRoutes(
   }
 
   if (!internalKeyMatches(req)) {
-    writeJson(res, 401, { error: 'unauthorized' });
+    // 401 when no credential is supplied, 403 when a wrong credential is.
+    writeJson(res, hasInternalCredential(req) ? 403 : 401, { error: 'unauthorized' });
     return true;
   }
 
