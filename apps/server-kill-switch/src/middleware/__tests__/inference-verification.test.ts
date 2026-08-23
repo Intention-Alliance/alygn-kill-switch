@@ -30,6 +30,7 @@ function createMockService(overrides: { mode?: 'async' | 'sync'; verdict?: 'SAFE
     reason: verdict === 'UNSAFE' ? 'harmful content' : 'test-safe',
     degraded: false,
     latencyMs: 10,
+    model: 'test-model',
   };
   const base = {
     mode,
@@ -72,7 +73,7 @@ describe('checkInferenceVerification', () => {
 
   it('returns { verified: false } when body has no prompt/output', () => {
     const service = createMockService();
-    const result = checkInferenceVerification('POST', '/v1/inference/generate', { foo: 'bar' }, service, 'req-4');
+    const result = checkInferenceVerification('POST', '/v1/inference/generate', { foo: 'bar' } as any, service, 'req-4');
     expect(result.verified).toBe(false);
   });
 
