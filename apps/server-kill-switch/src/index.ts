@@ -299,9 +299,12 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // unreachable, log a warning and continue with a degraded (no-op) verifier —
   // the spec says fail-fast, but we allow startup with a degraded warning.
   if (verificationEnabled) {
-    const problems = validateVerifierConfig(verificationConfig);
-    if (problems.length > 0) {
-      console.warn('[verification] Config problems (verification will be degraded):', problems);
+    try {
+      validateVerifierConfig(verificationConfig);
+    } catch (err: any) {
+      console.error('[verification] Config invalid — verification disabled:', err.message);
+      // Disable verification if config is invalid
+      verificationEnabled = false;
     }
     const reachable = await validateVerifierReachability(verificationConfig);
     if (!reachable) {

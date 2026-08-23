@@ -88,6 +88,20 @@ describe('VerificationService — UNSAFE handling', () => {
     expect(ks.transitions[0].metadata.ip).toBe('internal');
   });
 
+  it('UNSAFE threads the flagged machineId into transition metadata (P2-A)', async () => {
+    const ks = makeKillSwitch('RUNNING');
+    const service = new VerificationService({
+      verifier: makeVerifier('UNSAFE'),
+      mode: 'sync',
+      killSwitch: ks as any,
+      persistEvents: false,
+    });
+    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', machineId: 'machine-xyz' });
+
+    expect(ks.transitions.length).toBe(1);
+    expect(ks.transitions[0].metadata.machineId).toBe('machine-xyz');
+  });
+
   it('UNSAFE does not double-transition when already STOPPED', async () => {
     const ks = makeKillSwitch('STOPPED');
     const service = new VerificationService({

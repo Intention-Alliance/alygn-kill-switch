@@ -34,12 +34,16 @@ export interface AuditEntry {
   initiatedBy: string;
   reason: string;
   ip: string;
+  /** machineId of the machine whose inference/telemetry triggered an automated kill (spec §d.1). */
+  machineId?: string;
 }
 
 export interface TransitionMetadata {
   userId?: string;
   reason?: string;
   ip?: string;
+  /** machineId of the machine whose inference/telemetry triggered an automated kill (spec §d.1). */
+  machineId?: string;
 }
 
 export class KillSwitchService {
@@ -113,6 +117,7 @@ export class KillSwitchService {
         traceId: span.spanContext().traceId,
         initiatedBy: metadata.userId || 'system',
         reason: metadata.reason || 'manual',
+        machineId: metadata.machineId,
       };
 
       await this.redis.publish(PUBSUB_CHANNEL, JSON.stringify(message));
@@ -126,6 +131,7 @@ export class KillSwitchService {
         initiatedBy: message.initiatedBy,
         reason: message.reason,
         ip: metadata.ip || 'unknown',
+        machineId: metadata.machineId,
       };
 
       this.auditLog.push(auditEntry);
