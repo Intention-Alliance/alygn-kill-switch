@@ -24,6 +24,46 @@ import { secureCompare } from '../utils/secure-compare';
 
 const ALLOWED_AUTOMATED_STATES: KillSwitchState[] = ['STOPPING', 'STOPPED'];
 
+// ─── In-memory sliding-window rate limiter (P2-C) ────────────────
+// The internal transition endpoint is key-gated but had no rate limiter,
+// unlike the /v1/internal/api-keys/* routes. A leaked/compromised
+// KILL_SWITCH_INTERNAL_KEY could hammer the endpoint. This is a simple
+// in-memory sliding-window limiter (no Redis dependency) — max 10
+// transitions per 60s per IP. Exceeding it returns 429.
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+const _rateBuckets = new Map<string, number[]>();
+
+/**
+ * Sliding-window rate check. Returns true if the request is allowed,
+ * false if it exceeds the limit. Prunes stale timestamps on each call.
+ */
+function checkTransitionRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - RATE_LIMIT_WINDOW_MS;
+  const bucket = _rateBuckets.get(ip) ?? [];
+
+  // Drop timestamps outside the window.
+  const fresh = bucket.filter((t) => t > cutoff);
+
+  if (fresh.length >= RATE_LIMIT_MAX) {
+    _rateBuckets.set(ip, fresh);
+    return false;
+  }
+
+  fresh.push(now);
+  _rateBuckets.set(ip, fresh);
+  return true;
+}
+
+/**
+ * Reset the rate limiter state. Exposed for tests.
+ */
+export function resetTransitionRateLimiter(): void {
+  _rateBuckets.clear();
+}
+
 interface Req {
   method: string;
   url: string;
@@ -91,6 +131,15 @@ export async function handleInternalKillSwitchRoutes(
     return true;
   }
 
+  // P2-C: rate limit — max 10 transitions per 60s per IP.
+  if (!checkTransitionRateLimit(req.ip || 'unknown')) {
+    writeJson(res, 429, {
+      error: 'rate limit exceeded',
+      retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000),
+    });
+    return true;
+  }
+
   let body: Record<string, unknown> = {};
   try {
     body = req.body ? JSON.parse(req.body) : {};
@@ -118,6 +167,7 @@ export async function handleInternalKillSwitchRoutes(
       reason,
       userId: initiatedBy,
       ip: 'internal',
+      machineId,
     });
 
     writeJson(res, 200, {

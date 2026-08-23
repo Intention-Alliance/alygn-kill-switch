@@ -98,7 +98,7 @@ export class VerificationService {
     let triggeredKill = false;
 
     if (result.verdict === 'UNSAFE' && this.autoKillOnUnsafe) {
-      triggeredKill = await this.triggerStop();
+      triggeredKill = await this.triggerStop(ctx.machineId);
     }
 
     // REVIEW or degraded → publish event, no kill.
@@ -149,8 +149,12 @@ export class VerificationService {
    * STOPPED→STOPPED double-transition (invalid per VALID_TRANSITIONS) to
    * avoid audit log spam: if already STOPPED, log the event but skip the
    * transition.
+   *
+   * @param machineId the machine whose inference was flagged UNSAFE — threaded
+   *   into the transition metadata so the audit log records which machine
+   *   triggered the automated kill (spec §d.1).
    */
-  private async triggerStop(): Promise<boolean> {
+  private async triggerStop(machineId?: string): Promise<boolean> {
     if (!this.killSwitch) {
       console.warn('[verification] UNSAFE verdict but no killSwitch injected — cannot auto-kill');
       return false;
@@ -168,6 +172,7 @@ export class VerificationService {
         reason: 'inference-unsafe',
         userId: 'system:verifier',
         ip: 'internal',
+        machineId,
       });
       return true;
     } catch (err: unknown) {
