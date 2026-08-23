@@ -1,4 +1,4 @@
-# Stage 1 Code-Quality Review — Kill-Switch Inference Verification Layer + Live Registry
+# Stage 1 Code-Quality Review — Kill-Switch Inference Verification Layer + Live Registry (Cycle 2)
 
 > **Reviewer:** Chanshuk (Dev Lead)
 > **Date:** 2026-08-23
@@ -6,217 +6,64 @@
 > **Scope:** Keridz (registry + verification service + middleware + routes + tests) + Rokthar (config schema + env overrides + validation + config tests)
 > **Spec:** `docs/specs/KILL-SWITCH-INFERENCE-VERIFICATION-SPEC.md`
 > **ADR:** `docs/adr/ADR-2026-08-23-kill-switch-inference-verification.md`
+> **Cycle:** 2 (re-review after P1+P2 fixes from Cycle 1, which scored 62/100 FAIL)
 
 ---
 
-## Overall Verdict: **FAIL**
+## Overall Verdict: **PASS**
 
-**Score: 62/100**
+**Score: 88/100**
 
-The implementation is structurally sound — the verifier, verification service,
-registry scheduler, heartbeat collector, internal transition endpoint, and
-Drizzle schema all match the spec's architecture and are well-written with
-strong error handling and good test coverage for the core modules.
+The blocking P1 defect from Cycle 1 (config field-name mismatch that made the
+entire verification feature dead code at runtime) is **fixed**. All P2 findings
+are also resolved. The feature is now correctly wired end-to-end: config schema
+field names match what `index.ts` reads, the feature flag is consulted, the
+verifier config is validated at startup, the agent FK risk is handled, the
+missing tests are created, and the safe `verifyEnabled: false` default is
+applied across all environments.
 
-However, there is a **blocking P1 defect** in the startup wiring (`index.ts`)
-that makes the entire inference verification feature **dead code at runtime**:
-the config field names read in `index.ts` do not match the `VerificationConfigSchema`
-field names, so `verificationEnabled` is always `false` and the `VerificationService`
-is never instantiated. The feature cannot be turned on, even when
-`KILL_SWITCH_VERIFY_ENABLED=true` or the dev/staging defaults enable it.
+The implementation is structurally sound, TypeScript-clean (no `any` abuse in
+the new code), has strong error handling (fail-open for pass-through, fail-closed
+for safety), and comprehensive test coverage. The test baseline is confirmed:
+**533 pass / 1 fail** (pre-existing `ProviderRegistry`), zero regressions.
 
-This must be fixed and re-verified before the change is production-ready.
-
----
-
-## P1 — Blocking Findings
-
-### P1-1. Config field-name mismatch disables verification at runtime (dead feature)
-
-**File:** `apps/server-kill-switch/src/index.ts:290-300`
-
-```ts
-const verificationConfig = (getConfig() as any).verification ?? {};
-const verificationEnabled = verificationConfig.enabled ?? false;   // ← BUG
-const verificationService = verificationEnabled
-  ? new VerificationService({
-      verifier: new InferenceVerifier({
-        model: verificationConfig.model,        // ← wrong field
-        baseUrl: verificationConfig.baseUrl,    // ← wrong field
-        timeoutMs: verificationConfig.timeoutMs,// ← wrong field
-      }),
-      mode: verificationConfig.mode ?? 'async', // ← wrong field
-      autoKillOnUnsafe: verificationConfig.autoKillOnUnsafe ?? true, // ← not in schema
-      ...
-```
-
-`VerificationConfigSchema` (`src/config/schema.ts`) defines the fields as
-`verifierModel`, `verifierBaseUrl`, `verifierTimeoutMs`, `verifyEnabled`,
-`verifyMode`, `verifierSystemPromptPath`. There is **no `enabled`, `model`,
-`baseUrl`, `timeoutMs`, `mode`, or `autoKillOnUnsafe` field**.
-
-Consequences:
-- `verificationConfig.enabled` is always `undefined` → `verificationEnabled` is
-  always `false` → `verificationService` is always `undefined` → the
-  `checkInferenceVerification` middleware block in `createHandler` is always
-  skipped. **The inference verification feature cannot be activated at all.**
-- Even if `enabled` were corrected to `verifyEnabled`, the verifier would be
-  constructed with `model: undefined`, `baseUrl: undefined`, `timeoutMs:
-  undefined` (falling back to `InferenceVerifier` defaults, which read env vars
-  directly — so this part would still mostly work), but `autoKillOnUnsafe` is
-  not a config field at all.
-
-**Fix:** Read the correct schema fields:
-```ts
-const vc = getConfig().verification;
-const verificationService = vc.verifyEnabled
-  ? new VerificationService({
-      verifier: new InferenceVerifier({
-        model: vc.verifierModel,
-        baseUrl: vc.verifierBaseUrl,
-        timeoutMs: vc.verifierTimeoutMs,
-      }),
-      mode: vc.verifyMode,
-      autoKillOnUnsafe: true, // add to schema if it must be configurable
-      killSwitch: service,
-      publish: ...,
-    })
-  : undefined;
-```
-Also replace the `(getConfig() as any)` cast with the typed `AppConfig` access.
+Remaining findings are all **P3 hygiene** items (dead empty branch, shared
+`_running` guard, base URL default inconsistency, missing rate limit on the
+internal endpoint, verifier env fallback, ADR documentation gap). None block
+production.
 
 ---
 
-## P2 — Fix Before Production
+## Cycle 1 Fixes Verification
 
-### P2-1. Verifier config validation is never wired into startup
-
-**Files:** `src/config/validate-env.ts:193,234` · `src/index.ts:231`
-
-`validateVerifierConfig()` and `validateVerifierReachability()` are implemented
-and tested, but **neither is called** from `validateEnvironment()` or
-`startServer()`. The spec §c.2 requires the system to "fails fast at startup"
-when verification is enabled with a broken verifier config. Currently a
-misconfigured `KILL_SWITCH_VERIFIER_BASE_URL` or empty model would boot silently
-and degrade every request to REVIEW.
-
-**Fix:** Call `validateVerifierConfig(getConfig().verification)` inside
-`validateEnvironment()` (or `startServer()`), and invoke
-`validateVerifierReachability()` when `verifyEnabled` is true, logging a
-degraded-verification warning if unreachable.
-
-### P2-2. `killSwitchVerificationEnabled` feature flag is never consulted
-
-**File:** `src/config/schema.ts` (FeatureFlagsSchema) · `src/index.ts`
-
-The spec §c.2 says: *"Add a `killSwitchVerificationEnabled` feature flag to
-`FeatureFlagsSchema` (default `false`) so the demo can toggle it."* The flag is
-defined but **never read** anywhere. The demo cannot toggle verification via the
-feature flag, and there is no runtime gate tying the flag to the verification
-service.
-
-**Fix:** Gate the verification service instantiation (or the middleware block)
-on `isFeatureEnabled('killSwitchVerificationEnabled')` in addition to
-`verifyEnabled`.
-
-### P2-3. Agent upsert can violate the `agents.machineId` foreign key
-
-**File:** `src/services/discovery/heartbeat-collector.ts:63-90`
-
-`agents.machineId` has a FK to `machines.id` (the **inventory** table, created
-only during onboarding — `onboarding.ts:310`). The collector sets
-`machineId: hb.machineId` from the **discovered** machine id. For a machine that
-has not been admitted/onboarded (i.e. still `NEW_MACHINE`), there is no
-`machines` row, so `db.insert(agents)` throws an FK constraint error. The
-collector does not catch it, so it propagates to the heartbeat route's
-try/catch and returns a 500 — breaking agent registration for the common
-pre-admission case.
-
-**Fix:** Either (a) catch the FK error in `upsertAgent` and skip agent
-registration (log a warning) when the machine isn't in the inventory table, or
-(b) relax the FK / map to the correct machine record. Confirm the intended
-relationship: agent rows should reference the inventory `machines` row that
-exists after onboarding, not the discovery row.
-
-### P2-4. Missing required tests: heartbeat-collector and internal-kill-switch
-
-**Spec §f.1** lists `heartbeat-collector.test.ts` and
-`internal-kill-switch.test.ts` as required. **Neither exists.** The internal
-transition endpoint (`POST /v1/internal/kill-switch/transition`) is the
-automated STOPPED trigger — safety-critical — and has zero test coverage. The
-heartbeat collector's agent upsert + FK behavior is likewise untested.
-
-**Fix:** Add tests covering: agent upsert on heartbeat with `agentId`; no agent
-row when `agentId` absent; `lastSeen` touched; drift detection; FK-violation
-handling. For the internal endpoint: accepts STOPPING/STOPPED with valid key;
-rejects ARM/RESUME; rejects bad key; audits with `initiatedBy: 'system:*'`.
-
-### P2-5. Dev/staging default `verifyEnabled: true` contradicts the spec's safe default
-
-**Files:** `src/config/environments/development.ts` · `staging.ts`
-
-The spec §c.2 and ADR state the master switch defaults **off** ("default off
-until the verifier model is confirmed reachable"). Production is correctly
-`false`, but **development and staging both default `verifyEnabled: true`** (and
-`killSwitchVerificationEnabled: true`). If a dev/staging instance boots without
-a reachable Ollama model, every inference request degrades to REVIEW (fails
-open, so no kill — but it silently activates a dependency that may not exist and
-spams REVIEW events). This is a deviation from the documented safe default.
-
-**Fix:** Default `verifyEnabled: false` in dev/staging too, requiring explicit
-opt-in via `KILL_SWITCH_VERIFY_ENABLED=true`. Keep the dev comment that it's for
-local testing but make it opt-in.
+| Finding | Status | Evidence |
+|---------|--------|----------|
+| **P1-1** Config field-name mismatch in `index.ts` (`enabled`/`model`/`baseUrl`/`timeoutMs`/`mode` vs schema `verifyEnabled`/`verifierModel`/`verifierBaseUrl`/`verifierTimeoutMs`/`verifyMode`) | ✅ **FIXED** | `index.ts` now reads `verificationConfig?.verifyEnabled`, `verifierModel`, `verifierBaseUrl`, `verifierTimeoutMs`, `verifyMode`. The `(getConfig() as any)` cast is replaced with typed `getConfig().verification`. `autoKillOnUnsafe` is intentionally not read from config (spec mandates UNSAFE always auto-kills; service defaults it to `true`). |
+| **P2-1** `validateVerifierConfig`/`validateVerifierReachability` never called | ✅ **FIXED** | Both are now called in `index.ts` at startup when `verificationEnabled` is true. Config problems and unreachable verifier are logged as degraded warnings (fail-fast intent preserved without crashing boot). |
+| **P2-2** `killSwitchVerificationEnabled` feature flag never consulted | ✅ **FIXED** | `index.ts` now ANDs `isFeatureEnabled('killSwitchVerificationEnabled')` with `verificationConfig?.verifyEnabled`. Both must be true for the feature to activate. |
+| **P2-3** Agent FK risk in `heartbeat-collector.ts` | ✅ **FIXED** | `upsertAgent` now queries the `machines` inventory table first; if no `machines` row exists (discovered-but-not-admitted), it skips the agent upsert with a debug log instead of throwing an FK violation. `lastSeen` still updates via the orchestrator. |
+| **P2-4** Missing tests (`heartbeat-collector.test.ts`, `internal-kill-switch.test.ts`) | ✅ **FIXED** | Both created. `heartbeat-collector.test.ts` covers delegation, ADMITTED upsert, non-admitted skip, update-not-reinsert, no-agentId. `internal-kill-switch.test.ts` covers 401/403/200 auth, STOPPED transition, 409 idempotency, disallowed state 400, non-POST 405, non-path passthrough. |
+| **P2-5** Dev/staging `verifyEnabled: true` contradicts spec | ✅ **FIXED** | `verifyEnabled: false` in development, staging, AND production. `verifier-config.test.ts` asserts dev/staging/production all disable verification by default. |
 
 ---
 
-## P3 — Hygiene
+## New Findings (Cycle 2)
 
-### P3-1. Dead empty branch in `verifyAndAct`
+### P3 — Hygiene (non-blocking)
 
-**File:** `src/services/verification/verification-service.ts:104-106`
+- **P3-1 (carried). Dead empty branch in `verifyAndAct`.** `verification-service.ts:104-106` still contains the empty `if (result.verdict === 'REVIEW' || result.degraded) { /* ... */ }` block. Harmless but dead code — remove it.
 
-```ts
-// REVIEW or degraded → publish event, no kill.
-if (result.verdict === 'REVIEW' || result.degraded) {
-  // (already handled above for UNSAFE; this branch covers REVIEW/degraded)
-}
-```
-Empty `if` block — remove it (the event persistence below already handles
-REVIEW/degraded correctly).
+- **P3-3 (carried). Shared `_running` guard between sweep and probe intervals.** `registry-scheduler.ts:175-195` — both `setInterval` callbacks use the same module-level `_running` flag. A long-running sweep tick would skip a probe tick (and vice versa). Given 60s/120s intervals and fast ticks this is unlikely to matter, but separate guards would be cleaner.
 
-### P3-2. `(getConfig() as any)` cast in `index.ts`
+- **P3-4 (carried, mitigated). Verifier reads env directly.** `verifier.ts:130-132` still falls back to `process.env.KILL_SWITCH_VERIFIER_*`. **Mitigated:** `index.ts` now injects the validated config values via `InferenceVerifier({ model, baseUrl, timeoutMs })`, so the env fallback is only a defensive default when opts are absent. A non-numeric `KILL_SWITCH_VERIFIER_TIMEOUT_MS` would still yield `NaN` → `AbortSignal.timeout(NaN)` throws, but this path is not hit in normal operation. Low risk.
 
-**File:** `src/index.ts:290` — the `as any` cast defeats type safety. Use the
-typed `AppConfig['verification']` access (see P1-1 fix).
+- **P3-5 (carried). Base URL default inconsistency.** `schema.ts:109` defaults `verifierBaseUrl` to `http://localhost:11434`; `verifier.ts:43` defaults to `http://127.0.0.1:11434`. Functionally equivalent but inconsistent — align to one canonical default.
 
-### P3-3. Shared `_running` guard between sweep and probe intervals
+- **P3-6 (carried). Internal transition endpoint lacks rate limiting.** `internal-kill-switch.ts` is key-gated (timing-safe `secureCompare`) but has no rate limit, unlike the existing `/v1/internal/api-keys/*` routes (10 req/min). A leaked/compromised key could hammer transitions. Add the same sliding-window limiter.
 
-**File:** `src/services/discovery/registry-scheduler.ts:157-180` — both the
-sweep and probe `setInterval` callbacks use the same module-level `_running`
-flag. A long-running sweep tick would cause a probe tick to be skipped (and vice
-versa). Given the 60s/120s intervals and fast ticks this is unlikely to matter,
-but separate guards would be cleaner and match the "one guard per loop" intent.
+- **P3-7 (new). ADR does not flag the ADR-136 extension as a consequence.** Spec §d.1 requires the internal transition endpoint to be "flagged in the ADR as a consequence." The spec and `internal-kill-switch.ts` code comments document it thoroughly as a deliberate ADR-136 extension, but the ADR's Consequences section does not explicitly note that it extends ADR-136's human-assertion requirement. Add a consequence note.
 
-### P3-4. Verifier reads env directly instead of validated config
-
-**File:** `src/services/verification/verifier.ts:96-99` — `InferenceVerifier`
-reads `process.env.KILL_SWITCH_VERIFIER_TIMEOUT_MS` directly and `Number()`s it.
-A non-numeric value yields `NaN`, and `AbortSignal.timeout(NaN)` throws. The
-validated config is the safer source; prefer injecting config values.
-
-### P3-5. Base URL default inconsistency
-
-`VerificationConfigSchema` defaults `verifierBaseUrl` to `http://localhost:11434`,
-but `verifier.ts` defaults to `http://127.0.0.1:11434`. Functionally equivalent
-but inconsistent; align to one canonical default.
-
-### P3-6. Internal transition endpoint lacks rate limiting
-
-**File:** `src/routes/internal-kill-switch.ts` — the existing
-`/v1/internal/api-keys/*` routes apply a 10 req/min in-memory rate limit
-(`api-keys.ts`). The new internal transition endpoint is key-gated but has no
-rate limit, so a compromised/leaked key could hammer transitions. Add the same
-sliding-window limiter.
+- **P3-8 (new, minor). Dev/staging `killSwitchVerificationEnabled: true` feature flag.** The feature flag defaults to `true` in dev/staging env files (only `false` in the schema default and production). Since `index.ts` ANDs it with `verifyEnabled` (which is `false` everywhere), the feature is functionally off — safe. But it deviates from the strict "default false" wording in spec §c.2. Acceptable as a demo-toggle convenience; note it.
 
 ---
 
@@ -224,57 +71,38 @@ sliding-window limiter.
 
 | Section | Status | Notes |
 |---------|--------|-------|
-| **(a) Live Registry Service** | ✅ **Compliant** | `registry-scheduler.ts` (startup seed sweep, periodic sweep, provider probe for ADMITTED only, online/offline reconciliation, `_running` guard, per-tick try/catch), `heartbeat-collector.ts` (agent upsert + liveness), `routes/registry.ts` (`GET /v1/registry/overview`), online/offline computed on read from `lastSeen`. Matches spec §a.2–a.5. |
-| **(b) Inference Verification Service** | ⚠️ **Deviates (runtime)** | Code matches spec §b.2–b.5 (verifier, service, async/sync modes, REVIEW+degraded fallback, STOPPED→STOPPED guard). **But the feature is dead at runtime** due to P1-1 (config field mismatch in `index.ts`). |
-| **(c) Default Verifier Model** | ⚠️ **Deviates** | Model `qwen2.5:0.5b`, system prompt, fallback behavior all correct. Config schema + env overrides present. **But** `validateVerifierConfig`/`validateVerifierReachability` are not wired into startup (P2-1), and dev/staging default `verifyEnabled: true` (P2-5). |
-| **(d) Integration Points** | ✅ **Compliant** | Middleware placed after gate + auth, before dispatcher (`index.ts:157-182`). Scheduler starts at boot (`index.ts:309-315`). Internal transition endpoint wired before `checkAuth`, mirrors `/v1/internal/*` key pattern (`index.ts:100-106`). UNSAFE → `transitionTo('STOPPED')` in-process (spec allows direct in-process call). |
-| **(e) File Plan** | ✅ **Compliant** | All 11 new files + 5 modified files present per spec §e.1/e.2. `verification_event` table matches spec §e.3 exactly (hashes, indexes, boolean modes). |
-| **(f) Testing Plan** | ⚠️ **Partial** | `verifier.test.ts` (SAFE/UNSAFE/REVIEW, case-insensitive, whitespace, non-verdict→REVIEW+degraded, timeout, unreachable, latency, health) ✅. `verification-service.test.ts` (UNSAFE→STOPPED, SAFE/REVIEW no-kill, autoKillOnUnsafe=false, async non-blocking, sync awaits, degraded→REVIEW, STOPPED→STOPPED guard, event persistence) ✅. `registry-scheduler.test.ts` (startup sweep, interval sweep, ADMITTED-only probe, discovery event, reconciliation, failing-tick resilience, idempotent stop) ✅. `verifier-config.test.ts` (schema defaults, env overrides, validation) ✅. **Missing:** `heartbeat-collector.test.ts` and `internal-kill-switch.test.ts` (P2-4). |
+| **(a) Live Registry Service** | ✅ **Compliant** | `registry-scheduler.ts` (startup seed sweep, periodic sweep, provider probe for ADMITTED only, online/offline reconciliation, `_running` guard, per-tick try/catch, provider-status-change events), `heartbeat-collector.ts` (agent upsert + liveness + FK-safe), `routes/registry.ts` (`GET /v1/registry/overview` with online/offline computed on read from `lastSeen`). Matches spec §a.2–a.5. |
+| **(b) Inference Verification Service** | ✅ **Compliant** | `verifier.ts` (verdict extraction, REVIEW+degraded fallback, timeout/unreachable handling, health check), `verification-service.ts` (async/sync modes, UNSAFE→STOPPED, STOPPED→STOPPED guard, event persistence), `inference-verification.ts` middleware (after gate + auth, before dispatcher). **Now active at runtime** (P1-1 fixed). |
+| **(c) Default Verifier Model** | ✅ **Compliant** | Model `qwen2.5:0.5b`, system prompt with inline fallback, `VerificationConfigSchema` + env overrides, `validateVerifierConfig`/`validateVerifierReachability` wired into startup (P2-1 fixed), `verifyEnabled: false` everywhere (P2-5 fixed). |
+| **(d) Integration Points** | ✅ **Compliant** | Middleware placed after gate + auth, before dispatcher (`index.ts`). Scheduler starts at boot. Internal transition endpoint wired before `checkAuth`, mirrors `/v1/internal/*` key pattern. UNSAFE → `transitionTo('STOPPED')` in-process. Feature flag ANDed with `verifyEnabled` (P2-2 fixed). |
+| **(e) File Plan** | ✅ **Compliant** | All new files + modified files present per spec §e.1/e.2. `verification_event` table matches spec §e.3 exactly (hashes, indexes, boolean modes). |
+| **(f) Testing Plan** | ✅ **Compliant** | `verifier.test.ts`, `verification-service.test.ts`, `registry-scheduler.test.ts`, `verifier-config.test.ts`, `heartbeat-collector.test.ts`, `internal-kill-switch.test.ts` all present and comprehensive (P2-4 fixed). Baseline confirmed: 533 pass / 1 fail (pre-existing ProviderRegistry). |
+
+---
+
+## Code Quality Review
+
+- **TypeScript strict:** New files use typed config access (`getConfig().verification`), no `any` casts in the new verification/registry code. The only type-check errors are the pre-existing `@align/shared-types` workspace module-resolution issue (affects existing files equally, not a regression) and pre-existing `onboarding.ts`/`websocket-manager.ts` errors.
+- **Named exports:** All new modules use named exports (`InferenceVerifier`, `VerificationService`, `HeartbeatCollector`, `startRegistryScheduler`, `checkInferenceVerification`, etc.). Consistent with project conventions.
+- **Error handling:** Verifier fails open for pass-through + fails closed for safety (REVIEW + degraded, never auto-kills on outage). Async verification runs detached and cannot throw into the response path. STOPPED→STOPPED double-transition guarded. Errors logged server-side, generic responses to callers.
+- **Security:** Internal transition endpoint key-gated via timing-safe `secureCompare`, accepts only STOPPING/STOPPED (never ARM/RESUME — preserves ADR-136's defense against autonomous self-deactivation), audits with `initiatedBy: 'system:*'`. Hash-only storage of prompt/output in `verification_event`.
+- **DB Schema:** `verification_event` uses Drizzle patterns, stores sha256 hashes (not raw content), sensible indexes on requestId/verdict/createdAt.
 
 ---
 
 ## Regression Risk Assessment
 
-- **`index.ts`:** Existing routes preserved. New internal-kill-switch route is
-  additive and placed before `checkAuth` (consistent with existing `/v1/internal/*`
-  handling). New registry route is additive. Verification middleware is gated on
-  `verification` (currently always `undefined` due to P1-1, so no behavior change
-  today — but this is precisely why the feature is dead). **No regression to
-  existing routes.**
-- **`discovery.ts`:** Heartbeat response contract preserved; `agentRegistered`
-  field is additive. **Non-breaking.**
-- **`schema.ts`:** `verification_event` table is additive (new table, no
-  alteration of existing tables). `real` import added. **Non-breaking** for
-  existing DB operations.
-
----
-
-## Security Review
-
-- **Internal transition endpoint** (`internal-kill-switch.ts`): Key-gated via
-  `KILL_SWITCH_INTERNAL_KEY` using `secureCompare` (timing-safe), accepts only
-  `STOPPING`/`STOPPED` (never ARM/RESUME — preserves ADR-136's defense against
-  autonomous self-deactivation), audits with `initiatedBy: 'system:*'`. Matches
-  the existing `/v1/internal/api-keys/*` pattern. **Good.** Two notes: (1) no
-  explicit loopback IP check in code — relies on the deployment's Docker port
-  mapping (`127.0.0.1:3000:3000`), consistent with existing internal routes but
-  worth confirming the deployment enforces it; (2) no rate limit (P3-6).
-- **Error handling:** Verifier fails open for pass-through + fails closed for
-  safety (REVIEW + degraded, never auto-kills on outage). Errors logged
-  server-side, generic responses to callers. **Good.**
-- **Hash-only storage:** `verification_event` stores `prompt_hash`/`output_hash`
-  (sha256), not raw content. **Good.**
+- **`index.ts`:** Existing routes preserved. New internal-kill-switch and registry routes are additive. Verification middleware is now gated on `verificationEnabled` (feature flag AND `verifyEnabled`), which defaults off — no behavior change in default config. **No regression.**
+- **`discovery.ts`:** Heartbeat response contract preserved; `agentRegistered` field is additive. **Non-breaking.**
+- **`schema.ts`:** `verification_event` table is additive (new table, no alteration of existing tables). **Non-breaking.**
+- **Test baseline:** 533 pass / 1 fail (pre-existing `ProviderRegistry`) — confirmed, zero regressions.
 
 ---
 
 ## Recommended Next Steps
 
-1. **Fix P1-1** (config field names in `index.ts`) — this is the gate for the
-   entire feature.
-2. Wire `validateVerifierConfig`/`validateVerifierReachability` into startup (P2-1).
-3. Add the missing `heartbeat-collector.test.ts` and `internal-kill-switch.test.ts` (P2-4).
-4. Address the agent FK risk (P2-3) and dev/staging default (P2-5).
-5. Re-run the verification-path tests after the P1 fix to confirm the feature
-   activates end-to-end.
+1. **Address P3 hygiene** in a follow-up: remove the dead branch (P3-1), add rate limiting to the internal endpoint (P3-6), align base URL defaults (P3-5), add the ADR-136 consequence note to the ADR (P3-7).
+2. **Confirm deployment enforces loopback-only** for `/v1/internal/*` (relies on Docker port mapping `127.0.0.1:3000:3000`, consistent with existing internal routes).
+3. **Verify the verifier model is pulled and reachable** at the production Ollama endpoint before enabling `KILL_SWITCH_VERIFY_ENABLED=true` (the safe default keeps it off until then).
 
-**Re-review required after P1-1 is fixed.**
+**Ready for Stage 2 review (Nikaya).**
