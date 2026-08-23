@@ -82,6 +82,7 @@ guide
 # Kill Switch SQLite data files
 apps/server-kill-switch/data/*.sqlite
 apps/server-kill-switch/data/*.sqlite-*
+data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal
 
