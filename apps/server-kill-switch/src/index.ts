@@ -172,7 +172,7 @@ function createHandler(
           body = null;
         }
       }
-      const v = checkInferenceVerification(method, url, body, verification, requestId);
+      const v = checkInferenceVerification(method, url, body, verification, requestId, (body as any)?.machineId);
       if (v.awaitDecision) {
         const decision = await v.awaitDecision;
         if (decision.reject) {
