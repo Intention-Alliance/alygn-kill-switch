@@ -346,11 +346,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   const port = opts.port || config.server.port;
 
   // Bun.serve with native WebSocket
-  // Bind to config.server.host (default '0.0.0.0'). Docker's port mapping
-  // (127.0.0.1:3000:3000) ensures only the host can reach the container,
-  // so binding to 0.0.0.0 does not expose /v1/internal/* endpoints to the
-  // outside world while making the API reachable from the host via nginx.
-  // Spec §9 requires internal endpoints be localhost-only.
+  // Bind to config.server.host (default '0.0.0.0'). The container runs in
+  // network_mode: host, so there is no port mapping — the server binds directly
+  // to host port 3000. Binding to 0.0.0.0 does not expose /v1/internal/*
+  // endpoints to the outside world while making the API reachable from the
+  // host via nginx. Spec §9 requires internal endpoints be localhost-only.
   const server = Bun.serve<{ userId: string; ip: string }>({
     hostname: config.server.host || '0.0.0.0',
     port,
@@ -457,8 +457,9 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   console.log(`   WebSocket: ws://localhost:${port}/ws`);
 
   // Seed admin user + feature flags AFTER Bun.serve() is listening.
-  // seedAdminUser() calls auth.api.signInEmail() which does an HTTP
-  // roundtrip to BETTER_AUTH_URL — if the server isn't up yet, it hangs forever.
+  // seedAdminUser() now uses a DIRECT DB insert (no HTTP self-roundtrip),
+  // so it cannot deadlock the event loop during startup. It runs after
+  // Bun.serve() returns so the server is fully ready to serve requests.
   await seedAdminUser();
 
   try {
