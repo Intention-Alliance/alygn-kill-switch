@@ -156,6 +156,52 @@ export class RedisPool extends EventEmitter {
     });
   }
 
+  /**
+   * Resolve the nodeAddressMap for createCluster.
+   *
+   * Reads REDIS_NODE_MAP as a JSON object mapping announced addresses to
+   * reachable addresses. Falls back to the host-mode default mapping that
+   * translates the internal Docker hostnames to the host-published ports.
+   *
+   * @redis/client v4.7.1 requires NodeAddressMap values to be
+   * `{ host: string; port: number }` objects (not strings). String values
+   * in "host:port" form are normalized to objects here so both env-provided
+   * and default mappings conform to the expected shape.
+   *
+   * @returns {Object<string, {host: string, port: number}>} A node address
+   *   map whose values are `{ host, port }` objects. Never returns null.
+   */
+  _resolveNodeAddressMap() {
+    const envMap = process.env.REDIS_NODE_MAP;
+    if (envMap) {
+      try {
+        const parsed = JSON.parse(envMap);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          // Normalize: if values are strings "host:port", convert to objects
+          const normalized = {};
+          for (const [key, val] of Object.entries(parsed)) {
+            if (typeof val === 'string' && val.includes(':')) {
+              const idx = val.lastIndexOf(':');
+              const host = val.slice(0, idx);
+              const portStr = val.slice(idx + 1);
+              normalized[key] = { host, port: parseInt(portStr, 10) };
+            } else if (typeof val === 'object' && val && val.host && val.port) {
+              normalized[key] = { host: val.host, port: parseInt(val.port, 10) };
+            }
+          }
+          return normalized;
+        }
+      } catch {
+        // fall through to default mapping on invalid JSON
+      }
+    }
+    return {
+      'redis-node-1:6379': { host: '127.0.0.1', port: 6380 },
+      'redis-node-2:6379': { host: '127.0.0.1', port: 6381 },
+      'redis-node-3:6379': { host: '127.0.0.1', port: 6382 },
+    };
+  }
+
   /** Initialize cluster connection */
   async connect() {
     // Parse URLs into rootNodes format for createCluster
@@ -170,11 +216,21 @@ export class RedisPool extends EventEmitter {
       };
     });
 
+    // nodeAddressMap translates the addresses Redis announces via CLUSTER SLOTS
+    // (internal Docker hostnames like redis-node-1:6379) to the addresses the
+    // client can actually reach. In network_mode: host the kill-switch connects
+    // via host-published ports (127.0.0.1:6380-6382), so the announced internal
+    // hostnames would not resolve from the host network namespace. The map is
+    // configurable via REDIS_NODE_MAP (JSON object) so it works in both host
+    // mode (default mapping below) and bridge mode (empty map / internal names).
+    const nodeAddressMap = this._resolveNodeAddressMap();
+
     this._cluster = createCluster({
       rootNodes,
       defaults: {
         ...this.clientOpts,
       },
+      ...(nodeAddressMap ? { nodeAddressMap } : {}),
     });
 
     this._cluster.on('error', (err) => this.emit('error', err));

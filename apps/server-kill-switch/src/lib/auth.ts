@@ -18,6 +18,7 @@
 
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { eq } from 'drizzle-orm';
 import { db } from '../db/index';
 import * as schema from '../db/schema';
 
@@ -84,7 +85,7 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: (process.env.TRUSTED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://alygn-kill-switch:3000,http://alygn-web-regulator:3000,http://localhost:3001,https://andlersrv.tail62d797.ts.net:8443')
+  trustedOrigins: (process.env.TRUSTED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001,https://andlersrv.tail62d797.ts.net:8443')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),
@@ -97,56 +98,88 @@ export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@alygn.com';
 // ─── Auto-Seed Admin User ────────────────────────────────────────────────
 
 /**
- * Seeds the default admin user on startup.
- * Uses Better-Auth's native signUpEmail API which respects the configured
- * Bun.password hashing (Argon2id). Password comes from KILL_SWITCH_AUTH_TOKEN
- * env var (same as before for backward compatibility).
+ * Auto-Seed Admin User (direct DB insert — no HTTP self-roundtrip).
+ *
+ * FIX (kill-switch startup deadlock): the previous implementation called
+ * auth.api.signInEmail()/signUpEmail(), which perform an HTTP roundtrip to
+ * BETTER_AUTH_URL (the server's own port). During startup the event loop is
+ * blocked before Bun.serve() returns, so that self-request deadlocks forever.
+ *
+ * This version writes the admin user + credential account DIRECTLY to SQLite
+ * via Drizzle ORM — no HTTP involved. It mirrors exactly what Better-Auth's
+ * signUpEmail would persist (user row + credential account row with the
+ * Argon2id password hash), so sign-in continues to work unchanged.
+ *
+ * Password comes from KILL_SWITCH_AUTH_TOKEN env var (same as before for
+ * backward compatibility). Idempotent: skips if the user already exists.
  */
 export async function seedAdminUser() {
-  const email = ADMIN_EMAIL;
+  // P2-2: Normalize the admin email to lowercase before insert so lookups and
+  // sign-in are case-insensitive-consistent (Better-Auth lowercases on signup).
+  const email = ADMIN_EMAIL.toLowerCase();
   const password = process.env.KILL_SWITCH_AUTH_TOKEN;
 
   if (!password || password.length < 16) {
     console.warn(
-      `[auth] KILL_SWITCH_AUTH_TOKEN is missing or too short (<16 chars). ` +
+      `[auth] KILL_SWITCH_AUTH_TOKEN is missing or too short (< 16 chars). ` +
       `Admin user will NOT be seeded. Set KILL_SWITCH_AUTH_TOKEN in environment.`
     );
     return;
   }
 
-  // Try sign-in first to check if admin exists
-  try {
-    const signInResult = await auth.api.signInEmail({
-      body: { email, password },
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-    });
+  // Check if the admin user already exists (direct DB query — no HTTP).
+  const existing = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .where(eq(schema.users.email, email))
+    .get();
 
-    if (signInResult?.user) {
-      console.log(`[auth] Admin user "${email}" already exists, skipping seed`);
-      return;
-    }
-  } catch (_signInErr: any) {
-    console.log(`[auth] Admin user "${email}" not found, creating...`);
+  if (existing) {
+    console.log(`[auth] Admin user "${email}" already exists, skipping seed`);
+    return;
   }
 
-  // Create admin user via Better-Auth (uses Bun.password hashing internally)
+  // Create the admin user + credential account directly in SQLite.
+  // Mirrors Better-Auth's signUpEmail persistence: a `user` row plus an
+  // `account` row with providerId='credential' holding the Argon2id hash.
+  const userId = crypto.randomUUID();
+  const now = new Date();
+  const passwordHash = await Bun.password.hash(password);
+
   try {
-    const result = await auth.api.signUpEmail({
-      body: { email, password, name: 'Admin' },
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+    await db.transaction(async (tx) => {
+      await tx.insert(schema.users).values({
+        id: userId,
+        email,
+        // P2-1: emailVerified stays `true` for the seeded admin — the admin is
+        // provisioned directly (no email verification flow), unlike signUpEmail
+        // which would leave it false pending verification.
+        emailVerified: true,
+        name: 'Admin',
+        role: 'admin',
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      await tx.insert(schema.accounts).values({
+        id: crypto.randomUUID(),
+        userId,
+        accountId: userId, // Better-Auth credential accounts key on the user id
+        providerId: 'credential',
+        password: passwordHash,
+        createdAt: now,
+        updatedAt: now,
+      });
     });
 
-    if (result?.user) {
-      console.log(`[auth] Admin user "${email}" seeded successfully`);
-    } else {
-      console.error('[auth] Admin sign-up returned without user:', result);
-    }
-  } catch (createErr: any) {
-    if (createErr?.message?.includes('already exists') || createErr?.status === 400) {
+    console.log(`[auth] Admin user "${email}" seeded successfully (direct DB insert)`);
+  } catch (err: any) {
+    // Unique-constraint race (another process seeded first) is non-fatal.
+    if (err?.message?.includes('UNIQUE') || err?.message?.includes('already exists')) {
       console.log(`[auth] Admin user "${email}" already exists (race condition), skipping`);
       return;
     }
-    console.error(`[auth] Failed to seed admin user: ${createErr?.message || createErr}`);
+    console.error(`[auth] Failed to seed admin user: ${err?.message || err}`);
   }
 }
 

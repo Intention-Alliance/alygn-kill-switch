@@ -48,16 +48,17 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // The backend URL is baked into the build output at build time. In local
     // dev the backend runs on the host (localhost), but in the production
-    // Docker deployment the web-regulator and kill-switch are separate
-    // containers on the same compose network, so the backend is reached by its
-    // service name. Defaulting to "localhost" in a production build silently
-    // breaks every /api/* proxy (the container would call itself), which
-    // manifests as auth failures and 500s. Use the Docker service name as the
-    // production default unless KILL_SWITCH_BACKEND_URL is explicitly set.
+    // Docker deployment the kill-switch runs in network_mode: host (binds
+    // 127.0.0.1:3000 on the host) and is NOT on align-network, so the
+    // web-regulator reaches it via the Docker host gateway. Defaulting to
+    // "localhost" in a production build silently breaks every /api/* proxy
+    // (the container would call itself), which manifests as auth failures and
+    // 500s. Use the host gateway as the production default unless
+    // KILL_SWITCH_BACKEND_URL is explicitly set.
     const backendUrl =
       process.env.KILL_SWITCH_BACKEND_URL ||
       (process.env.NODE_ENV === "production"
-        ? "http://alygn-kill-switch:3000"
+        ? "http://host.docker.internal:3000"
         : "http://localhost:3000");
 
     return [
