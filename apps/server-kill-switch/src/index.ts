@@ -343,14 +343,6 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     },
   });
 
-  await seedAdminUser();
-
-  try {
-    await seedFeatureFlags();
-  } catch (e) {
-    console.error('[seed] Feature flag seeding failed (non-fatal):', e);
-  }
-
   const port = opts.port || config.server.port;
 
   // Bun.serve with native WebSocket
@@ -463,6 +455,18 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
 
   console.log(`\u2699\ufe0f Kill Switch API v2.0.0 listening on port ${port} [${config.env}]`);
   console.log(`   WebSocket: ws://localhost:${port}/ws`);
+
+  // Seed admin user + feature flags AFTER Bun.serve() is listening.
+  // seedAdminUser() calls auth.api.signInEmail() which does an HTTP
+  // roundtrip to BETTER_AUTH_URL — if the server isn't up yet, it hangs forever.
+  await seedAdminUser();
+
+  try {
+    await seedFeatureFlags();
+  } catch (e) {
+    console.error('[seed] Feature flag seeding failed (non-fatal):', e);
+  }
+
   return { server, service, redis, wsManager };
 }
 
