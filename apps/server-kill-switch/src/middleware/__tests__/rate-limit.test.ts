@@ -3,6 +3,7 @@ import {
   checkRateLimit,
   isReadRequest,
   isHeartbeatUrl,
+  isStaticAssetUrl,
   initRateLimiter,
   READ_RATE_LIMIT_MAX,
   WRITE_RATE_LIMIT_MAX,
@@ -55,6 +56,26 @@ describe('isHeartbeatUrl', () => {
   });
 });
 
+describe('isStaticAssetUrl', () => {
+  it('returns true for /_next/static/ chunks', () => {
+    expect(isStaticAssetUrl('/_next/static/chunks/app/layout.js')).toBe(true);
+  });
+
+  it('returns true for /_next/data/ paths', () => {
+    expect(isStaticAssetUrl('/_next/data/build-id/machines.json')).toBe(true);
+  });
+
+  it('returns true for favicon', () => {
+    expect(isStaticAssetUrl('/favicon.ico')).toBe(true);
+    expect(isStaticAssetUrl('/favicon.png')).toBe(true);
+  });
+
+  it('returns false for API routes', () => {
+    expect(isStaticAssetUrl('/v1/machines')).toBe(false);
+    expect(isStaticAssetUrl('/api/scores/machines')).toBe(false);
+  });
+});
+
 // ─── Rate limiting with graceful degradation ──────
 
 describe('checkRateLimit', () => {
@@ -74,19 +95,90 @@ describe('checkRateLimit', () => {
     expect(result).toEqual({ allowed: true });
   });
 
-  it('bypasses rate limiting for read/navigation requests (GET)', async () => {
-    // Navigation between dashboard pages fires many GETs (machines, flags,
-    // settings, health, metrics). These must NOT count toward a per-minute
-    // budget or the UI trips 429 just from browsing.
-    const result = await checkRateLimit('10.0.0.1', 'GET', '/v1/machines');
-    expect(result).toEqual({ allowed: true });
+  it('bypasses rate limiting for static asset paths (navigation/asset traffic)', async () => {
+    const nextStatic = await checkRateLimit('10.0.0.1', 'GET', '/_next/static/chunks/app/layout.js');
+    expect(nextStatic).toEqual({ allowed: true });
+    const nextData = await checkRateLimit('10.0.0.1', 'GET', '/_next/data/build-id/machines.json');
+    expect(nextData).toEqual({ allowed: true });
+    const favicon = await checkRateLimit('10.0.0.1', 'GET', '/favicon.ico');
+    expect(favicon).toEqual({ allowed: true });
   });
 
-  it('bypasses rate limiting for HEAD and OPTIONS (read/navigation)', async () => {
+  it('rate-limits read/navigation requests (GET) at the read budget', async () => {
+    // API GET requests are rate-limited at READ_RATE_LIMIT_MAX, not bypassed.
+    // A count above the read budget must be rejected.
+    const mockPool: RedisPool = {
+      getClient: async () => ({
+        multi: () => ({
+          zAdd() { return this; }, zRemRangeByScore() { return this; },
+          zCard() { return this; }, expire() { return this; },
+          exec: async () => [0, 0, READ_RATE_LIMIT_MAX + 1, 1],
+        }),
+      }),
+      release: () => {},
+      get: async () => null,
+      set: async () => null,
+      del: async () => 0,
+      publish: async () => 0,
+      subscribe: async () => {},
+      healthCheck: async () => ({ redis: 'ok' }),
+      chaosKillSwitchKey: () => 'chaos:kill-switch',
+      connect: async () => {},
+    };
+    initRateLimiter(mockPool);
+    const result = await checkRateLimit('10.0.0.1', 'GET', '/v1/machines');
+    expect(result.allowed).toBe(false);
+  });
+
+  it('allows read requests within the read budget', async () => {
+    // A count at or below the read budget must be allowed.
+    const mockPool: RedisPool = {
+      getClient: async () => ({
+        multi: () => ({
+          zAdd() { return this; }, zRemRangeByScore() { return this; },
+          zCard() { return this; }, expire() { return this; },
+          exec: async () => [0, 0, READ_RATE_LIMIT_MAX, 1],
+        }),
+      }),
+      release: () => {},
+      get: async () => null,
+      set: async () => null,
+      del: async () => 0,
+      publish: async () => 0,
+      subscribe: async () => {},
+      healthCheck: async () => ({ redis: 'ok' }),
+      chaosKillSwitchKey: () => 'chaos:kill-switch',
+      connect: async () => {},
+    };
+    initRateLimiter(mockPool);
+    const result = await checkRateLimit('10.0.0.1', 'GET', '/v1/machines');
+    expect(result.allowed).toBe(true);
+  });
+
+  it('rate-limits HEAD and OPTIONS at the read budget', async () => {
+    const mockPool: RedisPool = {
+      getClient: async () => ({
+        multi: () => ({
+          zAdd() { return this; }, zRemRangeByScore() { return this; },
+          zCard() { return this; }, expire() { return this; },
+          exec: async () => [0, 0, READ_RATE_LIMIT_MAX + 1, 1],
+        }),
+      }),
+      release: () => {},
+      get: async () => null,
+      set: async () => null,
+      del: async () => 0,
+      publish: async () => 0,
+      subscribe: async () => {},
+      healthCheck: async () => ({ redis: 'ok' }),
+      chaosKillSwitchKey: () => 'chaos:kill-switch',
+      connect: async () => {},
+    };
+    initRateLimiter(mockPool);
     const head = await checkRateLimit('10.0.0.1', 'HEAD', '/v1/flags');
-    expect(head).toEqual({ allowed: true });
+    expect(head.allowed).toBe(false);
     const options = await checkRateLimit('10.0.0.1', 'OPTIONS', '/v1/flags');
-    expect(options).toEqual({ allowed: true });
+    expect(options.allowed).toBe(false);
   });
 
   it('still rate-limits mutation endpoints (POST)', async () => {
@@ -121,11 +213,11 @@ describe('checkRateLimit', () => {
 describe('rate limit constants', () => {
   it('RATE_LIMIT_MAX equals READ_RATE_LIMIT_MAX for backward compatibility', () => {
     expect(RATE_LIMIT_MAX).toBe(READ_RATE_LIMIT_MAX);
-    expect(RATE_LIMIT_MAX).toBe(60);
+    expect(RATE_LIMIT_MAX).toBe(200);
   });
 
   it('exports READ_RATE_LIMIT_MAX', () => {
-    expect(READ_RATE_LIMIT_MAX).toBe(60);
+    expect(READ_RATE_LIMIT_MAX).toBe(200);
   });
 
   it('exports WRITE_RATE_LIMIT_MAX', () => {
