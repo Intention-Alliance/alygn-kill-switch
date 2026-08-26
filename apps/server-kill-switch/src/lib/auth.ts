@@ -71,8 +71,8 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: 60 * 60,          // 1 hour
-    updateAge: 5 * 60,           // refresh every 5 minutes
+    expiresIn: 12 * 60 * 60,   // 12 hours (was 1 hour — sessions expired too fast)
+    updateAge: 60,             // refresh sliding expiry every 60s so navigation keeps the session alive
   },
   user: {
     additionalFields: {
