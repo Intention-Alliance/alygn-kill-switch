@@ -20,8 +20,6 @@
 #   TAILSCALE_IP         (defaults to 100.66.199.80)
 # ============================================================
 
-version: '3.8'
-
 services:
   # ==========================================================
   # Dignity Verifier Dashboard (Next.js standalone, super-admin)
