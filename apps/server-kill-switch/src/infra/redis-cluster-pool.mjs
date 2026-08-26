@@ -195,11 +195,21 @@ export class RedisPool extends EventEmitter {
         // fall through to default mapping on invalid JSON
       }
     }
-    return {
-      'redis-node-1:6379': { host: '127.0.0.1', port: 6380 },
-      'redis-node-2:6379': { host: '127.0.0.1', port: 6381 },
-      'redis-node-3:6379': { host: '127.0.0.1', port: 6382 },
-    };
+    // No env var set: return null (no mapping needed in bridge mode where
+    // internal Docker hostnames resolve directly via align-network).
+    return null;
+    // No env var set: return null (no mapping needed in bridge mode where
+    // internal Docker hostnames resolve directly via align-network).
+    return null;
+    // No env var set: return null (no mapping needed in bridge mode where
+    // internal Docker hostnames resolve directly via align-network).
+    return null;
+    // No env var set: return null (no mapping needed in bridge mode where
+    // internal Docker hostnames resolve directly via align-network).
+    return null;
+    // No env var set: return null (no mapping needed in bridge mode where
+    // internal Docker hostnames resolve directly via align-network).
+    return null;
   }
 
   /** Initialize cluster connection */
