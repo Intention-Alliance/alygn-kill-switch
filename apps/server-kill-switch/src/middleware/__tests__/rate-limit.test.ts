@@ -73,6 +73,47 @@ describe('checkRateLimit', () => {
     const result = await checkRateLimit('10.0.0.1', 'GET', '/health');
     expect(result).toEqual({ allowed: true });
   });
+
+  it('bypasses rate limiting for read/navigation requests (GET)', async () => {
+    // Navigation between dashboard pages fires many GETs (machines, flags,
+    // settings, health, metrics). These must NOT count toward a per-minute
+    // budget or the UI trips 429 just from browsing.
+    const result = await checkRateLimit('10.0.0.1', 'GET', '/v1/machines');
+    expect(result).toEqual({ allowed: true });
+  });
+
+  it('bypasses rate limiting for HEAD and OPTIONS (read/navigation)', async () => {
+    const head = await checkRateLimit('10.0.0.1', 'HEAD', '/v1/flags');
+    expect(head).toEqual({ allowed: true });
+    const options = await checkRateLimit('10.0.0.1', 'OPTIONS', '/v1/flags');
+    expect(options).toEqual({ allowed: true });
+  });
+
+  it('still rate-limits mutation endpoints (POST)', async () => {
+    // With Redis initialized and a client that returns a count above the
+    // write limit, a POST should be rejected.
+    const mockPool: RedisPool = {
+      getClient: async () => ({
+        multi: () => ({
+          zAdd() { return this; }, zRemRangeByScore() { return this; },
+          zCard() { return this; }, expire() { return this; },
+          exec: async () => [0, 0, WRITE_RATE_LIMIT_MAX + 1, 1],
+        }),
+      }),
+      release: () => {},
+      get: async () => null,
+      set: async () => null,
+      del: async () => 0,
+      publish: async () => 0,
+      subscribe: async () => {},
+      healthCheck: async () => ({ redis: 'ok' }),
+      chaosKillSwitchKey: () => 'chaos:kill-switch',
+      connect: async () => {},
+    };
+    initRateLimiter(mockPool);
+    const result = await checkRateLimit('10.0.0.1', 'POST', '/v1/flags');
+    expect(result.allowed).toBe(false);
+  });
 });
 
 // ─── Constants ────────────────────────────────────
