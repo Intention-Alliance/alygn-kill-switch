@@ -303,17 +303,27 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
       validateVerifierConfig(verificationConfig);
     } catch (err: any) {
       console.error('[verification] Config invalid — verification disabled:', err.message);
-      // Disable verification if config is invalid
       verificationEnabled = false;
     }
-    const reachable = await validateVerifierReachability(verificationConfig);
-    if (!reachable) {
-      console.warn(
-        `[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
-        `'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
-        `(REVIEW + no auto-kill) until the model is reachable.`,
-      );
-    }
+    // Defer reachability probe to prevent blocking Bun.serve() startup.
+    // The probe runs after the server is listening; if unreachable, verification
+    // degrades gracefully (REVIEW + no auto-kill) per spec §c.3.
+    setTimeout(async () => {
+      try {
+        const reachable = await validateVerifierReachability(verificationConfig);
+        if (!reachable) {
+          console.warn(
+            `[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
+            `'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
+            `(REVIEW + no auto-kill) until the model is reachable.`,
+          );
+        } else {
+          console.log(`[verification] Verifier model reachable — inference verification active`);
+        }
+      } catch (err: any) {
+        console.warn(`[verification] Reachability probe failed (non-fatal):`, err.message);
+      }
+    }, 3000);
   }
 
   const verificationService = verificationEnabled
