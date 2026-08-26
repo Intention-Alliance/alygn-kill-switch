@@ -262,6 +262,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     apiKey: opts.apiKey || process.env.KILL_SWITCH_API_KEY,
   });
 
+  // Recover the kill-switch audit history from the DB so the dashboard's
+  // audit log isn't empty after a process restart / container rebuild
+  // (the in-memory hot cache starts empty).
+  await service.loadAuditFromDb();
+
   const wsManager = new WebSocketManager();
 
   if (typeof redis.subscribe === 'function') {
@@ -278,7 +283,12 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     },
   });
 
-  service.onStateChange((entry: any) => wsManager.broadcastStateChange(entry));
+  service.onStateChange((entry: any) => {
+    wsManager.broadcastStateChange(entry);
+    // Also emit the `audit-entry` event the frontend hook listens for, so
+    // the audit log updates in real time (not just on the 5s poll).
+    wsManager.broadcastAuditEntry(entry);
+  });
 
   // ── Inference Verification Service (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b) ──
   // Instantiate the verifier + verification service. Config values

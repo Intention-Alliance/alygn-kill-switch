@@ -16,7 +16,7 @@ import {
   Loader2,
   Pencil,
   Flag,
-  AlertTriangle,
+  Skull,
   Shield,
 } from "lucide-react";
 import { DPUSecurityBanner } from "@/components/machines/dpu-security-banner";
@@ -483,12 +483,12 @@ export default function MachinesDashboardPage() {
                                       size="sm"
                                       className="h-7 gap-1 text-destructive border-destructive/40 hover:bg-destructive/10"
                                       onClick={() => setActionsFor(machine)}
-                                      aria-label={`Emergency stop ${machine.name}`}
+                                      aria-label={`Kill ${machine.name}`}
                                       title="Open kill-switch Quick Actions for this machine"
                                     >
-                                      <AlertTriangle className="h-3 w-3" />
+                                      <Skull className="h-3 w-3" />
                                       <span className="hidden sm:inline">
-                                        Stop
+                                        Kill
                                       </span>
                                     </Button>
                                     <Button

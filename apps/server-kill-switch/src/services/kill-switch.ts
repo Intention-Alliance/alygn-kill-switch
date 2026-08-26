@@ -6,6 +6,9 @@ import type { RedisPool } from '../types/redis-pool';
 import { secureCompare } from '../utils/secure-compare';
 import { loadTracing } from '../infra-loader';
 import { pauseInferenceTraffic, resumeInferenceTraffic } from './traffic-pause';
+import { db } from '../db/index';
+import { killSwitchAuditLog } from '../db/schema';
+import { desc } from 'drizzle-orm';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -52,6 +55,10 @@ export class KillSwitchService {
   private apiKey: string;
   private auditLog: AuditEntry[] = [];
   private _stateChangeListeners: Array<(entry: AuditEntry) => void | Promise<void>> = [];
+  // Guards the one-time startup DB load so a hot reload doesn't double-load.
+  private _dbLoaded = false;
+  // Hot-cache cap — matches the in-memory trim used on push.
+  private static readonly HOT_CACHE_SIZE = 1000;
 
   constructor(opts: { redis: RedisPool; authToken?: string; apiKey?: string }) {
     this.redis = opts.redis;
@@ -135,8 +142,28 @@ export class KillSwitchService {
       };
 
       this.auditLog.push(auditEntry);
-      if (this.auditLog.length > 1000) {
-        this.auditLog = this.auditLog.slice(-1000);
+      if (this.auditLog.length > KillSwitchService.HOT_CACHE_SIZE) {
+        this.auditLog = this.auditLog.slice(-KillSwitchService.HOT_CACHE_SIZE);
+      }
+
+      // Persist to the immutable DB audit log (ADR-140) so history survives
+      // process restarts / container rebuilds. Fire-and-forget — a DB write
+      // failure must not block the state transition or the HTTP response.
+      try {
+        await db.insert(killSwitchAuditLog).values({
+          id: auditEntry.id,
+          timestamp: new Date(auditEntry.timestamp),
+          userId: auditEntry.initiatedBy,
+          reason: auditEntry.reason,
+          previousState: auditEntry.previousState,
+          newState: auditEntry.newState,
+          traceId: auditEntry.traceId,
+          machineId: auditEntry.machineId ?? null,
+          severity: 'info',
+          metadata: JSON.stringify({ ip: auditEntry.ip }),
+        }).run();
+      } catch (err) {
+        console.error('[kill-switch] Failed to persist audit entry to DB:', err);
       }
 
       for (const listener of this._stateChangeListeners) {
@@ -176,6 +203,48 @@ export class KillSwitchService {
   }
 
   // ─── Audit Log ───────────────────────────────────────────────────
+
+  /**
+   * Load recent audit entries from the DB into the in-memory hot cache.
+   * Called once on startup to recover history after a process restart or
+   * container rebuild (the in-memory buffer starts empty).
+   */
+  async loadAuditFromDb(): Promise<void> {
+    if (this._dbLoaded) return;
+    this._dbLoaded = true;
+
+    try {
+      const rows = await db.select()
+        .from(killSwitchAuditLog)
+        .orderBy(desc(killSwitchAuditLog.timestamp))
+        .limit(KillSwitchService.HOT_CACHE_SIZE)
+        .all();
+
+      // Reverse to chronological order (oldest first) so the hot cache
+      // matches the push-order semantics of transitionTo().
+      for (const row of rows.reverse()) {
+        this.auditLog.push({
+          id: row.id,
+          previousState: row.previousState as KillSwitchState,
+          newState: row.newState as KillSwitchState,
+          timestamp: new Date(row.timestamp).toISOString(),
+          traceId: row.traceId,
+          initiatedBy: row.userId,
+          reason: row.reason,
+          ip: 'unknown',
+          machineId: row.machineId ?? undefined,
+        });
+      }
+
+      if (this.auditLog.length > KillSwitchService.HOT_CACHE_SIZE) {
+        this.auditLog = this.auditLog.slice(-KillSwitchService.HOT_CACHE_SIZE);
+      }
+
+      console.log(`[kill-switch] Loaded ${this.auditLog.length} audit entries from DB`);
+    } catch (err) {
+      console.error('[kill-switch] Failed to load audit log from DB:', err);
+    }
+  }
 
   getAuditLog(limit = 50): AuditEntry[] {
     return this.auditLog.slice(-limit);
