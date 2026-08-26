@@ -41,7 +41,16 @@ export interface VerifierOpts {
 
 const DEFAULT_MODEL = 'qwen2.5:0.5b';
 const DEFAULT_BASE_URL = 'http://127.0.0.1:11434';
-const DEFAULT_TIMEOUT_MS = 500;
+// Generous default so a cold-start model load (first /api/generate after a
+// container restart) doesn't abort before Ollama finishes loading the model
+// into memory. The model is warm on the host (~360ms), but the first call
+// after boot can take several seconds. Overridable via
+// KILL_SWITCH_VERIFIER_TIMEOUT_MS.
+const DEFAULT_TIMEOUT_MS = 10_000;
+// Grace timeout for the cold-start retry — Ollama reloading a model into
+// memory can take up to ~30s on a busy host. Only used on the retry after a
+// timeout, so warm-model calls are unaffected.
+const COLD_START_TIMEOUT_MS = 30_000;
 
 // Resolve the bundled system prompt relative to the repo root. The server
 // runs from apps/server-kill-switch, so we walk up to the monorepo root.
@@ -67,7 +76,16 @@ function loadSystemPrompt(): string {
   try {
     _cachedSystemPrompt = readFileSync(path, 'utf-8');
   } catch (err) {
-    console.error('[verifier] Failed to load system prompt, using inline fallback:', err);
+    // ENOENT is expected in packaged builds where docs/ isn't copied into the
+    // image — the inline fallback is complete and functional, so this is not
+    // an error. Only surface a warning for genuine read failures (permissions,
+    // I/O errors), not a missing file.
+    const code = (err as NodeJS.ErrnoException)?.code;
+    if (code === 'ENOENT') {
+      console.debug('[verifier] System prompt file not found, using inline fallback:', path);
+    } else {
+      console.warn('[verifier] Failed to load system prompt, using inline fallback:', err instanceof Error ? err.message : err);
+    }
     _cachedSystemPrompt = FALLBACK_SYSTEM_PROMPT;
   }
   return _cachedSystemPrompt;
@@ -226,18 +244,46 @@ export class InferenceVerifier {
   /**
    * Call the Ollama /api/generate endpoint. Returns the raw model text.
    * Throws on network error, timeout, or non-2xx response.
+   *
+   * Cold-start retry: the first /api/generate after the model is unloaded
+   * (idle timeout) can take several seconds while Ollama reloads it into
+   * memory — longer than the configured timeout. On a timeout (AbortError),
+   * retry once with a longer grace timeout so a cold model load doesn't
+   * produce a spurious degraded verdict. Warm-model calls succeed on the
+   * first attempt (~250-400ms).
    */
   private async callModel(userMessage: string): Promise<string> {
+    const payload = {
+      model: this.model,
+      prompt: `${this.systemPrompt}\n\n${userMessage}`,
+      stream: false,
+      options: { num_predict: 16 },
+    };
+
+    try {
+      return await this.postOnce(payload, this.timeoutMs);
+    } catch (err) {
+      // Only retry on timeout (AbortError) — a cold-start model load. Do NOT
+      // retry on non-2xx or network errors (those are deterministic).
+      if (err instanceof Error && err.name === 'TimeoutError') {
+        console.warn(
+          `[verifier] Model call timed out after ${this.timeoutMs}ms — retrying once with cold-start grace timeout`,
+        );
+        return await this.postOnce(payload, COLD_START_TIMEOUT_MS);
+      }
+      throw err;
+    }
+  }
+
+  private async postOnce(
+    payload: Record<string, unknown>,
+    timeoutMs: number,
+  ): Promise<string> {
     const res = await this.fetchImpl(`${this.baseUrl}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: this.model,
-        prompt: `${this.systemPrompt}\n\n${userMessage}`,
-        stream: false,
-        options: { num_predict: 16 },
-      }),
-      signal: AbortSignal.timeout(this.timeoutMs),
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(timeoutMs),
     });
 
     if (!res.ok) {

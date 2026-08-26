@@ -14,12 +14,15 @@ ENV NODE_ENV=production
 # Copy standalone output (includes server.js at deep path + layered node_modules)
 COPY apps/web-regulator/.next/standalone/ /app/
 
-# Working directory where server.js lives (standalone output mirrors host path)
-WORKDIR /app/.openclaw/workspace/repos/alygn-core-infra/apps/web-regulator
-
 # Copy static assets (CSS/JS chunks — not bundled in standalone output)
-COPY apps/web-regulator/.next/static/ ./.next/static/
+COPY apps/web-regulator/.next/static/ /app/.next/static/
 
 EXPOSE 3000
 
-CMD ["bun", "run", "server.js"]
+# The standalone output mirrors the host build path (e.g.
+# .openclaw/workspace-be-coder/repos/alygn/infrastructure-fixes/apps/web-regulator),
+# which varies by checkout location. Instead of hardcoding a WORKDIR that
+# breaks when the repo moves, resolve server.js at runtime and run it from its
+# own directory (Next.js standalone requires CWD = the server.js dir so it can
+# find the bundled node_modules + .next).
+CMD ["sh", "-c", "cd \"$(dirname \"$(find /app -name server.js -path '*web-regulator*' | head -1)\")\" && bun run server.js"]

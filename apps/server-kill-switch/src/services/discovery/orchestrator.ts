@@ -282,6 +282,13 @@ export class DiscoveryOrchestrator {
 	 * Opportunistic network sweep (mDNS + ARP/ICMP). Newly seen hosts are
 	 * inserted as NEW_MACHINE — never auto-admitted. Already-registered
 	 * hosts are skipped (heartbeat is the authoritative path).
+	 *
+	 * Dedup is keyed on the PRIMARY KEY (id), not hostname: the sweep
+	 * generates a stable `discovered-<ip>` id per host, so re-sweeping the
+	 * same IP must never collide on the UNIQUE id constraint. Hostnames can
+	 * be unstable across sweeps (reverse-DNS may resolve or not), so a
+	 * hostname-only check is insufficient. The insert is an upsert
+	 * (ON CONFLICT DO UPDATE) that refreshes lastSeen instead of throwing.
 	 */
 	async runNetworkSweep(): Promise<{
 		discovered: DiscoveredMachine[]
@@ -292,31 +299,47 @@ export class DiscoveryOrchestrator {
 		let skipped = 0
 
 		for (const host of sweep.hosts) {
+			const now = new Date()
 			const existing = await db
 				.select({ id: discoveredMachines.id })
 				.from(discoveredMachines)
-				.where(eq(discoveredMachines.hostname, host.hostname))
+				.where(eq(discoveredMachines.id, host.id))
 				.get()
 
 			if (existing) {
+				// Already registered (same sweep id) — refresh lastSeen, don't
+				// re-insert. This is the fix for the recurring
+				// `UNIQUE constraint failed: discovered_machine.id` log spam.
+				await db
+					.update(discoveredMachines)
+					.set({ lastSeen: now })
+					.where(eq(discoveredMachines.id, host.id))
 				skipped++
 				continue
 			}
 
-			const now = new Date()
-			await db.insert(discoveredMachines).values({
-				id: host.id,
-				hostname: host.hostname,
-				ip: host.ip,
-				source: host.source,
-				state: 'NEW_MACHINE',
-				fingerprint: null,
-				integritySignature: null,
-				firstSeen: now,
-				lastSeen: now,
-				confirmedAt: null,
-				confirmedBy: null,
-			})
+			// Upsert as a safety net: even if a concurrent sweep inserted the
+			// same id between our SELECT and INSERT, refresh lastSeen instead
+			// of throwing on the UNIQUE id constraint.
+			await db
+				.insert(discoveredMachines)
+				.values({
+					id: host.id,
+					hostname: host.hostname,
+					ip: host.ip,
+					source: host.source,
+					state: 'NEW_MACHINE',
+					fingerprint: null,
+					integritySignature: null,
+					firstSeen: now,
+					lastSeen: now,
+					confirmedAt: null,
+					confirmedBy: null,
+				})
+				.onConflictDoUpdate({
+					target: discoveredMachines.id,
+					set: { lastSeen: now },
+				})
 			discovered.push(host)
 		}
 

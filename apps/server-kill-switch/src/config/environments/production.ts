@@ -39,7 +39,10 @@ export const productionConfig: Partial<AppConfig> = {
     enableIncidentResponse: true,
     enableLbHealth: true,
     killSwitchTrafficPauseEnabled: true,
-    killSwitchVerificationEnabled: false,
+    // Verification is enabled in production: the verifier model (qwen2.5:0.5b)
+    // is confirmed reachable at the production Ollama endpoint, and the
+    // inference-verification layer is active (see verification block below).
+    killSwitchVerificationEnabled: true,
   },
   server: {
     port: 3000,
@@ -62,15 +65,17 @@ export const productionConfig: Partial<AppConfig> = {
     challengeTtlMs: 300_000,
     assertionTokenTtlMs: 600_000,
   },
-  // ADR-2026-08-23: verification DISABLED by default in production.
-  // Andler enables it manually (via KILL_SWITCH_VERIFY_ENABLED=true)
-  // only after the verifier model is confirmed reachable at the
-  // production Ollama endpoint. Safe default — behaves as today.
+  // ADR-2026-08-23: inference verification is ACTIVE in production. The
+  // verifier model (qwen2.5:0.5b) is confirmed reachable at the production
+  // Ollama endpoint (host.docker.internal:11434 via the host-gateway alias).
+  // Both killSwitchVerificationEnabled (above) and verifyEnabled must be true
+  // for the verifier to activate; KILL_SWITCH_VERIFY_ENABLED=true in .env
+  // overrides this to true at runtime.
   verification: {
     verifierModel: 'qwen2.5:0.5b',
     verifierBaseUrl: 'http://localhost:11434',
     verifierTimeoutMs: 500,
-    verifyEnabled: false,
+    verifyEnabled: true,
     verifyMode: 'async',
     verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
   },

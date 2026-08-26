@@ -89,9 +89,9 @@ describe('loadConfig — verification section', () => {
 		expect(config.verification.verifyEnabled).toBe(false)
 	})
 
-	it('production disables verification by default', () => {
+	it('production enables verification by default (verifier confirmed reachable)', () => {
 		const config = loadConfig('production')
-		expect(config.verification.verifyEnabled).toBe(false)
+		expect(config.verification.verifyEnabled).toBe(true)
 	})
 
 	it('staging disables verification by default (P2-5: off until verifier confirmed reachable)', () => {

@@ -59,9 +59,10 @@ services:
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
       - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
-      # Host network mode: the kill-switch reaches Redis via published host
-      # ports (127.0.0.1:6380-6382) since the align-network hostnames
-      # (redis-node-1, etc.) do NOT resolve from host mode.
+      # Bridge mode: the kill-switch reaches Redis via the align-network
+      # service hostnames (redis-node-1, etc.) which resolve within the
+      # bridge network. Published host ports (127.0.0.1:6380-6382) remain for
+      # host-side tooling.
       - REDIS_URLS=${REDIS_URLS:-redis://redis:6379}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
@@ -70,8 +71,8 @@ services:
       # (redis/client v4.7.1 NodeAddressMap shape). Overridable via env.
       - DATA_DIR=/app/data
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      # Inference verification layer — host network mode lets the container
-      # reach Ollama directly on the host loopback.
+      # Inference verification layer — the kill-switch reaches Ollama on the
+      # host via the host-gateway alias (host.docker.internal:11434).
       - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
       - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
       - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
@@ -148,9 +149,10 @@ services:
       - redis-node-2-data:/data
     networks:
       - align-network
-    # Published host port so the kill-switch (network_mode: host) can reach
-    # this node at 127.0.0.1:6381. Cluster bootstrap still uses internal
-    # hostnames (redis-node-2:6379) within align-network — unaffected.
+    # Published host port so host-side tooling can reach this node at
+    # 127.0.0.1:6381. The kill-switch (bridge mode) reaches it via the
+    # align-network hostname redis-node-2:6379. Cluster bootstrap still uses
+    # internal hostnames within align-network — unaffected.
     ports:
       - "127.0.0.1:6381:6379"
     restart: unless-stopped
@@ -170,9 +172,9 @@ services:
       - redis-node-3-data:/data
     networks:
       - align-network
-    # Published host port so the kill-switch (network_mode: host) can reach
-    # this node at 127.0.0.1:6382. Cluster bootstrap still uses internal
-    # hostnames (redis-node-3:6379) within align-network — unaffected.
+    # Published host port so host-side tooling can reach this node at
+    # 127.0.0.1:6382. Cluster bootstrap still uses internal hostnames
+    # (redis-node-3:6379) within align-network — unaffected.
     ports:
       - "127.0.0.1:6382:6379"
     restart: unless-stopped
@@ -219,9 +221,10 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:3001:3000"
-    # The kill-switch runs in network_mode: host (binds 127.0.0.1:3000 on the
-    # host), so it is NOT on align-network. The web-regulator reaches it via
-    # the Docker host gateway instead of the service name.
+    # The kill-switch runs in bridge mode on align-network (binds
+    # 127.0.0.1:3000 on the host via published port). The web-regulator
+    # reaches it via the Docker host gateway (host.docker.internal:3000)
+    # since the published port is host-bound, not a service alias.
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:

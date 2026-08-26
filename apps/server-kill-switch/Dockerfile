@@ -26,6 +26,11 @@ COPY apps/server-kill-switch/src/ ./apps/server-kill-switch/src/
 COPY apps/server-kill-switch/package.json ./apps/server-kill-switch/package.json
 COPY apps/server-kill-switch/tsconfig.json ./apps/server-kill-switch/tsconfig.json
 
+# Copy the canonical verifier system prompt so the verifier loads the real
+# prompt (not the inline fallback) in the packaged image. The verifier
+# resolves it relative to the repo root (docs/specs/verifier-system-prompt.md).
+COPY docs/specs/verifier-system-prompt.md ./docs/specs/verifier-system-prompt.md
+
 # Install dependencies
 RUN bun install
 
