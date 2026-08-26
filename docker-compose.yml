@@ -40,11 +40,10 @@ services:
       dockerfile: apps/server-kill-switch/Dockerfile
     container_name: alygn-kill-switch
     pid: "host"
-    # Host network mode: the container shares the host's network stack, so it
-    # can reach Ollama at 127.0.0.1:11434 and the host's Redis directly.
-    # Host mode does NOT support `ports` mapping or custom `networks` — the
-    # container binds host ports directly (KILL_SWITCH_PORT=3000).
-    network_mode: host
+    ports:
+      - "127.0.0.1:3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - kill-switch-data:/app/data
       - ${SECRETS_FILE:-/home/andlersrv/.openclaw/secrets.json}:/root/.openclaw/secrets.json:ro
@@ -63,22 +62,28 @@ services:
       # Host network mode: the kill-switch reaches Redis via published host
       # ports (127.0.0.1:6380-6382) since the align-network hostnames
       # (redis-node-1, etc.) do NOT resolve from host mode.
-      - REDIS_URLS=${REDIS_URLS:-redis://127.0.0.1:6380,redis://127.0.0.1:6381,redis://127.0.0.1:6382}
-      - REDIS_URL=${REDIS_URL:-redis://127.0.0.1:6380}
+      - REDIS_URLS=${REDIS_URLS:-redis://redis:6379}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       # nodeAddressMap for createCluster — maps announced internal Docker
       # hostnames to reachable addresses. Values must be {host, port} objects
       # (redis/client v4.7.1 NodeAddressMap shape). Overridable via env.
-      - REDIS_NODE_MAP=${REDIS_NODE_MAP:-{"redis-node-1:6379":{"host":"127.0.0.1","port":6380},"redis-node-2:6379":{"host":"127.0.0.1","port":6381},"redis-node-3:6379":{"host":"127.0.0.1","port":6382}}}
       - DATA_DIR=/app/data
       - LOG_LEVEL=${LOG_LEVEL:-info}
       # Inference verification layer — host network mode lets the container
       # reach Ollama directly on the host loopback.
-      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://127.0.0.1:11434}
+      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
+      - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
+      - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
+      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://host.docker.internal:11434}
+      - KILL_SWITCH_VERIFIER_TIMEOUT_MS=${KILL_SWITCH_VERIFIER_TIMEOUT_MS:-500}
       # ADR-136: WebAuthn (FIDO2) relying party — production Tailscale mesh
       # hostname + Nginx SSL listener. Overrides the schema defaults.
       - WEBAUTHN_RP_ID=${WEBAUTHN_RP_ID:-andlersrv.tail62d797.ts.net}
       - WEBAUTHN_ORIGIN=${WEBAUTHN_ORIGIN:-https://andlersrv.tail62d797.ts.net:8443}
+    networks:
+      - align-network
+      - infra-align-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]

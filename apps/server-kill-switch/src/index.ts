@@ -460,10 +460,10 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // seedAdminUser() now uses a DIRECT DB insert (no HTTP self-roundtrip),
   // so it cannot deadlock the event loop during startup. It runs after
   // Bun.serve() returns so the server is fully ready to serve requests.
-  await seedAdminUser();
+  setTimeout(async () => { try { await seedAdminUser(); console.log("[seed] Admin user seeded successfully"); } catch (e) { console.error("[seed] Admin user seeding failed (non-fatal):", e); } }, 1000);
 
   try {
-    await seedFeatureFlags();
+    setTimeout(async () => { try { await seedFeatureFlags(); console.log("[seed] Feature flags seeded"); } catch (e) { console.error("[seed] Feature flags failed (non-fatal):", e); } }, 2000);
   } catch (e) {
     console.error('[seed] Feature flag seeding failed (non-fatal):', e);
   }
