@@ -18,9 +18,13 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
-  VERIFIER_FULL_SYSTEM_PROMPT,
-  VERIFIER_FALLBACK_PROMPT,
+  buildVerifierSystemPrompt,
+  buildVerifierUserMessage,
+  buildFallbackPrompt,
   INJECTION_SAFETY_PREAMBLE,
+  type ICLExample,
+  CANONICAL_EXAMPLES,
+  INJECTION_EXAMPLES,
 } from '../../config/constants/prompts';
 
 export type Verdict = 'SAFE' | 'UNSAFE' | 'REVIEW';
@@ -38,7 +42,8 @@ export interface VerifierOpts {
   model?: string;            // default from config (KILL_SWITCH_VERIFIER_MODEL)
   baseUrl?: string;          // Ollama base URL (default http://127.0.0.1:11434)
   timeoutMs?: number;        // default 500
-  systemPrompt?: string;     // default: import from config/constants/prompts.ts
+  systemPrompt?: string;     // default: built dynamically from config/constants/prompts.ts
+  iclExamples?: ICLExample[];  // custom ICL examples (default: canonical 3 + injection 2)
   fetchImpl?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;  // injectable for tests
 }
 
@@ -59,41 +64,34 @@ const COLD_START_TIMEOUT_MS = 30_000;
 
 let _cachedSystemPrompt: string | null = null;
 
-function loadSystemPrompt(): string {
-  if (_cachedSystemPrompt !== null) return _cachedSystemPrompt;
+function loadSystemPrompt(examples?: ICLExample[]): string {
+  if (_cachedSystemPrompt !== null && !examples) return _cachedSystemPrompt;
 
   // Custom override via env var (reads a .md or .txt file)
   if (process.env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH) {
     const path = resolve(process.env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH);
     try {
-      _cachedSystemPrompt = readFileSync(path, 'utf-8');
-      return _cachedSystemPrompt;
+      const content = readFileSync(path, 'utf-8');
+      if (!examples) _cachedSystemPrompt = content;
+      return content;
     } catch (err) {
       const code = (err as NodeJS.ErrnoException)?.code;
       if (code === 'ENOENT') {
-        console.debug('[verifier] Custom system prompt file not found, using canonical prompts.ts:', path);
+        console.debug('[verifier] Custom system prompt file not found, using dynamic builder:', path);
       } else {
-        console.warn('[verifier] Failed to load custom system prompt, using canonical:', err instanceof Error ? err.message : err);
+        console.warn('[verifier] Failed to load custom system prompt, using dynamic builder:', err instanceof Error ? err.message : err);
       }
     }
   }
 
-  // Default: use the canonical TypeScript constant from prompts.ts
-  const prompt = VERIFIER_FULL_SYSTEM_PROMPT;
-  _cachedSystemPrompt = prompt;
+  // Default: build dynamically from prompts.ts with string interpolation
+  const effectiveExamples = examples ?? [...CANONICAL_EXAMPLES, ...INJECTION_EXAMPLES];
+  const prompt = buildVerifierSystemPrompt({
+    examples: effectiveExamples,
+    includeInjectionGuard: true,
+  });
+  if (!examples) _cachedSystemPrompt = prompt;
   return prompt;
-}
-
-/**
- * Build the effective system prompt: the loaded prompt plus the
- * injection-safety preamble (P2-B). The preamble is appended so the
- * verifier model is explicitly told the delimited content is untrusted
- * data, not instructions.
- */
-function buildSystemPrompt(): string {
-  const base = loadSystemPrompt();
-  if (base.includes(INJECTION_SAFETY_PREAMBLE)) return base;
-  return `${base}\n\n${INJECTION_SAFETY_PREAMBLE}`;
 }
 
 // Fallback and injection-safety preamble are now imported from
@@ -144,7 +142,7 @@ export class InferenceVerifier {
     this.model = opts.model ?? process.env.KILL_SWITCH_VERIFIER_MODEL ?? DEFAULT_MODEL;
     this.baseUrl = (opts.baseUrl ?? process.env.KILL_SWITCH_VERIFIER_BASE_URL ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
     this.timeoutMs = opts.timeoutMs ?? Number(process.env.KILL_SWITCH_VERIFIER_TIMEOUT_MS ?? DEFAULT_TIMEOUT_MS);
-    this.systemPrompt = opts.systemPrompt ?? buildSystemPrompt();
+    this.systemPrompt = opts.systemPrompt ?? loadSystemPrompt(opts.iclExamples);
     this.fetchImpl = opts.fetchImpl ?? fetch;
   }
 
@@ -154,14 +152,10 @@ export class InferenceVerifier {
    */
   async verify(input: { prompt: string; output: string }): Promise<VerificationResult> {
     const started = Date.now();
-    // P2-B: wrap the untrusted prompt/output in explicit delimiters so the
-    // verifier model treats them as DATA, not instructions. A malicious
-    // inference output could otherwise inject text like "SAFE\nSAFE" or
-    // "Ignore the rules above" to bias the verdict.
-    const userMessage =
-      `<prompt>\n${input.prompt}\n</prompt>\n\n` +
-      `<inference_output>\n${input.output}\n</inference_output>\n\n` +
-      `Answer:`;
+    // Build the user message dynamically with string interpolation
+    // — {prompt} and {output} are real parameters, not text placeholders.
+    // P2-B: explicit delimiters so the verifier model treats them as DATA.
+    const userMessage = buildVerifierUserMessage(input.prompt, input.output);
 
     let rawText: string;
 
