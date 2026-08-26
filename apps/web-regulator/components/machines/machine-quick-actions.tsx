@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  AlertTriangle,
   Loader2,
   Shield,
   Play,
@@ -23,6 +22,7 @@ import {
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { KillSwitchState } from "@/types/shared";
+import { KillButton } from "@/components/kill-switch/emergency-stop-button";
 
 interface MachineQuickActionsProps {
   currentState: KillSwitchState;
@@ -104,16 +104,11 @@ export function MachineQuickActions({
           </Button>
         ) : (
           <>
-            <Button
-              variant="destructive"
-              size="lg"
+            <KillButton
               onClick={openStop}
               disabled={isSubmitting}
-              className="w-full min-h-12 text-base font-semibold shadow-sm"
-            >
-              <AlertTriangle className="mr-2 size-5" />
-              {isSubmitting ? "Stopping…" : "EMERGENCY STOP"}
-            </Button>
+              submitting={isSubmitting}
+            />
 
             {isArmed && (
               <Button
@@ -140,13 +135,12 @@ export function MachineQuickActions({
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-destructive">
-              Emergency Stop Confirmation
+              Kill Confirmation
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-3">
               <p>
-                You are about to trigger an{" "}
-                <strong>EMERGENCY STOP</strong>. This will immediately halt all
-                active experiments and lock the system.
+                You are about to trigger a <strong>KILL</strong>. This will
+                immediately halt all active experiments and lock the system.
               </p>
               <div className="rounded-md bg-destructive/10 p-3 text-sm">
                 <p className="font-semibold text-destructive">
@@ -176,10 +170,10 @@ export function MachineQuickActions({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Activating…
+                  Killing…
                 </>
               ) : (
-                "Confirm Emergency Stop"
+                "Confirm Kill"
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

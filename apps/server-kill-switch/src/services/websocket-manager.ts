@@ -117,6 +117,25 @@ export class WebSocketManager {
     }});
   }
 
+  /**
+   * Emit an `audit-entry` event to all connected clients. The frontend
+   * hook (use-kill-switch-websocket) listens for this event type and
+   * prepends the entry to its audit log. Payload matches the shared
+   * ActivationRecord shape: { id, timestamp, user, reason, previousState,
+   * newState, traceId }.
+   */
+  broadcastAuditEntry(entry: any): void {
+    this.broadcast({ type: 'audit-entry', payload: {
+      id: entry.id,
+      timestamp: new Date(entry.timestamp).toISOString(),
+      user: entry.initiatedBy,
+      reason: entry.reason,
+      previousState: entry.previousState,
+      newState: entry.newState,
+      traceId: entry.traceId,
+    }});
+  }
+
   broadcastFlagUpdate(payload: any): void { this.broadcast({ type: 'flag-update', payload }); }
   broadcastAgentEvent(payload: any): void { this.broadcast({ type: 'agent-event', payload }); }
   broadcastMachineEvent(type: string, payload: Record<string, unknown>): void { this.broadcast({ type, payload }); }
