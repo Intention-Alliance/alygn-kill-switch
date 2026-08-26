@@ -60,7 +60,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
  * verbatim, render as raw JSON in the UI. This extracts a readable
  * message and maps common status codes to friendly copy.
  */
-function friendlyErrorMessage(raw: string, status: number): string {
+export function friendlyErrorMessage(raw: string, status: number): string {
   // Rate limiting — always show friendly copy regardless of body shape.
   if (status === 429) {
     return "Too many requests. Please wait a moment.";

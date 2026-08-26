@@ -51,6 +51,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { apiGet } from "@/lib/api-client";
+import { effectiveStatus } from "@/lib/dashboard-utils";
 import { toast } from "sonner";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type {
@@ -86,20 +87,6 @@ const STATUS_ICONS: Record<
     label: "Pending",
   },
 };
-
-/**
- * Resolve a machine's effective status for display.
- *
- * Machines that report `connected: false` (or have no heartbeat yet) are
- * treated as "pending" — they've registered on the network but haven't
- * completed a handshake. This keeps the UI consistent even when the API
- * only returns `active`/`inactive`/`offline`.
- */
-function effectiveStatus(machine: Machine): MachineStatusType {
-  if (machine.status === "pending") return "pending";
-  if (machine.connected === false) return "pending";
-  return machine.status;
-}
 
 interface MachinesResponse {
   data: Machine[];

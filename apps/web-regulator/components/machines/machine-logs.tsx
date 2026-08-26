@@ -23,7 +23,7 @@ interface MachineLogsProps {
 
 // ─── Machine audit log API response shape ────────────────────────────
 // GET /v1/machines/:id/audit → { data: MachineAuditEntry[], ... }
-interface MachineAuditEntry {
+export interface MachineAuditEntry {
   id: string;
   timestamp: string;
   userId: string | null;
@@ -41,7 +41,7 @@ interface MachineAuditResponse {
 }
 
 // ─── Adapt a machine-audit entry to the shared ActivationRecord shape ──
-function adaptAuditEntry(entry: MachineAuditEntry): ActivationRecord {
+export function adaptAuditEntry(entry: MachineAuditEntry): ActivationRecord {
   return {
     id: entry.id,
     timestamp: entry.timestamp,

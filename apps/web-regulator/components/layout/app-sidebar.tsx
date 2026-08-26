@@ -36,6 +36,7 @@ import { useAuth } from "@/lib/auth-context";
 import { apiGet } from "@/lib/api-client";
 import { SystemMetricsBar } from "@/components/machines/system-metrics";
 import { MachineQuickActions } from "@/components/machines/machine-quick-actions";
+import { effectiveStatus } from "@/lib/dashboard-utils";
 import type { Machine, KillSwitchState } from "@/types/shared";
 
 const NAV_ITEMS = [
@@ -108,17 +109,6 @@ interface MachinesResponse {
   total: number;
   limit: number;
   offset: number;
-}
-
-/**
- * Resolve a machine's effective status for display. Machines that report
- * `connected: false` are treated as "pending" (registered but not yet
- * connected to the network).
- */
-function effectiveStatus(machine: Machine): Machine["status"] {
-  if (machine.status === "pending") return "pending";
-  if (machine.connected === false) return "pending";
-  return machine.status;
 }
 
 interface AppSidebarProps {

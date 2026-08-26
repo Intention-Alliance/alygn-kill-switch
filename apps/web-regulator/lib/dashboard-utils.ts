@@ -1,4 +1,9 @@
-import type { ActivationRecord, KillSwitchState, Machine } from "@/types/shared";
+import type {
+  ActivationRecord,
+  KillSwitchState,
+  Machine,
+  MachineStatus,
+} from "@/types/shared";
 
 // ─── Compatible Cluster Shape ─────────────────────────────────
 // Structural subset of Cluster from @/types/supabase.types
@@ -63,6 +68,38 @@ export function computeDashboardStats(
       ? realUptimes.reduce((a, b) => a + b, 0) / realUptimes.length
       : 0,
   };
+}
+
+/**
+ * Resolve a machine's effective status for display.
+ *
+ * Distinguishes three states so a machine that was active but lost its
+ * heartbeat is shown as "offline" rather than conflated with a machine that
+ * has never connected ("pending"):
+ *
+ * - `status === 'pending'` (never connected, no heartbeat) → "pending"
+ * - `connected === true` → "active"
+ * - `connected === false && lastSeen != null` → "offline" (lost heartbeat)
+ * - `connected === false && lastSeen == null` → "pending" (never connected)
+ * - otherwise → fall back to the machine's reported status
+ */
+export function effectiveStatus(machine: Machine): MachineStatus {
+  // Explicitly pending (never connected, no heartbeat) → Pending
+  if (machine.status === "pending") return "pending";
+
+  // Connected → Active
+  if (machine.connected === true) return "active";
+
+  // Was connected but lost its heartbeat → Offline
+  if (machine.connected === false && machine.lastSeen != null) {
+    return "offline";
+  }
+
+  // Registered but never connected (no lastSeen) → Pending
+  if (machine.connected === false) return "pending";
+
+  // Fall back to the machine's reported status
+  return machine.status;
 }
 
 /** Adapt a Kill Switch Machine to a display-friendly cluster format. */
