@@ -14,7 +14,7 @@
  * Publishes machine events to bcp:machines:events Redis channel.
  */
 
-import { eq, ne, desc, asc, and } from 'drizzle-orm';
+import { eq, ne, desc, asc, and, sql } from 'drizzle-orm';
 import { db } from '../db/index';
 import { machines, machineFlags, agents, featureFlags, killSwitchAuditLog } from '../db/schema';
 import { getMachineMetrics, collectSystemMetrics } from '../services/system-metrics';
@@ -63,11 +63,21 @@ function validateRole(role: string): string | null {
 function serializeMachine(row: any): Machine {
   const specs = row.specs ? (typeof row.specs === 'string' ? JSON.parse(row.specs) : row.specs) : null;
   const metrics = getMachineMetrics(row.id);
+
+  // Connection model: machines connect via heartbeat (POST /v1/machines/:id/heartbeat).
+  //   - connected = true  → machine has a recent heartbeat (within the timeout window)
+  //   - connected = false → machine is registered but not currently connected
+  //   - pending           → machine is registered but has NEVER connected (lastSeen is null)
+  const heartbeatTimeoutMs = Number(process.env.KILL_SWITCH_HEARTBEAT_TIMEOUT_MS ?? 90_000);
+  const lastSeenMs = row.lastSeen ? new Date(row.lastSeen).getTime() : null;
+  const connected = lastSeenMs !== null && Date.now() - lastSeenMs <= heartbeatTimeoutMs;
+  const neverConnected = lastSeenMs === null;
+
   return {
     id: row.id,
     name: row.name,
     hostname: row.hostname,
-    status: row.status as MachineStatus,
+    status: (neverConnected ? 'pending' : row.status) as MachineStatus,
     role: row.role,
     lastSeen: row.lastSeen ? new Date(row.lastSeen).toISOString() : '',
     createdAt: row.createdAt ? new Date(row.createdAt).toISOString() : '',
@@ -75,6 +85,7 @@ function serializeMachine(row: any): Machine {
     specs: specs || { cpu: '', ram: '', gpu: '', dpu: null },
     cpuUsage: metrics.cpuUsage,
     memoryUsage: metrics.memoryUsage,
+    connected,
     // ADR-138: monitoring-only + zone are part of the machine tenant contract.
     monitoringOnly: row.monitoringOnly !== undefined ? Boolean(row.monitoringOnly) : undefined,
     zone: row.zone !== undefined ? String(row.zone) : undefined,
@@ -114,7 +125,11 @@ export async function handleMachinesRoutes(
 
       let query = db.select().from(machines).$dynamic();
 
-      if (statusFilter && ['active', 'inactive', 'offline'].includes(statusFilter)) {
+      if (statusFilter === 'pending') {
+        // pending is a derived status — machines registered but never connected
+        // (no heartbeat yet, so lastSeen is null).
+        query = query.where(sql`${machines.lastSeen} IS NULL`);
+      } else if (statusFilter && ['active', 'inactive', 'offline'].includes(statusFilter)) {
         query = query.where(eq(machines.status, statusFilter));
       }
 
@@ -126,7 +141,9 @@ export async function handleMachinesRoutes(
 
       // Get total count
       let countQuery = db.select().from(machines).$dynamic();
-      if (statusFilter && ['active', 'inactive', 'offline'].includes(statusFilter)) {
+      if (statusFilter === 'pending') {
+        countQuery = countQuery.where(sql`${machines.lastSeen} IS NULL`);
+      } else if (statusFilter && ['active', 'inactive', 'offline'].includes(statusFilter)) {
         countQuery = countQuery.where(eq(machines.status, statusFilter));
       }
       const allForCount = await countQuery.all();
@@ -515,8 +532,8 @@ export async function handleMachinesRoutes(
         updates.hostname = body.hostname;
       }
       if (body.status !== undefined) {
-        if (!['active', 'inactive', 'offline'].includes(body.status)) {
-          json(res, 400, { error: 'status must be active, inactive, or offline' });
+        if (!['active', 'inactive', 'offline', 'pending'].includes(body.status)) {
+          json(res, 400, { error: 'status must be active, inactive, offline, or pending' });
           return true;
         }
         updates.status = body.status;

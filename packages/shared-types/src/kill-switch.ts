@@ -41,7 +41,7 @@ export interface MachineSpecs {
   dpu: string | null;
 }
 
-export type MachineStatus = 'active' | 'inactive' | 'offline';
+export type MachineStatus = 'active' | 'inactive' | 'offline' | 'pending';
 
 export interface Machine {
   id: string;
@@ -60,6 +60,13 @@ export interface Machine {
   monitoringOnly?: boolean;
   // ADR-137/138: zone assignment (default 'unassigned').
   zone?: string;
+  /**
+   * Network handshake flag. `true` when the machine has an active connection
+   * (recent heartbeat), `false` when registered but not currently connected.
+   * When absent, the machine is treated as "pending" (registered but never
+   * connected / not yet verified) in the dashboard UI.
+   */
+  connected?: boolean;
 }
 
 export interface DpuInfo {

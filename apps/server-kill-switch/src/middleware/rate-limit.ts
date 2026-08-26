@@ -1,11 +1,20 @@
 /**
  * Redis-backed Sliding-Window Rate Limiter
  *
- * Replaces the old Map-based in-memory rate limiter with Redis sorted sets:
- *   - Read: 60 requests per 60s window (GET/HEAD/OPTIONS)
- *   - Write: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
+ * Replaces the old Map-based in-memory rate limiter with Redis sorted sets.
  *
- * Heartbeat endpoints (/health, /v1/kill-switch/health) bypass rate limiting entirely.
+ * MUTATION endpoints (POST/PUT/PATCH/DELETE) are rate-limited at a strict
+ * budget. READ endpoints (GET/HEAD/OPTIONS) are rate-limited at a higher
+ * budget so the dashboard can navigate between pages without tripping 429,
+ * while still protecting DB-query endpoints from authenticated GET flooding.
+ *
+ * Static asset paths (/_next/static/, /_next/data/, favicon) and heartbeat
+ * endpoints (/health, /v1/kill-switch/health) are exempt entirely — they are
+ * navigation/asset traffic, not DB-query endpoints, and must never 429.
+ *
+ *   - Write: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
+ *   - Read:  200 requests per 60s window (GET/HEAD/OPTIONS on API routes)
+ *   - Static assets + heartbeat: NOT rate-limited
  *
  * Graceful degradation: allows requests if Redis is unavailable.
  *
@@ -15,7 +24,7 @@
 import type { RedisPool } from '../types/redis-pool';
 
 // ─── Configuration ────────────────────────────────
-export const READ_RATE_LIMIT_MAX = 60;   // GET requests per minute
+export const READ_RATE_LIMIT_MAX = 200;  // GET/HEAD/OPTIONS per minute (3x write budget)
 export const WRITE_RATE_LIMIT_MAX = 10;  // POST/PUT/DELETE per minute
 export const RATE_LIMIT_WINDOW_MS = 60000;
 export const RATE_LIMIT_MAX = READ_RATE_LIMIT_MAX; // legacy compat
@@ -71,13 +80,37 @@ export function isHeartbeatUrl(url: string): boolean {
   return url.startsWith('/v1/kill-switch/health') || url.startsWith('/health');
 }
 
+/**
+ * Static asset / navigation paths that must never be rate-limited. These are
+ * browser asset fetches (Next.js chunks, data, favicon), not DB-query API
+ * endpoints, so they are exempt entirely to avoid 429s during navigation.
+ */
+export function isStaticAssetUrl(url: string): boolean {
+  return (
+    url.startsWith('/_next/static/') ||
+    url.startsWith('/_next/data/') ||
+    url === '/favicon.ico' ||
+    url.startsWith('/favicon.')
+  );
+}
+
 export async function checkRateLimit(
   ip: string,
   method: string = 'GET',
   url: string = '/',
 ): Promise<{ allowed: boolean; retryAfter?: number }> {
-  if (isHeartbeatUrl(url)) return { allowed: true };
+  // Heartbeat and static asset paths are exempt entirely — they are not
+  // DB-query endpoints and must never trip the limiter during navigation.
+  if (isHeartbeatUrl(url) || isStaticAssetUrl(url)) return { allowed: true };
 
-  const maxRequests = isReadRequest(method) ? READ_RATE_LIMIT_MAX : WRITE_RATE_LIMIT_MAX;
-  return checkRateLimitRedis(ip, maxRequests);
+  // Read/navigation requests (GET/HEAD/OPTIONS) are rate-limited at a higher
+  // budget than mutations. This protects DB-query endpoints from authenticated
+  // GET flooding while still allowing the dashboard to navigate between pages.
+  if (isReadRequest(method)) {
+    return checkRateLimitRedis(ip, READ_RATE_LIMIT_MAX);
+  }
+
+  // Mutation endpoints (POST/PUT/PATCH/DELETE) and the /api/chat webhook
+  // (a POST) are rate-limited at the strict write budget.
+  return checkRateLimitRedis(ip, WRITE_RATE_LIMIT_MAX);
 }
