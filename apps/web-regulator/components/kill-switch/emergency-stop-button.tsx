@@ -38,9 +38,13 @@ const CONFIRM_PHRASE = "STOP ALL CHAOS";
 
 /**
  * Big rounded red "Kill" button styled like a physical emergency button
- * emerging from the surface. Uses layered box-shadows for a 3D "raised"
- * look and a press-down transform on :active so it feels like a real
- * button you push.
+ * emerging from the surface.
+ *
+ * 3D construction (Bug fix): the shadow / "base" lives on a SEPARATE
+ * wrapper element that stays fixed, while the button itself translates down
+ * on :active. This makes the button sink INTO its base on press instead of
+ * dragging the shadow along with it (which previously looked like the whole
+ * button + shadow moving together and being shifted a few px at the bottom).
  */
 export function KillButton({
   onClick,
@@ -54,41 +58,60 @@ export function KillButton({
   className?: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled || submitting}
-      aria-label="Kill — trigger emergency stop"
-      className={cn(
-        // Base: big, fully rounded, blood-red with a radial highlight so it
-        // reads as a physical mushroom-style emergency button.
-        "group relative inline-flex w-full items-center justify-center gap-2.5",
-        "rounded-full px-8 py-5 text-lg font-black uppercase tracking-widest",
-        "text-white select-none transition-all duration-150",
-        // 3D emergence: a darker "base" ring beneath + layered shadows that
-        // lift the button off the surface.
-        "bg-gradient-to-b from-red-500 via-red-600 to-red-700",
-        "shadow-[0_10px_0_0_#7f1d1d,0_16px_24px_-6px_rgba(0,0,0,0.6),inset_0_2px_0_0_rgba(255,255,255,0.35),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
-        "ring-4 ring-red-900/40 ring-offset-2 ring-offset-background",
-        "hover:brightness-110 hover:shadow-[0_12px_0_0_#7f1d1d,0_20px_28px_-6px_rgba(0,0,0,0.65),inset_0_2px_0_0_rgba(255,255,255,0.4),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
-        // Press-down: the button sinks into its base when clicked.
-        "active:translate-y-[6px] active:shadow-[0_4px_0_0_#7f1d1d,0_8px_12px_-4px_rgba(0,0,0,0.5),inset_0_2px_0_0_rgba(255,255,255,0.25),inset_0_-4px_8px_0_rgba(0,0,0,0.4)]",
-        "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-500",
-        "disabled:pointer-events-none disabled:opacity-60 disabled:translate-y-0 disabled:shadow-[0_10px_0_0_#7f1d1d,0_16px_24px_-6px_rgba(0,0,0,0.6),inset_0_2px_0_0_rgba(255,255,255,0.35),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
-        className,
-      )}
-    >
-      <Skull
-        className={cn(
-          "size-7 shrink-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]",
-          submitting && "animate-pulse",
-        )}
+    <div className={cn("group relative", className)}>
+      {/*
+        Pedestal / base — the fixed "shadow" beneath the button.
+        Extends 6px below the button so the button has room to sink into it
+        on press. This element NEVER moves; only the button translates.
+      */}
+      <div
         aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 bottom-[-6px]",
+          "rounded-full bg-red-950/90",
+          "shadow-[0_10px_0_0_#7f1d1d,0_16px_24px_-6px_rgba(0,0,0,0.6)]",
+          "transition-shadow duration-150",
+          "group-hover:shadow-[0_12px_0_0_#7f1d1d,0_20px_28px_-6px_rgba(0,0,0,0.65)]",
+        )}
       />
-      <span className="drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
-        {submitting ? "Killing…" : "Kill"}
-      </span>
-    </button>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled || submitting}
+        aria-label="Kill — trigger emergency stop"
+        className={cn(
+          // Base: big, fully rounded, blood-red with a radial highlight so it
+          // reads as a physical mushroom-style emergency button.
+          "relative inline-flex w-full items-center justify-center gap-2.5",
+          "rounded-full px-8 py-5 text-lg font-black uppercase tracking-widest",
+          "text-white select-none transition-all duration-150",
+          // The button's own shadows are only the INNER bevel (highlight on
+          // top, shading at the bottom) — the outer drop shadow lives on the
+          // fixed pedestal above, so it never moves with the button.
+          "bg-gradient-to-b from-red-500 via-red-600 to-red-700",
+          "shadow-[inset_0_2px_0_0_rgba(255,255,255,0.35),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
+          "ring-4 ring-red-900/40 ring-offset-2 ring-offset-background",
+          "hover:brightness-110",
+          // Press-down: the button sinks 6px into the fixed pedestal. The
+          // pedestal (and its shadow) stays put, so the base appears fixed
+          // while the button compresses into it.
+          "active:translate-y-[6px]",
+          "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-500",
+          "disabled:pointer-events-none disabled:opacity-60 disabled:translate-y-0",
+        )}
+      >
+        <Skull
+          className={cn(
+            "size-7 shrink-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]",
+            submitting && "animate-pulse",
+          )}
+          aria-hidden="true"
+        />
+        <span className="drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)]">
+          {submitting ? "Killing…" : "Kill"}
+        </span>
+      </button>
+    </div>
   );
 }
 
@@ -168,7 +191,7 @@ export function EmergencyStopButton({
               onClick={() => openActivationDialog("STOPPED")}
               disabled={isSubmitting}
               submitting={isSubmitting}
-              className="sm:w-auto sm:min-w-[220px]"
+              className="sm:w-auto sm:min-w-[220px] sm:my-1"
             />
 
             {currentState === "ARMED" && (

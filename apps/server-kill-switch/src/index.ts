@@ -267,6 +267,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // (the in-memory hot cache starts empty).
   await service.loadAuditFromDb();
 
+  // If the DB audit log is empty (fresh container, no state changes yet),
+  // seed a single "System initialized" entry so the dashboard's audit log
+  // is never blank.
+  await service.seedInitialAuditEntry();
+
   const wsManager = new WebSocketManager();
 
   if (typeof redis.subscribe === 'function') {
