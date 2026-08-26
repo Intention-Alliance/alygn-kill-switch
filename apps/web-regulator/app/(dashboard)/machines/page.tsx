@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   Server,
@@ -50,6 +51,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { apiGet } from "@/lib/api-client";
+import { effectiveStatus } from "@/lib/dashboard-utils";
 import { toast } from "sonner";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type {
@@ -78,6 +80,11 @@ const STATUS_ICONS: Record<
     icon: CircleOff,
     color: "text-red-500",
     label: "Offline",
+  },
+  pending: {
+    icon: Clock,
+    color: "text-amber-500",
+    label: "Pending",
   },
 };
 
@@ -108,6 +115,7 @@ interface MachineFlagsResponse {
 }
 
 export default function MachinesDashboardPage() {
+  const router = useRouter();
   const { machines: wsMachines, isConnected, status } = useKillSwitchWebSocket();
 
   const [machines, setMachines] = useState<Machine[]>([]);
@@ -211,13 +219,16 @@ export default function MachinesDashboardPage() {
   // ─── Stats ─────────────────────────────────────────────────────
 
   const activeCount = machines.filter(
-    (m) => m.status === "active",
+    (m) => effectiveStatus(m) === "active",
   ).length;
   const inactiveCount = machines.filter(
-    (m) => m.status === "inactive",
+    (m) => effectiveStatus(m) === "inactive",
   ).length;
   const offlineCount = machines.filter(
-    (m) => m.status === "offline",
+    (m) => effectiveStatus(m) === "offline",
+  ).length;
+  const pendingCount = machines.filter(
+    (m) => effectiveStatus(m) === "pending",
   ).length;
 
   // ─── Loading State ─────────────────────────────────────────────
@@ -294,7 +305,7 @@ export default function MachinesDashboardPage() {
 
         {/* Stats Overview */}
         <SectionErrorBoundary title="Stats">
-          <div className="grid gap-4 sm:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -340,6 +351,18 @@ export default function MachinesDashboardPage() {
               <CardContent>
                 <div className="text-2xl font-bold text-red-500">
                   {offlineCount}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Pending
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-amber-500">
+                  {pendingCount}
                 </div>
               </CardContent>
             </Card>
@@ -398,10 +421,11 @@ export default function MachinesDashboardPage() {
                         </TableHeader>
                         <TableBody>
                           {machines.map((machine) => {
+                            const status = effectiveStatus(machine);
                             const StatusIcon =
-                              STATUS_ICONS[machine.status].icon;
+                              STATUS_ICONS[status].icon;
                             const statusColor =
-                              STATUS_ICONS[machine.status].color;
+                              STATUS_ICONS[status].color;
 
                             return (
                               <TableRow
@@ -412,11 +436,8 @@ export default function MachinesDashboardPage() {
                                     machine.id && "bg-muted/50",
                                 )}
                                 onClick={() =>
-                                  setSelectedMachine(
-                                    selectedMachine?.id ===
-                                      machine.id
-                                      ? null
-                                      : machine,
+                                  router.push(
+                                    `/machines/${machine.id}`,
                                   )
                                 }
                               >
@@ -439,7 +460,7 @@ export default function MachinesDashboardPage() {
                                   >
                                     <StatusIcon className="h-3 w-3" />
                                     {
-                                      STATUS_ICONS[machine.status]
+                                      STATUS_ICONS[status]
                                         .label
                                     }
                                   </Badge>
@@ -547,14 +568,15 @@ export default function MachinesDashboardPage() {
                         variant="outline"
                         className={cn(
                           "mt-1 gap-1",
-                          STATUS_ICONS[selectedMachine.status]
-                            .color,
+                          STATUS_ICONS[
+                            effectiveStatus(selectedMachine)
+                          ].color,
                         )}
                       >
                         {(() => {
                           const S =
                             STATUS_ICONS[
-                              selectedMachine.status
+                              effectiveStatus(selectedMachine)
                             ];
                           return (
                             <>

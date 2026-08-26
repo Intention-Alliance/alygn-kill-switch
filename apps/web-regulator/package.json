@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "type-check": "tsc --noEmit",
-    "test": "echo 'no tests yet'",
+    "test": "bun test",
     "build": "next build",
     "start": "next start",
     "lint": "eslint ."

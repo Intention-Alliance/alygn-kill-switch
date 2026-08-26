@@ -80,53 +80,53 @@ export function MachineQuickActions({
     <div className={cn("flex flex-col gap-2", className)}>
       <h3 className="text-sm font-semibold text-foreground">Quick Actions</h3>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2">
         {isLocked ? (
           <Button
             variant="default"
-            size="sm"
+            size="lg"
             disabled
-            className="flex-1 min-w-[140px]"
+            className="w-full min-h-12"
           >
-            <Shield className="mr-1.5 size-3.5" />
+            <Shield className="mr-2 size-5" />
             System Locked
           </Button>
         ) : isStopped ? (
           <Button
             variant="default"
-            size="sm"
+            size="lg"
             onClick={() => submitStateChange("ARMED")}
             disabled={isSubmitting}
-            className="flex-1 min-w-[140px]"
+            className="w-full min-h-12"
           >
-            <Shield className="mr-1.5 size-3.5" />
+            <Shield className="mr-2 size-5" />
             {isSubmitting ? "Arming…" : "ARM & RELEASE"}
           </Button>
         ) : (
           <>
             <Button
               variant="destructive"
-              size="sm"
+              size="lg"
               onClick={openStop}
               disabled={isSubmitting}
-              className="flex-1 min-w-[140px]"
+              className="w-full min-h-12 text-base font-semibold shadow-sm"
             >
-              <AlertTriangle className="mr-1.5 size-3.5" />
+              <AlertTriangle className="mr-2 size-5" />
               {isSubmitting ? "Stopping…" : "EMERGENCY STOP"}
             </Button>
 
             {isArmed && (
               <Button
                 variant="default"
-                size="sm"
+                size="lg"
                 onClick={() => submitStateChange("RUNNING")}
                 disabled={isSubmitting}
-                className="flex-1 min-w-[140px]"
+                className="w-full min-h-12"
               >
                 {isSubmitting ? (
-                  <Loader2 className="mr-1.5 size-3.5 animate-spin" />
+                  <Loader2 className="mr-2 size-5 animate-spin" />
                 ) : (
-                  <Play className="mr-1.5 size-3.5" />
+                  <Play className="mr-2 size-5" />
                 )}
                 RUN
               </Button>
