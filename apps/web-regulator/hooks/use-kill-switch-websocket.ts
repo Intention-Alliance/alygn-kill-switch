@@ -131,6 +131,12 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const attemptRef = useRef(0);
   const heartbeatTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
+  // Tracks whether the WebSocket ever successfully opened. A rejected upgrade
+  // (e.g. invalid/expired auth token → backend returns HTTP 401) surfaces to
+  // the browser as an abnormal close (code 1006) WITHOUT ever firing onopen.
+  // We use this to distinguish "auth rejected" from a genuine network drop so
+  // we fall back to HTTP polling instead of retrying 5 times.
+  const everConnectedRef = useRef(false);
   // Persist the audit log across tab switches / remounts so it isn't lost
   // when the user navigates away and back. Restored on mount below.
   const auditLogRef = useRef<ActivationRecord[]>([]);
@@ -425,6 +431,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       wsRef.current = null;
     }
 
+    // A fresh connection attempt starts with no successful open yet.
+    everConnectedRef.current = false;
+
     const token = await getSessionToken();
     if (!token) {
       // No token available — go straight to polling
@@ -456,6 +465,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
       // eslint-disable-next-line no-console
       console.log("[ws] Connected");
+      everConnectedRef.current = true;
       setIsConnected(true);
       setReconnectAttempt(0);
       attemptRef.current = 0;
@@ -491,8 +501,17 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       clearHeartbeatTimer();
       setIsConnected(false);
 
-      // If auth failed, don't retry — go to polling
-      if (event.code === 4001) {
+      // If auth failed, don't retry — go to polling.
+      //   - 4001: backend sent an explicit auth-failure close frame.
+      //   - 1006 + never connected: the upgrade was rejected (backend returned
+      //     an HTTP 401 for an invalid/expired token), which the browser
+      //     surfaces as an abnormal close without ever firing onopen. Treat
+      //     this as an auth failure too so we don't burn 5 reconnect attempts
+      //     on a token that will never validate.
+      const authRejected =
+        event.code === 4001 ||
+        (event.code === 1006 && !everConnectedRef.current);
+      if (authRejected) {
         startPolling();
         return;
       }
@@ -563,6 +582,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         stopPolling();
         attemptRef.current = 0;
         setReconnectAttempt(0);
+        everConnectedRef.current = false;
         connect();
       }
     }

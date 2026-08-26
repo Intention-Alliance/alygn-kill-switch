@@ -76,6 +76,7 @@ export function adaptMachineToCluster(m: Machine): DashboardCluster {
     status:
       m.status === "active" ? "operational"
       : m.status === "inactive" ? "offline"
+      : m.status === "pending" ? "degraded"
       : "degraded",
     gpus: m.specs?.gpu ? 1 : 0,
     // Real values only — never fabricate. Map the machine's reported CPU and

@@ -1,11 +1,19 @@
 /**
  * Redis-backed Sliding-Window Rate Limiter
  *
- * Replaces the old Map-based in-memory rate limiter with Redis sorted sets:
- *   - Read: 60 requests per 60s window (GET/HEAD/OPTIONS)
- *   - Write: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
+ * Replaces the old Map-based in-memory rate limiter with Redis sorted sets.
  *
- * Heartbeat endpoints (/health, /v1/kill-switch/health) bypass rate limiting entirely.
+ * Only MUTATION endpoints (POST/PUT/PATCH/DELETE) and the /api/chat webhook
+ * are rate-limited. Read/navigation requests (GET/HEAD/OPTIONS) are NOT
+ * rate-limited — the dashboard fires many GETs while navigating between
+ * pages (machines, flags, settings, health, metrics), and counting those
+ * toward a per-minute budget caused the UI to hit 429 just from browsing.
+ *
+ *   - Write: 10 requests per 60s window (POST/PUT/PATCH/DELETE)
+ *   - Read:  NOT rate-limited (GET/HEAD/OPTIONS bypass)
+ *
+ * Heartbeat endpoints (/health, /v1/kill-switch/health) bypass rate limiting
+ * entirely.
  *
  * Graceful degradation: allows requests if Redis is unavailable.
  *
@@ -15,7 +23,7 @@
 import type { RedisPool } from '../types/redis-pool';
 
 // ─── Configuration ────────────────────────────────
-export const READ_RATE_LIMIT_MAX = 60;   // GET requests per minute
+export const READ_RATE_LIMIT_MAX = 60;   // legacy compat — reads are no longer limited
 export const WRITE_RATE_LIMIT_MAX = 10;  // POST/PUT/DELETE per minute
 export const RATE_LIMIT_WINDOW_MS = 60000;
 export const RATE_LIMIT_MAX = READ_RATE_LIMIT_MAX; // legacy compat
@@ -78,6 +86,11 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean; retryAfter?: number }> {
   if (isHeartbeatUrl(url)) return { allowed: true };
 
-  const maxRequests = isReadRequest(method) ? READ_RATE_LIMIT_MAX : WRITE_RATE_LIMIT_MAX;
-  return checkRateLimitRedis(ip, maxRequests);
+  // Read/navigation requests (GET/HEAD/OPTIONS) are NOT rate-limited. Only
+  // mutation endpoints (POST/PUT/PATCH/DELETE) and the /api/chat webhook
+  // (a POST) are rate-limited. This prevents the dashboard from tripping the
+  // limiter just by navigating between pages.
+  if (isReadRequest(method)) return { allowed: true };
+
+  return checkRateLimitRedis(ip, WRITE_RATE_LIMIT_MAX);
 }

@@ -21,7 +21,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "./auth-client";
 
 // ─── Types ────────────────────────────────────────────────────────
@@ -39,6 +39,10 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  /** Re-fetch the session from the server and update local auth state.
+   *  Used after WebAuthn sign-in (which mints the session cookie server-side
+   *  but does not go through the password `login()` path). */
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -64,8 +68,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
   const isAuthenticated = user !== null;
   const wasAuthenticatedRef = useRef(isAuthenticated);
+
+  // Refresh the session on every navigation (route change). This keeps the
+  // sliding 12h expiry alive as the user moves between dashboard pages —
+  // without it, a session could expire mid-browsing even though the user is
+  // actively using the app.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    authClient
+      .getSession()
+      .then((res) => {
+        if (res.error || !res.data) {
+          setUser(null);
+          return;
+        }
+        const data = res.data as { user?: Record<string, unknown> };
+        const adapted = adaptUser(data.user);
+        if (adapted) setUser(adapted);
+      })
+      .catch(() => {
+        // Silent — don't log out on network errors
+      });
+  }, [pathname, isAuthenticated]);
 
   // Restore session on mount
   useEffect(() => {
@@ -153,6 +181,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  // Re-fetch the session from the server and update local auth state.
+  // WebAuthn sign-in mints the session cookie server-side but does not go
+  // through the password `login()` path, so the context must be refreshed
+  // explicitly or the AuthGuard would bounce the user back to /login.
+  const refreshSession = useCallback(async () => {
+    try {
+      const res = await authClient.getSession();
+      if (res.error || !res.data) {
+        setUser(null);
+        return;
+      }
+      const data = res.data as { user?: Record<string, unknown> };
+      const adapted = adaptUser(data.user);
+      setUser(adapted);
+    } catch {
+      setUser(null);
+    }
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -160,8 +207,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
+      refreshSession,
     }),
-    [user, isAuthenticated, isLoading, login, logout],
+    [user, isAuthenticated, isLoading, login, logout, refreshSession],
   );
 
   // ─── Redirect on auth state change ─────────────────────────

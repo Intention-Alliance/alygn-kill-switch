@@ -43,10 +43,47 @@ export class ApiError extends Error {
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const body = await response.text().catch(() => "Request failed");
-    throw new ApiError(body || `HTTP ${response.status}`, response.status);
+    const raw = await response.text().catch(() => "");
+    throw new ApiError(
+      friendlyErrorMessage(raw, response.status),
+      response.status,
+    );
   }
   return response.json() as Promise<T>;
+}
+
+/**
+ * Convert a raw error response body into a user-friendly message.
+ *
+ * Backends sometimes return JSON error payloads (e.g.
+ * `{"error":"Rate limit exceeded","limit":60}`) which, if surfaced
+ * verbatim, render as raw JSON in the UI. This extracts a readable
+ * message and maps common status codes to friendly copy.
+ */
+function friendlyErrorMessage(raw: string, status: number): string {
+  // Rate limiting — always show friendly copy regardless of body shape.
+  if (status === 429) {
+    return "Too many requests. Please wait a moment.";
+  }
+
+  // Try to parse a JSON error body and pull out a human-readable field.
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      const candidate =
+        parsed.error ?? parsed.message ?? parsed.detail ?? parsed.reason;
+      if (typeof candidate === "string" && candidate.trim().length > 0) {
+        return candidate.trim();
+      }
+    } catch {
+      // Not JSON — fall through to raw text below.
+    }
+  }
+
+  // Plain text body (or empty) — fall back to a generic message.
+  const trimmed = raw.trim();
+  if (trimmed) return trimmed;
+  return `Request failed (HTTP ${status})`;
 }
 
 // ─── API Methods ─────────────────────────────────────────────────────

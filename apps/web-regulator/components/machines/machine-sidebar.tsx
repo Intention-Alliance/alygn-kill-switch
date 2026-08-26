@@ -19,6 +19,12 @@ interface MachineSidebarProps {
   machine: Machine;
   currentKillSwitchState: KillSwitchState;
   onKillSwitchStateChange: (state: KillSwitchState) => void;
+  /** Optional live metrics (polled from GET /v1/machines/:id/metrics). */
+  metrics?: {
+    cpuUsage: number;
+    memoryUsage: number;
+    gpuUsage: number;
+  } | null;
 }
 
 const MACHINE_STATUS_CONFIG: Record<
@@ -28,12 +34,14 @@ const MACHINE_STATUS_CONFIG: Record<
   active: { label: "Active", variant: "default" },
   inactive: { label: "Inactive", variant: "secondary" },
   offline: { label: "Offline", variant: "destructive" },
+  pending: { label: "Pending", variant: "secondary" },
 };
 
 export function MachineSidebar({
   machine,
   currentKillSwitchState,
   onKillSwitchStateChange,
+  metrics,
 }: MachineSidebarProps) {
   const statusConfig = MACHINE_STATUS_CONFIG[machine.status] ?? {
     label: machine.status,
@@ -104,7 +112,7 @@ export function MachineSidebar({
 
           {/* System Metrics */}
           <Separator className="bg-border/50" />
-          <SystemMetricsBar machine={machine} />
+          <SystemMetricsBar machine={machine} metrics={metrics} />
         </CardContent>
       </Card>
 
