@@ -1,0 +1,28 @@
+{
+  "name": "align-dignity-verifier-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "type-check": "tsc --noEmit",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "better-auth": "^1.6.9",
+    "drizzle-orm": "^0.44.0",
+    "next": "16.1.4",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^25",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.1",
+    "typescript": "^5"
+  }
+}
