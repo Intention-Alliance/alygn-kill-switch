@@ -89,19 +89,20 @@ export function EmergencyStopButton({
 
   return (
     <div className={className}>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         {currentState === "STOPPED" ? (
           <Button
             variant="default"
             size="lg"
             onClick={() => submitStateChange("ARMED")}
             disabled={isSubmitting}
+            className="w-full min-h-12 sm:w-auto"
           >
             <Shield className="mr-2 h-5 w-5" />
             {isSubmitting ? "Activating…" : "ARM & RELEASE"}
           </Button>
         ) : currentState === "LOCKED" ? (
-          <Button variant="default" size="lg" disabled>
+          <Button variant="default" size="lg" disabled className="w-full min-h-12 sm:w-auto">
             <Shield className="mr-2 h-5 w-5" />
             System Locked
           </Button>
@@ -112,6 +113,7 @@ export function EmergencyStopButton({
               size="lg"
               onClick={() => openActivationDialog("STOPPED")}
               disabled={isSubmitting}
+              className="w-full min-h-12 text-base font-semibold shadow-sm sm:w-auto"
             >
               <AlertTriangle className="mr-2 h-5 w-5" />
               {isSubmitting ? "Activating…" : "EMERGENCY STOP"}
@@ -123,6 +125,7 @@ export function EmergencyStopButton({
                 size="lg"
                 onClick={() => submitStateChange("RUNNING")}
                 disabled={isSubmitting}
+                className="w-full min-h-12 sm:w-auto"
               >
                 <Loader2
                   className={cn(

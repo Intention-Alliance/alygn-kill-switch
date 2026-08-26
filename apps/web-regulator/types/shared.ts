@@ -71,7 +71,11 @@ export interface MachineSpecs {
   dpu: string | null;
 }
 
-export type MachineStatus = "active" | "inactive" | "offline";
+export type MachineStatus =
+  | "active"
+  | "inactive"
+  | "offline"
+  | "pending";
 
 export interface Machine {
   id: string;
@@ -85,6 +89,11 @@ export interface Machine {
   specs: MachineSpecs;
   cpuUsage?: number;
   memoryUsage?: number;
+  /**
+   * Optional network handshake flag. When `false`, the machine is treated
+   * as "pending" (registered but not yet connected) in the dashboard UI.
+   */
+  connected?: boolean;
 }
 
 export interface DpuInfo {

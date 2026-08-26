@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { Fingerprint, Loader2 } from "lucide-react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { apiPost, ApiError } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import type {
   Fido2LoginBeginResponse,
@@ -36,6 +37,7 @@ export function SecurityKeySignInButton({
   redirectTo = "/kill-switch",
 }: SecurityKeySignInButtonProps) {
   const router = useRouter();
+  const { refreshSession } = useAuth();
   const [busy, setBusy] = useState(false);
   // Whether any user has a registered security key. The button is hidden
   // until we confirm a key exists (discoverable sign-in: login/begin with
@@ -91,6 +93,13 @@ export function SecurityKeySignInButton({
       if (!result.verified) {
         throw new Error("Sign-in was not verified by the server");
       }
+
+      // Refresh the auth context BEFORE redirecting. WebAuthn login mints the
+      // session cookie server-side but does not go through the password
+      // `login()` path, so the context still thinks the user is unauthenticated.
+      // Without this, the dashboard AuthGuard bounces the user back to /login
+      // and the redirect only works on a full reload.
+      await refreshSession();
 
       toast.success("Signed in with security key", {
         description: `Welcome back, ${result.name || result.email}.`,

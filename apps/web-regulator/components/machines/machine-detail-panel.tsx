@@ -10,6 +10,7 @@ import { MachineSidebar } from "@/components/machines/machine-sidebar";
 import { MachineLogs } from "@/components/machines/machine-logs";
 import { DPUSecurityBanner } from "@/components/machines/dpu-security-banner";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { apiGet } from "@/lib/api-client";
 import type { Machine, ActivationRecord, KillSwitchState } from "@/types/shared";
 
 interface MachineDetailPanelProps {
@@ -20,6 +21,22 @@ interface MachineDetailPanelProps {
   onKillSwitchStateChange: (state: KillSwitchState) => void;
 }
 
+// ─── Live metrics API response shape ────────────────────────────────
+// GET /v1/machines/:id/metrics → real-time host telemetry
+interface MachineMetricsResponse {
+  cpuUsage: number;
+  memoryUsage: number;
+  gpuUsage: number;
+  gpuModel: string;
+  dpuStatus: string;
+  loadAvg: number;
+  uptime: number;
+  diskUsage: number;
+  timestamp: string;
+}
+
+const METRICS_POLL_INTERVAL_MS = 5_000; // refresh live stats every 5s
+
 const MACHINE_STATUS_CONFIG: Record<
   Machine["status"],
   { label: string; variant: "default" | "destructive" | "outline" }
@@ -27,6 +44,7 @@ const MACHINE_STATUS_CONFIG: Record<
   active: { label: "Active", variant: "default" },
   inactive: { label: "Inactive", variant: "outline" },
   offline: { label: "Offline", variant: "destructive" },
+  pending: { label: "Pending", variant: "outline" },
 };
 
 export function MachineDetailPanel({
@@ -38,12 +56,40 @@ export function MachineDetailPanel({
 }: MachineDetailPanelProps) {
   const [isVisible, setIsVisible] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  // Live metrics — seeded from the machine row, then refreshed by polling
+  // GET /v1/machines/:id/metrics every 5s so CPU/RAM/GPU actually update.
+  const [liveMetrics, setLiveMetrics] = useState<MachineMetricsResponse | null>(
+    null,
+  );
 
   // Trigger slide-in animation on mount
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsVisible(true));
     return () => cancelAnimationFrame(frame);
   }, []);
+
+  // Poll live system metrics every 5s (Bug: machine stats were static).
+  useEffect(() => {
+    let cancelled = false;
+
+    async function pollMetrics() {
+      try {
+        const res = await apiGet<MachineMetricsResponse>(
+          `/api/machines/${encodeURIComponent(machine.id)}/metrics`,
+        );
+        if (!cancelled) setLiveMetrics(res);
+      } catch {
+        // Metrics endpoint may be unavailable — keep the last known values.
+      }
+    }
+
+    pollMetrics();
+    const interval = setInterval(pollMetrics, METRICS_POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [machine.id]);
 
   function handleClose() {
     setIsVisible(false);
@@ -55,22 +101,14 @@ export function MachineDetailPanel({
     variant: "outline" as const,
   };
 
-  const cpuValue = machine.cpuUsage ?? 0;
-  const memValue = machine.memoryUsage ?? 0;
+  // Prefer live polled metrics; fall back to the (static) machine row values.
+  const cpuValue = liveMetrics?.cpuUsage ?? machine.cpuUsage ?? 0;
+  const memValue = liveMetrics?.memoryUsage ?? machine.memoryUsage ?? 0;
 
   // Audit log violations count (STOPPED or LOCKED transitions)
   const violations = auditLog.filter(
     (e) => e.newState === "STOPPED" || e.newState === "LOCKED",
   ).length;
-
-  // Machine-specific log entries count
-  const machineLogs = auditLog.filter((entry) => {
-    const augmented = entry as ActivationRecord & { machineId?: string };
-    return (
-      augmented.machineId === machine.id ||
-      augmented.machineId === undefined
-    );
-  });
 
   return (
     <div
@@ -174,6 +212,7 @@ export function MachineDetailPanel({
             machine={machine}
             currentKillSwitchState={currentKillSwitchState}
             onKillSwitchStateChange={onKillSwitchStateChange}
+            metrics={liveMetrics}
           />
         </div>
 
