@@ -81,6 +81,14 @@ function buildEnvOverrides(): Partial<AppConfig> {
     (overrides as any).logging = { ...((overrides as any).logging || {}), level: env.LOG_LEVEL as any };
   }
 
+  // Feature flags — allow env override for killSwitchVerificationEnabled
+  if (env.KILL_SWITCH_VERIFICATION_FEATURE_FLAG) {
+    (overrides as any).features = {
+      ...((overrides as any).features || {}),
+      killSwitchVerificationEnabled: env.KILL_SWITCH_VERIFICATION_FEATURE_FLAG === "true",
+    };
+  }
+
   // Telemetry
   if (env.OTEL_EXPORTER_OTLP_ENDPOINT) {
     (overrides as any).telemetry = { ...((overrides as any).telemetry || {}), endpoint: env.OTEL_EXPORTER_OTLP_ENDPOINT };
