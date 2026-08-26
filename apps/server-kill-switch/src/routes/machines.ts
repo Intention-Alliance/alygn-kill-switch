@@ -14,7 +14,7 @@
  * Publishes machine events to bcp:machines:events Redis channel.
  */
 
-import { eq, ne, desc, asc, and, sql } from 'drizzle-orm';
+import { eq, ne, desc, asc, and, sql, or, isNull } from 'drizzle-orm';
 import { db } from '../db/index';
 import { machines, machineFlags, agents, featureFlags, killSwitchAuditLog } from '../db/schema';
 import { getMachineMetrics, collectSystemMetrics } from '../services/system-metrics';
@@ -445,7 +445,7 @@ export async function handleMachinesRoutes(
       const logs = await db
         .select()
         .from(killSwitchAuditLog)
-        .where(eq(killSwitchAuditLog.machineId, id))
+        .where(or(eq(killSwitchAuditLog.machineId, id), isNull(killSwitchAuditLog.machineId)))
         .orderBy(desc(killSwitchAuditLog.timestamp))
         .limit(limit)
         .offset(offset)
