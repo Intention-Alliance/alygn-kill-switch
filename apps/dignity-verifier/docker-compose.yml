@@ -1,0 +1,84 @@
+# ============================================================
+# Dignity Verifier Training Framework — Docker Compose
+# ============================================================
+# Super-admin dashboard for the Dignity Verifier Training
+# Framework. Tailscale-only access (127.0.0.1:3002 published,
+# remote access via Tailscale + nginx on 100.66.199.80:8443).
+#
+# Usage:
+#   docker compose -f apps/dignity-verifier/docker-compose.yml build
+#   docker compose -f apps/dignity-verifier/docker-compose.yml up -d
+#
+# Requires the external `align-network` (created by the root
+# docker-compose.yml) and the following env vars in the shell:
+#   BETTER_AUTH_SECRET   (shared with kill-switch)
+#   KILL_SWITCH_AUTH_TOKEN (super-admin password seed)
+#   OLLAMA_BASE_URL      (defaults to host gateway)
+#   TEACHER_MODEL        (defaults to deepseek-v4-flash:cloud)
+#   STUDENT_MODEL        (defaults to qwen2.5:0.5b)
+#   EMBEDDING_MODEL      (defaults to nomic-embed-text-v2-moe:latest)
+#   TAILSCALE_IP         (defaults to 100.66.199.80)
+# ============================================================
+
+version: '3.8'
+
+services:
+  # ==========================================================
+  # Dignity Verifier Dashboard (Next.js standalone, super-admin)
+  # ==========================================================
+  dignity-verifier-dashboard:
+    build:
+      context: ../..
+      dockerfile: apps/dignity-verifier/dashboard/Dockerfile
+    container_name: alygn-dignity-verifier
+    restart: unless-stopped
+    # Localhost-only publish. Remote access is via Tailscale + nginx
+    # (see dashboard/nginx.conf) which proxies to 127.0.0.1:3002.
+    ports:
+      - "127.0.0.1:3002:3000"
+    # The dashboard reaches Ollama (host) via the Docker host gateway
+    # since Ollama runs on the host loopback, not on align-network.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Persist dataset + model artifacts across restarts.
+      - dignity-verifier-data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_DIR=/app/data
+      # ─── Better-Auth (super-admin only) ─────────────────────
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET required}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://127.0.0.1:3002}
+      - NEXT_PUBLIC_BETTER_AUTH_URL=/api/auth
+      # Super-admin password seed (shared with kill-switch).
+      - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-andlersrv@alygn.com}
+      # ─── Tailscale identity check ─────────────────────────
+      - TAILSCALE_IP=${TAILSCALE_IP:-100.66.199.80}
+      - TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME:-andlersrv.tail62d797.ts.net}
+      # ─── Ollama / model config ─────────────────────────────
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - TEACHER_MODEL=${TEACHER_MODEL:-deepseek-v4-flash:cloud}
+      - TEACHER_FALLBACK_MODEL=${TEACHER_FALLBACK_MODEL:-glm-5.2:cloud}
+      - STUDENT_MODEL=${STUDENT_MODEL:-qwen2.5:0.5b}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-nomic-embed-text-v2-moe:latest}
+      - TARGET_MODEL=${TARGET_MODEL:-dignity-verifier-preview-v1}
+      # ─── Observability ────────────────────────────────────
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - align-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  align-network:
+    name: infrastructure_align-network
+    external: true
+
+volumes:
+  dignity-verifier-data:
