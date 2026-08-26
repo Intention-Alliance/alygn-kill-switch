@@ -1,0 +1,18 @@
+# Dignity Verifier — gitignore
+# Model artifacts + runtime data are never committed.
+
+# Runtime data (SQLite DB, dataset, model artifacts)
+data/
+dataset/augmented/*.jsonl
+dataset/eval/*.jsonl
+reports/training-runs/*
+reports/eval-results/*
+reports/distillation-logs/*
+
+# Next.js build output
+dashboard/.next/
+dashboard/node_modules/
+
+# Env files
+.env
+.env.local

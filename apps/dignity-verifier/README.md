@@ -32,12 +32,20 @@ stronger teacher, targeting **≥85%** accuracy.
 ```
 apps/dignity-verifier/
 ├── README.md            ← this file
+├── docker-compose.yml   ← dashboard service (align-network, 127.0.0.1:3002)
+├── .env.example         ← env template (secrets never committed)
 ├── dashboard/           ← Next.js super-admin dashboard (Tailscale-only)
+│   ├── Dockerfile       ← multi-stage: builder → standalone runner
+│   ├── nginx.conf       ← Tailscale-only reverse proxy (install to /etc/nginx)
+│   ├── package.json / next.config.ts / tsconfig.json
+│   └── src/
+│       ├── app/         ← layout, home, dataset/training/llama-index/reports pages
+│       │   └── api/     ← auth/[...all] (Better-Auth mount) + health
+│       └── lib/         ← auth.ts, auth-client.ts, db-schema.ts
 ├── dataset/             ← seed / augmented / eval JSONL datasets
 ├── training/            ← LoRA fine-tune pipeline + Ollama Modelfile
 ├── llama-index/         ← semantic augmentation pipeline
-├── reports/             ← training runs, eval results, distillation logs
-└── docker-compose.yml   ← dashboard + training services
+└── reports/             ← training runs, eval results, distillation logs
 ```
 
 ## Architecture
@@ -80,3 +88,87 @@ Architecture: **Hugrukal** · Pipeline: **Keridz** · Dashboard: **Gimglich** ·
 Dataset/eval: **Zyxali** · Storage: **Zuldrak** · Docker/deploy: **Rokthar** ·
 Review: **Chanshuk** / **Nikaya** · QA: **Volthiz** · Docs: **Talanara** ·
 Orchestration: **Wobblus**
+
+---
+
+# Operations (Rokthar / devops)
+
+## How to Start the Dashboard
+
+### Prerequisites
+
+- Docker + the external `align-network` network (created by the root
+  `docker-compose.yml`).
+- Env vars in the shell (or `.env`):
+  - `BETTER_AUTH_SECRET` (shared with kill-switch)
+  - `KILL_SWITCH_AUTH_TOKEN` (super-admin password seed, ≥16 chars)
+  - `OLLAMA_BASE_URL` (defaults to `http://host.docker.internal:11434`)
+  - `TEACHER_MODEL` (defaults to `deepseek-v4-flash:cloud`)
+  - `STUDENT_MODEL` (defaults to `qwen2.5:0.5b`)
+  - `EMBEDDING_MODEL` (defaults to `nomic-embed-text-v2-moe:latest`)
+
+### Build + Run
+
+```bash
+cd /home/andlersrv/.openclaw/workspace/repos/alygn/infrastructure
+
+# Build the dashboard image
+docker compose -f apps/dignity-verifier/docker-compose.yml build
+
+# Start it
+docker compose -f apps/dignity-verifier/docker-compose.yml up -d
+
+# Verify health
+curl -f http://127.0.0.1:3002/health
+```
+
+The dashboard publishes on **`127.0.0.1:3002`** (localhost only). Remote access
+is via Tailscale + nginx (below).
+
+### Nginx (Tailscale-only remote access)
+
+Install the provided nginx config to expose the dashboard over Tailscale with the
+existing Tailscale cert:
+
+```bash
+sudo ln -sf \
+  /home/andlersrv/.openclaw/workspace/repos/alygn/infrastructure/apps/dignity-verifier/dashboard/nginx.conf \
+  /etc/nginx/sites-available/dignity-verifier.conf
+sudo ln -sf /etc/nginx/sites-available/dignity-verifier.conf \
+            /etc/nginx/sites-enabled/dignity-verifier.conf
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Access: `https://andlersrv.tail62d797.ts.net:8443` (Tailscale mesh only —
+non-Tailscale IPs are denied at the nginx edge and re-verified in the app).
+
+## Super-Admin Access Setup
+
+The dashboard is **super-admin only** — a single user (Andler), no public
+registration, no multi-user. Access is gated by three layers:
+
+1. **Tailscale identity** — nginx denies non-Tailscale IPs; the app re-verifies
+   the client IP is within the Tailscale CGNAT range (`100.64.0.0/10`) as
+   defense-in-depth.
+2. **Better-Auth session** — httpOnly cookie, 1h expiry, refreshed every 5m.
+3. **WebAuthn (FIDO2)** — hardware security key / passkey bound to the Tailscale
+   relying party (`andlersrv.tail62d797.ts.net`).
+
+The super-admin user is auto-seeded on first request (direct SQLite insert, no
+HTTP self-roundtrip). Credentials:
+
+- **Email:** `ADMIN_EMAIL` (defaults to `andlersrv@alygn.com`)
+- **Password:** `KILL_SWITCH_AUTH_TOKEN` (shared with the kill-switch)
+
+The seed is idempotent — it skips if the user already exists. The SQLite DB
+(`dignity-verifier.db`) persists in the `dignity-verifier-data` volume.
+
+## Status
+
+- [x] Docker scaffold + super-admin auth (this scaffold)
+- [ ] Dashboard UI (Gimglich)
+- [ ] Training pipeline (Keridz)
+- [ ] Seed dataset 275+ examples (Zyxali)
+- [ ] LoRA fine-tune <4h on CPU
+- [ ] Eval accuracy ≥85%
+- [ ] Deploy `dignity-verifier-preview-v1` to kill-switch

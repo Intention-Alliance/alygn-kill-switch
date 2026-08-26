@@ -27,6 +27,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { eq } from "drizzle-orm";
 import { Database } from "bun:sqlite";
 import { drizzle } from "drizzle-orm/bun-sqlite";
+import { mkdirSync } from "node:fs";
 import * as schema from "./db-schema";
 
 // ─── Environment Validation ──────────────────────────────────────────────
@@ -82,7 +83,6 @@ const DATA_DIR = process.env.DATA_DIR || "/app/data";
 const DB_PATH = `${DATA_DIR}/dignity-verifier.db`;
 
 // Ensure data dir exists (idempotent)
-import { mkdirSync } from "node:fs";
 mkdirSync(DATA_DIR, { recursive: true });
 
 const sqlite = new Database(DB_PATH);
