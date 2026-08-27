@@ -51,7 +51,7 @@ eval results feed back into the dataset for the next cycle.
 │  └───────────┘  └───────────┘  └───────┬────────┘             │
 │                                        ▼                      │
 │  ┌─────────────────────────────────────────────────────────┐  │
-│  │ Ollama Modelfile → dignity-verifier-preview-v1           │  │
+│  │ Ollama Modelfile → dignity-verification-v0.1-preview           │  │
 │  │ (FROM qwen2.5:0.5b + LoRA adapter)                       │  │
 │  └─────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────┘
@@ -73,7 +73,7 @@ eval results feed back into the dataset for the next cycle.
 
 3. **Ollama** (external) — hosts the student base model (`qwen2.5:0.5b`), the
    embedding model (`nomic-embed-text-v2-moe`), and the created
-   `dignity-verifier-preview-v1`. The teacher (`deepseek-v4-flash:cloud`) is
+   `dignity-verification-v0.1-preview`. The teacher (`deepseek-v4-flash:cloud`) is
    reached through Ollama's cloud routing.
 
 **Data flow:** Dashboard issues commands → Core reads seed dataset → LlamaIndex
@@ -120,10 +120,10 @@ batch_size=4, lr=2e-4, CPU-only (~2–4h). Output: adapter (~5–20MB).
 
 **Step 4 — Ollama model creation.** Modelfile `FROM qwen2.5:0.5b` +
 `ADAPTER ./lora-weights.safetensors` → `ollama create
-dignity-verifier-preview-v1`. Run the 33-test eval suite.
+dignity-verification-v0.1-preview`. Run the 33-test eval suite.
 
 **Step 5 — Deploy + verify.** If accuracy ≥85%, update kill-switch
-`DEFAULT_MODEL` to `dignity-verifier-preview-v1`, rebuild the kill-switch
+`DEFAULT_MODEL` to `dignity-verification-v0.1-preview`, rebuild the kill-switch
 container, run the Dignity Test suite. If <85%, iterate.
 
 ### Dashboard architecture
@@ -264,10 +264,10 @@ status via `/api/training/status` (polling or SSE).
 
 - **Input:** LoRA adapter weights (`training/lora-weights.safetensors`) +
   Modelfile template.
-- **Output:** `dignity-verifier-preview-v1` model in Ollama.
+- **Output:** `dignity-verification-v0.1-preview` model in Ollama.
 - **Contract:** `train.py` writes the adapter to a known path. The Modelfile is
   `FROM qwen2.5:0.5b` + `ADAPTER ./lora-weights.safetensors`. `ollama create
-  dignity-verifier-preview-v1 -f modelfile` produces the model. The eval runner
+  dignity-verification-v0.1-preview -f modelfile` produces the model. The eval runner
   then calls the model via Ollama's OpenAI-compatible API and compares verdicts
   against the eval suite's expected labels.
 
