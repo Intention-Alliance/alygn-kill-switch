@@ -12,6 +12,11 @@ reports/distillation-logs/*
 # Eval runner output (generated artifact)
 eval-results/
 
+# LlamaIndex augmentation runtime artifacts
+llama-index/.index/
+llama-index/.venv/
+llama-index/.augment.lock
+
 # Next.js build output
 dashboard/.next/
 dashboard/node_modules/
