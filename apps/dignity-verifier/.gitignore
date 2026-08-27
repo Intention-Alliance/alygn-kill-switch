@@ -17,6 +17,15 @@ llama-index/.index/
 llama-index/.venv/
 llama-index/.augment.lock
 
+# LoRA training runtime artifacts (WS-3)
+training/.venv/
+training/lora-weights/
+training/checkpoints/
+training/reports/
+training/mlruns/
+training/__pycache__/
+training/*.log
+
 # Next.js build output
 dashboard/.next/
 dashboard/node_modules/
