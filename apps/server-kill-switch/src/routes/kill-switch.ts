@@ -8,6 +8,7 @@ import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webaut
 import { killActionForTarget } from './kill-authorization';
 import { checkAuth } from '../middleware/auth';
 import { getConfig } from '../config';
+import type { VerifierReachabilityTracker } from '../services/verification/verifier-reachability';
 
 /**
  * Extract and verify the WebAuthn assertion token required for kill
@@ -52,6 +53,7 @@ export async function handleKillSwitchRoutes(
   res: any,
   service: KillSwitchService,
   ip: string,
+  verifierReachability?: VerifierReachabilityTracker,
 ): Promise<boolean> {
   try {
     // GET /v1/kill-switch/activations
@@ -87,6 +89,10 @@ export async function handleKillSwitchRoutes(
         verificationEnabled: verification.verifyEnabled,
         verificationMode: verification.verifyMode,
         verifierModel: verification.verifierModel,
+        // H1.1: expose verifier reachability so the dashboard can surface
+        // whether inference verification is active or degraded. When
+        // verification is disabled, the tracker is undefined → null.
+        verifierReachable: verifierReachability?.getVerifierReachable() ?? null,
       };
 
       res.writeHead(200, { 'Content-Type': 'application/json' });

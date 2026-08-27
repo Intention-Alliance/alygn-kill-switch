@@ -7,7 +7,8 @@ import { assertProxyAndVerificationInvariant } from './config/proxy-invariants'
 import {
 	validateEnvironment,
 	validateVerifierConfig,
-	validateVerifierReachability,
+	getVerifierMaxRetries,
+	getVerifierReprobeIntervalMs,
 } from './config/validate-env'
 import { sqlite as sqliteDb } from './db/index'
 import { seedFeatureFlags } from './db/seed'
@@ -73,6 +74,7 @@ import { KillSwitchService } from './services/kill-switch'
 import { startMachineHeartbeat } from './services/machine-heartbeat'
 import { startMetricGeneration } from './services/system-metrics'
 import { VerificationService } from './services/verification/verification-service'
+import { VerifierReachabilityTracker } from './services/verification/verifier-reachability'
 import { InferenceVerifier } from './services/verification/verifier'
 import { WebSocketManager } from './services/websocket-manager'
 
@@ -95,6 +97,7 @@ function createHandler(
 		secretsLoader: SecretsLoader
 		lockoutState: LockoutStateMachine
 		redis: RedisClient
+		verifierReachability?: VerifierReachabilityTracker
 	},
 	verification?: VerificationService,
 	/**
@@ -110,7 +113,7 @@ function createHandler(
 ) {
 	const authRateLimiter = new AuthRateLimiter()
 	const config = getConfig()
-	const { secretsLoader, lockoutState, redis } = ctx
+	const { secretsLoader, lockoutState, redis, verifierReachability } = ctx
 
 	return async (req: any, res: any) => {
 		const ip = req.ip || req.socket?.remoteAddress || 'unknown'
@@ -446,7 +449,15 @@ function createHandler(
 					service,
 					authRateLimiter,
 				)) ||
-				(await handleKillSwitchRoutes(method, url, req, res, service, ip)) ||
+				(await handleKillSwitchRoutes(
+					method,
+					url,
+					req,
+					res,
+					service,
+					ip,
+					verifierReachability,
+				)) ||
 				(await handleKillAuthorizationRoutes(method, url, req, res, service)) ||
 				(await handleAuditRoutes(method, url, req, res)) ||
 				(await handleFlagsRoutes(
@@ -700,6 +711,15 @@ export async function startServer(
 	// startup (before Bun.serve). If verification is enabled but the verifier is
 	// unreachable, log a warning and continue with a degraded (no-op) verifier —
 	// the spec says fail-fast, but we allow startup with a degraded warning.
+	//
+	// H1.1: reachability is now probed via a retry loop (VerifierReachabilityTracker)
+	// instead of a single setTimeout. The tracker runs 5 attempts with exponential
+	// backoff (5s→60s); on success it flips verification to active, on persistent
+	// failure it schedules a re-probe every VERIFIER_REPROBE_INTERVAL_MS (default
+	// 5 min) while keeping the service degraded (no crash). The tracker's
+	// reachability state is surfaced on /v1/kill-switch/status as
+	// `verifierReachable`.
+	let verifierReachability: VerifierReachabilityTracker | undefined
 	if (verificationEnabled) {
 		try {
 			validateVerifierConfig(verificationConfig)
@@ -710,30 +730,28 @@ export async function startServer(
 			)
 			verificationEnabled = false
 		}
-		// Defer reachability probe to prevent blocking Bun.serve() startup.
-		// The probe runs after the server is listening; if unreachable, verification
-		// degrades gracefully (REVIEW + no auto-kill) per spec §c.3.
-		setTimeout(async () => {
-			try {
-				const reachable = await validateVerifierReachability(verificationConfig)
-				if (!reachable) {
-					console.warn(
-						`[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
-							`'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
-							`(REVIEW + no auto-kill) until the model is reachable.`,
-					)
-				} else {
-					console.log(
-						`[verification] Verifier model reachable — inference verification active`,
-					)
-				}
-			} catch (err: any) {
-				console.warn(
-					`[verification] Reachability probe failed (non-fatal):`,
-					err.message,
-				)
-			}
-		}, 3000)
+		if (verificationEnabled) {
+			verifierReachability = new VerifierReachabilityTracker({
+				verification: verificationConfig,
+				maxRetries: getVerifierMaxRetries(),
+				reprobeIntervalMs: getVerifierReprobeIntervalMs(),
+				onStateChange: (reachable) => {
+					if (reachable) {
+						console.log(
+							'[verification] Verifier reachable — verification active (recovered)',
+						)
+					} else {
+						console.warn(
+							'[verification] Verifier unreachable — verification degraded (REVIEW + no auto-kill)',
+						)
+					}
+				},
+			})
+			// Defer the retry loop so it does not block Bun.serve() startup. The
+			// probe sequence runs after the server is listening; if unreachable,
+			// verification degrades gracefully (REVIEW + no auto-kill) per spec §c.3.
+			setTimeout(() => verifierReachability?.start(), 3000)
+		}
 	}
 
 	const verificationService = verificationEnabled
@@ -980,7 +998,7 @@ export async function startServer(
 
 				createHandler(
 					service,
-					{ secretsLoader, lockoutState, redis },
+					{ secretsLoader, lockoutState, redis, verifierReachability },
 					verificationService,
 					relayCtx,
 				)(nodeReq, nodeRes)
