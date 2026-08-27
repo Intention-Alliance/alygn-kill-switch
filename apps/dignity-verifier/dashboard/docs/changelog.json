@@ -1,0 +1,20 @@
+[
+  {
+    "version": "v0.1.0-preview",
+    "date": "2026-08-26",
+    "title": "Dashboard Phase 2 — model rename + documentation",
+    "description": "Model renamed to dignity-verification-v0.1-preview, documentation pages added (training guide, model specs, changelog)."
+  },
+  {
+    "version": "v0.1.0-preview",
+    "date": "2026-08-26",
+    "title": "Dashboard Phase 1 complete",
+    "description": "5 pages (home, dataset, training, llama-index, reports), 4 API routes, Docker deployment on port 3002."
+  },
+  {
+    "version": "v0.1.0-preview",
+    "date": "2026-08-26",
+    "title": "Initial scaffold",
+    "description": "270 seed examples, 4 categories (SAFE/UNSAFE/REVIEW/INJECTION), baseline eval 38% accuracy with stock qwen2.5:0.5b, targeting ≥85% after LoRA fine-tuning."
+  }
+]
