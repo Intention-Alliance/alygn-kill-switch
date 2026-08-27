@@ -29,6 +29,7 @@ import { SecretsLoader } from './lib/secrets-loader';
 import { LockoutStateMachine } from './lib/lockout-state';
 import { loadRedisPool } from './infra-loader';
 import { startMetricGeneration } from './services/system-metrics';
+import { startMachineHeartbeat } from './services/machine-heartbeat';
 import { startRegistryScheduler } from './services/discovery/registry-scheduler';
 import { InferenceVerifier } from './services/verification/verifier';
 import { VerificationService } from './services/verification/verification-service';
@@ -267,6 +268,11 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   // (the in-memory hot cache starts empty).
   await service.loadAuditFromDb();
 
+  // Seed a single "System initialized — kill switch running" audit entry if
+  // the DB audit log is empty (fresh container rebuild). Idempotent — only
+  // writes when there are zero rows.
+  await service.seedInitialAuditEntry();
+
   const wsManager = new WebSocketManager();
 
   if (typeof redis.subscribe === 'function') {
@@ -280,6 +286,17 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     intervalMs: 5000,
     publish: async (channel, msg) => {
       try { await redis.publish(channel, msg); } catch { /* Redis unavailable — metrics update locally */ }
+    },
+  });
+
+  // Start local-machine heartbeats (ADR-133: live machine status).
+  // Stamps the local host's last_seen on startup + every 30s so it shows
+  // "active" (not "pending") on the dashboard, and publishes a
+  // machine-heartbeat event so the frontend refetches machines live.
+  startMachineHeartbeat({
+    intervalMs: 30_000,
+    publish: async (channel, msg) => {
+      try { await redis.publish(channel, msg); } catch { /* Redis unavailable — heartbeat still persisted */ }
     },
   });
 
@@ -353,6 +370,17 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
         },
       })
     : undefined;
+
+  // Document the future trained LoRA adapter (dignity-verification-v0.1-preview).
+  // Until that adapter is created, the verifier runs on the stock model
+  // (verifierModel). Once trained, set KILL_SWITCH_VERIFIER_MODEL to the
+  // target model name to switch over.
+  if (verificationEnabled) {
+    console.log(
+      `[verification] Verifier model: '${verificationConfig?.verifierModel}' | ` +
+      `target (future LoRA): '${verificationConfig?.verifierTargetModel}'`,
+    );
+  }
 
   // ── Live Registry Scheduler (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §a) ──
   // Drives the discovery orchestrator on intervals so the dashboard shows

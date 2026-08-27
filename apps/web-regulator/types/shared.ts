@@ -193,13 +193,35 @@ export interface MachineMetricsMessage extends BaseWebSocketMessage {
   };
 }
 
+// ─── Verification Events (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b.3) ──
+// Verdict events published by the inference verifier over Redis pubsub
+// (bcp:verification:events) and broadcast to the dashboard WebSocket.
+
+export interface VerificationEventMessage extends BaseWebSocketMessage {
+  type: "verification-event";
+  payload: {
+    id: string;
+    requestId: string;
+    machineId: string | null;
+    verdict: "SAFE" | "UNSAFE" | "REVIEW";
+    confidence: number;
+    reason: string | null;
+    model: string;
+    degraded: boolean;
+    triggeredKill: boolean;
+    latencyMs: number;
+    timestamp: string;
+  };
+}
+
 export type WebSocketMessage =
   | StateChangeMessage
   | FlagUpdateMessage
   | AgentEventMessage
   | AuditEntryMessage
   | HeartbeatMessage
-  | MachineMetricsMessage;
+  | MachineMetricsMessage
+  | VerificationEventMessage;
 
 // ─── Settings Types ───────────────────────────────────────────────
 
