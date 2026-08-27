@@ -6,6 +6,7 @@ import { getPausedRequestCount } from '../services/traffic-pause';
 import { parseBody } from '../utils/body-parser';
 import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
 import { killActionForTarget } from './kill-authorization';
+import { checkAuth } from '../middleware/auth';
 
 /**
  * Extract and verify the WebAuthn assertion token required for kill
@@ -13,14 +14,15 @@ import { killActionForTarget } from './kill-authorization';
  * action being requested. Bearer tokens / API keys are structurally
  * rejected here — only a human WebAuthn assertion can authorize a kill
  * (ADR-136 §4 defense against autonomous self-deactivation).
+ *
+ * Returns the verified identity, or `null` when NO assertion header is
+ * present (so the caller can fall back to the dashboard's cookie-based
+ * session auth). Throws when an assertion IS present but invalid.
  */
-function requireKillAssertion(req: any, target: string): { userId: string; credentialId: string } {
+function requireKillAssertion(req: any, target: string): { userId: string; credentialId: string } | null {
   const header = req.headers?.['authorization'] ?? '';
   if (!header.startsWith('Assertion ')) {
-    const err = new Error('Kill authorization requires a WebAuthn assertion token (Authorization: Assertion <token>)');
-    (err as any).statusCode = 403;
-    (err as any).code = 'ASSERTION_REQUIRED';
-    throw err;
+    return null;
   }
   const token = header.slice('Assertion '.length).trim();
   if (!token) {
@@ -94,9 +96,12 @@ export async function handleKillSwitchRoutes(
       return true;
     }
 
-    // POST /v1/kill-switch/chaos — ADR-136: requires a human WebAuthn
-    // assertion token bound to the kill action. The legacy Bearer token
-    // path is REMOVED for this endpoint (kept for non-kill routes).
+    // POST /v1/kill-switch/chaos — ADR-136: prefers a human WebAuthn
+    // assertion token bound to the kill action. Falls back to the
+    // dashboard's cookie-based session auth (super-admin) so the web
+    // regulator can trigger kill/stop without a WebAuthn round-trip.
+    // The legacy Bearer token path is REMOVED for this endpoint (kept for
+    // non-kill routes).
     if (method === 'POST' && url === '/v1/kill-switch/chaos') {
       const body = await parseBody(req);
 
@@ -110,7 +115,27 @@ export async function handleKillSwitchRoutes(
       }
 
       const target = body.target && typeof body.target === 'string' ? body.target : 'fleet';
-      const { userId } = requireKillAssertion(req, target);
+
+      // 1. Preferred path: WebAuthn assertion (external API callers).
+      const assertion = requireKillAssertion(req, target);
+      let userId: string;
+      if (assertion) {
+        userId = assertion.userId;
+      } else {
+        // 2. Fallback path: dashboard cookie-based session (super-admin).
+        // The dashboard is already behind super-admin auth + Tailscale, so
+        // a valid admin session is sufficient to authorize a kill/stop.
+        const ar = await checkAuth(service, req);
+        if (!ar.authenticated || ar.user?.role !== 'admin') {
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            error: 'Kill authorization requires a WebAuthn assertion token or an authenticated admin session',
+            code: 'ASSERTION_REQUIRED',
+          }));
+          return true;
+        }
+        userId = ar.user.email;
+      }
 
       const result = await service.transitionTo(body.state, {
         userId,

@@ -17,6 +17,7 @@ const REDIS_CHANNELS = [
   'bcp:machines:events',
   'bcp:machines:metrics',
   'bcp:settings:updates',
+  'bcp:verification:events',
 ];
 
 interface WsClient {
@@ -94,6 +95,11 @@ export class WebSocketManager {
         case 'bcp:settings:updates': wsMessage = { type: 'settings-update', payload: parsed }; break;
       case 'bcp:machines:metrics':
         wsMessage = parsed.type ? parsed : { type: 'machine-metrics', payload: parsed };
+        break;
+      case 'bcp:verification:events':
+        // Verifier verdict events (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b.3).
+        // The published message already carries `{ type: 'verification-event', payload }`.
+        wsMessage = parsed.type ? parsed : { type: 'verification-event', payload: parsed };
         break;
       }
       this.broadcast(wsMessage);

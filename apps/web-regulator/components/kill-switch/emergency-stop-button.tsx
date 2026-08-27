@@ -38,9 +38,19 @@ const CONFIRM_PHRASE = "STOP ALL CHAOS";
 
 /**
  * Big rounded red "Kill" button styled like a physical emergency button
- * emerging from the surface. Uses layered box-shadows for a 3D "raised"
- * look and a press-down transform on :active so it feels like a real
- * button you push.
+ * emerging from the surface.
+ *
+ * 3D mechanics (single element, no wrapper):
+ *   - At rest the button sits on a tall "base" — a solid #7f1d1d box-shadow
+ *     that extends 10px below the face, so it reads as a raised mushroom
+ *     button.
+ *   - On :active the button face translates DOWN by the full base height
+ *     (10px) while the base shadow compresses to 0. The base stays anchored
+ *     to the surface and the face sinks onto it — a real physical press,
+ *     not a uniform shift. Because the face's bottom edge lands exactly
+ *     where the base was, the button never overflows its grid cell.
+ *   - On hover the button lifts slightly (translate-y -2px, base grows to
+ *     12px) so it feels reactive before you press.
  */
 export function KillButton({
   onClick,
@@ -64,16 +74,24 @@ export function KillButton({
         // reads as a physical mushroom-style emergency button.
         "group relative inline-flex w-full items-center justify-center gap-2.5",
         "rounded-full px-8 py-5 text-lg font-black uppercase tracking-widest",
-        "text-white select-none transition-all duration-150",
+        "text-white select-none",
+        // Smooth press/release; transform + shadow are compositor-friendly.
+        "transition-[transform,box-shadow,filter] duration-150 ease-out",
+        "will-change-transform",
         // 3D emergence: a darker "base" ring beneath + layered shadows that
-        // lift the button off the surface.
+        // lift the button off the surface. The 10px solid #7f1d1d base is
+        // the physical "pedestal" the face sits on.
         "bg-gradient-to-b from-red-500 via-red-600 to-red-700",
         "shadow-[0_10px_0_0_#7f1d1d,0_16px_24px_-6px_rgba(0,0,0,0.6),inset_0_2px_0_0_rgba(255,255,255,0.35),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
         "ring-4 ring-red-900/40 ring-offset-2 ring-offset-background",
-        "hover:brightness-110 hover:shadow-[0_12px_0_0_#7f1d1d,0_20px_28px_-6px_rgba(0,0,0,0.65),inset_0_2px_0_0_rgba(255,255,255,0.4),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
-        // Press-down: the button sinks into its base when clicked.
-        "active:translate-y-[6px] active:shadow-[0_4px_0_0_#7f1d1d,0_8px_12px_-4px_rgba(0,0,0,0.5),inset_0_2px_0_0_rgba(255,255,255,0.25),inset_0_-4px_8px_0_rgba(0,0,0,0.4)]",
+        // Hover: lift the face slightly off the base (base grows to 12px).
+        "hover:brightness-110 hover:-translate-y-0.5 hover:shadow-[0_12px_0_0_#7f1d1d,0_20px_28px_-6px_rgba(0,0,0,0.65),inset_0_2px_0_0_rgba(255,255,255,0.4),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
+        // Press-down: the face sinks the FULL base height (10px) onto the
+        // surface while the base compresses to 0. The base stays anchored,
+        // so the button presses INTO it instead of shifting down as a block.
+        "active:translate-y-[10px] active:shadow-[0_0px_0_0_#7f1d1d,0_4px_8px_-2px_rgba(0,0,0,0.5),inset_0_2px_0_0_rgba(255,255,255,0.2),inset_0_-2px_6px_0_rgba(0,0,0,0.45)]",
         "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-500",
+        // Disabled: fully reset to the resting raised state (no press).
         "disabled:pointer-events-none disabled:opacity-60 disabled:translate-y-0 disabled:shadow-[0_10px_0_0_#7f1d1d,0_16px_24px_-6px_rgba(0,0,0,0.6),inset_0_2px_0_0_rgba(255,255,255,0.35),inset_0_-6px_12px_0_rgba(0,0,0,0.35)]",
         className,
       )}
