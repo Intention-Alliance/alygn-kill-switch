@@ -110,6 +110,7 @@ interface MockUser {
   id: string;
   email: string;
   name: string | null;
+  role?: string;
 }
 interface MockSession {
   id: string;
@@ -125,8 +126,8 @@ let sessionStore: MockSession[] = [];
 beforeEach(() => {
   credentialStore = [];
   userStore = [
-    { id: 'user-1', email: 'admin@alygn.com', name: 'Admin' },
-    { id: 'user-2', email: 'other@alygn.com', name: 'Other' },
+    { id: 'user-1', email: 'admin@alygn.com', name: 'Admin', role: 'admin' },
+    { id: 'user-2', email: 'other@alygn.com', name: 'Other', role: 'viewer' },
   ];
   sessionStore = [];
   mockGenerateRegistrationOptions.mockClear();
@@ -502,6 +503,27 @@ describe('WebAuthnService — login assertion (sign-in with security key)', () =
         response: { id: 'unknown-credential' },
       }),
     ).rejects.toThrow();
+  });
+
+  it('login: non-admin credential owner cannot mint a session (P0-3)', async () => {
+    // Seed a credential for user-2 (role: viewer).
+    const reg = await webauthn.startRegistration({ userId: 'user-2', userName: 'other@alygn.com' });
+    await webauthn.finishRegistration({
+      userId: 'user-2',
+      challengeId: reg.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+    });
+
+    const started = await webauthn.startLoginAssertion({});
+    await expect(
+      webauthn.finishLoginAssertion({
+        challengeId: started.challengeId,
+        response: { id: FAKE_CREDENTIAL_ID },
+      }),
+    ).rejects.toThrow('Credential not authorized for admin access');
+
+    // No session may have been minted.
+    expect(sessionStore.length).toBe(0);
   });
 });
 

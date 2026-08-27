@@ -705,6 +705,14 @@ export async function finishLoginAssertion({
     throw new WebAuthnError('Credential owner no longer exists', 'USER_NOT_FOUND');
   }
 
+  // P0-3: Only admin users may mint a session via a WebAuthn login
+  // assertion. Without this check, any registered credential owner
+  // (including a non-admin who enrolled before the P0-2 gate) could
+  // mint a full admin session — the account-takeover chain.
+  if (user.role !== 'admin') {
+    throw new WebAuthnError('Credential not authorized for admin access', 'NOT_ADMIN');
+  }
+
   const sessionCookie = await mintSessionCookie(credential.userId);
 
   return {
