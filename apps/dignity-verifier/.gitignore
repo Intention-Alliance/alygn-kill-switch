@@ -9,6 +9,9 @@ reports/training-runs/*
 reports/eval-results/*
 reports/distillation-logs/*
 
+# Eval runner output (generated artifact)
+eval-results/
+
 # Next.js build output
 dashboard/.next/
 dashboard/node_modules/
