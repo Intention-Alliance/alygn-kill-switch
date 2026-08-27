@@ -14,7 +14,7 @@
 #   BETTER_AUTH_SECRET   (shared with kill-switch)
 #   KILL_SWITCH_AUTH_TOKEN (super-admin password seed)
 #   OLLAMA_BASE_URL      (defaults to host gateway)
-#   TEACHER_MODEL        (defaults to deepseek-v4-flash:cloud)
+#   TEACHER_MODEL        (defaults to glm-5.3-flash:cloud)
 #   STUDENT_MODEL        (defaults to qwen2.5:0.5b)
 #   EMBEDDING_MODEL      (defaults to nomic-embed-text-v2-moe:latest)
 #   TAILSCALE_IP         (defaults to 100.66.199.80)
@@ -59,7 +59,7 @@ services:
       - TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME:-andlersrv.tail62d797.ts.net}
       # ─── Ollama / model config ─────────────────────────────
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - TEACHER_MODEL=${TEACHER_MODEL:-deepseek-v4-flash:cloud}
+      - TEACHER_MODEL=${TEACHER_MODEL:-glm-5.3-flash:cloud}
       - TEACHER_FALLBACK_MODEL=${TEACHER_FALLBACK_MODEL:-glm-5.2:cloud}
       - STUDENT_MODEL=${STUDENT_MODEL:-qwen2.5:0.5b}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-nomic-embed-text-v2-moe:latest}

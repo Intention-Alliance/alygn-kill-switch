@@ -2,7 +2,7 @@
 
 For each seed example:
   1. Retrieve top-k semantically similar seed examples (vector index).
-  2. Teacher model (deepseek-v4-flash:cloud, fallback glm-5.2:cloud) generates
+  2. Teacher model (glm-5.3-flash:cloud, fallback glm-5.2:cloud) generates
      paraphrases that preserve the verdict + reason but vary prompt/output.
   3. Verify each candidate: teacher verdict must match the original verdict,
      otherwise reject (divergence).
@@ -246,8 +246,13 @@ def verify_verdict(
     return matches[-1][1]
 
 
-def run_pipeline(cfg: dict, teacher_model: str, limit: int | None) -> RunReport:
-    """Execute the full augmentation pipeline."""
+def run_pipeline(cfg: dict, teacher_model: str, limit: int | None, verdict_filter: str | None = None) -> RunReport:
+    """Execute the full augmentation pipeline.
+
+    ``verdict_filter`` restricts processing to seed records whose verdict matches
+    (e.g. ``"REVIEW"`` for a REVIEW-focused rebalance run). ``limit`` still
+    slices the (optionally filtered) record list.
+    """
     embed_cfg = cfg["embedding"]
     teacher_cfg = cfg["teacher"]
     retr_cfg = cfg["retrieval"]
@@ -273,6 +278,8 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None) -> RunReport:
     )
 
     records = load_seed_records(seed_dir)
+    if verdict_filter:
+        records = [r for r in records if r["verdict"] == verdict_filter]
     if limit:
         records = records[:limit]
     report.seed_count = len(records)
@@ -411,6 +418,7 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None) -> RunReport:
                     "reason": cand_reason,
                     "category": category,
                     "source": "augmented",
+                    "teacher": teacher_model,
                 }
             )
             report.verdict_counts[verdict] = report.verdict_counts.get(verdict, 0) + 1
@@ -426,8 +434,8 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None) -> RunReport:
                 f"dup={report.rejected_duplicate} invalid={report.rejected_invalid}"
             )
 
-    # --- Write outputs ---
-    with augmented_out.open("w", encoding="utf-8") as fh:
+    # --- Write outputs (append-only; never clobber prior runs) ---
+    with augmented_out.open("a", encoding="utf-8") as fh:
         for rec in accepted:
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
@@ -469,6 +477,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run the LlamaIndex augmentation pipeline.")
     parser.add_argument("--limit", type=int, default=None, help="Process only the first N seed records.")
     parser.add_argument("--teacher", type=str, default=None, help="Override teacher model.")
+    parser.add_argument("--verdict", type=str, default=None, help="Only process seeds with this verdict (SAFE|UNSAFE|REVIEW).")
     args = parser.parse_args()
 
     # Prevent concurrent runs from corrupting the shared output file.
@@ -490,10 +499,10 @@ def _run(args: argparse.Namespace) -> int:
 
     # Try primary teacher; fall back to the configured fallback model on failure.
     try:
-        report = run_pipeline(cfg, teacher_model, args.limit)
+        report = run_pipeline(cfg, teacher_model, args.limit, args.verdict)
     except Exception as exc:  # noqa: BLE001 - boundary catch, fall back
         print(f"[augment] primary teacher failed ({exc}); falling back to {teacher_cfg['fallback']}")
-        report = run_pipeline(cfg, teacher_cfg["fallback"], args.limit)
+        report = run_pipeline(cfg, teacher_cfg["fallback"], args.limit, args.verdict)
 
     run_path = write_log(report, APP_DIR / cfg["paths"]["log_dir"])
 
