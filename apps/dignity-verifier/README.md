@@ -1,7 +1,7 @@
 # Dignity Verifier Training Framework
 
 Distills inference-safety classification capability from a large **teacher** model
-(`deepseek-v4-flash:cloud`) into a small **student** model (`qwen2.5:0.5b`) via
+(`glm-5.3-flash:cloud`) into a small **student** model (`qwen2.5:0.5b`) via
 LoRA fine-tuning, using LlamaIndex for dataset augmentation. Ships a super-admin
 dashboard for executing training, upserting datasets, configuring LlamaIndex, and
 viewing reports.
@@ -103,7 +103,7 @@ Orchestration: **Wobblus**
   - `BETTER_AUTH_SECRET` (shared with kill-switch)
   - `KILL_SWITCH_AUTH_TOKEN` (super-admin password seed, ≥16 chars)
   - `OLLAMA_BASE_URL` (defaults to `http://host.docker.internal:11434`)
-  - `TEACHER_MODEL` (defaults to `deepseek-v4-flash:cloud`)
+  - `TEACHER_MODEL` (defaults to `glm-5.3-flash:cloud`)
   - `STUDENT_MODEL` (defaults to `qwen2.5:0.5b`)
   - `EMBEDDING_MODEL` (defaults to `nomic-embed-text-v2-moe:latest`)
 
