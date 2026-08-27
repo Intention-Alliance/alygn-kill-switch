@@ -22,15 +22,6 @@ const MODEL_OVERVIEW = [
   { label: "Use case", value: "kill-switch verifier model" },
 ] as const;
 
-const SPECS = [
-  { label: "Architecture", value: "Qwen2.5 0.5B parameters, decoder-only transformer" },
-  { label: "LoRA config", value: "rank=8, alpha=16, dropout=0.05, target=q_proj+v_proj" },
-  { label: "Training config", value: "3 epochs, batch_size=4, lr=2e-4, CPU-only" },
-  { label: "Input", value: "(prompt, output) pair + system prompt" },
-  { label: "Output", value: "verdict label + reason string" },
-  { label: "Constraints", value: "no GPU, <5G disk, <4h training time" },
-] as const;
-
 /* ─── Architecture (deep dive) ────────────────────────────────── */
 
 const ARCHITECTURE = [

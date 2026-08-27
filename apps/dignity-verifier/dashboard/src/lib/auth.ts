@@ -30,8 +30,8 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { eq } from "drizzle-orm";
-import { mkdirSync } from "node:fs";
 import * as schema from "./db-schema";
+import { getDb } from "./db";
 
 // ─── Environment Validation ──────────────────────────────────────────────
 
@@ -76,35 +76,6 @@ export function isTailscaleIP(ip: string | undefined | null): boolean {
   const second = parseInt(match[2], 10);
   // 100.64.0.0/10 covers 100.64.0.0 – 100.127.255.255
   return first === 100 && second >= 64 && second <= 127;
-}
-
-// ─── Lazy SQLite + Drizzle (self-contained session store) ───────────────
-
-const DATA_DIR = process.env.DATA_DIR || "/app/data";
-const DB_PATH = `${DATA_DIR}/dignity-verifier.db`;
-
-type DrizzleDb = ReturnType<typeof import("drizzle-orm/bun-sqlite")["drizzle"]>;
-
-let dbInstance: DrizzleDb | null = null;
-
-/**
- * Lazily create the SQLite connection + Drizzle instance. Uses a dynamic
- * import of bun:sqlite so the module can be loaded during `next build`
- * (Node workers) without evaluating Bun-only code.
- */
-async function getDb(): Promise<DrizzleDb> {
-  if (dbInstance) return dbInstance;
-
-  // Ensure data dir exists (idempotent).
-  mkdirSync(DATA_DIR, { recursive: true });
-
-  const { Database } = await import("bun:sqlite");
-  const { drizzle } = await import("drizzle-orm/bun-sqlite");
-
-  const sqlite = new Database(DB_PATH);
-  sqlite.exec("PRAGMA journal_mode = WAL;");
-  dbInstance = drizzle(sqlite);
-  return dbInstance;
 }
 
 // ─── Lazy Better-Auth Instance ──────────────────────────────────────────
