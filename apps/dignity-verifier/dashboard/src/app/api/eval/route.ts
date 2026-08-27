@@ -2,30 +2,21 @@
  * Dignity Verifier Dashboard — Eval API
  *
  * GET /api/eval
- * Returns the latest eval suite metrics. The eval runner does not exist
- * yet, so this returns an empty/null report shape. It will be wired to
- * real data once the eval runner lands.
+ * Returns the latest eval suite metrics, read from the NEWEST eval-results
+ * report.json produced by the eval runner
+ * (`bun apps/dignity-verifier/eval/run-eval.ts`). Returns the empty report
+ * shape when no artifact exists yet.
  */
 
 import { NextResponse } from "next/server";
-import type { EvalApiResponse, EvalReport } from "@/lib/eval-types";
+import type { EvalApiResponse } from "@/lib/eval-types";
+import { emptyReport, readNewestEvalReport } from "@/lib/eval-report";
 
-function emptyReport(): EvalReport {
-  return {
-    runId: null,
-    accuracy: null,
-    fpr: null,
-    fnr: null,
-    confusionMatrix: null,
-    perCategory: [],
-    latencyP95Ms: null,
-    generatedAt: null,
-  };
-}
+export async function GET() {
+  const report = await readNewestEvalReport();
 
-export function GET() {
   const body: EvalApiResponse = {
-    data: emptyReport(),
+    data: report ?? emptyReport(),
     error: null,
     success: true,
   };
