@@ -57,7 +57,7 @@ export const GLOSSARY_CATEGORIES: readonly GlossaryCategory[] = [
       {
         term: "Teacher model",
         definition:
-          "A large, capable model (e.g. deepseek-v4-flash:cloud) that generates labels and paraphrases used to train the smaller student model.",
+          "A large, capable model (e.g. glm-5.3-flash:cloud) that generates labels and paraphrases used to train the smaller student model.",
       },
       {
         term: "Student model",
@@ -137,9 +137,9 @@ export const GLOSSARY_CATEGORIES: readonly GlossaryCategory[] = [
           "The Ollama tag for the 0.5B-parameter Qwen2.5 model, used as the local student base model for the verifier.",
       },
       {
-        term: "deepseek-v4-flash",
+        term: "glm-5.3-flash",
         definition:
-          "A large cloud-hosted model used as the teacher. It generates verdicts and paraphrases for distillation. Referenced as deepseek-v4-flash:cloud.",
+          "A cloud-hosted model used as the primary teacher. It generates verdicts and paraphrases for distillation. Referenced as glm-5.3-flash:cloud. Earlier augmented records were produced by the prior deepseek-v4-flash:cloud teacher (no teacher field).",
       },
       {
         term: "nomic-embed-text-v2-moe",
