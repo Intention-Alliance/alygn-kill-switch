@@ -1,19 +1,24 @@
 /**
  * Dignity Verifier Dashboard — Training Executor
  *
- * LoRA fine-tune configuration and run management. UI-only for Phase 1:
- * the "Start Training" action requires the Phase 2 backend.
+ * LoRA fine-tune configuration and run management, wired to the Phase 2
+ * backend. "Start Training" POSTs to /api/training/run (with an optional
+ * dry-run flag), then polls GET /api/runs/[id] until the run reaches a
+ * terminal status. The button is disabled while a training run is active.
  */
 
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PageShell } from "@/components/page-shell";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { RunProgress } from "@/components/run-progress";
+import { RunsHistory } from "@/components/runs-history";
+import { useRun } from "@/lib/use-run";
+import { type RunRecord, type RunsListResponse, isTerminalRunStatus } from "@/lib/run-types";
 
 const MODEL_CONFIG = [
-  { label: "Teacher", value: "deepseek-v4-flash:cloud" },
+  { label: "Teacher", value: "glm-5.3-flash:cloud" },
   { label: "Student (base)", value: "qwen2.5:0.5b" },
   { label: "Embedding", value: "nomic-embed-text-v2-moe:latest" },
   { label: "Target", value: "dignity-verification-v0.1-preview" },
@@ -35,10 +40,46 @@ const DEFAULT_PARAMS: TrainingParams = {
 
 export function TrainingPage() {
   const [params, setParams] = useState<TrainingParams>(DEFAULT_PARAMS);
+  const [dryRun, setDryRun] = useState(false);
+  const [alreadyActive, setAlreadyActive] = useState(false);
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+
+  const { run, isActive, isStarting, error, start } = useRun({
+    startUrl: "/api/training/run",
+    alreadyActive,
+  });
 
   const updateParam = (key: keyof TrainingParams, value: string) => {
     setParams((current) => ({ ...current, [key]: value }));
   };
+
+  // On load, check whether a training run is already active so we can
+  // disable the button until it finishes.
+  const checkActive = useCallback(async () => {
+    try {
+      const response = await fetch("/api/runs?type=training&limit=20");
+      const json = (await response.json()) as RunsListResponse;
+      if (!response.ok || !json.success || !json.data) return;
+      const active = json.data.runs.some(
+        (item: RunRecord) => !isTerminalRunStatus(item.status)
+      );
+      setAlreadyActive(active);
+    } catch {
+      // Non-fatal — the button will still work; the backend returns 409
+      // if a run is already active.
+    }
+  }, []);
+
+  useEffect(() => {
+    void checkActive();
+  }, [checkActive]);
+
+  const handleStart = async () => {
+    await start({ dryRun });
+    setHistoryRefresh((value) => value + 1);
+  };
+
+  const buttonDisabled = alreadyActive || isActive || isStarting;
 
   return (
     <PageShell active="/training">
@@ -124,42 +165,60 @@ export function TrainingPage() {
             </label>
           </div>
 
+          {/* ─── Dry-run toggle ─────────────────────────────── */}
+          <label className="mt-6 flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              checked={dryRun}
+              onChange={(event) => setDryRun(event.target.checked)}
+              className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-emerald-500 focus:ring-emerald-500/50"
+            />
+            <span className="text-sm text-slate-300">Dry run</span>
+            <span className="text-xs text-slate-500">
+              Validate the pipeline without persisting a full training run.
+            </span>
+          </label>
+
           <div className="mt-6 flex items-center gap-3">
             <button
               type="button"
-              disabled
-              title="Requires Phase 2 backend"
-              className="cursor-not-allowed rounded-md bg-emerald-600/40 px-5 py-2.5 text-sm font-semibold text-emerald-200/60"
+              disabled={buttonDisabled}
+              onClick={() => void handleStart()}
+              className={`rounded-md px-5 py-2.5 text-sm font-semibold transition ${
+                buttonDisabled
+                  ? "cursor-not-allowed bg-emerald-600/40 text-emerald-200/60"
+                  : "bg-emerald-600 text-white hover:bg-emerald-500"
+              }`}
             >
-              Start Training
+              {isStarting
+                ? "Starting…"
+                : isActive
+                  ? "Training…"
+                  : alreadyActive
+                    ? "Training in progress"
+                    : "Start Training"}
             </button>
             <p className="text-xs text-slate-500">
-              Requires Phase 2 backend — the training pipeline is not yet wired
-              to this dashboard.
+              {alreadyActive
+                ? "A training run is already active — wait for it to finish."
+                : "Starts a LoRA fine-tune session on the Phase 2 backend."}
             </p>
           </div>
+
+          {error ? (
+            <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-300">
+              {error}
+            </div>
+          ) : null}
         </div>
       </section>
 
-      {/* ─── Progress placeholder ────────────────────────────── */}
+      {/* ─── Progress ────────────────────────────────────────── */}
       <section className="mb-8">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-400">
           Training Progress
         </h2>
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="text-slate-400">Current run</span>
-            <span className="text-slate-500">Idle</span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full w-0 rounded-full bg-emerald-500" />
-          </div>
-          <pre className="mt-4 max-h-48 overflow-y-auto rounded-lg border border-slate-800 bg-slate-950 p-4 font-mono text-xs leading-relaxed text-slate-500">
-{`# No active training run.
-# Log output will stream here once the Phase 2 backend is connected.
-# Expected: ~2–4h on CPU, adapter output ~5–20MB.`}
-          </pre>
-        </div>
+        <RunProgress run={run} label="Current run" />
       </section>
 
       {/* ─── Recent runs ─────────────────────────────────────── */}
@@ -167,10 +226,7 @@ export function TrainingPage() {
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-400">
           Recent Runs
         </h2>
-        <EmptyState
-          title="No training runs yet"
-          description="Once you start a training run, it will appear here with its status, hyperparameters, and eval accuracy. The Phase 2 backend will persist run history."
-        />
+        <RunsHistory type="training" refreshKey={historyRefresh} />
       </section>
     </PageShell>
   );
