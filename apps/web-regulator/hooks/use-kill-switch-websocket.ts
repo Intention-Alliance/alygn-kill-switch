@@ -14,6 +14,7 @@ import type {
   AgentEventMessage,
   AuditEntryMessage,
   MachineMetricsMessage,
+  VerificationEventMessage,
 } from "@/types/shared";
 
 // ─── Constants ──────────────────────────────────────────────────
@@ -109,6 +110,7 @@ export interface UseKillSwitchWebSocketReturn {
   isConnected: boolean;
   reconnectAttempt: number;
   latestMetrics: MachineMetricsMessage["payload"] | null;
+  verificationEvents: VerificationEventMessage["payload"][];
 }
 
 // ─── Hook ───────────────────────────────────────────────────────
@@ -124,6 +126,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const [isConnected, setIsConnected] = useState(false);
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const [latestMetrics, setLatestMetrics] = useState<MachineMetricsMessage["payload"] | null>(null);
+  const [verificationEvents, setVerificationEvents] = useState<
+    VerificationEventMessage["payload"][]
+  >([]);
 
   // Refs that survive re-renders and don't trigger them
   const wsRef = useRef<WebSocket | null>(null);
@@ -412,6 +417,24 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         break;
       }
 
+      case "verification-event": {
+        const payload = (msg as unknown as VerificationEventMessage).payload;
+        setVerificationEvents((prev) =>
+          [payload, ...prev].slice(0, 100),
+        );
+
+        if (payload.verdict === "UNSAFE") {
+          toast.error(
+            `Inference verification UNSAFE — ${payload.reason ?? "no reason"}`,
+          );
+        } else if (payload.verdict === "REVIEW") {
+          toast.warning(
+            `Inference verification REVIEW — ${payload.reason ?? "no reason"}`,
+          );
+        }
+        break;
+      }
+
       default:
         break;
     }
@@ -600,5 +623,6 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
     isConnected,
     reconnectAttempt,
     latestMetrics,
+    verificationEvents,
   };
 }

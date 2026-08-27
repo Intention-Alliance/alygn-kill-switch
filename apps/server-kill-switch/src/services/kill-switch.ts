@@ -85,7 +85,7 @@ export class KillSwitchService {
 
   async getCurrentState(): Promise<KillSwitchState> {
     const state = await this.redis.get(this.redis.chaosKillSwitchKey());
-    return (state as KillSwitchState) || STATES.ARMED;
+    return (state as KillSwitchState) || STATES.RUNNING;
   }
 
   async transitionTo(newState: KillSwitchState, metadata: TransitionMetadata = {}): Promise<AuditEntry> {
@@ -273,12 +273,12 @@ export class KillSwitchService {
       const now = new Date();
       const entry: AuditEntry = {
         id: crypto.randomUUID(),
-        previousState: STATES.ARMED,
-        newState: STATES.ARMED,
+        previousState: STATES.RUNNING,
+        newState: STATES.RUNNING,
         timestamp: now.toISOString(),
         traceId: `seed-${crypto.randomUUID().slice(0, 8)}`,
         initiatedBy: 'system',
-        reason: 'System initialized — kill switch armed',
+        reason: 'System initialized — kill switch running',
         ip: 'system',
       };
 
@@ -298,7 +298,7 @@ export class KillSwitchService {
       this.auditLog.push(entry);
       console.log('[kill-switch] Seeded initial audit entry (empty DB)');
     } catch (err) {
-      console.error('[kill-switch] Failed to seed initial audit entry:', err);
+      console.error('[kill-switch] Failed to seed initial audit entry:', err instanceof Error ? err.message : err);
     }
   }
 
