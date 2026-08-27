@@ -14,6 +14,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  type RunDetailResponse,
   type RunRecord,
   type RunStartResponse,
   isTerminalRunStatus,
@@ -56,8 +57,8 @@ function friendlyError(status: number, fallback: string): string {
 
 async function readError(response: Response, fallback: string): Promise<string> {
   try {
-    const json = (await response.json()) as { error?: string | null };
-    return json.error ?? friendlyError(response.status, fallback);
+    const json = (await response.json()) as { error?: { message?: string } | null };
+    return json.error?.message ?? friendlyError(response.status, fallback);
   } catch {
     return friendlyError(response.status, fallback);
   }
@@ -96,13 +97,9 @@ export function useRun({ startUrl, alreadyActive = false }: UseRunOptions): UseR
           setError(await readError(response, "Failed to fetch run status."));
           return;
         }
-        const json = (await response.json()) as {
-          success: boolean;
-          data?: { run: RunRecord };
-          error?: string | null;
-        };
+        const json = (await response.json()) as RunDetailResponse;
         if (!json.success || !json.data) {
-          setError(json.error ?? "Failed to fetch run status.");
+          setError(json.error?.message ?? "Failed to fetch run status.");
           return;
         }
         setRun(json.data.run);
@@ -130,7 +127,7 @@ export function useRun({ startUrl, alreadyActive = false }: UseRunOptions): UseR
         });
         const json = (await response.json()) as RunStartResponse;
         if (!response.ok || !json.success || !json.data) {
-          setError(await readError(response, json.error ?? "Failed to start run."));
+          setError(await readError(response, json.error?.message ?? "Failed to start run."));
           return;
         }
         const runId = json.data.runId;
