@@ -8,6 +8,7 @@ import { loadTracing } from '../infra-loader';
 import { pauseInferenceTraffic, resumeInferenceTraffic } from './traffic-pause';
 import { db } from '../db/index';
 import { killSwitchAuditLog } from '../db/schema';
+import { appendAuditEntry } from './audit-chain';
 import { desc, sql } from 'drizzle-orm';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
@@ -146,13 +147,14 @@ export class KillSwitchService {
         this.auditLog = this.auditLog.slice(-KillSwitchService.HOT_CACHE_SIZE);
       }
 
-      // Persist to the immutable DB audit log (ADR-140) so history survives
-      // process restarts / container rebuilds. Fire-and-forget — a DB write
-      // failure must not block the state transition or the HTTP response.
+      // Persist to the immutable DB audit log via the tamper-evident audit
+      // chain (ADR-140). appendAuditEntry computes prev_hash (linking to the
+      // prior entry's self_hash), self_hash, and server_hmac, and inserts
+      // under a write lock so concurrent transitions cannot collide on the
+      // chain link. Fire-and-forget — a DB write failure must not block the
+      // state transition or the HTTP response.
       try {
-        await db.insert(killSwitchAuditLog).values({
-          id: auditEntry.id,
-          timestamp: new Date(auditEntry.timestamp),
+        await appendAuditEntry({
           userId: auditEntry.initiatedBy,
           reason: auditEntry.reason,
           previousState: auditEntry.previousState,
@@ -161,7 +163,8 @@ export class KillSwitchService {
           machineId: auditEntry.machineId ?? null,
           severity: 'info',
           metadata: JSON.stringify({ ip: auditEntry.ip }),
-        }).run();
+          plainExplanation: `Kill switch state transition ${auditEntry.previousState} → ${auditEntry.newState} initiated by ${auditEntry.initiatedBy} (${auditEntry.reason}).`,
+        });
       } catch (err) {
         console.error('[kill-switch] Failed to persist audit entry to DB:', err);
       }
@@ -260,6 +263,14 @@ export class KillSwitchService {
    * on restart. The entry is also pushed into the in-memory hot cache so the
    * WebSocket `audit-entry` broadcast and the activations endpoint reflect it
    * immediately.
+   *
+   * ADR-140 chain wiring: the seed is written through appendAuditEntry so it
+   * becomes the GENESIS entry of the tamper-evident chain (real self_hash +
+   * server_hmac). This is the "mark as legacy and start a fresh anchored
+   * chain" choice: the seed is the anchor head, and every subsequent
+   * transition chains off its self_hash. (The old raw db.insert wrote
+   * prev_hash='GENESIS' + self_hash='' which would have broken the chain link
+   * for the first real transition.)
    */
   async seedInitialAuditEntry(): Promise<void> {
     try {
@@ -282,9 +293,7 @@ export class KillSwitchService {
         ip: 'system',
       };
 
-      await db.insert(killSwitchAuditLog).values({
-        id: entry.id,
-        timestamp: now,
+      await appendAuditEntry({
         userId: entry.initiatedBy,
         reason: entry.reason,
         previousState: entry.previousState,
@@ -293,7 +302,8 @@ export class KillSwitchService {
         machineId: null,
         severity: 'info',
         metadata: JSON.stringify({ ip: entry.ip, seed: true }),
-      }).run();
+        plainExplanation: 'System initialized — kill switch running (seed entry, chain genesis).',
+      });
 
       this.auditLog.push(entry);
       console.log('[kill-switch] Seeded initial audit entry (empty DB)');
