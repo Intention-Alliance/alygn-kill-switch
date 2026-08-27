@@ -20,7 +20,7 @@ machine safe to keep running?"*
 
 In parallel, the Dignity Verifier Training Framework
 (ADR-dignity-verifier-training-framework) is fine-tuning a 0.5B student model
-(`dignity-verifier-preview-v1`) to replace the stock `qwen2.5:0.5b` verifier.
+(`dignity-verification-v0.1-preview`) to replace the stock `qwen2.5:0.5b` verifier.
 That fine-tuned model is the **scorer** — it is the same model that classifies
 inference output, and its verdict stream is the raw material for every score.
 
@@ -46,7 +46,7 @@ kill-switch state), computes four scores, caches them, and exposes them via new
 `/v1/scores/*` routes that the dashboard proxies through its existing `/api/*`
 rewrite pattern.
 
-The fine-tuned `dignity-verifier-preview-v1` model is the **scorer**: it is the
+The fine-tuned `dignity-verification-v0.1-preview` model is the **scorer**: it is the
 model that produces the verdict stream the engine aggregates. The scoring
 engine is the **aggregator**; the verifier is the **classifier**. They are two
 layers of the same pipeline.
@@ -137,12 +137,12 @@ eligibility.
 
 ### How it integrates with the training framework
 
-The fine-tuned `dignity-verifier-preview-v1` model is the **scorer**. The
+The fine-tuned `dignity-verification-v0.1-preview` model is the **scorer**. The
 integration is a **single pipeline with two layers**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│  Inference request → verifier (dignity-verifier-preview-v1)         │
+│  Inference request → verifier (dignity-verification-v0.1-preview)         │
 │  ── classifies output → SAFE | UNSAFE | REVIEW (+ confidence)       │
 │  ── persists verification_event row + publishes bcp:verification   │
 └───────────────────────────────┬─────────────────────────────────────┘
@@ -165,14 +165,14 @@ integration is a **single pipeline with two layers**:
 ```
 
 **Real-time scoring:** every inference output is scored by the verifier
-(`dignity-verifier-preview-v1`) in real time. The scoring engine aggregates
+(`dignity-verification-v0.1-preview`) in real time. The scoring engine aggregates
 those verdicts per machine on a rolling window. The dashboard displays the
 scores as gauges/charts. When a score drops below the red threshold, the engine
 raises an alert and marks the machine (or the fleet) as **emergency-stop
 eligible**.
 
 **Training-framework coupling:** the scoring engine consumes the *output* of the
-training framework (the deployed `dignity-verifier-preview-v1` model). It does
+training framework (the deployed `dignity-verification-v0.1-preview` model). It does
 not run training. The training framework's eval target (≥85% accuracy) is the
 same threshold the dashboard's green band uses for the Dignity Test Pass Rate.
 When the training framework deploys a new model version, the scoring engine
@@ -292,7 +292,7 @@ admin-only, low-frequency operation (not on the hot path).
 ### Data flow
 
 1. **Kill-switch verifier runs on inference → verdict logged.** The existing
-   `VerificationService` calls `dignity-verifier-preview-v1`, gets a
+   `VerificationService` calls `dignity-verification-v0.1-preview`, gets a
    `SAFE | UNSAFE | REVIEW` verdict, persists a `verification_event` row, and
    publishes to `bcp:verification:events`. **No change to this path** — the
    scoring engine is a downstream consumer.
@@ -382,7 +382,7 @@ existing flag-resolution pattern in the dashboard. Defaults:
 
 #### 4. Scoring Engine ↔ Training Framework
 
-- **Contract:** The training framework deploys `dignity-verifier-preview-v1` to
+- **Contract:** The training framework deploys `dignity-verification-v0.1-preview` to
   Ollama and updates the kill-switch `DEFAULT_MODEL` config. The scoring engine
   consumes the verdict stream produced by that model. No direct coupling — the
   engine reads whatever model the verifier is configured to use. After a deploy,
@@ -399,7 +399,7 @@ existing flag-resolution pattern in the dashboard. Defaults:
    `verification_event`, `machine`, discovery, integrity, and audit rows; no new
    data collection.
 3. **Ties directly to the training framework** — the fine-tuned
-   `dignity-verifier-preview-v1` is the scorer, and the dashboard's green band
+   `dignity-verification-v0.1-preview` is the scorer, and the dashboard's green band
    maps to the training framework's ≥85% eval target.
 4. **No new service** — the engine lives inside the existing kill-switch server,
    mirroring the inference-verification ADR's "no new service" decision.
@@ -473,7 +473,7 @@ paths.
 - ADR-137 (zone assignment) and ADR-138 (onboarding / monitoring-only) — documented in the `machine` table comments in `apps/server-kill-switch/src/db/schema.ts`; the ADR files are not yet present in `docs/architecture/`
 - `apps/server-kill-switch/src/db/schema.ts` — `verification_event`, `machine`, `discovered_provider/model`, `integrity_event`, `kill_switch_audit_log`
 - `apps/server-kill-switch/src/services/verification/verification-service.ts` — persists verdicts the engine reads
-- `apps/server-kill-switch/src/services/verification/verifier.ts` — the scorer (`dignity-verifier-preview-v1`)
+- `apps/server-kill-switch/src/services/verification/verifier.ts` — the scorer (`dignity-verification-v0.1-preview`)
 - `apps/server-kill-switch/src/services/kill-switch.ts` — the STOPPED transition a red score can trigger
 - `apps/server-kill-switch/src/routes/machines.ts` — existing route pattern for `/v1/scores/*`
 - `apps/web-regulator/lib/api-client.ts` — dashboard API client (`apiGet`/`apiPost`)
