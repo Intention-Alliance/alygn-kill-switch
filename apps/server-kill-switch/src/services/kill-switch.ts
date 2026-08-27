@@ -8,7 +8,7 @@ import { loadTracing } from '../infra-loader';
 import { pauseInferenceTraffic, resumeInferenceTraffic } from './traffic-pause';
 import { db } from '../db/index';
 import { killSwitchAuditLog } from '../db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -85,7 +85,7 @@ export class KillSwitchService {
 
   async getCurrentState(): Promise<KillSwitchState> {
     const state = await this.redis.get(this.redis.chaosKillSwitchKey());
-    return (state as KillSwitchState) || STATES.ARMED;
+    return (state as KillSwitchState) || STATES.RUNNING;
   }
 
   async transitionTo(newState: KillSwitchState, metadata: TransitionMetadata = {}): Promise<AuditEntry> {
@@ -248,6 +248,58 @@ export class KillSwitchService {
 
   getAuditLog(limit = 50): AuditEntry[] {
     return this.auditLog.slice(-limit);
+  }
+
+  /**
+   * Seed a single "System initialized" audit entry if the DB audit log is
+   * empty. Called once on startup so the dashboard's audit log is never
+   * blank after a fresh container rebuild (the DB starts empty and no state
+   * change has occurred yet to populate it).
+   *
+   * Idempotent: only writes when there are zero rows, so it never duplicates
+   * on restart. The entry is also pushed into the in-memory hot cache so the
+   * WebSocket `audit-entry` broadcast and the activations endpoint reflect it
+   * immediately.
+   */
+  async seedInitialAuditEntry(): Promise<void> {
+    try {
+      const count = await db
+        .select({ count: sql`count(*)` })
+        .from(killSwitchAuditLog)
+        .get();
+      const total = Number(count?.count ?? 0);
+      if (total > 0) return;
+
+      const now = new Date();
+      const entry: AuditEntry = {
+        id: crypto.randomUUID(),
+        previousState: STATES.RUNNING,
+        newState: STATES.RUNNING,
+        timestamp: now.toISOString(),
+        traceId: `seed-${crypto.randomUUID().slice(0, 8)}`,
+        initiatedBy: 'system',
+        reason: 'System initialized — kill switch running',
+        ip: 'system',
+      };
+
+      await db.insert(killSwitchAuditLog).values({
+        id: entry.id,
+        timestamp: now,
+        userId: entry.initiatedBy,
+        reason: entry.reason,
+        previousState: entry.previousState,
+        newState: entry.newState,
+        traceId: entry.traceId,
+        machineId: null,
+        severity: 'info',
+        metadata: JSON.stringify({ ip: entry.ip, seed: true }),
+      }).run();
+
+      this.auditLog.push(entry);
+      console.log('[kill-switch] Seeded initial audit entry (empty DB)');
+    } catch (err) {
+      console.error('[kill-switch] Failed to seed initial audit entry:', err instanceof Error ? err.message : err);
+    }
   }
 
   getLastActivation(): { timestamp: string | null; by: string | null; reason: string | null } {

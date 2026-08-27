@@ -32,6 +32,18 @@ services:
     #   - rdma-monitor
   
   # ============================================
+  # Ollama Proxy — bridges align-network to host Ollama
+  # ============================================
+  ollama-proxy:
+    image: alpine/socat
+    container_name: alygn-ollama-proxy
+    command: TCP-LISTEN:11434,fork,reuseaddr TCP:172.17.0.1:11434
+    networks:
+      - align-network
+      - default
+    restart: unless-stopped
+
+  # ============================================
   # Kill Switch API (Bun + Elysia + SQLite)
   # ============================================
   kill-switch:
@@ -83,7 +95,7 @@ services:
       - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
       - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
       - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
-      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://host.docker.internal:11434}
+      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://alygn-ollama-proxy:11434}
       - KILL_SWITCH_VERIFIER_TIMEOUT_MS=${KILL_SWITCH_VERIFIER_TIMEOUT_MS:-500}
       # ADR-136: WebAuthn (FIDO2) relying party — production Tailscale mesh
       # hostname + Nginx SSL listener. Overrides the schema defaults.
@@ -226,24 +238,20 @@ services:
       dockerfile: apps/web-regulator/Dockerfile
     container_name: alygn-web-regulator
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:3000"
-    # The kill-switch runs in bridge mode on align-network (binds
-    # 127.0.0.1:3000 on the host via published port). The web-regulator
-    # reaches it via the Docker host gateway (host.docker.internal:3000)
-    # since the published port is host-bound, not a service alias.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # network_mode: host — the web-regulator needs direct host network access
+    # to reach the kill-switch (localhost:3000) and Ollama (localhost:11434).
+    # Docker bridge networking blocks host-bound ports despite extra_hosts.
+    network_mode: host
     environment:
       - NODE_ENV=production
-      - KILL_SWITCH_BACKEND_URL=http://host.docker.internal:3000
+      - PORT=3001
+      - HOSTNAME=0.0.0.0
+      - KILL_SWITCH_BACKEND_URL=http://localhost:3000
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://host.docker.internal:3000}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
       - NEXT_PUBLIC_BETTER_AUTH_URL=/api/auth
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}
       - NEXT_PUBLIC_OTEL_ENABLED=false
-    networks:
-      - align-network
     depends_on:
       kill-switch:
         condition: service_healthy

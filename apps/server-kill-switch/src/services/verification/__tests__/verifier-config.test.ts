@@ -143,6 +143,7 @@ describe('validateVerifierConfig — misconfiguration detection', () => {
 				verifyEnabled: false,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			}),
 		).not.toThrow()
 	})
@@ -156,6 +157,7 @@ describe('validateVerifierConfig — misconfiguration detection', () => {
 				verifyEnabled: true,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			}),
 		).toThrow(/verifierModel must be non-empty/)
 	})
@@ -169,6 +171,7 @@ describe('validateVerifierConfig — misconfiguration detection', () => {
 				verifyEnabled: true,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			}),
 		).toThrow(/not a valid URL/)
 	})
@@ -182,6 +185,7 @@ describe('validateVerifierConfig — misconfiguration detection', () => {
 				verifyEnabled: true,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			}),
 		).toThrow(/must use http\(s\)/)
 	})
@@ -195,6 +199,7 @@ describe('validateVerifierConfig — misconfiguration detection', () => {
 				verifyEnabled: true,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			}),
 		).not.toThrow()
 	})
@@ -209,6 +214,7 @@ describe('validateVerifierReachability', () => {
 			verifyEnabled: false,
 			verifyMode: 'async',
 			verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 		})
 		expect(ok).toBe(true)
 	})
@@ -222,6 +228,7 @@ describe('validateVerifierReachability', () => {
 				verifyEnabled: true,
 				verifyMode: 'async',
 				verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+				verifierTargetModel: 'dignity-verification-v0.1-preview',
 			},
 			500,
 		)

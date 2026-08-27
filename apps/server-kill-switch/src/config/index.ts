@@ -125,6 +125,9 @@ function buildEnvOverrides(): Partial<AppConfig> {
   if (env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH) {
     verificationOverrides.verifierSystemPromptPath = env.KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH;
   }
+  if (env.KILL_SWITCH_VERIFIER_TARGET_MODEL) {
+    verificationOverrides.verifierTargetModel = env.KILL_SWITCH_VERIFIER_TARGET_MODEL;
+  }
   if (Object.keys(verificationOverrides).length > 0) {
     (overrides as Record<string, unknown>).verification = {
       ...((overrides as Record<string, unknown>).verification as Record<string, unknown> | undefined),
