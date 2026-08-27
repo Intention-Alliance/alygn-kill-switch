@@ -9,6 +9,11 @@ reports/training-runs/*
 reports/eval-results/*
 reports/distillation-logs/*
 
+# LlamaIndex augmentation runtime artifacts
+llama-index/.index/
+llama-index/.venv/
+llama-index/.augment.lock
+
 # Next.js build output
 dashboard/.next/
 dashboard/node_modules/
