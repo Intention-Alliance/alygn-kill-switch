@@ -244,6 +244,10 @@ export async function handleWebAuthnRoutes(
         json(res, 401, { error: 'Authentication required' });
         return true;
       }
+      if (!(await requireAdminRole(user))) {
+        json(res, 403, { error: 'Admin role required for credential enrollment' });
+        return true;
+      }
       const body = await parseBody(req);
       if (!body?.challengeId || !body?.response) {
         json(res, 400, { error: 'Missing required fields: challengeId, response' });
