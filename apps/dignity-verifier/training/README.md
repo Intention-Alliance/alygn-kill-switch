@@ -1,6 +1,6 @@
 # Training Pipeline
 
-LoRA fine-tuning of `qwen2.5:0.5b` into `dignity-verifier-preview-v1`. Owned by
+LoRA fine-tuning of `qwen2.5:0.5b` into `dignity-verification-v0.1-preview`. Owned by
 **Keridz** (be-coder).
 
 ## Files
@@ -22,12 +22,12 @@ LoRA fine-tuning of `qwen2.5:0.5b` into `dignity-verifier-preview-v1`. Owned by
 ## Output
 
 LoRA adapter weights (`lora-weights.safetensors`) → consumed by the Ollama
-Modelfile to create `dignity-verifier-preview-v1`.
+Modelfile to create `dignity-verification-v0.1-preview`.
 
 ## Ollama model creation
 
 ```bash
-ollama create dignity-verifier-preview-v1 -f modelfile
+ollama create dignity-verification-v0.1-preview -f modelfile
 ```
 
 Modelfile: `FROM qwen2.5:0.5b` + `ADAPTER ./lora-weights.safetensors`.
