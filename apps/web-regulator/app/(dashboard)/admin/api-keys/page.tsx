@@ -1,6 +1,8 @@
-import { Key, Plus, Activity, History } from "lucide-react";
+import { Key, Activity } from "lucide-react";
 import { fetchApiKeys } from "./actions";
 import { ApiKeysPageClient } from "@/components/api-keys/api-keys-page";
+import { AdminGuard } from "@/components/admin-guard";
+import { requireAdmin } from "@/lib/server-auth";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -22,6 +24,11 @@ export const metadata = {
  * server actions (which call the kill-switch-api with ADMIN_UI_API_KEY).
  */
 export default async function ApiKeysPage() {
+  // Enforce the admin role server-side BEFORE fetching sensitive data, so a
+  // non-admin authenticated user never receives the RSC payload containing
+  // API keys + audit logs (Nikaya P1 finding).
+  await requireAdmin("/admin/api-keys");
+
   let initial: ApiKeysPageData;
   try {
     initial = await fetchApiKeys();
@@ -30,10 +37,12 @@ export default async function ApiKeysPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <PageHeader keyCount={initial.keys.length} />
-      <ApiKeysPageClient initial={initial} />
-    </div>
+    <AdminGuard>
+      <div className="space-y-4">
+        <PageHeader keyCount={initial.keys.length} />
+        <ApiKeysPageClient initial={initial} />
+      </div>
+    </AdminGuard>
   );
 }
 

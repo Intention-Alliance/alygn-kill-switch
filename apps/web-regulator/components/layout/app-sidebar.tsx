@@ -52,6 +52,7 @@ const NAV_ITEMS = [
     label: "Secrets",
     icon: Key,
     description: "Secret rotation & audit",
+    adminOnly: true,
   },
   {
     href: "/flags",
@@ -246,28 +247,30 @@ export function AppSidebar({
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3">
         <ul className="space-y-0.5 px-2">
-          {NAV_ITEMS.map((item) => {
-            const isActive =
-              pathname === item.href || pathname.startsWith(item.href + "/");
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                    collapsed && "justify-center px-2",
-                  )}
-                  title={collapsed ? item.label : undefined}
-                >
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {!collapsed && <span>{item.label}</span>}
-                </Link>
-              </li>
-            );
-          })}
+          {NAV_ITEMS.filter((item) => !item.adminOnly || user?.role === "admin").map(
+            (item) => {
+              const isActive =
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      collapsed && "justify-center px-2",
+                    )}
+                    title={collapsed ? item.label : undefined}
+                  >
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    {!collapsed && <span>{item.label}</span>}
+                  </Link>
+                </li>
+              );
+            },
+          )}
         </ul>
       </nav>
 
