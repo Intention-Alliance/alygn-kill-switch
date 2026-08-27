@@ -97,6 +97,8 @@ apps/web-regulator/components/secrets/*.bak
 # Seed + eval datasets ARE committed (curated ground truth).
 apps/dignity-verifier/dataset/augmented/
 apps/dignity-verifier/reports/
+# Eval runner output (generated artifact, written to repo root by default)
+eval-results/
 apps/dignity-verifier/training/lora-weights.safetensors
 apps/dignity-verifier/training/*.safetensors
 apps/dignity-verifier/training/.cache/
