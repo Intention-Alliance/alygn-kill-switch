@@ -158,6 +158,21 @@ export function ReportsPage() {
         description="Eval suite metrics: accuracy, false positive/negative rates, latency, and the expected-vs-actual confusion matrix."
       />
 
+      <div className="mb-6 flex items-center justify-end">
+        <button
+          type="button"
+          onClick={() => void loadReport()}
+          disabled={isLoading}
+          className={`rounded-md px-4 py-2 text-sm font-semibold transition ${
+            isLoading
+              ? "cursor-not-allowed bg-slate-700/40 text-slate-400"
+              : "bg-slate-800 text-slate-200 hover:bg-slate-700"
+          }`}
+        >
+          {isLoading ? "Refreshing…" : "Refresh"}
+        </button>
+      </div>
+
       {error ? (
         <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-300">
           {error}
