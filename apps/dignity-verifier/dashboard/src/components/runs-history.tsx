@@ -41,7 +41,7 @@ export function RunsHistory({ type, refreshKey = 0 }: RunsHistoryProps) {
       const response = await fetch(`/api/runs?type=${type}&limit=20`);
       const json = (await response.json()) as RunsListResponse;
       if (!response.ok || !json.success || !json.data) {
-        setError(json.error ?? "Failed to load run history.");
+        setError(json.error?.message ?? "Failed to load run history.");
         return;
       }
       setRuns(json.data.runs);
