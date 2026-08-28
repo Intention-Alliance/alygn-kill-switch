@@ -92,7 +92,17 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       # Inference verification layer — the kill-switch reaches Ollama on the
       # host via the host-gateway alias (host.docker.internal:11434).
-      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
+      #
+      # P1-2 (Stage 2 — Nikaya 78/100): the kill-switch now ships with the
+      # inference proxy (node-res-adapter) active by default. When the proxy
+      # is on, the verifier MUST be on too — the server enforces this with
+      # a fail-start guard (see index.ts startup). The default flips from
+      # `-false` to `-true` so a fresh deployment cannot silently ship
+      # verification-off. Operators that intentionally want verification
+      # disabled must also disable the proxy feature flag
+      # (KILL_SWITCH_VERIFICATION_FEATURE_FLAG) or the proxy will refuse to
+      # start.
+      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-true}
       - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
       - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
       - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://alygn-ollama-proxy:11434}
