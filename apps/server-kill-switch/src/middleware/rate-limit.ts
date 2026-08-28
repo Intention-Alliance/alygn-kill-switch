@@ -22,6 +22,7 @@
  */
 
 import type { RedisPool } from '../types/redis-pool';
+import { isOllamaProxyPath } from '../routes/ollama-proxy';
 
 // ─── Configuration ────────────────────────────────
 export const READ_RATE_LIMIT_MAX = 200;  // GET/HEAD/OPTIONS per minute (3x write budget)
@@ -102,6 +103,13 @@ export async function checkRateLimit(
   // Heartbeat and static asset paths are exempt entirely — they are not
   // DB-query endpoints and must never trip the limiter during navigation.
   if (isHeartbeatUrl(url) || isStaticAssetUrl(url)) return { allowed: true };
+
+  // Ollama reverse-proxy paths (infra consult #3 — 2026-08-27) are exempt:
+  // they are data-plane pass-through to the upstream (not DB-query
+  // endpoints), and the strict write budget (10/min) would break real
+  // inference traffic. Auth is enforced by the proxy route itself
+  // (X-API-Key, defense in depth behind the nginx gate).
+  if (isOllamaProxyPath(url)) return { allowed: true };
 
   // Read/navigation requests (GET/HEAD/OPTIONS) are rate-limited at a higher
   // budget than mutations. This protects DB-query endpoints from authenticated

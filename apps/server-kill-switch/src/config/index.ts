@@ -135,6 +135,24 @@ function buildEnvOverrides(): Partial<AppConfig> {
     };
   }
 
+  // Ollama reverse-proxy (infra consult #3 — 2026-08-27)
+  const ollamaProxyOverrides: Partial<AppConfig['ollamaProxy']> = {};
+  if (env.KILL_SWITCH_OLLAMA_UPSTREAMS) {
+    ollamaProxyOverrides.upstreams = env.KILL_SWITCH_OLLAMA_UPSTREAMS
+      .split(',')
+      .map((u) => u.trim())
+      .filter(Boolean);
+  }
+  if (env.KILL_SWITCH_OLLAMA_PROXY_TIMEOUT_MS) {
+    ollamaProxyOverrides.timeoutMs = parseInt(env.KILL_SWITCH_OLLAMA_PROXY_TIMEOUT_MS, 10);
+  }
+  if (Object.keys(ollamaProxyOverrides).length > 0) {
+    (overrides as Record<string, unknown>).ollamaProxy = {
+      ...((overrides as Record<string, unknown>).ollamaProxy as Record<string, unknown> | undefined),
+      ...ollamaProxyOverrides,
+    };
+  }
+
   return overrides;
 }
 

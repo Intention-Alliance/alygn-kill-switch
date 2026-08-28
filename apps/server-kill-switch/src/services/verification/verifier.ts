@@ -132,7 +132,8 @@ export function extractReason(rawText: string): string {
 // ─── Verifier ────────────────────────────────────────────────────
 
 export class InferenceVerifier {
-  private readonly model: string;
+  /** Model name — public so callers can label degraded events (P2-8). */
+  readonly model: string;
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
   private readonly systemPrompt: string;

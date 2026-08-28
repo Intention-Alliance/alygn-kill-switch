@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'bun:test';
-import { checkInferenceVerification } from '../inference-verification';
+import { checkInferenceVerification, extractInferencePrompt } from '../inference-verification';
 import type { VerificationService, HandleInferenceResult } from '../../services/verification/verification-service';
 import type { VerificationResult } from '../../services/verification/verifier';
 
@@ -131,5 +131,106 @@ describe('checkInferenceVerification', () => {
     expect(decision.reject).toBeDefined();
     expect(decision.reject!.status).toBe(403);
     expect(decision.reject!.body).toHaveProperty('error');
+  });
+
+  // ─── Ollama proxy lanes (infra consult #3 — 2026-08-27) ─────────
+
+  it('fires verification for POST /v1/chat/completions (messages array)', async () => {
+    const service = createMockService();
+    const body = {
+      model: 'qwen2.5:0.5b',
+      messages: [
+        { role: 'system', content: 'You are helpful.' },
+        { role: 'user', content: 'Explain the kill switch' },
+      ],
+    };
+    const result = checkInferenceVerification('POST', '/v1/chat/completions', body, service, 'req-10', 'm-10');
+    expect(result.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(lastRequestId).toBe('req-10');
+  });
+
+  it('extracts the last user message as the prompt for chat completions', async () => {
+    const service = createMockService();
+    const body = {
+      messages: [
+        { role: 'user', content: 'First' },
+        { role: 'assistant', content: 'Answer' },
+        { role: 'user', content: 'Second question' },
+      ],
+    };
+    const result = checkInferenceVerification('POST', '/v1/chat/completions', body, service, 'req-11', 'm-11');
+    expect(result.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(extractInferencePrompt(body)).toBe('Second question');
+  });
+
+  it('fires verification for POST /api/chat', async () => {
+    const service = createMockService();
+    const body = { model: 'qwen2.5:0.5b', messages: [{ role: 'user', content: 'Hi' }] };
+    const result = checkInferenceVerification('POST', '/api/chat', body, service, 'req-12', 'm-12');
+    expect(result.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(lastRequestId).toBe('req-12');
+  });
+
+  it('fires verification for POST /api/generate (prompt field)', async () => {
+    const service = createMockService();
+    const body = { model: 'qwen2.5:0.5b', prompt: 'Write a haiku' };
+    const result = checkInferenceVerification('POST', '/api/generate', body, service, 'req-13', 'm-13');
+    expect(result.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(lastRequestId).toBe('req-13');
+  });
+
+  it('fires verification for POST /v1/completions (prompt field, P1-1)', async () => {
+    const service = createMockService();
+    const body = { model: 'qwen2.5:0.5b', prompt: 'Complete this sentence' };
+    const result = checkInferenceVerification('POST', '/v1/completions', body, service, 'req-17', 'm-17');
+    expect(result.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(lastRequestId).toBe('req-17');
+  });
+
+  it('fires verification for query-string variants of generation lanes (P1-2)', async () => {
+    const service = createMockService();
+    const body = { model: 'qwen2.5:0.5b', messages: [{ role: 'user', content: 'Hi' }] };
+    const chat = checkInferenceVerification('POST', '/api/chat?stream=true', body, service, 'req-18', 'm-18');
+    expect(chat.verified).toBe(true);
+    const completions = checkInferenceVerification(
+      'POST',
+      '/v1/completions?stream=true',
+      { model: 'qwen2.5:0.5b', prompt: 'Go' },
+      service,
+      'req-19',
+      'm-19',
+    );
+    expect(completions.verified).toBe(true);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(lastRequestId).toBe('req-19');
+  });
+
+  it('does not fire verification for metadata GETs (/v1/models, /api/tags)', () => {
+    const service = createMockService();
+    const result = checkInferenceVerification('GET', '/v1/models', null, service, 'req-14');
+    expect(result.verified).toBe(false);
+    const tags = checkInferenceVerification('GET', '/api/tags', null, service, 'req-15');
+    expect(tags.verified).toBe(false);
+  });
+
+  it('returns { verified: false } when chat body has no messages', () => {
+    const service = createMockService();
+    const result = checkInferenceVerification('POST', '/v1/chat/completions', { model: 'x' }, service, 'req-16');
+    expect(result.verified).toBe(false);
+  });
+
+  it('extractInferencePrompt prefers prompt over messages', () => {
+    expect(extractInferencePrompt({ prompt: 'direct', messages: [{ role: 'user', content: 'msg' }] })).toBe('direct');
+  });
+
+  it('extractInferencePrompt returns empty for null/empty bodies', () => {
+    expect(extractInferencePrompt(null)).toBe('');
+    expect(extractInferencePrompt({})).toBe('');
+    expect(extractInferencePrompt({ messages: [] })).toBe('');
   });
 });

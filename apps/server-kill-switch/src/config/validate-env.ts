@@ -8,7 +8,7 @@
  * ADR-000: Security Baseline — no hardcoded secrets, no silent defaults.
  */
 
-import type { VerificationConfig } from './schema'
+import type { OllamaProxyConfig, VerificationConfig } from './schema'
 
 // ─── Validation Helpers ──────────────────────────────────────────
 
@@ -253,5 +253,42 @@ export async function validateVerifierReachability(
     }
   } catch {
     return false;
+  }
+}
+
+// ─── Ollama Proxy Config Validation (infra consult #3) ────────────
+
+/**
+ * Validate the Ollama reverse-proxy upstream list.
+ *
+ * Each upstream must be a well-formed http(s) URL. The list is ordered —
+ * first entry is the primary, the rest are failover candidates. This is a
+ * no-op when the list is empty (the schema default always provides at least
+ * one entry, so this only fires on explicit misconfiguration).
+ *
+ * @throws Error with a descriptive message if any upstream is invalid.
+ */
+export function validateOllamaProxyConfig(proxy: OllamaProxyConfig): void {
+  const failures: string[] = [];
+
+  if (!proxy.upstreams || proxy.upstreams.length === 0) {
+    failures.push('upstreams must contain at least one upstream URL');
+  }
+
+  for (const upstream of proxy.upstreams ?? []) {
+    try {
+      const parsed = new URL(upstream);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        failures.push(`upstream "${upstream}" must use http(s), got "${parsed.protocol}"`);
+      }
+    } catch {
+      failures.push(`upstream is not a valid URL: "${upstream}"`);
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(
+      `Ollama proxy configuration invalid:\n  - ${failures.join('\n  - ')}`,
+    );
   }
 }

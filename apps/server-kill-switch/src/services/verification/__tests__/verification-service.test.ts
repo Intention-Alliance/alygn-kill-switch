@@ -13,6 +13,7 @@
 import { describe, expect, it, mock, beforeEach } from 'bun:test';
 import { VerificationService } from '../verification-service';
 import type { InferenceVerifier, VerificationResult } from '../verifier';
+import { isFingerprintBlocked, unblockFingerprint, resetFingerprintHaltState } from '../../fingerprint-halt';
 
 // ─── Mock verifier ──────────────────────────────────────────────
 
@@ -66,10 +67,71 @@ function makePublish() {
   };
 }
 
+beforeEach(() => {
+  resetFingerprintHaltState();
+});
+
 // ─── Tests ──────────────────────────────────────────────────────
 
-describe('VerificationService — UNSAFE handling', () => {
-  it('UNSAFE → transitionTo(STOPPED) called with reason inference-unsafe', async () => {
+describe('VerificationService — UNSAFE handling (P1-1 scoped halt)', () => {
+  it('UNSAFE with a fingerprint → scoped halt (block), NO global transition (single fingerprint)', async () => {
+    const ks = makeKillSwitch('RUNNING');
+    const service = new VerificationService({
+      verifier: makeVerifier('UNSAFE'),
+      mode: 'sync',
+      killSwitch: ks as any,
+      persistEvents: false,
+    });
+    const result = await service.handleInferenceRequest({
+      prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:abc', fingerprintSource: 'machineId',
+    });
+
+    expect(result.mode).toBe('sync');
+    expect(result.result?.verdict).toBe('UNSAFE');
+    // P1-1: the fingerprint is blocked, the GLOBAL state is NOT flipped.
+    expect(result.blockedFingerprint?.fingerprint).toBe('fp:abc');
+    expect(result.escalatedToGlobal).toBe(false);
+    expect(ks.transitions.length).toBe(0);
+  });
+
+  it('UNSAFE blocks the fingerprint in the blocklist (next request from it is gated)', async () => {
+    const service = new VerificationService({
+      verifier: makeVerifier('UNSAFE'),
+      mode: 'sync',
+      persistEvents: false,
+    });
+    await service.handleInferenceRequest({
+      prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:blocked', fingerprintSource: 'apiKey',
+    });
+    expect(isFingerprintBlocked('fp:blocked')).toBe(true);
+    // Cleanup so other tests start fresh.
+    unblockFingerprint('fp:blocked');
+  });
+
+  it('UNSAFE escalates to global STOPPED when ALL active fingerprints are UNSAFE (2+ active)', async () => {
+    const ks = makeKillSwitch('RUNNING');
+    const service = new VerificationService({
+      verifier: makeVerifier('UNSAFE'),
+      mode: 'sync',
+      killSwitch: ks as any,
+      persistEvents: false,
+    });
+    // Two distinct fingerprints both UNSAFE inside the eval window.
+    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:one', fingerprintSource: 'machineId' });
+    const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r2', fingerprint: 'fp:two', fingerprintSource: 'machineId' });
+
+    expect(result.escalatedToGlobal).toBe(true);
+    expect(ks.transitions.length).toBe(1);
+    expect(ks.transitions[0].newState).toBe('STOPPED');
+    expect(ks.transitions[0].metadata.reason).toBe('inference-unsafe');
+    expect(ks.transitions[0].metadata.userId).toBe('system:verifier');
+    expect(ks.transitions[0].metadata.ip).toBe('internal');
+    // Cleanup.
+    unblockFingerprint('fp:one');
+    unblockFingerprint('fp:two');
+  });
+
+  it('UNSAFE without a fingerprint → NO global flip (P1-1: never flip global on a single UNSAFE)', async () => {
     const ks = makeKillSwitch('RUNNING');
     const service = new VerificationService({
       verifier: makeVerifier('UNSAFE'),
@@ -79,30 +141,12 @@ describe('VerificationService — UNSAFE handling', () => {
     });
     const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1' });
 
-    expect(result.mode).toBe('sync');
     expect(result.result?.verdict).toBe('UNSAFE');
-    expect(ks.transitions.length).toBe(1);
-    expect(ks.transitions[0].newState).toBe('STOPPED');
-    expect(ks.transitions[0].metadata.reason).toBe('inference-unsafe');
-    expect(ks.transitions[0].metadata.userId).toBe('system:verifier');
-    expect(ks.transitions[0].metadata.ip).toBe('internal');
+    expect(result.blockedFingerprint).toBeUndefined();
+    expect(ks.transitions.length).toBe(0);
   });
 
-  it('UNSAFE threads the flagged machineId into transition metadata (P2-A)', async () => {
-    const ks = makeKillSwitch('RUNNING');
-    const service = new VerificationService({
-      verifier: makeVerifier('UNSAFE'),
-      mode: 'sync',
-      killSwitch: ks as any,
-      persistEvents: false,
-    });
-    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', machineId: 'machine-xyz' });
-
-    expect(ks.transitions.length).toBe(1);
-    expect(ks.transitions[0].metadata.machineId).toBe('machine-xyz');
-  });
-
-  it('UNSAFE does not double-transition when already STOPPED', async () => {
+  it('UNSAFE does not double-transition when already STOPPED (escalation path)', async () => {
     const ks = makeKillSwitch('STOPPED');
     const service = new VerificationService({
       verifier: makeVerifier('UNSAFE'),
@@ -110,13 +154,17 @@ describe('VerificationService — UNSAFE handling', () => {
       killSwitch: ks as any,
       persistEvents: false,
     });
-    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1' });
+    // Two active fingerprints → escalation attempted, but already STOPPED.
+    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:one', fingerprintSource: 'machineId' });
+    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r2', fingerprint: 'fp:two', fingerprintSource: 'machineId' });
 
     // Already STOPPED → skip transition (no audit spam).
     expect(ks.transitions.length).toBe(0);
+    unblockFingerprint('fp:one');
+    unblockFingerprint('fp:two');
   });
 
-  it('UNSAFE with autoKillOnUnsafe=false → no kill', async () => {
+  it('UNSAFE with autoKillOnUnsafe=false → no block, no kill', async () => {
     const ks = makeKillSwitch('RUNNING');
     const service = new VerificationService({
       verifier: makeVerifier('UNSAFE'),
@@ -125,20 +173,42 @@ describe('VerificationService — UNSAFE handling', () => {
       killSwitch: ks as any,
       persistEvents: false,
     });
-    const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1' });
+    const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:x', fingerprintSource: 'machineId' });
 
     expect(result.result?.verdict).toBe('UNSAFE');
+    expect(result.blockedFingerprint).toBeUndefined();
     expect(ks.transitions.length).toBe(0);
   });
 
-  it('UNSAFE with no killSwitch injected → no kill, no throw', async () => {
+  it('UNSAFE with no killSwitch injected → scoped halt still works, no throw', async () => {
     const service = new VerificationService({
       verifier: makeVerifier('UNSAFE'),
       mode: 'sync',
       persistEvents: false,
     });
-    const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1' });
+    const result = await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:y', fingerprintSource: 'machineId' });
     expect(result.result?.verdict).toBe('UNSAFE');
+    expect(result.blockedFingerprint?.fingerprint).toBe('fp:y');
+    unblockFingerprint('fp:y');
+  });
+
+  it('SAFE verdict unblocks a previously-blocked fingerprint (self-heal)', async () => {
+    const service = new VerificationService({
+      verifier: makeVerifier('UNSAFE'),
+      mode: 'sync',
+      persistEvents: false,
+    });
+    await service.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:heal', fingerprintSource: 'machineId' });
+    expect(isFingerprintBlocked('fp:heal')).toBe(true);
+
+    // A later SAFE verdict from the same fingerprint re-enters it.
+    const safeService = new VerificationService({
+      verifier: makeVerifier('SAFE'),
+      mode: 'sync',
+      persistEvents: false,
+    });
+    await safeService.handleInferenceRequest({ prompt: 'p', output: 'o', requestId: 'r2', fingerprint: 'fp:heal', fingerprintSource: 'machineId' });
+    expect(isFingerprintBlocked('fp:heal')).toBe(false);
   });
 });
 
@@ -259,6 +329,54 @@ describe('VerificationService — event persistence', () => {
     expect(recorded.requestId).toBe('r1');
     expect(recorded.machineId).toBe('m1');
     expect(recorded.result.verdict).toBe('SAFE');
+    expect(recorded.triggeredKill).toBe(false);
+  });
+
+  it('persists the fingerprint via machineId (P1-1)', async () => {
+    let recorded: any = null;
+    mock.module('../verification-event', () => ({
+      recordVerificationEvent: async (input: any) => {
+        recorded = input;
+        return 'event-id';
+      },
+      VERIFICATION_EVENTS_CHANNEL: 'bcp:verification:events',
+    }));
+
+    const service = new VerificationService({
+      verifier: makeVerifier('SAFE'),
+      mode: 'sync',
+      persistEvents: true,
+    });
+    await service.handleInferenceRequest({
+      prompt: 'p', output: 'o', requestId: 'r1', fingerprint: 'fp:abc', fingerprintSource: 'machineId',
+    });
+
+    expect(recorded.machineId).toBe('fp:abc');
+  });
+
+  it('recordDegradedEvent writes a REVIEW + degraded row without running the verifier (P2-8)', async () => {
+    let recorded: any = null;
+    mock.module('../verification-event', () => ({
+      recordVerificationEvent: async (input: any) => {
+        recorded = input;
+        return 'event-id';
+      },
+      VERIFICATION_EVENTS_CHANNEL: 'bcp:verification:events',
+    }));
+
+    const service = new VerificationService({
+      verifier: makeVerifier('SAFE'),
+      mode: 'sync',
+      persistEvents: true,
+    });
+    await service.recordDegradedEvent({ requestId: 'r-malformed', machineId: 'm-1', reason: 'malformed_json_body' });
+
+    expect(recorded).not.toBeNull();
+    expect(recorded.requestId).toBe('r-malformed');
+    expect(recorded.machineId).toBe('m-1');
+    expect(recorded.result.verdict).toBe('REVIEW');
+    expect(recorded.result.degraded).toBe(true);
+    expect(recorded.result.reason).toBe('malformed_json_body');
     expect(recorded.triggeredKill).toBe(false);
   });
 });

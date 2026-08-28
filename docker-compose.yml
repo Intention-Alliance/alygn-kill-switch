@@ -76,7 +76,7 @@ services:
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET required}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
-      - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
+      - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:?KILL_SWITCH_API_KEY required}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
       # Bridge mode: the kill-switch reaches Redis via the align-network
       # service hostnames (redis-node-1, etc.) which resolve within the
@@ -92,11 +92,22 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       # Inference verification layer — the kill-switch reaches Ollama on the
       # host via the host-gateway alias (host.docker.internal:11434).
-      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
+      # P1-2: default ON (:-true) — the safety property (verify-before-trust)
+      # must be active by default. The deploy host .env sets
+      # KILL_SWITCH_VERIFY_ENABLED=true explicitly; an empty/absent host var
+      # now defaults to true instead of silently disabling verification.
+      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-true}
       - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
       - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
       - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://alygn-ollama-proxy:11434}
       - KILL_SWITCH_VERIFIER_TIMEOUT_MS=${KILL_SWITCH_VERIFIER_TIMEOUT_MS:-500}
+      # Ollama reverse-proxy (infra consult #3 — 2026-08-27): ordered,
+      # comma-separated upstream list (first = primary, rest = failover).
+      # Default is the container-network socat relay (alygn-ollama-proxy →
+      # host Ollama at 172.17.0.1:11434). Read timeout matches nginx
+      # proxy_read_timeout (90 min) so long generations are not cut short.
+      - KILL_SWITCH_OLLAMA_UPSTREAMS=${KILL_SWITCH_OLLAMA_UPSTREAMS:-http://alygn-ollama-proxy:11434}
+      - KILL_SWITCH_OLLAMA_PROXY_TIMEOUT_MS=${KILL_SWITCH_OLLAMA_PROXY_TIMEOUT_MS:-5400000}
       # ADR-136: WebAuthn (FIDO2) relying party — production Tailscale mesh
       # hostname + Nginx SSL listener. Overrides the schema defaults.
       - WEBAUTHN_RP_ID=${WEBAUTHN_RP_ID:-andlersrv.tail62d797.ts.net}

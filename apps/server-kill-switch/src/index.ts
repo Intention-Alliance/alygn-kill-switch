@@ -33,13 +33,16 @@ import { startMachineHeartbeat } from './services/machine-heartbeat';
 import { startRegistryScheduler } from './services/discovery/registry-scheduler';
 import { InferenceVerifier } from './services/verification/verifier';
 import { VerificationService } from './services/verification/verification-service';
-import { checkInferenceVerification } from './middleware/inference-verification';
+import { checkInferenceVerification, type InferenceRequestBody } from './middleware/inference-verification';
 import { handleRegistryRoutes } from './routes/registry';
 import { handleInternalKillSwitchRoutes } from './routes/internal-kill-switch';
 import { getConfig, isFeatureEnabled } from './config';
 import { seedAdminUser } from './lib/auth';
 import { seedFeatureFlags } from './db/seed';
-import { validateEnvironment, validateVerifierConfig, validateVerifierReachability } from './config/validate-env';
+import { validateEnvironment, validateVerifierConfig, validateVerifierReachability, validateOllamaProxyConfig } from './config/validate-env';
+import { handleOllamaProxyRoutes, isOllamaProxyPath, isOllamaProxyRequest, startOllamaUpstreamHealthCheck } from './routes/ollama-proxy';
+import { createNodeResAdapter, MAX_BUFFER_BYTES } from './utils/node-res-adapter';
+import { fingerprintSourceFromParts } from './services/fingerprint-halt';
 
 // ─── Redis client type (mirrors RedisPool from src/infra/redis-cluster-pool.mjs) ──
 
@@ -55,6 +58,7 @@ function createHandler(
   service: KillSwitchService,
   ctx: { secretsLoader: SecretsLoader; lockoutState: LockoutStateMachine; redis: RedisClient },
   verification?: VerificationService,
+  ollamaProxyEnabled = true,
 ) {
   const authRateLimiter = new AuthRateLimiter();
   const config = getConfig();
@@ -109,7 +113,11 @@ function createHandler(
     if (admin) return;
 
     const isAuth = url.startsWith('/v1/auth/');
-    if (!isAuth && !isIpAllowed(ip)) {
+    // Ollama proxy paths are exempt from the IP allowlist check: nginx is
+    // the auth gate (PCA key + IP allowlist) and proxies to the kill-switch
+    // over loopback. The route itself verifies X-API-Key (defense in depth).
+    const isOllamaProxy = isOllamaProxyPath(url);
+    if (!isAuth && !isOllamaProxy && !isIpAllowed(ip)) {
       res.writeHead(403, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'IP not allowed', ip }));
       return;
@@ -131,19 +139,47 @@ function createHandler(
       return;
     }
 
-    // ── Inference gate (ADR-141) ─────────────────────────────────
-    // While the kill-switch is STOPPED, reject POST /v1/inference/* with
+    // ── Inference gate (ADR-141 + P1-1 fingerprint-scoped halt) ──
+    // While the kill-switch is STOPPED, reject POST inference lanes with
     // 503 + Retry-After so no new inference requests flow. This is the
     // Phase 1 traffic-pause enforcement (swappable via PauseMechanism).
-    const gate = checkInferenceGate(req.method || 'GET', req.url || '/');
+    // P1-1: a per-fingerprint blocklist is checked BEFORE the global
+    // pause — a fingerprint blocked by an UNSAFE output verdict gets 503
+    // for ITS OWN generation requests while the rest of the fleet keeps
+    // flowing. Covers the legacy /v1/inference/* lane AND the Ollama
+    // proxy generation lanes (infra consult #3 — 2026-08-27).
+    //
+    // The body is only parsed for POST inference lanes (the only lanes the
+    // scoped halt applies to) — metadata GETs and admin paths skip the
+    // parse entirely.
+    const isInferenceWriteLane =
+      method === 'POST' &&
+      (url.startsWith('/v1/inference/') || isOllamaProxyRequest(method, url).verified);
+    const fingerprintSource = fingerprintSourceFromParts({
+      body: isInferenceWriteLane
+        ? (() => {
+            try {
+              return req.body ? JSON.parse(req.body) : null;
+            } catch {
+              return null;
+            }
+          })()
+        : null,
+      headers: req.headers,
+      ip,
+    });
+    const gate = checkInferenceGate(req.method || 'GET', req.url || '/', fingerprintSource);
     if (gate.gated) {
       res.writeHead(503, {
         'Content-Type': 'application/json',
         'Retry-After': String(gate.retryAfter ?? INFERENCE_GATE_RETRY_AFTER_SECONDS),
       });
       res.end(JSON.stringify({
-        error: 'Inference traffic paused (kill-switch STOPPED)',
+        error: gate.reason === 'fingerprint'
+          ? 'Inference traffic paused for this fingerprint (UNSAFE output verdict)'
+          : 'Inference traffic paused (kill-switch STOPPED)',
         retryAfter: gate.retryAfter ?? INFERENCE_GATE_RETRY_AFTER_SECONDS,
+        reason: gate.reason ?? 'global',
       }));
       return;
     }
@@ -151,7 +187,10 @@ function createHandler(
     let uid: string | null = null;
     let userRole: string | null = null;
     const isKillAuthPath = isKillAuthBypassPath(method, url);
-    if (url !== '/v1/kill-switch/health' && !isAuth && !isKillAuthPath) {
+    // Ollama proxy paths skip session auth: nginx is the auth gate (PCA key
+    // + IP allowlist) and injects X-API-Key, which the proxy route verifies
+    // (defense in depth). Do NOT require session auth on the proxy paths.
+    if (url !== '/v1/kill-switch/health' && !isAuth && !isKillAuthPath && !isOllamaProxy) {
       const ar = await checkAuth(service, req);
       if (!ar.authenticated) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Authentication required' })); return; }
       uid = ar.user?.email ?? null;
@@ -163,25 +202,72 @@ function createHandler(
     // but BEFORE the route dispatcher. Reads the inference body, fires the
     // VerificationService. ASYNC mode passes through immediately; SYNC mode
     // awaits and rejects UNSAFE with 403.
+    //
+    // P2-1 (auth-first): the Ollama PROXY lanes are SKIPPED here — the proxy
+    // route fires verification itself AFTER its own X-API-Key check. This
+    // closes the unauthenticated verifier-spam vector (the hook previously
+    // fired before the proxy route's auth). The legacy /v1/inference/* lane
+    // keeps the hook (it is behind session auth above).
+    //
+    // P2-8: malformed JSON on a generation path is logged loudly and a
+    // verification_event row with verdict REVIEW + degraded=1 is written
+    // (the request still proxies — the upstream decides).
     if (verification) {
       const requestId = crypto.randomUUID();
-      let body: { prompt?: string; output?: string } | null = null;
-      if (method === 'POST' && url.startsWith('/v1/inference/')) {
+      let body: InferenceRequestBody | null = null;
+      const isInferenceLane = method === 'POST' && url.startsWith('/v1/inference/');
+      const isProxyGenerationLane = method === 'POST' && isOllamaProxyRequest(method, url).verified;
+      if (isInferenceLane || isProxyGenerationLane) {
         try {
           body = req.body ? JSON.parse(req.body) : null;
         } catch {
           body = null;
+          if (isProxyGenerationLane) {
+            // P2-8: malformed JSON on a generation lane — log loudly and
+            // record a REVIEW/degraded verification_event row so the audit
+            // trail shows the verification was skipped, not silently dropped.
+            console.warn(`[inference-verification] Malformed JSON body on generation lane ${method} ${url} — verification skipped (REVIEW/degraded)`);
+            void verification.recordDegradedEvent({
+              requestId,
+              machineId: fingerprintSource.machineId,
+              reason: 'malformed_json_body',
+            }).catch((err) => {
+              console.warn('[inference-verification] Failed to record degraded event (non-fatal):', err instanceof Error ? err.message : err);
+            });
+          }
         }
       }
-      const v = checkInferenceVerification(method, url, body, verification, requestId, (body as any)?.machineId);
-      if (v.awaitDecision) {
-        const decision = await v.awaitDecision;
-        if (decision.reject) {
-          res.writeHead(decision.reject.status, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(decision.reject.body));
-          return;
+      // P2-1: only the legacy /v1/inference/* lane fires here. Proxy lanes
+      // fire verification inside the route AFTER the X-API-Key check.
+      if (isInferenceLane) {
+        const v = checkInferenceVerification(method, url, body, verification, requestId, body?.machineId);
+        if (v.awaitDecision) {
+          const decision = await v.awaitDecision;
+          if (decision.reject) {
+            res.writeHead(decision.reject.status, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(decision.reject.body));
+            return;
+          }
         }
       }
+    }
+
+    // ── Ollama reverse-proxy (infra consult #3 — 2026-08-27) ──────
+    // Runs AFTER the verification hook (legacy lane only — P2-1) and
+    // BEFORE the generic route dispatcher so these paths never 404. nginx
+    // is the auth gate; the route verifies X-API-Key (defense in depth) and
+    // proxies to the ordered upstream list (try-in-order failover). The
+    // route fires OUTPUT verification (P1-1) after relaying, scoped to the
+    // request's fingerprint. Skipped entirely when the upstream config
+    // failed validation at startup.
+    if (ollamaProxyEnabled) {
+      const ollamaProxyHandled = await handleOllamaProxyRoutes(method, url, req, res, {
+        upstreams: config.ollamaProxy.upstreams,
+        timeoutMs: config.ollamaProxy.timeoutMs,
+        verification,
+        fingerprintSource,
+      });
+      if (ollamaProxyHandled) return;
     }
 
     // Wrap the dispatcher chain in try/catch so a throw in any handler
@@ -307,6 +393,22 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
     wsManager.broadcastAuditEntry(entry);
   });
 
+  // ── Ollama reverse-proxy (infra consult #3 — 2026-08-27) ─────────
+  // Validate the upstream list (fail fast on misconfiguration). On invalid
+  // config the proxy routes are ACTUALLY disabled (guard flag) — the log
+  // message must match reality, so the handler is not wired and the health
+  // check is not started. Proxy paths then fall through to the generic
+  // dispatcher (404) instead of 502-ing on a broken upstream list.
+  // Computed BEFORE the verification block so the P1-2 fail-start guard
+  // can check "proxy enabled AND verification off".
+  let ollamaProxyEnabled = true;
+  try {
+    validateOllamaProxyConfig(config.ollamaProxy);
+  } catch (err) {
+    ollamaProxyEnabled = false;
+    console.error('[ollama-proxy] Config invalid — proxy routes disabled:', err instanceof Error ? err.message : err);
+  }
+
   // ── Inference Verification Service (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b) ──
   // Instantiate the verifier + verification service. Config values
   // (KILL_SWITCH_VERIFIER_MODEL, KILL_SWITCH_VERIFIER_BASE_URL,
@@ -320,6 +422,25 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
   let verificationEnabled =
     isFeatureEnabled('killSwitchVerificationEnabled') &&
     (verificationConfig?.verifyEnabled ?? false);
+
+  // P1-2 fail-start guard: if the Ollama proxy is enabled AND verification
+  // is NOT active, the safety property (verify-before-trust) is not in
+  // effect for the proxied inference lanes. Log LOUDLY at startup so the
+  // operator cannot miss it. The server still boots (the proxy is a
+  // pass-through without verification) — but the warning is unmissable.
+  if (ollamaProxyEnabled && !verificationEnabled) {
+    console.error(
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+      '  ⚠️  SAFETY PROPERTY NOT ACTIVE: Ollama proxy is ENABLED but inference\n' +
+      '  verification is DISABLED (KILL_SWITCH_VERIFY_ENABLED != true or the\n' +
+      '  killSwitchVerificationEnabled feature flag is off).\n' +
+      '  Proxied generation lanes (/v1/chat/completions, /api/chat, …) will\n' +
+      '  pass through WITHOUT prompt/output verification. Set\n' +
+      '  KILL_SWITCH_VERIFY_ENABLED=true (and confirm the verifier model is\n' +
+      '  reachable) to restore the safety property.\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    );
+  }
 
   // P2-1: validate the verification config + probe verifier reachability at
   // startup (before Bun.serve). If verification is enabled but the verifier is
@@ -390,6 +511,13 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
       try { await redis.publish(channel, msg); } catch { /* Redis unavailable */ }
     },
   });
+
+  if (ollamaProxyEnabled) {
+    startOllamaUpstreamHealthCheck({
+      upstreams: config.ollamaProxy.upstreams,
+      intervalMs: 30_000,
+    });
+  }
 
   const port = opts.port || config.server.port;
 
@@ -466,8 +594,19 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
       }
 
       // Regular HTTP — read body, convert to node-style, process via handler
+      // P2-2: cap the body read for Ollama proxy paths (MAX_BUFFER_BYTES) so
+      // an unbounded request body cannot OOM the kill-switch. Non-proxy
+      // paths keep the unbounded read (existing behavior — admin/auth bodies
+      // are small and validated downstream).
+      const isProxyPath = isOllamaProxyPath(url.pathname);
       const bodyText = (req.method !== 'GET' && req.method !== 'HEAD')
         ? await req.text().catch(() => '') : '';
+      if (isProxyPath && Buffer.byteLength(bodyText) > MAX_BUFFER_BYTES) {
+        return new Response(JSON.stringify({ error: 'request_too_large' }), {
+          status: 413,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
 
       return new Promise(resolve => {
         const ip = srv.requestIP(req)?.address || 'unknown';
@@ -484,19 +623,9 @@ export async function startServer(opts: { redisUrls?: string[]; authToken?: stri
         };
         for (const [k, v] of req.headers.entries()) nodeReq.headers[k] = v;
 
-        const nodeRes: any = {
-          _h: {} as Record<string, string>, _s: 200, _b: '',
-          setHeader(n: string, v: string) { this._h[n.toLowerCase()] = String(v); },
-          writeHead(s: number, h?: Record<string, string>) { this._s = s; if (h) Object.entries(h).forEach(([k, v]) => { this._h[k.toLowerCase()] = String(v); }); },
-          end(d?: string) {
-            this._b = d || '';
-            const hdrs = new Headers(this._h);
-            hdrs.set('content-length', String(Buffer.byteLength(this._b)));
-            resolve(new Response(this._b, { status: this._s, headers: hdrs }));
-          },
-        };
+        const nodeRes = createNodeResAdapter((response) => resolve(response));
 
-        createHandler(service, { secretsLoader, lockoutState, redis }, verificationService)(nodeReq, nodeRes);
+        createHandler(service, { secretsLoader, lockoutState, redis }, verificationService, ollamaProxyEnabled)(nodeReq, nodeRes);
       });
     },
   });

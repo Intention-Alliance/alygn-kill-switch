@@ -126,6 +126,25 @@ export const VerificationConfigSchema = z.object({
 		.default('dignity-verification-v0.1-preview'),
 })
 
+// ADR-2026-08-27 (infra consult #3): Ollama reverse-proxy config.
+// The kill-switch proxies ALL machine inference lanes
+// (/v1/chat/completions, /api/chat, /api/generate, /v1/models, /api/tags)
+// to an ordered upstream list. First entry = primary, rest = failover
+// (try-in-order, log-which-served, periodic health check).
+//
+// Env overrides (see config/index.ts):
+//   KILL_SWITCH_OLLAMA_UPSTREAMS        -> upstreams (comma-separated)
+//   KILL_SWITCH_OLLAMA_PROXY_TIMEOUT_MS -> timeoutMs
+export const OllamaProxyConfigSchema = z.object({
+	upstreams: z
+		.array(z.string().url())
+		.min(1)
+		.default(['http://alygn-ollama-proxy:11434']),
+	// Read timeout for proxied requests. 5400s (90 min) matches the nginx
+	// proxy_read_timeout so long-running generations are not cut short.
+	timeoutMs: z.number().int().min(1).default(5_400_000),
+})
+
 export const AppConfigSchema = z.object({
 	env: z.enum(['development', 'staging', 'production']),
 	redis: RedisConfigSchema,
@@ -137,6 +156,7 @@ export const AppConfigSchema = z.object({
 	telemetry: TelemetryConfigSchema,
 	webauthn: WebAuthnConfigSchema.default({}),
 	verification: VerificationConfigSchema.default({}),
+	ollamaProxy: OllamaProxyConfigSchema.default({}),
 })
 
 export type AppConfig = z.infer<typeof AppConfigSchema>
@@ -149,3 +169,4 @@ export type ServerConfig = z.infer<typeof ServerConfigSchema>
 export type TelemetryConfig = z.infer<typeof TelemetryConfigSchema>
 export type WebAuthnConfig = z.infer<typeof WebAuthnConfigSchema>
 export type VerificationConfig = z.infer<typeof VerificationConfigSchema>
+export type OllamaProxyConfig = z.infer<typeof OllamaProxyConfigSchema>
