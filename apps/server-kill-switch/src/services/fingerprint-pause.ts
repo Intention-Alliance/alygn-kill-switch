@@ -10,15 +10,28 @@
  *
  *   - UNSAFE output verdict → halt traffic for THAT fingerprint only.
  *     Other fingerprints continue to flow.
- *   - Fingerprint priority order:
- *       1. Explicit `machineId` / `sessionId` in request body or header.
- *       2. API-key identity (the kill-switch API-key or PCA key on the
- *          11435/8080 lanes).
- *       3. Source IP + User-Agent hash (fallback when no explicit identity
- *          is present).
- *   - Escalation-to-global: when ALL active fingerprints in the eval
- *     window show UNSAFE, escalate to global pause via the existing
- *     `pauseInferenceTraffic()` path. Stays scoped otherwise.
+ *   - Fingerprint derivation priority (first non-empty wins — see
+ *     `deriveFingerprint` in `./fingerprint-blocklist.ts` for the
+ *     authoritative implementation):
+ *       1. `body.machineId`   — explicit machine identity from the
+ *                                inference request body.
+ *       2. `body.sessionId`   — session identity from the request body.
+ *       3. `body.fingerprint` — caller-supplied fingerprint in the body.
+ *       4. Header `x-fingerprint` — set by the openclaw-webhook or the
+ *                                   orchestrator that knows the session.
+ *       5. Header `x-api-key`  — kill-switch API key or PCA key
+ *                                 (hashed, not persisted raw).
+ *       6. Header `authorization` (Bearer token) — auth identity
+ *                                                  (hashed).
+ *       7. IP + User-Agent hash — fallback when no explicit identity
+ *                                  is present (hashed; IP never
+ *                                  persisted raw).
+ *   - Escalation-to-global: when ALL distinct active fingerprints in
+ *     the eval window show UNSAFE (i.e. no SAFE fingerprint is active
+ *     in the window), escalate to global pause via the existing
+ *     `pauseInferenceTraffic()` path. Stays scoped otherwise. A single
+ *     UNSAFE verdict in a 10-fingerprint system halts only that one
+ *     fingerprint and keeps the other nine flowing.
  *   - Self-heal: a fingerprint re-enters allowed traffic when a later
  *     request from it verifies SAFE, OR when the TTL expires
  *     (default 5 min). TTL exists so a missed verifier reply never
@@ -37,7 +50,14 @@
  * requires cross-instance sharing.
  */
 
-import { and, eq, gt, isNotNull } from 'drizzle-orm'
+import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
+// Import Drizzle operators from the `drizzle-orm/sql` sub-path rather
+// than the top-level barrel. Some test files mock `drizzle-orm` to
+// strip/override individual operators, but the sub-path is unaffected
+// by those top-level mocks. This keeps the escalation query working
+// even when the test runner has loaded other test files that mock
+// `drizzle-orm` with partial exports.
+import { and, eq, gt, isNotNull } from 'drizzle-orm/sql'
 import { db } from '../db'
 import { verificationEvents } from '../db/schema'
 import {
@@ -79,44 +99,73 @@ export const ESCALATION_WINDOW_MS = 60 * 1000
 
 // ─── Types ────────────────────────────────────────────────────────
 
+/**
+ * Active-fingerprint counts in the escalation window. The escalation
+ * rule compares these two values directly: escalate only when
+ * `unsafeActive === totalActive && totalActive > 0`.
+ */
+export interface EscalationCounts {
+	/** Distinct fingerprints with ANY verdict in the window. */
+	totalActive: number
+	/** Distinct fingerprints with at least one UNSAFE verdict in the window. */
+	unsafeActive: number
+}
+
 export interface EscalationCheckResult {
 	/** True when escalation fired this call. */
 	escalated: boolean
-	/** Number of active fingerprints in the window. */
+	/** Number of distinct active fingerprints in the window. */
 	activeFingerprints: number
-	/** Number of UNSAFE verdicts in the window. */
-	unsafeVerdicts: number
+	/** Number of distinct UNSAFE fingerprints in the window. */
+	unsafeFingerprints: number
 	/** Whether the kill-switch was already in a paused state at check time. */
 	alreadyPaused: boolean
 }
 
-// ─── Escalation-to-global ────────────────────────────────────────
+// ─── Pure query helper (extracted for testability) ───────────────
 
 /**
- * Check whether to escalate the kill-switch to global pause.
+ * Pure DB query for the escalation rule. Counts distinct fingerprints
+ * (a.k.a. `machine_id`) that were active in the last `windowMs`
+ * milliseconds, broken down by verdict:
  *
- * The check counts fingerprints that had an UNSAFE verdict in the last
- * `ESCALATION_WINDOW_MS`. If EVERY active fingerprint (i.e. those with
- * at least one UNSAFE in the window) shows UNSAFE — meaning there is no
- * "safe" fingerprint to keep serving — escalate to global pause via the
- * existing `pauseInferenceTraffic()` path.
+ *   - `totalActive`  — distinct fingerprints with ANY verdict in the
+ *                       window (SAFE | UNSAFE | REVIEW). These are the
+ *                       fingerprints currently sending traffic.
+ *   - `unsafeActive` — distinct fingerprints with at least one UNSAFE
+ *                       verdict in the window.
  *
- * "Active" means "had a verdict in the window" — we don't count
- * fingerprints that have been silent for the full window because they
- * aren't currently sending traffic.
+ * The escalation rule is `unsafeActive === totalActive && totalActive > 0`
+ * — i.e. every fingerprint that spoke in the window showed UNSAFE. If
+ * even one fingerprint is SAFE (or silent with no UNSAFE), the scoped
+ * halt design stays in effect and the other fingerprints keep flowing.
  *
- * The check is idempotent: if the kill-switch is already paused, no
- * double-pause is triggered (pauseInferenceTraffic is idempotent).
+ * The DB handle is injected so tests can exercise the SAME query
+ * shape that production uses (no raw-SQL bypass). Production passes
+ * the module-level singleton; tests pass an in-memory Drizzle handle.
+ *
+ * On query error returns `{ totalActive: 0, unsafeActive: 0 }` — the
+ * caller treats that as "no signal" and does not escalate.
  */
-export async function shouldEscalateToGlobal(
-	windowMs: number = ESCALATION_WINDOW_MS,
-): Promise<EscalationCheckResult> {
-	// Step 1: query verification_event for UNSAFE verdicts in the window.
+export async function queryEscalationCounts(
+	database: BunSQLiteDatabase<any>,
+	windowMs: number,
+): Promise<EscalationCounts> {
 	const windowStart = new Date(Date.now() - windowMs)
-	let unsafeRows: Array<{ machine_id: string | null }> = []
 	try {
-		unsafeRows = (await db
-			.selectDistinct({ machine_id: verificationEvents.machineId })
+		// Total distinct active fingerprints (any verdict) in the window.
+		const totalRows = await database
+			.selectDistinct({ machineId: verificationEvents.machineId })
+			.from(verificationEvents)
+			.where(
+				and(
+					isNotNull(verificationEvents.machineId),
+					gt(verificationEvents.createdAt, windowStart),
+				),
+			)
+		// Distinct UNSAFE fingerprints in the window.
+		const unsafeRows = await database
+			.selectDistinct({ machineId: verificationEvents.machineId })
 			.from(verificationEvents)
 			.where(
 				and(
@@ -124,52 +173,79 @@ export async function shouldEscalateToGlobal(
 					isNotNull(verificationEvents.machineId),
 					gt(verificationEvents.createdAt, windowStart),
 				),
-			)) as Array<{ machine_id: string | null }>
+			)
+		const totalActive = new Set(
+			totalRows
+				.map((r: { machineId: string | null }) => r.machineId)
+				.filter((m: string | null): m is string => Boolean(m)),
+		).size
+		const unsafeActive = new Set(
+			unsafeRows
+				.map((r: { machineId: string | null }) => r.machineId)
+				.filter((m: string | null): m is string => Boolean(m)),
+		).size
+		return { totalActive, unsafeActive }
 	} catch (err) {
-		// DB error — don't escalate; log and skip. The blocklist layer is
-		// still scoped per-fingerprint, so the system stays safe.
 		console.warn(
 			'[fingerprint-pause] escalation query failed (non-fatal):',
 			err,
 		)
-		return {
-			escalated: false,
-			activeFingerprints: 0,
-			unsafeVerdicts: 0,
-			alreadyPaused: isTrafficPaused(),
-		}
+		return { totalActive: 0, unsafeActive: 0 }
 	}
+}
 
-	// Each UNSAFE verdict (not distinct machine_id) counts toward the
-	// active-fingerprint set.
-	const fingerprints = new Set<string>()
-	for (const row of unsafeRows) {
-		if (row.machine_id) fingerprints.add(`machine:${row.machine_id}`)
-	}
+// ─── Escalation-to-global ────────────────────────────────────────
 
-	const activeFingerprints = fingerprints.size
+/**
+ * Check whether to escalate the kill-switch to global pause.
+ *
+ * The rule: if EVERY distinct active fingerprint (i.e. those with at
+ * least one verdict in the window) has at least one UNSAFE verdict in
+ * the window, escalate to global pause via the existing
+ * `pauseInferenceTraffic()` path. Otherwise stay scoped — a single
+ * UNSAFE in a multi-fingerprint system halts only that fingerprint and
+ * the rest keep flowing.
+ *
+ * "Active" means "had a verdict in the window" — we don't count
+ * fingerprints that have been silent for the full window because they
+ * aren't currently sending traffic.
+ *
+ * The check is idempotent: if the kill-switch is already paused, no
+ * double-pause is triggered (pauseInferenceTraffic is idempotent).
+ *
+ * @param windowMs eval window in ms (default `ESCALATION_WINDOW_MS`)
+ * @param database  injectable DB handle for tests; production uses the
+ *                  module-level singleton.
+ */
+export async function shouldEscalateToGlobal(
+	windowMs: number = ESCALATION_WINDOW_MS,
+	database: BunSQLiteDatabase<any> = db,
+): Promise<EscalationCheckResult> {
+	const { totalActive, unsafeActive } = await queryEscalationCounts(
+		database,
+		windowMs,
+	)
 	const alreadyPaused = isTrafficPaused()
 
-	// Escalation rule: if we have at least one active fingerprint and ALL
-	// of them are UNSAFE (we have no other signal here — every verdict we
-	// saw was UNSAFE), AND the system isn't already paused, escalate.
-	// We always count UNSAFE > 0 here because the query is filtered to
-	// UNSAFE verdicts — so `activeFingerprints > 0` AND no SAFE signal in
-	// the window means escalate.
-	if (activeFingerprints > 0 && !alreadyPaused) {
+	// Escalation rule: every active fingerprint in the window showed
+	// UNSAFE, AND we have at least one active fingerprint, AND the
+	// system isn't already paused. This is the correct scoped-halt
+	// contract: SAFE fingerprints (or any fingerprint with no UNSAFE)
+	// must keep flowing, even when other fingerprints are UNSAFE.
+	if (totalActive > 0 && unsafeActive === totalActive && !alreadyPaused) {
 		await pauseInferenceTraffic()
 		return {
 			escalated: true,
-			activeFingerprints,
-			unsafeVerdicts: activeFingerprints,
+			activeFingerprints: totalActive,
+			unsafeFingerprints: unsafeActive,
 			alreadyPaused: false,
 		}
 	}
 
 	return {
 		escalated: false,
-		activeFingerprints,
-		unsafeVerdicts: activeFingerprints,
+		activeFingerprints: totalActive,
+		unsafeFingerprints: unsafeActive,
 		alreadyPaused,
 	}
 }

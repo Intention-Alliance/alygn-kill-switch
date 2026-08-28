@@ -59,6 +59,7 @@ import { handleSettingsRoutes } from './routes/settings'
 import { handleWebAuthnRoutes } from './routes/webauthn'
 import { handleWebhookKeysRoutes } from './routes/webhook-keys'
 import { startRegistryScheduler } from './services/discovery/registry-scheduler'
+import { sweepExpiredBlocks } from './services/fingerprint-blocklist'
 import { isIpAllowed, startDnsRefresh } from './services/ip-allowlist'
 import { KillSwitchService } from './services/kill-switch'
 import { startMachineHeartbeat } from './services/machine-heartbeat'
@@ -740,6 +741,27 @@ export async function startServer(
 			}
 		},
 	})
+
+	// P1-1 (Stage 2 fingerprint-scoped): sweep expired fingerprint
+	// blocks on a 60s interval. The in-memory blocklist is bounded by
+	// sweeping — a missed verifier reply never permanently bans a
+	// fingerprint, and abandoned fingerprints don't accumulate.
+	// KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §d self-heal contract.
+	const sweepInterval = setInterval(() => {
+		try {
+			const removed = sweepExpiredBlocks()
+			if (removed > 0) {
+				console.log(
+					`[fingerprint-pause] swept ${removed} expired block(s)`,
+				)
+			}
+		} catch (err) {
+			console.warn('[fingerprint-pause] sweep failed (non-fatal):', err)
+		}
+	}, 60_000)
+	// Don't keep the event loop alive solely for the sweep — let the
+	// process exit naturally when Bun.serve() stops.
+	sweepInterval.unref?.()
 
 	const port = opts.port || config.server.port
 

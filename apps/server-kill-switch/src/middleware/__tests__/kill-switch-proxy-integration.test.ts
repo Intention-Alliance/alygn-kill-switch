@@ -79,7 +79,7 @@ function makeScriptedVerifier(verdict: 'SAFE' | 'UNSAFE' | 'REVIEW', reason = 't
   const baseResult = (): VerificationResult => ({
     verdict: nextVerdict,
     confidence: nextVerdict === 'REVIEW' ? 0.5 : 0.9,
-    reason: nextVerdict === 'RESAFE' || nextVerdict === 'SAFE' ? 'safe' : reason,
+    reason: nextVerdict === 'SAFE' ? 'safe' : reason,
     latencyMs: 10,
     model: 'test-model',
     degraded: false,
