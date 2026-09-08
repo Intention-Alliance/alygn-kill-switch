@@ -85,7 +85,7 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: (process.env.TRUSTED_ORIGINS || process.env.TRUSTED_ORIGINS_DEFAULT ?? 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001')
+  trustedOrigins: (process.env.TRUSTED_ORIGINS || process.env.TRUSTED_ORIGINS_DEFAULT || 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),

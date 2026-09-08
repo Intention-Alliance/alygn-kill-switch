@@ -20,13 +20,13 @@ export async function seedDefaults() {
   const existingMachine = await db
     .select()
     .from(machines)
-    .where(eq(machines.id, process.env.ALYGN_MACHINE_ID ?? 'machine-local-001'))
+    .where(eq(machines.hostname, process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost'))
     .get();
 
   if (!existingMachine) {
     await db.insert(machines).values({
-      id: process.env.ALYGN_MACHINE_ID ?? 'machine-local-001',
-      name: process.env.ALYGN_MACHINE_NAME ?? 'local-machine',
+      id: `machine-${(process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost').split('.')[0]}`,
+      name: process.env.ALYGN_MACHINE_NAME ?? (process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost').split('.')[0],
       hostname: process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost',
       status: 'active',
       role: 'Primary Controller',

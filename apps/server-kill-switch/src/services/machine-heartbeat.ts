@@ -22,9 +22,9 @@ import { db } from '../db/index';
 import { machines } from '../db/schema';
 
 // ─── Local machine identity ────────────────────────────────────────
-const LOCAL_MACHINE_ID = process.env.ALYGN_MACHINE_ID ?? 'local-machine';
-const LOCAL_MACHINE_NAME = process.env.ALYGN_MACHINE_NAME ?? 'local-machine';
 const LOCAL_MACHINE_HOSTNAME = process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost';
+const LOCAL_MACHINE_ID = `machine-${LOCAL_MACHINE_HOSTNAME.split('.')[0]}`;
+const LOCAL_MACHINE_NAME = process.env.ALYGN_MACHINE_NAME ?? LOCAL_MACHINE_HOSTNAME.split('.')[0];
 const LOCAL_MACHINE_ROLE = 'primary';
 
 const HEARTBEAT_INTERVAL_MS = 30_000; // 30s — matches the task spec
