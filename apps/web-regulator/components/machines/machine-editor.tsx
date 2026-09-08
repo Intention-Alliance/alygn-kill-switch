@@ -167,7 +167,7 @@ export function MachineEditor({
               id="machine-hostname"
               value={form.hostname}
               onChange={(e) => updateField("hostname", e.target.value)}
-              placeholder="e.g., worker01.tail62d797.ts.net"
+              placeholder="e.g., worker01.yourdomain.com"
               required
               disabled={isSubmitting}
             />

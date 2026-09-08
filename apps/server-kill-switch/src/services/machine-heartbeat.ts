@@ -22,10 +22,9 @@ import { db } from '../db/index';
 import { machines } from '../db/schema';
 
 // ─── Local machine identity ────────────────────────────────────────
-// Must match the seed in db/index.ts (INSERT OR IGNORE ... 'andlersrv-local').
-const LOCAL_MACHINE_ID = 'andlersrv-local';
-const LOCAL_MACHINE_NAME = 'andlersrv';
-const LOCAL_MACHINE_HOSTNAME = 'andlersrv.tail62d797.ts.net';
+const LOCAL_MACHINE_ID = process.env.ALYGN_MACHINE_ID ?? 'local-machine';
+const LOCAL_MACHINE_NAME = process.env.ALYGN_MACHINE_NAME ?? 'local-machine';
+const LOCAL_MACHINE_HOSTNAME = process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost';
 const LOCAL_MACHINE_ROLE = 'primary';
 
 const HEARTBEAT_INTERVAL_MS = 30_000; // 30s — matches the task spec

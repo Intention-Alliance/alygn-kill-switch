@@ -83,11 +83,11 @@ export const WebAuthnConfigSchema = z.object({
 	rpID: z
 		.string()
 		.min(1)
-		.default('andlersrv.tail62d797.ts.net'),
+		.default('localhost'),
 	origin: z
 		.string()
 		.min(1)
-		.default('https://andlersrv.tail62d797.ts.net:8443'),
+		.default('https://localhost:8443'),
 	challengeTtlMs: z.number().int().min(1000).default(300_000),
 	assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
 })

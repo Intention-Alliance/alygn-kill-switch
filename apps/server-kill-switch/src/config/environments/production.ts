@@ -60,8 +60,8 @@ export const productionConfig: Partial<AppConfig> = {
   // WEBAUTHN_RP_ID / WEBAUTHN_ORIGIN env vars (see config/index.ts).
   webauthn: {
     rpName: 'Alygn Kill Switch',
-    rpID: 'andlersrv.tail62d797.ts.net',
-    origin: 'https://andlersrv.tail62d797.ts.net:8443',
+    rpID: process.env.WEBAUTHN_RP_ID ?? 'localhost',
+    origin: process.env.WEBAUTHN_ORIGIN ?? 'https://localhost:8443',
     challengeTtlMs: 300_000,
     assertionTokenTtlMs: 600_000,
   },

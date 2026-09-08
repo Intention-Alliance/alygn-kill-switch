@@ -1,7 +1,7 @@
 /**
  * Database Seed Module — Default Data Initialization
  *
- * Seeds the default machine (andlersrv) and 6 default settings
+ * Seeds the default machine and default settings
  * on first startup. All operations are idempotent (safe to re-run).
  *
  * ADR-133: Kill Switch dashboard rebuild — machine + settings seeding.
@@ -12,7 +12,7 @@ import { db } from './index';
 import { machines, settings, featureFlags } from './schema';
 
 /**
- * Seed the default machine (andlersrv) if it doesn't exist.
+ * Seed the default machine if it doesn't exist.
  * Uses INSERT OR IGNORE semantics — won't overwrite existing data.
  */
 export async function seedDefaults() {
@@ -20,14 +20,14 @@ export async function seedDefaults() {
   const existingMachine = await db
     .select()
     .from(machines)
-    .where(eq(machines.id, 'machine-andlersrv-001'))
+    .where(eq(machines.id, process.env.ALYGN_MACHINE_ID ?? 'machine-local-001'))
     .get();
 
   if (!existingMachine) {
     await db.insert(machines).values({
-      id: 'machine-andlersrv-001',
-      name: 'andlersrv',
-      hostname: 'andlersrv.tail62d797.ts.net',
+      id: process.env.ALYGN_MACHINE_ID ?? 'machine-local-001',
+      name: process.env.ALYGN_MACHINE_NAME ?? 'local-machine',
+      hostname: process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost',
       status: 'active',
       role: 'Primary Controller',
       hasDpu: false,
@@ -43,7 +43,7 @@ export async function seedDefaults() {
       zone: 'control-plane',
       lastSeen: new Date(),
     });
-    console.log('[seed] Default machine "andlersrv" created');
+    console.log('[seed] Default machine created');
   }
 
   // ─── Seed default settings ────────────────────────────────────────

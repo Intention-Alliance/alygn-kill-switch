@@ -6,7 +6,7 @@ import { resolve4 } from 'node:dns/promises';
 
 // ─── Tailscale MagicDNS — dynamic DNS resolution for Tailscale IP ──
 
-const TAILSCALE_MAGICDNS = 'andlersrv.tail62d797.ts.net';
+const TAILSCALE_MAGICDNS = process.env.TAILSCALE_HOSTNAME ?? '';
 const DNS_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 let dnsResolvedIps: string[] = [];

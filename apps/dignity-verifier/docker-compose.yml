@@ -3,7 +3,7 @@
 # ============================================================
 # Super-admin dashboard for the Dignity Verifier Training
 # Framework. Tailscale-only access (127.0.0.1:3002 published,
-# remote access via Tailscale + nginx on 100.66.199.80:8443).
+# remote access via Tailscale + nginx).
 #
 # Usage:
 #   docker compose -f apps/dignity-verifier/docker-compose.yml build
@@ -17,7 +17,7 @@
 #   TEACHER_MODEL        (defaults to glm-5.3-flash:cloud)
 #   STUDENT_MODEL        (defaults to qwen2.5:0.5b)
 #   EMBEDDING_MODEL      (defaults to nomic-embed-text-v2-moe:latest)
-#   TAILSCALE_IP         (defaults to 100.66.199.80)
+#   TAILSCALE_IP         (no default — set per deployment)
 # ============================================================
 
 services:
@@ -53,10 +53,10 @@ services:
       - NEXT_PUBLIC_BETTER_AUTH_URL=/api/auth
       # Super-admin password seed (shared with kill-switch).
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-andlersrv@alygn.com}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
       # ─── Tailscale identity check ─────────────────────────
-      - TAILSCALE_IP=${TAILSCALE_IP:-100.66.199.80}
-      - TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME:-andlersrv.tail62d797.ts.net}
+      - TAILSCALE_IP=${TAILSCALE_IP:-}
+      - TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME:-}
       # ─── Ollama / model config ─────────────────────────────
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - TEACHER_MODEL=${TEACHER_MODEL:-glm-5.3-flash:cloud}
