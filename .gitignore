@@ -107,3 +107,11 @@ apps/dignity-verifier/llama-index/__pycache__/
 # Python venv / env
 apps/dignity-verifier/training/.venv/
 apps/dignity-verifier/llama-index/.venv/
+
+# Auth/live state — never commit (Better-Auth sessions, tokens)
+data/auth.sqlite
+data/auth.sqlite-shm
+data/auth.sqlite-wal
+data/auth.sqlite-journal
+data/kill-switch.sqlite-journal
+*.sqlite-journal
