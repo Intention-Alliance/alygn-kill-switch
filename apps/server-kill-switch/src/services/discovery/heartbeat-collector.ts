@@ -11,7 +11,7 @@
 
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/index';
-import { agents, machines } from '../../db/schema';
+import { agents, machines, integrityEvents } from '../../db/schema';
 import type { DiscoveryOrchestrator } from './orchestrator';
 import type {
   HardwareFingerprint,
@@ -35,6 +35,15 @@ export interface HeartbeatResult {
   agentRegistered: boolean;
 }
 
+export class HostnameMismatchError extends Error {
+  constructor(public registered: string, public reported: string) {
+    super(
+      `Hostname mismatch: registered "${registered}" but heartbeat reported "${reported}". Machine tagged INSECURE.`
+    );
+    this.name = 'HostnameMismatchError';
+  }
+}
+
 export class HeartbeatCollector {
   constructor(private orchestrator: DiscoveryOrchestrator) {}
 
@@ -44,6 +53,40 @@ export class HeartbeatCollector {
    * was registered.
    */
   async handleAgentHeartbeat(hb: AgentHeartbeat): Promise<HeartbeatResult> {
+    // Hostname integrity check (Design System §5.1, ADR-135 §5.2):
+    // if this machine is already admitted, the heartbeat hostname MUST match
+    // the registered hostname. A mismatch means the machine identity changed
+    // — flag as tamper/swap and tag INSECURE.
+    const admitted = await db
+      .select({ id: machines.id, hostname: machines.hostname })
+      .from(machines)
+      .where(eq(machines.id, hb.machineId))
+      .get();
+
+    if (admitted && admitted.hostname !== hb.hostname) {
+      // Hostname mismatch — the machine identity changed. Record integrity
+      // event and tag the machine as insecure (monitoring-only).
+      await db
+        .update(machines)
+        .set({ monitoringOnly: 1 })
+        .where(eq(machines.id, hb.machineId));
+
+      await db.insert(integrityEvents).values({
+        id: crypto.randomUUID(),
+        machineId: hb.machineId,
+        eventType: 'hostname_mismatch',
+        severity: 'critical',
+        details: JSON.stringify({
+          registered: admitted.hostname,
+          reported: hb.hostname,
+          action: 'machine tagged INSECURE — monitoring-only until human review',
+        }),
+        createdAt: new Date(),
+      });
+
+      throw new HostnameMismatchError(admitted.hostname, hb.hostname);
+    }
+
     const { drift, signature } = await this.orchestrator.handleHeartbeat({
       machineId: hb.machineId,
       hostname: hb.hostname,

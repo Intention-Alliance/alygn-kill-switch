@@ -21,7 +21,7 @@ import { desc, eq } from 'drizzle-orm'
 import { db } from '../db/index'
 import { discoveredMachines, integrityEvents } from '../db/schema'
 import { DiscoveryOrchestrator } from '../services/discovery/orchestrator'
-import { HeartbeatCollector } from '../services/discovery/heartbeat-collector'
+import { HeartbeatCollector, HostnameMismatchError } from '../services/discovery/heartbeat-collector'
 import { OnboardingStateError } from '../services/onboarding'
 
 // ─── Helpers ────────────────────────────────────────────────────
@@ -154,25 +154,42 @@ export async function handleDiscoveryRoutes(
 			// registration + liveness bookkeeping happen alongside the
 			// orchestrator's fingerprint/integrity check. The response
 			// contract is preserved.
+			// Hostname integrity check (Design System §5.1, ADR-135 §5.2):
+			// the collector validates that the reported hostname matches the
+			// registered machine. A mismatch throws HostnameMismatchError and
+			// the machine is tagged INSECURE (monitoring-only).
 			const collector = new HeartbeatCollector(discovery)
-			const result = await collector.handleAgentHeartbeat({
-				machineId,
-				hostname,
-				fingerprint: body?.fingerprint ?? undefined,
-				agentId: body?.agentId ?? undefined,
-				agentName: body?.agentName ?? undefined,
-				agentVersion: body?.agentVersion ?? undefined,
-				capabilities: body?.capabilities ?? undefined,
-			})
+			try {
+				const result = await collector.handleAgentHeartbeat({
+					machineId,
+					hostname,
+					fingerprint: body?.fingerprint ?? undefined,
+					agentId: body?.agentId ?? undefined,
+					agentName: body?.agentName ?? undefined,
+					agentVersion: body?.agentVersion ?? undefined,
+					capabilities: body?.capabilities ?? undefined,
+				})
 
-			json(res, 200, {
-				acknowledged: true,
-				machineId,
-				signature: result.signature,
-				drift: result.drift,
-				state: result.drift ? 'INTEGRITY_DRIFT' : 'OK',
-				agentRegistered: result.agentRegistered,
-			})
+				json(res, 200, {
+					acknowledged: true,
+					machineId,
+					signature: result.signature,
+					drift: result.drift,
+					state: result.drift ? 'INTEGRITY_DRIFT' : 'OK',
+					agentRegistered: result.agentRegistered,
+				})
+			} catch (err) {
+				if (err instanceof HostnameMismatchError) {
+					json(res, 403, {
+						error: 'Hostname mismatch — machine tagged INSECURE',
+						code: 'HOSTNAME_MISMATCH',
+						registered: err.registered,
+						reported: err.reported,
+					})
+					return true
+				}
+				throw err
+			}
 			return true
 		}
 
