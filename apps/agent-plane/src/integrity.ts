@@ -1,0 +1,118 @@
+/**
+ * Hardware fingerprint collection — ADR-134 detection model.
+ * Collects CPU, memory, GPU, disk, OS, and MAC addresses.
+ * Used for registration and integrity drift detection.
+ */
+
+export interface HardwareFingerprint {
+  cpuModel: string
+  cpuCores: number
+  memoryMb: number
+  gpus: { name: string; vendor: string | null; pciId: string | null }[]
+  diskGb: number
+  osRelease: string
+  macs: string[]
+  collectedAt: string
+}
+
+export async function collectFingerprint(): Promise<HardwareFingerprint> {
+  const [cpuModel, cpuCores, memoryMb, gpus, diskGb, osRelease, macs] = await Promise.all([
+    getCpuModel(),
+    getCoreCount(),
+    getMemoryMb(),
+    getGpus(),
+    getDiskGb(),
+    getOsRelease(),
+    getMacs(),
+  ])
+
+  return {
+    cpuModel, cpuCores, memoryMb, gpus, diskGb, osRelease, macs,
+    collectedAt: new Date().toISOString(),
+  }
+}
+
+async function getCpuModel(): Promise<string> {
+  const file = Bun.file('/proc/cpuinfo')
+  if (await file.exists()) {
+    const content = await file.text()
+    const match = content.match(/model name\s*:\s*(.+)/)
+    if (match) return match[1].trim()
+  }
+  return 'unknown'
+}
+
+function getCoreCount(): number {
+  return navigator.hardwareConcurrency ?? 0
+}
+
+async function getMemoryMb(): Promise<number> {
+  const file = Bun.file('/proc/meminfo')
+  if (await file.exists()) {
+    const content = await file.text()
+    const match = content.match(/MemTotal:\s+(\d+)\s+kB/)
+    if (match) return Math.round(parseInt(match[1]) / 1024)
+  }
+  return 0
+}
+
+async function getGpus(): Promise<HardwareFingerprint['gpus']> {
+  const proc = Bun.spawn(['lspci', '-nn'], { stdout: 'pipe', stderr: 'pipe' })
+  const output = await new Response(proc.stdout).text()
+  await proc.exited
+  return output
+    .split('\n')
+    .filter(l => /VGA|3D controller|Display/.test(l))
+    .map(l => {
+      const pciMatch = l.match(/^(\S+)/)
+      const nameMatch = l.match(/\[(\w{4}:\w{4})\]/)
+      const vendorMatch = l.match(/\[(\w{4}):\w{4}\]/)
+      return {
+        name: l.split(':')[2]?.trim() ?? l.trim(),
+        vendor: /NVIDIA/i.test(l) ? 'NVIDIA' : /Intel/i.test(l) ? 'Intel' : /AMD/i.test(l) ? 'AMD' : null,
+        pciId: nameMatch?.[1] ?? null,
+      }
+    })
+}
+
+async function getDiskGb(): Promise<number> {
+  const proc = Bun.spawn(['df', '--output=size', '--total', '-B1G', '/'], { stdout: 'pipe', stderr: 'pipe' })
+  const output = await new Response(proc.stdout).text()
+  await proc.exited
+  const lines = output.trim().split('\n')
+  const totalLine = lines.find(l => l.trim() && !isNaN(parseInt(l.trim())))
+  return totalLine ? parseInt(totalLine.trim()) : 0
+}
+
+async function getOsRelease(): Promise<string> {
+  const file = Bun.file('/etc/os-release')
+  if (await file.exists()) {
+    const content = await file.text()
+    const pretty = content.match(/PRETTY_NAME="?([^"\n]+)"?/)
+    if (pretty) return pretty[1]
+  }
+  return 'unknown'
+}
+
+async function getMacs(): Promise<string[]> {
+  const proc = Bun.spawn(['cat', '/sys/class/net/*/address'], { stdout: 'pipe', stderr: 'pipe' })
+  const output = await new Response(proc.stdout).text()
+  await proc.exited
+  return output.split('\n').filter(l => /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/i.test(l.trim())).map(l => l.trim())
+}
+
+export function detectDrift(previous: HardwareFingerprint, current: HardwareFingerprint): string[] {
+  const drifts: string[] = []
+  if (previous.cpuModel !== current.cpuModel) drifts.push(`cpu: ${previous.cpuModel} → ${current.cpuModel}`)
+  if (previous.cpuCores !== current.cpuCores) drifts.push(`cores: ${previous.cpuCores} → ${current.cpuCores}`)
+  if (previous.memoryMb !== current.memoryMb) drifts.push(`memory: ${previous.memoryMb}MB → ${current.memoryMb}MB`)
+  const prevGpu = JSON.stringify(previous.gpus)
+  const currGpu = JSON.stringify(current.gpus)
+  if (prevGpu !== currGpu) drifts.push(`gpu changed`)
+  if (previous.diskGb !== current.diskGb) drifts.push(`disk: ${previous.diskGb}GB → ${current.diskGb}GB`)
+  if (previous.osRelease !== current.osRelease) drifts.push(`os: ${previous.osRelease} → ${current.osRelease}`)
+  const prevMacs = previous.macs.sort().join(',')
+  const currMacs = current.macs.sort().join(',')
+  if (prevMacs !== currMacs) drifts.push(`macs changed`)
+  return drifts
+}
