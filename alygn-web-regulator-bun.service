@@ -4,9 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=andlersrv
-WorkingDirectory=/var/www/admin/repos/alygn/infrastructure/apps/web-regulator
-ExecStart=/home/andlersrv/.local/share/mise/shims/bun run server.js
+User=[your_machine_name]
+WorkingDirectory=/var/www/admin/kill-switch/apps/web-regulator
+ExecStart=/home/[your_machine_name]/.local/share/mise/shims/bun run server.js
 Restart=on-failure
 Environment=NODE_ENV=production
 Environment=KILL_SWITCH_BACKEND_URL=http://localhost:3000
