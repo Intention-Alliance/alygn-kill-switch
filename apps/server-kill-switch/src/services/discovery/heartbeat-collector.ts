@@ -74,14 +74,14 @@ export class HeartbeatCollector {
       await db.insert(integrityEvents).values({
         id: crypto.randomUUID(),
         machineId: hb.machineId,
-        eventType: 'hostname_mismatch',
+        event: 'hostname_mismatch',
         severity: 'critical',
-        details: JSON.stringify({
+        driftedFields: JSON.stringify({
           registered: admitted.hostname,
           reported: hb.hostname,
           action: 'machine tagged INSECURE — monitoring-only until human review',
         }),
-        createdAt: new Date(),
+        detectedAt: new Date(),
       });
 
       throw new HostnameMismatchError(admitted.hostname, hb.hostname);
