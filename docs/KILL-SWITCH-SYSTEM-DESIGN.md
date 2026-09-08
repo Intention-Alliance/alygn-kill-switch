@@ -1,6 +1,6 @@
 # Kill Switch System Design — ALYGN Sovereign Compliance Infrastructure
 
-**Version:** 2.0.0  
+**Version:** 1.2.0  
 **Date:** 2026-05-14  
 **Classification:** Internal / Institutional Architecture  
 **Architect:** Hugrukal 📐  
@@ -1132,20 +1132,4 @@ packages/
 
 ---
 
-## Document Metrics
-
-- **Word Count:** ~5,800 words
-- **Section Count:** 10 major sections
-- **Tables:** 25+
-- **ASCII Diagrams:** 5
-- **Code References:** 40+ exact file/line citations
-- **Components Documented:** 18
-- **API Endpoints Documented:** 28
-- **Database Tables Documented:** 12
-- **ADR Records:** 5
-
----
-
-*End of Kill Switch System Design Document v2.0.0*
-
-*For updates or corrections, contact the Architecture team or open a PR against this file.*
+*End of Kill Switch System Design Document v1.2.0*
