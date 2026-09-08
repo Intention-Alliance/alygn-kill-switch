@@ -3,8 +3,7 @@
 **Version:** 1.2.0  
 **Date:** 2026-05-14  
 **Classification:** Internal / Institutional Architecture  
-**Architect:** Hugrukal 📐  
-**Repository:** `repos/alygn/infrastructure`  
+**Architect:** Hugrukal 📐
 **ADR-133 Status:** Accepted and Implemented
 
 ---
