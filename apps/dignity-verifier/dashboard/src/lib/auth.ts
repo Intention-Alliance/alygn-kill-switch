@@ -61,8 +61,8 @@ const BASE_PATH = "/api/auth";
 // Tailscale CGNAT range (RFC 6598 / 100.64.0.0/10). All Tailscale client
 // IPs fall within this range. Used as defense-in-depth: even if nginx is
 // misconfigured, the app refuses non-Tailscale clients.
-const TAILSCALE_IP = process.env.TAILSCALE_IP || "100.66.199.80";
-const TAILSCALE_HOSTNAME = process.env.TAILSCALE_HOSTNAME || "andlersrv.tail62d797.ts.net";
+const TAILSCALE_IP = process.env.TAILSCALE_IP || "";
+const TAILSCALE_HOSTNAME = process.env.TAILSCALE_HOSTNAME || "";
 
 /**
  * Check whether an IP is within the Tailscale CGNAT range.
@@ -157,7 +157,7 @@ export async function getAuth() {
 
 // ─── Constants ───────────────────────────────────────────────────────────
 
-export const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "andlersrv@alygn.com").toLowerCase();
+export const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@alygn.com").toLowerCase();
 
 // ─── Auto-Seed Super-Admin User ─────────────────────────────────────────
 

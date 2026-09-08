@@ -77,7 +77,7 @@ function getWsUrl(token: string): string {
 
   const host =
     process.env.NEXT_PUBLIC_WS_HOST ||
-    "andlersrv.tail62d797.ts.net:8443";
+    process.env.NEXT_PUBLIC_WEBAUTHN_HOST ?? "";
   return `wss://${host}/ws?token=${encodeURIComponent(token)}`;
 }
 

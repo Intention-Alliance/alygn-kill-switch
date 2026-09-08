@@ -557,9 +557,9 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`
     INSERT OR IGNORE INTO machine (id, name, hostname, status, role, specs, created_at)
     VALUES (
-      'andlersrv-local',
-      'andlersrv',
-      'andlersrv.tail62d797.ts.net',
+      process.env.ALYGN_MACHINE_ID ?? 'local-machine',
+      process.env.ALYGN_MACHINE_NAME ?? 'local-machine',
+      process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost',
       'active',
       'primary',
       '{"gpu":"none","cpu":"arch","cores":8}',
