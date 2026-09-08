@@ -2,7 +2,7 @@
 
 **Sovereign Compliance Infrastructure for AI Safety**
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-Bun-000000.svg)](https://bun.sh)
 [![Rust](https://img.shields.io/badge/safety--critical-Rust-DEA584.svg)](https://www.rust-lang.org)
 [![Contributor Covenant](https://img.shields.io/badge/Code_of_Conduct-Contributor_Covenant-2.1.svg)](CODE_OF_CONDUCT.md)
