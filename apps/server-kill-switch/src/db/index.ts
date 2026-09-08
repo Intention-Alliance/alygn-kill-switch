@@ -554,18 +554,14 @@ export function initDatabase(dbPath: string = DB_PATH) {
   // Ensure the dashboard always has at least the local host registered so
   // the web-regulator never renders an empty machine inventory. Uses
   // INSERT OR IGNORE (hostname is UNIQUE) so it is safe on every restart.
-  sqlite.run(`
-    INSERT OR IGNORE INTO machine (id, name, hostname, status, role, specs, created_at)
-    VALUES (
-      process.env.ALYGN_MACHINE_ID ?? 'local-machine',
-      process.env.ALYGN_MACHINE_NAME ?? 'local-machine',
-      process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost',
-      'active',
-      'primary',
-      '{"gpu":"none","cpu":"arch","cores":8}',
-      strftime('%s','now') * 1000
-    )
-  `);
+  const seedHostname = process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost';
+  const seedMachineId = `machine-${seedHostname.split('.')[0]}`;
+  const seedMachineName = process.env.ALYGN_MACHINE_NAME ?? seedHostname.split('.')[0];
+  sqlite.run(
+    `INSERT OR IGNORE INTO machine (id, name, hostname, status, role, specs, created_at)
+     VALUES (?, ?, ?, 'active', 'primary', '{"gpu":"none","cpu":"arch","cores":8}', strftime('%s','now') * 1000)`,
+    [seedMachineId, seedMachineName, seedHostname]
+  );
 
   // Machine flag index
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_flag_key_idx ON machine_flag(flag_key)`);
