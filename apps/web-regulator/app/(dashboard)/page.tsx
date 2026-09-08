@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import DashboardTabs from "./dashboard-tabs";
+import { BRAND_FULL_NAME } from "@/lib/branding";
 
 export const metadata = {
-  title: "Dashboard | ALYGN Regulator",
+  title: `Dashboard | ${BRAND_FULL_NAME}`,
 };
 
 /**

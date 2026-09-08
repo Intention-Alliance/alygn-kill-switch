@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { Button } from "@/components/ui/button";
 import { apiPost } from "@/lib/api-client";
+import { BRAND_NAME } from "@/lib/branding";
 import { toast } from "sonner";
 import type { KillSwitchState } from "@/types/shared";
 
@@ -78,7 +79,7 @@ export default function KillSwitchDashboardPage() {
               </h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Emergency shutdown control for the ALYGN protocol network
+              Emergency shutdown control for the {BRAND_NAME} protocol network
             </p>
           </div>
 

@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { apiPost, apiPut } from "@/lib/api-client";
+import { BRAND_NAME } from "@/lib/branding";
 import { toast } from "sonner";
 import type { Machine, MachineSpecs } from "@/types/shared";
 
@@ -144,7 +145,7 @@ export function MachineEditor({
           <DialogDescription>
             {isEditing
               ? "Update machine configuration."
-              : "Register a new machine in the ALYGN network."}
+              : `Register a new machine in the ${BRAND_NAME} network.`}
           </DialogDescription>
         </DialogHeader>
 
