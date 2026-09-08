@@ -5,7 +5,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-Bun-000000.svg)](https://bun.sh)
 [![Rust](https://img.shields.io/badge/safety--critical-Rust-DEA584.svg)](https://www.rust-lang.org)
-[![Contributor Covenant](https://img.shields.io/badge/Code_of_Conduct-Contributor_Covenant-2.1.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Code_of_Conduct-Contributor_Covenant-2.svg)](CODE_OF_CONDUCT.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 > **The Kill Switch is the technical enforcement layer of the Dignity Test** — a governed, layered intervention architecture for autonomous AI systems: digital, agentic, and embodied. Human-governed interruption, configuration, and audit of any AI system, on any provider, with immutable evidence. *Read the [Manifesto](MANIFESTO.md) first.*
