@@ -66,12 +66,24 @@ When using the logo:
 - Do not recolor outside the approved brand palette (teal-cyan `#0891b2` on dark navy `#0a1728`).
 - Do not combine with other logos in a way that implies co-branding without written permission.
 
-## 7. Questions & Permissions
+## 7. Domain Names & Online Use
+
+You may not register or use domain names, social media handles, or online identifiers that incorporate the Alygn Marks or any confusingly similar variation (including "alygn", "alygn-killswitch", "alygnks" and phonetic equivalents) without written permission. This does not restrict truthful references such as `github.com/Intention-Alliance/alygn-core-infra` or links to the official project.
+
+## 8. Reporting Violations
+
+If you become aware of use of the Alygn Marks that violates this policy, report it to **trademark@andler.dev**. Include the URL or context of the use, the specific mark involved, and any relevant details. Intention Alliance will review and take appropriate action.
+
+## 9. Questions & Permissions
 
 For uses not covered by this policy, or to request written permission:
 
 **Contact:** Intention Alliance, Inc. — via [Andler Devs Studio](https://andler.dev) · aialygn
 
+## 10. Relationship to the GPL v3 License
+
+The GNU GPL v3 license covers the **source code** of the Alygn Kill Switch. This policy covers the **Alygn Marks** (names and logos). These are separate and independent: the GPL grants rights to copy, modify, and distribute the code — it does not grant any rights to the trademarks. A fork of this codebase that complies with GPL v3 must still comply with this trademark policy regarding the use of the Alygn Marks.
+
 ---
 
-*This policy is part of the Alygn Kill Switch governance framework. It may be updated as the project evolves; the current version is always available in this repository.*
+*This policy is part of the Alygn Kill Switch governance framework. It may be updated as the project evolves; the current version is always available in this repository. Last updated: September 2026.*
