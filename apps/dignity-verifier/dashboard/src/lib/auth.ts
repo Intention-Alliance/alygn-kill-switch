@@ -61,8 +61,8 @@ const BASE_PATH = "/api/auth";
 // Tailscale CGNAT range (RFC 6598 / 100.64.0.0/10). All Tailscale client
 // IPs fall within this range. Used as defense-in-depth: even if nginx is
 // misconfigured, the app refuses non-Tailscale clients.
-const TAILSCALE_IP = process.env.TAILSCALE_IP || "";
-const TAILSCALE_HOSTNAME = process.env.TAILSCALE_HOSTNAME || "";
+const SECURE_NET_IP = process.env.SECURE_NET_IP || "";
+const SECURE_NET_HOSTNAME = process.env.SECURE_NET_HOSTNAME || "";
 
 /**
  * Check whether an IP is within the Tailscale CGNAT range.
@@ -119,8 +119,8 @@ export async function getAuth() {
     // Mirrors the kill-switch ADR-136 relying-party config.
     webauthn: {
       rpName: "Alygn Dignity Verifier",
-      rpID: TAILSCALE_HOSTNAME,
-      origin: `https://${TAILSCALE_HOSTNAME}:8443`,
+      rpID: SECURE_NET_HOSTNAME,
+      origin: `https://${SECURE_NET_HOSTNAME}:8443`,
       challengeTtlMs: 300_000,
       assertionTokenTtlMs: 600_000,
     },
@@ -145,7 +145,7 @@ export async function getAuth() {
     },
     trustedOrigins: (
       process.env.TRUSTED_ORIGINS ||
-      `http://127.0.0.1:3002,http://localhost:3002,https://${TAILSCALE_HOSTNAME}:8443`
+      `http://127.0.0.1:3002,http://localhost:3002,https://${SECURE_NET_HOSTNAME}:8443`
     )
       .split(",")
       .map((s) => s.trim())
@@ -229,4 +229,4 @@ export async function seedSuperAdmin() {
   }
 }
 
-export { BASE_PATH, TAILSCALE_IP, TAILSCALE_HOSTNAME };
+export { BASE_PATH, SECURE_NET_IP, SECURE_NET_HOSTNAME };

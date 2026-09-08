@@ -6,7 +6,7 @@ import { resolve4 } from 'node:dns/promises';
 
 // ─── Tailscale MagicDNS — dynamic DNS resolution for Tailscale IP ──
 
-const TAILSCALE_MAGICDNS = process.env.TAILSCALE_HOSTNAME ?? '';
+const SECURE_NET_HOSTNAME = process.env.SECURE_NET_HOSTNAME ?? '';
 const DNS_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 let dnsResolvedIps: string[] = [];
@@ -14,12 +14,12 @@ let refreshTimer: ReturnType<typeof setInterval> | null = null;
 
 export async function refreshTailscaleDns(): Promise<string[]> {
   try {
-    const addresses = await resolve4(TAILSCALE_MAGICDNS);
+    const addresses = await resolve4(SECURE_NET_HOSTNAME);
     dnsResolvedIps = addresses;
-    console.log(`[ip-allowlist] DNS resolved ${TAILSCALE_MAGICDNS} → [${addresses.join(', ')}]`);
+    console.log(`[ip-allowlist] DNS resolved ${SECURE_NET_HOSTNAME} → [${addresses.join(', ')}]`);
     return addresses;
   } catch (err: any) {
-    console.error(`[ip-allowlist] DNS resolution failed for ${TAILSCALE_MAGICDNS}: ${err.message}`);
+    console.error(`[ip-allowlist] DNS resolution failed for ${SECURE_NET_HOSTNAME}: ${err.message}`);
     return dnsResolvedIps; // keep previous
   }
 }
