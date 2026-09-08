@@ -1,6 +1,14 @@
-# ALYGN Core Infrastructure
+# ALYGN Core Infrastructure — The Kill Switch
 
 **Sovereign Compliance Infrastructure for AI Safety**
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Bun](https://img.shields.io/badge/runtime-Bun-000000.svg)](https://bun.sh)
+[![Rust](https://img.shields.io/badge/safety--critical-Rust-DEA584.svg)](https://www.rust-lang.org)
+[![Contributor Covenant](https://img.shields.io/badge/Code_of_Conduct-Contributor_Covenant-2.1.svg)](CODE_OF_CONDUCT.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+> **The Kill Switch is the technical enforcement layer of the Dignity Test** — a governed, layered intervention architecture for autonomous AI systems: digital, agentic, and embodied. Human-governed interruption, configuration, and audit of any AI system, on any provider, with immutable evidence. *Read the [Manifesto](MANIFESTO.md) first.*
 
 A comprehensive monorepo for the ALYGN (Artificial Ledger for Intelligence Governance Networks) system, implementing hardware-enforced AI safety compliance with cryptoeconomic incentives on the Bitcoin blockchain.
 
@@ -262,7 +270,7 @@ Examples:
 
 ---
 
-## 📚 Additional Resources
+## 📚 Additional Resources & Design Records
 
 - [ALYGN Core Infrastructure Guide](./align-core-infrastructure-guide.md)
 - [Data Center Onboarding Guide](./guide/Data%20Center%20Onboarding%20Guide.md)
@@ -273,13 +281,14 @@ Examples:
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/my-feature`
-3. Commit changes: `git commit -m 'feat: add my feature'`
-4. Push to branch: `git push origin feat/my-feature`
-5. Open a Pull Request
+We welcome contributions — from typo fixes to Rust enforcement modules. A control layer whose purpose is protecting human dignity must be built and verified by the communities it affects.
 
----
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — how to set up, branch, test, and submit PRs (including the safety-critical review bar).
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — our community standards, with safety-specific provisions.
+- **[SECURITY.md](SECURITY.md)** — private vulnerability disclosure (do not open public issues for security bugs).
+- **[MANIFESTO.md](MANIFESTO.md)** — why this system exists and the principles it will not compromise.
+
+**The Dignity Test pilot** accepts universities, independent researchers, open-source developers, institutions, and embodied-platform partners. Authority is earned through the governed participation model — no contributor type gets special access.
 
 ## 📄 License
 
