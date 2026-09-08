@@ -17,7 +17,7 @@
 #   TEACHER_MODEL        (defaults to glm-5.3-flash:cloud)
 #   STUDENT_MODEL        (defaults to qwen2.5:0.5b)
 #   EMBEDDING_MODEL      (defaults to nomic-embed-text-v2-moe:latest)
-#   TAILSCALE_IP         (no default — set per deployment)
+#   SECURE_NET_IP         (no default — set per deployment)
 # ============================================================
 
 services:
@@ -55,8 +55,8 @@ services:
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
       # ─── Tailscale identity check ─────────────────────────
-      - TAILSCALE_IP=${TAILSCALE_IP:-}
-      - TAILSCALE_HOSTNAME=${TAILSCALE_HOSTNAME:-}
+      - SECURE_NET_IP=${SECURE_NET_IP:-}
+      - SECURE_NET_HOSTNAME=${SECURE_NET_HOSTNAME:-}
       # ─── Ollama / model config ─────────────────────────────
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - TEACHER_MODEL=${TEACHER_MODEL:-glm-5.3-flash:cloud}
