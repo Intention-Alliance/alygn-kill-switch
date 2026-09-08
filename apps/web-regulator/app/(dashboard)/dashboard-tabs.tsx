@@ -27,6 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useMachineSelection } from "@/lib/machine-selection-context";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { DashboardCluster } from "@/lib/dashboard-utils";
@@ -151,10 +152,10 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
-            ALYGN Ledger
+            {BRAND_NAME} Ledger
           </h1>
           <p className="text-muted-foreground mt-1 text-lg">
-            Sovereign Compliance Monitoring Dashboard
+            {BRAND_TAGLINE}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -366,7 +367,7 @@ function KillSwitchTab({
             </h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Emergency shutdown control for the ALYGN protocol network
+            Emergency shutdown control for the {BRAND_NAME} protocol network
           </p>
         </div>
 

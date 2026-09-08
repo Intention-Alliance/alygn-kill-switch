@@ -26,6 +26,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/lib/auth-context";
+import { BRAND_NAME } from "@/lib/branding";
 
 const NAV_ITEMS = [
   {
@@ -108,7 +109,7 @@ export function MobileSidebar() {
             {/* Brand */}
             <div className="flex h-14 items-center gap-2 px-4">
               <Shield className="h-5 w-5 text-primary" />
-              <span className="font-bold tracking-tight">ALYGN</span>
+              <span className="font-bold tracking-tight">{BRAND_NAME}</span>
             </div>
 
             <Separator />
@@ -177,7 +178,7 @@ export function MobileSidebar() {
         {/* Mobile brand */}
         <Link href="/" className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
-          <span className="text-sm font-bold tracking-tight">ALYGN</span>
+          <span className="text-sm font-bold tracking-tight">{BRAND_NAME}</span>
         </Link>
       </div>
     </>

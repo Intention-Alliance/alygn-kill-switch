@@ -8,6 +8,7 @@ import { useState, useEffect, Suspense } from "react";
 import { Shield, Loader2, Fingerprint } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { BRAND_FULL_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -100,7 +101,7 @@ function LoginPageInner() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
       <div className="mb-6 flex items-center gap-2">
         <Shield className="h-8 w-8 text-primary" />
-        <span className="text-xl font-bold tracking-tight">ALYGN Regulator</span>
+        <span className="text-xl font-bold tracking-tight">{BRAND_FULL_NAME}</span>
       </div>
 
       <Card className="w-full max-w-sm shadow-lg">
@@ -218,7 +219,7 @@ function LoginPageInner() {
       </Card>
 
       <p className="mt-6 text-xs text-muted-foreground">
-        Sovereign Compliance Infrastructure — ALYGN Protocol
+        {BRAND_TAGLINE}
       </p>
     </div>
   );
