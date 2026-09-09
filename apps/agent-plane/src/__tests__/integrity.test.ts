@@ -31,6 +31,16 @@ describe('procfs fingerprint (regression: exists()+text() returns empty)', () =>
   })
 })
 
+describe('df disk total (regression: header parsed as size)', () => {
+  it('reports the real disk total, not the "1G-blocks" header', async () => {
+    const fp = await collectFingerprint()
+    // Regression: getDiskGb() matched the first parseInt-able line, which
+    // is the "1G-blocks" header → parseInt=1. The real total must be
+    // reported (any Linux host with a root filesystem is > 10GB).
+    expect(fp.diskGb).toBeGreaterThan(10)
+  })
+})
+
 describe('detectDrift', () => {
   const base: HardwareFingerprint = {
     cpuModel: 'Intel Xeon',

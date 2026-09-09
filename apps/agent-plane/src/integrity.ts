@@ -95,7 +95,10 @@ async function getDiskGb(): Promise<number> {
     const output = await new Response(proc.stdout).text()
     await proc.exited
     const lines = output.trim().split('\n')
-    const totalLine = lines.find(l => l.trim() && !isNaN(parseInt(l.trim())))
+    // Skip the header line: "1G-blocks" parses as parseInt=1, so the old
+    // find() matched the header and reported diskGb=1 instead of the real
+    // total. Take the last purely-numeric line, which is the --total row.
+    const totalLine = [...lines].reverse().find(l => /^\d+$/.test(l.trim()))
     return totalLine ? parseInt(totalLine.trim()) : 0
   } catch {
     return 0
