@@ -201,6 +201,23 @@ export async function handleDiscoveryRoutes(
 				return true
 			}
 			const machineId = probeMatch[1]
+			// WS-B (Nikaya 78/100, MEDIUM): machine-existence check BEFORE
+			// probing. detectProvidersForMachine() inserts provider/model
+			// rows keyed to machineId; a missing machine used to surface as
+			// a FOREIGN KEY 500. Mirror the report route: unknown machine →
+			// 404, never a 500.
+			const machine = await db
+				.select({ id: discoveredMachines.id })
+				.from(discoveredMachines)
+				.where(eq(discoveredMachines.id, machineId))
+				.get()
+			if (!machine) {
+				json(res, 404, {
+					error: 'Machine not found in discovery registry',
+					machineId,
+				})
+				return true
+			}
 			const results = await discovery.detectProvidersForMachine(machineId)
 			json(res, 200, {
 				machineId,
