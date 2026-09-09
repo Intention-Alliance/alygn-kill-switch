@@ -65,9 +65,9 @@ GitHub no permite borrar hidden refs de PRs vía git ni API. La ref permanecerá
 | Check | Resultado |
 |-------|-----------|
 | `git ls-remote origin` | 61 refs (eran 64; −3 ramas borradas) |
-| Scan `sb_secret_FJpLu` en TODAS las refs remotas | ✅ solo `refs/pull/49/head` (2 commits) |
+| Scan `sb_secret_FJpLu…` en TODAS las refs remotas | ✅ solo `refs/pull/49/head` (2 commits) |
 | Scan archivos personales en TODAS las refs remotas | ✅ solo `refs/pull/49/head` (81 hits) |
-| `git log origin/main -S "sb_secret_FJpLu"` | ✅ 0 commits — main limpio |
+| `git log origin/main -S "sb_secret_FJpLu…"` | ✅ 0 commits — main limpio |
 | Webhook key `wk_kvlG…` en las 4 refs objetivo | ✅ 0 commits — nunca estuvo ahí |
 
 **Nota sobre `wk_kvlG…`:** la key SÍ aparece en main y en ~40 refs, pero como `DEFAULT_SEED` **intencional y documentado** en `apps/server-kill-switch/scripts/create-admin-key.ts` (card 0e2f9fec §12 decisión 5, con instrucción de rotar vía `--force`). No es un leak de esta card; es un seed de bootstrap con rotación planificada. Fuera de alcance de WS-F.
@@ -78,7 +78,7 @@ GitHub no permite borrar hidden refs de PRs vía git ni API. La ref permanecerá
 
 - **264 findings totales**: 250 en commits huérfanos (ya no alcanzables desde ninguna ref remota tras el borrado) + **14 en commits alcanzables desde main** (regla `generic-api-key`).
 - Los 14 de main están en: fixtures de tests (`api-keys.test.ts`, `server.test.ts`), artefactos `.next/` (ya eliminados del árbol actual — main tiene 0 archivos `.next/`), y `scripts/start-kill-switch-host.sh`.
-- **Ninguno de los 14 es `sb_secret_FJpLu`** (ese secret solo existía en las ramas huérfanas). Son keys de prueba/fixtures y artefactos de build históricos.
+- **Ninguno de los 14 es `sb_secret_FJpLu…`** (ese secret solo existía en las ramas huérfanas). Son keys de prueba/fixtures y artefactos de build históricos.
 - **Recomendación secundaria (no bloqueante):** revisar los 14 findings de main en una card separada si se quiere historial 100% libre de fixtures; requiere history rewrite de main (fuera de alcance de WS-F).
 
 ## 4. Recomendación BLOQUEANTE: rotar el secret de Supabase
