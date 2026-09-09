@@ -57,7 +57,7 @@ apps/wizard-tui/
   redisUrl: string           // REDIS_URL (default redis://localhost:6379)
   webauthnRpId: string       // WEBAUTHN_RP_ID (default hostname)
   webauthnOrigin: string     // WEBAUTHN_ORIGIN (default http://localhost:3001)
-  ollamaBaseUrl: string      // OLLAMA_BASE_URL (default http://localhost:11434)
+  ollamaBaseUrl: string      // OLLAMA_BASE_URL (default http://localhost:11435 — the real Ollama; the interceptor listens on 11434)
   thresholds: {              // safe defaults from shared-types SecurityThresholds
     malformedThreshold: number      // default 100
     detectionWindowUs: number       // default 1_000_000
@@ -109,8 +109,8 @@ ALYGN_MACHINE_ID=<machineId>
 ALYGN_MACHINE_NAME=<machineName>
 ALYGN_MACHINE_HOSTNAME=<machineHostname>
 ALYGN_HEARTBEAT_INTERVAL_MS=30000
-OLLAMA_BASE_URL=<ollamaBaseUrl>
-OLLAMA_INTERCEPT_PORT=11434
+OLLAMA_BASE_URL=<ollamaBaseUrl>   # real Ollama (default http://localhost:11435)
+OLLAMA_INTERCEPT_PORT=11434        # interceptor listens on the client-facing port, forwards to OLLAMA_BASE_URL
 LOG_LEVEL=info
 ```
 
@@ -163,7 +163,7 @@ Heartbeat flow: agent heartbeats → machine enters `NEW_MACHINE` → admin conf
 
 ## 7. systemd units
 
-Base on repo-root `alygn-web-regulator.service` / `alygn-web-regulator-bun.service`. Parameterize `User`, `WorkingDirectory`, `ExecStart`, `Environment`. Install to `/etc/systemd/system/`:
+Base on repo-root `alygn-web-regulator.service` / `alygn-web-regulator-bun.service`. Parameterize `User`, `WorkingDirectory`, `ExecStart`, `Environment`. Both units load the install `.env` via `EnvironmentFile=<installDir>/.env` (Bun does not auto-load parent-dir .env — the server's `validateEnvironment()` and the agent's API-key check would fail without it). Install to `/etc/systemd/system/`:
 
 - `alygn-web-regulator.service` — kill-switch server (bun run src/index.ts)
 - `alygn-agent-plane.service` — agent heartbeat + interceptor
@@ -187,7 +187,9 @@ wizard [--config <path>] [--dry-run] [--yes] [uninstall [--purge]]
 1. Verify script SHA-256 against published checksum (embedded + fetched).
 2. Download release tarball, verify checksum, extract to `installDir`.
 3. `bun install` (or `bun install --production`).
-4. Exec `bun run wizard` with args passed through.
+4. Exec `bun run wizard` with args passed through (root `package.json` exposes `wizard` → `bun --filter @alygn/wizard-tui wizard`).
+
+Release artifacts (`alygn-wizard-tui.tar.gz`, `alygn-wizard-tui.tar.gz.sha256`, `install.sh.sha256`) are published by `.github/workflows/release.yml` on every `v*` tag push.
 
 ## 10. Commit rules (ALL commits)
 
