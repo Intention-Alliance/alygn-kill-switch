@@ -33,8 +33,10 @@ export function ActivationHistory({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // If WebSocket provides records, use them directly
-    if (webSocketRecords) {
+    // If WebSocket provides records, use them directly (only when non-empty;
+    // an empty array means the WS hasn't delivered history yet — fall through
+    // to the API so the table is never stuck empty).
+    if (webSocketRecords && webSocketRecords.length > 0) {
       setRecords(webSocketRecords.slice(0, limit));
       setIsLoading(false);
       return;

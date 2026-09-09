@@ -108,7 +108,7 @@ export function MachineQuickActions({
               onClick={openStop}
               disabled={isSubmitting}
               submitting={isSubmitting}
-              className="my-1"
+              className="h-[120px] w-[120px] mx-auto"
             />
 
             {isArmed && (

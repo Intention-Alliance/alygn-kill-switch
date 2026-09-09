@@ -60,11 +60,6 @@ const NAV_ITEMS = [
     icon: Settings,
   },
   {
-    href: "/billing",
-    label: "Billing",
-    icon: CreditCard,
-  },
-  {
     href: "/docs",
     label: "Documentation",
     icon: BookOpen,

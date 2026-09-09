@@ -25,7 +25,7 @@ export const BRAND_TAGLINE =
 /** Credit line rendered in the sidebar footer. */
 export const BRAND_FOOTER_CREDIT =
   process.env.NEXT_PUBLIC_BRAND_FOOTER_CREDIT ??
-  "Powered by ALYGN — Dignity Runtime";
+  "Powered by ALYGN Kill Switch, the Dignity Runtime";
 
 /** App version shown in the sidebar footer and About card. */
 export const BRAND_VERSION = "v2.0.0";
