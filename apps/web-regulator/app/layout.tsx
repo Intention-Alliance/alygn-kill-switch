@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Figtree, Inter } from "next/font/google";
+import { BRAND_FULL_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import "./globals.css";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -15,8 +16,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "ALYGN Regulator",
-  description: "Sovereign Compliance Infrastructure for AI Safety",
+  title: BRAND_FULL_NAME,
+  description: BRAND_TAGLINE,
   icons: {
     icon: "/favicon.ico",
   },
