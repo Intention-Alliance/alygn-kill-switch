@@ -11,7 +11,7 @@
 
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/index';
-import { agents, machines, integrityEvents } from '../../db/schema';
+import { agents, machines, discoveredMachines, integrityEvents } from '../../db/schema';
 import type { DiscoveryOrchestrator } from './orchestrator';
 import type {
   HardwareFingerprint,
@@ -54,22 +54,34 @@ export class HeartbeatCollector {
    */
   async handleAgentHeartbeat(hb: AgentHeartbeat): Promise<HeartbeatResult> {
     // Hostname integrity check (Design System §5.1, ADR-135 §5.2):
-    // if this machine is already admitted, the heartbeat hostname MUST match
-    // the registered hostname. A mismatch means the machine identity changed
-    // — flag as tamper/swap and tag INSECURE.
+    // the heartbeat hostname MUST match the registered hostname — whether the
+    // machine is admitted (machines table) or still in discovery.
+    // A mismatch means the machine identity changed — flag as tamper/swap
+    // and tag INSECURE.
     const admitted = await db
       .select({ id: machines.id, hostname: machines.hostname })
       .from(machines)
       .where(eq(machines.id, hb.machineId))
       .get();
 
-    if (admitted && admitted.hostname !== hb.hostname) {
+    const discovered = admitted
+      ? null
+      : await db
+          .select({ id: discoveredMachines.id, hostname: discoveredMachines.hostname })
+          .from(discoveredMachines)
+          .where(eq(discoveredMachines.id, hb.machineId))
+          .get();
+
+    const registered = admitted?.hostname ?? discovered?.hostname;
+    if (registered && registered !== hb.hostname) {
       // Hostname mismatch — the machine identity changed. Record integrity
       // event and tag the machine as insecure (monitoring-only).
-      await db
-        .update(machines)
-        .set({ monitoringOnly: 1 })
-        .where(eq(machines.id, hb.machineId));
+      if (admitted) {
+        await db
+          .update(machines)
+          .set({ monitoringOnly: 1 })
+          .where(eq(machines.id, hb.machineId));
+      }
 
       await db.insert(integrityEvents).values({
         id: crypto.randomUUID(),
@@ -77,14 +89,14 @@ export class HeartbeatCollector {
         event: 'hostname_mismatch',
         severity: 'critical',
         driftedFields: JSON.stringify({
-          registered: admitted.hostname,
+          registered,
           reported: hb.hostname,
           action: 'machine tagged INSECURE — monitoring-only until human review',
         }),
         detectedAt: new Date(),
       });
 
-      throw new HostnameMismatchError(admitted.hostname, hb.hostname);
+      throw new HostnameMismatchError(registered, hb.hostname);
     }
 
     const { drift, signature } = await this.orchestrator.handleHeartbeat({

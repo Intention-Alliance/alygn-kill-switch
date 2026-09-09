@@ -26,6 +26,13 @@ import {
 	verifyInferenceOutput,
 } from './middleware/inference-verification'
 import { isKillAuthBypassPath } from './middleware/kill-auth-bypass'
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL] Unhandled rejection:', reason)
+})
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL] Uncaught exception:', err)
+})
 import { handleLbHealthRoutes } from './middleware/lb-health'
 import {
 	relayInferenceRequest,
@@ -519,7 +526,9 @@ export async function startServer(
 			)
 		},
 	})
+	console.log('[startup] loading secrets...')
 	await secretsLoader.load()
+	console.log('[startup] secrets loaded')
 	secretsLoader.startWatchers()
 	console.log(
 		`[secrets-loader] loaded ${secretsLoader.getLoadedKeys().length} managed secret(s)`,
@@ -527,16 +536,22 @@ export async function startServer(
 
 	// ─── Lockout State Machine ──────────────────────────────────────
 	const lockoutState = new LockoutStateMachine()
-	await lockoutState.load()
+			console.log('[startup] loading lockout state...')
+		await lockoutState.load()
+		console.log('[startup] lockout state loaded')
 	lockoutState.startWatchers()
 	console.log(`[lockout-state] state: ${lockoutState.getLockoutLabel()}`)
 
 	// ─── Secrets Audit Log: load recent entries from DB ─────────────
-	await initAuditLogFromDb()
+			console.log('[startup] loading audit log from DB...')
+		await initAuditLogFromDb()
+		console.log('[startup] audit log loaded')
 
 	const RedisPool = (await loadRedisPool()) as any
 	const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls })
-	await redis.connect()
+			console.log('[startup] connecting to redis...')
+		await redis.connect()
+		console.log('[startup] redis connected')
 
 	initRateLimiter(redis)
 	startDnsRefresh()
@@ -550,12 +565,16 @@ export async function startServer(
 	// Recover the kill-switch audit history from the DB so the dashboard's
 	// audit log isn't empty after a process restart / container rebuild
 	// (the in-memory hot cache starts empty).
-	await service.loadAuditFromDb()
+			console.log('[startup] loading audit from DB (service)...')
+		await service.loadAuditFromDb()
+		console.log('[startup] audit loaded (service)')
 
 	// Seed a single "System initialized — kill switch running" audit entry if
 	// the DB audit log is empty (fresh container rebuild). Idempotent — only
 	// writes when there are zero rows.
-	await service.seedInitialAuditEntry()
+			console.log('[startup] seeding initial audit entry...')
+		await service.seedInitialAuditEntry()
+		console.log('[startup] audit entry seeded')
 
 	const wsManager = new WebSocketManager()
 
@@ -771,8 +790,9 @@ export async function startServer(
 	// to host port 3000. Binding to 0.0.0.0 does not expose /v1/internal/*
 	// endpoints to the outside world while making the API reachable from the
 	// host via nginx. Spec §9 requires internal endpoints be localhost-only.
+	console.log('[startup] calling Bun.serve()...')
 	const server = Bun.serve<{ userId: string; ip: string }>({
-		hostname: config.server.host || '0.0.0.0',
+		hostname: '0.0.0.0',
 		port,
 		websocket: {
 			maxPayloadLength: 65536,
@@ -788,6 +808,7 @@ export async function startServer(
 			},
 		},
 		async fetch(req, srv) {
+			console.log(`[debug] fetch called: ${req.method} ${req.url}`)
 			const url = new URL(req.url)
 
 			// WebSocket upgrade — validate session via Better-Auth v2

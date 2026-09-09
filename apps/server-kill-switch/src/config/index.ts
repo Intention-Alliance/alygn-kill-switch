@@ -67,6 +67,13 @@ function buildEnvOverrides(): Partial<AppConfig> {
       urls: env.REDIS_URLS.split(',').map((u) => u.trim()),
     };
   }
+  console.log('[config] REDIS_URL:', env.REDIS_URL, 'REDIS_URLS:', env.REDIS_URLS)
+  if (env.REDIS_URL) {
+    (overrides as any).redis = {
+      ...((overrides as any).redis || {}),
+      urls: [env.REDIS_URL],
+    };
+  }
   if (env.REDIS_PASSWORD) {
     (overrides as any).redis = { ...((overrides as any).redis || {}), password: env.REDIS_PASSWORD };
   }

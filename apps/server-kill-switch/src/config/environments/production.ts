@@ -4,7 +4,7 @@ import type { AppConfig } from '../schema';
 
 export const productionConfig: Partial<AppConfig> = {
   redis: {
-    urls: ['redis://redis:6379'],
+    urls: [process.env.REDIS_URL ?? process.env.REDIS_URLS?.split(',')[0] ?? 'redis://localhost:6379'],
     password: '',
     poolSize: 20,
     connectTimeoutMs: 10_000,
