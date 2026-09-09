@@ -10,7 +10,6 @@ import {
   Server,
   Settings,
   BookOpen,
-  CreditCard,
   Menu,
 } from "lucide-react";
 import { useState } from "react";
@@ -58,11 +57,6 @@ const NAV_ITEMS = [
     href: "/settings",
     label: "Settings",
     icon: Settings,
-  },
-  {
-    href: "/billing",
-    label: "Billing",
-    icon: CreditCard,
   },
   {
     href: "/docs",

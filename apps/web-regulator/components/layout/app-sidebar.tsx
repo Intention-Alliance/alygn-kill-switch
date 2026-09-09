@@ -10,7 +10,6 @@ import {
   Server,
   Settings,
   BookOpen,
-  CreditCard,
   PanelLeftClose,
   PanelLeft,
   ArrowRight,
@@ -71,12 +70,6 @@ const NAV_ITEMS = [
     label: "Settings",
     icon: Settings,
     description: "System configuration",
-  },
-  {
-    href: "/billing",
-    label: "Billing",
-    icon: CreditCard,
-    description: "Subscription & payment methods",
   },
   {
     href: "/docs",
@@ -141,7 +134,15 @@ export function AppSidebar({
     setMachinesLoading(true);
     try {
       const data = await apiGet<MachinesResponse>("/api/machines");
-      setMachines(data.data ?? []);
+      // Dedupe by id — the WS broadcast and the REST list can both deliver
+      // the same machine; render each machine exactly once.
+      const seen = new Set<string>();
+      const deduped = (data.data ?? []).filter((m) => {
+        if (seen.has(m.id)) return false;
+        seen.add(m.id);
+        return true;
+      });
+      setMachines(deduped);
       setMachinesError(null);
     } catch (err) {
       setMachinesError(
@@ -155,6 +156,45 @@ export function AppSidebar({
   useEffect(() => {
     fetchMachines();
   }, [fetchMachines]);
+
+  // ─── Live metrics for the selected machine ─────────────────────
+  // Poll GET /v1/machines/:id/metrics every 5s so the sidebar stats
+  // (CPU/RAM/GPU) update in real time instead of showing static row values.
+  const [liveMetrics, setLiveMetrics] = useState<{
+    cpuUsage: number;
+    memoryUsage: number;
+    gpuUsage: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const machineId = selectedMachine?.id ?? "";
+    if (!machineId) {
+      setLiveMetrics(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function pollMetrics() {
+      try {
+        const res = await apiGet<{
+          cpuUsage: number;
+          memoryUsage: number;
+          gpuUsage: number;
+        }>(`/api/machines/${encodeURIComponent(machineId)}/metrics`);
+        if (!cancelled) setLiveMetrics(res);
+      } catch {
+        // Metrics endpoint may be unavailable — keep the last known values.
+      }
+    }
+
+    pollMetrics();
+    const interval = setInterval(pollMetrics, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [selectedMachine]);
 
   const initials = user?.name
     ? user.name
@@ -343,7 +383,7 @@ export function AppSidebar({
 
               {/* Compact System Metrics */}
               <div className="rounded-md bg-muted/30 px-2 py-1.5">
-                <SystemMetricsBar machine={selectedMachine} />
+                <SystemMetricsBar machine={selectedMachine} metrics={liveMetrics} />
               </div>
 
               {/* Compact Quick Actions */}

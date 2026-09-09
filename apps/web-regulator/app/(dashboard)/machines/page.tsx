@@ -409,6 +409,7 @@ export default function MachinesDashboardPage() {
                             <TableHead>Name</TableHead>
                             <TableHead>Hostname</TableHead>
                             <TableHead>Role</TableHead>
+                            <TableHead>Hardware</TableHead>
                             <TableHead className="w-24">
                               Status
                             </TableHead>
@@ -450,6 +451,17 @@ export default function MachinesDashboardPage() {
                                 </TableCell>
                                 <TableCell className="text-sm text-muted-foreground">
                                   {machine.role}
+                                </TableCell>
+                                <TableCell className="font-mono text-[10px] text-muted-foreground">
+                                  {machine.specs?.cpu || "—"}
+                                  {machine.specs?.ram
+                                    ? ` • ${machine.specs.ram}`
+                                    : ""}
+                                  {machine.specs?.gpu &&
+                                  machine.specs.gpu !== "none" &&
+                                  machine.specs.gpu !== "—"
+                                    ? ` • ${machine.specs.gpu}`
+                                    : ""}
                                 </TableCell>
                                 <TableCell>
                                   <Badge

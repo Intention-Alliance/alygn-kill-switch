@@ -37,6 +37,7 @@ import type {
   KillSwitchState,
   KillSwitchStatus,
   ActivationRecord,
+  VerificationEventMessage,
 } from "@/types/shared";
 import {
   adaptMachineToCluster,
@@ -55,7 +56,7 @@ function isTabKey(value: string | null): value is TabKey {
 export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { status, machines, auditLog, isConnected, reconnectAttempt } =
+  const { status, machines, auditLog, isConnected, reconnectAttempt, verificationEvents } =
     useKillSwitchWebSocket();
   const { selectedMachine, selectMachine } = useMachineSelection();
 
@@ -298,7 +299,7 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
 
         {/* ─── Logs tab (placeholder → /kill-switch or future /logs) ── */}
         <TabsContent value="logs" className="space-y-6">
-          <LogsTab auditLog={auditLog} />
+          <LogsTab auditLog={auditLog} verificationEvents={verificationEvents} />
         </TabsContent>
       </Tabs>
     </div>
@@ -543,7 +544,13 @@ function ConnectionNotice({
 // Logs tab — placeholder card linked to /kill-switch or future /logs route
 // ============================================================================
 
-function LogsTab({ auditLog }: { auditLog: ActivationRecord[] }) {
+function LogsTab({
+  auditLog,
+  verificationEvents = [],
+}: {
+  auditLog: ActivationRecord[];
+  verificationEvents?: VerificationEventMessage["payload"][];
+}) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -592,6 +599,64 @@ function LogsTab({ auditLog }: { auditLog: ActivationRecord[] }) {
             <p className="text-sm text-muted-foreground">
               No events yet. Events will appear here as the kill switch and
               machines report activity.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Live Verification Activity — inference verdicts streamed over WS.
+          Fixes "no activity running": the events arrive via WebSocket but
+          were never rendered anywhere in the dashboard. */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            Live Verification Activity
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {verificationEvents.length > 0 ? (
+            <ul className="space-y-2">
+              {verificationEvents.slice(0, 20).map((ev) => (
+                <li
+                  key={ev.id}
+                  className="rounded-md border px-3 py-2 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {new Date(ev.timestamp).toLocaleString()}
+                    </span>
+                    <Badge
+                      variant={
+                        ev.verdict === "UNSAFE"
+                          ? "destructive"
+                          : ev.verdict === "REVIEW"
+                            ? "secondary"
+                            : "default"
+                      }
+                      className="font-mono text-xs"
+                    >
+                      {ev.verdict}
+                    </Badge>
+                  </div>
+                  <p className="mt-1">
+                    <span className="font-medium">{ev.model}</span>
+                    <span className="text-muted-foreground"> — </span>
+                    {ev.reason ?? "Standard inference verification"}
+                    {ev.confidence !== undefined && (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        (conf {(ev.confidence * 100).toFixed(0)}%)
+                      </span>
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No verification events yet. Inference verdicts from the
+              verifier will stream here in real time.
             </p>
           )}
         </CardContent>
