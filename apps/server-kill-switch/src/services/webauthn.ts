@@ -260,6 +260,22 @@ export async function hasAnyRegisteredCredential(): Promise<boolean> {
 }
 
 /**
+ * All non-revoked credentials across all users. Used by the discoverable
+ * sign-in flow (login/begin with no username) to populate allowCredentials
+ * so the ceremony works with ANY registered key — resident (discoverable)
+ * or not. Without allowCredentials, the browser only offers resident keys
+ * and reports "no credentials" for a non-resident YubiKey.
+ */
+export async function listAllActiveCredentials(): Promise<StoredCredential[]> {
+  const rows = await db
+    .select()
+    .from(webauthnCredentials)
+    .where(isNull(webauthnCredentials.revokedAt))
+    .all();
+  return rows.map(toStoredCredential);
+}
+
+/**
  * Rename a credential's human label (e.g. "YubiKey 5C — Andler").
  * The `name` field is display text only — never used for auth decisions.
  * Returns the updated credential, or null when the credential does not
@@ -589,6 +605,15 @@ export async function startLoginAssertion({
     if (allowCredentials.length === 0) {
       throw new WebAuthnError('No registered authenticators for this user', 'NO_CREDENTIALS');
     }
+  } else {
+    // Discoverable sign-in: include every active credential so the ceremony
+    // works with non-resident keys too (a plain YubiKey without a resident
+    // credential would otherwise surface "no credentials" in the browser).
+    const creds = await listAllActiveCredentials();
+    allowCredentials = creds.map((c) => ({
+      id: c.credentialId,
+      transports: c.transports ?? [],
+    }));
   }
 
   const options = await generateAuthenticationOptions({
