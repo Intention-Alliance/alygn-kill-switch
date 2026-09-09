@@ -1,0 +1,25 @@
+{
+  "name": "@alygn/wizard-tui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Alygn Kill Switch — interactive install wizard (clack TUI)",
+  "bin": {
+    "wizard": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "biome check src/ test/",
+    "test": "bun test test/"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.0"
+  }
+}
