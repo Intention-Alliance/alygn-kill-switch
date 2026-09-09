@@ -10,7 +10,6 @@ import {
   Server,
   Settings,
   BookOpen,
-  CreditCard,
   PanelLeftClose,
   PanelLeft,
   ArrowRight,
