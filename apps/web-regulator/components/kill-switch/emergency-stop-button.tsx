@@ -81,9 +81,11 @@ export function KillButton({
         aria-label="Kill — trigger emergency stop"
         className={cn(
           // Base: big, fully rounded, blood-red with a radial highlight so it
-          // reads as a physical mushroom-style emergency button.
-          "relative inline-flex w-full items-center justify-center gap-2.5",
-          "rounded-full px-8 py-5 text-lg font-black uppercase tracking-widest",
+          // reads as a physical mushroom-style emergency button. Fixed 180×180
+          // circle (Andler spec: round, same size, 3D preserved — only the
+          // container dimensions changed + font +10%).
+          "relative inline-flex h-full w-full items-center justify-center gap-2.5",
+          "rounded-full px-8 py-5 text-xl font-black uppercase tracking-widest",
           "text-white select-none transition-all duration-150",
           // The button's own shadows are only the INNER bevel (highlight on
           // top, shading at the bottom) — the outer drop shadow lives on the
@@ -191,7 +193,7 @@ export function EmergencyStopButton({
               onClick={() => openActivationDialog("STOPPED")}
               disabled={isSubmitting}
               submitting={isSubmitting}
-              className="sm:w-auto sm:min-w-[220px] sm:my-1"
+              className="h-[180px] w-[180px]"
             />
 
             {currentState === "ARMED" && (
