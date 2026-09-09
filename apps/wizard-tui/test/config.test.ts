@@ -15,7 +15,7 @@ describe('validateConfig', () => {
 		expect(cfg.adminEmail).toBe('admin@alygn.com')
 		expect(cfg.motherUrl).toBe('http://localhost:3000')
 		expect(cfg.redisUrl).toBe('redis://localhost:6379')
-		expect(cfg.ollamaBaseUrl).toBe('http://localhost:11434')
+		expect(cfg.ollamaBaseUrl).toBe('http://localhost:11435')
 		expect(cfg.webauthnOrigin).toBe('http://localhost:3001')
 		expect(cfg.verifyEnabled).toBe(false)
 		expect(cfg.verifyModel).toBe('qwen2.5:0.5b')

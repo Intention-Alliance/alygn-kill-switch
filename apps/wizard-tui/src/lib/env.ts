@@ -59,6 +59,8 @@ function agentEnvLines(config: WizardConfig): string[] {
 		`ALYGN_MACHINE_HOSTNAME=${config.machineHostname}`,
 		'ALYGN_HEARTBEAT_INTERVAL_MS=30000',
 		`OLLAMA_BASE_URL=${config.ollamaBaseUrl}`,
+		// The interceptor listens on the client-facing port (11434) and
+		// forwards to the real Ollama on OLLAMA_BASE_URL (11435 by default).
 		'OLLAMA_INTERCEPT_PORT=11434',
 		'LOG_LEVEL=info',
 	]

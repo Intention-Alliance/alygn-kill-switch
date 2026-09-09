@@ -37,7 +37,7 @@ export const wizardConfigSchema = z
 		redisUrl: z.string().min(1).default('redis://localhost:6379'),
 		webauthnRpId: z.string().min(1).default(hostname()),
 		webauthnOrigin: z.string().url().default('http://localhost:3001'),
-		ollamaBaseUrl: z.string().url().default('http://localhost:11434'),
+		ollamaBaseUrl: z.string().url().default('http://localhost:11435'),
 		thresholds: thresholdsSchema,
 		zones: z.array(z.string().min(1)).default(['default']),
 		installDir: z.string().min(1).default(join(homedir(), 'alygn')),
