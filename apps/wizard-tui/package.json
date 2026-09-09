@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "bun run src/index.ts",
+    "wizard": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
     "test": "bun test test/",
     "type-check": "tsc --noEmit",

@@ -10,6 +10,8 @@
 #    installDir (default ~/alygn).
 # 3. Runs `bun install` in the extracted tree.
 # 4. Execs `bun run wizard` with any args passed through.
+#    The root package.json exposes `wizard` → `bun --filter @alygn/wizard-tui wizard`
+#    so the script resolves inside the extracted monorepo tree.
 #
 # SECURITY: never pipes a script it could not verify. Fails closed.
 
