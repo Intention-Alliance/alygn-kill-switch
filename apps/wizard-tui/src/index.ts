@@ -1,198 +1,169 @@
 #!/usr/bin/env bun
 /**
- * Alygn Kill Switch Wizard — CLI entry (WS-C).
+ * Wizard TUI — CLI entry (WS-C).
  *
- * Skeleton owned by be-coder: arg parsing, mode dispatch, exit codes.
- * The interactive clack prompt flows live in steps/ (fe-coder) and are
- * loaded lazily so non-interactive modes work without them.
+ * Modes (spec §8):
+ *   wizard                      interactive flow (preflight → configure → install → verify → handoff)
+ *   wizard --config <path>      non-interactive replay from JSON
+ *   wizard --dry-run            preflight + config validation only, no writes
+ *   wizard uninstall [--purge]  stop/disable/remove units (+ delete .env/data)
  *
- * CLI contract (spec §8):
- *   wizard [--config <path>] [--dry-run] [--yes] [uninstall [--purge]]
- *
- * Exit codes: 0 ok · 1 preflight fail · 2 config invalid · 3 install fail
- *             4 verify fail
+ * Exit codes: 0 ok · 1 preflight fail · 2 config invalid · 3 install fail · 4 verify fail
  */
 
-import { loadConfig, validateConfig, type WizardConfig } from './lib/config'
-import { install } from './lib/installer'
-import { detectSystem, hasBlockingIssues } from './lib/system'
+import { cancel, intro, log, outro } from '@clack/prompts'
+import { loadConfig } from './lib/config'
 import { uninstall } from './lib/uninstaller'
-import { verifyInstall } from './lib/verifier'
-
-/** Shape of the interactive flow modules (implemented by fe-coder). */
-interface WizardSteps {
-	runPreflight(): Promise<boolean>
-	runConfigure(): Promise<unknown>
-	runInstall(): Promise<boolean>
-	runVerify(): Promise<boolean>
-	runHandoff(): Promise<void>
-}
+import { runConfigure } from './steps/configure'
+import { runHandoff } from './steps/handoff'
+import { runInstall } from './steps/install'
+import { runPreflight } from './steps/preflight'
+import { runVerify } from './steps/verify'
 
 interface CliArgs {
 	configPath?: string
 	dryRun: boolean
-	yes: boolean
-	command: 'install' | 'uninstall'
+	uninstallMode: boolean
 	purge: boolean
 }
 
+/** Parse argv into a typed options object. */
 function parseArgs(argv: string[]): CliArgs {
-	const args: CliArgs = {
-		dryRun: false,
-		yes: false,
-		command: 'install',
-		purge: false,
-	}
+	const args: CliArgs = { dryRun: false, uninstallMode: false, purge: false }
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i]
-		switch (arg) {
-			case '--config': {
-				const value = argv[++i]
-				if (!value) throw new Error('--config requires a path argument')
-				args.configPath = value
-				break
+		if (arg === '--config') {
+			const value = argv[i + 1]
+			if (!value || value.startsWith('--')) {
+				throw new Error('--config requires a file path')
 			}
-			case '--dry-run':
-				args.dryRun = true
-				break
-			case '--yes':
-				args.yes = true
-				break
-			case 'uninstall':
-				args.command = 'uninstall'
-				break
-			case '--purge':
-				args.purge = true
-				break
-			default:
-				throw new Error(`Unknown argument: ${arg}`)
+			args.configPath = value
+			i++
+		} else if (arg === '--dry-run') {
+			args.dryRun = true
+		} else if (arg === 'uninstall') {
+			args.uninstallMode = true
+		} else if (arg === '--purge') {
+			args.purge = true
+		} else if (arg === '--yes') {
+			// Accepted for compatibility (spec §8) — non-interactive flows
+			// already skip prompts when --config is present.
+		} else if (arg === '--help' || arg === '-h') {
+			printHelp()
+			process.exit(0)
+		} else {
+			throw new Error(`Unknown argument: ${arg}`)
 		}
 	}
+
 	return args
 }
 
-/** Load the interactive flow modules (steps/) — fe-coder's layer. */
-async function loadSteps(): Promise<WizardSteps> {
-	const modulePath = new URL('./steps/index.ts', import.meta.url).pathname
-	const mod = (await import(modulePath)) as unknown as WizardSteps
-	return mod
+/** Print usage. */
+function printHelp(): void {
+	console.log(`Alygn Kill Switch — install wizard
+
+Usage:
+  wizard [--config <path>] [--dry-run] [--yes]
+  wizard uninstall [--purge]
+
+Modes:
+  --config <path>   non-interactive replay from a JSON config file
+  --dry-run         preflight + config validation only (no writes)
+  --yes             accept defaults in non-interactive flows
+  uninstall         stop/disable/remove systemd units
+  --purge           (with uninstall) also delete .env files and data dir
+
+Exit codes: 0 ok · 1 preflight fail · 2 config invalid · 3 install fail · 4 verify fail`)
 }
 
-async function runInteractive(args: CliArgs): Promise<number> {
-	const steps = await loadSteps()
+/** Non-interactive replay from a config file. */
+async function runNonInteractive(args: CliArgs): Promise<void> {
+	if (!args.configPath) {
+		throw new Error('Non-interactive mode requires --config <path>.')
+	}
 
-	const preflightOk = await steps.runPreflight()
-	if (!preflightOk) return 1
+	const config = await loadConfig({ configPath: args.configPath, interactive: false })
+	log.success(`Loaded config from ${args.configPath}`)
 
-	const config = await steps.runConfigure()
-	if (config === null) return 2
-	validateConfig(config)
+	if (!config.licenseAccepted) {
+		throw new Error('licenseAccepted must be true in the config file.')
+	}
+
+	await runPreflight()
+	if (args.dryRun) {
+		log.success('Dry run complete — no changes were made.')
+		return
+	}
+
+	await runInstall(config)
+	await runVerify(config)
+	runHandoff(config)
+}
+
+/** Interactive flow. */
+async function runInteractive(args: CliArgs): Promise<void> {
+	await runPreflight()
 
 	if (args.dryRun) {
-		console.log('[wizard] --dry-run: preflight + config validated, no writes performed.')
-		return 0
+		log.success('Dry run complete — no changes were made.')
+		return
 	}
 
-	const installOk = await steps.runInstall()
-	if (!installOk) return 3
-
-	const verifyOk = await steps.runVerify()
-	if (!verifyOk) return 4
-
-	await steps.runHandoff()
-	return 0
+	const config = await runConfigure()
+	await runInstall(config)
+	await runVerify(config)
+	runHandoff(config)
 }
 
-async function runNonInteractive(args: CliArgs): Promise<number> {
-	// Preflight always runs first (exit 1 on blocking issues).
-	const report = await detectSystem()
-	if (hasBlockingIssues(report)) {
-		for (const issue of report.issues) {
-			console.error(`[preflight] ${issue.severity}: ${issue.message}`)
-			console.error(`  → ${issue.remediation}`)
-		}
-		return 1
-	}
-
-	let config: WizardConfig
-	try {
-		config = await loadConfig({
-			configPath: args.configPath,
-			interactive: false,
-		})
-	} catch (err) {
-		console.error(`[config] ${err instanceof Error ? err.message : String(err)}`)
-		return 2
-	}
-
-	if (args.dryRun) {
-		console.log('[wizard] --dry-run: preflight + config validated, no writes performed.')
-		return 0
-	}
-
-	if (args.command === 'uninstall') {
-		const result = await uninstall(config, { purge: args.purge })
-		console.log(
-			`[wizard] Uninstall complete: units=${result.units.join(', ')} stopped=${result.stopped} disabled=${result.disabled} removed=${result.removed} envDeleted=${result.envDeleted} dataDeleted=${result.dataDeleted}`,
-		)
-		return 0
-	}
-
-	const result = await install(config)
-	if (!result.migrations.ok) {
-		console.error(`[install] migrations failed: ${result.migrations.output}`)
-		return 3
-	}
-
-	const verification = await verifyInstall(config)
-	const ok = verification.api.ok && verification.redis.ok && verification.heartbeat !== null
-	if (!ok) {
-		console.error(
-			'[verify] post-install verification failed:',
-			JSON.stringify(verification, null, 2),
-		)
-		return 4
-	}
-
-	console.log('[wizard] Install verified:', JSON.stringify(verification, null, 2))
-	return 0
-}
-
-async function main(): Promise<number> {
-	const args = parseArgs(process.argv.slice(2))
-
-	if (args.command === 'uninstall' && args.configPath === undefined) {
-		console.error(
-			'[wizard] uninstall requires --config <path> (non-interactive) or the interactive flow.',
-		)
-		return 2
-	}
-
-	if (args.configPath !== undefined || args.command === 'uninstall') {
-		return runNonInteractive(args)
-	}
-
-	if (args.dryRun) {
-		// --dry-run without a config: preflight + defaults only.
-		const report = await detectSystem()
-		if (hasBlockingIssues(report)) {
-			for (const issue of report.issues) {
-				console.error(`[preflight] ${issue.severity}: ${issue.message}`)
-				console.error(`  → ${issue.remediation}`)
-			}
-			return 1
-		}
-		console.log('[wizard] --dry-run: preflight passed, no writes performed.')
-		return 0
-	}
-
-	return runInteractive(args)
-}
-
-main()
-	.then((code) => process.exit(code))
-	.catch((err) => {
-		console.error(`[wizard] ${err instanceof Error ? err.message : String(err)}`)
-		process.exit(2)
+/** Uninstall mode. */
+async function runUninstall(args: CliArgs): Promise<void> {
+	const config = await loadConfig({
+		configPath: args.configPath,
+		interactive: true,
 	})
+	const result = await uninstall(config, { purge: args.purge })
+	log.success(`Uninstalled: ${result.units.join(', ')} (purge=${result.envDeleted ? 'yes' : 'no'})`)
+	const removed: string[] = []
+	if (result.envDeleted) removed.push('.env')
+	if (result.dataDeleted) removed.push('data dir')
+	if (removed.length > 0) {
+		log.message(`Removed: ${removed.join(', ')}`)
+	}
+}
+
+/** Main entry. */
+async function main(): Promise<void> {
+	intro('Alygn Kill Switch — install wizard')
+
+	let args: CliArgs
+	try {
+		args = parseArgs(process.argv.slice(2))
+	} catch (err) {
+		cancel(err instanceof Error ? err.message : String(err))
+		process.exit(2)
+	}
+
+	try {
+		if (args.uninstallMode) {
+			await runUninstall(args)
+		} else if (args.configPath) {
+			await runNonInteractive(args)
+		} else {
+			await runInteractive(args)
+		}
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err)
+		log.error(message)
+		cancel('Wizard failed.')
+		process.exit(2)
+	}
+
+	outro('Done.')
+}
+
+main().catch((err) => {
+	console.error(err)
+	process.exit(2)
+})
