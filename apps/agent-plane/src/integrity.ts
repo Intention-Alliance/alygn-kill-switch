@@ -4,6 +4,8 @@
  * Used for registration and integrity drift detection.
  */
 
+import { readdirSync, readFileSync } from 'node:fs'
+
 export interface HardwareFingerprint {
   cpuModel: string
   cpuCores: number
@@ -57,31 +59,40 @@ async function getMemoryMb(): Promise<number> {
 }
 
 async function getGpus(): Promise<HardwareFingerprint['gpus']> {
-  const proc = Bun.spawn(['lspci', '-nn'], { stdout: 'pipe', stderr: 'pipe' })
-  const output = await new Response(proc.stdout).text()
-  await proc.exited
-  return output
-    .split('\n')
-    .filter(l => /VGA|3D controller|Display/.test(l))
-    .map(l => {
-      const pciMatch = l.match(/^(\S+)/)
-      const nameMatch = l.match(/\[(\w{4}:\w{4})\]/)
-      const vendorMatch = l.match(/\[(\w{4}):\w{4}\]/)
-      return {
-        name: l.split(':')[2]?.trim() ?? l.trim(),
-        vendor: /NVIDIA/i.test(l) ? 'NVIDIA' : /Intel/i.test(l) ? 'Intel' : /AMD/i.test(l) ? 'AMD' : null,
-        pciId: nameMatch?.[1] ?? null,
-      }
-    })
+  try {
+    const proc = Bun.spawn(['lspci', '-nn'], { stdout: 'pipe', stderr: 'pipe' })
+    const output = await new Response(proc.stdout).text()
+    await proc.exited
+    return output
+      .split('\n')
+      .filter(l => /VGA|3D controller|Display/.test(l))
+      .map(l => {
+        const pciMatch = l.match(/^(\S+)/)
+        const nameMatch = l.match(/\[(\w{4}:\w{4})\]/)
+        const vendorMatch = l.match(/\[(\w{4}):\w{4}\]/)
+        return {
+          name: l.split(':')[2]?.trim() ?? l.trim(),
+          vendor: /NVIDIA/i.test(l) ? 'NVIDIA' : /Intel/i.test(l) ? 'Intel' : /AMD/i.test(l) ? 'AMD' : null,
+          pciId: nameMatch?.[1] ?? null,
+        }
+      })
+  } catch {
+    // lspci not installed (e.g. minimal containers) — no GPU info is valid
+    return []
+  }
 }
 
 async function getDiskGb(): Promise<number> {
-  const proc = Bun.spawn(['df', '--output=size', '--total', '-B1G', '/'], { stdout: 'pipe', stderr: 'pipe' })
-  const output = await new Response(proc.stdout).text()
-  await proc.exited
-  const lines = output.trim().split('\n')
-  const totalLine = lines.find(l => l.trim() && !isNaN(parseInt(l.trim())))
-  return totalLine ? parseInt(totalLine.trim()) : 0
+  try {
+    const proc = Bun.spawn(['df', '--output=size', '--total', '-B1G', '/'], { stdout: 'pipe', stderr: 'pipe' })
+    const output = await new Response(proc.stdout).text()
+    await proc.exited
+    const lines = output.trim().split('\n')
+    const totalLine = lines.find(l => l.trim() && !isNaN(parseInt(l.trim())))
+    return totalLine ? parseInt(totalLine.trim()) : 0
+  } catch {
+    return 0
+  }
 }
 
 async function getOsRelease(): Promise<string> {
@@ -94,11 +105,34 @@ async function getOsRelease(): Promise<string> {
   return 'unknown'
 }
 
+/**
+ * Read MAC addresses by expanding the /sys/class/net directory ourselves.
+ *
+ * Passing the literal glob 'cat /sys/class/net/star/address' to Bun.spawn
+ * never expands it (the shell does that, and Bun.spawn does not run a
+ * shell) — the literal path fails and MACs always come back empty,
+ * silently disabling drift detection. We enumerate the directory and
+ * read each interface's address file instead.
+ */
 async function getMacs(): Promise<string[]> {
-  const proc = Bun.spawn(['cat', '/sys/class/net/*/address'], { stdout: 'pipe', stderr: 'pipe' })
-  const output = await new Response(proc.stdout).text()
-  await proc.exited
-  return output.split('\n').filter(l => /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/i.test(l.trim())).map(l => l.trim())
+  const macs: string[] = []
+  let ifaces: string[] = []
+  try {
+    ifaces = readdirSync('/sys/class/net')
+  } catch {
+    return macs // no /sys (non-Linux) — empty MAC list is valid
+  }
+  for (const iface of ifaces) {
+    try {
+      const address = readFileSync(`/sys/class/net/${iface}/address`, 'utf8').trim()
+      if (/^([0-9a-f]{2}:){5}[0-9a-f]{2}$/i.test(address)) {
+        macs.push(address.toLowerCase())
+      }
+    } catch {
+      // interface without an address file (e.g. some virtual devices) — skip
+    }
+  }
+  return macs
 }
 
 export function detectDrift(previous: HardwareFingerprint, current: HardwareFingerprint): string[] {
@@ -111,8 +145,8 @@ export function detectDrift(previous: HardwareFingerprint, current: HardwareFing
   if (prevGpu !== currGpu) drifts.push(`gpu changed`)
   if (previous.diskGb !== current.diskGb) drifts.push(`disk: ${previous.diskGb}GB → ${current.diskGb}GB`)
   if (previous.osRelease !== current.osRelease) drifts.push(`os: ${previous.osRelease} → ${current.osRelease}`)
-  const prevMacs = previous.macs.sort().join(',')
-  const currMacs = current.macs.sort().join(',')
+  const prevMacs = [...previous.macs].sort().join(',')
+  const currMacs = [...current.macs].sort().join(',')
   if (prevMacs !== currMacs) drifts.push(`macs changed`)
   return drifts
 }

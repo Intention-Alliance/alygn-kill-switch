@@ -1,0 +1,21 @@
+[Unit]
+Description=ALYGN Agent Plane (Kill Switch agent)
+After=network.target
+
+[Service]
+Type=simple
+User=[your_machine_name]
+WorkingDirectory=/path/to/alygn-core-infra/apps/agent-plane
+ExecStart=/home/[your_machine_name]/.local/share/mise/shims/bun run /path/to/alygn-core-infra/apps/agent-plane/src/index.ts
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=ALYGN_MOTHER_URL=http://localhost:3000
+Environment=ALYGN_AGENT_API_KEY=***
+Environment=ALYGN_STATE_DB=/var/lib/alygn-agent-plane/agent-state.sqlite
+Environment=OLLAMA_BASE_URL=http://localhost:11434
+Environment=OLLAMA_INTERCEPT_PORT=11435
+Environment=LOG_LEVEL=info
+
+[Install]
+WantedBy=multi-user.target
