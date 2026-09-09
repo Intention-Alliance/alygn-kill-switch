@@ -1,0 +1,16 @@
+{
+  "name": "agent-plane",
+  "version": "0.1.0",
+  "description": "Alygn Kill Switch — Agent Plane: heartbeat, interception, integrity, enforcement",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
