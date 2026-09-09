@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Cluster } from "@/types/supabase.types";
+import type { Cluster } from "@/types/db.types";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 

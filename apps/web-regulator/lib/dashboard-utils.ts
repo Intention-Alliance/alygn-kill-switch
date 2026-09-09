@@ -6,7 +6,7 @@ import type {
 } from "@/types/shared";
 
 // ─── Compatible Cluster Shape ─────────────────────────────────
-// Structural subset of Cluster from @/types/supabase.types
+// Structural subset of Cluster from @/types/db.types
 // that ClusterTable actually reads.
 
 export interface DashboardCluster {
