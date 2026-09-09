@@ -492,7 +492,7 @@ describe('POST /v1/kill-authorization/policy-change — quorum-gated flag change
   it('non-kill.authorization.* flag → 400 NOT_KILL_AUTH_FLAG', async () => {
     const res = createMockRes();
     const req = createMockReq(
-      JSON.stringify({ flagKey: 'interception_enabled', value: 'false' }),
+      JSON.stringify({ flagKey: 'llm_interception_enabled', value: 'false' }),
       { authorization: 'Assertion whatever' },
     );
 

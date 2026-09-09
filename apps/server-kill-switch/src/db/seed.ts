@@ -85,7 +85,7 @@ export async function seedFeatureFlags() {
   const predefinedFlags = [
     {
       id: 'flag-interception-enabled',
-      key: 'interception_enabled',
+      key: 'llm_interception_enabled',
       value: true,
       description: 'Master kill switch for LLM request interception',
       enabled: true,
@@ -117,7 +117,7 @@ export async function seedFeatureFlags() {
     },
     {
       id: 'flag-sampling-rate',
-      key: 'sampling_rate',
+      key: 'request_sampling_rate',
       value: true,
       description: 'Fraction of requests to evaluate (0-1, default: 1.0)',
       enabled: true,

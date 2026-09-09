@@ -61,7 +61,7 @@ beforeEach(() => {
     },
     {
       id: 'flag-interception',
-      key: 'interception_enabled',
+      key: 'llm_interception_enabled',
       value: true,
       description: null,
       enabled: true,
