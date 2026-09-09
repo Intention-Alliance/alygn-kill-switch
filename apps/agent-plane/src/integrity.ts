@@ -35,11 +35,15 @@ export async function collectFingerprint(): Promise<HardwareFingerprint> {
 }
 
 async function getCpuModel(): Promise<string> {
-  const file = Bun.file('/proc/cpuinfo')
-  if (await file.exists()) {
-    const content = await file.text()
+  try {
+    // readFileSync, not Bun.file().exists() + .text(): on /proc files the
+    // exists() probe consumes the stream and .text() then returns empty,
+    // silently yielding cpuModel=unknown and blinding CPU drift detection.
+    const content = readFileSync('/proc/cpuinfo', 'utf8')
     const match = content.match(/model name\s*:\s*(.+)/)
     if (match) return match[1].trim()
+  } catch {
+    // no /proc (non-Linux) — unknown is valid
   }
   return 'unknown'
 }
@@ -49,11 +53,14 @@ function getCoreCount(): number {
 }
 
 async function getMemoryMb(): Promise<number> {
-  const file = Bun.file('/proc/meminfo')
-  if (await file.exists()) {
-    const content = await file.text()
+  try {
+    // Same readFileSync rationale as getCpuModel: exists()+text() on /proc
+    // returns empty, yielding memoryMb=0 and blind memory drift detection.
+    const content = readFileSync('/proc/meminfo', 'utf8')
     const match = content.match(/MemTotal:\s+(\d+)\s+kB/)
     if (match) return Math.round(parseInt(match[1]) / 1024)
+  } catch {
+    // no /proc (non-Linux) — 0 is valid
   }
   return 0
 }
@@ -96,11 +103,13 @@ async function getDiskGb(): Promise<number> {
 }
 
 async function getOsRelease(): Promise<string> {
-  const file = Bun.file('/etc/os-release')
-  if (await file.exists()) {
-    const content = await file.text()
+  try {
+    // readFileSync for consistency with the other fingerprint readers.
+    const content = readFileSync('/etc/os-release', 'utf8')
     const pretty = content.match(/PRETTY_NAME="?([^"\n]+)"?/)
     if (pretty) return pretty[1]
+  } catch {
+    // no /etc/os-release (non-Linux) — unknown is valid
   }
   return 'unknown'
 }

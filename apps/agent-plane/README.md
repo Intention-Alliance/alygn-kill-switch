@@ -50,13 +50,18 @@ sudo ./install.sh --user <user> --mother-url http://localhost:3000
 ```
 
 Or copy `alygn-agent-plane.service` to `/etc/systemd/system/`, fill in
-the user/paths/key, then:
+the user/paths, create the secrets file, then:
 
 ```bash
+sudo sh -c 'umask 077; echo "ALYGN_AGENT_API_KEY=***" > /etc/alygn-agent-plane.env'
 sudo systemctl daemon-reload
 sudo systemctl enable --now alygn-agent-plane
 journalctl -u alygn-agent-plane -f
 ```
+
+The API key is loaded from `/etc/alygn-agent-plane.env` (0600) via
+`EnvironmentFile=` — never inline it in the unit file, which is world
+readable (644).
 
 ### Docker
 

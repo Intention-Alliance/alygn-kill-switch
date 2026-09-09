@@ -46,6 +46,16 @@ fi
 mkdir -p "$DATA_DIR"
 chown "$USER_NAME":"$USER_NAME" "$DATA_DIR"
 
+# Secrets file — the API key must NOT live in the systemd unit (644, world
+# readable). Write it to a 0600 root-owned file loaded via EnvironmentFile=.
+ENV_FILE="/etc/alygn-agent-plane.env"
+umask 077
+cat > "$ENV_FILE" <<EOF
+ALYGN_AGENT_API_KEY=$API_KEY
+EOF
+chown root:root "$ENV_FILE"
+chmod 600 "$ENV_FILE"
+
 cat > "$SERVICE_FILE" <<EOF
 [Unit]
 Description=ALYGN Agent Plane (Kill Switch agent)
@@ -58,9 +68,9 @@ WorkingDirectory=$REPO_DIR/apps/agent-plane
 ExecStart=$BUN_SHIM run $REPO_DIR/apps/agent-plane/src/index.ts
 Restart=on-failure
 RestartSec=5
+EnvironmentFile=$ENV_FILE
 Environment=NODE_ENV=production
 Environment=ALYGN_MOTHER_URL=$MOTHER_URL
-Environment=ALYGN_AGENT_API_KEY=$API_KEY
 Environment=ALYGN_STATE_DB=$DATA_DIR/agent-state.sqlite
 Environment=OLLAMA_BASE_URL=http://localhost:11434
 Environment=OLLAMA_INTERCEPT_PORT=11435
@@ -76,5 +86,6 @@ systemctl start "$SERVICE_NAME"
 
 echo "Installed $SERVICE_NAME (systemd)."
 echo "  Service file: $SERVICE_FILE"
+echo "  Secrets file: $ENV_FILE (0600, loaded via EnvironmentFile=)"
 echo "  State DB:     $DATA_DIR/agent-state.sqlite"
 echo "  Logs:         journalctl -u $SERVICE_NAME -f"

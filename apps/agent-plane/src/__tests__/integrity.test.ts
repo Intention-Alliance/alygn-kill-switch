@@ -18,6 +18,19 @@ describe('getMacs (via collectFingerprint)', () => {
   })
 })
 
+describe('procfs fingerprint (regression: exists()+text() returns empty)', () => {
+  it('reads real CPU model and memory from /proc on Linux', async () => {
+    const fp = await collectFingerprint()
+    // Regression: Bun.file('/proc/cpuinfo').exists() then .text() returns
+    // EMPTY (the exists() probe consumes the stream), so cpuModel was
+    // 'unknown' and memoryMb 0 — silently blinding CPU/memory drift
+    // detection. readFileSync must be used instead.
+    expect(fp.cpuModel).not.toBe('unknown')
+    expect(fp.cpuModel.length).toBeGreaterThan(0)
+    expect(fp.memoryMb).toBeGreaterThan(0)
+  })
+})
+
 describe('detectDrift', () => {
   const base: HardwareFingerprint = {
     cpuModel: 'Intel Xeon',
