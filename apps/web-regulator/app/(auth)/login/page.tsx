@@ -51,6 +51,9 @@ function LoginPageInner() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const webauthnRegistered = searchParams.get("webauthn") === "registered";
+  // Password form is collapsed by default — the security key is the primary
+  // sign-in surface; password is the explicit fallback.
+  const [showPassword, setShowPassword] = useState(false);
 
   // Resolve where to send the user after a successful sign-in. We honour an
   // explicit ?callbackUrl (set by the dashboard AuthGuard when it bounced an
@@ -118,7 +121,32 @@ function LoginPageInner() {
             </div>
           )}
 
-          <Form {...form}>
+          {/* ── Security key: THE primary sign-in method ─────────────── */}
+          <div className="rounded-xl border-2 border-primary/40 bg-primary/5 p-5 text-center shadow-sm">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <Fingerprint className="h-8 w-8 text-primary" aria-hidden="true" />
+            </div>
+            <h2 className="text-base font-semibold text-foreground">
+              Touch your security key
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Fast, phishing-resistant sign-in with your YubiKey
+            </p>
+            <div className="mt-4">
+              <SecurityKeySignInButton redirectTo={getCallbackUrl()} />
+            </div>
+          </div>
+
+          {/* ── Password: explicit fallback, collapsed by default ────── */}
+          {showPassword && (
+            <>
+              <div className="my-4 flex items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs text-muted-foreground">or use password</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
                 control={form.control}
@@ -196,24 +224,32 @@ function LoginPageInner() {
                 )}
               </Button>
             </form>
-          </Form>
+            </Form>
+            </>
+          )}
 
-          <div className="my-4 flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-xs text-muted-foreground">or</span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
+          {!showPassword && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setShowPassword(true)}
+                className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+              >
+                Use password instead
+              </button>
+            </div>
+          )}
 
-          <SecurityKeySignInButton redirectTo={getCallbackUrl()} />
-
-          <div className="mt-4 text-center text-xs text-muted-foreground">
-            <Link
-              href="/auth/forgot-password"
-              className="underline underline-offset-4 hover:text-foreground"
-            >
-              Forgot your password?
-            </Link>
-          </div>
+          {showPassword && (
+            <div className="mt-4 text-center text-xs text-muted-foreground">
+              <Link
+                href="/auth/forgot-password"
+                className="underline underline-offset-4 hover:text-foreground"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -65,10 +65,36 @@ export function SecurityKeySignInButton({
     };
   }, []);
 
-  // While the availability check is in flight, render nothing so the
-  // button never flashes before we know a key exists.
-  if (available === null) return null;
-  if (!available) return null;
+  // While the availability check is in flight, render a disabled placeholder
+  // so the button never flashes in/out before we know a key exists.
+  if (available === null) {
+    return (
+      <Button
+        type="button"
+        variant="default"
+        size="lg"
+        className="h-11 w-full text-sm"
+        disabled
+      >
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+        Checking for security keys…
+      </Button>
+    );
+  }
+  if (!available) {
+    return (
+      <Button
+        type="button"
+        variant="default"
+        size="lg"
+        className="h-11 w-full text-sm"
+        disabled
+      >
+        <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
+        No security key registered
+      </Button>
+    );
+  }
 
   async function handleSignIn() {
     if (busy) return;
@@ -119,19 +145,20 @@ export function SecurityKeySignInButton({
   return (
     <Button
       type="button"
-      variant="secondary"
-      className="w-full"
+      variant="default"
+      size="lg"
+      className="h-11 w-full text-sm"
       onClick={handleSignIn}
       disabled={busy}
     >
       {busy ? (
         <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
           Touch your security key…
         </>
       ) : (
         <>
-          <Fingerprint className="mr-2 h-4 w-4" aria-hidden="true" />
+          <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
           Sign in with security key
         </>
       )}

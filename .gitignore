@@ -115,3 +115,4 @@ data/auth.sqlite-wal
 data/auth.sqlite-journal
 data/kill-switch.sqlite-journal
 *.sqlite-journal
+.env.docker
