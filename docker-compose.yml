@@ -78,6 +78,7 @@ services:
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
       - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
+      - AUDIT_HMAC_KEY=${AUDIT_HMAC_KEY:?AUDIT_HMAC_KEY required}
       # Bridge mode: the kill-switch reaches Redis via the align-network
       # service hostnames (redis-node-1, etc.) which resolve within the
       # bridge network. Published host ports (127.0.0.1:6380-6382) remain for
