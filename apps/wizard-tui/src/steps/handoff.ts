@@ -13,12 +13,19 @@ import type { WizardConfig } from '../lib/config'
 export function runHandoff(config: WizardConfig): void {
 	const base = config.motherUrl.replace(/\/$/, '')
 
+	// The admin password the user configured IS the dashboard login token
+	// (KILL_SWITCH_AUTH_TOKEN). When none was configured, generate-secrets.sh
+	// wrote a random token into the install .env — point the admin at it.
+	const signInLine = config.adminPassword
+		? '2. Sign in with the admin email + password you configured.'
+		: `2. Sign in with the admin email + the KILL_SWITCH_AUTH_TOKEN value in ${config.installDir}/.env.`
+
 	note(
 		[
 			'1. Open the dashboard:',
 			`   ${base}`,
 			'',
-			'2. Sign in with the admin email + password you configured.',
+			signInLine,
 			'',
 			'3. Register a WebAuthn security key (passkey) — this is the',
 			'   human-signature required for kill/stop actions (ADR-136).',

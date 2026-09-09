@@ -72,6 +72,27 @@ describe('writeEnvFile', () => {
 		expect(text).toContain('LOG_LEVEL=info')
 	})
 
+	test('writes adminPassword as KILL_SWITCH_AUTH_TOKEN (spec §3)', async () => {
+		const dir = await makeTempDir()
+		const target = join(dir, '.env')
+		const cfg = { ...baseConfig, adminPassword: 'a-strong-password-16+' }
+
+		await writeEnvFile(cfg, target)
+		const text = await readFile(target, 'utf8')
+
+		expect(text).toContain('KILL_SWITCH_AUTH_TOKEN=a-strong-password-16+')
+	})
+
+	test('omits KILL_SWITCH_AUTH_TOKEN when no adminPassword is set', async () => {
+		const dir = await makeTempDir()
+		const target = join(dir, '.env')
+
+		await writeEnvFile(baseConfig, target)
+		const text = await readFile(target, 'utf8')
+
+		expect(text).not.toContain('KILL_SWITCH_AUTH_TOKEN=')
+	})
+
 	test('preserves existing secret values and mirrors KILL_SWITCH_API_KEY', async () => {
 		const dir = await makeTempDir()
 		const target = join(dir, '.env')

@@ -22,7 +22,7 @@ const GENERATE_SECRETS_SCRIPT = resolve(
 
 /** Server env block (spec §4) — values only, never logged. */
 function serverEnvLines(config: WizardConfig): string[] {
-	return [
+	const lines = [
 		'KILL_SWITCH_ENV=production',
 		'KILL_SWITCH_PORT=3000',
 		`BETTER_AUTH_URL=${config.motherUrl}`,
@@ -38,6 +38,13 @@ function serverEnvLines(config: WizardConfig): string[] {
 		`KILL_SWITCH_VERIFY_ENABLED=${config.verifyEnabled ? 'true' : 'false'}`,
 		'KILL_SWITCH_VERIFY_MODE=async',
 	]
+	// The admin password the user configured IS the dashboard login token
+	// (spec §3: adminPassword → KILL_SWITCH_AUTH_TOKEN). When absent,
+	// generate-secrets.sh fills it with a random value.
+	if (config.adminPassword) {
+		lines.push(`KILL_SWITCH_AUTH_TOKEN=${config.adminPassword}`)
+	}
+	return lines
 }
 
 /** Agent env block (spec §4) — values only, never logged. */
