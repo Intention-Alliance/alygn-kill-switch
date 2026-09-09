@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky prepare",
+    "wizard": "bun --filter @alygn/wizard-tui wizard",
     "type-check": "bun --filter '*' type-check || echo 'no type-check'",
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",

@@ -1,0 +1,59 @@
+name: Release — wizard-tui tarball + checksums
+
+# Publishes the artifacts install.sh downloads:
+#   alygn-wizard-tui.tar.gz          (release tarball)
+#   alygn-wizard-tui.tar.gz.sha256  (tarball checksum)
+#   install.sh.sha256               (bootstrap script checksum)
+#
+# Triggered on tag push (v*). The tarball is built from the tagged tree
+# with the same layout install.sh expects: repo root with apps/, packages/,
+# package.json, bun.lock — extracted with --strip-components=1 into
+# $INSTALL_DIR, then `bun install` + `bun run wizard`.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release tarball
+        run: |
+          set -euo pipefail
+          # Exclude VCS, node_modules, and local tooling from the artifact.
+          tar \
+            --exclude='./.git' \
+            --exclude='./node_modules' \
+            --exclude='./**/node_modules' \
+            --exclude='./.husky' \
+            --exclude='./.vscode' \
+            -czf alygn-wizard-tui.tar.gz \
+            apps packages package.json bun.lock bunfig.toml tsconfig.json \
+            drizzle.config.ts docker-compose.yml \
+            alygn-web-regulator.service alygn-web-regulator-bun.service \
+            README.md SECURITY.md LICENSE MANIFESTO.md CODE_OF_CONDUCT.md \
+            CONTRIBUTING.md TRADEMARK-POLICY.md docs prepare scripts
+
+      - name: Generate checksums
+        run: |
+          set -euo pipefail
+          sha256sum alygn-wizard-tui.tar.gz > alygn-wizard-tui.tar.gz.sha256
+          sha256sum apps/wizard-tui/scripts/install.sh > install.sh.sha256
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          files: |
+            alygn-wizard-tui.tar.gz
+            alygn-wizard-tui.tar.gz.sha256
+            install.sh.sha256
+            apps/wizard-tui/scripts/install.sh
