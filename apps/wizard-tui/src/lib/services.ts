@@ -67,6 +67,7 @@ After=network.target
 Type=simple
 User=${config.serviceUser}
 WorkingDirectory=${serverDir}
+EnvironmentFile=${installDir}/.env
 ExecStart=${bunPath} run src/index.ts
 Restart=on-failure
 Environment=NODE_ENV=production
@@ -89,6 +90,7 @@ After=network.target
 Type=simple
 User=${config.serviceUser}
 WorkingDirectory=${agentDir}
+EnvironmentFile=${installDir}/.env
 ExecStart=${bunPath} run src/index.ts
 Restart=on-failure
 Environment=NODE_ENV=production
