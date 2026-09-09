@@ -78,7 +78,7 @@ function getWsUrl(token: string): string {
   const host =
     process.env.NEXT_PUBLIC_WS_HOST ||
     process.env.NEXT_PUBLIC_WEBAUTHN_HOST ||
-    "";
+    window.location.host;
   return `wss://${host}/ws?token=${encodeURIComponent(token)}`;
 }
 
