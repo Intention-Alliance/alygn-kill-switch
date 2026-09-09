@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/sheet";
 import { apiGet } from "@/lib/api-client";
 import { effectiveStatus } from "@/lib/dashboard-utils";
+import { BRAND_NAME } from "@/lib/branding";
 import { toast } from "sonner";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import type {
@@ -290,7 +291,7 @@ export default function MachinesDashboardPage() {
               </h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Node registry — monitor connected machines in the ALYGN
+              Node registry — monitor connected machines in the {BRAND_NAME}
               network
             </p>
           </div>
@@ -380,7 +381,7 @@ export default function MachinesDashboardPage() {
                     Registered Machines
                   </CardTitle>
                   <CardDescription>
-                    All nodes in the ALYGN network
+                    All nodes in the {BRAND_NAME} network
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

@@ -37,6 +37,8 @@ import { apiGet } from "@/lib/api-client";
 import { SystemMetricsBar } from "@/components/machines/system-metrics";
 import { MachineQuickActions } from "@/components/machines/machine-quick-actions";
 import { effectiveStatus } from "@/lib/dashboard-utils";
+import { BRAND_NAME } from "@/lib/branding";
+import { SidebarFooter } from "@/components/layout/sidebar-footer";
 import type { Machine, KillSwitchState } from "@/types/shared";
 
 const NAV_ITEMS = [
@@ -176,7 +178,7 @@ export function AppSidebar({
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span className="font-bold tracking-tight">ALYGN</span>
+            <span className="font-bold tracking-tight">{BRAND_NAME}</span>
           </Link>
         )}
         {collapsed && (
@@ -408,6 +410,11 @@ export function AppSidebar({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <Separator />
+
+      {/* Brand credit + version */}
+      <SidebarFooter collapsed={collapsed} />
     </aside>
   );
 }
