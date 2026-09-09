@@ -31,7 +31,7 @@ import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { DashboardCluster } from "@/lib/dashboard-utils";
-import type { Cluster } from "@/types/supabase.types";
+import type { Cluster } from "@/types/db.types";
 import type {
   Machine,
   KillSwitchState,

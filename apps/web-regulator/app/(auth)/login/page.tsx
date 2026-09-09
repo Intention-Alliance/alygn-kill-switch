@@ -6,7 +6,6 @@ import * as z from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, Suspense } from "react";
 import { Shield, Loader2, Fingerprint } from "lucide-react";
-import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { BRAND_FULL_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import { Button } from "@/components/ui/button";
@@ -243,12 +242,7 @@ function LoginPageInner() {
 
           {showPassword && (
             <div className="mt-4 text-center text-xs text-muted-foreground">
-              <Link
-                href="/auth/forgot-password"
-                className="underline underline-offset-4 hover:text-foreground"
-              >
-                Forgot your password?
-              </Link>
+              &nbsp;
             </div>
           )}
         </CardContent>
