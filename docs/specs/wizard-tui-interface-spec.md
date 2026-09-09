@@ -11,7 +11,7 @@
 **Bun + @clack/prompts.** Rationale:
 
 - Same toolchain as the monorepo (bun workspaces, TS strict) — no second toolchain.
-- Reuses `apps/agent-plane` heartbeat client contract and `@align/shared-types`.
+- Reuses `apps/agent-plane` heartbeat client contract and the shape of `@align/shared-types` (SecurityThresholds — no direct dependency; the wizard mirrors the interface with local defaults).
 - `generate-secrets.sh` is bash — invoked from Bun, output merged into `.env`.
 - Non-interactive `--config` replay is a first-class clack pattern.
 - Team is TS-native; Rust+ratatui rejected (new toolchain, no code reuse, slower iteration).
