@@ -9,6 +9,7 @@ import { collectFingerprint } from './integrity'
 import { OllamaInterceptor } from './interceptor'
 import { EnforcementConsumer } from './enforcement'
 import { AgentStateStore } from './state'
+import { FlagClient } from './flags'
 
 const MOTHER_URL = process.env.ALYGN_MOTHER_URL ?? 'http://localhost:3000'
 const API_KEY = process.env.ALYGN_AGENT_API_KEY ?? ''
@@ -19,6 +20,7 @@ const HEARTBEAT_MS = parseInt(process.env.ALYGN_HEARTBEAT_INTERVAL_MS ?? '30000'
 const OLLAMA_URL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
 const INTERCEPT_PORT = parseInt(process.env.OLLAMA_INTERCEPT_PORT ?? '11435')
 const ENFORCE_POLL_MS = parseInt(process.env.ALYGN_ENFORCE_POLL_INTERVAL_MS ?? '5000')
+const FLAGS_POLL_MS = parseInt(process.env.ALYGN_FLAGS_POLL_INTERVAL_MS ?? '10000')
 const STATE_DB_PATH = process.env.ALYGN_STATE_DB ?? './data/agent-state.sqlite'
 const LOG_LEVEL = process.env.LOG_LEVEL ?? 'info'
 
@@ -81,6 +83,23 @@ async function main() {
     },
   )
 
+  // Runtime flags — poll the mother's merged flag view so the interceptor
+  // honors llm_interception_enabled / auto_stop_threshold / sampling / etc.
+  const flagClient = new FlagClient({
+    motherUrl: MOTHER_URL,
+    apiKey: API_KEY,
+    machineId: MACHINE_ID,
+    pollIntervalMs: FLAGS_POLL_MS,
+  })
+  const stopFlags = flagClient.start(
+    (map) => {
+      log('info', `Runtime flags refreshed: ${map.size} flags (interception=${map.get('llm_interception_enabled') ?? 'default'}, threshold=${map.get('auto_stop_threshold') ?? 'default'})`)
+    },
+    (err) => {
+      log('warn', `Runtime flags fetch failed: ${err.message} — keeping last known values`)
+    },
+  )
+
   // Start Ollama interceptor (listens on the intercept port, forwards to real Ollama)
   try {
     const interceptor = new OllamaInterceptor({
@@ -88,9 +107,18 @@ async function main() {
       listenPort: INTERCEPT_PORT,
       scoreThreshold: 0.7,
       isPaused: () => enforcement.isPaused(),
+      flags: flagClient,
     })
     await interceptor.start((req, result) => {
-      log('info', `Intercepted: ${req.method} ${req.path} → score=${result.score.toFixed(2)} action=${result.action}`)
+      // damage_logging_level controls per-request log verbosity:
+      //   minimal  → no per-request log
+      //   standard → one line per request (default)
+      //   verbose  → one line + body summary
+      const level = String(flagClient.getFlag('damage_logging_level') ?? 'standard')
+      if (level === 'minimal') return
+      const scored = result.scored ? ` score=${result.score.toFixed(2)} action=${result.action}` : ' (not scored)'
+      const detail = level === 'verbose' && req.body ? ` body=${JSON.stringify(req.body).slice(0, 120)}` : ''
+      log('info', `Intercepted: ${req.method} ${req.path} →${scored}${result.alert ? ' ⚠ ALERT' : ''}${detail}`)
     })
     log('info', `Ollama interceptor listening on :${INTERCEPT_PORT} → forwarding to ${OLLAMA_URL}`)
   } catch (err) {
@@ -103,6 +131,7 @@ async function main() {
     log('info', 'Shutting down agent plane')
     stopHeartbeat()
     stopEnforcement()
+    stopFlags()
     state.close()
     process.exit(0)
   })

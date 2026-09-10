@@ -83,6 +83,15 @@ function getWsUrl(token: string): string {
 }
 
 async function getSessionToken(): Promise<string | null> {
+  // better-auth v2 stores the session token in an httpOnly cookie
+  // (better-auth.session_token) and does NOT expose the raw token in
+  // getSession() data — session?.token is always undefined. Read the
+  // cookie directly instead.
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(/(?:^|;\s*)better-auth\.session_token=([^;]+)/);
+    if (match) return decodeURIComponent(match[1]);
+  }
+
   try {
     const res = await authClient.getSession();
     const data = res.data as Record<string, unknown> | undefined;
