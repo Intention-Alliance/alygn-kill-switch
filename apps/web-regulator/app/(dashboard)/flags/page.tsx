@@ -72,12 +72,16 @@ const PREDEFINED_FLAGS = [
   },
 ];
 
-// None of the predefined flags are read by the runtime yet: the agent-plane
-// interceptor scores requests with a FIXED configuration (keyword scoring,
-// threshold 0.7) and does not consult the backend flags. They are stored
-// and editable, but editing them has no runtime effect until the interceptor
-// is wired to this API. Flagged in the UI so admins aren't misled.
-const NOT_WIRED_FLAGS = new Set(PREDEFINED_FLAGS.map((pf) => pf.key));
+// Runtime wiring (v1.3): the agent-plane interceptor reads these flags from
+// the backend via FlagClient and applies them per request:
+//   llm_interception_enabled → master toggle (false = pass through unscored)
+//   auto_stop_threshold      → scoring threshold
+//   request_sampling_rate    → fraction of requests scored
+//   damage_logging_level     → per-request log verbosity
+//   alert_on_critical_score  → alert when score ≥ threshold
+// The scoring itself is basic keyword/pattern matching (the full semantic
+// engine is Phase 2.5). Flags take effect on the agent that runs the
+// interceptor (agent-plane).
 
 // The backend returns flags with a slightly different shape
 interface BackendFlag {
@@ -282,15 +286,16 @@ export default function FlagsDashboardPage() {
             <div
               className="mb-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400"
               role="note"
-              aria-label="Predefined flags not yet wired to the runtime"
+              aria-label="Scoring uses basic keyword matching"
             >
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>
-                <strong>Flags stored, not yet wired to the runtime.</strong>{" "}
-                The agent-plane interceptor already scores requests (basic
-                keyword scoring) but uses a fixed configuration — it does not
-                read these flags from the backend yet. Editing them below has
-                no runtime effect until the interceptor is wired to this API.
+                <strong>Scoring: basic keyword matching.</strong> These flags
+                control the agent-plane interceptor (master toggle, threshold,
+                sampling, log verbosity, alerts). The scoring engine is
+                currently keyword/pattern based — the full semantic engine is
+                Phase 2.5. Changes take effect on the next interceptor poll
+                (≈10s).
               </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -299,7 +304,6 @@ export default function FlagsDashboardPage() {
                   key={pf.key}
                   className={cn(
                     "rounded-md border bg-background p-3",
-                    NOT_WIRED_FLAGS.has(pf.key) && "border-dashed border-amber-500/50",
                   )}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
@@ -309,13 +313,13 @@ export default function FlagsDashboardPage() {
                     <Badge variant="secondary" className="text-[10px] h-4 px-1">
                       {pf.type}
                     </Badge>
-                    {NOT_WIRED_FLAGS.has(pf.key) && (
+                    {pf.key === "llm_interception_enabled" && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] h-4 px-1 border-amber-500/40 text-amber-600 dark:text-amber-400"
-                        title="Stored and editable, but the runtime does not read this flag yet (interceptor uses fixed config)"
+                        className="text-[10px] h-4 px-1 border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
+                        title="Read by the agent-plane interceptor on every request"
                       >
-                        not wired
+                        wired
                       </Badge>
                     )}
                   </div>
