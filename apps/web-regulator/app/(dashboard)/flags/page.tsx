@@ -72,13 +72,16 @@ const PREDEFINED_FLAGS = [
   },
 ];
 
-// The scoring engine is not implemented. These flags are stored/editable but
-// have no runtime effect. Flagged in the UI so admins aren't misled.
-const SCORING_FLAG_KEYS = new Set([
-  "auto_stop_threshold",
-  "alert_on_critical_score",
-  "request_sampling_rate",
-]);
+// Runtime wiring (v1.3): the agent-plane interceptor reads these flags from
+// the backend via FlagClient and applies them per request:
+//   llm_interception_enabled → master toggle (false = pass through unscored)
+//   auto_stop_threshold      → scoring threshold
+//   request_sampling_rate    → fraction of requests scored
+//   damage_logging_level     → per-request log verbosity
+//   alert_on_critical_score  → alert when score ≥ threshold
+// The scoring itself is basic keyword/pattern matching (the full semantic
+// engine is Phase 2.5). Flags take effect on the agent that runs the
+// interceptor (agent-plane).
 
 // The backend returns flags with a slightly different shape
 interface BackendFlag {
@@ -283,17 +286,16 @@ export default function FlagsDashboardPage() {
             <div
               className="mb-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400"
               role="note"
-              aria-label="Scoring engine not implemented"
+              aria-label="Scoring uses basic keyword matching"
             >
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>
-                <strong>Scoring engine: Not implemented.</strong> The
-                scoring-related flags below (
-                <code className="font-mono">auto_stop_threshold</code>,{" "}
-                <code className="font-mono">alert_on_critical_score</code>,{" "}
-                <code className="font-mono">request_sampling_rate</code>) are
-                stored and editable, but no scoring engine evaluates them yet.
-                They have no runtime effect until the engine ships.
+                <strong>Scoring: basic keyword matching.</strong> These flags
+                control the agent-plane interceptor (master toggle, threshold,
+                sampling, log verbosity, alerts). The scoring engine is
+                currently keyword/pattern based — the full semantic engine is
+                Phase 2.5. Changes take effect on the next interceptor poll
+                (≈10s).
               </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -302,7 +304,6 @@ export default function FlagsDashboardPage() {
                   key={pf.key}
                   className={cn(
                     "rounded-md border bg-background p-3",
-                    SCORING_FLAG_KEYS.has(pf.key) && "border-dashed border-amber-500/50",
                   )}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
@@ -312,13 +313,13 @@ export default function FlagsDashboardPage() {
                     <Badge variant="secondary" className="text-[10px] h-4 px-1">
                       {pf.type}
                     </Badge>
-                    {SCORING_FLAG_KEYS.has(pf.key) && (
+                    {pf.key === "llm_interception_enabled" && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] h-4 px-1 border-amber-500/40 text-amber-600 dark:text-amber-400"
-                        title="This flag is not evaluated by any scoring engine"
+                        className="text-[10px] h-4 px-1 border-emerald-500/40 text-emerald-600 dark:text-emerald-400"
+                        title="Read by the agent-plane interceptor on every request"
                       >
-                        no engine
+                        wired
                       </Badge>
                     )}
                   </div>

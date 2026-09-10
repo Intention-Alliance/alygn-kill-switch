@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ws://localhost:3000; font-src 'self'; object-src 'none'; media-src 'self'; frame-src 'none';",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ws://localhost:3000 wss://andlersrv.tail62d797.ts.net:8443; font-src 'self'; object-src 'none'; media-src 'self'; frame-src 'none';",
           },
           {
             key: "X-Content-Type-Options",
@@ -85,6 +85,10 @@ const nextConfig: NextConfig = {
       {
         source: "/api/settings/:path*",
         destination: `${backendUrl}/v1/settings/:path*`,
+      },
+      {
+        source: "/api/inference-logs/:path*",
+        destination: `${backendUrl}/v1/inference-logs/:path*`,
       },
       // Health and metrics endpoints
       {

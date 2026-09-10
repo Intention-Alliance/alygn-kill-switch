@@ -7,6 +7,7 @@ import { parseBody } from '../utils/body-parser';
 import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
 import { killActionForTarget } from './kill-authorization';
 import { checkAuth } from '../middleware/auth';
+import { getConfig } from '../config';
 
 /**
  * Extract and verify the WebAuthn assertion token required for kill
@@ -70,6 +71,7 @@ export async function handleKillSwitchRoutes(
       const recentTransitions = service.getAuditLog(10);
 
       // Return full KillSwitchStatus matching @align/shared-types
+      const verification = getConfig().verification;
       const status = {
         state,
         lastActivation: lastActivation.timestamp,
@@ -81,6 +83,10 @@ export async function handleKillSwitchRoutes(
         // ADR-141: expose the paused-request counter so the dashboard can
         // surface how many inference requests were rejected while paused.
         pausedRequestCount: getPausedRequestCount(),
+        // Inference verification on/off (dashboard indicator):
+        verificationEnabled: verification.verifyEnabled,
+        verificationMode: verification.verifyMode,
+        verifierModel: verification.verifierModel,
       };
 
       res.writeHead(200, { 'Content-Type': 'application/json' });

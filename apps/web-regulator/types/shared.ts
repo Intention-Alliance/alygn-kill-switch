@@ -23,6 +23,10 @@ export interface KillSwitchStatus {
   reason: string | null;
   recentTransitions?: unknown[];
   pausedRequestCount?: number;
+  // Inference verification on/off (dashboard indicator)
+  verificationEnabled?: boolean;
+  verificationMode?: "async" | "sync";
+  verifierModel?: string;
 }
 
 export interface ActivationRecord {

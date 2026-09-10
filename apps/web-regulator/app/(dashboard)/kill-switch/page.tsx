@@ -6,6 +6,7 @@ import { ErrorBoundary, SectionErrorBoundary } from "@/components/error-boundary
 import { StatusIndicator } from "@/components/kill-switch/status-indicator";
 import { EmergencyStopButton } from "@/components/kill-switch/emergency-stop-button";
 import { ActivationHistory } from "@/components/kill-switch/activation-history";
+import { InferenceLogs } from "@/components/kill-switch/inference-logs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -91,6 +92,23 @@ export default function KillSwitchDashboardPage() {
               </span>
             </div>
           )}
+
+          {status && status.verificationEnabled !== undefined && (
+            <Badge
+              variant={status.verificationEnabled ? "default" : "secondary"}
+              className="gap-1.5"
+              title={`Verifier model: ${status.verifierModel ?? "unknown"} · mode: ${status.verificationMode ?? "async"}`}
+            >
+              <Shield className="h-3 w-3" aria-hidden="true" />
+              Verification:{" "}
+              {status.verificationEnabled ? "ON" : "OFF"}
+              {status.verificationEnabled && status.verificationMode && (
+                <span className="text-[10px] opacity-80">
+                  ({status.verificationMode})
+                </span>
+              )}
+            </Badge>
+          )}
         </div>
 
         <Separator />
@@ -171,6 +189,11 @@ export default function KillSwitchDashboardPage() {
             limit={20}
             webSocketRecords={auditLog}
           />
+        </SectionErrorBoundary>
+
+        {/* Inference Logs — intercepted requests reported by agent-plane */}
+        <SectionErrorBoundary title="Inference Logs">
+          <InferenceLogs limit={25} />
         </SectionErrorBoundary>
       </div>
     </ErrorBoundary>

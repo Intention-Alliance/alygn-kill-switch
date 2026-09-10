@@ -97,10 +97,10 @@ export async function apiGet<T>(path: string): Promise<T> {
   return handleResponse<T>(response);
 }
 
-export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
+export async function apiPost<T>(path: string, body?: unknown, headers?: HeadersInit): Promise<T> {
   const response = await fetch(path, {
     method: "POST",
-    headers: getHeaders(),
+    headers: { ...getHeaders(), ...(headers ?? {}) },
     credentials: "include",
     body: body ? JSON.stringify(body) : undefined,
   });
