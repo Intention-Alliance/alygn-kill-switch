@@ -30,14 +30,18 @@ export async function handleInferenceLogsRoutes(
   if (!url.startsWith('/v1/inference-logs')) return false;
 
   try {
+    // Split path from query string — the GET handler matches on the pathname
+    // (the dispatcher passes the raw URL, which may include ?limit=...).
+    const urlObj = new URL(url, 'http://localhost');
+    const pathname = urlObj.pathname;
+
     // ─── GET /v1/inference-logs — list (admin) ─────────────────────
-    if (method === 'GET' && url === '/v1/inference-logs') {
+    if (method === 'GET' && pathname === '/v1/inference-logs') {
       if (userRole !== 'admin') {
         json(res, 403, { error: 'Admin role required' });
         return true;
       }
 
-      const urlObj = new URL(url, 'http://localhost');
       const limit = Math.min(parseInt(urlObj.searchParams.get('limit') ?? '50', 10) || 50, 200);
       const offset = Math.max(parseInt(urlObj.searchParams.get('offset') ?? '0', 10) || 0, 0);
       const machineId = urlObj.searchParams.get('machineId');
