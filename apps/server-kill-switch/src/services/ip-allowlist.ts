@@ -11,8 +11,18 @@ const DNS_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 let dnsResolvedIps: string[] = [];
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
+let warnedNoHostname = false;
 
 export async function refreshTailscaleDns(): Promise<string[]> {
+  // No hostname configured (SECURE_NET_HOSTNAME unset) — nothing to resolve.
+  // Avoids a pointless `resolve4('')` error spamming the logs every 5 min.
+  if (!SECURE_NET_HOSTNAME) {
+    if (!warnedNoHostname) {
+      warnedNoHostname = true;
+      console.warn('[ip-allowlist] SECURE_NET_HOSTNAME not set — Tailscale DNS allowlist refresh disabled');
+    }
+    return dnsResolvedIps;
+  }
   try {
     const addresses = await resolve4(SECURE_NET_HOSTNAME);
     dnsResolvedIps = addresses;

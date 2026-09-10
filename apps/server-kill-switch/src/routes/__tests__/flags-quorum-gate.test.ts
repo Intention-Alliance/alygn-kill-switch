@@ -30,7 +30,7 @@ mock.module('drizzle-orm', () => ({
 interface MockFlag {
   id: string;
   key: string;
-  value: boolean;
+  value: boolean | string; // v1.2: stored as TEXT, mocks may hold either
   description: string | null;
   enabled: boolean;
   createdBy: string;
@@ -283,7 +283,10 @@ describe('handleFlagsRoutes — quorum-gated kill.authorization.* changes (ADR-1
 
     expect(handled).toBe(true);
     expect(res.statusCode).toBe(200);
-    expect(flagsStore.find((f) => f.id === 'flag-interception')!.value).toBe(false);
+    // v1.2: value stored as TEXT ('false'), not boolean
+    expect(flagsStore.find((f) => f.id === 'flag-interception')!.value).toBe('false');
+    // Response body coerces back to the declared type
+    expect(getJson(res).flag.value).toBe(false);
   });
 
   it('non-admin PUT kill.authorization.* flag → 403 Admin role required (role check first)', async () => {

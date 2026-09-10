@@ -191,11 +191,13 @@ export function initDatabase(dbPath: string = DB_PATH) {
   `);
 
   // Feature flags
+  // v1.2: value is TEXT (typed values serialized as strings). Fresh DBs get
+  // the TEXT column directly; existing DBs are migrated below (v1.2 rebuild).
   sqlite.run(`
     CREATE TABLE IF NOT EXISTS feature_flag (
       id TEXT PRIMARY KEY,
       key TEXT NOT NULL UNIQUE,
-      value INTEGER NOT NULL,
+      value TEXT NOT NULL,
       description TEXT,
       enabled INTEGER DEFAULT 1,
       created_by TEXT NOT NULL DEFAULT 'admin',
@@ -280,6 +282,64 @@ export function initDatabase(dbPath: string = DB_PATH) {
   } catch (e: any) {
     // Flag_audit_log table may not exist yet (fresh DB): CREATE TABLE IF NOT EXISTS
     // above will already be correct. Safe to ignore.
+    if (e.message && !e.message.includes('no such table')) {
+      throw e;
+    }
+  }
+
+  // ─── v1.2 migration: feature_flag.value INTEGER(boolean) → TEXT ──────
+  // Feature flags carry typed values (boolean | number | string). The old
+  // schema stored booleans as INTEGER; numbers/strings could not be stored
+  // faithfully (POST /v1/flags coerced everything through Boolean(value)).
+  // Rebuild preserves data: existing 0/1 values become 'false'/'true'.
+  try {
+    const flagCols = sqlite
+      .query('PRAGMA table_info(feature_flag)')
+      .all() as Array<{ name: string; type: string }>;
+    const valueCol = flagCols.find((c) => c.name === 'value');
+    if (valueCol && valueCol.type.toUpperCase().includes('INT')) {
+      console.log('[db] v1.2 migration: feature_flag.value INTEGER → TEXT');
+
+      sqlite.run('PRAGMA foreign_keys=OFF');
+      sqlite.run('BEGIN');
+      try {
+        sqlite.run(`
+          CREATE TABLE feature_flag_new (
+            id TEXT PRIMARY KEY,
+            key TEXT NOT NULL UNIQUE,
+            value TEXT NOT NULL,
+            description TEXT,
+            enabled INTEGER DEFAULT 1,
+            created_by TEXT NOT NULL DEFAULT 'admin',
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
+          )
+        `);
+        // 0/1 → 'false'/'true'; anything else is stored as-is (string).
+        sqlite.run(`
+          INSERT INTO feature_flag_new
+          SELECT id, key,
+                 CASE WHEN value = 1 THEN 'true' WHEN value = 0 THEN 'false' ELSE CAST(value AS TEXT) END,
+                 description, enabled, created_by, created_at, updated_at
+          FROM feature_flag
+        `);
+        sqlite.run('DROP TABLE feature_flag');
+        sqlite.run('ALTER TABLE feature_flag_new RENAME TO feature_flag');
+        sqlite.run('CREATE UNIQUE INDEX IF NOT EXISTS feature_flag_key_idx ON feature_flag(key)');
+        sqlite.run('COMMIT');
+        console.log('[db] v1.2 migration complete');
+      } catch (e) {
+        sqlite.run('ROLLBACK');
+        console.error('[db] v1.2 migration failed — rolled back:', e);
+        throw e;
+      } finally {
+        sqlite.run('PRAGMA foreign_keys=ON');
+      }
+    } else {
+      console.log('[db] v1.2 migration: already on TEXT schema (skipped)');
+    }
+  } catch (e: any) {
+    // feature_flag may not exist yet on a fresh DB (created above with TEXT).
     if (e.message && !e.message.includes('no such table')) {
       throw e;
     }

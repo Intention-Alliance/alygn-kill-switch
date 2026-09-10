@@ -1,15 +1,20 @@
 /**
  * Database Seed Module — Default Data Initialization
  *
- * Seeds the default machine and default settings
- * on first startup. All operations are idempotent (safe to re-run).
+ * Seeds the default machine and default settings on first startup.
+ * All operations are idempotent (safe to re-run).
  *
  * ADR-133: Kill Switch dashboard rebuild — machine + settings seeding.
+ * v1.2: feature flags now seed from the single source of truth
+ * (db/flag-definitions.ts) and RECONCILE existing rows by key instead of
+ * colliding on hardcoded ids (fixes F1: "UNIQUE constraint failed:
+ * feature_flag.id" on re-seed against an existing database).
  */
 
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from './index';
-import { machines, settings, featureFlags } from './schema';
+import { machines, settings, featureFlags, machineFlags } from './schema';
+import { PREDEFINED_FLAG_DEFINITIONS, LEGACY_FLAG_KEY_MAP, stableFlagId } from './flag-definitions';
 
 /**
  * Seed the default machine if it doesn't exist.
@@ -78,100 +83,101 @@ export async function seedDefaults() {
 }
 
 /**
- * Seed the 5 predefined feature flags (ADR-133 Q5) on first startup.
- * All operations are idempotent (safe to re-run).
+ * Seed the predefined feature flags (ADR-133 Q5 + ADR-136/137) from the
+ * single source of truth. Idempotent and collision-free:
+ *
+ *   1. Rename legacy keys (interception_enabled → llm_interception_enabled,
+ *      sampling_rate → request_sampling_rate) so the UI, overrides and
+ *      merged view all agree. Legacy rows keep their id, value and audit
+ *      history; only the key is updated (and any machine_flag rows that
+ *      reference the old key are migrated too).
+ *   2. Insert any missing predefined flag by its STABLE id derived from the
+ *      key (never a hardcoded id that can collide with an existing row).
+ *   3. Never overwrite existing values — the seed is a baseline, not a reset.
  */
 export async function seedFeatureFlags() {
-  const predefinedFlags = [
-    {
-      id: 'flag-interception-enabled',
-      key: 'llm_interception_enabled',
-      value: true,
-      description: 'Master kill switch for LLM request interception',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-auto-stop-threshold',
-      key: 'auto_stop_threshold',
-      value: true,
-      description: 'Semantic score threshold for auto-stop (default: 0.85)',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-damage-logging-level',
-      key: 'damage_logging_level',
-      value: true,
-      description: 'Log level for damage events (default: warning)',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-alert-on-critical',
-      key: 'alert_on_critical_score',
-      value: true,
-      description: 'Emit alert when score exceeds threshold',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-sampling-rate',
-      key: 'request_sampling_rate',
-      value: true,
-      description: 'Fraction of requests to evaluate (0-1, default: 1.0)',
-      enabled: true,
-      createdBy: 'system',
-    },
-    // ─── ADR-136: Human-Signature Kill Authorization flags ─────────
-    // Stored as feature_flag rows (value column is boolean; the actual
-    // policy values live in the `setting` table via the settings API):
-    //   kill.authorization.mode      = 'single' | 'quorum'  (setting)
-    //   kill.authorization.quorum    = 2 (of 3) | 3 (of 3)  (setting)
-    //   kill.authorization.timeoutMs = quorum window        (setting)
-    // The feature_flag rows gate whether the WebAuthn kill-authorization
-    // pipeline is enabled at all (ADR-137: authorization policy as flags).
-    {
-      id: 'flag-kill-auth-mode',
-      key: 'kill.authorization.mode',
-      value: true,
-      description: 'Kill authorization mode: single | quorum (value in settings)',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-kill-auth-quorum',
-      key: 'kill.authorization.quorum',
-      value: true,
-      description: 'Quorum threshold for kill authorization (value in settings)',
-      enabled: true,
-      createdBy: 'system',
-    },
-    {
-      id: 'flag-kill-auth-timeout',
-      key: 'kill.authorization.timeoutMs',
-      value: true,
-      description: 'Quorum window in ms (value in settings)',
-      enabled: true,
-      createdBy: 'system',
-    },
-  ];
+  // ─── 1. Reconcile legacy keys ─────────────────────────────────────
+  for (const [legacyKey, canonicalKey] of Object.entries(LEGACY_FLAG_KEY_MAP)) {
+    const legacyRow = await db
+      .select()
+      .from(featureFlags)
+      .where(eq(featureFlags.key, legacyKey))
+      .get();
+    if (!legacyRow) continue;
 
+    const canonicalRow = await db
+      .select()
+      .from(featureFlags)
+      .where(eq(featureFlags.key, canonicalKey))
+      .get();
+
+    if (canonicalRow) {
+      // Both exist: drop the legacy row (overrides/audit reference the key;
+      // the canonical row is the survivor). machine_flag rows pointing at
+      // the legacy key are repointed to the canonical key.
+      await db.delete(featureFlags).where(eq(featureFlags.key, legacyKey)).run();
+      console.log(`[seed] Flag key reconciled: removed legacy "${legacyKey}" (canonical "${canonicalKey}" already exists)`);
+    } else {
+      await db.update(featureFlags)
+        .set({ key: canonicalKey, updatedAt: new Date() })
+        .where(eq(featureFlags.key, legacyKey))
+        .run();
+      console.log(`[seed] Flag key reconciled: "${legacyKey}" → "${canonicalKey}"`);
+    }
+
+    // Migrate any per-machine overrides that referenced the legacy key.
+    // (machine_flag has no FK to feature_flag; the key is the join.)
+    // If a machine already has an override for the canonical key, drop the
+    // legacy one (canonical wins); otherwise rename it.
+    const legacyOverrides = await db
+      .select()
+      .from(machineFlags)
+      .where(eq(machineFlags.flagKey, legacyKey))
+      .all();
+    for (const ov of legacyOverrides) {
+      const canonicalOv = await db
+        .select()
+        .from(machineFlags)
+        .where(and(eq(machineFlags.machineId, ov.machineId), eq(machineFlags.flagKey, canonicalKey)))
+        .get();
+      if (canonicalOv) {
+        await db.delete(machineFlags)
+          .where(and(eq(machineFlags.machineId, ov.machineId), eq(machineFlags.flagKey, legacyKey)))
+          .run();
+      } else {
+        await db.update(machineFlags)
+          .set({ flagKey: canonicalKey })
+          .where(and(eq(machineFlags.machineId, ov.machineId), eq(machineFlags.flagKey, legacyKey)))
+          .run();
+      }
+    }
+  }
+
+  // ─── 2. Insert missing predefined flags ───────────────────────────
   let seeded = 0;
-  for (const flag of predefinedFlags) {
+  for (const def of PREDEFINED_FLAG_DEFINITIONS) {
     const existing = await db
       .select()
       .from(featureFlags)
-      .where(eq(featureFlags.key, flag.key))
+      .where(eq(featureFlags.key, def.key))
       .get();
 
-    if (!existing) {
-      await db.insert(featureFlags).values(flag);
-      seeded++;
-    }
+    if (existing) continue;
+
+    await db.insert(featureFlags).values({
+      id: stableFlagId(def.key),
+      key: def.key,
+      value: String(def.defaultValue), // value column is TEXT (v1.2 migration)
+      description: def.description,
+      enabled: true,
+      createdBy: 'system',
+    });
+    seeded++;
   }
 
   if (seeded > 0) {
     console.log(`[seed] ${seeded} feature flags created`);
+  } else {
+    console.log('[seed] Feature flags already seeded (0 created)');
   }
 }

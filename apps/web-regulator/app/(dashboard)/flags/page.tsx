@@ -84,7 +84,7 @@ const SCORING_FLAG_KEYS = new Set([
 interface BackendFlag {
   id: string;
   key: string;
-  value: boolean;
+  value: boolean | string | number;
   description: string | null;
   enabled: boolean;
   createdBy: string;
@@ -144,18 +144,20 @@ export default function FlagsDashboardPage() {
   }, [wsFlags, isConnected]);
 
   async function handleToggleFlag(flag: FlagType) {
+    // F5: the Value switch toggles the flag VALUE (booleans only), not the
+    // enabled state. Non-boolean flags render a plain value readout instead
+    // of a switch, so this handler only ever sees boolean values.
+    const nextValue = !Boolean(flag.value);
     try {
       await apiPut(`/api/flags/${flag.id}`, {
-        enabled: !flag.enabled,
+        value: nextValue,
       });
       setFlags((prev) =>
         prev.map((f) =>
-          f.id === flag.id ? { ...f, enabled: !f.enabled } : f,
+          f.id === flag.id ? { ...f, value: nextValue } : f,
         ),
       );
-      toast.success(
-        `Flag "${flag.key}" ${flag.enabled ? "disabled" : "enabled"}`,
-      );
+      toast.success(`Flag "${flag.key}" value set to ${nextValue}`);
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Failed to toggle flag",
@@ -406,10 +408,17 @@ export default function FlagsDashboardPage() {
                             <FlagStatusBadge flag={flag} />
                           </TableCell>
                           <TableCell>
-                            <Switch
-                              checked={Boolean(flag.value)}
-                              onCheckedChange={() => handleToggleFlag(flag)}
-                            />
+                            {typeof flag.value === "boolean" ? (
+                              <Switch
+                                checked={flag.value}
+                                onCheckedChange={() => handleToggleFlag(flag)}
+                                aria-label={`Toggle value of ${flag.key}`}
+                              />
+                            ) : (
+                              <span className="font-mono text-xs text-muted-foreground">
+                                {String(flag.value)}
+                              </span>
+                            )}
                           </TableCell>
                           <TableCell>
             <div className="flex items-center gap-1">

@@ -149,7 +149,9 @@ export const featureFlags = sqliteTable(
   {
     id: text('id').primaryKey(),
     key: text('key').notNull().unique(),
-    value: integer('value', { mode: 'boolean' }).notNull(),
+    // v1.2: TEXT storage — flags carry typed values (boolean | number | string)
+    // serialized as strings. See db/index.ts v1.2 migration.
+    value: text('value').notNull(),
     description: text('description'),
     enabled: integer('enabled', { mode: 'boolean' }).default(true),
     createdBy: text('created_by').notNull().default('admin'),
