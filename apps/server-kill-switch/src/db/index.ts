@@ -714,6 +714,26 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS kill_authorization_request_initiated_at_idx ON kill_authorization_request(initiated_at)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS kill_authorization_request_target_idx ON kill_authorization_request(target)`);
 
+  // ─── Inference log (intercepted requests from agent-plane) ────────────
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS inference_log (
+      id TEXT PRIMARY KEY,
+      timestamp INTEGER NOT NULL,
+      machine_id TEXT NOT NULL,
+      method TEXT NOT NULL,
+      path TEXT NOT NULL,
+      score REAL NOT NULL DEFAULT 0,
+      action TEXT NOT NULL,
+      reasons TEXT,
+      alert INTEGER NOT NULL DEFAULT 0,
+      scored INTEGER NOT NULL DEFAULT 1,
+      prompt_preview TEXT,
+      model TEXT
+    )
+  `);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS inference_log_time_idx ON inference_log(timestamp)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS inference_log_machine_idx ON inference_log(machine_id)`);
+
   const db = drizzle(sqlite, { schema });
 
   console.log(`[db] SQLite initialized: ${dbPath} (WAL mode, tables verified)`);

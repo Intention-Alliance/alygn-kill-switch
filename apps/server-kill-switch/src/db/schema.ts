@@ -647,3 +647,29 @@ export const verificationEvents = sqliteTable(
     timeIdx: index('verification_event_time_idx').on(table.createdAt),
   }),
 );
+
+// ─── Inference Log (intercepted requests from agent-plane) ───────────────
+// Each intercepted LLM request reported by the agent-plane interceptor.
+// The dashboard surfaces these as "inference logs".
+
+export const inferenceLogs = sqliteTable(
+  'inference_log',
+  {
+    id: text('id').primaryKey(),
+    timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    machineId: text('machine_id').notNull(),
+    method: text('method').notNull(),
+    path: text('path').notNull(),
+    score: real('score').notNull().default(0),
+    action: text('action').notNull(),            // forward | block | escalate
+    reasons: text('reasons'),                    // JSON array string
+    alert: integer('alert', { mode: 'boolean' }).notNull().default(false),
+    scored: integer('scored', { mode: 'boolean' }).notNull().default(true),
+    promptPreview: text('prompt_preview'),
+    model: text('model'),
+  },
+  (table) => ({
+    timeIdx: index('inference_log_time_idx').on(table.timestamp),
+    machineIdx: index('inference_log_machine_idx').on(table.machineId),
+  }),
+);

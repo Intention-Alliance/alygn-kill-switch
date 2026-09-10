@@ -3,7 +3,11 @@
  * Ollama instance, scores them, and forwards or blocks per threshold.
  *
  * The agent acts as a reverse proxy: the agent listens on the intercept
- * port (default 11435) and forwards to the real Ollama (default 11434).
+ * port (default 11436) and forwards to the real Ollama (default 11434).
+ *
+ * NOTE: the default was 11435, but nginx owns 11435 (admin-ui.conf serves
+ * Ollama over TLS there) — the interceptor could never bind it. 11436 is
+ * free on the production host.
  *
  * Enforcement: when the kill-switch is paused (STOPPED/LOCKED), the
  * interceptor rejects inference requests with 503 instead of forwarding.
@@ -59,7 +63,7 @@ export class OllamaInterceptor {
     flags?: FlagProvider
   }) {
     this.ollamaUrl = (config.ollamaUrl ?? 'http://localhost:11434').replace(/\/$/, '')
-    this.listenPort = config.listenPort ?? 11435
+    this.listenPort = config.listenPort ?? 11436
     this.scoreThreshold = config.scoreThreshold ?? 0.7
     this.isPaused = config.isPaused ?? (() => false)
     this.flags = config.flags
