@@ -18,7 +18,7 @@ const MACHINE_NAME = process.env.ALYGN_MACHINE_NAME ?? 'local-machine'
 const HOSTNAME = process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost'
 const HEARTBEAT_MS = parseInt(process.env.ALYGN_HEARTBEAT_INTERVAL_MS ?? '30000')
 const OLLAMA_URL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
-const INTERCEPT_PORT = parseInt(process.env.OLLAMA_INTERCEPT_PORT ?? '11435')
+const INTERCEPT_PORT = parseInt(process.env.OLLAMA_INTERCEPT_PORT ?? '11436')
 const ENFORCE_POLL_MS = parseInt(process.env.ALYGN_ENFORCE_POLL_INTERVAL_MS ?? '5000')
 const FLAGS_POLL_MS = parseInt(process.env.ALYGN_FLAGS_POLL_INTERVAL_MS ?? '10000')
 const STATE_DB_PATH = process.env.ALYGN_STATE_DB ?? './data/agent-state.sqlite'
@@ -110,6 +110,28 @@ async function main() {
       flags: flagClient,
     })
     await interceptor.start((req, result) => {
+      // Report the intercepted request to the mother so the dashboard can
+      // show inference logs (previously stdout-only on the agent).
+      const body = req.body as Record<string, unknown> | null
+      const prompt = typeof body?.prompt === 'string' ? body.prompt : ''
+      const model = typeof body?.model === 'string' ? body.model : null
+      fetch(`${MOTHER_URL}/v1/inference-logs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+        body: JSON.stringify({
+          machineId: MACHINE_ID,
+          method: req.method,
+          path: req.path,
+          score: result.score,
+          action: result.action,
+          reasons: result.reasons,
+          alert: result.alert ?? false,
+          scored: result.scored ?? true,
+          promptPreview: prompt.slice(0, 200),
+          model,
+        }),
+      }).catch((err) => log('warn', `Inference log report failed: ${err.message}`))
+
       // damage_logging_level controls per-request log verbosity:
       //   minimal  → no per-request log
       //   standard → one line per request (default)
