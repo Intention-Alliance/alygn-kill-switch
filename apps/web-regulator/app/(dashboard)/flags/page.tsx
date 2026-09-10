@@ -72,13 +72,12 @@ const PREDEFINED_FLAGS = [
   },
 ];
 
-// The scoring engine is not implemented. These flags are stored/editable but
-// have no runtime effect. Flagged in the UI so admins aren't misled.
-const SCORING_FLAG_KEYS = new Set([
-  "auto_stop_threshold",
-  "alert_on_critical_score",
-  "request_sampling_rate",
-]);
+// None of the predefined flags are read by the runtime yet: the agent-plane
+// interceptor scores requests with a FIXED configuration (keyword scoring,
+// threshold 0.7) and does not consult the backend flags. They are stored
+// and editable, but editing them has no runtime effect until the interceptor
+// is wired to this API. Flagged in the UI so admins aren't misled.
+const NOT_WIRED_FLAGS = new Set(PREDEFINED_FLAGS.map((pf) => pf.key));
 
 // The backend returns flags with a slightly different shape
 interface BackendFlag {
@@ -283,17 +282,15 @@ export default function FlagsDashboardPage() {
             <div
               className="mb-3 flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400"
               role="note"
-              aria-label="Scoring engine not implemented"
+              aria-label="Predefined flags not yet wired to the runtime"
             >
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>
-                <strong>Scoring engine: Not implemented.</strong> The
-                scoring-related flags below (
-                <code className="font-mono">auto_stop_threshold</code>,{" "}
-                <code className="font-mono">alert_on_critical_score</code>,{" "}
-                <code className="font-mono">request_sampling_rate</code>) are
-                stored and editable, but no scoring engine evaluates them yet.
-                They have no runtime effect until the engine ships.
+                <strong>Flags stored, not yet wired to the runtime.</strong>{" "}
+                The agent-plane interceptor already scores requests (basic
+                keyword scoring) but uses a fixed configuration — it does not
+                read these flags from the backend yet. Editing them below has
+                no runtime effect until the interceptor is wired to this API.
               </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -302,7 +299,7 @@ export default function FlagsDashboardPage() {
                   key={pf.key}
                   className={cn(
                     "rounded-md border bg-background p-3",
-                    SCORING_FLAG_KEYS.has(pf.key) && "border-dashed border-amber-500/50",
+                    NOT_WIRED_FLAGS.has(pf.key) && "border-dashed border-amber-500/50",
                   )}
                 >
                   <div className="flex items-center gap-1.5 mb-1">
@@ -312,13 +309,13 @@ export default function FlagsDashboardPage() {
                     <Badge variant="secondary" className="text-[10px] h-4 px-1">
                       {pf.type}
                     </Badge>
-                    {SCORING_FLAG_KEYS.has(pf.key) && (
+                    {NOT_WIRED_FLAGS.has(pf.key) && (
                       <Badge
                         variant="outline"
                         className="text-[10px] h-4 px-1 border-amber-500/40 text-amber-600 dark:text-amber-400"
-                        title="This flag is not evaluated by any scoring engine"
+                        title="Stored and editable, but the runtime does not read this flag yet (interceptor uses fixed config)"
                       >
-                        no engine
+                        not wired
                       </Badge>
                     )}
                   </div>
