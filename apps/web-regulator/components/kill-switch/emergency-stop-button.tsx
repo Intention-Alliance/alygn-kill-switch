@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Shield, Skull, Loader2 } from "lucide-react";
+import { startAuthentication } from "@simplewebauthn/browser";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,10 @@ import {
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { KillSwitchState } from "@/types/shared";
+import type {
+  Fido2AssertBeginResponse,
+  Fido2AssertFinishResponse,
+} from "@/types/fido2";
 
 interface EmergencyStopButtonProps {
   currentState: KillSwitchState;
@@ -144,14 +149,50 @@ export function EmergencyStopButton({
     setIsSubmitting(true);
 
     try {
+      // WebAuthn (yubi key) assertion — the preferred kill authorization
+      // path (ADR-136). The backend accepts `Authorization: Assertion
+      // <token>` bound to the kill action. If no key is registered, the
+      // user cancels, or WebAuthn is unavailable, we fall back to the
+      // dashboard session cookie (phrase confirmation already done).
+      let assertionHeader: HeadersInit | undefined;
+      try {
+        const begin = await apiPost<Fido2AssertBeginResponse>(
+          "/api/auth/webauthn/assert/begin",
+          { action: "kill:fleet" },
+        );
+        const response = await startAuthentication({
+          optionsJSON: begin.options,
+        });
+        const finish = await apiPost<Fido2AssertFinishResponse>(
+          "/api/auth/webauthn/assert/finish",
+          { challengeId: begin.challengeId, response },
+        );
+        if (finish.verified && finish.assertionToken) {
+          assertionHeader = {
+            Authorization: `Assertion ${finish.assertionToken}`,
+          };
+        }
+      } catch (webauthnErr) {
+        // No registered key / user cancelled / WebAuthn unavailable —
+        // fall back to the dashboard session.
+        console.warn(
+          "[kill] WebAuthn assertion skipped, using session auth:",
+          webauthnErr,
+        );
+      }
+
       const result = await apiPost<{
         current: KillSwitchState;
         previous: KillSwitchState;
         timestamp: number;
-      }>("/api/kill-switch/chaos", {
-        state: nextState,
-        reason: `Manual override via dashboard: ${nextState}`,
-      });
+      }>(
+        "/api/kill-switch/chaos",
+        {
+          state: nextState,
+          reason: `Manual override via dashboard: ${nextState}`,
+        },
+        assertionHeader,
+      );
 
       toast.success(`State changed to ${result.current}`);
       onStateChange(result.current);
