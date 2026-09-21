@@ -24,12 +24,13 @@ function AuthGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      // Preserve the originally-requested route so the login page can
-      // redirect back here after a successful sign-in. Without this, a
-      // deep link to a protected route (e.g. /admin/security/fido2)
-      // bounces the user to /login and then to the default landing page,
-      // never returning them to where they were headed.
-      const callbackUrl = pathname !== "/" ? encodeURIComponent(pathname) : "";
+      // Preserve the originally-requested route AND its query string so the
+      // login page can redirect back here after a successful sign-in. Without
+      // the search string, a logged-out deep link to /?tab=kill-switch
+      // returns the user to / (overview) instead of the kill-switch tab.
+      const search = typeof window !== "undefined" ? window.location.search : "";
+      const target = `${pathname}${search}`;
+      const callbackUrl = target !== "/" ? encodeURIComponent(target) : "";
       router.replace(callbackUrl ? `/login?callbackUrl=${callbackUrl}` : "/login");
     }
   }, [isAuthenticated, isLoading, pathname, router]);
@@ -54,7 +55,10 @@ function AuthGuard({ children }: { children: ReactNode }) {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isDashboard = pathname === "/";
+  // S5: /kill-switch must render full-bleed like the dashboard root, otherwise
+  // the identical KillSwitchView renders at max-w-6xl on one route and
+  // full-bleed on the other — breaking visual parity.
+  const isDashboard = pathname === "/" || pathname === "/kill-switch";
 
   return (
     <MachineSelectionProvider>
