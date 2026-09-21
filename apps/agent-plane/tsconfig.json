@@ -11,7 +11,10 @@
     "strict": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "types": ["bun"]
+    "types": ["bun"],
+    "paths": {
+      "@align/shared-types": ["../../packages/shared-types/src/index.ts"]
+    }
   },
   "include": ["src"]
 }
