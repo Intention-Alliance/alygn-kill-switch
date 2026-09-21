@@ -57,6 +57,7 @@ import { handleAuthRoutes } from './routes/auth'
 import { handleDiscoveryRoutes } from './routes/discovery'
 import { handleFlagsRoutes } from './routes/flags'
 import { handleInferenceLogsRoutes } from './routes/inference-logs'
+import { handleDecisionRoutes } from './routes/decision'
 import { handleInternalKillSwitchRoutes } from './routes/internal-kill-switch'
 import { handleKillAuthorizationRoutes } from './routes/kill-authorization'
 import { handleKillSwitchRoutes } from './routes/kill-switch'
@@ -436,6 +437,7 @@ function createHandler(
 					uid,
 					userRole,
 				)) ||
+				(await handleDecisionRoutes(method, url, req, res, uid)) ||
 				(await handleMachinesRoutes(
 					method,
 					url,

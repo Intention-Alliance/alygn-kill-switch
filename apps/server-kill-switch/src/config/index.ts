@@ -142,6 +142,19 @@ function buildEnvOverrides(): Partial<AppConfig> {
     };
   }
 
+  // Decision provider (JEV-FEATURE-FLAG-STRATEGY)
+  // The TypeSafe key is server-side only. Absence is a normal state and must
+  // NOT fail startup — decision.provider defaults to keyword.
+  const decisionOverrides: Partial<AppConfig['decision']> = {};
+  if (env.TYPESAFE_API_KEY) decisionOverrides.typesafeApiKey = env.TYPESAFE_API_KEY;
+  if (env.TYPESAFE_BASE_URL) decisionOverrides.typesafeBaseUrl = env.TYPESAFE_BASE_URL;
+  if (Object.keys(decisionOverrides).length > 0) {
+    (overrides as Record<string, unknown>).decision = {
+      ...((overrides as Record<string, unknown>).decision as Record<string, unknown> | undefined),
+      ...decisionOverrides,
+    };
+  }
+
   return overrides;
 }
 

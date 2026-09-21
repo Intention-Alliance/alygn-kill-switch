@@ -13,7 +13,8 @@
     "allowJs": true,
     "types": ["bun"],
     "paths": {
-      "@align/shared-types": ["../../packages/shared-types/src/index.ts"]
+      "@align/shared-types": ["../../packages/shared-types/src/index.ts"],
+      "@align/decision-core": ["../../packages/decision-core/src/index.ts"]
     }
   },
   "include": ["src"]
