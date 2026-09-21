@@ -142,6 +142,7 @@ async function main() {
           promptPreview: prompt.slice(0, 200),
           model,
           provider: result.provider ?? 'keyword',
+          degraded: result.degraded ?? false,
         }),
       }).catch((err) => log('warn', `Inference log report failed: ${err.message}`))
 
