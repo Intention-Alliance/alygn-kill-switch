@@ -10,6 +10,7 @@ import type { DecisionProvider, ProviderName } from '@align/shared-types';
 import { KeywordProvider } from './providers/keyword';
 import { OllamaProvider, type VerifierLike } from './providers/ollama';
 import { JevProvider } from './providers/jev';
+import { LayaProvider } from './providers/laya';
 import { RemoteProvider } from './providers/remote';
 
 export class ProviderRegistry {
@@ -36,6 +37,7 @@ export interface BuildRegistryOpts {
   threshold: number;
   verifier?: VerifierLike;
   jev?: { apiKey: string; baseUrl?: string; model?: string; timeoutMs?: number };
+  laya?: { baseUrl?: string; model?: string; timeoutMs?: number };
   remote?: { motherUrl: string; apiKey: string; machineId: string };
 }
 
@@ -60,6 +62,16 @@ export function buildRegistry(opts: BuildRegistryOpts): ProviderRegistry {
         baseUrl: opts.jev.baseUrl,
         model: opts.jev.model,
         timeoutMs: opts.jev.timeoutMs,
+      }),
+    );
+  }
+
+  if (opts.laya && opts.laya.baseUrl) {
+    registry.register(
+      new LayaProvider({
+        baseUrl: opts.laya.baseUrl,
+        model: opts.laya.model,
+        timeoutMs: opts.laya.timeoutMs,
       }),
     );
   }

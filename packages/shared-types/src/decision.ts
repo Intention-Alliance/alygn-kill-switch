@@ -10,7 +10,7 @@
  */
 
 /** Provider identifiers. `dignity` is reserved for the distilled model (S8). */
-export type ProviderName = 'keyword' | 'ollama' | 'jev' | 'dignity';
+export type ProviderName = 'keyword' | 'ollama' | 'jev' | 'laya' | 'dignity';
 
 /** Normalized decision label. */
 export type DecisionLabel = 'safe' | 'unsafe' | 'review';
@@ -61,4 +61,7 @@ export type DecisionFlagKey =
   | 'decision.provider'
   | 'decision.jev.model'
   | 'decision.jev.timeoutMs'
+  | 'decision.laya.baseUrl'
+  | 'decision.laya.model'
+  | 'decision.laya.timeoutMs'
   | 'decision.review_threshold';

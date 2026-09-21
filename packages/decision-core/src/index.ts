@@ -9,6 +9,7 @@
 export * from './providers/keyword';
 export * from './providers/ollama';
 export * from './providers/jev';
+export * from './providers/laya';
 export * from './providers/remote';
 export * from './registry';
 export * from './selector';

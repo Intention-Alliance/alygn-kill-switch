@@ -148,6 +148,12 @@ function buildEnvOverrides(): Partial<AppConfig> {
   const decisionOverrides: Partial<AppConfig['decision']> = {};
   if (env.TYPESAFE_API_KEY) decisionOverrides.typesafeApiKey = env.TYPESAFE_API_KEY;
   if (env.TYPESAFE_BASE_URL) decisionOverrides.typesafeBaseUrl = env.TYPESAFE_BASE_URL;
+  if (env.LAYA_BASE_URL) decisionOverrides.layaBaseUrl = env.LAYA_BASE_URL;
+  if (env.LAYA_MODEL) decisionOverrides.layaModel = env.LAYA_MODEL;
+  if (env.LAYA_TIMEOUT_MS) {
+    const n = Number(env.LAYA_TIMEOUT_MS);
+    if (Number.isFinite(n)) decisionOverrides.layaTimeoutMs = n;
+  }
   if (Object.keys(decisionOverrides).length > 0) {
     (overrides as Record<string, unknown>).decision = {
       ...((overrides as Record<string, unknown>).decision as Record<string, unknown> | undefined),

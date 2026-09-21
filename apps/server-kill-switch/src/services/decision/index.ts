@@ -41,5 +41,14 @@ export function buildServerRegistry(opts?: { verifier?: VerifierLike }): Provide
           timeoutMs: 500,
         }
       : undefined,
+    // Laya runs in a local Python sidecar; register it when a base URL is
+    // configured. Absent/unreachable fails closed to review.
+    laya: decision.layaBaseUrl
+      ? {
+          baseUrl: decision.layaBaseUrl,
+          model: decision.layaModel,
+          timeoutMs: decision.layaTimeoutMs,
+        }
+      : undefined,
   });
 }

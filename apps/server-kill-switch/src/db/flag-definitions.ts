@@ -126,6 +126,34 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
       '(0-1, default: 0.6)',
     order: 12,
   },
+  // ─── Laya (open-weights System 1 model, served by a local sidecar) ──
+  {
+    key: 'decision.laya.baseUrl',
+    type: 'string',
+    defaultValue: 'http://127.0.0.1:8787',
+    description:
+      'Base URL of the local Laya sidecar. The laya provider is registered only when ' +
+      'this is set; absent or unreachable fails closed to review (default: http://127.0.0.1:8787)',
+    order: 13,
+  },
+  {
+    key: 'decision.laya.model',
+    type: 'string',
+    defaultValue: 'laya-multilingual',
+    description:
+      'Laya checkpoint to use. Default laya-multilingual — the English checkpoint ' +
+      'collapses outside English while staying confident (default: laya-multilingual)',
+    order: 14,
+  },
+  {
+    key: 'decision.laya.timeoutMs',
+    type: 'number',
+    defaultValue: 1000,
+    description:
+      'Decision budget in ms for a Laya call. CPU inference is 193-464ms, so this is ' +
+      'wider than the Jev budget. On timeout the decision fails closed to review (default: 1000)',
+    order: 15,
+  },
 ];
 
 /**

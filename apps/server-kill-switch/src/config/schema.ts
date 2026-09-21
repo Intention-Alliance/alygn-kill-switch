@@ -132,6 +132,11 @@ export const VerificationConfigSchema = z.object({	verifierModel: z.string().min
 export const DecisionConfigSchema = z.object({
 	typesafeApiKey: z.string().default(''),
 	typesafeBaseUrl: z.string().url().default('https://api.typesafe.ai'),
+	// Laya runs in a local Python sidecar (open-weights model). Empty base URL
+	// means the provider is not registered; the selector then fails closed.
+	layaBaseUrl: z.string().default(''),
+	layaModel: z.string().default('laya-multilingual'),
+	layaTimeoutMs: z.number().int().min(50).max(30000).default(1000),
 })
 
 export const AppConfigSchema = z.object({

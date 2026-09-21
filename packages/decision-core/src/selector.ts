@@ -25,7 +25,7 @@ export const DEFAULT_TIMEOUT_MS = 500;
 /** Hard outer guard: a provider that ignores its own timeout still cannot hang. */
 export const HARD_TIMEOUT_SLACK_MS = 250;
 
-const VALID_PROVIDERS: ProviderName[] = ['keyword', 'ollama', 'jev', 'dignity'];
+const VALID_PROVIDERS: ProviderName[] = ['keyword', 'ollama', 'jev', 'laya', 'dignity'];
 
 /** machine override > global > declared default. Unknown value → default. */
 export function resolveProviderName(flags: DecisionFlagReader): ProviderName {
@@ -52,6 +52,26 @@ export function resolveTimeoutMs(flags: DecisionFlagReader): number {
   const n = typeof raw === 'number' ? raw : Number(raw);
   if (!Number.isFinite(n)) return DEFAULT_TIMEOUT_MS;
   return Math.min(30_000, Math.max(50, n));
+}
+
+/** Default Laya budget: CPU inference is 193-464ms, so it is wider than Jev's. */
+export const DEFAULT_LAYA_TIMEOUT_MS = 1000;
+
+/** Reads decision.laya.timeoutMs, clamped to [50, 30000], default 1000. */
+export function resolveLayaTimeoutMs(flags: DecisionFlagReader): number {
+  const raw = flags.getFlag('decision.laya.timeoutMs');
+  if (raw === null || raw === undefined) return DEFAULT_LAYA_TIMEOUT_MS;
+  const n = typeof raw === 'number' ? raw : Number(raw);
+  if (!Number.isFinite(n)) return DEFAULT_LAYA_TIMEOUT_MS;
+  return Math.min(30_000, Math.max(50, n));
+}
+
+/**
+ * Per-provider decision budget. Jev is designed for 500ms (D2); Laya on CPU
+ * needs more headroom, so it has its own flag rather than sharing Jev's.
+ */
+export function resolveBudgetMs(name: ProviderName, flags: DecisionFlagReader): number {
+  return name === 'laya' ? resolveLayaTimeoutMs(flags) : resolveTimeoutMs(flags);
 }
 
 function failClosed(name: string, reason: string, latencyMs: number): DecisionResult {
@@ -100,7 +120,7 @@ export async function decideWithProvider(
     return failClosed(name, `provider unavailable: ${name}`, Date.now() - started);
   }
 
-  const hardTimeout = resolveTimeoutMs(flags) + HARD_TIMEOUT_SLACK_MS;
+  const hardTimeout = resolveBudgetMs(name, flags) + HARD_TIMEOUT_SLACK_MS;
 
   let result: DecisionResult;
   try {

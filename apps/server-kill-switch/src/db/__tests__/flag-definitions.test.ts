@@ -42,9 +42,16 @@ const NEW_4: FlagTuple[] = [
   { key: 'decision.review_threshold', type: 'number', defaultValue: 0.6, order: 12 },
 ];
 
+/** The 3 Laya flags appended after the Jev set. */
+const LAYA_3: FlagTuple[] = [
+  { key: 'decision.laya.baseUrl', type: 'string', defaultValue: 'http://127.0.0.1:8787', order: 13 },
+  { key: 'decision.laya.model', type: 'string', defaultValue: 'laya-multilingual', order: 14 },
+  { key: 'decision.laya.timeoutMs', type: 'number', defaultValue: 1000, order: 15 },
+];
+
 describe('PREDEFINED_FLAG_DEFINITIONS', () => {
-  it('has 12 flags after S1', () => {
-    expect(PREDEFINED_FLAG_DEFINITIONS.length).toBe(12);
+  it('has 15 flags after the Laya set', () => {
+    expect(PREDEFINED_FLAG_DEFINITIONS.length).toBe(15);
   });
 
   it('keeps the original 8 byte-identical (key/type/default/order)', () => {
@@ -57,14 +64,24 @@ describe('PREDEFINED_FLAG_DEFINITIONS', () => {
     expect(actual).toEqual(ORIGINAL_8);
   });
 
-  it('appends the 4 decision.* flags at orders 9-12', () => {
-    const actual = PREDEFINED_FLAG_DEFINITIONS.slice(8).map((d) => ({
+  it('appends the 4 Jev decision.* flags at orders 9-12', () => {
+    const actual = PREDEFINED_FLAG_DEFINITIONS.slice(8, 12).map((d) => ({
       key: d.key,
       type: d.type,
       defaultValue: d.defaultValue,
       order: d.order,
     }));
     expect(actual).toEqual(NEW_4);
+  });
+
+  it('appends the 3 Laya flags at orders 13-15', () => {
+    const actual = PREDEFINED_FLAG_DEFINITIONS.slice(12).map((d) => ({
+      key: d.key,
+      type: d.type,
+      defaultValue: d.defaultValue,
+      order: d.order,
+    }));
+    expect(actual).toEqual(LAYA_3);
   });
 
   it('orders are strictly increasing', () => {
@@ -80,9 +97,9 @@ describe('PREDEFINED_FLAG_DEFINITIONS', () => {
     expect(stableFlagId('decision.review_threshold')).toBe('flag-decision-review-threshold');
   });
 
-  it('all 12 ids are unique', () => {
+  it('all 15 ids are unique', () => {
     const ids = PREDEFINED_FLAG_DEFINITIONS.map((d) => stableFlagId(d.key));
-    expect(new Set(ids).size).toBe(12);
+    expect(new Set(ids).size).toBe(15);
   });
 
   it('exposes the declared types for the new flags', () => {
