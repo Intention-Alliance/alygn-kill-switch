@@ -161,7 +161,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const startPolling = useCallback(() => {
     if (pollIntervalRef.current) return;
 
-    // eslint-disable-next-line no-console
+     
     console.warn("[ws] Max retries exceeded, falling back to HTTP polling");
 
     async function poll() {
@@ -232,7 +232,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       }
 
       heartbeatTimerRef.current = setTimeout(() => {
-        // eslint-disable-next-line no-console
+         
         console.warn("[ws] Heartbeat timeout — reconnecting");
         ws.close();
       }, HEARTBEAT_TIMEOUT);
@@ -496,7 +496,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         return;
       }
 
-      // eslint-disable-next-line no-console
+       
       console.log("[ws] Connected");
       everConnectedRef.current = true;
       setIsConnected(true);
@@ -526,7 +526,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
     ws.onclose = (event) => {
       if (!mountedRef.current) return;
 
-      // eslint-disable-next-line no-console
+       
       console.warn(
         `[ws] Disconnected (code: ${event.code})`,
       );
@@ -560,7 +560,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       }
 
       const delay = BACKOFF_SCHEDULE[attempt - 1];
-      // eslint-disable-next-line no-console
+       
       console.log(`[ws] Reconnecting in ${delay}ms (attempt ${attempt}/${MAX_RETRIES})`);
 
       setTimeout(() => {
@@ -610,7 +610,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   useEffect(() => {
     function handleStorageChange(e: StorageEvent) {
       if (e.key === "admin_token") {
-        // eslint-disable-next-line no-console
+         
         console.log("[ws] Token changed — reconnecting");
         stopPolling();
         attemptRef.current = 0;

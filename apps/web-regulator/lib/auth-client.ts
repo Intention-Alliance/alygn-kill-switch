@@ -46,7 +46,7 @@ const baseURL = resolveAuthBaseURL();
 // non-localhost URL without a same-origin proxy. CSP 'self' will block the
 // getSession fetch, and login will silently fail in the browser.
 if (baseURL.startsWith("http") && !baseURL.includes("localhost") && !baseURL.includes("127.0.0.1")) {
-  // eslint-disable-next-line no-console
+   
   console.warn(
     `[auth-client] NEXT_PUBLIC_BETTER_AUTH_URL=${baseURL} is a non-localhost absolute URL. ` +
     `If your CSP connect-src is 'self', the getSession fetch will be blocked. ` +
