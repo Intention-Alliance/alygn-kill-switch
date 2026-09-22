@@ -66,20 +66,59 @@ A record may only enter the **eval suite** if it is human-authored *and*
 human-verified. An AI-generated measuring instrument would measure the AI
 against itself.
 
+### Minimum per-class counts
+
+Gate these **before** training starts, not after:
+
+- **≥30 per class for training.** Below this the class is not a class. REVIEW
+  sits at 4/612 today; inverse-sqrt weighting gives it 8.43×, which means 4
+examples carry the gradient weight of ~8 SAFE examples each. That is not
+compensation, it is 4 points dominating the loss.
+- **≥20 per class for eval.** Per-class recall at n=7 has roughly a ±18pp 95%
+  confidence interval — you cannot tell a good classifier from a bad one. Any
+  per-class metric below n=20 is noise presented as a number; suppress it
+  rather than print it.
+- **If a class cannot reach the floor**, the honest option is to drop it from
+  the trained taxonomy and handle it as a post-hoc abstain band on a binary
+  head — not to train a third class on 4 examples.
+
 ## Record schema
 
-See `../README.md` — same `(id, prompt, output, verdict, reason, category, source)`
-shape.
+Base shape (see `../README.md`): `(id, prompt, output, verdict, reason, category, source)`.
 
-`source` records provenance, and it is load-bearing:
+Provenance is **load-bearing** and cannot be expressed by `source` alone —
+`source` says where a record came from, not who is accountable for its label.
+Two orthogonal fields carry that:
 
-| value | meaning |
-|-------|---------|
-| `seed` | Zyxali-curated, teacher-verified — the reviewed ground truth |
-| `draft-generated` | machine-drafted scaffold, **not** reviewed or verified |
+| field | values | meaning |
+|-------|--------|---------|
+| `authored_by` | `human:<name>` \| `ai:draft-generated` | who wrote the record |
+| `verified_by` | `human:<name>` \| `ai:<model>` \| `null` | who confirmed the verdict |
+| `verification_status` | `human-verified` \| `ai-verified` \| `unverified` \| `disputed` | the trust state |
 
-The current files are all `draft-generated`. A record should only become
-`seed` once it has passed curation and teacher verification.
+`source` keeps its existing values (`seed`, `draft-generated`, `augmented`) and
+describes origin only.
+
+### Trust tiers (what a reviewer can rely on)
+
+| tier | authored | verified | usable for |
+|------|----------|----------|------------|
+| **gold** | human | human | train **and** eval |
+| **silver** | human | ai | train (spot-check) |
+| **silver** | ai | human | train — the human-in-the-loop path |
+| **bronze** | ai | ai | train only, **never eval** |
+| — | any | `disputed` | **quarantine** — human adjudicates |
+
+**Hard rule:** the eval suite must be **gold** — human-authored *and*
+human-verified. No AI-drafted or AI-verified record may enter the held-out set.
+The eval is the measuring instrument; an AI-generated instrument measures the AI
+against itself.
+
+**Promotion is explicit.** `draft-generated` is never silently promoted to
+`seed`. Promotion is a human act that rewrites `authored_by`, `verified_by`,
+and `source` together.
+
+The current files are all `draft-generated` / `unverified`.
 
 ## Git policy
 
