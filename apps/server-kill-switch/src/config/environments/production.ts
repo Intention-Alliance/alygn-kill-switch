@@ -4,7 +4,7 @@ import type { AppConfig } from '../schema';
 
 export const productionConfig: Partial<AppConfig> = {
   redis: {
-    urls: ['redis://redis:6379'],
+    urls: [process.env.REDIS_URL ?? process.env.REDIS_URLS?.split(',')[0] ?? 'redis://localhost:6379'],
     password: '',
     poolSize: 20,
     connectTimeoutMs: 10_000,
@@ -60,8 +60,8 @@ export const productionConfig: Partial<AppConfig> = {
   // WEBAUTHN_RP_ID / WEBAUTHN_ORIGIN env vars (see config/index.ts).
   webauthn: {
     rpName: 'Alygn Kill Switch',
-    rpID: 'andlersrv.tail62d797.ts.net',
-    origin: 'https://andlersrv.tail62d797.ts.net:8443',
+    rpID: process.env.WEBAUTHN_RP_ID ?? 'localhost',
+    origin: process.env.WEBAUTHN_ORIGIN ?? 'https://localhost:8443',
     challengeTtlMs: 300_000,
     assertionTokenTtlMs: 600_000,
   },
@@ -78,5 +78,8 @@ export const productionConfig: Partial<AppConfig> = {
     verifyEnabled: true,
     verifyMode: 'async',
     verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+    // Future trained LoRA adapter. Until it's created, the verifier runs on
+    // verifierModel (qwen2.5:0.5b). Once trained, set verifierModel to this.
+    verifierTargetModel: 'dignity-verification-v0.1-preview',
   },
 };

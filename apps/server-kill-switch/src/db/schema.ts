@@ -149,7 +149,9 @@ export const featureFlags = sqliteTable(
   {
     id: text('id').primaryKey(),
     key: text('key').notNull().unique(),
-    value: integer('value', { mode: 'boolean' }).notNull(),
+    // v1.2: TEXT storage — flags carry typed values (boolean | number | string)
+    // serialized as strings. See db/index.ts v1.2 migration.
+    value: text('value').notNull(),
     description: text('description'),
     enabled: integer('enabled', { mode: 'boolean' }).default(true),
     createdBy: text('created_by').notNull().default('admin'),
@@ -643,5 +645,31 @@ export const verificationEvents = sqliteTable(
     requestIdx: index('verification_event_request_idx').on(table.requestId),
     verdictIdx: index('verification_event_verdict_idx').on(table.verdict),
     timeIdx: index('verification_event_time_idx').on(table.createdAt),
+  }),
+);
+
+// ─── Inference Log (intercepted requests from agent-plane) ───────────────
+// Each intercepted LLM request reported by the agent-plane interceptor.
+// The dashboard surfaces these as "inference logs".
+
+export const inferenceLogs = sqliteTable(
+  'inference_log',
+  {
+    id: text('id').primaryKey(),
+    timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    machineId: text('machine_id').notNull(),
+    method: text('method').notNull(),
+    path: text('path').notNull(),
+    score: real('score').notNull().default(0),
+    action: text('action').notNull(),            // forward | block | escalate
+    reasons: text('reasons'),                    // JSON array string
+    alert: integer('alert', { mode: 'boolean' }).notNull().default(false),
+    scored: integer('scored', { mode: 'boolean' }).notNull().default(true),
+    promptPreview: text('prompt_preview'),
+    model: text('model'),
+  },
+  (table) => ({
+    timeIdx: index('inference_log_time_idx').on(table.timestamp),
+    machineIdx: index('inference_log_machine_idx').on(table.machineId),
   }),
 );

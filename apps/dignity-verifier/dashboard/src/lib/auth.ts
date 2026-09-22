@@ -20,15 +20,18 @@
  * This is a self-contained Better-Auth server (unlike web-regulator, which
  * proxies auth to the kill-switch backend). The dashboard owns its own
  * session store so it can run independently of the kill-switch.
+ *
+ * BUILD-SAFETY: this module uses Bun-only APIs (bun:sqlite, Bun.password).
+ * Next.js build workers run under Node, so the DB + auth instance are
+ * initialized lazily on first request (getAuth/getDb) rather than at module
+ * load. This keeps `next build` from evaluating Bun-only imports.
  */
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { eq } from "drizzle-orm";
-import { Database } from "bun:sqlite";
-import { drizzle } from "drizzle-orm/bun-sqlite";
-import { mkdirSync } from "node:fs";
 import * as schema from "./db-schema";
+import { getDb } from "./db";
 
 // ─── Environment Validation ──────────────────────────────────────────────
 
@@ -50,7 +53,6 @@ function requireSecretEnv(name: string, minLength: number): string {
   return val;
 }
 
-const BETTER_AUTH_SECRET = requireSecretEnv("BETTER_AUTH_SECRET", 32);
 const BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || "http://127.0.0.1:3002";
 const BASE_PATH = "/api/auth";
 
@@ -59,9 +61,8 @@ const BASE_PATH = "/api/auth";
 // Tailscale CGNAT range (RFC 6598 / 100.64.0.0/10). All Tailscale client
 // IPs fall within this range. Used as defense-in-depth: even if nginx is
 // misconfigured, the app refuses non-Tailscale clients.
-const TAILSCALE_CGNAT = "100.64.0.0/10";
-const TAILSCALE_IP = process.env.TAILSCALE_IP || "100.66.199.80";
-const TAILSCALE_HOSTNAME = process.env.TAILSCALE_HOSTNAME || "andlersrv.tail62d797.ts.net";
+const SECURE_NET_IP = process.env.SECURE_NET_IP || "";
+const SECURE_NET_HOSTNAME = process.env.SECURE_NET_HOSTNAME || "";
 
 /**
  * Check whether an IP is within the Tailscale CGNAT range.
@@ -77,83 +78,86 @@ export function isTailscaleIP(ip: string | undefined | null): boolean {
   return first === 100 && second >= 64 && second <= 127;
 }
 
-// ─── SQLite + Drizzle (self-contained session store) ────────────────────
+// ─── Lazy Better-Auth Instance ──────────────────────────────────────────
 
-const DATA_DIR = process.env.DATA_DIR || "/app/data";
-const DB_PATH = `${DATA_DIR}/dignity-verifier.db`;
+let authInstance: unknown = null;
 
-// Ensure data dir exists (idempotent)
-mkdirSync(DATA_DIR, { recursive: true });
+/**
+ * Lazily build the Better-Auth instance. Validates required env vars and
+ * initializes the DB on first call (request time), not at module load.
+ */
+export async function getAuth() {
+  if (authInstance) return authInstance as ReturnType<typeof betterAuth>;
 
-const sqlite = new Database(DB_PATH);
-sqlite.exec("PRAGMA journal_mode = WAL;");
-const db = drizzle(sqlite);
+  const secret = requireSecretEnv("BETTER_AUTH_SECRET", 32);
+  const db = await getDb();
 
-// ─── Better-Auth Instance ───────────────────────────────────────────────
-
-export const auth = betterAuth({
-  baseURL: BETTER_AUTH_URL,
-  basePath: BASE_PATH,
-  secret: BETTER_AUTH_SECRET,
-  database: drizzleAdapter(db, {
-    provider: "sqlite",
-    schema: {
-      user: schema.users,
-      session: schema.sessions,
-      account: schema.accounts,
-      verification: schema.verifications,
-    },
-  }),
-  // Super-admin only: email+password for the single seeded user.
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: false,
-    requireEmailVerification: false,
-    password: {
-      hash: (input: string) => Bun.password.hash(input),
-      verify: ({ password, hash }) => Bun.password.verify(password, hash),
-    },
-  },
-  // WebAuthn (FIDO2) — hardware key / passkey bound to the Tailscale RP.
-  // Mirrors the kill-switch ADR-136 relying-party config.
-  webauthn: {
-    rpName: "Alygn Dignity Verifier",
-    rpID: TAILSCALE_HOSTNAME,
-    origin: `https://${TAILSCALE_HOSTNAME}:8443`,
-    challengeTtlMs: 300_000,
-    assertionTokenTtlMs: 600_000,
-  },
-  session: {
-    expiresIn: 60 * 60,          // 1 hour
-    updateAge: 5 * 60,           // refresh every 5 minutes
-    cookieCache: {
+  authInstance = betterAuth({
+    baseURL: BETTER_AUTH_URL,
+    basePath: BASE_PATH,
+    secret,
+    database: drizzleAdapter(db, {
+      provider: "sqlite",
+      schema: {
+        user: schema.users,
+        session: schema.sessions,
+        account: schema.accounts,
+        verification: schema.verifications,
+      },
+    }),
+    // Super-admin only: email+password for the single seeded user.
+    emailAndPassword: {
       enabled: true,
-      maxAge: 5 * 60,
-    },
-  },
-  user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        required: false,
-        defaultValue: "super-admin",
-        output: true,
-        input: false,
+      autoSignIn: false,
+      requireEmailVerification: false,
+      password: {
+        hash: (input: string) => Bun.password.hash(input),
+        verify: ({ password, hash }) => Bun.password.verify(password, hash),
       },
     },
-  },
-  trustedOrigins: (
-    process.env.TRUSTED_ORIGINS ||
-    `http://127.0.0.1:3002,http://localhost:3002,https://${TAILSCALE_HOSTNAME}:8443`
-  )
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean),
-});
+    // WebAuthn (FIDO2) — hardware key / passkey bound to the Tailscale RP.
+    // Mirrors the kill-switch ADR-136 relying-party config.
+    webauthn: {
+      rpName: "Alygn Dignity Verifier",
+      rpID: SECURE_NET_HOSTNAME,
+      origin: `https://${SECURE_NET_HOSTNAME}:8443`,
+      challengeTtlMs: 300_000,
+      assertionTokenTtlMs: 600_000,
+    },
+    session: {
+      expiresIn: 60 * 60,          // 1 hour
+      updateAge: 5 * 60,           // refresh every 5 minutes
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60,
+      },
+    },
+    user: {
+      additionalFields: {
+        role: {
+          type: "string",
+          required: false,
+          defaultValue: "super-admin",
+          output: true,
+          input: false,
+        },
+      },
+    },
+    trustedOrigins: (
+      process.env.TRUSTED_ORIGINS ||
+      `http://127.0.0.1:3002,http://localhost:3002,https://${SECURE_NET_HOSTNAME}:8443`
+    )
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  });
+
+  return authInstance as ReturnType<typeof betterAuth>;
+}
 
 // ─── Constants ───────────────────────────────────────────────────────────
 
-export const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "andlersrv@alygn.com").toLowerCase();
+export const SUPER_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "admin@alygn.com").toLowerCase();
 
 // ─── Auto-Seed Super-Admin User ─────────────────────────────────────────
 
@@ -173,6 +177,8 @@ export async function seedSuperAdmin() {
     );
     return;
   }
+
+  const db = await getDb();
 
   const existing = await db
     .select({ id: schema.users.id })
@@ -213,13 +219,14 @@ export async function seedSuperAdmin() {
     });
 
     console.log(`[auth] Super-admin "${SUPER_ADMIN_EMAIL}" seeded successfully (direct DB insert)`);
-  } catch (err: any) {
-    if (err?.message?.includes("UNIQUE") || err?.message?.includes("already exists")) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.includes("UNIQUE") || message.includes("already exists")) {
       console.log(`[auth] Super-admin already exists (race condition), skipping`);
       return;
     }
-    console.error(`[auth] Failed to seed super-admin: ${err?.message || err}`);
+    console.error(`[auth] Failed to seed super-admin: ${message}`);
   }
 }
 
-export { BASE_PATH, isTailscaleIP, TAILSCALE_IP, TAILSCALE_HOSTNAME };
+export { BASE_PATH, SECURE_NET_IP, SECURE_NET_HOSTNAME };

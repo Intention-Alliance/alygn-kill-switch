@@ -14,6 +14,7 @@ import type {
   AgentEventMessage,
   AuditEntryMessage,
   MachineMetricsMessage,
+  VerificationEventMessage,
 } from "@/types/shared";
 
 // ─── Constants ──────────────────────────────────────────────────
@@ -76,11 +77,21 @@ function getWsUrl(token: string): string {
 
   const host =
     process.env.NEXT_PUBLIC_WS_HOST ||
-    "andlersrv.tail62d797.ts.net:8443";
+    process.env.NEXT_PUBLIC_WEBAUTHN_HOST ||
+    window.location.host;
   return `wss://${host}/ws?token=${encodeURIComponent(token)}`;
 }
 
 async function getSessionToken(): Promise<string | null> {
+  // better-auth v2 stores the session token in an httpOnly cookie
+  // (better-auth.session_token) and does NOT expose the raw token in
+  // getSession() data — session?.token is always undefined. Read the
+  // cookie directly instead.
+  if (typeof window !== "undefined") {
+    const match = document.cookie.match(/(?:^|;\s*)better-auth\.session_token=([^;]+)/);
+    if (match) return decodeURIComponent(match[1]);
+  }
+
   try {
     const res = await authClient.getSession();
     const data = res.data as Record<string, unknown> | undefined;
@@ -109,6 +120,7 @@ export interface UseKillSwitchWebSocketReturn {
   isConnected: boolean;
   reconnectAttempt: number;
   latestMetrics: MachineMetricsMessage["payload"] | null;
+  verificationEvents: VerificationEventMessage["payload"][];
 }
 
 // ─── Hook ───────────────────────────────────────────────────────
@@ -124,6 +136,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const [isConnected, setIsConnected] = useState(false);
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const [latestMetrics, setLatestMetrics] = useState<MachineMetricsMessage["payload"] | null>(null);
+  const [verificationEvents, setVerificationEvents] = useState<
+    VerificationEventMessage["payload"][]
+  >([]);
 
   // Refs that survive re-renders and don't trigger them
   const wsRef = useRef<WebSocket | null>(null);
@@ -131,6 +146,12 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
   const attemptRef = useRef(0);
   const heartbeatTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
+  // Tracks whether the WebSocket ever successfully opened. A rejected upgrade
+  // (e.g. invalid/expired auth token → backend returns HTTP 401) surfaces to
+  // the browser as an abnormal close (code 1006) WITHOUT ever firing onopen.
+  // We use this to distinguish "auth rejected" from a genuine network drop so
+  // we fall back to HTTP polling instead of retrying 5 times.
+  const everConnectedRef = useRef(false);
   // Persist the audit log across tab switches / remounts so it isn't lost
   // when the user navigates away and back. Restored on mount below.
   const auditLogRef = useRef<ActivationRecord[]>([]);
@@ -406,6 +427,24 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         break;
       }
 
+      case "verification-event": {
+        const payload = (msg as unknown as VerificationEventMessage).payload;
+        setVerificationEvents((prev) =>
+          [payload, ...prev].slice(0, 100),
+        );
+
+        if (payload.verdict === "UNSAFE") {
+          toast.error(
+            `Inference verification UNSAFE — ${payload.reason ?? "no reason"}`,
+          );
+        } else if (payload.verdict === "REVIEW") {
+          toast.warning(
+            `Inference verification REVIEW — ${payload.reason ?? "no reason"}`,
+          );
+        }
+        break;
+      }
+
       default:
         break;
     }
@@ -424,6 +463,9 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       wsRef.current.close();
       wsRef.current = null;
     }
+
+    // A fresh connection attempt starts with no successful open yet.
+    everConnectedRef.current = false;
 
     const token = await getSessionToken();
     if (!token) {
@@ -456,6 +498,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 
       // eslint-disable-next-line no-console
       console.log("[ws] Connected");
+      everConnectedRef.current = true;
       setIsConnected(true);
       setReconnectAttempt(0);
       attemptRef.current = 0;
@@ -491,8 +534,17 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
       clearHeartbeatTimer();
       setIsConnected(false);
 
-      // If auth failed, don't retry — go to polling
-      if (event.code === 4001) {
+      // If auth failed, don't retry — go to polling.
+      //   - 4001: backend sent an explicit auth-failure close frame.
+      //   - 1006 + never connected: the upgrade was rejected (backend returned
+      //     an HTTP 401 for an invalid/expired token), which the browser
+      //     surfaces as an abnormal close without ever firing onopen. Treat
+      //     this as an auth failure too so we don't burn 5 reconnect attempts
+      //     on a token that will never validate.
+      const authRejected =
+        event.code === 4001 ||
+        (event.code === 1006 && !everConnectedRef.current);
+      if (authRejected) {
         startPolling();
         return;
       }
@@ -563,6 +615,7 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
         stopPolling();
         attemptRef.current = 0;
         setReconnectAttempt(0);
+        everConnectedRef.current = false;
         connect();
       }
     }
@@ -580,5 +633,6 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
     isConnected,
     reconnectAttempt,
     latestMetrics,
+    verificationEvents,
   };
 }

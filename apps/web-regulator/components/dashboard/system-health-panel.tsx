@@ -115,7 +115,13 @@ export function SystemHealthPanel({
                     {log.reason || "Standard Inference Verification"}
                   </p>
                   <p className="text-[10px] text-muted-foreground">
-                    {new Date(log.timestamp).toLocaleTimeString()}
+                    {new Date(log.timestamp).toLocaleString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </div>
               </div>

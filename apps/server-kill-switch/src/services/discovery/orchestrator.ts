@@ -96,7 +96,16 @@ export class DiscoveryOrchestrator {
 	private readonly providerRegistry: ProviderRegistry
 
 	constructor({ providerRegistry }: DiscoveryOrchestratorParams = {}) {
-		this.providerRegistry = providerRegistry ?? new ProviderRegistry()
+		// WS-B (Nikaya 78/100, HIGH): anchor the Ollama provider to the
+		// stable host machine. The base URL is configurable via
+		// KILL_SWITCH_DISCOVERY_OLLAMA_BASE_URL (set by
+		// scripts/start-kill-switch-host.sh) so discovery probes the host's
+		// Ollama (localhost:11434) instead of an ephemeral container IP.
+		this.providerRegistry =
+			providerRegistry ??
+			new ProviderRegistry({
+				ollamaBaseUrl: process.env.KILL_SWITCH_DISCOVERY_OLLAMA_BASE_URL,
+			})
 	}
 
 	/**

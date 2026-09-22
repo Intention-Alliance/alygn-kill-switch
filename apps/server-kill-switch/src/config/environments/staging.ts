@@ -4,7 +4,7 @@ import type { AppConfig } from '../schema';
 
 export const stagingConfig: Partial<AppConfig> = {
   redis: {
-    urls: ['redis://redis:6379'],
+    urls: [process.env.REDIS_URL ?? 'redis://localhost:6379'],
     password: '',
     poolSize: 10,
     connectTimeoutMs: 15_000,
@@ -62,5 +62,8 @@ export const stagingConfig: Partial<AppConfig> = {
     verifyEnabled: false,
     verifyMode: 'async',
     verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
+    // Future trained LoRA adapter. Until it's created, the verifier runs on
+    // verifierModel (qwen2.5:0.5b). Once trained, set verifierModel to this.
+    verifierTargetModel: 'dignity-verification-v0.1-preview',
   },
 };

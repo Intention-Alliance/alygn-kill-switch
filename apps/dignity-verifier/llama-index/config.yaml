@@ -1,0 +1,39 @@
+# Dignity Verifier — LlamaIndex augmentation configuration
+# All models are local (Ollama) or allowed cloud models per AGENTS.md ACP pre-flight.
+
+# ─── Embedding model (local) ───────────────────────────────────────
+embedding:
+  model: "nomic-embed-text-v2-moe:latest"
+  base_url: "http://localhost:11434"
+  dim: 768
+
+# ─── Teacher model (allowed cloud) ─────────────────────────────────
+teacher:
+  primary: "glm-5.3-flash:cloud"
+  fallback: "glm-5.2:cloud"
+  base_url: "http://localhost:11434"
+  temperature: 0.7
+  max_tokens: 1024
+  verify_max_tokens: 256
+
+# ─── Retrieval ─────────────────────────────────────────────────────
+retrieval:
+  top_k: 5          # semantically similar seed examples per paraphrase
+  similarity_top_k: 5
+
+# ─── Augmentation ──────────────────────────────────────────────────
+augmentation:
+  max_paraphrases_per_seed: 3   # target ~2 accepted per seed (3 requested to reliably hit 500)
+  target_total: 500             # minimum augmented examples to produce
+  verify_rounds: 1              # teacher verdict must match original
+
+# ─── Deduplication ─────────────────────────────────────────────────
+dedup:
+  cosine_threshold: 0.92        # cosine > threshold => duplicate, reject
+
+# ─── Paths (relative to apps/dignity-verifier/) ────────────────────
+paths:
+  seed_dir: "dataset/seed"
+  augmented_out: "dataset/augmented/augmented.jsonl"
+  index_dir: "llama-index/.index"
+  log_dir: "reports/distillation-logs"

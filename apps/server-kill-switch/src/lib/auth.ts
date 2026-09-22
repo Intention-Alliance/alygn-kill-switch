@@ -71,8 +71,8 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: 60 * 60,          // 1 hour
-    updateAge: 5 * 60,           // refresh every 5 minutes
+    expiresIn: 12 * 60 * 60,   // 12 hours (was 1 hour — sessions expired too fast)
+    updateAge: 60,             // refresh sliding expiry every 60s so navigation keeps the session alive
   },
   user: {
     additionalFields: {
@@ -85,7 +85,7 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: (process.env.TRUSTED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001,https://andlersrv.tail62d797.ts.net:8443')
+  trustedOrigins: (process.env.TRUSTED_ORIGINS || process.env.TRUSTED_ORIGINS_DEFAULT || 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),

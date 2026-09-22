@@ -126,3 +126,24 @@ export const evalResults = sqliteTable("eval_result", {
   details: text("details"), // JSON of per-test results
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 });
+
+/**
+ * A job-runner run record (training / augment / calibrate).
+ *
+ * The dashboard triggers teaching pipelines as subprocesses. Each trigger
+ * persists a row here so the UI can track queued → running → succeeded/failed
+ * lifecycle, capture a bounded log tail, and surface the exit code.
+ */
+export const runs = sqliteTable("run", {
+  id: text("id").primaryKey(),
+  type: text("type").notNull(), // training | augment | calibrate
+  status: text("status").notNull().default("queued"), // queued | running | succeeded | failed
+  params: text("params").notNull().default("{}"), // JSON of the trigger params
+  startedAt: integer("started_at", { mode: "timestamp" }),
+  finishedAt: integer("finished_at", { mode: "timestamp" }),
+  exitCode: integer("exit_code"),
+  logTail: text("log_tail").notNull().default(""), // bounded tail (≤100 lines)
+  artifactPath: text("artifact_path"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});

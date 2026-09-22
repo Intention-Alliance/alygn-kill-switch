@@ -6,20 +6,30 @@ import { resolve4 } from 'node:dns/promises';
 
 // ─── Tailscale MagicDNS — dynamic DNS resolution for Tailscale IP ──
 
-const TAILSCALE_MAGICDNS = 'andlersrv.tail62d797.ts.net';
+const SECURE_NET_HOSTNAME = process.env.SECURE_NET_HOSTNAME ?? '';
 const DNS_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 let dnsResolvedIps: string[] = [];
 let refreshTimer: ReturnType<typeof setInterval> | null = null;
+let warnedNoHostname = false;
 
 export async function refreshTailscaleDns(): Promise<string[]> {
+  // No hostname configured (SECURE_NET_HOSTNAME unset) — nothing to resolve.
+  // Avoids a pointless `resolve4('')` error spamming the logs every 5 min.
+  if (!SECURE_NET_HOSTNAME) {
+    if (!warnedNoHostname) {
+      warnedNoHostname = true;
+      console.warn('[ip-allowlist] SECURE_NET_HOSTNAME not set — Tailscale DNS allowlist refresh disabled');
+    }
+    return dnsResolvedIps;
+  }
   try {
-    const addresses = await resolve4(TAILSCALE_MAGICDNS);
+    const addresses = await resolve4(SECURE_NET_HOSTNAME);
     dnsResolvedIps = addresses;
-    console.log(`[ip-allowlist] DNS resolved ${TAILSCALE_MAGICDNS} → [${addresses.join(', ')}]`);
+    console.log(`[ip-allowlist] DNS resolved ${SECURE_NET_HOSTNAME} → [${addresses.join(', ')}]`);
     return addresses;
   } catch (err: any) {
-    console.error(`[ip-allowlist] DNS resolution failed for ${TAILSCALE_MAGICDNS}: ${err.message}`);
+    console.error(`[ip-allowlist] DNS resolution failed for ${SECURE_NET_HOSTNAME}: ${err.message}`);
     return dnsResolvedIps; // keep previous
   }
 }

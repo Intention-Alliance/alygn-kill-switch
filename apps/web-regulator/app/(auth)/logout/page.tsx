@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Shield, Loader2, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { BRAND_FULL_NAME } from "@/lib/branding";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,7 +43,7 @@ export default function LogoutPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
       <div className="mb-6 flex items-center gap-2">
         <Shield className="h-8 w-8 text-primary" />
-        <span className="text-xl font-bold tracking-tight">ALYGN Regulator</span>
+        <span className="text-xl font-bold tracking-tight">{BRAND_FULL_NAME}</span>
       </div>
 
       <Card className="w-full max-w-sm shadow-lg">

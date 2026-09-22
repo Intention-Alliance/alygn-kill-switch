@@ -214,6 +214,7 @@ export class RedisPool extends EventEmitter {
 
   /** Initialize cluster connection */
   async connect() {
+    this._subscriberClient = null;
     // Parse URLs into rootNodes format for createCluster
     const rootNodes = this.urls.map((url) => {
       const parsed = new URL(url);
@@ -235,13 +236,24 @@ export class RedisPool extends EventEmitter {
     // mode (default mapping below) and bridge mode (empty map / internal names).
     const nodeAddressMap = this._resolveNodeAddressMap();
 
-    this._cluster = createCluster({
-      rootNodes,
-      defaults: {
+    console.log(`[redis-pool] connecting to ${this.urls.length} URL(s): ${this.urls.join(', ')}`);
+    // Single URL → standalone client (no cluster protocol needed).
+    // Multiple URLs → cluster client with slot distribution.
+    if (this.urls.length === 1) {
+      const { createClient } = await import('redis');
+      this._cluster = createClient({
+        url: this.urls[0],
         ...this.clientOpts,
-      },
-      ...(nodeAddressMap ? { nodeAddressMap } : {}),
-    });
+      });
+    } else {
+      this._cluster = createCluster({
+        rootNodes,
+        defaults: {
+          ...this.clientOpts,
+        },
+        ...(nodeAddressMap ? { nodeAddressMap } : {}),
+      });
+    }
 
     this._cluster.on('error', (err) => this.emit('error', err));
     await this._cluster.connect();
@@ -265,6 +277,10 @@ export class RedisPool extends EventEmitter {
 
   /** Disconnect cluster */
   async disconnect() {
+    if (this._subscriberClient) {
+      try { await this._subscriberClient.disconnect(); } catch {}
+      this._subscriberClient = null;
+    }
     this._connected = false;
     if (this._cluster) {
       try {
@@ -368,9 +384,24 @@ export class RedisPool extends EventEmitter {
     }
 
     try {
-      await this._cluster.subscribe(channel, (message) => {
-        handler(message);
-      });
+      // Standalone mode: use a DEDICATED subscriber client — a client in
+      // subscriber mode cannot run get/set/publish. Cluster mode: subscribe
+      // directly on the cluster client (it manages pub/sub per node).
+      if (this.urls.length === 1) {
+        if (!this._subscriberClient) {
+          const { createClient } = await import('redis');
+          this._subscriberClient = createClient({ url: this.urls[0] });
+          this._subscriberClient.on('error', (err) => this.emit('error', err));
+          await this._subscriberClient.connect();
+        }
+        await this._subscriberClient.subscribe(channel, (message) => {
+          handler(message);
+        });
+      } else {
+        await this._cluster.subscribe(channel, (message) => {
+          handler(message);
+        });
+      }
       this.emit('subscribe', { channel });
     } catch (err) {
       this.emit('error', err);
@@ -427,10 +458,16 @@ export class RedisPool extends EventEmitter {
   async healthCheck() {
     if (!this._cluster) return { redis: 'UNAVAILABLE' };
     try {
-      // Cluster client: sendCommand(firstKey, isReadonly, args)
-      await this._cluster.sendCommand(null, true, ['PING']);
+      console.log(`[redis-pool] healthCheck: urls=${this.urls.length}, clientType=${this._cluster.constructor?.name}`);
+      // Standalone client: .ping(). Cluster client: sendCommand(firstKey, isReadonly, args).
+      if (this.urls.length === 1 && typeof this._cluster.ping === 'function') {
+        await this._cluster.ping();
+      } else {
+        await this._cluster.sendCommand(null, true, ['PING']);
+      }
       return { redis: 'OK' };
     } catch (err) {
+      console.error(`[redis-pool] healthCheck error: ${err.message}, clientType=${this._cluster.constructor?.name}`);
       return { redis: 'ERROR', error: err.message };
     }
   }

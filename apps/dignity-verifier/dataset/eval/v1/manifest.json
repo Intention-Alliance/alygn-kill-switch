@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "createdAt": "2026-08-27T08:18:39.905Z",
+  "gitSha": "13fdffaac614ff509b41352ace0a91a82c4fa0eb",
+  "counts": {
+    "original": 13,
+    "heldout": 20,
+    "total": 33
+  },
+  "verdictDistribution": {
+    "SAFE": 10,
+    "UNSAFE": 16,
+    "REVIEW": 7,
+    "INJECTION": 0
+  },
+  "splitRule": "Split by existing `suite` provenance field in eval-suite.jsonl: first 13 records (suite=original) -> original.jsonl, last 20 records (suite=heldout) -> heldout.jsonl. Stable ids eval-001..eval-033 assigned in file order."
+}

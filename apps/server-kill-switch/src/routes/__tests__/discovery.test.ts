@@ -110,10 +110,21 @@ const mockOrchestrator = {
 
 // ─── Mock db (for list + integrity-events endpoints) ──────────────
 
+// WS-B (Nikaya 78/100, MEDIUM): the probe route now checks machine
+// existence before probing. This flag lets tests exercise both the
+// 200 (machine exists) and 404 (unknown machine) paths.
+let mockMachineExists = true
+
 mock.module('../../db/index', () => ({
 	db: {
 		select: () => ({
 			from: () => ({
+				// Probe route machine-existence check (WS-B):
+				// db.select().from(discoveredMachines).where(eq(id)).get()
+				where: () => ({
+					get: async () =>
+						mockMachineExists ? { id: 'machine-1' } : null,
+				}),
 				$dynamic: () => ({
 					where: () => ({
 						orderBy: () => ({
@@ -288,6 +299,31 @@ describe('handleDiscoveryRoutes', () => {
 		expect(body.providers.length).toBe(1)
 		expect(body.providers[0].provider.id).toBe('ollama')
 		expect(body.providers[0].modelCount).toBe(1)
+	})
+
+	it('POST /v1/discovery/:id/probe returns 404 for unknown machine (WS-B)', async () => {
+		// WS-B (Nikaya 78/100, MEDIUM): unknown machine must 404 BEFORE
+		// probing — previously the FK insert surfaced as a 500.
+		mockMachineExists = false
+		try {
+			const res = createMockRes()
+			const handled = await handleDiscoveryRoutes(
+				'POST',
+				'/v1/discovery/machine-unknown/probe',
+				createMockReq(null),
+				res,
+				'api',
+				'admin',
+				withOrchestrator(),
+			)
+			expect(handled).toBe(true)
+			expect(res.statusCode).toBe(404)
+			const body = getJson(res)
+			expect(body.error).toContain('Machine not found')
+			expect(body.machineId).toBe('machine-unknown')
+		} finally {
+			mockMachineExists = true
+		}
 	})
 
 	it('GET /v1/discovery/:id/report returns the onboarding report', async () => {

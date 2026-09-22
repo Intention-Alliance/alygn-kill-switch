@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { BRAND_NAME } from "@/lib/branding";
 import {
   StateMachineDiagram,
   FlagResolutionDiagram,
@@ -199,13 +200,13 @@ export default function DocsPage() {
           <div>
             <h3 className="font-semibold text-base mb-2">What Is the Kill Switch?</h3>
             <p className="text-muted-foreground leading-relaxed">
-              The Kill Switch is the safety-critical control plane of the ALYGN compliance
+              The Kill Switch is the safety-critical control plane of the {BRAND_NAME} compliance
               infrastructure. It enables human operators to stop harmful LLM-generated content
               at the request level — either manually via the dashboard, or automatically when
               per-machine scoring agents detect content that exceeds configured safety thresholds.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-2">
-              Every machine in the ALYGN network runs a scoring agent that intercepts LLM
+              Every machine in the {BRAND_NAME} network runs a scoring agent that intercepts LLM
               requests before they reach the model. The agent scores each request against a
               combined rubric (semantic analysis + keyword detection + pattern matching) and
               either forwards or blocks based on the configured auto-stop threshold.
@@ -590,7 +591,7 @@ export default function DocsPage() {
             <h3 className="font-semibold text-base mb-2">What Is a Per-Machine Agent?</h3>
             <p className="text-muted-foreground leading-relaxed">
               A per-machine agent is a lightweight software process that runs on each node in
-              the ALYGN network. Its job is to intercept LLM requests before they reach the
+              the {BRAND_NAME} network. Its job is to intercept LLM requests before they reach the
               model, score them against the configured rubric, and either forward or block
               based on the auto-stop threshold. Agents declare their capabilities on
               registration, which determines what scoring dimensions they support (e.g.,

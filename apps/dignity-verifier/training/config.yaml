@@ -1,0 +1,60 @@
+# Dignity Verifier — LoRA fine-tuning configuration (WS-3)
+# CPU-only training. Hyperparameters locked per plan §6.
+# Class-weighted loss (Andler-direct delta): weights computed dynamically
+# from the actual dataset distribution at training start.
+
+# ─── Model ─────────────────────────────────────────────────────────
+model:
+  base: "Qwen/Qwen2.5-0.5B"        # HF id (Ollama tag qwen2.5:0.5b)
+  dtype: "float32"                 # CPU training; fp32 for stability
+  trust_remote_code: true
+
+# ─── LoRA ──────────────────────────────────────────────────────────
+lora:
+  r: 8                             # rank (≤8 per CPU constraint)
+  alpha: 16
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# ─── Training ──────────────────────────────────────────────────────
+training:
+  epochs: 3
+  batch_size: 4                    # ≤4 per CPU constraint
+  grad_accum: 4                    # effective batch = 16
+  lr: 2.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  max_length: 512
+  seed: 42
+  save_steps: 200
+  eval_steps: 100
+  logging_steps: 10
+  max_grad_norm: 1.0
+
+# ─── Class-weighted loss ───────────────────────────────────────────
+# Scheme: inverse-square-root frequency (gentler than pure inverse).
+#   weight_c = (1 / sqrt(freq_c)) / mean(1 / sqrt(freq_c))
+# Normalized so the mean weight across samples == 1 (loss scale stable).
+# Switch to pure inverse by setting scheme: "inverse".
+class_weight:
+  scheme: "inverse_sqrt"           # "inverse_sqrt" | "inverse"
+  enabled: true
+
+# ─── Data ──────────────────────────────────────────────────────────
+data:
+  train_path: "dataset/augmented/augmented.jsonl"
+  val_path: "dataset/eval/eval-suite.jsonl"   # held-out, NEVER trained on
+  val_fraction: 0.0               # 0 => use eval-suite as val; >0 => split train
+
+# ─── Output ────────────────────────────────────────────────────────
+output:
+  adapter_dir: "lora-weights"      # PEFT adapter output (gitignored)
+  checkpoint_dir: "checkpoints"    # gitignored
+  log_dir: "../reports/training-runs"
+
+# ─── MLflow ────────────────────────────────────────────────────────
+mlflow:
+  experiment: "dignity-verifier"
+  registered_model: "dignity-verification-v0.1-preview"

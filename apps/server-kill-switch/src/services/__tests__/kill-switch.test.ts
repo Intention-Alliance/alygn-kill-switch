@@ -12,6 +12,10 @@ import { KillSwitchService } from '../kill-switch';
 import type { RedisPool } from '../../types/redis-pool';
 import { isTrafficPaused, resetTrafficPauseState } from '../traffic-pause';
 
+// transitionTo now persists via the tamper-evident audit chain (ADR-140),
+// which requires the server HMAC key (validate-env.ts enforces it in prod).
+process.env.AUDIT_HMAC_KEY = 'test-audit-hmac-key-0123456789abcdef';
+
 // ─── Mock setup ─────────────────────────────────────────────────
 
 // Mock loadTracing to return no-op tracer

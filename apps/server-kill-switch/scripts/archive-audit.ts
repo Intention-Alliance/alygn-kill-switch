@@ -7,7 +7,7 @@
  * `data/audit-archive/YYYY-MM-DD.jsonl`, then deletes the source rows.
  *
  * Designed to be run by cron at 03:00 CST daily:
- *   0 3 * * *  cd /home/andlersrv/.openclaw/workspace/repos/alygn/infrastructure && bun run apps/server-kill-switch/scripts/archive-audit.ts
+ *   0 3 * * *  cd /opt/alygn/alygn-core-infra && bun run apps/server-kill-switch/scripts/archive-audit.ts
  *
  * Smoke test (manual, no deletion):
  *   bun run scripts/archive-audit.ts --dry-run --days 1

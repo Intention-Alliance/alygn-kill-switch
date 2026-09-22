@@ -6,6 +6,10 @@ import type { RedisPool } from '../types/redis-pool';
 import { secureCompare } from '../utils/secure-compare';
 import { loadTracing } from '../infra-loader';
 import { pauseInferenceTraffic, resumeInferenceTraffic } from './traffic-pause';
+import { db } from '../db/index';
+import { killSwitchAuditLog } from '../db/schema';
+import { appendAuditEntry } from './audit-chain';
+import { desc, sql } from 'drizzle-orm';
 
 export const STATES: Record<KillSwitchState, KillSwitchState> = {
   ARMED: 'ARMED',
@@ -52,6 +56,10 @@ export class KillSwitchService {
   private apiKey: string;
   private auditLog: AuditEntry[] = [];
   private _stateChangeListeners: Array<(entry: AuditEntry) => void | Promise<void>> = [];
+  // Guards the one-time startup DB load so a hot reload doesn't double-load.
+  private _dbLoaded = false;
+  // Hot-cache cap — matches the in-memory trim used on push.
+  private static readonly HOT_CACHE_SIZE = 1000;
 
   constructor(opts: { redis: RedisPool; authToken?: string; apiKey?: string }) {
     this.redis = opts.redis;
@@ -78,7 +86,7 @@ export class KillSwitchService {
 
   async getCurrentState(): Promise<KillSwitchState> {
     const state = await this.redis.get(this.redis.chaosKillSwitchKey());
-    return (state as KillSwitchState) || STATES.ARMED;
+    return (state as KillSwitchState) || STATES.RUNNING;
   }
 
   async transitionTo(newState: KillSwitchState, metadata: TransitionMetadata = {}): Promise<AuditEntry> {
@@ -135,8 +143,30 @@ export class KillSwitchService {
       };
 
       this.auditLog.push(auditEntry);
-      if (this.auditLog.length > 1000) {
-        this.auditLog = this.auditLog.slice(-1000);
+      if (this.auditLog.length > KillSwitchService.HOT_CACHE_SIZE) {
+        this.auditLog = this.auditLog.slice(-KillSwitchService.HOT_CACHE_SIZE);
+      }
+
+      // Persist to the immutable DB audit log via the tamper-evident audit
+      // chain (ADR-140). appendAuditEntry computes prev_hash (linking to the
+      // prior entry's self_hash), self_hash, and server_hmac, and inserts
+      // under a write lock so concurrent transitions cannot collide on the
+      // chain link. Fire-and-forget — a DB write failure must not block the
+      // state transition or the HTTP response.
+      try {
+        await appendAuditEntry({
+          userId: auditEntry.initiatedBy,
+          reason: auditEntry.reason,
+          previousState: auditEntry.previousState,
+          newState: auditEntry.newState,
+          traceId: auditEntry.traceId,
+          machineId: auditEntry.machineId ?? null,
+          severity: 'info',
+          metadata: JSON.stringify({ ip: auditEntry.ip }),
+          plainExplanation: `Kill switch state transition ${auditEntry.previousState} → ${auditEntry.newState} initiated by ${auditEntry.initiatedBy} (${auditEntry.reason}).`,
+        });
+      } catch (err) {
+        console.error('[kill-switch] Failed to persist audit entry to DB:', err);
       }
 
       for (const listener of this._stateChangeListeners) {
@@ -177,8 +207,109 @@ export class KillSwitchService {
 
   // ─── Audit Log ───────────────────────────────────────────────────
 
+  /**
+   * Load recent audit entries from the DB into the in-memory hot cache.
+   * Called once on startup to recover history after a process restart or
+   * container rebuild (the in-memory buffer starts empty).
+   */
+  async loadAuditFromDb(): Promise<void> {
+    if (this._dbLoaded) return;
+    this._dbLoaded = true;
+
+    try {
+      const rows = await db.select()
+        .from(killSwitchAuditLog)
+        .orderBy(desc(killSwitchAuditLog.timestamp))
+        .limit(KillSwitchService.HOT_CACHE_SIZE)
+        .all();
+
+      // Reverse to chronological order (oldest first) so the hot cache
+      // matches the push-order semantics of transitionTo().
+      for (const row of rows.reverse()) {
+        this.auditLog.push({
+          id: row.id,
+          previousState: row.previousState as KillSwitchState,
+          newState: row.newState as KillSwitchState,
+          timestamp: new Date(row.timestamp).toISOString(),
+          traceId: row.traceId,
+          initiatedBy: row.userId,
+          reason: row.reason,
+          ip: 'unknown',
+          machineId: row.machineId ?? undefined,
+        });
+      }
+
+      if (this.auditLog.length > KillSwitchService.HOT_CACHE_SIZE) {
+        this.auditLog = this.auditLog.slice(-KillSwitchService.HOT_CACHE_SIZE);
+      }
+
+      console.log(`[kill-switch] Loaded ${this.auditLog.length} audit entries from DB`);
+    } catch (err) {
+      console.error('[kill-switch] Failed to load audit log from DB:', err);
+    }
+  }
+
   getAuditLog(limit = 50): AuditEntry[] {
     return this.auditLog.slice(-limit);
+  }
+
+  /**
+   * Seed a single "System initialized" audit entry if the DB audit log is
+   * empty. Called once on startup so the dashboard's audit log is never
+   * blank after a fresh container rebuild (the DB starts empty and no state
+   * change has occurred yet to populate it).
+   *
+   * Idempotent: only writes when there are zero rows, so it never duplicates
+   * on restart. The entry is also pushed into the in-memory hot cache so the
+   * WebSocket `audit-entry` broadcast and the activations endpoint reflect it
+   * immediately.
+   *
+   * ADR-140 chain wiring: the seed is written through appendAuditEntry so it
+   * becomes the GENESIS entry of the tamper-evident chain (real self_hash +
+   * server_hmac). This is the "mark as legacy and start a fresh anchored
+   * chain" choice: the seed is the anchor head, and every subsequent
+   * transition chains off its self_hash. (The old raw db.insert wrote
+   * prev_hash='GENESIS' + self_hash='' which would have broken the chain link
+   * for the first real transition.)
+   */
+  async seedInitialAuditEntry(): Promise<void> {
+    try {
+      const count = await db
+        .select({ count: sql`count(*)` })
+        .from(killSwitchAuditLog)
+        .get();
+      const total = Number(count?.count ?? 0);
+      if (total > 0) return;
+
+      const now = new Date();
+      const entry: AuditEntry = {
+        id: crypto.randomUUID(),
+        previousState: STATES.RUNNING,
+        newState: STATES.RUNNING,
+        timestamp: now.toISOString(),
+        traceId: `seed-${crypto.randomUUID().slice(0, 8)}`,
+        initiatedBy: 'system',
+        reason: 'System initialized — kill switch running',
+        ip: 'system',
+      };
+
+      await appendAuditEntry({
+        userId: entry.initiatedBy,
+        reason: entry.reason,
+        previousState: entry.previousState,
+        newState: entry.newState,
+        traceId: entry.traceId,
+        machineId: null,
+        severity: 'info',
+        metadata: JSON.stringify({ ip: entry.ip, seed: true }),
+        plainExplanation: 'System initialized — kill switch running (seed entry, chain genesis).',
+      });
+
+      this.auditLog.push(entry);
+      console.log('[kill-switch] Seeded initial audit entry (empty DB)');
+    } catch (err) {
+      console.error('[kill-switch] Failed to seed initial audit entry:', err instanceof Error ? err.message : err);
+    }
   }
 
   getLastActivation(): { timestamp: string | null; by: string | null; reason: string | null } {

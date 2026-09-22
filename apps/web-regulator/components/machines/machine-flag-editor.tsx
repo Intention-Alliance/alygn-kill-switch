@@ -45,45 +45,6 @@ import { toast } from "sonner";
 
 type FlagType = "boolean" | "number" | "string";
 
-interface PredefinedFlag {
-  key: string;
-  type: FlagType;
-  description: string;
-}
-
-const PREDEFINED_FLAGS: PredefinedFlag[] = [
-  {
-    key: "llm_interception_enabled",
-    type: "boolean",
-    description:
-      "Master toggle for LLM request interception. When false, all requests pass through unscored. Toggle per-machine for granular control.",
-  },
-  {
-    key: "auto_stop_threshold",
-    type: "number",
-    description:
-      "Score threshold for automatic blocking (0.0–1.0). Lower values = stricter blocking. Set to 1.0 to disable auto-blocking while still logging scores.",
-  },
-  {
-    key: "damage_logging_level",
-    type: "string",
-    description:
-      "Verbosity: minimal (blocked only), standard (blocked + near-threshold), verbose (all scored). Higher levels increase storage usage.",
-  },
-  {
-    key: "alert_on_critical_score",
-    type: "boolean",
-    description:
-      "Desktop notification on critical events when request score exceeds 0.9. Early warning before auto-stop triggers.",
-  },
-  {
-    key: "request_sampling_rate",
-    type: "number",
-    description:
-      "Percentage of requests to sample (0.0–1.0). At 1.0 every request is scored. Lower values reduce CPU load but create blind spots.",
-  },
-];
-
 const DAMAGE_LEVEL_OPTIONS = ["minimal", "standard", "verbose"] as const;
 
 // ─── Contract response shapes ──────────────────────────────────────
@@ -190,7 +151,7 @@ export function MachineFlagEditor({
     if (!flag) return;
 
     const raw = drafts[key];
-    const parsed = parseFromInput(raw, flag.type);
+    const parsed = parseFromInput(raw, flag.type, flag.key);
     if ("error" in parsed) {
       toast.error(parsed.error);
       return;
@@ -264,29 +225,29 @@ export function MachineFlagEditor({
           </div>
         ) : (
           <div className="space-y-3">
-            {PREDEFINED_FLAGS.map((predef) => {
-              const flag = flags.find((f) => f.key === predef.key);
-              if (!flag) {
-                // Flag not yet returned by the backend (contract § 3.1 says
-                // exactly 5 rows; this branch should not fire in practice).
-                return null;
-              }
-              const isPending = pendingKeys.has(predef.key);
-              const isDirty = dirtyKeys.has(predef.key);
-              const currentInput = drafts[predef.key] ?? "";
+            {flags.map((flag) => {
+              const isPending = pendingKeys.has(flag.key);
+              const isDirty = dirtyKeys.has(flag.key);
+              const currentInput = drafts[flag.key] ?? "";
               return (
                 <FlagRow
-                  key={predef.key}
+                  key={flag.key}
                   flag={flag}
                   draftValue={currentInput}
                   isPending={isPending}
                   isDirty={isDirty}
-                  onChange={(v) => handleDraftChange(predef.key, v)}
-                  onSave={() => handleSave(predef.key)}
-                  onRevert={() => handleRevert(predef.key)}
+                  onChange={(v) => handleDraftChange(flag.key, v)}
+                  onSave={() => handleSave(flag.key)}
+                  onRevert={() => handleRevert(flag.key)}
                 />
               );
             })}
+
+            {flags.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No flags available for this machine yet.
+              </p>
+            )}
 
             <Separator />
 
@@ -440,23 +401,36 @@ function FlagValueInput({
   }
 
   if (flag.type === "string") {
+    if (flag.key === "damage_logging_level") {
+      return (
+        <Select
+          value={value || DAMAGE_LEVEL_OPTIONS[1]}
+          onValueChange={onChange}
+          disabled={disabled}
+        >
+          <SelectTrigger id={`flag-${flag.key}`} className="h-8 text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {DAMAGE_LEVEL_OPTIONS.map((opt) => (
+              <SelectItem key={opt} value={opt} className="text-xs">
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
+    // Custom / other string flags: free text.
     return (
-      <Select
-        value={value || DAMAGE_LEVEL_OPTIONS[1]}
-        onValueChange={onChange}
+      <Input
+        id={`flag-${flag.key}`}
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-      >
-        <SelectTrigger id={`flag-${flag.key}`} className="h-8 text-xs">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {DAMAGE_LEVEL_OPTIONS.map((opt) => (
-            <SelectItem key={opt} value={opt} className="text-xs">
-              {opt}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        className="h-8 text-xs font-mono"
+      />
     );
   }
 
@@ -485,23 +459,31 @@ function formatForInput(v: boolean | number | string): string {
 
 type ParseResult = { value: unknown; error?: undefined } | { error: string };
 
-function parseFromInput(raw: string, type: FlagType): ParseResult {
+function parseFromInput(raw: string, type: FlagType, key: string): ParseResult {
   if (type === "boolean") {
     if (raw === "true" || raw === "false") return { value: raw === "true" };
     return { error: "Value must be true or false" };
   }
   if (type === "string") {
-    if (DAMAGE_LEVEL_OPTIONS.includes(raw as (typeof DAMAGE_LEVEL_OPTIONS)[number])) {
-      return { value: raw };
+    if (key === "damage_logging_level") {
+      if (DAMAGE_LEVEL_OPTIONS.includes(raw as (typeof DAMAGE_LEVEL_OPTIONS)[number])) {
+        return { value: raw };
+      }
+      return {
+        error: `Value must be one of: ${DAMAGE_LEVEL_OPTIONS.join(", ")}`,
+      };
     }
-    return {
-      error: `Value must be one of: ${DAMAGE_LEVEL_OPTIONS.join(", ")}`,
-    };
+    // Custom string flags accept any non-empty text.
+    if (raw.trim()) return { value: raw };
+    return { error: "Value must not be empty" };
   }
   // number
   const n = Number(raw);
   if (!Number.isFinite(n)) return { error: "Value must be a number" };
-  if (n < 0 || n > 1)
+  if (
+    (key === "auto_stop_threshold" || key === "request_sampling_rate") &&
+    (n < 0 || n > 1)
+  )
     return { error: "Value must be in the range [0.0, 1.0]" };
   return { value: n };
 }

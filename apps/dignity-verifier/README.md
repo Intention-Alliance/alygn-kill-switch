@@ -1,12 +1,12 @@
 # Dignity Verifier Training Framework
 
 Distills inference-safety classification capability from a large **teacher** model
-(`deepseek-v4-flash:cloud`) into a small **student** model (`qwen2.5:0.5b`) via
+(`glm-5.3-flash:cloud`) into a small **student** model (`qwen2.5:0.5b`) via
 LoRA fine-tuning, using LlamaIndex for dataset augmentation. Ships a super-admin
 dashboard for executing training, upserting datasets, configuring LlamaIndex, and
 viewing reports.
 
-**Target model:** `dignity-verifier-preview-v1` (fine-tuned `qwen2.5:0.5b`)
+**Target model:** `dignity-verification-v0.1-preview` (fine-tuned `qwen2.5:0.5b`)
 
 ## Why this exists
 
@@ -65,7 +65,7 @@ architecture design, component contracts, and security boundaries.
    `q_proj`/`v_proj`) on `qwen2.5:0.5b`, 3 epochs, batch_size=4, lr=2e-4, CPU-only
    (~2–4h). Output: LoRA adapter (~5–20MB).
 4. **Eval** — 33-test suite (13 original + 20 held-out). Target ≥85%.
-5. **Deploy** — `ollama create dignity-verifier-preview-v1` from Modelfile
+5. **Deploy** — `ollama create dignity-verification-v0.1-preview` from Modelfile
    (`FROM qwen2.5:0.5b` + `ADAPTER`), then update kill-switch `DEFAULT_MODEL`.
 
 ## Self-evolving loop
@@ -103,7 +103,7 @@ Orchestration: **Wobblus**
   - `BETTER_AUTH_SECRET` (shared with kill-switch)
   - `KILL_SWITCH_AUTH_TOKEN` (super-admin password seed, ≥16 chars)
   - `OLLAMA_BASE_URL` (defaults to `http://host.docker.internal:11434`)
-  - `TEACHER_MODEL` (defaults to `deepseek-v4-flash:cloud`)
+  - `TEACHER_MODEL` (defaults to `glm-5.3-flash:cloud`)
   - `STUDENT_MODEL` (defaults to `qwen2.5:0.5b`)
   - `EMBEDDING_MODEL` (defaults to `nomic-embed-text-v2-moe:latest`)
 
@@ -171,4 +171,4 @@ The seed is idempotent — it skips if the user already exists. The SQLite DB
 - [ ] Seed dataset 275+ examples (Zyxali)
 - [ ] LoRA fine-tune <4h on CPU
 - [ ] Eval accuracy ≥85%
-- [ ] Deploy `dignity-verifier-preview-v1` to kill-switch
+- [ ] Deploy `dignity-verification-v0.1-preview` to kill-switch

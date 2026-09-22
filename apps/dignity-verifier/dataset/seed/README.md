@@ -23,7 +23,7 @@ before merge.
 
 ## Verification rule
 
-Every seed example is **verified by the teacher model** (`deepseek-v4-flash:cloud`)
+Every seed example is **verified by the teacher model** (`glm-5.3-flash:cloud`)
 before inclusion — the teacher's verdict must match the curated verdict, or the
 example is flagged for review.
 

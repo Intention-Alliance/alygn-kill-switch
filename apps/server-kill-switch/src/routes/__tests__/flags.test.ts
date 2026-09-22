@@ -60,6 +60,7 @@ afterAll(() => {
 // ─── Mock drizzle-orm ───────────────────────────────────────────
 mock.module('drizzle-orm', () => ({
   eq: (left: any, right: any) => ({ __eq: right, __leftName: left?.name }),
+  and: (...args: any[]) => ({ __and: args }),
 }));
 
 // ─── Mock db/index ──────────────────────────────────────────────

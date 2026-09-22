@@ -32,6 +32,18 @@ services:
     #   - rdma-monitor
   
   # ============================================
+  # Ollama Proxy — bridges align-network to host Ollama
+  # ============================================
+  ollama-proxy:
+    image: alpine/socat
+    container_name: alygn-ollama-proxy
+    command: TCP-LISTEN:11434,fork,reuseaddr TCP:172.17.0.1:11434
+    networks:
+      - align-network
+      - default
+    restart: unless-stopped
+
+  # ============================================
   # Kill Switch API (Bun + Elysia + SQLite)
   # ============================================
   kill-switch:
@@ -66,6 +78,7 @@ services:
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN:?KILL_SWITCH_AUTH_TOKEN required}
       - KILL_SWITCH_API_KEY=${KILL_SWITCH_API_KEY:-}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@alygn.com}
+      - AUDIT_HMAC_KEY=${AUDIT_HMAC_KEY:?AUDIT_HMAC_KEY required}
       # Bridge mode: the kill-switch reaches Redis via the align-network
       # service hostnames (redis-node-1, etc.) which resolve within the
       # bridge network. Published host ports (127.0.0.1:6380-6382) remain for
@@ -80,10 +93,20 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
       # Inference verification layer — the kill-switch reaches Ollama on the
       # host via the host-gateway alias (host.docker.internal:11434).
-      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-false}
+      #
+      # P1-2 (Stage 2 — Nikaya 78/100): the kill-switch now ships with the
+      # inference proxy (node-res-adapter) active by default. When the proxy
+      # is on, the verifier MUST be on too — the server enforces this with
+      # a fail-start guard (see index.ts startup). The default flips from
+      # `-false` to `-true` so a fresh deployment cannot silently ship
+      # verification-off. Operators that intentionally want verification
+      # disabled must also disable the proxy feature flag
+      # (KILL_SWITCH_VERIFICATION_FEATURE_FLAG) or the proxy will refuse to
+      # start.
+      - KILL_SWITCH_VERIFY_ENABLED=${KILL_SWITCH_VERIFY_ENABLED:-true}
       - KILL_SWITCH_VERIFY_MODE=${KILL_SWITCH_VERIFY_MODE:-async}
       - KILL_SWITCH_VERIFIER_MODEL=${KILL_SWITCH_VERIFIER_MODEL:-qwen2.5:0.5b}
-      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://host.docker.internal:11434}
+      - KILL_SWITCH_VERIFIER_BASE_URL=${KILL_SWITCH_VERIFIER_BASE_URL:-http://alygn-ollama-proxy:11434}
       - KILL_SWITCH_VERIFIER_TIMEOUT_MS=${KILL_SWITCH_VERIFIER_TIMEOUT_MS:-500}
       # ADR-136: WebAuthn (FIDO2) relying party — production Tailscale mesh
       # hostname + Nginx SSL listener. Overrides the schema defaults.
@@ -94,7 +117,7 @@ services:
       - infra-align-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/v1/kill-switch/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -226,24 +249,20 @@ services:
       dockerfile: apps/web-regulator/Dockerfile
     container_name: alygn-web-regulator
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:3000"
-    # The kill-switch runs in bridge mode on align-network (binds
-    # 127.0.0.1:3000 on the host via published port). The web-regulator
-    # reaches it via the Docker host gateway (host.docker.internal:3000)
-    # since the published port is host-bound, not a service alias.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # network_mode: host — the web-regulator needs direct host network access
+    # to reach the kill-switch (localhost:3000) and Ollama (localhost:11434).
+    # Docker bridge networking blocks host-bound ports despite extra_hosts.
+    network_mode: host
     environment:
       - NODE_ENV=production
-      - KILL_SWITCH_BACKEND_URL=http://host.docker.internal:3000
+      - PORT=3001
+      - HOSTNAME=0.0.0.0
+      - KILL_SWITCH_BACKEND_URL=http://localhost:3000
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://host.docker.internal:3000}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://localhost:3000}
       - NEXT_PUBLIC_BETTER_AUTH_URL=/api/auth
       - KILL_SWITCH_AUTH_TOKEN=${KILL_SWITCH_AUTH_TOKEN}
       - NEXT_PUBLIC_OTEL_ENABLED=false
-    networks:
-      - align-network
     depends_on:
       kill-switch:
         condition: service_healthy

@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { Fingerprint, Loader2 } from "lucide-react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { apiPost, ApiError } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import type {
   Fido2LoginBeginResponse,
@@ -36,6 +37,7 @@ export function SecurityKeySignInButton({
   redirectTo = "/kill-switch",
 }: SecurityKeySignInButtonProps) {
   const router = useRouter();
+  const { refreshSession } = useAuth();
   const [busy, setBusy] = useState(false);
   // Whether any user has a registered security key. The button is hidden
   // until we confirm a key exists (discoverable sign-in: login/begin with
@@ -63,10 +65,36 @@ export function SecurityKeySignInButton({
     };
   }, []);
 
-  // While the availability check is in flight, render nothing so the
-  // button never flashes before we know a key exists.
-  if (available === null) return null;
-  if (!available) return null;
+  // While the availability check is in flight, render a disabled placeholder
+  // so the button never flashes in/out before we know a key exists.
+  if (available === null) {
+    return (
+      <Button
+        type="button"
+        variant="default"
+        size="lg"
+        className="h-11 w-full text-sm"
+        disabled
+      >
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+        Checking for security keys…
+      </Button>
+    );
+  }
+  if (!available) {
+    return (
+      <Button
+        type="button"
+        variant="default"
+        size="lg"
+        className="h-11 w-full text-sm"
+        disabled
+      >
+        <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
+        No security key registered
+      </Button>
+    );
+  }
 
   async function handleSignIn() {
     if (busy) return;
@@ -92,6 +120,13 @@ export function SecurityKeySignInButton({
         throw new Error("Sign-in was not verified by the server");
       }
 
+      // Refresh the auth context BEFORE redirecting. WebAuthn login mints the
+      // session cookie server-side but does not go through the password
+      // `login()` path, so the context still thinks the user is unauthenticated.
+      // Without this, the dashboard AuthGuard bounces the user back to /login
+      // and the redirect only works on a full reload.
+      await refreshSession();
+
       toast.success("Signed in with security key", {
         description: `Welcome back, ${result.name || result.email}.`,
       });
@@ -110,19 +145,20 @@ export function SecurityKeySignInButton({
   return (
     <Button
       type="button"
-      variant="secondary"
-      className="w-full"
+      variant="default"
+      size="lg"
+      className="h-11 w-full text-sm"
       onClick={handleSignIn}
       disabled={busy}
     >
       {busy ? (
         <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+          <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
           Touch your security key…
         </>
       ) : (
         <>
-          <Fingerprint className="mr-2 h-4 w-4" aria-hidden="true" />
+          <Fingerprint className="mr-2 h-5 w-5" aria-hidden="true" />
           Sign in with security key
         </>
       )}

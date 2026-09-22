@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ScrollText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,12 +12,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { apiGet } from "@/lib/api-client";
 import type { ActivationRecord, KillSwitchState } from "@/types/shared";
 
 interface MachineLogsProps {
   machineId: string;
   auditLog: ActivationRecord[];
   className?: string;
+}
+
+// ─── Machine audit log API response shape ────────────────────────────
+// GET /v1/machines/:id/audit → { data: MachineAuditEntry[], ... }
+export interface MachineAuditEntry {
+  id: string;
+  timestamp: string;
+  userId: string | null;
+  reason: string | null;
+  previousState: string | null;
+  newState: string | null;
+  traceId: string | null;
+  machineId: string | null;
+  severity: string | null;
+  metadata: unknown;
+}
+
+interface MachineAuditResponse {
+  data: MachineAuditEntry[];
+}
+
+// ─── Adapt a machine-audit entry to the shared ActivationRecord shape ──
+export function adaptAuditEntry(entry: MachineAuditEntry): ActivationRecord {
+  return {
+    id: entry.id,
+    timestamp: entry.timestamp,
+    user: entry.userId ?? "system",
+    reason: entry.reason ?? "",
+    previousState: (entry.previousState as KillSwitchState) ?? "ARMED",
+    newState: (entry.newState as KillSwitchState) ?? "ARMED",
+    traceId: entry.traceId ?? "",
+  };
 }
 
 const STATE_BADGE_VARIANT: Record<
@@ -46,15 +80,49 @@ export function MachineLogs({
   auditLog,
   className,
 }: MachineLogsProps) {
-  // Filter: entries matching the machineId, or general events
-  const filtered = auditLog.filter((entry) => {
+  // Machine-specific logs fetched from the kill-switch API
+  // (GET /v1/machines/:id/audit). The WS audit log only carries global
+  // state-change events; machine-scoped entries (automated kills, integrity
+  // events) live in the DB and must be fetched explicitly.
+  const [machineLogs, setMachineLogs] = useState<ActivationRecord[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMachineLogs() {
+      try {
+        const res = await apiGet<MachineAuditResponse>(
+          `/api/machines/${encodeURIComponent(machineId)}/audit?limit=50`,
+        );
+        if (!cancelled) {
+          setMachineLogs((res.data ?? []).map(adaptAuditEntry));
+        }
+      } catch {
+        // Machine audit endpoint may be unavailable — keep the WS log only.
+        if (!cancelled) setMachineLogs([]);
+      }
+    }
+
+    loadMachineLogs();
+    return () => {
+      cancelled = true;
+    };
+  }, [machineId]);
+
+  // Merge WS-delivered entries with DB-fetched machine logs, deduped by id.
+  // Machine-scoped entries from the API take precedence; global WS events
+  // (no machineId) are also shown so the panel isn't empty.
+  const merged = [...machineLogs, ...auditLog].filter((entry, index, arr) => {
     const augmented = entry as ActivationRecord & { machineId?: string };
-    return (
+    const isForThisMachine =
       augmented.machineId === machineId ||
-      // Include general events not targeting any specific machine
-      augmented.machineId === undefined
-    );
+      augmented.machineId === undefined;
+    if (!isForThisMachine) return false;
+    // Dedupe by id (keep the first occurrence — API entries come first).
+    return arr.findIndex((e) => e.id === entry.id) === index;
   });
+
+  const filtered = merged;
 
   return (
     <div className={cn("space-y-3", className)}>

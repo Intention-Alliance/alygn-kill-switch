@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { apiGet, apiPost, apiPut } from "@/lib/api-client";
+import { BRAND_FULL_NAME, BRAND_TAGLINE, BRAND_VERSION } from "@/lib/branding";
 import { toast } from "sonner";
 import {
   parseSettings,
@@ -626,8 +627,7 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="text-lg">About</CardTitle>
               <CardDescription>
-                ALYGN Regulator — Sovereign Compliance Infrastructure for AI
-                Safety
+                {BRAND_FULL_NAME} — {BRAND_TAGLINE}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -635,7 +635,7 @@ export default function SettingsPage() {
                 <Shield className="h-5 w-5 text-primary mt-0.5" />
                 <div>
                   <p className="text-sm font-medium">
-                    ALYGN Regulator v2.0.0
+                    {BRAND_FULL_NAME} {BRAND_VERSION}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Backend: Bun + Elysia + Better-Auth + SQLite. Frontend:

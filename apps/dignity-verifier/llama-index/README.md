@@ -17,7 +17,7 @@ Semantic dataset augmentation using LlamaIndex + local embeddings. Owned by
    `nomic-embed-text-v2-moe` (local, F16, 512 context).
 2. **Retrieve** — for each seed example, fetch top-5 semantically similar
    examples.
-3. **Paraphrase** — teacher model (`deepseek-v4-flash:cloud`) generates
+3. **Paraphrase** — teacher model (`glm-5.3-flash:cloud`) generates
    paraphrases + variations.
 4. **Verify** — each augmented example is checked against the teacher's verdict;
    divergence → reject.
@@ -25,9 +25,16 @@ Semantic dataset augmentation using LlamaIndex + local embeddings. Owned by
 
 ## Teacher model
 
-- **Primary:** `deepseek-v4-flash:cloud` (allowed cloud model)
+- **Primary:** `glm-5.3-flash:cloud` (allowed cloud model)
 - **Fallback:** `glm-5.2:cloud`
 - Must be an **allowed cloud model** per AGENTS.md ACP pre-flight.
+
+## Teacher provenance
+
+Accepted augmented records carry a `teacher` field naming the model that
+produced them (e.g. `"glm-5.3-flash:cloud"`). Records **without** a `teacher`
+field predate this convention and were produced by the earlier
+`deepseek-v4-flash:cloud` teacher era — absence of the field means deepseek.
 
 ## Output
 

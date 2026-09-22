@@ -10,17 +10,21 @@ import {
   Server,
   Settings,
   BookOpen,
-  CreditCard,
   PanelLeftClose,
   PanelLeft,
   ArrowRight,
+  CircleCheck,
+  CircleAlert,
+  CircleOff,
+  Clock,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,8 +32,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/lib/auth-context";
+import { apiGet } from "@/lib/api-client";
 import { SystemMetricsBar } from "@/components/machines/system-metrics";
 import { MachineQuickActions } from "@/components/machines/machine-quick-actions";
+import { effectiveStatus } from "@/lib/dashboard-utils";
+import { BRAND_NAME } from "@/lib/branding";
+import { SidebarFooter } from "@/components/layout/sidebar-footer";
 import type { Machine, KillSwitchState } from "@/types/shared";
 
 const NAV_ITEMS = [
@@ -64,12 +72,6 @@ const NAV_ITEMS = [
     description: "System configuration",
   },
   {
-    href: "/billing",
-    label: "Billing",
-    icon: CreditCard,
-    description: "Subscription & payment methods",
-  },
-  {
     href: "/docs",
     label: "Documentation",
     icon: BookOpen,
@@ -84,7 +86,25 @@ const MACHINE_STATUS_CONFIG: Record<
   active: { label: "Active", variant: "default" },
   inactive: { label: "Inactive", variant: "secondary" },
   offline: { label: "Offline", variant: "destructive" },
+  pending: { label: "Pending", variant: "secondary" },
 };
+
+const MACHINE_STATUS_ICON: Record<
+  Machine["status"],
+  { icon: typeof CircleCheck; color: string }
+> = {
+  active: { icon: CircleCheck, color: "text-emerald-500" },
+  inactive: { icon: CircleAlert, color: "text-amber-500" },
+  offline: { icon: CircleOff, color: "text-red-500" },
+  pending: { icon: Clock, color: "text-amber-500" },
+};
+
+interface MachinesResponse {
+  data: Machine[];
+  total: number;
+  limit: number;
+  offset: number;
+}
 
 interface AppSidebarProps {
   className?: string;
@@ -104,6 +124,77 @@ export function AppSidebar({
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+
+  // ─── Available machines list (always visible) ─────────────────
+  const [machines, setMachines] = useState<Machine[]>([]);
+  const [machinesLoading, setMachinesLoading] = useState(true);
+  const [machinesError, setMachinesError] = useState<string | null>(null);
+
+  const fetchMachines = useCallback(async () => {
+    setMachinesLoading(true);
+    try {
+      const data = await apiGet<MachinesResponse>("/api/machines");
+      // Dedupe by id — the WS broadcast and the REST list can both deliver
+      // the same machine; render each machine exactly once.
+      const seen = new Set<string>();
+      const deduped = (data.data ?? []).filter((m) => {
+        if (seen.has(m.id)) return false;
+        seen.add(m.id);
+        return true;
+      });
+      setMachines(deduped);
+      setMachinesError(null);
+    } catch (err) {
+      setMachinesError(
+        err instanceof Error ? err.message : "Failed to load machines",
+      );
+    } finally {
+      setMachinesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMachines();
+  }, [fetchMachines]);
+
+  // ─── Live metrics for the selected machine ─────────────────────
+  // Poll GET /v1/machines/:id/metrics every 5s so the sidebar stats
+  // (CPU/RAM/GPU) update in real time instead of showing static row values.
+  const [liveMetrics, setLiveMetrics] = useState<{
+    cpuUsage: number;
+    memoryUsage: number;
+    gpuUsage: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const machineId = selectedMachine?.id ?? "";
+    if (!machineId) {
+      setLiveMetrics(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function pollMetrics() {
+      try {
+        const res = await apiGet<{
+          cpuUsage: number;
+          memoryUsage: number;
+          gpuUsage: number;
+        }>(`/api/machines/${encodeURIComponent(machineId)}/metrics`);
+        if (!cancelled) setLiveMetrics(res);
+      } catch {
+        // Metrics endpoint may be unavailable — keep the last known values.
+      }
+    }
+
+    pollMetrics();
+    const interval = setInterval(pollMetrics, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [selectedMachine]);
 
   const initials = user?.name
     ? user.name
@@ -127,7 +218,7 @@ export function AppSidebar({
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary" />
-            <span className="font-bold tracking-tight">ALYGN</span>
+            <span className="font-bold tracking-tight">{BRAND_NAME}</span>
           </Link>
         )}
         {collapsed && (
@@ -182,6 +273,87 @@ export function AppSidebar({
 
       <Separator />
 
+      {/* Available Machines — always visible (primary machine nav) */}
+      {!collapsed && (
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-3 space-y-2">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Machines
+              </span>
+              <Link
+                href="/machines"
+                className="text-xs text-primary hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+
+            {machinesLoading ? (
+              <div className="space-y-1.5">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-8 w-full" />
+                ))}
+              </div>
+            ) : machinesError ? (
+              <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+                <p>Couldn&apos;t load machines.</p>
+                <button
+                  type="button"
+                  onClick={fetchMachines}
+                  className="mt-1 text-primary underline hover:text-primary/80"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : machines.length === 0 ? (
+              <div className="rounded-md border border-dashed px-3 py-4 text-center text-xs text-muted-foreground">
+                No machines
+              </div>
+            ) : (
+              <ul className="space-y-1">
+                {machines.map((machine) => {
+                  const status = effectiveStatus(machine);
+                  const cfg = MACHINE_STATUS_CONFIG[status];
+                  const StatusIcon = MACHINE_STATUS_ICON[status].icon;
+                  const statusColor = MACHINE_STATUS_ICON[status].color;
+                  const isActive =
+                    pathname === `/machines/${machine.id}`;
+                  return (
+                    <li key={machine.id}>
+                      <Link
+                        href={`/machines/${machine.id}`}
+                        className={cn(
+                          "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                          isActive
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        )}
+                      >
+                        <StatusIcon
+                          className={cn("h-3.5 w-3.5 shrink-0", statusColor)}
+                        />
+                        <span className="flex-1 truncate">
+                          {machine.name}
+                        </span>
+                        <Badge
+                          variant={cfg?.variant ?? "secondary"}
+                          className="capitalize text-[9px] shrink-0"
+                        >
+                          {cfg?.label ?? status}
+                        </Badge>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Separator />
+
       {/* Machine Context Panel */}
       {selectedMachine && !collapsed && (
         <>
@@ -211,7 +383,7 @@ export function AppSidebar({
 
               {/* Compact System Metrics */}
               <div className="rounded-md bg-muted/30 px-2 py-1.5">
-                <SystemMetricsBar machine={selectedMachine} />
+                <SystemMetricsBar machine={selectedMachine} metrics={liveMetrics} />
               </div>
 
               {/* Compact Quick Actions */}
@@ -278,6 +450,11 @@ export function AppSidebar({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <Separator />
+
+      {/* Brand credit + version */}
+      <SidebarFooter collapsed={collapsed} />
     </aside>
   );
 }

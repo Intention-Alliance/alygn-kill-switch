@@ -6,6 +6,14 @@ import type { Machine } from "@/types/shared";
 
 interface SystemMetricsBarProps {
   machine: Machine;
+  /** Optional live metrics (polled from GET /v1/machines/:id/metrics).
+   *  When provided, these override the static machine-row values so CPU/RAM/
+   *  GPU actually update in real time. */
+  metrics?: {
+    cpuUsage: number;
+    memoryUsage: number;
+    gpuUsage: number;
+  } | null;
   className?: string;
 }
 
@@ -59,14 +67,15 @@ function MetricBar({
   );
 }
 
-export function SystemMetricsBar({ machine, className }: SystemMetricsBarProps) {
-  const cpuUsage = machine.cpuUsage;
-  const memUsage = machine.memoryUsage;
+export function SystemMetricsBar({ machine, metrics, className }: SystemMetricsBarProps) {
+  // Prefer live polled metrics; fall back to the static machine-row values.
+  const cpuUsage = metrics?.cpuUsage ?? machine.cpuUsage;
+  const memUsage = metrics?.memoryUsage ?? machine.memoryUsage;
 
   // GPU inferred from specs — if specs.gpu exists and is not "—", simulate usage
   const hasGpu = machine.specs?.gpu && machine.specs.gpu !== "—";
   const gpuUsage: number | undefined = hasGpu
-    ? (cpuUsage !== undefined ? Math.min((cpuUsage ?? 0) * 0.3, 100) : undefined)
+    ? (metrics?.gpuUsage ?? (cpuUsage !== undefined ? Math.min((cpuUsage ?? 0) * 0.3, 100) : undefined))
     : undefined;
 
   // DPU inferred from hasDpu

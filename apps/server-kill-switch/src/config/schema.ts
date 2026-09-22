@@ -83,11 +83,11 @@ export const WebAuthnConfigSchema = z.object({
 	rpID: z
 		.string()
 		.min(1)
-		.default('andlersrv.tail62d797.ts.net'),
+		.default('localhost'),
 	origin: z
 		.string()
 		.min(1)
-		.default('https://andlersrv.tail62d797.ts.net:8443'),
+		.default('https://localhost:8443'),
 	challengeTtlMs: z.number().int().min(1000).default(300_000),
 	assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
 })
@@ -104,6 +104,12 @@ export const WebAuthnConfigSchema = z.object({
 //   KILL_SWITCH_VERIFY_ENABLED              -> verifyEnabled
 //   KILL_SWITCH_VERIFY_MODE                 -> verifyMode
 //   KILL_SWITCH_VERIFIER_SYSTEM_PROMPT_PATH -> verifierSystemPromptPath
+//   KILL_SWITCH_VERIFIER_TARGET_MODEL       -> verifierTargetModel
+//
+// `verifierTargetModel` documents the FUTURE trained LoRA adapter
+// (dignity-verification-v0.1-preview). Until that adapter is created, the
+// verifier runs on the stock `verifierModel` (qwen2.5:0.5b). Once the LoRA
+// adapter exists, set KILL_SWITCH_VERIFIER_MODEL to the target model name.
 export const VerificationConfigSchema = z.object({
 	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
 	verifierBaseUrl: z.string().url().default('http://localhost:11434'),
@@ -114,6 +120,10 @@ export const VerificationConfigSchema = z.object({
 		.string()
 		.min(1)
 		.default('docs/specs/verifier-system-prompt.md'),
+	verifierTargetModel: z
+		.string()
+		.min(1)
+		.default('dignity-verification-v0.1-preview'),
 })
 
 export const AppConfigSchema = z.object({

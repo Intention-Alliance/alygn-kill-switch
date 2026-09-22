@@ -86,6 +86,10 @@ const nextConfig: NextConfig = {
         source: "/api/settings/:path*",
         destination: `${backendUrl}/v1/settings/:path*`,
       },
+      {
+        source: "/api/inference-logs/:path*",
+        destination: `${backendUrl}/v1/inference-logs/:path*`,
+      },
       // Health and metrics endpoints
       {
         source: "/api/health",

@@ -22,19 +22,9 @@ import { eq, and } from 'drizzle-orm';
 import { db } from '../db/index';
 import { featureFlags, flagAuditLog, machineFlags, machines } from '../db/schema';
 import { getAuthorizationMode, isKillAuthorizationFlag } from '../services/kill-authorization';
+import { PREDEFINED_FLAG_DEFINITIONS, getFlagType } from '../db/flag-definitions';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
-
-// Infer the JS type from a raw stored value string. Used when getFlagType
-// returns null (i.e. the flag key is not in KNOWN_FLAG_TYPES). Per contract
-// § 3.2: the resolved effective value must always be coerced back to the
-// right JS type.
-function inferType(stored: string): 'boolean' | 'number' | 'string' {
-  if (stored === 'true' || stored === 'false') return 'boolean';
-  const n = Number(stored);
-  if (Number.isFinite(n) && /^-?\d+(\.\d+)?$/.test(stored)) return 'number';
-  return 'string';
-}
 
 function json(res: any, statusCode: number, body: Record<string, unknown>) {
   res.writeHead(statusCode, { 'Content-Type': 'application/json' });
@@ -96,27 +86,37 @@ async function logMachineFlagAction(
 
 // ─── Per-Machine Flag Helpers (v1.1 § 8.2a) ──────────────────────────────
 
-// Maps the 5 predefined flag keys to their declared type. The legacy
-// feature_flag table does not store a type column, so we infer from the key.
-// Per contract § 0 + app/(dashboard)/flags/page.tsx lines 27–55.
-const KNOWN_FLAG_TYPES: Record<string, 'boolean' | 'number' | 'string'> = {
-  llm_interception_enabled: 'boolean',
-  auto_stop_threshold: 'number',
-  damage_logging_level: 'string',
-  alert_on_critical_score: 'boolean',
-  request_sampling_rate: 'number',
-};
+// Declared types come from the single source of truth (db/flag-definitions.ts).
+// Custom (non-predefined) flags infer their type from the stored value.
 
-function getFlagType(flagKey: string): 'boolean' | 'number' | 'string' | null {
-  return KNOWN_FLAG_TYPES[flagKey] ?? null;
+// Infer the JS type from a raw stored value string. Used when getFlagType
+// returns null (i.e. the flag key is not predefined). Per contract § 3.2:
+// the resolved effective value must always be coerced back to the right type.
+function inferType(stored: string): 'boolean' | 'number' | 'string' {
+  if (stored === 'true' || stored === 'false') return 'boolean';
+  const n = Number(stored);
+  if (Number.isFinite(n) && /^-?\d+(\.\d+)?$/.test(stored)) return 'number';
+  return 'string';
 }
 
-// Coerce a raw text value (from machine_flag.value) into the flag's declared
-// JS type. Per contract § 3.1 "Type coercion rule (binding)".
+// Infer the declared type from an incoming (unserialized) value.
+function inferIncomingType(raw: unknown): 'boolean' | 'number' | 'string' {
+  if (typeof raw === 'boolean') return 'boolean';
+  if (typeof raw === 'number') return 'number';
+  return 'string';
+}
+
+// Coerce a raw value into the flag's declared JS type. Accepts both the
+// TEXT storage form (strings) and native JS values (tests/mocks) so the
+// helpers are robust either way. Per contract § 3.1 "Type coercion rule".
 function coerceFlagValue(raw: string | null | undefined, type: 'boolean' | 'number' | 'string' | null): unknown {
   if (raw === null || raw === undefined) return null;
-  if (type === 'boolean') return raw === 'true' || raw === '1';
+  if (type === 'boolean') {
+    if (typeof raw === 'boolean') return raw;
+    return raw === 'true' || raw === '1';
+  }
   if (type === 'number') {
+    if (typeof raw === 'number') return raw;
     const n = Number(raw);
     return Number.isFinite(n) ? n : null;
   }
@@ -231,10 +231,21 @@ export async function handleFlagsRoutes(
         return true;
       }
 
+      // F4: store the value with its real type, not Boolean(value).
+      // Predefined flags use their declared type; custom flags infer from
+      // the incoming JSON type. Stored as TEXT (v1.2).
+      const declaredType = getFlagType(body.key);
+      const type = declaredType ?? inferIncomingType(body.value);
+      const coerced = coerceIncomingValue(body.value, type);
+      if (!coerced.ok) {
+        json(res, 400, { error: coerced.error });
+        return true;
+      }
+
       const flag = {
         id: crypto.randomUUID(),
         key: body.key,
-        value: Boolean(body.value),
+        value: coerced.value,
         description: body.description ?? null,
         enabled: body.enabled !== false,
         createdBy: userId,
@@ -245,7 +256,7 @@ export async function handleFlagsRoutes(
       await db.insert(featureFlags).values(flag).run();
       await logFlagAction(flag.id, 'created', userId, undefined, JSON.stringify(flag));
 
-      json(res, 201, { flag: { ...flag, value: !!flag.value, enabled: !!flag.enabled } });
+      json(res, 201, { flag: { ...flag, value: coerceFlagValue(flag.value, type), enabled: !!flag.enabled } });
       if (publishEvent) {
         await publishEvent('bcp:flags:updates', JSON.stringify({ type: 'flag-update', action: 'created', flag }));
       }
@@ -290,7 +301,17 @@ export async function handleFlagsRoutes(
       };
 
       if (body.key !== undefined) updates.key = body.key;
-      if (body.value !== undefined) updates.value = Boolean(body.value);
+      if (body.value !== undefined) {
+        // F4: coerce by declared type (or infer for custom flags) instead of
+        // Boolean(value) — preserves number/string flag values.
+        const type = getFlagType(existing.key) ?? inferIncomingType(body.value);
+        const coerced = coerceIncomingValue(body.value, type);
+        if (!coerced.ok) {
+          json(res, 400, { error: coerced.error });
+          return true;
+        }
+        updates.value = coerced.value;
+      }
       if (body.description !== undefined) updates.description = body.description;
       if (body.enabled !== undefined) updates.enabled = Boolean(body.enabled);
 
@@ -314,7 +335,7 @@ export async function handleFlagsRoutes(
       json(res, 200, {
         flag: {
           ...updated,
-          value: !!updated!.value,
+          value: coerceFlagValue(updated!.value, getFlagType(updated!.key) ?? inferType(String(updated!.value))),
           enabled: !!updated!.enabled,
         },
       });
@@ -398,23 +419,10 @@ export async function handleFlagsRoutes(
         overrides.map((o) => [o.flagKey, o]),
       );
 
-      // Per contract § 3.1: preserve the seeded flag order by iterating
-      // the 5 known keys in the documented sequence.
-      const orderedKeys = [
-        'llm_interception_enabled',
-        'auto_stop_threshold',
-        'damage_logging_level',
-        'alert_on_critical_score',
-        'request_sampling_rate',
-      ];
-      const descriptions: Record<string, string> = {
-        llm_interception_enabled: 'Master toggle for LLM request interception. When false, all requests pass through unscored. Toggle per-machine for granular control.',
-        auto_stop_threshold: 'Score threshold for automatic blocking (0.0–1.0). Lower values = stricter blocking. Set to 1.0 to disable auto-blocking while still logging scores.',
-        damage_logging_level: 'Verbosity: minimal (blocked only), standard (blocked + near-threshold), verbose (all scored). Higher levels increase storage usage.',
-        alert_on_critical_score: 'Notify admins when a request scores in the critical band.',
-        request_sampling_rate: 'Fraction of requests sampled for scoring (0.0–1.0). 1.0 = all requests.',
-      };
-
+      // F2/F3: dynamic merged view — iterate the predefined flags in
+      // documented order, then append any additional global flags (custom or
+      // legacy) that are not predefined. Overrides are matched by key, so
+      // nothing is ever silently dropped.
       const flags: Array<{
         key: string;
         value: unknown;
@@ -422,10 +430,9 @@ export async function handleFlagsRoutes(
         description: string;
         overridden: boolean;
       }> = [];
-      for (const key of orderedKeys) {
-        const global = globals.find((g) => g.key === key);
-        const ov = overrideMap.get(key);
-        const type = getFlagType(key) ?? 'string';
+      const seenKeys = new Set<string>();
+
+      const emitFlag = (key: string, global: typeof globals[number] | undefined, ov: typeof overrides[number] | undefined) => {
         // Resolve raw value: override takes precedence, else global stored value.
         let rawResolved: string | null;
         if (ov) {
@@ -433,21 +440,66 @@ export async function handleFlagsRoutes(
         } else if (global) {
           rawResolved = global.value === null || global.value === undefined ? null : String(global.value);
         } else {
-          // No global row yet (seeding incomplete) — return null with overridden=false.
           rawResolved = null;
         }
-        const coerced = coerceFlagValue(rawResolved, type);
-        if (coerced === null && rawResolved !== null) {
-          console.warn(`[flags] Unparseable value for ${key}: ${rawResolved}`);
-          continue;
+
+        if (rawResolved === null) {
+          // Known flag with no value anywhere: emit with null (never drop).
+          flags.push({
+            key,
+            value: null,
+            type: getFlagType(key) ?? 'string',
+            description: global?.description ?? '',
+            overridden: !!ov,
+          });
+          seenKeys.add(key);
+          return;
         }
-        flags.push({
-          key,
-          value: coerced,
-          type,
-          description: global?.description ?? descriptions[key] ?? '',
-          overridden: !!ov,
-        });
+
+        const type = getFlagType(key) ?? inferType(rawResolved);
+        const coerced = coerceFlagValue(rawResolved, type);
+        if (coerced === null) {
+          // F3: value unparseable for the declared type (legacy garbage such as
+          // a boolean stored for a number flag) — surface it raw instead of
+          // silently dropping the flag from the view.
+          console.warn(`[flags] Unparseable value for ${key}: ${rawResolved} — surfacing raw`);
+          flags.push({
+            key,
+            value: rawResolved,
+            type: inferType(rawResolved),
+            description: global?.description ?? '',
+            overridden: !!ov,
+          });
+        } else {
+          flags.push({
+            key,
+            value: coerced,
+            type,
+            description: global?.description ?? '',
+            overridden: !!ov,
+          });
+        }
+        seenKeys.add(key);
+      };
+
+      // 1) Predefined flags in document order (ADR-133).
+      for (const def of PREDEFINED_FLAG_DEFINITIONS) {
+        const global = globals.find((g) => g.key === def.key);
+        const ov = overrideMap.get(def.key);
+        emitFlag(def.key, global, ov);
+      }
+      // 2) Any other global flags (custom / legacy) not covered above.
+      for (const g of globals) {
+        if (!seenKeys.has(g.key)) {
+          emitFlag(g.key, g, overrideMap.get(g.key));
+        }
+      }
+      // 3) Orphan overrides (flag row deleted but override remains): surface
+      //    them so they are never invisible.
+      for (const ov of overrides) {
+        if (!seenKeys.has(ov.flagKey)) {
+          emitFlag(ov.flagKey, undefined, ov);
+        }
       }
 
       json(res, 200, {

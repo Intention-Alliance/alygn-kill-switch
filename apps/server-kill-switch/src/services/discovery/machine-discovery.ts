@@ -17,7 +17,7 @@
  * never floods the network (ADR-135 consequences §2).
  */
 
-import { execSync } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { networkInterfaces } from 'node:os'
 import type { DiscoveredMachine, DiscoverySource } from '@align/shared-types'
 
@@ -74,34 +74,45 @@ export function subnetHosts(subnet: LocalSubnet, maxHosts: number): string[] {
 	return hosts
 }
 
-function pingHost(ip: string, timeoutMs: number): boolean {
-	try {
-		execSync(
-			`ping -c 1 -W ${Math.max(1, Math.floor(timeoutMs / 1000))} ${ip}`,
-			{
-				stdio: 'ignore',
-				timeout: timeoutMs + 500,
-			},
-		)
-		return true
-	} catch {
-		return false
-	}
+function pingHost(ip: string, timeoutMs: number): Promise<boolean> {
+	return new Promise((resolve) => {
+		const child = spawn('ping', ['-c', '1', '-W', String(Math.max(1, Math.floor(timeoutMs / 1000))), ip], {
+			stdio: 'ignore',
+		})
+		const timer = setTimeout(() => {
+			child.kill('SIGKILL')
+			resolve(false)
+		}, timeoutMs + 500)
+		child.on('error', () => {
+			clearTimeout(timer)
+			resolve(false)
+		})
+		child.on('close', (code) => {
+			clearTimeout(timer)
+			resolve(code === 0)
+		})
+	})
 }
 
-function resolveHostname(ip: string): string | null {
-	try {
-		const output = execSync(`getent hosts ${ip}`, {
-			stdio: 'pipe',
-			timeout: 2000,
+function resolveHostname(ip: string): Promise<string | null> {
+	return new Promise((resolve) => {
+		const child = spawn('getent', ['hosts', ip], { stdio: ['ignore', 'pipe', 'ignore'] })
+		const timer = setTimeout(() => {
+			child.kill('SIGKILL')
+			resolve(null)
+		}, 2000)
+		let out = ''
+		child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
+		child.on('error', () => {
+			clearTimeout(timer)
+			resolve(null)
 		})
-			.toString()
-			.trim()
-		const parts = output.split(/\s+/)
-		return parts.length > 1 ? parts[1] : null
-	} catch {
-		return null
-	}
+		child.on('close', () => {
+			clearTimeout(timer)
+			const parts = out.trim().split(/\s+/)
+			resolve(parts.length > 1 ? parts[1] : null)
+		})
+	})
 }
 
 export function buildDiscoveredMachine(
@@ -143,8 +154,8 @@ export async function sweepLocalNetwork({
 	for (const subnet of subnets) {
 		const candidates = subnetHosts(subnet, maxHostsPerSweep)
 		for (const ip of candidates) {
-			if (pingHost(ip, pingTimeoutMs)) {
-				const hostname = resolveHostname(ip)
+			if (await pingHost(ip, pingTimeoutMs)) {
+				const hostname = await resolveHostname(ip)
 				hosts.push(buildDiscoveredMachine(ip, 'arp-sweep', hostname))
 			}
 		}
@@ -166,10 +177,14 @@ export async function discoverMdns({
 	mdnsTimeoutMs = 3000,
 }: MachineDiscoveryParams = {}): Promise<DiscoveredMachine[]> {
 	try {
-		const output = execSync(
-			`timeout ${Math.ceil(mdnsTimeoutMs / 1000)} avahi-browse -rt _alygn-killswitch._tcp 2>/dev/null || true`,
-			{ stdio: 'pipe', timeout: mdnsTimeoutMs + 1000 },
-		).toString()
+		const output = await new Promise<string>((resolve) => {
+			const child = spawn('avahi-browse', ['-rt', '_alygn-killswitch._tcp'], { stdio: ['ignore', 'pipe', 'ignore'] })
+			const timer = setTimeout(() => { child.kill('SIGKILL'); resolve('') }, mdnsTimeoutMs + 1000)
+			let out = ''
+			child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
+			child.on('error', () => { clearTimeout(timer); resolve('') })
+			child.on('close', () => { clearTimeout(timer); resolve(out) })
+		})
 		const hosts: DiscoveredMachine[] = []
 		const lines = output.split('\n')
 		for (const line of lines) {
