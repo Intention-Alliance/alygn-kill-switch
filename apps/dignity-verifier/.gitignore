@@ -24,6 +24,9 @@ training/checkpoints/
 training/reports/
 training/mlruns/
 training/__pycache__/
+training/outputs/
+training/.cache/
+llama-index/__pycache__/
 training/*.log
 
 # Next.js build output
