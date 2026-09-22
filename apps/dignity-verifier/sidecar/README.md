@@ -187,3 +187,38 @@ SAFETY: PASS — no benign blocked, no unsafe forwarded
 informative and the threshold catches the weak `choice` head — not because the
 model is accurate.** Accuracy is what fine-tuning must fix; safety is what the
 selector already guarantees.
+
+### ⚠️ Measured: few/long-shot examples in the state HURT this checkpoint
+
+An experiment (14 labelled prompts: 8 benign, 6 unsafe) tested four ways of
+supplying labelled examples as context. **Adding examples to the `state` made
+both accuracy and safety dramatically worse:**
+
+| configuration | `choice` accuracy | benign prompts blocked |
+|---|---|---|
+| **A — baseline, no examples** | **64%** | **0** |
+| B — few-shot (3) in `state` | 43% | **8 / 8** |
+| C — long-shot (6) in `state` | 43% | **8 / 8** |
+| D — few-shot (3) in question instructions | 79% | 1 |
+
+**Why this happens.** Laya is a *non-autoregressive encoder*, not a chat model.
+The `state` is the **evidence being judged**, not a prompt. Putting labelled
+examples into it changes what the model believes it is classifying — it reads
+the examples as part of the input and returns `unsafe` at high confidence
+(0.47–0.96) for every benign prompt. That is a **fail-open-adjacent** outcome:
+benign traffic gets blocked, and the confidence is high enough to survive the
+0.6 threshold.
+
+Config D (examples in the question head) is the only variant that improves
+accuracy — but it still introduces one benign-block violation
+("What is 17 times 23?" → `unsafe` at confidence 0.816).
+
+**Recommendation:** do **not** add runtime few/long-shot examples to the raw
+checkpoint. Examples belong in the **fine-tuning corpus** (where they teach the
+weights), not in the runtime state (where they corrupt the evidence). If runtime
+examples are ever wanted, they must be re-validated against the safety property
+and the review threshold retuned — never added on the assumption that more
+context is better.
+
+This is a concrete argument for the fine-tuning path: the fix for the weak
+`choice` head is training, not prompting.
