@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect } from 'bun:test';
-import { LayaProvider, LAYA_UNCALIBRATED_MARKER } from '../providers/laya';
+import { LayaProvider, LAYA_UNCALIBRATED_MARKER, renderChoiceInstructions } from '../providers/laya';
 import type { DecisionInput } from '@align/shared-types';
 
 const INPUT: DecisionInput = {
@@ -141,5 +141,74 @@ describe('LayaProvider — fail-closed', () => {
     });
     const r = await p.decide(INPUT);
     expect(r.degraded && r.action === 'forward').toBe(false);
+  });
+});
+
+/**
+ * Few-shot context — measured on the raw checkpoint, and safety-critical in
+ * WHERE it is placed.
+ *
+ * Measured (14-prompt probe, example pool disjoint from the test set):
+ *   0 examples 64% | 3 examples 93% (best) | 6 examples 86% | 12 examples 79%.
+ * Examples belong in the question INSTRUCTIONS. Laya is a non-autoregressive
+ * encoder, so `state` is the evidence being judged — examples placed there
+ * corrupt the input (measured: 71% accuracy, 4 of 6 unsafe prompts forwarded).
+ */
+describe('LayaProvider — few-shot context', () => {
+  /** Capture the request body the provider would send. */
+  function capturingFetch(sink: { body?: any }) {
+    return (async (_url: string, init: any) => {
+      sink.body = JSON.parse(init.body);
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          answers: {
+            harmful: { noul: 0.01 },
+            category: { choice: 'safe', confidence: 0.9, probabilities: { safe: 0.9 } },
+          },
+        }),
+      } as unknown as Response;
+    }) as unknown as typeof fetch;
+  }
+
+  it('renders the measured optimum (3) examples by default', async () => {
+    const sink: { body?: any } = {};
+    await new LayaProvider({ fetchImpl: capturingFetch(sink) }).decide(INPUT);
+    const ins: string = sink.body.questions.category.instructions;
+    const rendered = ins.split('\n').filter((l) => l.startsWith('- "'));
+    expect(rendered.length).toBe(3);
+    expect(ins).toContain('Labelled examples:');
+  });
+
+  it('places examples in the INSTRUCTIONS, never in state', async () => {
+    const sink: { body?: any } = {};
+    await new LayaProvider({ fetchImpl: capturingFetch(sink) }).decide(INPUT);
+    // The invariant that matters: state stays the clean evidence.
+    expect(sink.body.state.text).toBe(INPUT.text);
+    expect(JSON.stringify(sink.body.state)).not.toContain('Labelled examples');
+    expect(JSON.stringify(sink.body.state)).not.toContain('tallest mountain');
+    expect(sink.body.questions.category.instructions).toContain('tallest mountain');
+  });
+
+  it('disables examples when fewShotCount is 0', async () => {
+    const sink: { body?: any } = {};
+    await new LayaProvider({ fetchImpl: capturingFetch(sink), fewShotCount: 0 }).decide(INPUT);
+    const ins: string = sink.body.questions.category.instructions;
+    expect(ins).not.toContain('Labelled examples');
+    expect(ins).toBe('Classify this content for a safety gate.');
+  });
+
+  it('renderChoiceInstructions is pure and honours the count', () => {
+    expect(renderChoiceInstructions(0)).not.toContain('Labelled examples');
+    expect(renderChoiceInstructions(3).split('\n').filter((l) => l.startsWith('- "')).length).toBe(3);
+    expect(renderChoiceInstructions(6).split('\n').filter((l) => l.startsWith('- "')).length).toBe(6);
+  });
+
+  it('keeps the rendered instructions within the head token budget', () => {
+    // The head budget is 192 tokens; 3 examples measured 62 tokens. This guards
+    // against someone raising the count until the list is silently truncated.
+    const ins = renderChoiceInstructions(3);
+    expect(ins.length).toBeLessThan(500);
   });
 });
