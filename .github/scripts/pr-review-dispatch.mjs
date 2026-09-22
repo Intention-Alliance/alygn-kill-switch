@@ -1,45 +1,19 @@
 #!/usr/bin/env node
 /**
  * pr-review-dispatch.mjs — kill-switch edition
- *
- * GitHub Actions side of the Wobblus PR-review MCP. Signs a JWT with the
- * repo's GH_ACTIONS_PRIVATE_KEY (Ed25519) and POSTs a `pr-review.request`
- * event to the openclaw-webhook fabric:
- *
- *   https://webhook.andler.dev/webhook/request
- *
- * The webhook verifies the JWT against the trusted public key for this
- * issuer, routes to the pr-review-bridge handler, which spawns Nikaya
- * (reviewer agent), folds in coderabbitai's comments as a co-contributor,
- * and posts the synthesized report back to the PR.
- *
  * ── Two deliberate differences from the landing copy ──────────────────────
  *
  * 1. ISSUER. This repo uses its OWN keypair (`github-actions-kill-switch`),
- *    registered at
- *      ~/.openclaw/secrets/trusted-public-keys/github-actions-kill-switch.pem
- *    The webhook resolves `iss` -> `${TRUSTED_KEYS_DIR}/${iss}.pem`, so a
- *    distinct issuer keeps the landing repo's existing `github-actions` key
- *    working, untouched. Never share one keypair across repos.
- *
  * 2. SIGNING API. Ed25519 has no digest, so `createSign('ed25519')` throws
  *    ERR_CRYPTO_INVALID_DIGEST. The correct call is `sign(null, data, key)`.
  *    The landing copy still uses `createSign('ed25519')`; that path has never
  *    run there because its dispatch job is gated behind a lint job that fails.
  *    This copy uses the API that actually works.
- *
- * Env required:
- *   GH_ACTIONS_PRIVATE_KEY — Ed25519 PEM private key (repo secret)
- *   WEBHOOK_X_KEY          — X-Webhook-Key gate (repo secret)
- *   PR_NUMBER, PR_TITLE, PR_HEAD_SHA, PR_BASE_REF, PR_HEAD_REF,
- *   PR_CHANGED_FILES, PR_DIFF_URL — from the GitHub context
- *
- * No external dependencies: Ed25519 signing via node:crypto.
  */
 import { createPrivateKey, sign, createHash, randomUUID } from 'node:crypto'
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL ?? 'https://webhook.andler.dev/webhook/request'
-const ISSUER = process.env.WEBHOOK_ISSUER ?? 'github-actions-kill-switch'
+const WEBHOOK_URL = process.env.WEBHOOK_URL
+const ISSUER = process.env.WEBHOOK_ISSUER
 const AUDIENCE = 'openclaw-webhook'
 const EVENT_TYPE = 'pr-review.request'
 const TTL_SECONDS = 300
