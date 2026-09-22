@@ -19,8 +19,8 @@
  * Interface contract follows the same HardwareMonitor pattern as all other monitors.
  */
 
-import type { HardwareMonitor } from './interface';
-import type { HardwareMetric } from '../types';
+import type { HardwareMetric } from "../types";
+import type { HardwareMonitor } from "./interface";
 
 /**
  * DPU Monitor — stub implementation for future hardware.
@@ -29,22 +29,22 @@ import type { HardwareMetric } from '../types';
  * or use dpuctl CLI tools, mirroring the GpuMonitor nvidia-smi pattern.
  */
 export class DpuMonitor implements HardwareMonitor {
-  public readonly name = 'dpu';
+	public readonly name = "dpu";
 
-  public async collect(): Promise<HardwareMetric[]> {
-    // Return an "unavailable" status metric rather than an empty array,
-    // so consumers can distinguish "no hardware" from "error".
-    return [
-      {
-        monitorName: this.name,
-        metricName: 'status',
-        metricValue: 0,
-        unit: 'string',
-        labels: {
-          status: 'unavailable',
-          reason: 'no_dpu_hardware',
-        },
-      },
-    ];
-  }
+	public async collect(): Promise<HardwareMetric[]> {
+		// Return an "unavailable" status metric rather than an empty array,
+		// so consumers can distinguish "no hardware" from "error".
+		return [
+			{
+				monitorName: this.name,
+				metricName: "status",
+				metricValue: 0,
+				unit: "string",
+				labels: {
+					status: "unavailable",
+					reason: "no_dpu_hardware",
+				},
+			},
+		];
+	}
 }

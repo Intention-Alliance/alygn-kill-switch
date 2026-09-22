@@ -14,123 +14,125 @@
  *  - swap_usage_percent: swap usage as percentage
  */
 
-import { totalmem, freemem } from 'node:os';
-import { readFileSync, existsSync } from 'node:fs';
-import type { HardwareMonitor } from './interface';
-import type { HardwareMetric } from '../types';
+import { existsSync, readFileSync } from "node:fs";
+import { freemem, totalmem } from "node:os";
+import type { HardwareMetric } from "../types";
+import type { HardwareMonitor } from "./interface";
 
 /**
  * Memory Monitor — tracks RAM and swap usage.
  */
 export class MemoryMonitor implements HardwareMonitor {
-  public readonly name = 'memory';
+	public readonly name = "memory";
 
-  public async collect(): Promise<HardwareMetric[]> {
-    const metrics: HardwareMetric[] = [];
+	public async collect(): Promise<HardwareMetric[]> {
+		const metrics: HardwareMetric[] = [];
 
-    const totalBytes = totalmem();
-    const freeBytes = freemem();
-    const usedBytes = totalBytes - freeBytes;
-    const usagePercent = totalBytes > 0
-      ? Math.round((usedBytes / totalBytes) * 100 * 100) / 100
-      : 0;
+		const totalBytes = totalmem();
+		const freeBytes = freemem();
+		const usedBytes = totalBytes - freeBytes;
+		const usagePercent =
+			totalBytes > 0
+				? Math.round((usedBytes / totalBytes) * 100 * 100) / 100
+				: 0;
 
-    metrics.push({
-      monitorName: this.name,
-      metricName: 'total_bytes',
-      metricValue: totalBytes,
-      unit: 'bytes',
-    });
+		metrics.push({
+			monitorName: this.name,
+			metricName: "total_bytes",
+			metricValue: totalBytes,
+			unit: "bytes",
+		});
 
-    metrics.push({
-      monitorName: this.name,
-      metricName: 'used_bytes',
-      metricValue: usedBytes,
-      unit: 'bytes',
-    });
+		metrics.push({
+			monitorName: this.name,
+			metricName: "used_bytes",
+			metricValue: usedBytes,
+			unit: "bytes",
+		});
 
-    metrics.push({
-      monitorName: this.name,
-      metricName: 'free_bytes',
-      metricValue: freeBytes,
-      unit: 'bytes',
-    });
+		metrics.push({
+			monitorName: this.name,
+			metricName: "free_bytes",
+			metricValue: freeBytes,
+			unit: "bytes",
+		});
 
-    metrics.push({
-      monitorName: this.name,
-      metricName: 'usage_percent',
-      metricValue: usagePercent,
-      unit: 'percent',
-    });
+		metrics.push({
+			monitorName: this.name,
+			metricName: "usage_percent",
+			metricValue: usagePercent,
+			unit: "percent",
+		});
 
-    // ─── Swap (Linux /proc/meminfo, best-effort) ───────────────────
-    const swapMetrics = this.readSwapMetrics();
-    metrics.push(...swapMetrics);
+		// ─── Swap (Linux /proc/meminfo, best-effort) ───────────────────
+		const swapMetrics = this.readSwapMetrics();
+		metrics.push(...swapMetrics);
 
-    return metrics;
-  }
+		return metrics;
+	}
 
-  /**
-   * Read swap metrics from /proc/meminfo on Linux.
-   * Gracefully returns empty array on non-Linux or permission issues.
-   */
-  private readSwapMetrics(): HardwareMetric[] {
-    try {
-      const meminfoPath = '/proc/meminfo';
+	/**
+	 * Read swap metrics from /proc/meminfo on Linux.
+	 * Gracefully returns empty array on non-Linux or permission issues.
+	 */
+	private readSwapMetrics(): HardwareMetric[] {
+		try {
+			const meminfoPath = "/proc/meminfo";
 
-      if (!existsSync(meminfoPath)) {
-        return [];
-      }
+			if (!existsSync(meminfoPath)) {
+				return [];
+			}
 
-      const content = readFileSync(meminfoPath, 'utf-8');
-      const lines = content.split('\n');
+			const content = readFileSync(meminfoPath, "utf-8");
+			const lines = content.split("\n");
 
-      // Parse /proc/meminfo format: "SwapTotal:      123456 kB"
-      let swapTotalKb = 0;
-      let swapFreeKb = 0;
+			// Parse /proc/meminfo format: "SwapTotal:      123456 kB"
+			let swapTotalKb = 0;
+			let swapFreeKb = 0;
 
-      for (const line of lines) {
-        if (line.startsWith('SwapTotal:')) {
-          swapTotalKb = parseInt(line.split(':')[1]?.trim() || '0', 10);
-        }
-        if (line.startsWith('SwapFree:')) {
-          swapFreeKb = parseInt(line.split(':')[1]?.trim() || '0', 10);
-        }
-      }
+			for (const line of lines) {
+				if (line.startsWith("SwapTotal:")) {
+					swapTotalKb = parseInt(line.split(":")[1]?.trim() || "0", 10);
+				}
+				if (line.startsWith("SwapFree:")) {
+					swapFreeKb = parseInt(line.split(":")[1]?.trim() || "0", 10);
+				}
+			}
 
-      if (swapTotalKb === 0) {
-        return [];
-      }
+			if (swapTotalKb === 0) {
+				return [];
+			}
 
-      const swapTotalBytes = swapTotalKb * 1024;
-      const swapFreeBytes = swapFreeKb * 1024;
-      const swapUsedBytes = swapTotalBytes - swapFreeBytes;
-      const swapUsagePercent = swapTotalBytes > 0
-        ? Math.round((swapUsedBytes / swapTotalBytes) * 100 * 100) / 100
-        : 0;
+			const swapTotalBytes = swapTotalKb * 1024;
+			const swapFreeBytes = swapFreeKb * 1024;
+			const swapUsedBytes = swapTotalBytes - swapFreeBytes;
+			const swapUsagePercent =
+				swapTotalBytes > 0
+					? Math.round((swapUsedBytes / swapTotalBytes) * 100 * 100) / 100
+					: 0;
 
-      return [
-        {
-          monitorName: this.name,
-          metricName: 'swap_total_bytes',
-          metricValue: swapTotalBytes,
-          unit: 'bytes',
-        },
-        {
-          monitorName: this.name,
-          metricName: 'swap_used_bytes',
-          metricValue: swapUsedBytes,
-          unit: 'bytes',
-        },
-        {
-          monitorName: this.name,
-          metricName: 'swap_usage_percent',
-          metricValue: swapUsagePercent,
-          unit: 'percent',
-        },
-      ];
-    } catch {
-      return [];
-    }
-  }
+			return [
+				{
+					monitorName: this.name,
+					metricName: "swap_total_bytes",
+					metricValue: swapTotalBytes,
+					unit: "bytes",
+				},
+				{
+					monitorName: this.name,
+					metricName: "swap_used_bytes",
+					metricValue: swapUsedBytes,
+					unit: "bytes",
+				},
+				{
+					monitorName: this.name,
+					metricName: "swap_usage_percent",
+					metricValue: swapUsagePercent,
+					unit: "percent",
+				},
+			];
+		} catch {
+			return [];
+		}
+	}
 }
