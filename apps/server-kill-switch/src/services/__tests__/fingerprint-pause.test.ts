@@ -17,7 +17,7 @@
  *  - IP+UA fallback hashes the IP (does not store raw IP)
  */
 
-import { beforeEach, describe, expect, it } from 'bun:test'
+import { beforeEach, describe, expect, it } from "bun:test";
 import {
 	blockFingerprint,
 	checkFingerprintBlocked,
@@ -29,206 +29,208 @@ import {
 	selfHealOnSafe,
 	sweepExpiredBlocks,
 	unblockFingerprint,
-} from '../fingerprint-pause'
+} from "../fingerprint-pause";
 
-describe('deriveFingerprint (priority order)', () => {
-	it('returns body.machineId when present (priority 1)', () => {
-		expect(deriveFingerprint({ body: { machineId: 'm-1' } })).toBe(
-			'machine:m-1',
-		)
-	})
+describe("deriveFingerprint (priority order)", () => {
+	it("returns body.machineId when present (priority 1)", () => {
+		expect(deriveFingerprint({ body: { machineId: "m-1" } })).toBe(
+			"machine:m-1",
+		);
+	});
 
-	it('falls back to body.sessionId when no machineId (priority 2)', () => {
-		expect(deriveFingerprint({ body: { sessionId: 's-1' } })).toBe(
-			'session:s-1',
-		)
-	})
+	it("falls back to body.sessionId when no machineId (priority 2)", () => {
+		expect(deriveFingerprint({ body: { sessionId: "s-1" } })).toBe(
+			"session:s-1",
+		);
+	});
 
-	it('falls back to body.fingerprint when no machineId/sessionId', () => {
-		expect(deriveFingerprint({ body: { fingerprint: 'fp-1' } })).toBe('fp:fp-1')
-	})
+	it("falls back to body.fingerprint when no machineId/sessionId", () => {
+		expect(deriveFingerprint({ body: { fingerprint: "fp-1" } })).toBe(
+			"fp:fp-1",
+		);
+	});
 
-	it('falls back to header x-fingerprint when no body fields', () => {
-		expect(deriveFingerprint({ headers: { 'x-fingerprint': 'h-fp-1' } })).toBe(
-			'fp:h-fp-1',
-		)
-	})
+	it("falls back to header x-fingerprint when no body fields", () => {
+		expect(deriveFingerprint({ headers: { "x-fingerprint": "h-fp-1" } })).toBe(
+			"fp:h-fp-1",
+		);
+	});
 
-	it('falls back to x-api-key (priority 4) and hashes the value', () => {
-		const fp = deriveFingerprint({ headers: { 'x-api-key': '***' } })
-		expect(fp.startsWith('apikey:')).toBe(true)
-		expect(fp.length).toBeGreaterThan(7)
+	it("falls back to x-api-key (priority 4) and hashes the value", () => {
+		const fp = deriveFingerprint({ headers: { "x-api-key": "***" } });
+		expect(fp.startsWith("apikey:")).toBe(true);
+		expect(fp.length).toBeGreaterThan(7);
 		// Don't store the raw key.
-		expect(fp).not.toContain('***')
-	})
+		expect(fp).not.toContain("***");
+	});
 
-	it('falls back to authorization Bearer header', () => {
+	it("falls back to authorization Bearer header", () => {
 		const fp = deriveFingerprint({
-			headers: { authorization: '***' },
-		})
-		expect(fp.startsWith('bearer:')).toBe(true)
-		expect(fp).not.toContain('***')
-	})
+			headers: { authorization: "***" },
+		});
+		expect(fp.startsWith("bearer:")).toBe(true);
+		expect(fp).not.toContain("***");
+	});
 
-	it('falls back to IP+UA hash (priority 5)', () => {
+	it("falls back to IP+UA hash (priority 5)", () => {
 		const fp = deriveFingerprint({
-			ip: '192.168.1.42',
-			headers: { 'user-agent': 'curl/8.0' },
-		})
-		expect(fp.startsWith('ipua:')).toBe(true)
+			ip: "192.168.1.42",
+			headers: { "user-agent": "curl/8.0" },
+		});
+		expect(fp.startsWith("ipua:")).toBe(true);
 		// Don't store raw IP.
-		expect(fp).not.toContain('192.168.1.42')
-	})
+		expect(fp).not.toContain("192.168.1.42");
+	});
 
 	it('returns "" when no identity signal', () => {
-		expect(deriveFingerprint({})).toBe('')
-		expect(deriveFingerprint({ body: null })).toBe('')
-	})
+		expect(deriveFingerprint({})).toBe("");
+		expect(deriveFingerprint({ body: null })).toBe("");
+	});
 
-	it('priority order is stable: machineId beats sessionId beats header beats IP', () => {
+	it("priority order is stable: machineId beats sessionId beats header beats IP", () => {
 		const fp = deriveFingerprint({
-			body: { machineId: 'm-1', sessionId: 's-1', fingerprint: 'fp-1' },
-			headers: { 'x-api-key': '***', 'x-fingerprint': 'h-fp' },
-			ip: '1.2.3.4',
-		})
-		expect(fp).toBe('machine:m-1')
-	})
-})
+			body: { machineId: "m-1", sessionId: "s-1", fingerprint: "fp-1" },
+			headers: { "x-api-key": "***", "x-fingerprint": "h-fp" },
+			ip: "1.2.3.4",
+		});
+		expect(fp).toBe("machine:m-1");
+	});
+});
 
-describe('blockFingerprint / unblockFingerprint', () => {
+describe("blockFingerprint / unblockFingerprint", () => {
 	beforeEach(() => {
-		resetFingerprintPauseState()
-	})
+		resetFingerprintPauseState();
+	});
 
-	it('adds a block for a new fingerprint', () => {
-		const block = blockFingerprint('machine:m-1', 'test reason')
-		expect(block.fingerprint).toBe('machine:m-1')
-		expect(block.reason).toBe('test reason')
-		expect(block.unsafeCount).toBe(1)
-		expect(getBlockedFingerprintCount()).toBe(1)
-	})
+	it("adds a block for a new fingerprint", () => {
+		const block = blockFingerprint("machine:m-1", "test reason");
+		expect(block.fingerprint).toBe("machine:m-1");
+		expect(block.reason).toBe("test reason");
+		expect(block.unsafeCount).toBe(1);
+		expect(getBlockedFingerprintCount()).toBe(1);
+	});
 
-	it('re-blocking the same fingerprint increments count + extends TTL', () => {
-		blockFingerprint('machine:m-1', 'first')
-		const first = checkFingerprintBlocked('machine:m-1')
-		const second = blockFingerprint('machine:m-1', 'second')
-		expect(second.unsafeCount).toBe(2)
-		expect(second.reason).toBe('second')
+	it("re-blocking the same fingerprint increments count + extends TTL", () => {
+		blockFingerprint("machine:m-1", "first");
+		const first = checkFingerprintBlocked("machine:m-1");
+		const second = blockFingerprint("machine:m-1", "second");
+		expect(second.unsafeCount).toBe(2);
+		expect(second.reason).toBe("second");
 		// TTL must be extended past the original.
-		expect(second.expiresAt).toBeGreaterThanOrEqual(first?.expiresAt)
-	})
+		expect(second.expiresAt).toBeGreaterThanOrEqual(first?.expiresAt);
+	});
 
-	it('unblockFingerprint removes the block', () => {
-		blockFingerprint('machine:m-1', 'first')
-		expect(unblockFingerprint('machine:m-1')).toBe(true)
-		expect(checkFingerprintBlocked('machine:m-1')).toBeUndefined()
-	})
+	it("unblockFingerprint removes the block", () => {
+		blockFingerprint("machine:m-1", "first");
+		expect(unblockFingerprint("machine:m-1")).toBe(true);
+		expect(checkFingerprintBlocked("machine:m-1")).toBeUndefined();
+	});
 
-	it('unblockFingerprint returns false when not blocked', () => {
-		expect(unblockFingerprint('machine:not-blocked')).toBe(false)
-	})
+	it("unblockFingerprint returns false when not blocked", () => {
+		expect(unblockFingerprint("machine:not-blocked")).toBe(false);
+	});
 
-	it('throws on empty fingerprint', () => {
-		expect(() => blockFingerprint('', 'reason')).toThrow(/empty/)
-	})
+	it("throws on empty fingerprint", () => {
+		expect(() => blockFingerprint("", "reason")).toThrow(/empty/);
+	});
 
-	it('snapshot reflects current state', () => {
-		blockFingerprint('machine:a', 'r1')
-		blockFingerprint('machine:b', 'r2')
-		const snap = getBlockedFingerprints()
-		expect(snap.length).toBe(2)
+	it("snapshot reflects current state", () => {
+		blockFingerprint("machine:a", "r1");
+		blockFingerprint("machine:b", "r2");
+		const snap = getBlockedFingerprints();
+		expect(snap.length).toBe(2);
 		expect(snap.map((b) => b.fingerprint).sort()).toEqual([
-			'machine:a',
-			'machine:b',
-		])
-	})
-})
+			"machine:a",
+			"machine:b",
+		]);
+	});
+});
 
-describe('checkFingerprintBlocked (TTL-aware)', () => {
+describe("checkFingerprintBlocked (TTL-aware)", () => {
 	beforeEach(() => {
-		resetFingerprintPauseState()
-	})
+		resetFingerprintPauseState();
+	});
 
-	it('returns the block when present and not expired', () => {
-		blockFingerprint('machine:m-1', 'test')
-		const block = checkFingerprintBlocked('machine:m-1')
-		expect(block).toBeDefined()
-		expect(block?.reason).toBe('test')
-	})
+	it("returns the block when present and not expired", () => {
+		blockFingerprint("machine:m-1", "test");
+		const block = checkFingerprintBlocked("machine:m-1");
+		expect(block).toBeDefined();
+		expect(block?.reason).toBe("test");
+	});
 
-	it('returns undefined when not blocked', () => {
-		expect(checkFingerprintBlocked('machine:not-blocked')).toBeUndefined()
-	})
+	it("returns undefined when not blocked", () => {
+		expect(checkFingerprintBlocked("machine:not-blocked")).toBeUndefined();
+	});
 
-	it('returns undefined when the fingerprint is empty string', () => {
-		expect(checkFingerprintBlocked('')).toBeUndefined()
-	})
+	it("returns undefined when the fingerprint is empty string", () => {
+		expect(checkFingerprintBlocked("")).toBeUndefined();
+	});
 
-	it('block is fresh within TTL (default 5 minutes)', async () => {
-		blockFingerprint('machine:m-1', 'test')
-		await new Promise((r) => setTimeout(r, 5))
-		const block = checkFingerprintBlocked('machine:m-1')
-		expect(block).toBeDefined()
-		expect(block?.expiresAt).toBeGreaterThan(Date.now())
-	})
-})
+	it("block is fresh within TTL (default 5 minutes)", async () => {
+		blockFingerprint("machine:m-1", "test");
+		await new Promise((r) => setTimeout(r, 5));
+		const block = checkFingerprintBlocked("machine:m-1");
+		expect(block).toBeDefined();
+		expect(block?.expiresAt).toBeGreaterThan(Date.now());
+	});
+});
 
-describe('sweepExpiredBlocks', () => {
+describe("sweepExpiredBlocks", () => {
 	beforeEach(() => {
-		resetFingerprintPauseState()
-	})
+		resetFingerprintPauseState();
+	});
 
-	it('returns 0 when nothing expired', () => {
-		blockFingerprint('machine:a', 'r')
-		blockFingerprint('machine:b', 'r')
-		expect(sweepExpiredBlocks()).toBe(0)
-	})
+	it("returns 0 when nothing expired", () => {
+		blockFingerprint("machine:a", "r");
+		blockFingerprint("machine:b", "r");
+		expect(sweepExpiredBlocks()).toBe(0);
+	});
 
-	it('clears the map when called on empty state', () => {
-		expect(sweepExpiredBlocks()).toBe(0)
-		expect(getBlockedFingerprintCount()).toBe(0)
-	})
-})
+	it("clears the map when called on empty state", () => {
+		expect(sweepExpiredBlocks()).toBe(0);
+		expect(getBlockedFingerprintCount()).toBe(0);
+	});
+});
 
-describe('selfHealOnSafe', () => {
+describe("selfHealOnSafe", () => {
 	beforeEach(() => {
-		resetFingerprintPauseState()
-	})
+		resetFingerprintPauseState();
+	});
 
-	it('unblocks the fingerprint when verdict is SAFE', () => {
-		blockFingerprint('machine:m-1', 'unsafe')
-		const healed = selfHealOnSafe('machine:m-1', 'SAFE')
-		expect(healed).toBe(true)
-		expect(checkFingerprintBlocked('machine:m-1')).toBeUndefined()
-	})
+	it("unblocks the fingerprint when verdict is SAFE", () => {
+		blockFingerprint("machine:m-1", "unsafe");
+		const healed = selfHealOnSafe("machine:m-1", "SAFE");
+		expect(healed).toBe(true);
+		expect(checkFingerprintBlocked("machine:m-1")).toBeUndefined();
+	});
 
-	it('does NOT unblock when verdict is UNSAFE', () => {
-		blockFingerprint('machine:m-1', 'unsafe')
-		selfHealOnSafe('machine:m-1', 'UNSAFE')
-		expect(checkFingerprintBlocked('machine:m-1')).toBeDefined()
-	})
+	it("does NOT unblock when verdict is UNSAFE", () => {
+		blockFingerprint("machine:m-1", "unsafe");
+		selfHealOnSafe("machine:m-1", "UNSAFE");
+		expect(checkFingerprintBlocked("machine:m-1")).toBeDefined();
+	});
 
-	it('does NOT unblock when verdict is REVIEW', () => {
-		blockFingerprint('machine:m-1', 'unsafe')
-		selfHealOnSafe('machine:m-1', 'REVIEW')
-		expect(checkFingerprintBlocked('machine:m-1')).toBeDefined()
-	})
+	it("does NOT unblock when verdict is REVIEW", () => {
+		blockFingerprint("machine:m-1", "unsafe");
+		selfHealOnSafe("machine:m-1", "REVIEW");
+		expect(checkFingerprintBlocked("machine:m-1")).toBeDefined();
+	});
 
-	it('returns false when the fingerprint is not blocked', () => {
-		expect(selfHealOnSafe('machine:not-blocked', 'SAFE')).toBe(false)
-	})
+	it("returns false when the fingerprint is not blocked", () => {
+		expect(selfHealOnSafe("machine:not-blocked", "SAFE")).toBe(false);
+	});
 
-	it('returns false when the fingerprint is empty', () => {
-		expect(selfHealOnSafe('', 'SAFE')).toBe(false)
-	})
-})
+	it("returns false when the fingerprint is empty", () => {
+		expect(selfHealOnSafe("", "SAFE")).toBe(false);
+	});
+});
 
-describe('constants', () => {
-	it('TTL is at least 1 minute (so transient bans do not pile up)', () => {
-		expect(FINGERPRINT_BLOCK_TTL_MS).toBeGreaterThanOrEqual(60_000)
-	})
+describe("constants", () => {
+	it("TTL is at least 1 minute (so transient bans do not pile up)", () => {
+		expect(FINGERPRINT_BLOCK_TTL_MS).toBeGreaterThanOrEqual(60_000);
+	});
 
-	it('TTL is at most 1 hour (so stale bans clear in reasonable time)', () => {
-		expect(FINGERPRINT_BLOCK_TTL_MS).toBeLessThanOrEqual(60 * 60_000)
-	})
-})
+	it("TTL is at most 1 hour (so stale bans clear in reasonable time)", () => {
+		expect(FINGERPRINT_BLOCK_TTL_MS).toBeLessThanOrEqual(60 * 60_000);
+	});
+});

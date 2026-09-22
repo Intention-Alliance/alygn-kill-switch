@@ -13,43 +13,43 @@
  * the DB layer, which has its own coverage in verification-service.test.ts).
  */
 
-import { describe, expect, it } from 'bun:test'
-import { composeEventReason } from '../verification-event'
+import { describe, expect, it } from "bun:test";
+import { composeEventReason } from "../verification-event";
 
-describe('composeEventReason (P1-3 truncation marker)', () => {
-	it('appends the truncation marker when outputTruncated=true', () => {
-		expect(composeEventReason('looks fine', true)).toBe(
-			'looks fine | output-truncated:streamed-above-256KB-cap',
-		)
-	})
+describe("composeEventReason (P1-3 truncation marker)", () => {
+	it("appends the truncation marker when outputTruncated=true", () => {
+		expect(composeEventReason("looks fine", true)).toBe(
+			"looks fine | output-truncated:streamed-above-256KB-cap",
+		);
+	});
 
-	it('preserves the original reason when outputTruncated=false', () => {
-		expect(composeEventReason('looks fine', false)).toBe('looks fine')
-	})
+	it("preserves the original reason when outputTruncated=false", () => {
+		expect(composeEventReason("looks fine", false)).toBe("looks fine");
+	});
 
-	it('returns the marker alone when the verifier returned no reason', () => {
-		expect(composeEventReason('', true)).toBe(
-			'output-truncated:streamed-above-256KB-cap',
-		)
-	})
+	it("returns the marker alone when the verifier returned no reason", () => {
+		expect(composeEventReason("", true)).toBe(
+			"output-truncated:streamed-above-256KB-cap",
+		);
+	});
 
-	it('returns the marker alone when the verifier returned undefined reason', () => {
+	it("returns the marker alone when the verifier returned undefined reason", () => {
 		expect(composeEventReason(undefined, true)).toBe(
-			'output-truncated:streamed-above-256KB-cap',
-		)
-	})
+			"output-truncated:streamed-above-256KB-cap",
+		);
+	});
 
-	it('returns null when both reason and truncation are absent', () => {
-		expect(composeEventReason('', false)).toBe(null)
-		expect(composeEventReason(undefined, false)).toBe(null)
-	})
+	it("returns null when both reason and truncation are absent", () => {
+		expect(composeEventReason("", false)).toBe(null);
+		expect(composeEventReason(undefined, false)).toBe(null);
+	});
 
-	it('defaults to no-truncation when the flag is undefined', () => {
-		expect(composeEventReason('looks fine', undefined)).toBe('looks fine')
-	})
+	it("defaults to no-truncation when the flag is undefined", () => {
+		expect(composeEventReason("looks fine", undefined)).toBe("looks fine");
+	});
 
-	it('produces a stable marker string operators can grep', () => {
-		const marker = 'output-truncated:streamed-above-256KB-cap'
-		expect(composeEventReason('any reason', true)).toContain(marker)
-	})
-})
+	it("produces a stable marker string operators can grep", () => {
+		const marker = "output-truncated:streamed-above-256KB-cap";
+		expect(composeEventReason("any reason", true)).toContain(marker);
+	});
+});

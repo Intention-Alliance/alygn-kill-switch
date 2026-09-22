@@ -17,16 +17,16 @@
  * ADR-141: Kill-switch traffic pause.
  */
 
-import { isFeatureEnabled } from '../config';
+import { isFeatureEnabled } from "../config";
 
 // ─── Pause mechanism abstraction ──────────────────────────────────
 // A mechanism knows how to pause and resume inference traffic. Phase 1
 // uses the in-memory counter + inference-gate middleware. Phase 2/3 swap
 // in NGINX upstream pause / app-level request queue hold.
 export interface PauseMechanism {
-  readonly name: string;
-  pause(): void | Promise<void>;
-  resume(): void | Promise<void>;
+	readonly name: string;
+	pause(): void | Promise<void>;
+	resume(): void | Promise<void>;
 }
 
 // ─── Phase 1: in-memory counter mechanism ─────────────────────────
@@ -39,11 +39,11 @@ let _paused = false;
 let _pauseInFlight: Promise<void> | null = null;
 
 export function getPausedRequestCount(): number {
-  return _pausedRequestCount;
+	return _pausedRequestCount;
 }
 
 export function isTrafficPaused(): boolean {
-  return _paused;
+	return _paused;
 }
 
 /**
@@ -52,14 +52,14 @@ export function isTrafficPaused(): boolean {
  * each rejected request counts once.
  */
 export function recordPausedRequest(): void {
-  _pausedRequestCount += 1;
+	_pausedRequestCount += 1;
 }
 
 /**
  * Reset the counter (used by tests and on resume).
  */
 export function resetPausedRequestCount(): void {
-  _pausedRequestCount = 0;
+	_pausedRequestCount = 0;
 }
 
 /**
@@ -69,20 +69,20 @@ export function resetPausedRequestCount(): void {
  * have left the module paused.
  */
 export function resetTrafficPauseState(): void {
-  _paused = false;
-  _pausedRequestCount = 0;
-  _pauseInFlight = null;
+	_paused = false;
+	_pausedRequestCount = 0;
+	_pauseInFlight = null;
 }
 
 const inMemoryMechanism: PauseMechanism = {
-  name: 'in-memory-counter',
-  pause() {
-    _paused = true;
-  },
-  resume() {
-    _paused = false;
-    _pausedRequestCount = 0;
-  },
+	name: "in-memory-counter",
+	pause() {
+		_paused = true;
+	},
+	resume() {
+		_paused = false;
+		_pausedRequestCount = 0;
+	},
 };
 
 // ─── Active mechanism (swappable) ─────────────────────────────────
@@ -94,11 +94,11 @@ let _activeMechanism: PauseMechanism = inMemoryMechanism;
  * Phase 1 in-memory counter.
  */
 export function setPauseMechanism(mechanism: PauseMechanism): void {
-  _activeMechanism = mechanism;
+	_activeMechanism = mechanism;
 }
 
 export function getActiveMechanismName(): string {
-  return _activeMechanism.name;
+	return _activeMechanism.name;
 }
 
 // ─── Public API ───────────────────────────────────────────────────
@@ -110,25 +110,25 @@ export function getActiveMechanismName(): string {
  * incremented once per pause cycle.
  */
 export async function pauseInferenceTraffic(): Promise<void> {
-  if (!isFeatureEnabled('killSwitchTrafficPauseEnabled')) {
-    return;
-  }
-  if (_paused) return; // already paused — idempotent
+	if (!isFeatureEnabled("killSwitchTrafficPauseEnabled")) {
+		return;
+	}
+	if (_paused) return; // already paused — idempotent
 
-  // Serialize concurrent pause calls: only the first actually pauses.
-  if (_pauseInFlight) {
-    await _pauseInFlight;
-    return;
-  }
+	// Serialize concurrent pause calls: only the first actually pauses.
+	if (_pauseInFlight) {
+		await _pauseInFlight;
+		return;
+	}
 
-  _pauseInFlight = (async () => {
-    await _activeMechanism.pause();
-    _paused = true;
-  })().finally(() => {
-    _pauseInFlight = null;
-  });
+	_pauseInFlight = (async () => {
+		await _activeMechanism.pause();
+		_paused = true;
+	})().finally(() => {
+		_pauseInFlight = null;
+	});
 
-  await _pauseInFlight;
+	await _pauseInFlight;
 }
 
 /**
@@ -141,9 +141,9 @@ export async function pauseInferenceTraffic(): Promise<void> {
  * inference traffic permanently paused (P2-1).
  */
 export async function resumeInferenceTraffic(): Promise<void> {
-  if (!_paused) return; // already running — idempotent
+	if (!_paused) return; // already running — idempotent
 
-  await _activeMechanism.resume();
-  _paused = false;
-  _pausedRequestCount = 0;
+	await _activeMechanism.resume();
+	_paused = false;
+	_pausedRequestCount = 0;
 }

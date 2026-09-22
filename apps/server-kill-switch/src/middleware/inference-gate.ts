@@ -28,26 +28,29 @@ import {
 	checkFingerprintBlocked,
 	deriveFingerprint,
 	type FingerprintSource,
-} from '../services/fingerprint-pause'
-import { isTrafficPaused, recordPausedRequest } from '../services/traffic-pause'
+} from "../services/fingerprint-pause";
+import {
+	isTrafficPaused,
+	recordPausedRequest,
+} from "../services/traffic-pause";
 
-export const INFERENCE_GATE_RETRY_AFTER_SECONDS = 5
+export const INFERENCE_GATE_RETRY_AFTER_SECONDS = 5;
 
 export interface InferenceGateDecision {
-	gated: boolean
-	retryAfter?: number
+	gated: boolean;
+	retryAfter?: number;
 	/**
 	 * When gated=true, identifies WHY:
 	 *   - 'fingerprint-blocked': scoped to the request's fingerprint
 	 *   - 'global-pause': kill-switch STOPPED (or escalated from all-fingerprints-UNSAFE)
 	 */
-	reason?: 'fingerprint-blocked' | 'global-pause'
+	reason?: "fingerprint-blocked" | "global-pause";
 	/** When reason='fingerprint-blocked', the blocked fingerprint (for response body). */
-	fingerprint?: string
+	fingerprint?: string;
 	/** When reason='fingerprint-blocked', the block reason (for response body). */
-	blockReason?: string
+	blockReason?: string;
 	/** The derived fingerprint for this request (always populated for inference writes). */
-	derivedFingerprint?: string
+	derivedFingerprint?: string;
 }
 
 /**
@@ -70,9 +73,10 @@ export function checkInferenceGate(
 	url: string,
 	source?: FingerprintSource,
 ): InferenceGateDecision {
-	const isInferenceWrite = method === 'POST' && url.startsWith('/v1/inference/')
+	const isInferenceWrite =
+		method === "POST" && url.startsWith("/v1/inference/");
 	if (!isInferenceWrite) {
-		return { gated: false }
+		return { gated: false };
 	}
 
 	// ── Layer 1: fingerprint-scoped pause ──────────────────────────
@@ -80,34 +84,34 @@ export function checkInferenceGate(
 	// An empty fingerprint (no identity signal at all) is treated as
 	// "unknown caller" — we DO NOT block unknowns, only known UNSAFE
 	// callers. The global-pause layer below is the safety net for unknowns.
-	let derivedFingerprint: string | undefined
+	let derivedFingerprint: string | undefined;
 	if (source) {
-		derivedFingerprint = deriveFingerprint(source)
-		const block = checkFingerprintBlocked(derivedFingerprint)
+		derivedFingerprint = deriveFingerprint(source);
+		const block = checkFingerprintBlocked(derivedFingerprint);
 		if (block) {
-			recordPausedRequest()
+			recordPausedRequest();
 			return {
 				gated: true,
 				retryAfter: INFERENCE_GATE_RETRY_AFTER_SECONDS,
-				reason: 'fingerprint-blocked',
+				reason: "fingerprint-blocked",
 				fingerprint: derivedFingerprint,
 				blockReason: block.reason,
 				derivedFingerprint,
-			}
+			};
 		}
 		// Fingerprint is clean — fall through to global pause check below.
 	}
 
 	// ── Layer 2: global pause ─────────────────────────────────────
 	if (!isTrafficPaused()) {
-		return { gated: false, derivedFingerprint }
+		return { gated: false, derivedFingerprint };
 	}
 
-	recordPausedRequest()
+	recordPausedRequest();
 	return {
 		gated: true,
 		retryAfter: INFERENCE_GATE_RETRY_AFTER_SECONDS,
-		reason: 'global-pause',
+		reason: "global-pause",
 		derivedFingerprint,
-	}
+	};
 }

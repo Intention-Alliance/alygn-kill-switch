@@ -10,7 +10,7 @@
  * KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §d (P1-1 fingerprint-scoped variant).
  */
 
-import { createHash } from 'node:crypto'
+import { createHash } from "node:crypto";
 
 // ─── Constants ────────────────────────────────────────────────────
 
@@ -21,43 +21,47 @@ import { createHash } from 'node:crypto'
  * to land a follow-up verdict; longer than a typical inference round-
  * trip; short enough that transient bans don't pile up.
  */
-export const FINGERPRINT_BLOCK_TTL_MS = 5 * 60 * 1000
+export const FINGERPRINT_BLOCK_TTL_MS = 5 * 60 * 1000;
 
 // ─── Types ────────────────────────────────────────────────────────
 
 export interface BlockedFingerprint {
-	fingerprint: string
-	reason: string
-	blockedAt: number
+	fingerprint: string;
+	reason: string;
+	blockedAt: number;
 	/** Expires at `blockedAt + FINGERPRINT_BLOCK_TTL_MS`. */
-	expiresAt: number
+	expiresAt: number;
 	/** Number of UNSAFE verdicts that contributed to this block. */
-	unsafeCount: number
+	unsafeCount: number;
 }
 
 export interface FingerprintSource {
-	body?: { machineId?: string; sessionId?: string; fingerprint?: string } | null
-	headers?: Record<string, string | string[] | undefined>
-	ip?: string
+	body?: {
+		machineId?: string;
+		sessionId?: string;
+		fingerprint?: string;
+	} | null;
+	headers?: Record<string, string | string[] | undefined>;
+	ip?: string;
 }
 
 // ─── Module-level state ──────────────────────────────────────────
 
-const _blocks = new Map<string, BlockedFingerprint>()
+const _blocks = new Map<string, BlockedFingerprint>();
 
 /** Test-only reset (mirrors `resetTrafficPauseState`). */
 export function resetFingerprintPauseState(): void {
-	_blocks.clear()
+	_blocks.clear();
 }
 
 /** Number of currently blocked fingerprints (for tests + dashboard). */
 export function getBlockedFingerprintCount(): number {
-	return _blocks.size
+	return _blocks.size;
 }
 
 /** Snapshot of all currently blocked fingerprints (read-only). */
 export function getBlockedFingerprints(): readonly BlockedFingerprint[] {
-	return [..._blocks.values()]
+	return [..._blocks.values()];
 }
 
 // ─── Fingerprint derivation ──────────────────────────────────────
@@ -81,41 +85,41 @@ export function getBlockedFingerprints(): readonly BlockedFingerprint[] {
  * in the in-memory blocklist. The IP is only used inside the hash.
  */
 export function deriveFingerprint(src: FingerprintSource): string {
-	const body = src.body ?? null
+	const body = src.body ?? null;
 	// 1. Body machineId
 	if (body?.machineId?.trim()) {
-		return `machine:${body.machineId.trim()}`
+		return `machine:${body.machineId.trim()}`;
 	}
 	// 2. Body sessionId / fingerprint
 	if (body?.sessionId?.trim()) {
-		return `session:${body.sessionId.trim()}`
+		return `session:${body.sessionId.trim()}`;
 	}
 	if (body?.fingerprint?.trim()) {
-		return `fp:${body.fingerprint.trim()}`
+		return `fp:${body.fingerprint.trim()}`;
 	}
 	// 3. Header x-fingerprint
-	const headerFp = getHeader(src.headers, 'x-fingerprint')
+	const headerFp = getHeader(src.headers, "x-fingerprint");
 	if (headerFp) {
-		return `fp:${headerFp}`
+		return `fp:${headerFp}`;
 	}
 	// 4. API-key identity (kill-switch or PCA key)
-	const apiKey = getHeader(src.headers, 'x-api-key')
+	const apiKey = getHeader(src.headers, "x-api-key");
 	if (apiKey) {
-		return `apikey:${shortHash(apiKey)}`
+		return `apikey:${shortHash(apiKey)}`;
 	}
-	const auth = getHeader(src.headers, 'authorization')
+	const auth = getHeader(src.headers, "authorization");
 	if (auth) {
 		// Strip the "Bearer " prefix so we don't hash the literal word.
-		const token = auth.replace(/^Bearer\s+/i, '')
-		return `bearer:${shortHash(token)}`
+		const token = auth.replace(/^Bearer\s+/i, "");
+		return `bearer:${shortHash(token)}`;
 	}
 	// 5. IP + UA fallback
 	if (src.ip) {
-		const ua = getHeader(src.headers, 'user-agent') ?? ''
-		return `ipua:${shortHash(`${src.ip}|${ua}`)}`
+		const ua = getHeader(src.headers, "user-agent") ?? "";
+		return `ipua:${shortHash(`${src.ip}|${ua}`)}`;
 	}
 	// No identity signal — caller decides whether to allow.
-	return ''
+	return "";
 }
 
 // ─── Block / unblock ─────────────────────────────────────────────
@@ -133,10 +137,10 @@ export function blockFingerprint(
 	reason: string,
 ): BlockedFingerprint {
 	if (!fingerprint) {
-		throw new Error('blockFingerprint: empty fingerprint')
+		throw new Error("blockFingerprint: empty fingerprint");
 	}
-	const existing = _blocks.get(fingerprint)
-	const now = Date.now()
+	const existing = _blocks.get(fingerprint);
+	const now = Date.now();
 	const next: BlockedFingerprint = existing
 		? {
 				fingerprint,
@@ -151,9 +155,9 @@ export function blockFingerprint(
 				blockedAt: now,
 				expiresAt: now + FINGERPRINT_BLOCK_TTL_MS,
 				unsafeCount: 1,
-			}
-	_blocks.set(fingerprint, next)
-	return next
+			};
+	_blocks.set(fingerprint, next);
+	return next;
 }
 
 /**
@@ -161,7 +165,7 @@ export function blockFingerprint(
  * blocked fingerprint (self-heal) or when the TTL expires.
  */
 export function unblockFingerprint(fingerprint: string): boolean {
-	return _blocks.delete(fingerprint)
+	return _blocks.delete(fingerprint);
 }
 
 /**
@@ -173,14 +177,14 @@ export function unblockFingerprint(fingerprint: string): boolean {
 export function checkFingerprintBlocked(
 	fingerprint: string,
 ): BlockedFingerprint | undefined {
-	if (!fingerprint) return undefined
-	const block = _blocks.get(fingerprint)
-	if (!block) return undefined
+	if (!fingerprint) return undefined;
+	const block = _blocks.get(fingerprint);
+	if (!block) return undefined;
 	if (Date.now() >= block.expiresAt) {
-		_blocks.delete(fingerprint)
-		return undefined
+		_blocks.delete(fingerprint);
+		return undefined;
 	}
-	return block
+	return block;
 }
 
 /**
@@ -191,15 +195,15 @@ export function checkFingerprintBlocked(
  * @returns the number of blocks removed
  */
 export function sweepExpiredBlocks(): number {
-	const now = Date.now()
-	let removed = 0
+	const now = Date.now();
+	let removed = 0;
 	for (const [fp, block] of _blocks) {
 		if (now >= block.expiresAt) {
-			_blocks.delete(fp)
-			removed++
+			_blocks.delete(fp);
+			removed++;
 		}
 	}
-	return removed
+	return removed;
 }
 
 // ─── Self-heal ───────────────────────────────────────────────────
@@ -211,11 +215,11 @@ export function sweepExpiredBlocks(): number {
  * @returns true when the fingerprint was unblocked by this call
  */
 export function selfHealOnSafe(fingerprint: string, verdict: string): boolean {
-	if (verdict !== 'SAFE') return false
-	if (!fingerprint) return false
-	if (!_blocks.has(fingerprint)) return false
-	_blocks.delete(fingerprint)
-	return true
+	if (verdict !== "SAFE") return false;
+	if (!fingerprint) return false;
+	if (!_blocks.has(fingerprint)) return false;
+	_blocks.delete(fingerprint);
+	return true;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -224,11 +228,11 @@ function getHeader(
 	headers: Record<string, string | string[] | undefined> | undefined,
 	name: string,
 ): string | undefined {
-	if (!headers) return undefined
-	const v = headers[name.toLowerCase()]
-	return Array.isArray(v) ? v[0] : v
+	if (!headers) return undefined;
+	const v = headers[name.toLowerCase()];
+	return Array.isArray(v) ? v[0] : v;
 }
 
 function shortHash(value: string): string {
-	return createHash('sha256').update(value, 'utf8').digest('hex').slice(0, 16)
+	return createHash("sha256").update(value, "utf8").digest("hex").slice(0, 16);
 }

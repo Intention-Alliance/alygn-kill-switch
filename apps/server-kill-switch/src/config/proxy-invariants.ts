@@ -26,9 +26,9 @@ export function assertProxyAndVerificationInvariant(
 ): void {
 	if (killSwitchVerificationFlag && !verifyEnabled) {
 		throw new Error(
-			'FAIL-START: killSwitchVerificationEnabled=true requires verification.verifyEnabled=true. ' +
-				'Set KILL_SWITCH_VERIFY_ENABLED=true (or the env override) to enable the verifier. ' +
-				'Refusing to start the inference proxy without verification enabled.',
-		)
+			"FAIL-START: killSwitchVerificationEnabled=true requires verification.verifyEnabled=true. " +
+				"Set KILL_SWITCH_VERIFY_ENABLED=true (or the env override) to enable the verifier. " +
+				"Refusing to start the inference proxy without verification enabled.",
+		);
 	}
 }

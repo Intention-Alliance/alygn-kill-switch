@@ -23,9 +23,9 @@ import type {
 	OnboardingDecision,
 	RegistrationRequest,
 	RogueDeviceAlert,
-} from '@align/shared-types'
-import { and, asc, desc, eq, inArray } from 'drizzle-orm'
-import { db } from '../db/index'
+} from "@align/shared-types";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { db } from "../db/index";
 import {
 	discoveredMachines,
 	featureFlags,
@@ -34,29 +34,29 @@ import {
 	machines,
 	registrationRequests,
 	rogueDeviceAlerts,
-} from '../db/schema'
+} from "../db/schema";
 
 // ─── Constants ───────────────────────────────────────────────────
 
 /** Denials from the same hostname/IP that trigger a rogue-device alert. */
-export const ROGUE_ALERT_DENIAL_THRESHOLD = 3
+export const ROGUE_ALERT_DENIAL_THRESHOLD = 3;
 
 /** Default zone for a newly admitted machine (ADR-137/138). */
-export const DEFAULT_ZONE = 'unassigned'
+export const DEFAULT_ZONE = "unassigned";
 
 /** States that may be approved (initial onboarding + re-onboarding). */
 const APPROVABLE_STATES: readonly MachineDiscoveryState[] = [
-	'NEW_MACHINE',
-	'PENDING_CONFIRMATION',
-	'PENDING_REVIEW',
-]
+	"NEW_MACHINE",
+	"PENDING_CONFIRMATION",
+	"PENDING_REVIEW",
+];
 
 /** States that may be denied. */
 const DENIABLE_STATES: readonly MachineDiscoveryState[] = [
-	'NEW_MACHINE',
-	'PENDING_CONFIRMATION',
-	'PENDING_REVIEW',
-]
+	"NEW_MACHINE",
+	"PENDING_CONFIRMATION",
+	"PENDING_REVIEW",
+];
 
 // ─── Types ───────────────────────────────────────────────────────
 
@@ -65,34 +65,34 @@ const DENIABLE_STATES: readonly MachineDiscoveryState[] = [
  * an already-ADMITTED machine). Routes map this to HTTP 409 (Conflict).
  */
 export class OnboardingStateError extends Error {
-	readonly statusCode = 409
+	readonly statusCode = 409;
 
 	constructor(message: string) {
-		super(message)
-		this.name = 'OnboardingStateError'
+		super(message);
+		this.name = "OnboardingStateError";
 	}
 }
 
 export interface ApproveMachineParams {
-	machineId: string
-	reviewedBy: string
-	zone?: string
+	machineId: string;
+	reviewedBy: string;
+	zone?: string;
 }
 
 export interface DenyMachineParams {
-	machineId: string
-	reviewedBy: string
-	denialReason?: string
+	machineId: string;
+	reviewedBy: string;
+	denialReason?: string;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
 function parseJson<T>(value: string | null): T | null {
-	if (!value) return null
+	if (!value) return null;
 	try {
-		return JSON.parse(value) as T
+		return JSON.parse(value) as T;
 	} catch {
-		return null
+		return null;
 	}
 }
 
@@ -103,7 +103,7 @@ function serializeDiscoveredMachine(
 		id: String(row.id),
 		hostname: String(row.hostname),
 		ip: row.ip ? String(row.ip) : null,
-		source: row.source as DiscoveredMachine['source'],
+		source: row.source as DiscoveredMachine["source"],
 		state: row.state as MachineDiscoveryState,
 		fingerprint: row.fingerprint
 			? parseJson<HardwareFingerprint>(String(row.fingerprint))
@@ -113,13 +113,13 @@ function serializeDiscoveredMachine(
 			: null,
 		firstSeen: row.firstSeen
 			? new Date(Number(row.firstSeen)).toISOString()
-			: '',
-		lastSeen: row.lastSeen ? new Date(Number(row.lastSeen)).toISOString() : '',
+			: "",
+		lastSeen: row.lastSeen ? new Date(Number(row.lastSeen)).toISOString() : "",
 		confirmedAt: row.confirmedAt
 			? new Date(Number(row.confirmedAt)).toISOString()
 			: null,
 		confirmedBy: row.confirmedBy ? String(row.confirmedBy) : null,
-	}
+	};
 }
 
 function serializeRegistrationRequest(
@@ -129,7 +129,7 @@ function serializeRegistrationRequest(
 		id: String(row.id),
 		machineId: String(row.machineId),
 		requestedBy: String(row.requestedBy),
-		status: row.status as RegistrationRequest['status'],
+		status: row.status as RegistrationRequest["status"],
 		denialReason: row.denialReason ? String(row.denialReason) : null,
 		reviewedBy: row.reviewedBy ? String(row.reviewedBy) : null,
 		reviewedAt: row.reviewedAt
@@ -137,8 +137,8 @@ function serializeRegistrationRequest(
 			: null,
 		createdAt: row.createdAt
 			? new Date(Number(row.createdAt)).toISOString()
-			: '',
-	}
+			: "",
+	};
 }
 
 function serializeRogueAlert(row: Record<string, unknown>): RogueDeviceAlert {
@@ -155,8 +155,8 @@ function serializeRogueAlert(row: Record<string, unknown>): RogueDeviceAlert {
 			: null,
 		createdAt: row.createdAt
 			? new Date(Number(row.createdAt)).toISOString()
-			: '',
-	}
+			: "",
+	};
 }
 
 /**
@@ -166,13 +166,13 @@ function serializeRogueAlert(row: Record<string, unknown>): RogueDeviceAlert {
 function fingerprintToSpecs(
 	fingerprint: HardwareFingerprint | null,
 ): string | null {
-	if (!fingerprint) return null
+	if (!fingerprint) return null;
 	return JSON.stringify({
 		cpu: fingerprint.cpuModel,
 		ram: `${fingerprint.memoryMb}MB`,
-		gpu: fingerprint.gpus.map((gpu: any) => gpu.name).join(', ') || null,
+		gpu: fingerprint.gpus.map((gpu: any) => gpu.name).join(", ") || null,
 		dpu: null,
-	})
+	});
 }
 
 /**
@@ -185,7 +185,7 @@ async function seedDefaultFlags(
 	tx: typeof db,
 	machineId: string,
 ): Promise<void> {
-	const globalFlags = await tx.select().from(featureFlags).all()
+	const globalFlags = await tx.select().from(featureFlags).all();
 	for (const flag of globalFlags) {
 		const existing = await tx
 			.select({ machineId: machineFlags.machineId })
@@ -196,14 +196,14 @@ async function seedDefaultFlags(
 					eq(machineFlags.flagKey, flag.key),
 				),
 			)
-			.get()
-		if (existing) continue
+			.get();
+		if (existing) continue;
 		await tx.insert(machineFlags).values({
 			machineId,
 			flagKey: flag.key,
 			value: String(flag.value),
 			updatedAt: new Date(),
-		})
+		});
 	}
 }
 
@@ -226,63 +226,63 @@ export class OnboardingService {
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		if (!machine) return null
+			.get();
+		if (!machine) return null;
 
-		const currentState = machine.state as MachineDiscoveryState
+		const currentState = machine.state as MachineDiscoveryState;
 		if (!APPROVABLE_STATES.includes(currentState)) {
 			throw new OnboardingStateError(
-				`Cannot approve machine in state ${currentState} — only ${APPROVABLE_STATES.join(', ')} are approvable`,
-			)
+				`Cannot approve machine in state ${currentState} — only ${APPROVABLE_STATES.join(", ")} are approvable`,
+			);
 		}
 
-		const now = new Date()
+		const now = new Date();
 		const fingerprint = machine.fingerprint
 			? parseJson<HardwareFingerprint>(String(machine.fingerprint))
-			: null
+			: null;
 
 		const decision = await db.transaction(async (tx) => {
 			// 1. Promote the discovered machine to ADMITTED.
 			await tx
 				.update(discoveredMachines)
 				.set({
-					state: 'ADMITTED',
+					state: "ADMITTED",
 					confirmedAt: now,
 					confirmedBy: reviewedBy,
 				})
-				.where(eq(discoveredMachines.id, machineId))
+				.where(eq(discoveredMachines.id, machineId));
 
 			// 2. Record the registration request as APPROVED.
 			const existingRequest = await tx
 				.select()
 				.from(registrationRequests)
 				.where(eq(registrationRequests.machineId, machineId))
-				.get()
+				.get();
 
-			let requestId: string
+			let requestId: string;
 			if (existingRequest) {
-				requestId = String(existingRequest.id)
+				requestId = String(existingRequest.id);
 				await tx
 					.update(registrationRequests)
 					.set({
-						status: 'APPROVED',
+						status: "APPROVED",
 						denialReason: null,
 						reviewedBy,
 						reviewedAt: now,
 					})
-					.where(eq(registrationRequests.id, requestId))
+					.where(eq(registrationRequests.id, requestId));
 			} else {
-				requestId = crypto.randomUUID()
+				requestId = crypto.randomUUID();
 				await tx.insert(registrationRequests).values({
 					id: requestId,
 					machineId,
 					requestedBy: machine.source,
-					status: 'APPROVED',
+					status: "APPROVED",
 					denialReason: null,
 					reviewedBy,
 					reviewedAt: now,
 					createdAt: now,
-				})
+				});
 			}
 
 			// 3. Create (or update) the managed machine tenant.
@@ -290,11 +290,11 @@ export class OnboardingService {
 				.select()
 				.from(machines)
 				.where(eq(machines.hostname, machine.hostname))
-				.get()
+				.get();
 
-			let machineRecordId: string
+			let machineRecordId: string;
 			if (existingMachine) {
-				machineRecordId = String(existingMachine.id)
+				machineRecordId = String(existingMachine.id);
 				await tx
 					.update(machines)
 					.set({
@@ -304,69 +304,69 @@ export class OnboardingService {
 						zone: existingMachine.zone ?? zone,
 						lastSeen: now,
 					})
-					.where(eq(machines.id, machineRecordId))
+					.where(eq(machines.id, machineRecordId));
 			} else {
-				machineRecordId = machineId
+				machineRecordId = machineId;
 				await tx.insert(machines).values({
 					id: machineRecordId,
 					name: machine.hostname,
 					hostname: machine.hostname,
-					status: 'active',
-					role: 'Managed AI Machine',
+					status: "active",
+					role: "Managed AI Machine",
 					hasDpu: false,
 					specs: fingerprintToSpecs(fingerprint),
 					monitoringOnly: true,
 					zone,
 					lastSeen: now,
 					createdAt: now,
-				})
+				});
 			}
 
 			// 4. Seed tenant flags from the org/zone defaults (ADR-138 §4).
 			// Runs on the tx handle so flag seeding rolls back with the
 			// decision — no orphaned machine_flag rows on rollback.
-			await seedDefaultFlags(tx as any, machineRecordId)
+			await seedDefaultFlags(tx as any, machineRecordId);
 
 			// 5. Audit log (ADR-140 — append-only).
 			await tx.insert(killSwitchAuditLog).values({
 				id: crypto.randomUUID(),
 				timestamp: now,
 				userId: reviewedBy,
-				reason: 'onboarding.approve',
+				reason: "onboarding.approve",
 				previousState: currentState,
-				newState: 'ADMITTED',
+				newState: "ADMITTED",
 				traceId: crypto.randomUUID(),
 				machineId,
-				severity: 'info',
+				severity: "info",
 				metadata: JSON.stringify({
 					hostname: machine.hostname,
 					zone,
 					monitoringOnly: true,
 					registrationRequestId: requestId,
 				}),
-			})
+			});
 
 			return {
 				machineRecordId,
 				requestId,
-			}
-		})
+			};
+		});
 
 		const updated = await db
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
+			.get();
 		const request = await db
 			.select()
 			.from(registrationRequests)
 			.where(eq(registrationRequests.id, decision.requestId))
-			.get()
+			.get();
 		const machineRecord = await db
 			.select()
 			.from(machines)
 			.where(eq(machines.id, decision.machineRecordId))
-			.get()
+			.get();
 
 		return {
 			machine: updated
@@ -389,7 +389,7 @@ export class OnboardingService {
 					}
 				: null,
 			rogueAlert: null,
-		}
+		};
 	}
 
 	/**
@@ -407,60 +407,60 @@ export class OnboardingService {
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		if (!machine) return null
+			.get();
+		if (!machine) return null;
 
-		const currentState = machine.state as MachineDiscoveryState
+		const currentState = machine.state as MachineDiscoveryState;
 		if (!DENIABLE_STATES.includes(currentState)) {
 			throw new OnboardingStateError(
-				`Cannot deny machine in state ${currentState} — only ${DENIABLE_STATES.join(', ')} are deniable`,
-			)
+				`Cannot deny machine in state ${currentState} — only ${DENIABLE_STATES.join(", ")} are deniable`,
+			);
 		}
 
-		const now = new Date()
+		const now = new Date();
 
 		const decision = await db.transaction(async (tx) => {
 			// 1. Block the machine.
 			await tx
 				.update(discoveredMachines)
 				.set({
-					state: 'DENIED',
+					state: "DENIED",
 					confirmedAt: now,
 					confirmedBy: reviewedBy,
 				})
-				.where(eq(discoveredMachines.id, machineId))
+				.where(eq(discoveredMachines.id, machineId));
 
 			// 2. Record the registration request as DENIED.
 			const existingRequest = await tx
 				.select()
 				.from(registrationRequests)
 				.where(eq(registrationRequests.machineId, machineId))
-				.get()
+				.get();
 
-			let requestId: string
+			let requestId: string;
 			if (existingRequest) {
-				requestId = String(existingRequest.id)
+				requestId = String(existingRequest.id);
 				await tx
 					.update(registrationRequests)
 					.set({
-						status: 'DENIED',
+						status: "DENIED",
 						denialReason: denialReason ?? null,
 						reviewedBy,
 						reviewedAt: now,
 					})
-					.where(eq(registrationRequests.id, requestId))
+					.where(eq(registrationRequests.id, requestId));
 			} else {
-				requestId = crypto.randomUUID()
+				requestId = crypto.randomUUID();
 				await tx.insert(registrationRequests).values({
 					id: requestId,
 					machineId,
 					requestedBy: machine.source,
-					status: 'DENIED',
+					status: "DENIED",
 					denialReason: denialReason ?? null,
 					reviewedBy,
 					reviewedAt: now,
 					createdAt: now,
-				})
+				});
 			}
 
 			// 3. Rogue-device detection: count denials for this hostname/IP.
@@ -470,12 +470,12 @@ export class OnboardingService {
 				.where(
 					and(
 						eq(discoveredMachines.hostname, machine.hostname),
-						eq(discoveredMachines.state, 'DENIED'),
+						eq(discoveredMachines.state, "DENIED"),
 					),
 				)
-				.all()
+				.all();
 
-			let rogueAlertId: string | null = null
+			let rogueAlertId: string | null = null;
 			if (denialCount.length >= ROGUE_ALERT_DENIAL_THRESHOLD) {
 				const existingAlert = await tx
 					.select()
@@ -486,19 +486,19 @@ export class OnboardingService {
 							eq(rogueDeviceAlerts.resolved, false),
 						),
 					)
-					.get()
+					.get();
 
 				if (existingAlert) {
-					rogueAlertId = String(existingAlert.id)
+					rogueAlertId = String(existingAlert.id);
 					await tx
 						.update(rogueDeviceAlerts)
 						.set({
 							denialCount: denialCount.length,
 							lastDeniedAt: now,
 						})
-						.where(eq(rogueDeviceAlerts.id, rogueAlertId))
+						.where(eq(rogueDeviceAlerts.id, rogueAlertId));
 				} else {
-					rogueAlertId = crypto.randomUUID()
+					rogueAlertId = crypto.randomUUID();
 					await tx.insert(rogueDeviceAlerts).values({
 						id: rogueAlertId,
 						hostname: machine.hostname,
@@ -509,7 +509,7 @@ export class OnboardingService {
 						resolvedBy: null,
 						resolvedAt: null,
 						createdAt: now,
-					})
+					});
 				}
 			}
 
@@ -518,12 +518,12 @@ export class OnboardingService {
 				id: crypto.randomUUID(),
 				timestamp: now,
 				userId: reviewedBy,
-				reason: 'onboarding.deny',
+				reason: "onboarding.deny",
 				previousState: currentState,
-				newState: 'DENIED',
+				newState: "DENIED",
 				traceId: crypto.randomUUID(),
 				machineId,
-				severity: rogueAlertId ? 'high' : 'medium',
+				severity: rogueAlertId ? "high" : "medium",
 				metadata: JSON.stringify({
 					hostname: machine.hostname,
 					ip: machine.ip,
@@ -531,28 +531,28 @@ export class OnboardingService {
 					denialCount: denialCount.length,
 					rogueAlertId,
 				}),
-			})
+			});
 
-			return { requestId, rogueAlertId }
-		})
+			return { requestId, rogueAlertId };
+		});
 
 		const updated = await db
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
+			.get();
 		const request = await db
 			.select()
 			.from(registrationRequests)
 			.where(eq(registrationRequests.id, decision.requestId))
-			.get()
+			.get();
 		const rogueAlert = decision.rogueAlertId
 			? await db
 					.select()
 					.from(rogueDeviceAlerts)
 					.where(eq(rogueDeviceAlerts.id, decision.rogueAlertId))
 					.get()
-			: null
+			: null;
 
 		return {
 			machine: updated
@@ -569,7 +569,7 @@ export class OnboardingService {
 			rogueAlert: rogueAlert
 				? serializeRogueAlert(rogueAlert as unknown as Record<string, unknown>)
 				: null,
-		}
+		};
 	}
 
 	/**
@@ -586,16 +586,16 @@ export class OnboardingService {
 			.from(discoveredMachines)
 			.where(
 				inArray(discoveredMachines.state, [
-					'NEW_MACHINE',
-					'PENDING_CONFIRMATION',
-					'PENDING_REVIEW',
+					"NEW_MACHINE",
+					"PENDING_CONFIRMATION",
+					"PENDING_REVIEW",
 				]),
 			)
 			.orderBy(desc(discoveredMachines.lastSeen))
-			.all()
+			.all();
 		return rows.map((row) =>
 			serializeDiscoveredMachine(row as unknown as Record<string, unknown>),
-		)
+		);
 	}
 
 	/**
@@ -611,10 +611,10 @@ export class OnboardingService {
 				asc(rogueDeviceAlerts.resolved),
 				desc(rogueDeviceAlerts.lastDeniedAt),
 			)
-			.all()
+			.all();
 		return rows.map((row) =>
 			serializeRogueAlert(row as unknown as Record<string, unknown>),
-		)
+		);
 	}
 
 	/**
@@ -628,33 +628,33 @@ export class OnboardingService {
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		if (!machine) return false
-		if (machine.state !== 'ADMITTED') return false
+			.get();
+		if (!machine) return false;
+		if (machine.state !== "ADMITTED") return false;
 
-		const now = new Date()
+		const now = new Date();
 		await db
 			.update(discoveredMachines)
-			.set({ state: 'PENDING_REVIEW' })
-			.where(eq(discoveredMachines.id, machineId))
+			.set({ state: "PENDING_REVIEW" })
+			.where(eq(discoveredMachines.id, machineId));
 
 		await db.insert(killSwitchAuditLog).values({
 			id: crypto.randomUUID(),
 			timestamp: now,
-			userId: 'system',
-			reason: 'onboarding.integrity-drift',
-			previousState: 'ADMITTED',
-			newState: 'PENDING_REVIEW',
+			userId: "system",
+			reason: "onboarding.integrity-drift",
+			previousState: "ADMITTED",
+			newState: "PENDING_REVIEW",
 			traceId: crypto.randomUUID(),
 			machineId,
-			severity: 'high',
+			severity: "high",
 			metadata: JSON.stringify({
 				hostname: machine.hostname,
-				note: 'High-severity integrity drift — re-confirmation required (ADR-138 §4).',
+				note: "High-severity integrity drift — re-confirmation required (ADR-138 §4).",
 			}),
-		})
+		});
 
-		return true
+		return true;
 	}
 
 	/**
@@ -668,8 +668,8 @@ export class OnboardingService {
 			.select({ monitoringOnly: machines.monitoringOnly })
 			.from(machines)
 			.where(eq(machines.id, machineId))
-			.get()
+			.get();
 		// No managed record → not admitted → no active responses.
-		return machine ? Boolean(machine.monitoringOnly) : true
+		return machine ? Boolean(machine.monitoringOnly) : true;
 	}
 }

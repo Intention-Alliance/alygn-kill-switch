@@ -17,102 +17,110 @@
  * never floods the network (ADR-135 consequences §2).
  */
 
-import { spawn } from 'node:child_process'
-import { networkInterfaces } from 'node:os'
-import type { DiscoveredMachine, DiscoverySource } from '@align/shared-types'
+import { spawn } from "node:child_process";
+import { networkInterfaces } from "node:os";
+import type { DiscoveredMachine, DiscoverySource } from "@align/shared-types";
 
 // ─── Types ───────────────────────────────────────────────────────
 
 export interface SweepResult {
-	hosts: DiscoveredMachine[]
-	sweptAt: string // ISO timestamp
-	durationMs: number
+	hosts: DiscoveredMachine[];
+	sweptAt: string; // ISO timestamp
+	durationMs: number;
 }
 
 export interface MachineDiscoveryParams {
-	maxHostsPerSweep?: number
-	pingTimeoutMs?: number
-	mdnsTimeoutMs?: number
+	maxHostsPerSweep?: number;
+	pingTimeoutMs?: number;
+	mdnsTimeoutMs?: number;
 }
 
 interface LocalSubnet {
-	ip: string
-	prefix: number
+	ip: string;
+	prefix: number;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
 export function getLocalSubnets(): LocalSubnet[] {
-	const subnets: LocalSubnet[] = []
-	const interfaces = networkInterfaces()
+	const subnets: LocalSubnet[] = [];
+	const interfaces = networkInterfaces();
 	for (const entries of Object.values(interfaces)) {
 		for (const entry of entries ?? []) {
-			if (entry.family === 'IPv4' && !entry.internal) {
+			if (entry.family === "IPv4" && !entry.internal) {
 				subnets.push({
 					ip: entry.address,
-					prefix: entry.cidr ? parseInt(entry.cidr.split('/')[1], 10) : 24,
-				})
+					prefix: entry.cidr ? parseInt(entry.cidr.split("/")[1], 10) : 24,
+				});
 			}
 		}
 	}
-	return subnets
+	return subnets;
 }
 
 export function subnetHosts(subnet: LocalSubnet, maxHosts: number): string[] {
-	const parts = subnet.ip.split('.').map((part) => parseInt(part, 10))
+	const parts = subnet.ip.split(".").map((part) => parseInt(part, 10));
 	if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part)))
-		return []
+		return [];
 
-	const hostBits = 32 - subnet.prefix
-	const totalHosts = Math.min(2 ** hostBits - 2, maxHosts)
-	const hosts: string[] = []
+	const hostBits = 32 - subnet.prefix;
+	const totalHosts = Math.min(2 ** hostBits - 2, maxHosts);
+	const hosts: string[] = [];
 	for (let i = 1; i <= totalHosts; i++) {
-		const offset = i
-		const hostPart = (parts[3] + offset) % 256
-		hosts.push(`${parts[0]}.${parts[1]}.${parts[2]}.${hostPart}`)
+		const offset = i;
+		const hostPart = (parts[3] + offset) % 256;
+		hosts.push(`${parts[0]}.${parts[1]}.${parts[2]}.${hostPart}`);
 	}
-	return hosts
+	return hosts;
 }
 
 function pingHost(ip: string, timeoutMs: number): Promise<boolean> {
 	return new Promise((resolve) => {
-		const child = spawn('ping', ['-c', '1', '-W', String(Math.max(1, Math.floor(timeoutMs / 1000))), ip], {
-			stdio: 'ignore',
-		})
+		const child = spawn(
+			"ping",
+			["-c", "1", "-W", String(Math.max(1, Math.floor(timeoutMs / 1000))), ip],
+			{
+				stdio: "ignore",
+			},
+		);
 		const timer = setTimeout(() => {
-			child.kill('SIGKILL')
-			resolve(false)
-		}, timeoutMs + 500)
-		child.on('error', () => {
-			clearTimeout(timer)
-			resolve(false)
-		})
-		child.on('close', (code) => {
-			clearTimeout(timer)
-			resolve(code === 0)
-		})
-	})
+			child.kill("SIGKILL");
+			resolve(false);
+		}, timeoutMs + 500);
+		child.on("error", () => {
+			clearTimeout(timer);
+			resolve(false);
+		});
+		child.on("close", (code) => {
+			clearTimeout(timer);
+			resolve(code === 0);
+		});
+	});
 }
 
 function resolveHostname(ip: string): Promise<string | null> {
 	return new Promise((resolve) => {
-		const child = spawn('getent', ['hosts', ip], { stdio: ['ignore', 'pipe', 'ignore'] })
+		const child = spawn("getent", ["hosts", ip], {
+			stdio: ["ignore", "pipe", "ignore"],
+		});
 		const timer = setTimeout(() => {
-			child.kill('SIGKILL')
-			resolve(null)
-		}, 2000)
-		let out = ''
-		child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
-		child.on('error', () => {
-			clearTimeout(timer)
-			resolve(null)
-		})
-		child.on('close', () => {
-			clearTimeout(timer)
-			const parts = out.trim().split(/\s+/)
-			resolve(parts.length > 1 ? parts[1] : null)
-		})
-	})
+			child.kill("SIGKILL");
+			resolve(null);
+		}, 2000);
+		let out = "";
+		child.stdout?.on("data", (d: Buffer) => {
+			out += d.toString();
+		});
+		child.on("error", () => {
+			clearTimeout(timer);
+			resolve(null);
+		});
+		child.on("close", () => {
+			clearTimeout(timer);
+			const parts = out.trim().split(/\s+/);
+			resolve(parts.length > 1 ? parts[1] : null);
+		});
+	});
 }
 
 export function buildDiscoveredMachine(
@@ -120,20 +128,20 @@ export function buildDiscoveredMachine(
 	source: DiscoverySource,
 	hostname: string | null,
 ): DiscoveredMachine {
-	const now = new Date().toISOString()
+	const now = new Date().toISOString();
 	return {
-		id: `discovered-${ip.replace(/\./g, '-')}`,
+		id: `discovered-${ip.replace(/\./g, "-")}`,
 		hostname: hostname ?? ip,
 		ip,
 		source,
-		state: 'NEW_MACHINE', // NO auto-admission (ADR-135 §5)
+		state: "NEW_MACHINE", // NO auto-admission (ADR-135 §5)
 		fingerprint: null,
 		integritySignature: null,
 		firstSeen: now,
 		lastSeen: now,
 		confirmedAt: null,
 		confirmedBy: null,
-	}
+	};
 }
 
 // ─── Sweep Implementation ────────────────────────────────────────
@@ -147,16 +155,16 @@ export async function sweepLocalNetwork({
 	maxHostsPerSweep = 64,
 	pingTimeoutMs = 1000,
 }: MachineDiscoveryParams = {}): Promise<SweepResult> {
-	const startedAt = performance.now()
-	const subnets = getLocalSubnets()
-	const hosts: DiscoveredMachine[] = []
+	const startedAt = performance.now();
+	const subnets = getLocalSubnets();
+	const hosts: DiscoveredMachine[] = [];
 
 	for (const subnet of subnets) {
-		const candidates = subnetHosts(subnet, maxHostsPerSweep)
+		const candidates = subnetHosts(subnet, maxHostsPerSweep);
 		for (const ip of candidates) {
 			if (await pingHost(ip, pingTimeoutMs)) {
-				const hostname = await resolveHostname(ip)
-				hosts.push(buildDiscoveredMachine(ip, 'arp-sweep', hostname))
+				const hostname = await resolveHostname(ip);
+				hosts.push(buildDiscoveredMachine(ip, "arp-sweep", hostname));
 			}
 		}
 	}
@@ -165,7 +173,7 @@ export async function sweepLocalNetwork({
 		hosts,
 		sweptAt: new Date().toISOString(),
 		durationMs: Math.round(performance.now() - startedAt),
-	}
+	};
 }
 
 /**
@@ -178,26 +186,39 @@ export async function discoverMdns({
 }: MachineDiscoveryParams = {}): Promise<DiscoveredMachine[]> {
 	try {
 		const output = await new Promise<string>((resolve) => {
-			const child = spawn('avahi-browse', ['-rt', '_alygn-killswitch._tcp'], { stdio: ['ignore', 'pipe', 'ignore'] })
-			const timer = setTimeout(() => { child.kill('SIGKILL'); resolve('') }, mdnsTimeoutMs + 1000)
-			let out = ''
-			child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
-			child.on('error', () => { clearTimeout(timer); resolve('') })
-			child.on('close', () => { clearTimeout(timer); resolve(out) })
-		})
-		const hosts: DiscoveredMachine[] = []
-		const lines = output.split('\n')
+			const child = spawn("avahi-browse", ["-rt", "_alygn-killswitch._tcp"], {
+				stdio: ["ignore", "pipe", "ignore"],
+			});
+			const timer = setTimeout(() => {
+				child.kill("SIGKILL");
+				resolve("");
+			}, mdnsTimeoutMs + 1000);
+			let out = "";
+			child.stdout?.on("data", (d: Buffer) => {
+				out += d.toString();
+			});
+			child.on("error", () => {
+				clearTimeout(timer);
+				resolve("");
+			});
+			child.on("close", () => {
+				clearTimeout(timer);
+				resolve(out);
+			});
+		});
+		const hosts: DiscoveredMachine[] = [];
+		const lines = output.split("\n");
 		for (const line of lines) {
-			const match = line.match(/=\s*([^\s]+)\s+IPv4\s+([^\s]+)/)
+			const match = line.match(/=\s*([^\s]+)\s+IPv4\s+([^\s]+)/);
 			if (match) {
-				const hostname = match[1]
-				const ip = match[2]
-				hosts.push(buildDiscoveredMachine(ip, 'mdns', hostname))
+				const hostname = match[1];
+				const ip = match[2];
+				hosts.push(buildDiscoveredMachine(ip, "mdns", hostname));
 			}
 		}
-		return hosts
+		return hosts;
 	} catch {
-		return []
+		return [];
 	}
 }
 
@@ -209,23 +230,23 @@ export async function discoverMdns({
 export async function runNetworkDiscovery(
 	params: MachineDiscoveryParams = {},
 ): Promise<SweepResult> {
-	const startedAt = performance.now()
+	const startedAt = performance.now();
 	const [mdnsHosts, sweep] = await Promise.all([
 		discoverMdns(params),
 		sweepLocalNetwork(params),
-	])
+	]);
 
 	// Deduplicate by IP — mDNS wins for hostname resolution
-	const byIp = new Map<string, DiscoveredMachine>()
-	for (const host of mdnsHosts) byIp.set(host.ip ?? host.hostname, host)
+	const byIp = new Map<string, DiscoveredMachine>();
+	for (const host of mdnsHosts) byIp.set(host.ip ?? host.hostname, host);
 	for (const host of sweep.hosts) {
 		if (!byIp.has(host.ip ?? host.hostname))
-			byIp.set(host.ip ?? host.hostname, host)
+			byIp.set(host.ip ?? host.hostname, host);
 	}
 
 	return {
 		hosts: [...byIp.values()],
 		sweptAt: new Date().toISOString(),
 		durationMs: Math.round(performance.now() - startedAt),
-	}
+	};
 }

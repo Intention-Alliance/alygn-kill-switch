@@ -19,48 +19,48 @@ import type {
 	IntegrityDrift,
 	IntegritySignature,
 	MachineDiscoveryState,
-} from '@align/shared-types'
-import { and, desc, eq } from 'drizzle-orm'
-import { db } from '../../db/index'
+} from "@align/shared-types";
+import { and, desc, eq } from "drizzle-orm";
+import { db } from "../../db/index";
 import {
 	discoveredMachines,
 	discoveredModels,
 	discoveredProviders,
 	integrityEvents,
-} from '../../db/schema'
-import { OnboardingService } from '../onboarding'
+} from "../../db/schema";
+import { OnboardingService } from "../onboarding";
 import {
 	collectHardwareFingerprint,
 	compareFingerprints,
 	detectFingerprintDrift,
 	signFingerprint,
-} from './fingerprint'
-import { runNetworkDiscovery } from './machine-discovery'
+} from "./fingerprint";
+import { runNetworkDiscovery } from "./machine-discovery";
 import {
 	type ProviderProbeResult,
 	ProviderRegistry,
-} from './providers/registry'
+} from "./providers/registry";
 
 // ─── Types ───────────────────────────────────────────────────────
 
 export interface HeartbeatDiscoveryParams {
-	machineId: string
-	hostname: string
-	fingerprint?: HardwareFingerprint
+	machineId: string;
+	hostname: string;
+	fingerprint?: HardwareFingerprint;
 }
 
 export interface DiscoveryOrchestratorParams {
-	providerRegistry?: ProviderRegistry
+	providerRegistry?: ProviderRegistry;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
 function parseJson<T>(value: string | null): T | null {
-	if (!value) return null
+	if (!value) return null;
 	try {
-		return JSON.parse(value) as T
+		return JSON.parse(value) as T;
 	} catch {
-		return null
+		return null;
 	}
 }
 
@@ -71,7 +71,7 @@ function serializeDiscoveredMachine(
 		id: String(row.id),
 		hostname: String(row.hostname),
 		ip: row.ip ? String(row.ip) : null,
-		source: row.source as DiscoveredMachine['source'],
+		source: row.source as DiscoveredMachine["source"],
 		state: row.state as MachineDiscoveryState,
 		fingerprint: row.fingerprint
 			? parseJson<HardwareFingerprint>(String(row.fingerprint))
@@ -81,19 +81,19 @@ function serializeDiscoveredMachine(
 			: null,
 		firstSeen: row.firstSeen
 			? new Date(Number(row.firstSeen)).toISOString()
-			: '',
-		lastSeen: row.lastSeen ? new Date(Number(row.lastSeen)).toISOString() : '',
+			: "",
+		lastSeen: row.lastSeen ? new Date(Number(row.lastSeen)).toISOString() : "",
 		confirmedAt: row.confirmedAt
 			? new Date(Number(row.confirmedAt)).toISOString()
 			: null,
 		confirmedBy: row.confirmedBy ? String(row.confirmedBy) : null,
-	}
+	};
 }
 
 // ─── Orchestrator ────────────────────────────────────────────────
 
 export class DiscoveryOrchestrator {
-	private readonly providerRegistry: ProviderRegistry
+	private readonly providerRegistry: ProviderRegistry;
 
 	constructor({ providerRegistry }: DiscoveryOrchestratorParams = {}) {
 		// WS-B (Nikaya 78/100, HIGH): anchor the Ollama provider to the
@@ -105,7 +105,7 @@ export class DiscoveryOrchestrator {
 			providerRegistry ??
 			new ProviderRegistry({
 				ollamaBaseUrl: process.env.KILL_SWITCH_DISCOVERY_OLLAMA_BASE_URL,
-			})
+			});
 	}
 
 	/**
@@ -120,36 +120,36 @@ export class DiscoveryOrchestrator {
 		hostname,
 		fingerprint,
 	}: HeartbeatDiscoveryParams): Promise<{
-		drift: IntegrityDrift | null
-		signature: IntegritySignature
+		drift: IntegrityDrift | null;
+		signature: IntegritySignature;
 	}> {
-		const current = fingerprint ?? collectHardwareFingerprint()
-		const signature = signFingerprint(current)
-		const now = new Date()
+		const current = fingerprint ?? collectHardwareFingerprint();
+		const signature = signFingerprint(current);
+		const now = new Date();
 
 		const existing = await db
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
+			.get();
 
-		let drift: IntegrityDrift | null = null
+		let drift: IntegrityDrift | null = null;
 
 		if (existing) {
 			const baseline = existing.fingerprint
 				? parseJson<HardwareFingerprint>(String(existing.fingerprint))
-				: null
+				: null;
 			if (baseline) {
-				drift = compareFingerprints(current, baseline, machineId)
+				drift = compareFingerprints(current, baseline, machineId);
 			} else {
 				// No stored fingerprint snapshot (e.g. a row written before
 				// snapshots existed) — fall back to signature-only drift
 				// detection against the persisted integrity signature.
 				const baselineSignature = existing.integritySignature
 					? parseJson<IntegritySignature>(String(existing.integritySignature))
-					: null
+					: null;
 				if (baselineSignature) {
-					drift = detectFingerprintDrift(current, baselineSignature, machineId)
+					drift = detectFingerprintDrift(current, baselineSignature, machineId);
 				}
 			}
 			if (drift) {
@@ -160,13 +160,13 @@ export class DiscoveryOrchestrator {
 					severity: drift.severity,
 					driftedFields: JSON.stringify(drift.driftedFields),
 					detectedAt: now,
-				})
+				});
 				// ADR-138 §4: high-severity tamper/swap returns an ADMITTED
 				// machine to PENDING_REVIEW — re-confirmation required before
 				// it can operate normally again. No-op for non-admitted machines.
-				if (drift.severity === 'high') {
-					const onboarding = new OnboardingService()
-					await onboarding.flagForReview(machineId)
+				if (drift.severity === "high") {
+					const onboarding = new OnboardingService();
+					await onboarding.flagForReview(machineId);
 				}
 			}
 			await db
@@ -177,24 +177,24 @@ export class DiscoveryOrchestrator {
 					integritySignature: JSON.stringify(signature),
 					lastSeen: now,
 				})
-				.where(eq(discoveredMachines.id, machineId))
+				.where(eq(discoveredMachines.id, machineId));
 		} else {
 			await db.insert(discoveredMachines).values({
 				id: machineId,
 				hostname,
 				ip: null,
-				source: 'heartbeat',
-				state: 'NEW_MACHINE', // NO auto-admission (ADR-135 §5)
+				source: "heartbeat",
+				state: "NEW_MACHINE", // NO auto-admission (ADR-135 §5)
 				fingerprint: JSON.stringify(current),
 				integritySignature: JSON.stringify(signature),
 				firstSeen: now,
 				lastSeen: now,
 				confirmedAt: null,
 				confirmedBy: null,
-			})
+			});
 		}
 
-		return { drift, signature }
+		return { drift, signature };
 	}
 
 	/**
@@ -204,8 +204,8 @@ export class DiscoveryOrchestrator {
 	async detectProvidersForMachine(
 		machineId: string,
 	): Promise<ProviderProbeResult[]> {
-		const results = await this.providerRegistry.discoverProviders()
-		const now = new Date()
+		const results = await this.providerRegistry.discoverProviders();
+		const now = new Date();
 
 		for (const result of results) {
 			const existingProvider = await db
@@ -217,7 +217,7 @@ export class DiscoveryOrchestrator {
 						eq(discoveredProviders.providerId, result.provider.id),
 					),
 				)
-				.get()
+				.get();
 
 			if (existingProvider) {
 				await db
@@ -225,12 +225,12 @@ export class DiscoveryOrchestrator {
 					.set({
 						baseUrl: result.provider.baseUrl,
 						version: result.provider.version,
-						status: result.health.healthy ? 'healthy' : 'unhealthy',
+						status: result.health.healthy ? "healthy" : "unhealthy",
 						lastHealthyAt: result.health.healthy
 							? now
 							: existingProvider.lastHealthyAt,
 					})
-					.where(eq(discoveredProviders.id, existingProvider.id))
+					.where(eq(discoveredProviders.id, existingProvider.id));
 			} else {
 				await db.insert(discoveredProviders).values({
 					id: crypto.randomUUID(),
@@ -238,10 +238,10 @@ export class DiscoveryOrchestrator {
 					providerId: result.provider.id,
 					baseUrl: result.provider.baseUrl,
 					version: result.provider.version,
-					status: result.health.healthy ? 'healthy' : 'unhealthy',
+					status: result.health.healthy ? "healthy" : "unhealthy",
 					detectedAt: now,
 					lastHealthyAt: result.health.healthy ? now : null,
-				})
+				});
 			}
 
 			for (const model of result.models) {
@@ -254,7 +254,7 @@ export class DiscoveryOrchestrator {
 							eq(discoveredModels.modelId, model.id),
 						),
 					)
-					.get()
+					.get();
 
 				if (existingModel) {
 					await db
@@ -266,7 +266,7 @@ export class DiscoveryOrchestrator {
 							family: model.family,
 							served: model.served,
 						})
-						.where(eq(discoveredModels.id, existingModel.id))
+						.where(eq(discoveredModels.id, existingModel.id));
 				} else {
 					await db.insert(discoveredModels).values({
 						id: crypto.randomUUID(),
@@ -279,12 +279,12 @@ export class DiscoveryOrchestrator {
 						family: model.family,
 						served: model.served,
 						detectedAt: now,
-					})
+					});
 				}
 			}
 		}
 
-		return results
+		return results;
 	}
 
 	/**
@@ -300,20 +300,20 @@ export class DiscoveryOrchestrator {
 	 * (ON CONFLICT DO UPDATE) that refreshes lastSeen instead of throwing.
 	 */
 	async runNetworkSweep(): Promise<{
-		discovered: DiscoveredMachine[]
-		skipped: number
+		discovered: DiscoveredMachine[];
+		skipped: number;
 	}> {
-		const sweep = await runNetworkDiscovery()
-		const discovered: DiscoveredMachine[] = []
-		let skipped = 0
+		const sweep = await runNetworkDiscovery();
+		const discovered: DiscoveredMachine[] = [];
+		let skipped = 0;
 
 		for (const host of sweep.hosts) {
-			const now = new Date()
+			const now = new Date();
 			const existing = await db
 				.select({ id: discoveredMachines.id })
 				.from(discoveredMachines)
 				.where(eq(discoveredMachines.id, host.id))
-				.get()
+				.get();
 
 			if (existing) {
 				// Already registered (same sweep id) — refresh lastSeen, don't
@@ -322,9 +322,9 @@ export class DiscoveryOrchestrator {
 				await db
 					.update(discoveredMachines)
 					.set({ lastSeen: now })
-					.where(eq(discoveredMachines.id, host.id))
-				skipped++
-				continue
+					.where(eq(discoveredMachines.id, host.id));
+				skipped++;
+				continue;
 			}
 
 			// Upsert as a safety net: even if a concurrent sweep inserted the
@@ -337,7 +337,7 @@ export class DiscoveryOrchestrator {
 					hostname: host.hostname,
 					ip: host.ip,
 					source: host.source,
-					state: 'NEW_MACHINE',
+					state: "NEW_MACHINE",
 					fingerprint: null,
 					integritySignature: null,
 					firstSeen: now,
@@ -348,11 +348,11 @@ export class DiscoveryOrchestrator {
 				.onConflictDoUpdate({
 					target: discoveredMachines.id,
 					set: { lastSeen: now },
-				})
-			discovered.push(host)
+				});
+			discovered.push(host);
 		}
 
-		return { discovered, skipped }
+		return { discovered, skipped };
 	}
 
 	/**
@@ -364,45 +364,45 @@ export class DiscoveryOrchestrator {
 			.select()
 			.from(discoveredMachines)
 			.where(eq(discoveredMachines.id, machineId))
-			.get()
-		if (!machine) return null
+			.get();
+		if (!machine) return null;
 
 		const providers = await db
 			.select()
 			.from(discoveredProviders)
 			.where(eq(discoveredProviders.machineId, machineId))
-			.all()
+			.all();
 
 		const models = await db
 			.select()
 			.from(discoveredModels)
 			.where(eq(discoveredModels.machineId, machineId))
-			.all()
+			.all();
 
 		const latestDrift = await db
 			.select()
 			.from(integrityEvents)
 			.where(eq(integrityEvents.machineId, machineId))
 			.orderBy(desc(integrityEvents.detectedAt))
-			.get()
+			.get();
 
 		const providerList: DiscoveredProvider[] = providers.map((row) => ({
 			id: String(row.id),
 			machineId: String(row.machineId),
-			providerId: row.providerId as DiscoveredProvider['providerId'],
+			providerId: row.providerId as DiscoveredProvider["providerId"],
 			baseUrl: row.baseUrl ? String(row.baseUrl) : null,
 			version: row.version ? String(row.version) : null,
-			status: row.status as DiscoveredProvider['status'],
+			status: row.status as DiscoveredProvider["status"],
 			detectedAt: new Date(Number(row.detectedAt)).toISOString(),
 			lastHealthyAt: row.lastHealthyAt
 				? new Date(Number(row.lastHealthyAt)).toISOString()
 				: null,
-		}))
+		}));
 
 		const modelList: DiscoveredModel[] = models.map((row) => ({
 			id: String(row.id),
 			machineId: String(row.machineId),
-			providerId: row.providerId as DiscoveredModel['providerId'],
+			providerId: row.providerId as DiscoveredModel["providerId"],
 			modelId: String(row.modelId),
 			name: String(row.name),
 			sizeBytes: row.sizeBytes !== null ? Number(row.sizeBytes) : null,
@@ -410,7 +410,7 @@ export class DiscoveryOrchestrator {
 			family: row.family ? String(row.family) : null,
 			served: Boolean(row.served),
 			detectedAt: new Date(Number(row.detectedAt)).toISOString(),
-		}))
+		}));
 
 		return {
 			machine: serializeDiscoveredMachine(
@@ -424,19 +424,19 @@ export class DiscoveryOrchestrator {
 					: null,
 				drift: latestDrift
 					? {
-							event: latestDrift.event as IntegrityDrift['event'],
+							event: latestDrift.event as IntegrityDrift["event"],
 							machineId: String(latestDrift.machineId),
 							driftedFields: latestDrift.driftedFields
 								? (JSON.parse(String(latestDrift.driftedFields)) as string[])
 								: [],
-							severity: latestDrift.severity as IntegrityDrift['severity'],
+							severity: latestDrift.severity as IntegrityDrift["severity"],
 							detectedAt: new Date(
 								Number(latestDrift.detectedAt),
 							).toISOString(),
 						}
 					: null,
 			},
-		}
+		};
 	}
 
 	/**
@@ -452,18 +452,18 @@ export class DiscoveryOrchestrator {
 		confirmedBy: string,
 		approve: boolean,
 	): Promise<DiscoveredMachine | null> {
-		const onboarding = new OnboardingService()
+		const onboarding = new OnboardingService();
 		if (approve) {
 			const decision = await onboarding.approve({
 				machineId,
 				reviewedBy: confirmedBy,
-			})
-			return decision?.machine ?? null
+			});
+			return decision?.machine ?? null;
 		}
 		const decision = await onboarding.deny({
 			machineId,
 			reviewedBy: confirmedBy,
-		})
-		return decision?.machine ?? null
+		});
+		return decision?.machine ?? null;
 	}
 }

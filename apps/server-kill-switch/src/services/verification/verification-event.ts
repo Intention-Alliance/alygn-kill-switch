@@ -8,32 +8,32 @@
  * `bcp:verification:events` message for the dashboard + audit.
  */
 
-import { createHash } from 'node:crypto'
-import { db } from '../../db'
-import { verificationEvents } from '../../db/schema'
-import type { VerificationResult } from './verifier'
+import { createHash } from "node:crypto";
+import { db } from "../../db";
+import { verificationEvents } from "../../db/schema";
+import type { VerificationResult } from "./verifier";
 
-export const VERIFICATION_EVENTS_CHANNEL = 'bcp:verification:events'
+export const VERIFICATION_EVENTS_CHANNEL = "bcp:verification:events";
 
 export interface VerificationEventInput {
-	requestId: string
-	machineId?: string
-	prompt: string
-	output: string
-	result: VerificationResult
-	triggeredKill: boolean
+	requestId: string;
+	machineId?: string;
+	prompt: string;
+	output: string;
+	result: VerificationResult;
+	triggeredKill: boolean;
 	/**
 	 * P1-3 (Stage 2): when true, append a `output-truncated:streamed-above-256KB-cap`
 	 * marker to the persisted reason so the dashboard surfaces that the
 	 * verifier saw only a partial slice of the upstream response. Default false.
 	 */
-	outputTruncated?: boolean
+	outputTruncated?: boolean;
 }
 
-export type PublishFn = (channel: string, msg: string) => Promise<void>
+export type PublishFn = (channel: string, msg: string) => Promise<void>;
 
 function sha256(value: string): string {
-	return createHash('sha256').update(value, 'utf8').digest('hex')
+	return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
 /**
@@ -57,10 +57,10 @@ export function composeEventReason(
 	outputTruncated: boolean | undefined,
 ): string | null {
 	const suffix = outputTruncated
-		? 'output-truncated:streamed-above-256KB-cap'
-		: ''
-	const composed = [verifierReason || '', suffix].filter(Boolean).join(' | ')
-	return composed || null
+		? "output-truncated:streamed-above-256KB-cap"
+		: "";
+	const composed = [verifierReason || "", suffix].filter(Boolean).join(" | ");
+	return composed || null;
 }
 
 /**
@@ -82,11 +82,11 @@ export async function recordVerificationEvent(
 		result,
 		triggeredKill,
 		outputTruncated,
-	} = input
+	} = input;
 
 	// P1-3: compose the reason with the truncation marker via the pure
 	// helper so the logic is unit-testable without a live DB.
-	const composedReason = composeEventReason(result.reason, outputTruncated)
+	const composedReason = composeEventReason(result.reason, outputTruncated);
 
 	const row = {
 		id: crypto.randomUUID(),
@@ -101,17 +101,17 @@ export async function recordVerificationEvent(
 		outputHash: sha256(output),
 		triggeredKill,
 		createdAt: new Date(),
-	}
+	};
 
-	let id: string | null = null
+	let id: string | null = null;
 	try {
-		await db.insert(verificationEvents).values(row)
-		id = row.id
+		await db.insert(verificationEvents).values(row);
+		id = row.id;
 	} catch (err) {
 		console.error(
-			'[verification-event] Failed to persist verification_event:',
+			"[verification-event] Failed to persist verification_event:",
 			err instanceof Error ? err.message : err,
-		)
+		);
 	}
 
 	if (publish) {
@@ -119,7 +119,7 @@ export async function recordVerificationEvent(
 			await publish(
 				VERIFICATION_EVENTS_CHANNEL,
 				JSON.stringify({
-					type: 'verification-event',
+					type: "verification-event",
 					payload: {
 						id: row.id,
 						requestId,
@@ -134,14 +134,14 @@ export async function recordVerificationEvent(
 						timestamp: row.createdAt.toISOString(),
 					},
 				}),
-			)
+			);
 		} catch (err) {
 			console.warn(
-				'[verification-event] Redis publish dropped:',
+				"[verification-event] Redis publish dropped:",
 				err instanceof Error ? err.message : err,
-			)
+			);
 		}
 	}
 
-	return id
+	return id;
 }

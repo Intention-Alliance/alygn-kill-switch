@@ -24,26 +24,29 @@
  * @see docs/webhook-api-keys-db-spec.md §7
  */
 
-import { randomBytes } from 'node:crypto'
-import { desc, eq } from 'drizzle-orm'
-import { db } from '../db'
-import { webhookApiKeyAudit, webhookApiKeys } from '../db/schema'
-import { readApiKeyHeader, verifyApiKey } from '../middleware/apikey.middleware'
-import { hashingService } from '../services/hashing'
-import { secureCompare } from '../utils/secure-compare'
+import { randomBytes } from "node:crypto";
+import { desc, eq } from "drizzle-orm";
+import { db } from "../db";
+import { webhookApiKeyAudit, webhookApiKeys } from "../db/schema";
+import {
+	readApiKeyHeader,
+	verifyApiKey,
+} from "../middleware/apikey.middleware";
+import { hashingService } from "../services/hashing";
+import { secureCompare } from "../utils/secure-compare";
 
 // Node-style request/response shapes (matches the rest of routes/*.ts)
 type Req = {
-	method: string
-	url: string
-	headers: Record<string, string | string[] | undefined>
-	body: string
-	ip: string
-}
+	method: string;
+	url: string;
+	headers: Record<string, string | string[] | undefined>;
+	body: string;
+	ip: string;
+};
 type Res = {
-	writeHead: (status: number, headers?: Record<string, string>) => void
-	end: (data?: string) => void
-}
+	writeHead: (status: number, headers?: Record<string, string>) => void;
+	end: (data?: string) => void;
+};
 
 // ─── Auth helpers ──────────────────────────────────────────────────
 
@@ -52,80 +55,91 @@ type Res = {
  * should have already thrown if it's missing.
  */
 function adminKeyMatches(req: Req): boolean {
-	const expected = process.env.ADMIN_UI_API_KEY
-	if (!expected) return false
-	const auth = req.headers?.authorization || ''
-	const m = String(auth).match(/^Bearer\s+(.+)$/i)
-	if (!m) return false
-	return secureCompare(m[1], expected)
+	const expected = process.env.ADMIN_UI_API_KEY;
+	if (!expected) return false;
+	const auth = req.headers?.authorization || "";
+	const m = String(auth).match(/^Bearer\s+(.+)$/i);
+	if (!m) return false;
+	return secureCompare(m[1], expected);
 }
 
 function internalKeyMatches(req: Req): boolean {
-	const expected = process.env.KILL_SWITCH_INTERNAL_KEY
-	if (!expected) return false
+	const expected = process.env.KILL_SWITCH_INTERNAL_KEY;
+	if (!expected) return false;
 	// Accept via X-Internal-Key header OR Authorization: Bearer <key>
-	const hdr = req.headers?.['x-internal-key'] || req.headers?.['X-Internal-Key']
-	if (typeof hdr === 'string' && secureCompare(hdr, expected)) return true
-	const auth = req.headers?.authorization || ''
-	const m = String(auth).match(/^Bearer\s+(.+)$/i)
-	if (m && secureCompare(m[1], expected)) return true
-	return false
+	const hdr =
+		req.headers?.["x-internal-key"] || req.headers?.["X-Internal-Key"];
+	if (typeof hdr === "string" && secureCompare(hdr, expected)) return true;
+	const auth = req.headers?.authorization || "";
+	const m = String(auth).match(/^Bearer\s+(.+)$/i);
+	if (m && secureCompare(m[1], expected)) return true;
+	return false;
 }
 
 // ─── Internal endpoint rate limiter (spec §7: 10 req/min/key) ────────────
 // In-memory sliding window since internal endpoints are localhost-only.
 // Prevents a runaway caller from hammering the lookup endpoint.
-const INTERNAL_RATE_LIMIT_MAX = 10
-const INTERNAL_RATE_LIMIT_WINDOW_MS = 60_000
-const internalRateBuckets = new Map<string, number[]>()
+const INTERNAL_RATE_LIMIT_MAX = 10;
+const INTERNAL_RATE_LIMIT_WINDOW_MS = 60_000;
+const internalRateBuckets = new Map<string, number[]>();
 
-function checkInternalRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-	const now = Date.now()
-	const cutoff = now - INTERNAL_RATE_LIMIT_WINDOW_MS
-	const bucket = internalRateBuckets.get(ip) ?? []
-	const recent = bucket.filter((t) => t > cutoff)
+function checkInternalRateLimit(ip: string): {
+	allowed: boolean;
+	retryAfter?: number;
+} {
+	const now = Date.now();
+	const cutoff = now - INTERNAL_RATE_LIMIT_WINDOW_MS;
+	const bucket = internalRateBuckets.get(ip) ?? [];
+	const recent = bucket.filter((t) => t > cutoff);
 	if (recent.length >= INTERNAL_RATE_LIMIT_MAX) {
-		return { allowed: false, retryAfter: Math.ceil(INTERNAL_RATE_LIMIT_WINDOW_MS / 1000) }
+		return {
+			allowed: false,
+			retryAfter: Math.ceil(INTERNAL_RATE_LIMIT_WINDOW_MS / 1000),
+		};
 	}
-	recent.push(now)
-	internalRateBuckets.set(ip, recent)
-	return { allowed: true }
+	recent.push(now);
+	internalRateBuckets.set(ip, recent);
+	return { allowed: true };
 }
 
 function rateLimited(res: Res): boolean {
-	writeJson(res, 429, { error: 'rate limit exceeded', limit: INTERNAL_RATE_LIMIT_MAX, retryAfter: 60 })
-	return true
+	writeJson(res, 429, {
+		error: "rate limit exceeded",
+		limit: INTERNAL_RATE_LIMIT_MAX,
+		retryAfter: 60,
+	});
+	return true;
 }
 
 function writeJson(res: Res, status: number, body: unknown) {
-	res.writeHead(status, { 'Content-Type': 'application/json' })
-	res.end(JSON.stringify(body))
+	res.writeHead(status, { "Content-Type": "application/json" });
+	res.end(JSON.stringify(body));
 }
 
 function unauthorized(res: Res): boolean {
-	writeJson(res, 401, { error: 'unauthorized' })
-	return true
+	writeJson(res, 401, { error: "unauthorized" });
+	return true;
 }
 
 function notFound(res: Res): boolean {
-	writeJson(res, 404, { error: 'not found' })
-	return true
+	writeJson(res, 404, { error: "not found" });
+	return true;
 }
 
 // ─── Date helpers (Drizzle returns Date or number for timestamp mode) ─
 
 function toIso(v: Date | number | null | undefined): string | null {
-	if (v === null || v === undefined) return null
-	if (v instanceof Date) return v.toISOString()
-	if (typeof v === 'number') return new Date(v * 1000).toISOString()
+	if (v === null || v === undefined) return null;
+	if (v instanceof Date) return v.toISOString();
+	if (typeof v === "number") return new Date(v * 1000).toISOString();
 	// Fall back: try to construct from whatever it is
-	const d = new Date(v as unknown as string | number)
-	return Number.isNaN(d.getTime()) ? null : d.toISOString()
+	const d = new Date(v as unknown as string | number);
+	return Number.isNaN(d.getTime()) ? null : d.toISOString();
 }
 
 // ─── Masking helper ────────────────────────────────────────────────
 
-type ApiKeyRow = typeof webhookApiKeys.$inferSelect
+type ApiKeyRow = typeof webhookApiKeys.$inferSelect;
 
 function rowToPublic(row: ApiKeyRow) {
 	return {
@@ -133,7 +147,7 @@ function rowToPublic(row: ApiKeyRow) {
 		keyPrefix: row.keyPrefix,
 		name: row.name,
 		scopes: row.scopes
-			.split(',')
+			.split(",")
 			.map((s) => s.trim())
 			.filter(Boolean),
 		createdAt: toIso(row.createdAt),
@@ -144,7 +158,7 @@ function rowToPublic(row: ApiKeyRow) {
 		revokedBy: row.revokedBy,
 		expiresAt: toIso(row.expiresAt),
 		notes: row.notes,
-	}
+	};
 }
 
 // ─── ID generation (ulid-ish, no deps) ───────────────────────────
@@ -152,24 +166,24 @@ function rowToPublic(row: ApiKeyRow) {
 function newKeyId(): string {
 	// ulid-ish format: `wk_<10 base36 time><16 base62 random>` — sortable, opaque
 	// We don't need true ULID monotonicity, just a sortable, opaque id.
-	const t = Date.now().toString(36).toUpperCase().padStart(10, '0')
+	const t = Date.now().toString(36).toUpperCase().padStart(10, "0");
 	const r = randomBytes(12)
-		.toString('base64url')
-		.replace(/[^A-Za-z0-9]/g, '')
+		.toString("base64url")
+		.replace(/[^A-Za-z0-9]/g, "")
 		.toUpperCase()
-		.padEnd(16, 'X')
-		.slice(0, 16)
-	return `wk_${t}${r}`
+		.padEnd(16, "X")
+		.slice(0, 16);
+	return `wk_${t}${r}`;
 }
 
 // ─── Allowed scopes ───────────────────────────────────────────────
 
 const ALLOWED_SCOPES = [
-	'live-chat',
-	'webhook-request',
-	'blog-pipeline',
-	'admin',
-]
+	"live-chat",
+	"webhook-request",
+	"blog-pipeline",
+	"admin",
+];
 
 // ─── Route handlers ───────────────────────────────────────────────
 
@@ -178,54 +192,54 @@ async function listKeys(res: Res): Promise<boolean> {
 	const rows = await db
 		.select()
 		.from(webhookApiKeys)
-		.orderBy(desc(webhookApiKeys.createdAt))
-	writeJson(res, 200, { keys: rows.map(rowToPublic) })
-	return true
+		.orderBy(desc(webhookApiKeys.createdAt));
+	writeJson(res, 200, { keys: rows.map(rowToPublic) });
+	return true;
 }
 
 /** POST /v1/admin/api-keys — body: { name, scopes, expiresAt?, notes? } */
 async function createKey(req: Req, res: Res): Promise<boolean> {
-	let body: Record<string, unknown> = {}
+	let body: Record<string, unknown> = {};
 	try {
-		body = req.body ? JSON.parse(req.body) : {}
+		body = req.body ? JSON.parse(req.body) : {};
 	} catch {
-		body = {}
+		body = {};
 	}
-	const name = typeof body.name === 'string' ? body.name.trim() : ''
+	const name = typeof body.name === "string" ? body.name.trim() : "";
 	if (name.length === 0) {
-		writeJson(res, 400, { error: 'name is required' })
-		return true
+		writeJson(res, 400, { error: "name is required" });
+		return true;
 	}
-	const rawScopes = body.scopes
-	let scopesCsv: string
-	if (typeof rawScopes === 'string' && rawScopes.trim().length > 0) {
-		scopesCsv = rawScopes.trim()
+	const rawScopes = body.scopes;
+	let scopesCsv: string;
+	if (typeof rawScopes === "string" && rawScopes.trim().length > 0) {
+		scopesCsv = rawScopes.trim();
 	} else if (Array.isArray(rawScopes) && rawScopes.length > 0) {
-		scopesCsv = rawScopes.map(String).join(',')
+		scopesCsv = rawScopes.map(String).join(",");
 	} else {
 		writeJson(res, 400, {
-			error: 'scopes is required (string or non-empty array)',
-		})
-		return true
+			error: "scopes is required (string or non-empty array)",
+		});
+		return true;
 	}
-	for (const s of scopesCsv.split(',')) {
+	for (const s of scopesCsv.split(",")) {
 		if (!ALLOWED_SCOPES.includes(s.trim())) {
 			writeJson(res, 400, {
-				error: `unknown scope: ${s.trim()}. Allowed: ${ALLOWED_SCOPES.join(', ')}`,
-			})
-			return true
+				error: `unknown scope: ${s.trim()}. Allowed: ${ALLOWED_SCOPES.join(", ")}`,
+			});
+			return true;
 		}
 	}
 	const expiresAt =
-		typeof body.expiresAt === 'string' && body.expiresAt.length > 0
+		typeof body.expiresAt === "string" && body.expiresAt.length > 0
 			? new Date(body.expiresAt)
-			: null
-	const notes = typeof body.notes === 'string' ? body.notes : null
+			: null;
+	const notes = typeof body.notes === "string" ? body.notes : null;
 
-	const plaintext = hashingService.generateApiKey()
-	const prefix = plaintext.slice(0, 8)
-	const hash = hashingService.hashApiKey(plaintext)
-	const id = newKeyId()
+	const plaintext = hashingService.generateApiKey();
+	const prefix = plaintext.slice(0, 8);
+	const hash = hashingService.hashApiKey(plaintext);
+	const id = newKeyId();
 
 	// apiKeyHash is unique, so a hash collision (effectively impossible with
 	// 190 bits of entropy) will throw on insert.
@@ -237,40 +251,40 @@ async function createKey(req: Req, res: Res): Promise<boolean> {
 			name,
 			scopes: scopesCsv,
 			createdAt: new Date(),
-			createdBy: 'admin', // (admin UI doesn't yet have user-level actor tracking)
+			createdBy: "admin", // (admin UI doesn't yet have user-level actor tracking)
 			expiresAt,
 			notes,
-		})
+		});
 	} catch (e: unknown) {
-		const msg = e instanceof Error ? e.message : String(e)
-		if (msg.includes('UNIQUE')) {
-			writeJson(res, 409, { error: 'hash collision (regenerate)' })
-			return true
+		const msg = e instanceof Error ? e.message : String(e);
+		if (msg.includes("UNIQUE")) {
+			writeJson(res, 409, { error: "hash collision (regenerate)" });
+			return true;
 		}
-		throw e
+		throw e;
 	}
 
 	// Audit
 	await db.insert(webhookApiKeyAudit).values({
 		keyId: id,
-		action: 'create',
-		actor: 'admin',
+		action: "create",
+		actor: "admin",
 		at: new Date(),
 		meta: JSON.stringify({
 			name,
 			scopes: scopesCsv,
 			expiresAt: body.expiresAt ?? null,
 		}),
-	})
+	});
 
 	writeJson(res, 201, {
 		id,
 		keyPrefix: prefix,
 		name,
-		scopes: scopesCsv.split(','),
+		scopes: scopesCsv.split(","),
 		key: plaintext, // shown ONCE
-	})
-	return true
+	});
+	return true;
 }
 
 /** POST /v1/admin/api-keys/:id/rotate */
@@ -279,26 +293,30 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 	// could both read the key as active and both proceed. By doing the
 	// read + check + write inside a single transaction, the second one
 	// will see the row as revoked and abort.
-	type RotateResult = { status: number; body: Record<string, unknown> }
+	type RotateResult = { status: number; body: Record<string, unknown> };
 
 	const result = await db.transaction(async (tx): Promise<RotateResult> => {
 		const existing = await tx.query.webhookApiKeys.findFirst({
 			where: eq(webhookApiKeys.id, id),
-		})
-		if (!existing) return { status: 404, body: { error: 'not found' } }
-		if (existing.revokedAt) return { status: 409, body: { error: 'cannot rotate a revoked key — create a new one' } }
+		});
+		if (!existing) return { status: 404, body: { error: "not found" } };
+		if (existing.revokedAt)
+			return {
+				status: 409,
+				body: { error: "cannot rotate a revoked key — create a new one" },
+			};
 
-		const newPlaintext = hashingService.generateApiKey()
-		const newPrefix = newPlaintext.slice(0, 8)
-		const newHash = hashingService.hashApiKey(newPlaintext)
-		const newId = newKeyId()
-		const oldId = existing.id
+		const newPlaintext = hashingService.generateApiKey();
+		const newPrefix = newPlaintext.slice(0, 8);
+		const newHash = hashingService.hashApiKey(newPlaintext);
+		const newId = newKeyId();
+		const oldId = existing.id;
 
 		// Mark old as revoked, then create new — both inside the transaction.
 		await tx
 			.update(webhookApiKeys)
-			.set({ revokedAt: new Date(), revokedBy: 'admin', expiresAt: new Date() })
-			.where(eq(webhookApiKeys.id, oldId))
+			.set({ revokedAt: new Date(), revokedBy: "admin", expiresAt: new Date() })
+			.where(eq(webhookApiKeys.id, oldId));
 		await tx.insert(webhookApiKeys).values({
 			id: newId,
 			keyPrefix: newPrefix,
@@ -306,26 +324,29 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 			name: existing.name,
 			scopes: existing.scopes,
 			createdAt: new Date(),
-			createdBy: 'admin',
+			createdBy: "admin",
 			expiresAt: existing.expiresAt,
 			notes: existing.notes,
-		})
+		});
 
 		// Audit entries inside the transaction too.
 		await tx.insert(webhookApiKeyAudit).values({
 			keyId: oldId,
-			action: 'rotate',
-			actor: 'admin',
+			action: "rotate",
+			actor: "admin",
 			at: new Date(),
-			meta: JSON.stringify({ newKeyId: newId, oldKeyPrefix: existing.keyPrefix }),
-		})
+			meta: JSON.stringify({
+				newKeyId: newId,
+				oldKeyPrefix: existing.keyPrefix,
+			}),
+		});
 		await tx.insert(webhookApiKeyAudit).values({
 			keyId: newId,
-			action: 'create',
-			actor: 'admin',
+			action: "create",
+			actor: "admin",
 			at: new Date(),
-			meta: JSON.stringify({ rotatedFrom: oldId, source: 'rotate' }),
-		})
+			meta: JSON.stringify({ rotatedFrom: oldId, source: "rotate" }),
+		});
 
 		return {
 			status: 201,
@@ -333,49 +354,52 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 				id: newId,
 				keyPrefix: newPrefix,
 				name: existing.name,
-				scopes: existing.scopes.split(',').map((s) => s.trim()).filter(Boolean),
+				scopes: existing.scopes
+					.split(",")
+					.map((s) => s.trim())
+					.filter(Boolean),
 				key: newPlaintext,
 				revokedKeyId: oldId,
 			},
-		}
-	})
+		};
+	});
 
-	writeJson(res, result.status, result.body)
-	return true
+	writeJson(res, result.status, result.body);
+	return true;
 }
 
 /** DELETE /v1/admin/api-keys/:id */
 async function revokeKey(res: Res, id: string): Promise<boolean> {
 	const existing = await db.query.webhookApiKeys.findFirst({
 		where: eq(webhookApiKeys.id, id),
-	})
+	});
 	if (!existing) {
-		notFound(res)
-		return true
+		notFound(res);
+		return true;
 	}
 	if (existing.revokedAt) {
 		// already revoked — idempotent
-		res.writeHead(204, { 'Content-Type': 'application/json' })
-		res.end()
-		return true
+		res.writeHead(204, { "Content-Type": "application/json" });
+		res.end();
+		return true;
 	}
 
 	await db
 		.update(webhookApiKeys)
-		.set({ revokedAt: new Date(), revokedBy: 'admin' })
-		.where(eq(webhookApiKeys.id, id))
+		.set({ revokedAt: new Date(), revokedBy: "admin" })
+		.where(eq(webhookApiKeys.id, id));
 
 	await db.insert(webhookApiKeyAudit).values({
 		keyId: id,
-		action: 'revoke',
-		actor: 'admin',
+		action: "revoke",
+		actor: "admin",
 		at: new Date(),
 		meta: JSON.stringify({ name: existing.name }),
-	})
+	});
 
-	res.writeHead(204, { 'Content-Type': 'application/json' })
-	res.end()
-	return true
+	res.writeHead(204, { "Content-Type": "application/json" });
+	res.end();
+	return true;
 }
 
 /** GET /v1/admin/api-keys/:id/audit */
@@ -385,7 +409,7 @@ async function keyAudit(res: Res, id: string): Promise<boolean> {
 		.from(webhookApiKeyAudit)
 		.where(eq(webhookApiKeyAudit.keyId, id))
 		.orderBy(desc(webhookApiKeyAudit.at))
-		.limit(100)
+		.limit(100);
 	writeJson(res, 200, {
 		entries: rows.map((r) => ({
 			id: r.id,
@@ -394,41 +418,41 @@ async function keyAudit(res: Res, id: string): Promise<boolean> {
 			at: toIso(r.at),
 			meta: r.meta ? JSON.parse(r.meta) : null,
 		})),
-	})
-	return true
+	});
+	return true;
 }
 
 /** GET /v1/internal/api-keys/lookup?prefix=... */
 async function internalLookup(req: Req, res: Res): Promise<boolean> {
-	const url = req.url || ''
-	const q = url.includes('?') ? url.slice(url.indexOf('?') + 1) : ''
-	const params = new URLSearchParams(q)
-	const prefix = params.get('prefix')
-	if (!prefix || prefix.length !== 8) {
-		writeJson(res, 400, { error: 'prefix query param (8 chars) required' })
-		return true
+	const url = req.url || "";
+	const q = url.includes("?") ? url.slice(url.indexOf("?") + 1) : "";
+	const params = new URLSearchParams(q);
+	const prefix = params.get("prefix");
+	if (prefix?.length !== 8) {
+		writeJson(res, 400, { error: "prefix query param (8 chars) required" });
+		return true;
 	}
 	const rows = await db
 		.select()
 		.from(webhookApiKeys)
 		.where(eq(webhookApiKeys.keyPrefix, prefix))
-		.limit(1)
-	const row = rows[0]
+		.limit(1);
+	const row = rows[0];
 	if (!row) {
-		notFound(res)
-		return true
+		notFound(res);
+		return true;
 	}
 	writeJson(res, 200, {
 		id: row.id,
 		apiKeyHash: row.apiKeyHash, // internal caller will sha256 the request header and compare
 		scopes: row.scopes
-			.split(',')
+			.split(",")
 			.map((s) => s.trim())
 			.filter(Boolean),
 		revokedAt: toIso(row.revokedAt),
 		expiresAt: toIso(row.expiresAt),
-	})
-	return true
+	});
+	return true;
 }
 
 /** POST /v1/internal/api-keys/verify — body: { requiredScope? }
@@ -443,26 +467,31 @@ async function internalVerify(
 	res: Res,
 	ip: string,
 ): Promise<boolean> {
-	const rawKey = readApiKeyHeader(req)
-	let body: Record<string, unknown> = {}
+	const rawKey = readApiKeyHeader(req);
+	let body: Record<string, unknown> = {};
 	try {
-		body = req.body ? JSON.parse(req.body) : {}
+		body = req.body ? JSON.parse(req.body) : {};
 	} catch {
-		body = {}
+		body = {};
 	}
 	const requiredScope =
-		typeof body.requiredScope === 'string' ? body.requiredScope : undefined
-	const result = await verifyApiKey(rawKey, ip, requiredScope, req.url ? new URL(req.url, 'http://localhost').pathname : null)
+		typeof body.requiredScope === "string" ? body.requiredScope : undefined;
+	const result = await verifyApiKey(
+		rawKey,
+		ip,
+		requiredScope,
+		req.url ? new URL(req.url, "http://localhost").pathname : null,
+	);
 	if (!result.ok) {
-		writeJson(res, 401, { error: 'unauthorized', reason: result.reason })
-		return true
+		writeJson(res, 401, { error: "unauthorized", reason: result.reason });
+		return true;
 	}
 	writeJson(res, 200, {
 		ok: true,
 		keyId: result.context.keyId,
 		scopes: result.context.scopes,
-	})
-	return true
+	});
+	return true;
 }
 
 // ─── Top-level dispatcher (the node-style route handler) ─────────
@@ -486,52 +515,52 @@ export async function handleApiKeysRoutes(
 	res: Res,
 	ip: string,
 ): Promise<boolean> {
-	const path = url.split('?')[0]
+	const path = url.split("?")[0];
 
 	// ─── Internal routes (openclaw-webhook) ────────────────────────
-	if (path === '/v1/internal/api-keys/lookup' && method === 'GET') {
-		if (!internalKeyMatches(req)) return unauthorized(res)
-		const rl = checkInternalRateLimit(ip)
-		if (!rl.allowed) return rateLimited(res)
-		return internalLookup(req, res)
+	if (path === "/v1/internal/api-keys/lookup" && method === "GET") {
+		if (!internalKeyMatches(req)) return unauthorized(res);
+		const rl = checkInternalRateLimit(ip);
+		if (!rl.allowed) return rateLimited(res);
+		return internalLookup(req, res);
 	}
-	if (path === '/v1/internal/api-keys/verify' && method === 'POST') {
-		if (!internalKeyMatches(req)) return unauthorized(res)
-		const rl = checkInternalRateLimit(ip)
-		if (!rl.allowed) return rateLimited(res)
-		return internalVerify(req, res, ip)
+	if (path === "/v1/internal/api-keys/verify" && method === "POST") {
+		if (!internalKeyMatches(req)) return unauthorized(res);
+		const rl = checkInternalRateLimit(ip);
+		if (!rl.allowed) return rateLimited(res);
+		return internalVerify(req, res, ip);
 	}
 
 	// ─── Admin routes (Bearer ADMIN_UI_API_KEY) ───────────────────
-	const adminPrefix = '/v1/admin/api-keys'
-	if (!path.startsWith(adminPrefix)) return false
+	const adminPrefix = "/v1/admin/api-keys";
+	if (!path.startsWith(adminPrefix)) return false;
 
-	if (!adminKeyMatches(req)) return unauthorized(res)
+	if (!adminKeyMatches(req)) return unauthorized(res);
 
 	// /v1/admin/api-keys (exact)
 	if (path === adminPrefix) {
-		if (method === 'GET') return listKeys(res)
-		if (method === 'POST') return createKey(req, res)
-		writeJson(res, 405, { error: 'method not allowed' })
-		return true
+		if (method === "GET") return listKeys(res);
+		if (method === "POST") return createKey(req, res);
+		writeJson(res, 405, { error: "method not allowed" });
+		return true;
 	}
 
 	// /v1/admin/api-keys/:id/...
-	const tail = path.slice(adminPrefix.length + 1) // strip leading /
-	const parts = tail.split('/')
-	const id = parts[0]
-	if (!id) return notFound(res)
+	const tail = path.slice(adminPrefix.length + 1); // strip leading /
+	const parts = tail.split("/");
+	const id = parts[0];
+	if (!id) return notFound(res);
 
 	if (parts.length === 1) {
-		if (method === 'DELETE') return revokeKey(res, id)
-		writeJson(res, 405, { error: 'method not allowed' })
-		return true
+		if (method === "DELETE") return revokeKey(res, id);
+		writeJson(res, 405, { error: "method not allowed" });
+		return true;
 	}
-	if (parts.length === 2 && parts[1] === 'rotate' && method === 'POST') {
-		return rotateKey(res, id)
+	if (parts.length === 2 && parts[1] === "rotate" && method === "POST") {
+		return rotateKey(res, id);
 	}
-	if (parts.length === 2 && parts[1] === 'audit' && method === 'GET') {
-		return keyAudit(res, id)
+	if (parts.length === 2 && parts[1] === "audit" && method === "GET") {
+		return keyAudit(res, id);
 	}
-	return notFound(res)
+	return notFound(res);
 }

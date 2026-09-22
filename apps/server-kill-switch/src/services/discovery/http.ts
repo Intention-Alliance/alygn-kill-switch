@@ -9,19 +9,19 @@
  * inference endpoints (Ollama /api/tags, vLLM /v1/models, ...).
  */
 
-const DEFAULT_TIMEOUT_MS = 1500
+const DEFAULT_TIMEOUT_MS = 1500;
 
 interface BoundedFetchParams {
-	url: string
-	timeoutMs?: number
-	headers?: Record<string, string>
+	url: string;
+	timeoutMs?: number;
+	headers?: Record<string, string>;
 }
 
 interface BoundedFetchResult {
-	ok: boolean
-	status: number
-	body: unknown
-	latencyMs: number
+	ok: boolean;
+	status: number;
+	body: unknown;
+	latencyMs: number;
 }
 
 /**
@@ -33,32 +33,32 @@ export async function boundedFetch({
 	timeoutMs = DEFAULT_TIMEOUT_MS,
 	headers,
 }: BoundedFetchParams): Promise<BoundedFetchResult> {
-	const startedAt = performance.now()
-	const controller = new AbortController()
-	const timer = setTimeout(() => controller.abort(), timeoutMs)
+	const startedAt = performance.now();
+	const controller = new AbortController();
+	const timer = setTimeout(() => controller.abort(), timeoutMs);
 
 	try {
 		const response = await fetch(url, {
 			signal: controller.signal,
-			headers: { Accept: 'application/json', ...headers },
-		})
-		const latencyMs = Math.round(performance.now() - startedAt)
-		let body: unknown = null
+			headers: { Accept: "application/json", ...headers },
+		});
+		const latencyMs = Math.round(performance.now() - startedAt);
+		let body: unknown = null;
 		try {
-			body = await response.json()
+			body = await response.json();
 		} catch {
-			body = null
+			body = null;
 		}
-		return { ok: response.ok, status: response.status, body, latencyMs }
+		return { ok: response.ok, status: response.status, body, latencyMs };
 	} catch {
 		return {
 			ok: false,
 			status: 0,
 			body: null,
 			latencyMs: Math.round(performance.now() - startedAt),
-		}
+		};
 	} finally {
-		clearTimeout(timer)
+		clearTimeout(timer);
 	}
 }
 
@@ -68,8 +68,8 @@ export async function boundedFetch({
  * instead of throwing.
  */
 export function parseArrayField(body: unknown, field: string): unknown[] {
-	if (body === null || typeof body !== 'object') return []
-	const record = body as Record<string, unknown>
-	const value = record[field]
-	return Array.isArray(value) ? value : []
+	if (body === null || typeof body !== "object") return [];
+	const record = body as Record<string, unknown>;
+	const value = record[field];
+	return Array.isArray(value) ? value : [];
 }
