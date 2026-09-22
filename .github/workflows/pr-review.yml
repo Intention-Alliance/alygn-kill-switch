@@ -108,7 +108,11 @@ jobs:
   review-assignment:
     name: Dispatch Team Review (Wobblus MCP)
     runs-on: ubuntu-latest
-    needs: lint
+    # Deliberately NOT gated on lint/test/build: the review dispatch is an
+    # independent signal and must fire even while code-quality jobs are red
+    # (e.g. the repo-wide bun install breakage from the db-schema removal).
+    # The reviewer sees the diff regardless of CI state; merge-requirements
+    # below still enforces the full gate before anything merges.
     if: github.event.pull_request.draft == false
 
     steps:
