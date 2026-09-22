@@ -182,7 +182,7 @@ jobs:
 
             **Wobblus MCP** (openclaw-webhook) has been notified. Nikaya 🔍 (reviewer) will review this PR and post a synthesized report — issues mapped by file, coderabbitai co-review, and next steps — directly on this PR.
 
-            _Ported from the andler-landing PR Review Gate (2026-09-21)._`
+            _Ported from the ${{vars.GITHUB_REPOSITORY}} PR Review Gate at ${{vars.GITHUB_REF_NAME}}._`
             });
 
   merge-requirements:
