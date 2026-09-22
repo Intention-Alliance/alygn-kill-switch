@@ -178,11 +178,11 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `## 🔍 Team Review Dispatched
+              body: `## 🔍 Team Review Dispatched ${{github.action_status}}
 
             **Wobblus MCP** (openclaw-webhook) has been notified. Nikaya 🔍 (reviewer) will review this PR and post a synthesized report — issues mapped by file, coderabbitai co-review, and next steps — directly on this PR.
 
-            _Ported from the ${{vars.GITHUB_REPOSITORY}} PR Review Gate at ${{vars.GITHUB_REF_NAME}}._`
+            _Ported from the ${{github.repository}} PR Review Gate at ${{vars.GITHUB_REF_NAME}}._`
             });
 
   merge-requirements:
