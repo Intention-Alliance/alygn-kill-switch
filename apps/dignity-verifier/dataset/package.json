@@ -1,0 +1,10 @@
+{
+  "name": "@alygn/dignity-verifier-dataset",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
