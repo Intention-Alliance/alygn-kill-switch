@@ -88,13 +88,28 @@ Base shape (see `../README.md`): `(id, prompt, output, verdict, reason, category
 
 Provenance is **load-bearing** and cannot be expressed by `source` alone —
 `source` says where a record came from, not who is accountable for its label.
-Two orthogonal fields carry that:
+
+### The authority fields
 
 | field | values | meaning |
 |-------|--------|---------|
 | `authored_by` | `human:<name>` \| `ai:draft-generated` | who wrote the record |
 | `verified_by` | `human:<name>` \| `ai:<model>` \| `null` | who confirmed the verdict |
 | `verification_status` | `human-verified` \| `ai-verified` \| `unverified` \| `disputed` | the trust state |
+
+### The audit fields (never authoritative)
+
+| field | values | meaning |
+|-------|--------|---------|
+| `ai_verdict` | `SAFE` \| `UNSAFE` \| `REVIEW` \| `null` | what the mediator said — **audit only** |
+| `ai_verdict_agreement` | `true` \| `false` \| `null` | did it agree with the human |
+| `mediated_by` | model id \| `null` | which model produced/checked it |
+| `review_state` | `accepted` \| `flagged` \| `pending_review` | queue position for flagged records |
+
+**No consumer may read `ai_verdict` as truth.** It exists so a reviewer can see
+*why* a record was flagged, not so a pipeline can use it as a label. The
+`ai_verdict` / `verified_by` split is what makes the human/AI boundary auditable
+rather than merely documented.
 
 `source` keeps its existing values (`seed`, `draft-generated`, `augmented`) and
 describes origin only.
@@ -119,6 +134,15 @@ against itself.
 and `source` together.
 
 The current files are all `draft-generated` / `unverified`.
+
+### Legacy records
+
+The 270 pre-migration records (70 SAFE + 110 UNSAFE + 60 REVIEW + 30 INJECTION)
+carried no `id` field; `migrate-add-id-source.ts` backfilled deterministic ids
+(`seed-<file>-<NNN>`) and `source: "seed"`. They predate this provenance
+convention, so they carry no `authored_by` / `verified_by`. Treat them as
+**unverified** until a human confirms them — do not infer human authorship from
+their presence in the repo.
 
 ## Git policy
 
