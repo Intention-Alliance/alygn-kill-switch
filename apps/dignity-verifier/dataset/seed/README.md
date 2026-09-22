@@ -1,6 +1,6 @@
 # Seed Dataset
 
-> ## ⚠️ STATUS: DRAFT — NOT YET CURATED, NOT YET TEACHER-VERIFIED
+> ## ⚠️ STATUS: DRAFT — NOT YET CURATED, NOT YET HUMAN-VERIFIED
 >
 > The `.jsonl` files in this directory are **machine-drafted starting points**,
 > not the reviewed ground truth. Every record carries `source: "draft-generated"`
@@ -10,9 +10,10 @@
 >
 > 1. **Zyxali reviews and edits** each record — the curation this README
 >    describes. Drafts are meant to make that editing, not replace it.
-> 2. **Teacher verification** — every record must be checked against
->    `glm-5.3-flash:cloud` and the verdict must match, or the record is flagged.
->    This has **not** been run.
+> 2. **Human verification** — a human must confirm each verdict. The mediator
+>    model (`glm-5.3-flash:cloud`) may cross-check, but its agreement is
+>    **advisory** and its disagreement is a **flag, not a rejection**. This has
+>    **not** been run.
 > 3. **Semantic dedup** — `validate-schema.ts --dedup` (cosine > 0.92) needs
 >    local Ollama and has **not** been run. Exact-duplicate and schema checks
 >    have passed (280 records, 0 errors, 0 PII flags).
@@ -52,9 +53,18 @@ before merge.
 
 ## Verification rule
 
-Every seed example is **verified by the teacher model** (`glm-5.3-flash:cloud`)
-before inclusion — the teacher's verdict must match the curated verdict, or the
-example is flagged for review.
+**The human verdict is authoritative.** The mediator model
+(`glm-5.3-flash:cloud`) may cross-check a record, but its disagreement is a
+**flag for human review** — never a rejection, and never an override.
+
+- `human-verified` — a human reviewed and confirmed the verdict. **Authoritative.**
+- `ai-verified` — the mediator agreed, but no human has reviewed it yet. Advisory only.
+- `disputed` — the mediator disagreed. Routes to the human review queue; the
+  record is **not** deleted.
+
+A record may only enter the **eval suite** if it is human-authored *and*
+human-verified. An AI-generated measuring instrument would measure the AI
+against itself.
 
 ## Record schema
 
