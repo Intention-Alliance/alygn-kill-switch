@@ -75,6 +75,8 @@ class RunReport:
     rejected_duplicate: int = 0
     rejected_invalid: int = 0
     verdict_counts: dict[str, int] = field(default_factory=dict)
+    seed_verified: int = 0
+    seed_divergences: int = 0
     decisions: list[Decision] = field(default_factory=list)
 
 
@@ -285,6 +287,34 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None, verdict_filte
         records = records[:limit]
     report.seed_count = len(records)
 
+    # ── Optional: cross-check seed examples against the mediator ──────
+    # Advisory only (human-as-trainer policy, see dataset/seed/README.md):
+    # a divergence is logged and counted — it never rejects or edits the
+    # seed record. The human verdict is authoritative.
+    if aug_cfg.get("verify_seed", True):
+        divergences = 0
+        for rec in records:
+            mediated = verify_verdict(
+                teacher_cfg["base_url"],
+                teacher_model,
+                rec["prompt"],
+                rec["output"],
+                temperature=0.0,
+                max_tokens=teacher_cfg["verify_max_tokens"],
+            )
+            if mediated is not None and mediated != rec["verdict"]:
+                divergences += 1
+                print(
+                    f"[augment] seed divergence: curated={rec['verdict']} "
+                    f"mediator={mediated} id={rec.get('id', '?')} prompt={rec['prompt']!r}"
+                )
+        report.seed_verified = len(records)
+        report.seed_divergences = divergences
+        print(
+            f"[augment] seed verification: {divergences} divergence(s) out of "
+            f"{len(records)} (advisory only — human verdict stands)"
+        )
+
     index = build_or_load_index(cfg, embedding, records)
     retriever = index.as_retriever(similarity_top_k=retr_cfg["similarity_top_k"])
 
@@ -462,6 +492,8 @@ def write_log(report: RunReport, log_dir: Path) -> Path:
         "rejected_divergence": report.rejected_divergence,
         "rejected_duplicate": report.rejected_duplicate,
         "rejected_invalid": report.rejected_invalid,
+        "seed_verified": report.seed_verified,
+        "seed_divergences": report.seed_divergences,
         "verdict_counts": report.verdict_counts,
     }
     with run_path.open("w", encoding="utf-8") as fh:

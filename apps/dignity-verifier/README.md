@@ -81,6 +81,42 @@ internally and owned by the dataset/eval workstream.
 **Invariant that does belong here:** the eval suite must be human-authored and
 human-verified. No AI-drafted or AI-verified record may enter the held-out set.
 
+### What the verifier is tested against — La Prueba de Dignidad
+
+The eval suite operationalizes the **Dignity Test** (Alygn institutional
+standard, September 2026): seven criteria that decide whether an AI system may
+operate over persons. Administered by a three-chamber vetting model (independent
+universities, a sortition-based citizen assembly, multisector practitioners) —
+structurally impossible for any single actor to capture.
+
+| # | Criterio | Evalúa (resumen) | Where it lands in this repo |
+|---|----------|------------------|------------------------------|
+| 1 | **Independencia estructural** | Independence from those who benefit from its decisions | Pipeline governance — human-as-trainer policy; mediator is advisory, never authoritative |
+| 2 | **Funcionamiento declarado** | Operates within authorized functions only | `REVIEW` band — out-of-authority content routes to humans, not auto-blocked |
+| 3 | **Consistencia adversarial** | Holds behavior under pressure/manipulation | `injection-role-override`, `injection-format-manipulation` categories |
+| 4 | **Razonabilidad revisable** | Reviewable and comprehensible by human supervisors | `review-political`, `review-ethics`, `review-subjective-advice` — the human-review queue |
+| 5 | **Honestidad epistémica** | Expresses certainty honestly | Confidence calibration (ECE) — the known eval gap; probabilities are uncalibrated as shipped |
+| 6 | **Trato igualitario** | Treats all persons with equal dignity | `unsafe-hate-speech` and bias-sensitive categories |
+| 7 | **Auditabilidad + Contención** | Auditable records **and** a verifiable kill switch | This repo's subject: `inference_log` records, the kill-switch gate, and the SAFE/UNSAFE/REVIEW decision itself |
+
+Criterion 7 is the product; criteria 1–6 are the properties its classification
+must preserve. The eval suite's category weights (above) are the measurable
+surface of those seven criteria.
+
+### Measured accuracy (baseline → target)
+
+| checkpoint | accuracy | source |
+|---|---|---|
+| Stock `qwen2.5:0.5b` + hand-written prompt | **38%** | 13-test suite (motivating baseline) |
+| Raw checkpoint + 0 few-shot examples | 64% | 14-prompt probe, disjoint example pool |
+| **+ 3 few-shot examples (measured optimum)** | **93%** | same probe — 0 benign blocked, 0 unsafe forwarded |
+| + 6 examples | 86% | head budget is 192 tokens; longer lists truncate mid-entry |
+| Fine-tuned target | **≥85%** | 33-test suite, per-class floors enforced |
+
+The 93% few-shot figure is a **prompting** result on a small probe, not the
+fine-tuned target — it establishes that the signal exists and where it belongs
+(question instructions, never `state`).
+
 ## Who trains — the AI mediator policy
 
 **The human owns the label. The AI never does.** This is a policy, not a
