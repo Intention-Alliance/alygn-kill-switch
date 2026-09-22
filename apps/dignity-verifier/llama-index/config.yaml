@@ -26,6 +26,10 @@ augmentation:
   max_paraphrases_per_seed: 3   # target ~2 accepted per seed (3 requested to reliably hit 500)
   target_total: 500             # minimum augmented examples to produce
   verify_rounds: 1              # teacher verdict must match original
+  verify_seed: true             # cross-check every seed example against the mediator
+                                # before augmenting. Advisory only: a divergence is
+                                # logged and counted, never a rejection — the human
+                                # verdict is authoritative (see dataset/seed/README.md).
 
 # ─── Deduplication ─────────────────────────────────────────────────
 dedup:

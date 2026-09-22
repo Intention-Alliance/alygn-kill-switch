@@ -6,7 +6,7 @@
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: './packages/db-schema/src/kill-switch/schema.ts',
+  schema: './apps/server-kill-switch/src/db/schema.ts',
   out: './apps/server-kill-switch/drizzle',
   dialect: 'sqlite',
   driver: 'bun-sqlite',

@@ -1,0 +1,17 @@
+# Dignity Verifier sidecar — runtime dependencies
+#
+# Python 3.12+. Install with uv:
+#   uv venv ~/.dignity-verifier/venv --python 3.12
+#   uv pip install --python ~/.dignity-verifier/venv/bin/python -r requirements.txt
+#   # CPU-only torch (no CUDA):
+#   uv pip install --python ~/.dignity-verifier/venv/bin/python torch \
+#     --index-url https://download.pytorch.org/whl/cpu
+#
+# The sidecar itself uses only the standard library for HTTP — there is no
+# web framework here on purpose (single endpoint, localhost, disk-tight host).
+
+torch>=2.10.0
+transformers>=4.46.0
+safetensors>=0.4.0
+huggingface_hub>=0.25.0
+laya>=0.3.5

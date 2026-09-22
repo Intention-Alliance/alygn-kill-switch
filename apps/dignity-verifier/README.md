@@ -1,12 +1,22 @@
 # Dignity Verifier Training Framework
 
-Distills inference-safety classification capability from a large **teacher** model
-(`glm-5.3-flash:cloud`) into a small **student** model (`qwen2.5:0.5b`) via
-LoRA fine-tuning, using LlamaIndex for dataset augmentation. Ships a super-admin
-dashboard for executing training, upserting datasets, configuring LlamaIndex, and
-viewing reports.
+**Humans are the trainers.** The training signal is human-authored and
+human-adjudicated labels. An AI model may act as an **optional mediator** on the
+training loop — proposing labels, generating paraphrases, and flagging
+disagreements — but it is never the arbiter of truth. See
+[Who trains](#who-trains--the-ai-mediator-policy).
+
+Mechanically, the framework fine-tunes a small **student** model
+(`qwen2.5:0.5b`) via LoRA on human-labelled data, using LlamaIndex for optional
+semantic augmentation. Ships a super-admin dashboard for executing training,
+upserting datasets, configuring LlamaIndex, and viewing reports.
 
 **Target model:** `dignity-verification-v0.1-preview` (fine-tuned `qwen2.5:0.5b`)
+
+> **Terminology.** "Teacher" is distillation vocabulary (a model whose outputs
+> are distilled into a student) — it does **not** mean the AI trains the model.
+> The trainer is the human. The teacher/mediator only proposes and paraphrases;
+> LoRA does the training.
 
 ## Why this exists
 
@@ -50,21 +60,120 @@ apps/dignity-verifier/
 
 ## Architecture
 
-See `docs/adr/ADR-dignity-verifier-training-framework.md` for the full
-architecture design, component contracts, and security boundaries.
+The architecture design, component contracts, and security boundaries are
+documented **internally** (team process docs, not this repo). This repo carries
+the implementation and the operational READMEs alongside it.
+
+> The previous revision pointed at `docs/adr/ADR-dignity-verifier-training-framework.md`.
+> That file was removed in the 2026-09-08 docs cleanup ("separate internal
+> development process from public documentation"), so the reference was dead.
+> Removed rather than re-added: architecture decision records for this framework
+> live in the internal process docs by that cleanup's own policy.
+
+## Testing framework
+
+The testing/eval framework is an **internal** design artifact and is deliberately
+**not specified in this repo**. What this repo carries is the interface: the eval
+runner contract and the held-out dataset. The framework's low-level parameters
+(per-class floors, calibration metrics, adversarial suites) are defined
+internally and owned by the dataset/eval workstream.
+
+**Invariant that does belong here:** the eval suite must be human-authored and
+human-verified. No AI-drafted or AI-verified record may enter the held-out set.
+
+### What the verifier is tested against — La Prueba de Dignidad
+
+The eval suite operationalizes the **Dignity Test** (Alygn institutional
+standard, September 2026): seven criteria that decide whether an AI system may
+operate over persons. Administered by a three-chamber vetting model (independent
+universities, a sortition-based citizen assembly, multisector practitioners) —
+structurally impossible for any single actor to capture.
+
+| # | Criterio | Evalúa (resumen) | Where it lands in this repo |
+|---|----------|------------------|------------------------------|
+| 1 | **Independencia estructural** | Independence from those who benefit from its decisions | Pipeline governance — human-as-trainer policy; mediator is advisory, never authoritative |
+| 2 | **Funcionamiento declarado** | Operates within authorized functions only | `REVIEW` band — out-of-authority content routes to humans, not auto-blocked |
+| 3 | **Consistencia adversarial** | Holds behavior under pressure/manipulation | `injection-role-override`, `injection-format-manipulation` categories |
+| 4 | **Razonabilidad revisable** | Reviewable and comprehensible by human supervisors | `review-political`, `review-ethics`, `review-subjective-advice` — the human-review queue |
+| 5 | **Honestidad epistémica** | Expresses certainty honestly | Confidence calibration (ECE) — the known eval gap; probabilities are uncalibrated as shipped |
+| 6 | **Trato igualitario** | Treats all persons with equal dignity | `unsafe-hate-speech` and bias-sensitive categories |
+| 7 | **Auditabilidad + Contención** | Auditable records **and** a verifiable kill switch | This repo's subject: `inference_log` records, the kill-switch gate, and the SAFE/UNSAFE/REVIEW decision itself |
+
+Criterion 7 is the product; criteria 1–6 are the properties its classification
+must preserve. The eval suite's category weights (above) are the measurable
+surface of those seven criteria.
+
+### Measured accuracy (baseline → target)
+
+| checkpoint | accuracy | source |
+|---|---|---|
+| Stock `qwen2.5:0.5b` + hand-written prompt | **38%** | 13-test suite (motivating baseline) |
+| Raw checkpoint + 0 few-shot examples | 64% | 14-prompt probe, disjoint example pool |
+| **+ 3 few-shot examples (measured optimum)** | **93%** | same probe — 0 benign blocked, 0 unsafe forwarded |
+| + 6 examples | 86% | head budget is 192 tokens; longer lists truncate mid-entry |
+| Fine-tuned target | **≥85%** | 33-test suite, per-class floors enforced |
+
+The 93% few-shot figure is a **prompting** result on a small probe, not the
+fine-tuned target — it establishes that the signal exists and where it belongs
+(question instructions, never `state`).
+
+## Who trains — the AI mediator policy
+
+**The human owns the label. The AI never does.** This is a policy, not a
+preference, and it inverts the rule the pipeline shipped with.
+
+### The roles
+
+| Role | Who | Authority |
+|------|-----|-----------|
+| **Trainer** | Human | Owns ground truth. Authors and adjudicates every label. |
+| **Mediator** | AI model (optional) | Proposes labels, generates paraphrases, flags disagreements. **Never** decides. |
+| **Training** | LoRA on `qwen2.5:0.5b` | Consumes the human-adjudicated dataset. No AI in this step. |
+
+### The policy
+
+1. **Human labels are authoritative.** No AI verdict may override, reject, or
+   silently replace a human label.
+2. **AI disagreement is a flag, never a rejection.** When the mediator's verdict
+differs from the human's, the record is routed to a **human review queue** with
+the mediator's verdict attached for context. It is not deleted.
+3. **The mediator is optional.** With mediation disabled the pipeline runs
+   seed → train directly. Nothing about training requires an AI in the loop.
+4. **Provenance is mandatory.** Every record records *who authored* and *who
+   verified* it, so the human/AI split is auditable per record rather than
+   assumed. See `dataset/seed/README.md` for the field set.
+5. **The eval suite is human-authored and human-verified, always.** An
+   AI-generated measuring instrument would measure the AI against itself.
+
+### What this changes in the code
+
+The shipped pipeline inverted the authority: `augment.py` treats *"teacher
+verdict must match the original verdict, otherwise reject (divergence)"* as an
+acceptance gate, so a human label was valid only if an AI agreed. Under this
+policy that gate becomes a **quarantine** — divergence routes to human review
+instead of discarding the record.
+
+### Why the mediator is a cloud model
+
+The mediator must be materially stronger than the 0.5B student to add signal,
+and the local host cannot serve a model that strong, so it is a cloud model on
+the allowed list. `glm-5.3-flash:cloud` is the current primary with
+`glm-5.2:cloud` as fallback — set in `llama-index/config.yaml`. This is a
+**capability and cost** choice, not a statement that AI should own the labels.
 
 ## Pipeline (seed → augment → fine-tune → eval → deploy)
 
-1. **Seed** — 275+ curated `(prompt, output, verdict, reason, category)` triples
+1. **Seed** — curated `(prompt, output, verdict, reason, category)` triples
    across 15+ categories (SAFE / UNSAFE / REVIEW / INJECTION).
-2. **Augment** — LlamaIndex indexes the seed with `nomic-embed-text-v2-moe`,
-   retrieves top-5 semantic neighbors, and the teacher generates paraphrases.
-   Each augmented example is verified against the teacher verdict before inclusion.
-   Target: 275 → 500+.
+   **Human-authored; human labels are authoritative.**
+2. **Augment** *(optional)* — LlamaIndex indexes the seed with
+   `nomic-embed-text-v2-moe`, retrieves top-5 semantic neighbors, and the
+   mediator generates paraphrases. Divergence from the human verdict
+   **quarantines** the candidate for human review — it never rejects it.
 3. **Fine-tune** — PEFT LoRA (rank=8, alpha=16, dropout=0.05, target
    `q_proj`/`v_proj`) on `qwen2.5:0.5b`, 3 epochs, batch_size=4, lr=2e-4, CPU-only
    (~2–4h). Output: LoRA adapter (~5–20MB).
-4. **Eval** — 33-test suite (13 original + 20 held-out). Target ≥85%.
+4. **Eval** — held-out suite, human-authored and human-verified. Target ≥85%.
 5. **Deploy** — `ollama create dignity-verification-v0.1-preview` from Modelfile
    (`FROM qwen2.5:0.5b` + `ADAPTER`), then update kill-switch `DEFAULT_MODEL`.
 
@@ -168,7 +277,7 @@ The seed is idempotent — it skips if the user already exists. The SQLite DB
 - [x] Docker scaffold + super-admin auth (this scaffold)
 - [ ] Dashboard UI (Gimglich)
 - [ ] Training pipeline (Keridz)
-- [ ] Seed dataset 275+ examples (Zyxali)
+- [ ] Seed dataset 280 examples (Zyxali)
 - [ ] LoRA fine-tune <4h on CPU
 - [ ] Eval accuracy ≥85%
 - [ ] Deploy `dignity-verification-v0.1-preview` to kill-switch

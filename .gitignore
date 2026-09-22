@@ -107,6 +107,7 @@ apps/dignity-verifier/training/*.safetensors
 apps/dignity-verifier/training/.cache/
 apps/dignity-verifier/training/__pycache__/
 apps/dignity-verifier/llama-index/__pycache__/
+apps/dignity-verifier/sidecar/__pycache__/
 # Python venv / env
 apps/dignity-verifier/training/.venv/
 apps/dignity-verifier/llama-index/.venv/

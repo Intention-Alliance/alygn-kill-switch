@@ -10,6 +10,7 @@ import { OllamaInterceptor } from './interceptor'
 import { EnforcementConsumer } from './enforcement'
 import { AgentStateStore } from './state'
 import { FlagClient } from './flags'
+import { buildRegistry } from '@align/decision-core'
 
 const MOTHER_URL = process.env.ALYGN_MOTHER_URL ?? 'http://localhost:3000'
 const API_KEY = process.env.ALYGN_AGENT_API_KEY ?? ''
@@ -102,12 +103,23 @@ async function main() {
 
   // Start Ollama interceptor (listens on the intercept port, forwards to real Ollama)
   try {
+    // S3: the interceptor selects its DecisionProvider by flag. The TypeSafe
+    // key never reaches this machine — when decision.provider=jev the agent
+    // calls the mother's /v1/decision (RemoteProvider). A machine without a
+    // reachable provider fails closed to review.
+    const registry = buildRegistry({
+      threshold: 0.7,
+      remote: { motherUrl: MOTHER_URL, apiKey: API_KEY, machineId: MACHINE_ID },
+    })
+
     const interceptor = new OllamaInterceptor({
       ollamaUrl: OLLAMA_URL,
       listenPort: INTERCEPT_PORT,
       scoreThreshold: 0.7,
       isPaused: () => enforcement.isPaused(),
       flags: flagClient,
+      machineId: MACHINE_ID,
+      registry,
     })
     await interceptor.start((req, result) => {
       // Report the intercepted request to the mother so the dashboard can
@@ -129,6 +141,8 @@ async function main() {
           scored: result.scored ?? true,
           promptPreview: prompt.slice(0, 200),
           model,
+          provider: result.provider ?? 'keyword',
+          degraded: result.degraded ?? false,
         }),
       }).catch((err) => log('warn', `Inference log report failed: ${err.message}`))
 
@@ -139,8 +153,9 @@ async function main() {
       const level = String(flagClient.getFlag('damage_logging_level') ?? 'standard')
       if (level === 'minimal') return
       const scored = result.scored ? ` score=${result.score.toFixed(2)} action=${result.action}` : ' (not scored)'
+      const providerTag = ` provider=${result.provider ?? 'keyword'}${result.degraded ? ' DEGRADED' : ''}`
       const detail = level === 'verbose' && req.body ? ` body=${JSON.stringify(req.body).slice(0, 120)}` : ''
-      log('info', `Intercepted: ${req.method} ${req.path} →${scored}${result.alert ? ' ⚠ ALERT' : ''}${detail}`)
+      log('info', `Intercepted: ${req.method} ${req.path} →${scored}${providerTag}${result.alert ? ' ⚠ ALERT' : ''}${detail}`)
     })
     log('info', `Ollama interceptor listening on :${INTERCEPT_PORT} → forwarding to ${OLLAMA_URL}`)
   } catch (err) {

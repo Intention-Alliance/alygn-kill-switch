@@ -12,7 +12,7 @@
     "lint": "bun --filter '*' lint",
     "test": "bun --filter '*' test",
     "test:challenges": "bun --filter '*' test:challenges",
-    "db:migrate": "cd packages/db-schema && supabase db push",
+    "db:migrate": "cd apps/server-kill-switch && bunx drizzle-kit migrate",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down"
   },
