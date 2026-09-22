@@ -1,18 +1,4 @@
 name: PR Review Gate
-
-# Ported from AndlerRL/andler-landing (.github/workflows/pr-review.yml), which
-# is the working reference for the Wobblus PR-review MCP flow.
-#
-# Two adaptations for this repo:
-#   1. Branches are [main, develop] — this repo's default is `develop`.
-#   2. The landing copy's `check:env --strict` step is landing-specific
-#      (NEXT_PUBLIC_SITE_URL, YOUTUBE_*, TWITCH_*, X_*). This repo has no such
-#      script, so that step is omitted rather than ported as a no-op.
-#
-# The dispatch job posts a signed `pr-review.request` to the openclaw-webhook
-# fabric, which routes it to the pr-review-bridge handler and posts the
-# synthesized review back on the PR.
-
 on:
   pull_request:
     branches:
