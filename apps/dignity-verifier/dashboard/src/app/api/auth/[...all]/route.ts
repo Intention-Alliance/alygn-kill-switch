@@ -7,7 +7,7 @@
  */
 
 import { toNextJsHandler } from "better-auth/next-js";
-import { auth, isTailscaleIP, seedSuperAdmin } from "@/lib/auth";
+import { getAuth, isTailscaleIP, seedSuperAdmin } from "@/lib/auth";
 
 // Seed the super-admin user on first request (idempotent).
 // Runs once per process; subsequent calls are no-ops.
@@ -19,7 +19,17 @@ async function ensureSeeded() {
   }
 }
 
-const { GET: baseGet, POST: basePost } = toNextJsHandler(auth);
+// Build the Better-Auth instance lazily (avoids Bun-only imports at build).
+let handlerPromise: Promise<ReturnType<typeof toNextJsHandler>> | null = null;
+async function getHandler() {
+  if (!handlerPromise) {
+    handlerPromise = (async () => {
+      const auth = await getAuth();
+      return toNextJsHandler(auth);
+    })();
+  }
+  return handlerPromise;
+}
 
 /**
  * Defense-in-depth: reject non-Tailscale clients even if nginx is bypassed.
@@ -48,10 +58,12 @@ function enforceTailscale(
 
 export async function GET(request: Request) {
   await ensureSeeded();
+  const { GET: baseGet } = await getHandler();
   return enforceTailscale(request, baseGet);
 }
 
 export async function POST(request: Request) {
   await ensureSeeded();
+  const { POST: basePost } = await getHandler();
   return enforceTailscale(request, basePost);
 }

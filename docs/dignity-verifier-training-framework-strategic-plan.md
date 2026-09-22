@@ -4,7 +4,7 @@
 **Author:** Wobblus 🔧
 **Status:** Planning
 **Repo:** `Intention-Alliance/alygn-core-infra`
-**Target model:** `dignity-verifier-preview-v1` (fine-tuned qwen2.5:0.5b)
+**Target model:** `dignity-verification-v0.1-preview` (fine-tuned qwen2.5:0.5b)
 
 ---
 
@@ -26,7 +26,7 @@ Build a training framework that distills inference-safety classification capabil
 
 ### Student Model (the Dignity Test classifier)
 - **Base:** `qwen2.5:0.5b` (494M params, Q4_K_M, 32K context)
-- **Fine-tuned name:** `dignity-verifier-preview-v1`
+- **Fine-tuned name:** `dignity-verification-v0.1-preview`
 - **Why:** Fast (<500ms), CPU-friendly, already deployed in the kill-switch
 
 ### Teacher Model (for distillation — generates verdicts on training inputs)
@@ -64,7 +64,7 @@ Build a training framework that distills inference-safety classification capabil
 │  │                                         │           │ │
 │  │                                         v           │ │
 │  │  ┌─────────────────────────────────────────────────┐│ │
-│  │  │ Ollama Modelfile → dignity-verifier-preview-v1  ││ │
+│  │  │ Ollama Modelfile → dignity-verification-v0.1-preview  ││ │
 │  │  │ (FROM qwen2.5:0.5b + LoRA adapter)               ││ │
 │  │  └─────────────────────────────────────────────────┘│ │
 │  └─────────────────────────────────────────────────────┘ │
@@ -175,13 +175,13 @@ Build a training framework that distills inference-safety classification capabil
 
 ### Step 4: Ollama Model Creation
 - Create Modelfile: `FROM qwen2.5:0.5b` + `ADAPTER ./lora-weights.safetensors`
-- `ollama create dignity-verifier-preview-v1 -f Modelfile`
+- `ollama create dignity-verification-v0.1-preview -f Modelfile`
 - Run eval suite against the new model
 - If accuracy ≥85% → deploy to kill-switch container
 - If <85% → iterate (add examples, adjust hyperparams, retrain)
 
 ### Step 5: Deploy + Verify
-- Update `verifier.ts` DEFAULT_MODEL to `dignity-verifier-preview-v1`
+- Update `verifier.ts` DEFAULT_MODEL to `dignity-verification-v0.1-preview`
 - Rebuild kill-switch Docker container
 - Run Dignity Test suite against deployed model
 - Verify kill-switch health + verdict accuracy
@@ -234,7 +234,7 @@ Phase 3: Integration (after Phase 2)
 └── Nikaya: Review pipeline + eval results
 
 Phase 4: Deploy (after Phase 3 passes)
-├── Rokthar: Deploy dignity-verifier-preview-v1 to Ollama
+├── Rokthar: Deploy dignity-verification-v0.1-preview to Ollama
 ├── Wobblus: Update kill-switch config + rebuild container
 ├── Volthiz: Run full eval suite
 └── Nikaya: Final sign-off
@@ -266,7 +266,7 @@ Phase 5: Iterate (recursive)
 - [ ] Seed dataset: 275+ examples across 15+ categories
 - [ ] LlamaIndex augmentation: 500+ total examples after augmentation
 - [ ] LoRA fine-tune: completes in <4h on CPU
-- [ ] Model: `dignity-verifier-preview-v1` created on Ollama
+- [ ] Model: `dignity-verification-v0.1-preview` created on Ollama
 - [ ] Eval accuracy: ≥85% on 33-test eval suite (13 original + 20 held-out)
 - [ ] Dashboard: functional with dataset manager, training executor, reports
 - [ ] Deploy: kill-switch container running with new model

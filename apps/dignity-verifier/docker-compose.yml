@@ -45,6 +45,8 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - DATA_DIR=/app/data
+      # Read-only seed + eval datasets baked into the image.
+      - DATASET_DIR=/app/dataset
       # ─── Better-Auth (super-admin only) ─────────────────────
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET required}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL:-http://127.0.0.1:3002}
@@ -61,7 +63,7 @@ services:
       - TEACHER_FALLBACK_MODEL=${TEACHER_FALLBACK_MODEL:-glm-5.2:cloud}
       - STUDENT_MODEL=${STUDENT_MODEL:-qwen2.5:0.5b}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-nomic-embed-text-v2-moe:latest}
-      - TARGET_MODEL=${TARGET_MODEL:-dignity-verifier-preview-v1}
+      - TARGET_MODEL=${TARGET_MODEL:-dignity-verification-v0.1-preview}
       # ─── Observability ────────────────────────────────────
       - LOG_LEVEL=${LOG_LEVEL:-info}
     networks:
