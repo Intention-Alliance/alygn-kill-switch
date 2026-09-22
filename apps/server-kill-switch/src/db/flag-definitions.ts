@@ -92,10 +92,13 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
   // set IS the protocol schema state: provider + thresholds are versioned,
   // auditable config, not code constants.
   // D3: global default is keyword; jev is opt-in per machine.
+  // Production default is `laya` (the open-weights System 1 model served by the
+  // local sidecar): it is the flag-selected Decision Provider this repo ships.
+  // Unknown or unavailable providers fail closed to review, never silent forward.
   {
     key: 'decision.provider',
     type: 'string',
-    defaultValue: 'keyword',
+    defaultValue: 'laya',
     description:
       'Decision provider for intercepted traffic: keyword | ollama | jev | dignity. ' +
       'Unknown or unavailable providers fail closed to review (never silent forward).',

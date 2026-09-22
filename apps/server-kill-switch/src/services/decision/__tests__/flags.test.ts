@@ -50,7 +50,7 @@ beforeEach(() => {
 describe('readDecisionFlags', () => {
   it('falls back to declared defaults when nothing is stored', async () => {
     const f = await readDecisionFlags('m1');
-    expect(f.getFlag('decision.provider')).toBe('keyword');
+    expect(f.getFlag('decision.provider')).toBe('laya');
     expect(f.getFlag('decision.jev.timeoutMs')).toBe(500);
     expect(f.getFlag('decision.review_threshold')).toBe(0.6);
     expect(f.getFlag('decision.jev.model')).toBe('jev-latest');

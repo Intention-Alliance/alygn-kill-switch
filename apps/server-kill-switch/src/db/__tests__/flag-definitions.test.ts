@@ -36,7 +36,7 @@ const ORIGINAL_8: FlagTuple[] = [
 ];
 
 const NEW_4: FlagTuple[] = [
-  { key: 'decision.provider', type: 'string', defaultValue: 'keyword', order: 9 },
+  { key: 'decision.provider', type: 'string', defaultValue: 'laya', order: 9 },
   { key: 'decision.jev.model', type: 'string', defaultValue: 'jev-latest', order: 10 },
   { key: 'decision.jev.timeoutMs', type: 'number', defaultValue: 500, order: 11 },
   { key: 'decision.review_threshold', type: 'number', defaultValue: 0.6, order: 12 },
@@ -110,7 +110,7 @@ describe('PREDEFINED_FLAG_DEFINITIONS', () => {
   });
 
   it('defaults decision.provider to keyword (D3: opt-in per machine)', () => {
-    expect(getFlagDefinition('decision.provider')?.defaultValue).toBe('keyword');
+    expect(getFlagDefinition('decision.provider')?.defaultValue).toBe('laya');
   });
 
   it('defaults decision.jev.timeoutMs to 500 (D2: 500ms budget)', () => {
