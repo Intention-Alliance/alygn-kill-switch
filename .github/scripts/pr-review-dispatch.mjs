@@ -1,14 +1,6 @@
 #!/usr/bin/env node
 /**
  * pr-review-dispatch.mjs — kill-switch edition
- * ── Two deliberate differences from the landing copy ──────────────────────
- *
- * 1. ISSUER. This repo uses its OWN keypair (`github-actions-kill-switch`),
- * 2. SIGNING API. Ed25519 has no digest, so `createSign('ed25519')` throws
- *    ERR_CRYPTO_INVALID_DIGEST. The correct call is `sign(null, data, key)`.
- *    The landing copy still uses `createSign('ed25519')`; that path has never
- *    run there because its dispatch job is gated behind a lint job that fails.
- *    This copy uses the API that actually works.
  */
 import { createPrivateKey, sign, createHash, randomUUID } from 'node:crypto'
 
