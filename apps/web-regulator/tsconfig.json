@@ -31,8 +31,6 @@
 		".next/dev/types/**/*.ts"
 	],
 	"exclude": [
-		"node_modules",
-		"../../packages/db-schema/src/database.types.ts",
-		"../../packages/db-schema/src/database.schemas.ts"
+		"node_modules"
 	]
 }
