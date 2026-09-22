@@ -77,6 +77,7 @@ class RunReport:
     verdict_counts: dict[str, int] = field(default_factory=dict)
     seed_verified: int = 0
     seed_divergences: int = 0
+    seed_mediation_errors: int = 0
     decisions: list[Decision] = field(default_factory=list)
 
 
@@ -293,6 +294,7 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None, verdict_filte
     # seed record. The human verdict is authoritative.
     if aug_cfg.get("verify_seed", True):
         divergences = 0
+        mediation_errors = 0
         for rec in records:
             mediated = verify_verdict(
                 teacher_cfg["base_url"],
@@ -302,7 +304,17 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None, verdict_filte
                 temperature=0.0,
                 max_tokens=teacher_cfg["verify_max_tokens"],
             )
-            if mediated is not None and mediated != rec["verdict"]:
+            if mediated is None:
+                # No verdict token in the response (e.g. the mediator burned
+                # its budget on reasoning and returned done_reason=length with
+                # an empty body). That is a MEDIATOR ERROR, not a divergence —
+                # counting it as one would fabricate a meaningless rate.
+                mediation_errors += 1
+                print(
+                    f"[augment] seed mediation error (no verdict returned) "
+                    f"id={rec.get('id', '?')} prompt={rec['prompt']!r}"
+                )
+            elif mediated != rec["verdict"]:
                 divergences += 1
                 print(
                     f"[augment] seed divergence: curated={rec['verdict']} "
@@ -310,9 +322,11 @@ def run_pipeline(cfg: dict, teacher_model: str, limit: int | None, verdict_filte
                 )
         report.seed_verified = len(records)
         report.seed_divergences = divergences
+        report.seed_mediation_errors = mediation_errors
         print(
-            f"[augment] seed verification: {divergences} divergence(s) out of "
-            f"{len(records)} (advisory only — human verdict stands)"
+            f"[augment] seed verification: {divergences} divergence(s), "
+            f"{mediation_errors} mediation error(s) out of {len(records)} "
+            "(advisory only — human verdict stands)"
         )
 
     index = build_or_load_index(cfg, embedding, records)
@@ -494,6 +508,7 @@ def write_log(report: RunReport, log_dir: Path) -> Path:
         "rejected_invalid": report.rejected_invalid,
         "seed_verified": report.seed_verified,
         "seed_divergences": report.seed_divergences,
+        "seed_mediation_errors": report.seed_mediation_errors,
         "verdict_counts": report.verdict_counts,
     }
     with run_path.open("w", encoding="utf-8") as fh:
