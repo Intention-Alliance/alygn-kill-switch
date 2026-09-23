@@ -24,7 +24,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "dignity-verifier/*"
   ],
   "peerDependencies": {
     "typescript": "^5"
