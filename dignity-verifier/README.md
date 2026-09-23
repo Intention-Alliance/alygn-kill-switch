@@ -34,9 +34,9 @@ dignity-verifier/
 ├── README.md            ← this file
 ├── docker-compose.yml   ← dashboard service (align-network, 127.0.0.1:3002)
 ├── .env.example         ← env template (secrets never committed)
-├── dashboard/           ← Next.js super-admin dashboard (Tailscale-only)
+├── dashboard/           ← Next.js super-admin dashboard (private-network only)
 │   ├── Dockerfile       ← multi-stage: builder → standalone runner
-│   ├── nginx.conf       ← Tailscale-only reverse proxy (install to /etc/nginx)
+│   ├── nginx.conf       ← private-network reverse proxy (install to /etc/nginx)
 │   ├── package.json / next.config.ts / tsconfig.json
 │   └── src/
 │       ├── app/         ← layout, home, dataset/training/llama-index/reports pages
@@ -76,9 +76,9 @@ accuracy is re-measured. See ADR §"Self-Evolving Loop".
 
 ## Security
 
-- **Super-admin only** — Andler's Tailscale identity via Better-Auth.
+- **Super-admin only** — private-network identity via Better-Auth.
 - **No PII** — synthetic examples only; no real user data.
-- **Localhost Docker** — dashboard binds `127.0.0.1:3002`; Tailscale for remote.
+- **Localhost Docker** — dashboard binds `127.0.0.1:3002`; a private network fronts it for remote access.
 - **Artifacts gitignored** — LoRA weights, augmented datasets, and reports are
   never committed.
 
@@ -110,7 +110,7 @@ Orchestration: **Wobblus**
 ### Build + Run
 
 ```bash
-cd /home/andlersrv/.openclaw/workspace/repos/alygn/infrastructure
+cd <repo-root>
 
 # Build the dashboard image
 docker compose -f dignity-verifier/docker-compose.yml build
@@ -123,41 +123,41 @@ curl -f http://127.0.0.1:3002/health
 ```
 
 The dashboard publishes on **`127.0.0.1:3002`** (localhost only). Remote access
-is via Tailscale + nginx (below).
+is via a private network + nginx (below).
 
-### Nginx (Tailscale-only remote access)
+### Nginx (private-network remote access)
 
-Install the provided nginx config to expose the dashboard over Tailscale with the
-existing Tailscale cert:
+Install the provided nginx config to expose the dashboard over your private
+network with its existing TLS cert:
 
 ```bash
 sudo ln -sf \
-  /home/andlersrv/.openclaw/workspace/repos/alygn/infrastructure/dignity-verifier/dashboard/nginx.conf \
+  <repo-root>/dignity-verifier/dashboard/nginx.conf \
   /etc/nginx/sites-available/dignity-verifier.conf
 sudo ln -sf /etc/nginx/sites-available/dignity-verifier.conf \
             /etc/nginx/sites-enabled/dignity-verifier.conf
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-Access: `https://andlersrv.tail62d797.ts.net:8443` (Tailscale mesh only —
-non-Tailscale IPs are denied at the nginx edge and re-verified in the app).
+Access: `https://<your-private-host>:8443` (private network only — clients
+outside the range are denied at the nginx edge and re-verified in the app).
 
 ## Super-Admin Access Setup
 
 The dashboard is **super-admin only** — a single user (Andler), no public
 registration, no multi-user. Access is gated by three layers:
 
-1. **Tailscale identity** — nginx denies non-Tailscale IPs; the app re-verifies
-   the client IP is within the Tailscale CGNAT range (`100.64.0.0/10`) as
+1. **Network identity** — nginx denies clients outside the private range; the
+   app re-verifies the client IP is within that range as
    defense-in-depth.
 2. **Better-Auth session** — httpOnly cookie, 1h expiry, refreshed every 5m.
-3. **WebAuthn (FIDO2)** — hardware security key / passkey bound to the Tailscale
-   relying party (`andlersrv.tail62d797.ts.net`).
+3. **WebAuthn (FIDO2)** — hardware security key / passkey bound to the
+   deployment's relying party (`SECURE_NET_HOSTNAME`).
 
 The super-admin user is auto-seeded on first request (direct SQLite insert, no
 HTTP self-roundtrip). Credentials:
 
-- **Email:** `ADMIN_EMAIL` (defaults to `andlersrv@alygn.com`)
+- **Email:** `ADMIN_EMAIL`
 - **Password:** `KILL_SWITCH_AUTH_TOKEN` (shared with the kill-switch)
 
 The seed is idempotent — it skips if the user already exists. The SQLite DB

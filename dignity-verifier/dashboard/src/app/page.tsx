@@ -10,6 +10,7 @@ import { PageShell } from "@/components/page-shell";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
 import { getDatasetStats } from "@/lib/dataset";
+import { MODEL_OVERVIEW } from "@/lib/model-config";
 
 const MODULES = [
   {
@@ -34,22 +35,15 @@ const MODULES = [
   },
 ] as const;
 
-const MODEL_CONFIG = [
-  { label: "Teacher", value: "deepseek-v4-flash:cloud", note: "Allowed cloud model" },
-  { label: "Student", value: "qwen2.5:0.5b", note: "LoRA fine-tune target" },
-  { label: "Embedding", value: "nomic-embed-text-v2-moe:latest", note: "Local, F16" },
-  { label: "Target", value: "dignity-verification-v0.1-preview", note: "Output model" },
-] as const;
-
 export default async function HomePage() {
   const stats = await getDatasetStats();
 
   return (
     <PageShell active="/">
       <PageHeader
-        eyebrow="Super-Admin · Tailscale Only"
+        eyebrow="Super-Admin · Private Network Only"
         title="Dignity Verifier Training Framework"
-        description="Distill inference-safety classification from a teacher model into a 0.5B student model via LoRA fine-tuning."
+        description="Distill inference-safety classification from a teacher model into a small student model via LoRA fine-tuning."
       />
 
       {/* ─── Framework status ─────────────────────────────────── */}
@@ -58,7 +52,7 @@ export default async function HomePage() {
           Framework Status
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MODEL_CONFIG.map((model) => (
+          {MODEL_OVERVIEW.map((model) => (
             <div
               key={model.label}
               className="rounded-xl border border-slate-800 bg-slate-900 p-5"

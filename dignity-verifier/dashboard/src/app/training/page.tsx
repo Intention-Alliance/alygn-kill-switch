@@ -16,12 +16,13 @@ import { RunProgress } from "@/components/run-progress";
 import { RunsHistory } from "@/components/runs-history";
 import { useRun } from "@/lib/use-run";
 import { type RunRecord, type RunsListResponse, isTerminalRunStatus } from "@/lib/run-types";
+import { EMBEDDING, STUDENTS, TARGET, TEACHERS } from "@/lib/model-config";
 
 const MODEL_CONFIG = [
-  { label: "Teacher", value: "glm-5.3-flash:cloud" },
-  { label: "Student (base)", value: "qwen2.5:0.5b" },
-  { label: "Embedding", value: "nomic-embed-text-v2-moe:latest" },
-  { label: "Target", value: "dignity-verification-v0.1-preview" },
+  { label: "Teacher", value: TEACHERS.primary.value },
+  { label: "Student (base)", value: STUDENTS.primary.value },
+  { label: "Embedding", value: EMBEDDING.value },
+  { label: "Target", value: TARGET.value },
 ] as const;
 
 interface TrainingParams {
