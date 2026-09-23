@@ -31,7 +31,6 @@ import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/branding";
 import { apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
 import type { DashboardCluster } from "@/lib/dashboard-utils";
-import type { Cluster } from "@/types/db.types";
 import type {
   Machine,
   KillSwitchState,
@@ -89,9 +88,8 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
 
   // Handle machine row click — navigate to dedicated detail page.
   const handleSelectMachine = useCallback(
-    (cluster: Cluster) => {
-      const dc = cluster as unknown as DashboardCluster;
-      const machine = machines.find((m: Machine) => m.id === dc.id);
+    (cluster: DashboardCluster) => {
+      const machine = machines.find((m: Machine) => m.id === cluster.id);
       if (machine) {
         selectMachine(machine);
       }
@@ -266,7 +264,7 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
                 <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
                   <div className="xl:col-span-3">
                     <ClusterTable
-                      clusters={clusters as Cluster[]}
+                      clusters={clusters}
                       isLoading={isLoading}
                       onSelectMachine={handleSelectMachine}
                       selectedId={selectedMachine?.id}

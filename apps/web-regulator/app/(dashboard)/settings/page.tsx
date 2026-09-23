@@ -163,7 +163,7 @@ export default function SettingsPage() {
       setSettings(parsed);
     } catch (err) {
       // If settings API is not yet available, use defaults
-      // eslint-disable-next-line no-console
+       
       console.warn(
         "[settings] API not available, using defaults:",
         err instanceof Error ? err.message : "",

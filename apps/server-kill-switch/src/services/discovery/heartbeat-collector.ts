@@ -9,174 +9,193 @@
  * liveness; it does NOT change the existing route contract.
  */
 
-import { eq } from 'drizzle-orm';
-import { db } from '../../db/index';
-import { agents, machines, discoveredMachines, integrityEvents } from '../../db/schema';
-import type { DiscoveryOrchestrator } from './orchestrator';
 import type {
-  HardwareFingerprint,
-  IntegrityDrift,
-  IntegritySignature,
-} from '@align/shared-types';
+	HardwareFingerprint,
+	IntegrityDrift,
+	IntegritySignature,
+} from "@align/shared-types";
+import { eq } from "drizzle-orm";
+import { db } from "../../db/index";
+import {
+	agents,
+	discoveredMachines,
+	integrityEvents,
+	machines,
+} from "../../db/schema";
+import type { DiscoveryOrchestrator } from "./orchestrator";
 
 export interface AgentHeartbeat {
-  machineId: string;
-  hostname: string;
-  agentId?: string;       // optional — if present, upsert the agent row
-  agentName?: string;
-  agentVersion?: string;
-  capabilities?: string[];
-  fingerprint?: HardwareFingerprint;
+	machineId: string;
+	hostname: string;
+	agentId?: string; // optional — if present, upsert the agent row
+	agentName?: string;
+	agentVersion?: string;
+	capabilities?: string[];
+	fingerprint?: HardwareFingerprint;
 }
 
 export interface HeartbeatResult {
-  drift: IntegrityDrift | null;
-  signature: IntegritySignature;
-  agentRegistered: boolean;
+	drift: IntegrityDrift | null;
+	signature: IntegritySignature;
+	agentRegistered: boolean;
 }
 
 export class HostnameMismatchError extends Error {
-  constructor(public registered: string, public reported: string) {
-    super(
-      `Hostname mismatch: registered "${registered}" but heartbeat reported "${reported}". Machine tagged INSECURE.`
-    );
-    this.name = 'HostnameMismatchError';
-  }
+	constructor(
+		public registered: string,
+		public reported: string,
+	) {
+		super(
+			`Hostname mismatch: registered "${registered}" but heartbeat reported "${reported}". Machine tagged INSECURE.`,
+		);
+		this.name = "HostnameMismatchError";
+	}
 }
 
 export class HeartbeatCollector {
-  constructor(private orchestrator: DiscoveryOrchestrator) {}
+	constructor(private orchestrator: DiscoveryOrchestrator) {}
 
-  /**
-   * Upsert machine (via orchestrator.handleHeartbeat) + optional agent, touch
-   * lastSeen. Returns the drift report, signature, and whether an agent row
-   * was registered.
-   */
-  async handleAgentHeartbeat(hb: AgentHeartbeat): Promise<HeartbeatResult> {
-    // Hostname integrity check (Design System §5.1, ADR-135 §5.2):
-    // the heartbeat hostname MUST match the registered hostname — whether the
-    // machine is admitted (machines table) or still in discovery.
-    // A mismatch means the machine identity changed — flag as tamper/swap
-    // and tag INSECURE.
-    const admitted = await db
-      .select({ id: machines.id, hostname: machines.hostname })
-      .from(machines)
-      .where(eq(machines.id, hb.machineId))
-      .get();
+	/**
+	 * Upsert machine (via orchestrator.handleHeartbeat) + optional agent, touch
+	 * lastSeen. Returns the drift report, signature, and whether an agent row
+	 * was registered.
+	 */
+	async handleAgentHeartbeat(hb: AgentHeartbeat): Promise<HeartbeatResult> {
+		// Hostname integrity check (Design System §5.1, ADR-135 §5.2):
+		// the heartbeat hostname MUST match the registered hostname — whether the
+		// machine is admitted (machines table) or still in discovery.
+		// A mismatch means the machine identity changed — flag as tamper/swap
+		// and tag INSECURE.
+		const admitted = await db
+			.select({ id: machines.id, hostname: machines.hostname })
+			.from(machines)
+			.where(eq(machines.id, hb.machineId))
+			.get();
 
-    const discovered = admitted
-      ? null
-      : await db
-          .select({ id: discoveredMachines.id, hostname: discoveredMachines.hostname })
-          .from(discoveredMachines)
-          .where(eq(discoveredMachines.id, hb.machineId))
-          .get();
+		const discovered = admitted
+			? null
+			: await db
+					.select({
+						id: discoveredMachines.id,
+						hostname: discoveredMachines.hostname,
+					})
+					.from(discoveredMachines)
+					.where(eq(discoveredMachines.id, hb.machineId))
+					.get();
 
-    const registered = admitted?.hostname ?? discovered?.hostname;
-    if (registered && registered !== hb.hostname) {
-      // Hostname mismatch — the machine identity changed. Record integrity
-      // event and tag the machine as insecure (monitoring-only).
-      if (admitted) {
-        await db
-          .update(machines)
-          .set({ monitoringOnly: 1 })
-          .where(eq(machines.id, hb.machineId));
-      }
+		const registered = admitted?.hostname ?? discovered?.hostname;
+		if (registered && registered !== hb.hostname) {
+			// Hostname mismatch — the machine identity changed. Record integrity
+			// event and tag the machine as insecure (monitoring-only).
+			if (admitted) {
+				await db
+					.update(machines)
+					.set({ monitoringOnly: 1 })
+					.where(eq(machines.id, hb.machineId));
+			}
 
-      await db.insert(integrityEvents).values({
-        id: crypto.randomUUID(),
-        machineId: hb.machineId,
-        event: 'hostname_mismatch',
-        severity: 'critical',
-        driftedFields: JSON.stringify({
-          registered,
-          reported: hb.hostname,
-          action: 'machine tagged INSECURE — monitoring-only until human review',
-        }),
-        detectedAt: new Date(),
-      });
+			await db.insert(integrityEvents).values({
+				id: crypto.randomUUID(),
+				machineId: hb.machineId,
+				event: "hostname_mismatch",
+				severity: "critical",
+				driftedFields: JSON.stringify({
+					registered,
+					reported: hb.hostname,
+					action:
+						"machine tagged INSECURE — monitoring-only until human review",
+				}),
+				detectedAt: new Date(),
+			});
 
-      throw new HostnameMismatchError(registered, hb.hostname);
-    }
+			throw new HostnameMismatchError(registered, hb.hostname);
+		}
 
-    const { drift, signature } = await this.orchestrator.handleHeartbeat({
-      machineId: hb.machineId,
-      hostname: hb.hostname,
-      fingerprint: hb.fingerprint,
-    });
+		const { drift, signature } = await this.orchestrator.handleHeartbeat({
+			machineId: hb.machineId,
+			hostname: hb.hostname,
+			fingerprint: hb.fingerprint,
+		});
 
-    let agentRegistered = false;
-    if (hb.agentId) {
-      agentRegistered = await this.upsertAgent(hb);
-    }
+		let agentRegistered = false;
+		if (hb.agentId) {
+			agentRegistered = await this.upsertAgent(hb);
+		}
 
-    return { drift, signature, agentRegistered };
-  }
+		return { drift, signature, agentRegistered };
+	}
 
-  /**
-   * Upsert the agent row for a machine, but ONLY if the machine exists in the
-   * `machines` inventory table (i.e. it has been admitted/onboarded).
-   *
-   * `agents.machineId` FKs to `machines.id` (the inventory table), NOT to
-   * `discovered_machine.id`. For discovered-but-not-admitted machines, the
-   * machineId is a `discovered_machine.id` that has no matching `machines`
-   * row, so an agent upsert would throw a foreign-key violation. In that case
-   * we skip the agent upsert (log a debug message) — the heartbeat still
-   * updates `discovered_machines.lastSeen` via the orchestrator.
-   */
-  private async upsertAgent(hb: AgentHeartbeat): Promise<boolean> {
-    const agentId = hb.agentId as string;
+	/**
+	 * Upsert the agent row for a machine, but ONLY if the machine exists in the
+	 * `machines` inventory table (i.e. it has been admitted/onboarded).
+	 *
+	 * `agents.machineId` FKs to `machines.id` (the inventory table), NOT to
+	 * `discovered_machine.id`. For discovered-but-not-admitted machines, the
+	 * machineId is a `discovered_machine.id` that has no matching `machines`
+	 * row, so an agent upsert would throw a foreign-key violation. In that case
+	 * we skip the agent upsert (log a debug message) — the heartbeat still
+	 * updates `discovered_machines.lastSeen` via the orchestrator.
+	 */
+	private async upsertAgent(hb: AgentHeartbeat): Promise<boolean> {
+		const agentId = hb.agentId as string;
 
-    // Only admit agent rows for machines present in the inventory table.
-    const machine = await db
-      .select({ id: machines.id })
-      .from(machines)
-      .where(eq(machines.id, hb.machineId))
-      .get();
+		// Only admit agent rows for machines present in the inventory table.
+		const machine = await db
+			.select({ id: machines.id })
+			.from(machines)
+			.where(eq(machines.id, hb.machineId))
+			.get();
 
-    if (!machine) {
-      // Discovered-but-not-admitted machine — skip agent upsert to avoid the
-      // agents.machineId → machines.id FK violation. The heartbeat still
-      // touched discovered_machines.lastSeen via the orchestrator.
-      console.debug(
-        `[heartbeat-collector] Skipping agent upsert for machine '${hb.machineId}' — ` +
-        `machine not admitted to inventory (no machines row). Agent '${agentId}' not registered.`,
-      );
-      return false;
-    }
+		if (!machine) {
+			// Discovered-but-not-admitted machine — skip agent upsert to avoid the
+			// agents.machineId → machines.id FK violation. The heartbeat still
+			// touched discovered_machines.lastSeen via the orchestrator.
+			console.debug(
+				`[heartbeat-collector] Skipping agent upsert for machine '${hb.machineId}' — ` +
+					`machine not admitted to inventory (no machines row). Agent '${agentId}' not registered.`,
+			);
+			return false;
+		}
 
-    const now = new Date();
-    const capabilities = hb.capabilities ? JSON.stringify(hb.capabilities) : null;
+		const now = new Date();
+		const capabilities = hb.capabilities
+			? JSON.stringify(hb.capabilities)
+			: null;
 
-    const existing = await db
-      .select({ id: agents.id, name: agents.name, version: agents.version, capabilities: agents.capabilities })
-      .from(agents)
-      .where(eq(agents.id, agentId))
-      .get();
+		const existing = await db
+			.select({
+				id: agents.id,
+				name: agents.name,
+				version: agents.version,
+				capabilities: agents.capabilities,
+			})
+			.from(agents)
+			.where(eq(agents.id, agentId))
+			.get();
 
-    if (existing) {
-      await db
-        .update(agents)
-        .set({
-          machineId: hb.machineId,
-          name: hb.agentName ?? existing.name,
-          version: hb.agentVersion ?? existing.version,
-          capabilities: capabilities ?? existing.capabilities,
-          lastHeartbeat: now,
-        })
-        .where(eq(agents.id, agentId));
-      return false; // updated, not newly registered
-    }
+		if (existing) {
+			await db
+				.update(agents)
+				.set({
+					machineId: hb.machineId,
+					name: hb.agentName ?? existing.name,
+					version: hb.agentVersion ?? existing.version,
+					capabilities: capabilities ?? existing.capabilities,
+					lastHeartbeat: now,
+				})
+				.where(eq(agents.id, agentId));
+			return false; // updated, not newly registered
+		}
 
-    await db.insert(agents).values({
-      id: agentId,
-      machineId: hb.machineId,
-      name: hb.agentName ?? hb.hostname,
-      version: hb.agentVersion ?? 'unknown',
-      capabilities,
-      lastHeartbeat: now,
-      createdAt: now,
-    });
-    return true;
-  }
+		await db.insert(agents).values({
+			id: agentId,
+			machineId: hb.machineId,
+			name: hb.agentName ?? hb.hostname,
+			version: hb.agentVersion ?? "unknown",
+			capabilities,
+			lastHeartbeat: now,
+			createdAt: now,
+		});
+		return true;
+	}
 }

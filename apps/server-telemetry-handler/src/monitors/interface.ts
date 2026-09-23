@@ -9,7 +9,7 @@
  * never exposing implementation details to callers.
  */
 
-import type { HardwareMetric } from '../types';
+import type { HardwareMetric } from "../types";
 
 /**
  * HardwareMonitor — the abstract contract for all hardware data collectors.
@@ -23,14 +23,14 @@ import type { HardwareMetric } from '../types';
  *  - NetworkMonitor: interfaces, throughput
  */
 export interface HardwareMonitor {
-  /** Unique identifier for this monitor (e.g., 'cpu', 'gpu', 'memory') */
-  readonly name: string;
+	/** Unique identifier for this monitor (e.g., 'cpu', 'gpu', 'memory') */
+	readonly name: string;
 
-  /**
-   * Collect current hardware metrics.
-   *
-   * @returns Array of metrics — may be empty if hardware is unavailable.
-   *          Must NEVER throw. On failure, log a warning and return [].
-   */
-  collect(): Promise<HardwareMetric[]>;
+	/**
+	 * Collect current hardware metrics.
+	 *
+	 * @returns Array of metrics — may be empty if hardware is unavailable.
+	 *          Must NEVER throw. On failure, log a warning and return [].
+	 */
+	collect(): Promise<HardwareMetric[]>;
 }

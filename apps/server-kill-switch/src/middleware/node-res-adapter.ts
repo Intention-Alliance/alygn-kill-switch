@@ -58,7 +58,7 @@
  * @module middleware/node-res-adapter
  */
 
-import type { IncomingMessage } from 'node:http'
+import type { IncomingMessage } from "node:http";
 
 // ─── Constants ────────────────────────────────────────────────────
 
@@ -74,15 +74,15 @@ import type { IncomingMessage } from 'node:http'
  * the truncation only affects what the verifier sees. See module-level
  * docstring for the full degradation note.
  */
-export const OUTPUT_BUFFER_CAP_BYTES = 256 * 1024
+export const OUTPUT_BUFFER_CAP_BYTES = 256 * 1024;
 
 // ─── Types ────────────────────────────────────────────────────────
 
 export interface NodeResAdapterOpts {
 	/** Upstream Ollama (or OpenAI-compatible) base URL. */
-	upstreamBaseUrl: string
+	upstreamBaseUrl: string;
 	/** Per-request timeout for the upstream fetch (default 60s). */
-	upstreamTimeoutMs?: number
+	upstreamTimeoutMs?: number;
 	/**
 	 * Injectable fetch for tests. Defaults to the global `fetch`. The
 	 * adapter always sets `Accept: application/x-ndjson` so callers can
@@ -91,27 +91,27 @@ export interface NodeResAdapterOpts {
 	fetchImpl?: (
 		input: string | URL | Request,
 		init?: RequestInit,
-	) => Promise<Response>
+	) => Promise<Response>;
 }
 
 export interface RelayResult {
 	/** The HTTP status returned by the upstream (e.g. 200, 404, 500). */
-	status: number
+	status: number;
 	/** Response headers copied from upstream (lowercased keys). */
-	headers: Record<string, string>
+	headers: Record<string, string>;
 	/**
 	 * The full response body sent to the client. For `stream: false` requests
 	 * this is the exact upstream body; for `stream: true` requests this is the
 	 * concatenated NDJSON events reconstructed into a single response. The
 	 * client receives the same content either way.
 	 */
-	body: string
+	body: string;
 	/** UTF-8 byte length of `body`. */
-	bodyBytes: number
+	bodyBytes: number;
 	/** True when `body` was truncated to fit the verifier's cap. */
-	outputTruncated: boolean
+	outputTruncated: boolean;
 	/** The prompt extracted from the request body (empty string if missing). */
-	prompt: string
+	prompt: string;
 	/**
 	 * The extracted response "output" sent to the verifier — for non-streaming
 	 * requests this is the same as `body` (possibly truncated to the cap); for
@@ -119,17 +119,17 @@ export interface RelayResult {
 	 * (possibly truncated). Used by `verifyInferenceOutput()` to run the
 	 * post-relay verifier.
 	 */
-	output: string
+	output: string;
 	/** The `stream` flag from the request body (false = buffered, true = NDJSON). */
-	streamMode: boolean
+	streamMode: boolean;
 }
 
 /** Minimal Node-style request shape the adapter accepts. */
 export interface NodeStyleRequest {
-	method?: string
-	url?: string
-	headers?: Record<string, string | string[] | undefined>
-	body?: string | Buffer | null
+	method?: string;
+	url?: string;
+	headers?: Record<string, string | string[] | undefined>;
+	body?: string | Buffer | null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -138,14 +138,14 @@ function getHeader(
 	headers: Record<string, string | string[] | undefined> | undefined,
 	name: string,
 ): string | undefined {
-	if (!headers) return undefined
-	const v = headers[name.toLowerCase()]
-	if (Array.isArray(v)) return v[0]
-	return v
+	if (!headers) return undefined;
+	const v = headers[name.toLowerCase()];
+	if (Array.isArray(v)) return v[0];
+	return v;
 }
 
 function utf8ByteLength(s: string): number {
-	return Buffer.byteLength(s, 'utf8')
+	return Buffer.byteLength(s, "utf8");
 }
 
 /**
@@ -161,29 +161,29 @@ function utf8ByteLength(s: string): number {
 export function extractPromptFromBody(
 	rawBody: string | Buffer | null | undefined,
 ): string {
-	if (!rawBody) return ''
-	const text = typeof rawBody === 'string' ? rawBody : rawBody.toString('utf8')
-	let parsed: unknown
+	if (!rawBody) return "";
+	const text = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
+	let parsed: unknown;
 	try {
-		parsed = JSON.parse(text)
+		parsed = JSON.parse(text);
 	} catch {
-		return ''
+		return "";
 	}
-	if (!parsed || typeof parsed !== 'object') return ''
-	const obj = parsed as Record<string, unknown>
-	if (typeof obj.prompt === 'string') return obj.prompt
+	if (!parsed || typeof parsed !== "object") return "";
+	const obj = parsed as Record<string, unknown>;
+	if (typeof obj.prompt === "string") return obj.prompt;
 	if (Array.isArray(obj.messages)) {
-		const parts: string[] = []
+		const parts: string[] = [];
 		for (const m of obj.messages) {
-			if (m && typeof m === 'object') {
-				const role = (m as Record<string, unknown>).role
-				const content = (m as Record<string, unknown>).content
-				if (role === 'user' && typeof content === 'string') parts.push(content)
+			if (m && typeof m === "object") {
+				const role = (m as Record<string, unknown>).role;
+				const content = (m as Record<string, unknown>).content;
+				if (role === "user" && typeof content === "string") parts.push(content);
 			}
 		}
-		return parts.join('\n')
+		return parts.join("\n");
 	}
-	return ''
+	return "";
 }
 
 /**
@@ -193,18 +193,18 @@ export function extractPromptFromBody(
 export function detectStreamMode(
 	rawBody: string | Buffer | null | undefined,
 ): boolean {
-	if (!rawBody) return false
-	const text = typeof rawBody === 'string' ? rawBody : rawBody.toString('utf8')
+	if (!rawBody) return false;
+	const text = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
 	try {
-		const parsed = JSON.parse(text)
-		if (parsed && typeof parsed === 'object') {
-			const obj = parsed as Record<string, unknown>
-			return obj.stream === true
+		const parsed = JSON.parse(text);
+		if (parsed && typeof parsed === "object") {
+			const obj = parsed as Record<string, unknown>;
+			return obj.stream === true;
 		}
 	} catch {
 		// Non-JSON bodies default to non-streaming.
 	}
-	return false
+	return false;
 }
 
 /**
@@ -224,55 +224,55 @@ export function extractOutputFromBody(
 	body: string,
 	streamMode: boolean,
 ): string {
-	if (!body) return ''
+	if (!body) return "";
 
 	if (streamMode) {
 		// NDJSON: each non-empty line is one JSON event.
-		const parts: string[] = []
-		for (const line of body.split('\n')) {
-			const trimmed = line.trim()
-			if (!trimmed) continue
+		const parts: string[] = [];
+		for (const line of body.split("\n")) {
+			const trimmed = line.trim();
+			if (!trimmed) continue;
 			try {
-				const evt = JSON.parse(trimmed)
-				if (evt && typeof evt === 'object') {
-					const o = evt as Record<string, unknown>
-					if (typeof o.response === 'string') parts.push(o.response)
-					else if (o.message && typeof o.message === 'object') {
-						const content = (o.message as Record<string, unknown>).content
-						if (typeof content === 'string') parts.push(content)
+				const evt = JSON.parse(trimmed);
+				if (evt && typeof evt === "object") {
+					const o = evt as Record<string, unknown>;
+					if (typeof o.response === "string") parts.push(o.response);
+					else if (o.message && typeof o.message === "object") {
+						const content = (o.message as Record<string, unknown>).content;
+						if (typeof content === "string") parts.push(content);
 					}
 				}
 			} catch {
 				// Non-JSON line — ignore (NDJSON expects each line to be JSON).
 			}
 		}
-		return parts.join('')
+		return parts.join("");
 	}
 
 	// Non-stream: try JSON shapes.
 	try {
-		const parsed = JSON.parse(body)
-		if (parsed && typeof parsed === 'object') {
-			const obj = parsed as Record<string, unknown>
-			if (typeof obj.response === 'string') return obj.response
+		const parsed = JSON.parse(body);
+		if (parsed && typeof parsed === "object") {
+			const obj = parsed as Record<string, unknown>;
+			if (typeof obj.response === "string") return obj.response;
 			if (Array.isArray(obj.choices)) {
-				const parts: string[] = []
+				const parts: string[] = [];
 				for (const c of obj.choices) {
-					if (c && typeof c === 'object') {
-						const message = (c as Record<string, unknown>).message
-						if (message && typeof message === 'object') {
-							const content = (message as Record<string, unknown>).content
-							if (typeof content === 'string') parts.push(content)
+					if (c && typeof c === "object") {
+						const message = (c as Record<string, unknown>).message;
+						if (message && typeof message === "object") {
+							const content = (message as Record<string, unknown>).content;
+							if (typeof content === "string") parts.push(content);
 						}
 					}
 				}
-				return parts.join('')
+				return parts.join("");
 			}
 		}
 	} catch {
 		// Non-JSON body — return raw.
 	}
-	return body
+	return body;
 }
 
 // ─── Core relay ───────────────────────────────────────────────────
@@ -297,67 +297,67 @@ export async function relayInferenceRequest(
 	urlPath: string,
 	opts: NodeResAdapterOpts,
 ): Promise<RelayResult> {
-	const upstreamUrl = opts.upstreamBaseUrl.replace(/\/+$/, '') + urlPath
-	const timeoutMs = opts.upstreamTimeoutMs ?? 60_000
-	const fetchImpl = opts.fetchImpl ?? fetch
+	const upstreamUrl = opts.upstreamBaseUrl.replace(/\/+$/, "") + urlPath;
+	const timeoutMs = opts.upstreamTimeoutMs ?? 60_000;
+	const fetchImpl = opts.fetchImpl ?? fetch;
 
 	// Forward request body verbatim. The inference path requires JSON; we
 	// copy the raw body bytes so upstream sees exactly what the client sent.
 	const bodyBuf =
-		typeof req.body === 'string'
-			? Buffer.from(req.body, 'utf8')
+		typeof req.body === "string"
+			? Buffer.from(req.body, "utf8")
 			: req.body
 				? Buffer.from(req.body)
-				: null
+				: null;
 
 	// Copy a filtered header set: drop Host, hop-by-hop headers, and the
 	// kill-switch's own auth headers (Content-Length and Authorization are
 	// not stripped — Content-Length is recomputed by fetch; Authorization is
 	// preserved if the upstream requires it).
 	const forwardHeaders: Record<string, string> = {
-		'Content-Type':
-			getHeader(req.headers, 'content-type') ?? 'application/json',
+		"Content-Type":
+			getHeader(req.headers, "content-type") ?? "application/json",
 		Accept:
-			getHeader(req.headers, 'accept') ??
-			'application/json, application/x-ndjson',
-	}
-	const auth = getHeader(req.headers, 'authorization')
-	if (auth) forwardHeaders.Authorization = auth
-	const userAgent = getHeader(req.headers, 'user-agent')
-	if (userAgent) forwardHeaders['User-Agent'] = userAgent
+			getHeader(req.headers, "accept") ??
+			"application/json, application/x-ndjson",
+	};
+	const auth = getHeader(req.headers, "authorization");
+	if (auth) forwardHeaders.Authorization = auth;
+	const userAgent = getHeader(req.headers, "user-agent");
+	if (userAgent) forwardHeaders["User-Agent"] = userAgent;
 
 	const upstreamRes = await fetchImpl(upstreamUrl, {
-		method: req.method ?? 'POST',
+		method: req.method ?? "POST",
 		headers: forwardHeaders,
 		body: bodyBuf,
 		signal: AbortSignal.timeout(timeoutMs),
-	})
+	});
 
 	// Read the body as text. NDJSON streams arrive as a single string here
 	// because fetch's default reader concatenates chunks.
-	const rawBody = await upstreamRes.text()
+	const rawBody = await upstreamRes.text();
 
 	// Copy response headers (lowercased) for the wire response.
-	const outHeaders: Record<string, string> = {}
+	const outHeaders: Record<string, string> = {};
 	upstreamRes.headers.forEach((v, k) => {
-		outHeaders[k.toLowerCase()] = v
-	})
+		outHeaders[k.toLowerCase()] = v;
+	});
 
-	const prompt = extractPromptFromBody(req.body)
-	const streamMode = detectStreamMode(req.body)
-	const bodyBytes = utf8ByteLength(rawBody)
-	const output = extractOutputFromBody(rawBody, streamMode)
+	const prompt = extractPromptFromBody(req.body);
+	const streamMode = detectStreamMode(req.body);
+	const bodyBytes = utf8ByteLength(rawBody);
+	const output = extractOutputFromBody(rawBody, streamMode);
 
 	// Apply the 256 KB cap to the verifier's view of the output, but NOT to
 	// the wire response (the client must receive the full body). The cap is
 	// a memory bound for the verifier, not a feature on the response.
-	const outputBytes = utf8ByteLength(output)
-	const truncated = outputBytes > OUTPUT_BUFFER_CAP_BYTES
+	const outputBytes = utf8ByteLength(output);
+	const truncated = outputBytes > OUTPUT_BUFFER_CAP_BYTES;
 	const verifierOutput = truncated
-		? Buffer.from(output, 'utf8')
+		? Buffer.from(output, "utf8")
 				.subarray(0, OUTPUT_BUFFER_CAP_BYTES)
-				.toString('utf8')
-		: output
+				.toString("utf8")
+		: output;
 
 	return {
 		status: upstreamRes.status,
@@ -368,7 +368,7 @@ export async function relayInferenceRequest(
 		prompt,
 		output: verifierOutput,
 		streamMode,
-	}
+	};
 }
 
 /**
@@ -377,10 +377,10 @@ export async function relayInferenceRequest(
  * `nodeRes._h / _s / _b`): `writeHead(status, headers?)` and `end(body?)`.
  */
 export interface NodeStyleResponse {
-	writeHead(status: number, headers?: Record<string, string | string[]>): void
-	end(body?: string): void
+	writeHead(status: number, headers?: Record<string, string | string[]>): void;
+	end(body?: string): void;
 	/** Optional no-op — some implementations have a setHeader; ignored here. */
-	setHeader?(name: string, value: string): void
+	setHeader?(name: string, value: string): void;
 }
 
 /**
@@ -395,18 +395,18 @@ export function writeRelayToResponse(
 ): void {
 	// Always set Content-Length to the FULL body length (we don't truncate
 	// the wire response — only the verifier view).
-	const headers: Record<string, string> = { ...result.headers }
-	headers['content-length'] = String(result.bodyBytes)
-	res.writeHead(result.status, headers)
-	res.end(result.body)
+	const headers: Record<string, string> = { ...result.headers };
+	headers["content-length"] = String(result.bodyBytes);
+	res.writeHead(result.status, headers);
+	res.end(result.body);
 }
 
 /** Type guard for IncomingMessage (used by the index.ts integration). */
 export function isNodeIncomingMessage(x: unknown): x is IncomingMessage {
 	return (
 		!!x &&
-		typeof x === 'object' &&
-		'headers' in (x as Record<string, unknown>) &&
-		'method' in (x as Record<string, unknown>)
-	)
+		typeof x === "object" &&
+		"headers" in (x as Record<string, unknown>) &&
+		"method" in (x as Record<string, unknown>)
+	);
 }

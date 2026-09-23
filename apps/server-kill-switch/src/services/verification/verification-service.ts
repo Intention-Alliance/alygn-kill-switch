@@ -42,33 +42,33 @@ import {
 	maybeResumeFromGlobal,
 	selfHealOnSafe,
 	shouldEscalateToGlobal,
-} from '../fingerprint-pause'
-import type { KillSwitchService } from '../kill-switch'
-import { type PublishFn, recordVerificationEvent } from './verification-event'
-import { InferenceVerifier, type VerificationResult } from './verifier'
+} from "../fingerprint-pause";
+import type { KillSwitchService } from "../kill-switch";
+import { type PublishFn, recordVerificationEvent } from "./verification-event";
+import { InferenceVerifier, type VerificationResult } from "./verifier";
 
-export type VerificationMode = 'async' | 'sync'
+export type VerificationMode = "async" | "sync";
 
 export interface VerificationServiceOpts {
-	verifier?: InferenceVerifier
-	mode?: VerificationMode // default 'async'
-	autoKillOnUnsafe?: boolean // default true
-	killSwitch?: KillSwitchService // injected for the STOPPED transition
-	publish?: PublishFn // Redis pubsub for bcp:verification:events
-	persistEvents?: boolean // default true — write verification_event rows
+	verifier?: InferenceVerifier;
+	mode?: VerificationMode; // default 'async'
+	autoKillOnUnsafe?: boolean; // default true
+	killSwitch?: KillSwitchService; // injected for the STOPPED transition
+	publish?: PublishFn; // Redis pubsub for bcp:verification:events
+	persistEvents?: boolean; // default true — write verification_event rows
 }
 
 export interface VerificationContext {
-	prompt: string
-	output: string
-	requestId: string
-	machineId?: string
+	prompt: string;
+	output: string;
+	requestId: string;
+	machineId?: string;
 	/**
 	 * P1-3 (Stage 2): when true, the verifier only saw the first 256 KB of a
 	 * longer streamed response. Recorded in the verification_event row's
 	 * `reason` field so the dashboard surfaces the degradation. Default false.
 	 */
-	outputTruncated?: boolean
+	outputTruncated?: boolean;
 	/**
 	 * P1-1 (Stage 2 fingerprint-scoped refinement): per-request fingerprint
 	 * source used to derive the fingerprint. When supplied, UNSAFE verdicts
@@ -76,30 +76,30 @@ export interface VerificationContext {
 	 * immediate global STOPPED. Falls back to `machine:<machineId>` when no
 	 * fingerprint source is supplied.
 	 */
-	fingerprintSource?: FingerprintSource
+	fingerprintSource?: FingerprintSource;
 }
 
 export interface HandleInferenceResult {
-	mode: VerificationMode
-	result?: VerificationResult
+	mode: VerificationMode;
+	result?: VerificationResult;
 }
 
 export class VerificationService {
-	private readonly verifier: InferenceVerifier
+	private readonly verifier: InferenceVerifier;
 	/** Verification mode — 'async' (default) or 'sync'. Public so the middleware can branch. */
-	readonly mode: VerificationMode
-	private readonly autoKillOnUnsafe: boolean
-	private readonly killSwitch?: KillSwitchService
-	private readonly publish?: PublishFn
-	private readonly persistEvents: boolean
+	readonly mode: VerificationMode;
+	private readonly autoKillOnUnsafe: boolean;
+	private readonly killSwitch?: KillSwitchService;
+	private readonly publish?: PublishFn;
+	private readonly persistEvents: boolean;
 
 	constructor(opts: VerificationServiceOpts = {}) {
-		this.verifier = opts.verifier ?? new InferenceVerifier()
-		this.mode = opts.mode ?? 'async'
-		this.autoKillOnUnsafe = opts.autoKillOnUnsafe ?? true
-		this.killSwitch = opts.killSwitch
-		this.publish = opts.publish
-		this.persistEvents = opts.persistEvents ?? true
+		this.verifier = opts.verifier ?? new InferenceVerifier();
+		this.mode = opts.mode ?? "async";
+		this.autoKillOnUnsafe = opts.autoKillOnUnsafe ?? true;
+		this.killSwitch = opts.killSwitch;
+		this.publish = opts.publish;
+		this.persistEvents = opts.persistEvents ?? true;
 	}
 
 	/**
@@ -114,19 +114,19 @@ export class VerificationService {
 	async handleInferenceRequest(
 		ctx: VerificationContext,
 	): Promise<HandleInferenceResult> {
-		if (this.mode === 'sync') {
-			const result = await this.verifyAndAct(ctx)
-			return { mode: 'sync', result }
+		if (this.mode === "sync") {
+			const result = await this.verifyAndAct(ctx);
+			return { mode: "sync", result };
 		}
 
 		// ASYNC — fire-and-forget. Detached task; never reject the request.
 		void this.verifyAndAct(ctx).catch((err) => {
 			console.error(
-				'[verification] Async verification failed (non-fatal):',
+				"[verification] Async verification failed (non-fatal):",
 				err instanceof Error ? err.message : err,
-			)
-		})
-		return { mode: 'async' }
+			);
+		});
+		return { mode: "async" };
 	}
 
 	/**
@@ -138,11 +138,11 @@ export class VerificationService {
 		const result = await this.verifier.verify({
 			prompt: ctx.prompt,
 			output: ctx.output,
-		})
+		});
 
-		let triggeredKill = false
+		let triggeredKill = false;
 
-		if (result.verdict === 'UNSAFE' && this.autoKillOnUnsafe) {
+		if (result.verdict === "UNSAFE" && this.autoKillOnUnsafe) {
 			// P1-1 (Stage 2 fingerprint-scoped refinement): block the request's
 			// fingerprint first, then check whether to escalate to global
 			// STOPPED. The legacy global-stop path remains as a fallback for
@@ -151,44 +151,44 @@ export class VerificationService {
 				? deriveFingerprint(ctx.fingerprintSource)
 				: ctx.machineId
 					? `machine:${ctx.machineId}`
-					: ''
+					: "";
 			if (fingerprint) {
 				blockFingerprint(
 					fingerprint,
-					`UNSAFE verdict: ${result.reason || 'no reason'}`,
-				)
+					`UNSAFE verdict: ${result.reason || "no reason"}`,
+				);
 			}
 			// Check whether every active fingerprint shows UNSAFE — if so,
 			// escalate to global STOPPED. Otherwise stay scoped.
-			const escalation = await shouldEscalateToGlobal()
+			const escalation = await shouldEscalateToGlobal();
 			if (escalation.escalated) {
-				triggeredKill = await this.triggerStop(ctx.machineId)
+				triggeredKill = await this.triggerStop(ctx.machineId);
 			}
-		} else if (result.verdict === 'SAFE') {
+		} else if (result.verdict === "SAFE") {
 			// P1-1 self-heal: SAFE verdict unblocks the request's fingerprint
 			// (if blocked) and may resume globally-paused traffic.
 			const fingerprint = ctx.fingerprintSource
 				? deriveFingerprint(ctx.fingerprintSource)
 				: ctx.machineId
 					? `machine:${ctx.machineId}`
-					: ''
-			const unblocked = selfHealOnSafe(fingerprint, 'SAFE')
+					: "";
+			const unblocked = selfHealOnSafe(fingerprint, "SAFE");
 			if (unblocked) {
 				console.log(
 					`[verification] Self-heal: unblocked fingerprint '${fingerprint}' after SAFE verdict`,
-				)
+				);
 			}
 			// If globally paused, check whether we should resume.
-			const resumed = await maybeResumeFromGlobal()
+			const resumed = await maybeResumeFromGlobal();
 			if (resumed) {
 				console.log(
 					`[verification] Self-heal: resumed global pause after SAFE verdict`,
-				)
+				);
 			}
 		}
 
 		// REVIEW or degraded → publish event, no kill.
-		if (result.verdict === 'REVIEW' || result.degraded) {
+		if (result.verdict === "REVIEW" || result.degraded) {
 			// (already handled above for UNSAFE; this branch covers REVIEW/degraded)
 		}
 
@@ -205,14 +205,14 @@ export class VerificationService {
 					outputTruncated: ctx.outputTruncated,
 				},
 				this.publish,
-			)
+			);
 		} else if (this.publish) {
 			// Still publish even if not persisting rows.
 			try {
 				await this.publish(
-					'bcp:verification:events',
+					"bcp:verification:events",
 					JSON.stringify({
-						type: 'verification-event',
+						type: "verification-event",
 						payload: {
 							requestId: ctx.requestId,
 							machineId: ctx.machineId ?? null,
@@ -226,16 +226,16 @@ export class VerificationService {
 							timestamp: new Date().toISOString(),
 						},
 					}),
-				)
+				);
 			} catch (err) {
 				console.warn(
-					'[verification] Redis publish dropped:',
+					"[verification] Redis publish dropped:",
 					err instanceof Error ? err.message : err,
-				)
+				);
 			}
 		}
 
-		return result
+		return result;
 	}
 
 	/**
@@ -251,43 +251,43 @@ export class VerificationService {
 	private async triggerStop(machineId?: string): Promise<boolean> {
 		if (!this.killSwitch) {
 			console.warn(
-				'[verification] UNSAFE verdict but no killSwitch injected — cannot auto-kill',
-			)
-			return false
+				"[verification] UNSAFE verdict but no killSwitch injected — cannot auto-kill",
+			);
+			return false;
 		}
 
 		try {
-			const current = await this.killSwitch.getCurrentState()
-			if (current === 'STOPPED') {
+			const current = await this.killSwitch.getCurrentState();
+			if (current === "STOPPED") {
 				// Already stopped — skip the double-transition to avoid audit spam.
 				console.warn(
-					'[verification] UNSAFE verdict but kill-switch already STOPPED — skipping transition',
-				)
-				return false
+					"[verification] UNSAFE verdict but kill-switch already STOPPED — skipping transition",
+				);
+				return false;
 			}
 
-			await this.killSwitch.transitionTo('STOPPED', {
-				reason: 'inference-unsafe',
-				userId: 'system:verifier',
-				ip: 'internal',
+			await this.killSwitch.transitionTo("STOPPED", {
+				reason: "inference-unsafe",
+				userId: "system:verifier",
+				ip: "internal",
 				machineId,
-			})
-			return true
+			});
+			return true;
 		} catch (err: unknown) {
 			// 409 invalid-transition (e.g. concurrent STOPPED) — ignore, already handled.
-			const statusCode = (err as { statusCode?: number })?.statusCode
+			const statusCode = (err as { statusCode?: number })?.statusCode;
 			if (statusCode === 409) {
 				console.warn(
-					'[verification] Kill-switch transition rejected (409) — likely already STOPPED:',
+					"[verification] Kill-switch transition rejected (409) — likely already STOPPED:",
 					err instanceof Error ? err.message : err,
-				)
-				return false
+				);
+				return false;
 			}
 			console.error(
-				'[verification] Failed to trigger STOPPED:',
+				"[verification] Failed to trigger STOPPED:",
 				err instanceof Error ? err.message : err,
-			)
-			return false
+			);
+			return false;
 		}
 	}
 }

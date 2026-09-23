@@ -24,50 +24,50 @@
  * @see docs/webhook-api-keys-db-spec.md §6, §7, §12a
  */
 
-import { eq } from 'drizzle-orm'
-import { db } from '../db'
-import { webhookApiKeyAudit, webhookApiKeys } from '../db/schema'
-import { hashingService } from '../services/hashing'
+import { eq } from "drizzle-orm";
+import { db } from "../db";
+import { webhookApiKeyAudit, webhookApiKeys } from "../db/schema";
+import { hashingService } from "../services/hashing";
 
 export type ApiKeyContext = {
-	keyId: string
-	name: string
-	scopes: string[]
-}
+	keyId: string;
+	name: string;
+	scopes: string[];
+};
 
 export type VerifyResult =
 	| { ok: true; context: ApiKeyContext }
 	| {
-			ok: false
+			ok: false;
 			reason:
-				| 'missing'
-				| 'malformed'
-				| 'unknown'
-				| 'hash_mismatch'
-				| 'revoked'
-				| 'expired'
-				| 'scope_mismatch'
-	  }
+				| "missing"
+				| "malformed"
+				| "unknown"
+				| "hash_mismatch"
+				| "revoked"
+				| "expired"
+				| "scope_mismatch";
+	  };
 
 /** Audit row write — fire-and-forget but logged on failure. */
 async function audit(
 	keyId: string | null,
-	action: 'use' | 'use_failed',
+	action: "use" | "use_failed",
 	actor: string,
 	meta: Record<string, unknown>,
 	webhookPath?: string | null,
 ): Promise<void> {
 	try {
 		await db.insert(webhookApiKeyAudit).values({
-			keyId: keyId || 'unknown',
+			keyId: keyId || "unknown",
 			action,
 			actor,
 			at: new Date(),
 			meta: JSON.stringify(meta),
 			webhookPath: webhookPath ?? null,
-		})
+		});
 	} catch (e) {
-		console.error('[apikey.middleware] audit write failed:', e)
+		console.error("[apikey.middleware] audit write failed:", e);
 	}
 }
 
@@ -98,80 +98,122 @@ export async function verifyApiKey(
 	requestPath?: string | null,
 ): Promise<VerifyResult> {
 	if (!rawKey) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'missing',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'missing' }
+		await audit(
+			null,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "missing",
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "missing" };
 	}
 	if (rawKey.length < 16) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'malformed',
-			requiredScope,
-			prefix: rawKey.slice(0, 8),
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'malformed' }
+		await audit(
+			null,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "malformed",
+				requiredScope,
+				prefix: rawKey.slice(0, 8),
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "malformed" };
 	}
 
-	const hash = hashingService.hashApiKey(rawKey)
+	const hash = hashingService.hashApiKey(rawKey);
 	const row = await db.query.webhookApiKeys.findFirst({
 		where: eq(webhookApiKeys.apiKeyHash, hash),
-	})
+	});
 
 	if (!row) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'unknown_prefix',
-			requiredScope,
-			prefix: rawKey.slice(0, 8),
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'unknown' }
+		await audit(
+			null,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "unknown_prefix",
+				requiredScope,
+				prefix: rawKey.slice(0, 8),
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "unknown" };
 	}
 
 	// Re-verify in constant time (defence-in-depth: even though we just
 	// looked up by hash, re-hashing the input and comparing is the textbook
 	// pattern and costs ~0.01ms).
-	const rehash = hashingService.hashApiKey(rawKey)
+	const rehash = hashingService.hashApiKey(rawKey);
 	if (!hashingService.verifyApiKeyHash(row.apiKeyHash, rehash)) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'hash_mismatch',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'hash_mismatch' }
+		await audit(
+			row.id,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "hash_mismatch",
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "hash_mismatch" };
 	}
 
 	if (row.revokedAt) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'revoked',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'revoked' }
+		await audit(
+			row.id,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "revoked",
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "revoked" };
 	}
 	if (row.expiresAt && row.expiresAt < new Date()) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'expired',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'expired' }
+		await audit(
+			row.id,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "expired",
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "expired" };
 	}
 
-	const scopes = (row.scopes || '')
-		.split(',')
+	const scopes = (row.scopes || "")
+		.split(",")
 		.map((s) => s.trim())
-		.filter(Boolean)
+		.filter(Boolean);
 	if (requiredScope && !scopes.includes(requiredScope)) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'scope_mismatch',
-			requiredScope,
-			actualScopes: scopes,
-			path: requestPath ?? null,
-		}, requestPath)
-		return { ok: false, reason: 'scope_mismatch' }
+		await audit(
+			row.id,
+			"use_failed",
+			`request:${ip}`,
+			{
+				reason: "scope_mismatch",
+				requiredScope,
+				actualScopes: scopes,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		);
+		return { ok: false, reason: "scope_mismatch" };
 	}
 
 	// Best-effort last_used update (don't block the request on this)
@@ -179,15 +221,23 @@ export async function verifyApiKey(
 		.update(webhookApiKeys)
 		.set({ lastUsedAt: new Date(), lastUsedIp: ip })
 		.where(eq(webhookApiKeys.id, row.id))
-		.then(() => audit(row.id, 'use', `request:${ip}`, { requiredScope, path: requestPath ?? null }, requestPath))
-		.catch((e) =>
-			console.error('[apikey.middleware] last_used update failed:', e),
+		.then(() =>
+			audit(
+				row.id,
+				"use",
+				`request:${ip}`,
+				{ requiredScope, path: requestPath ?? null },
+				requestPath,
+			),
 		)
+		.catch((e) =>
+			console.error("[apikey.middleware] last_used update failed:", e),
+		);
 
 	return {
 		ok: true,
 		context: { keyId: row.id, name: row.name, scopes },
-	}
+	};
 }
 
 /**
@@ -195,12 +245,12 @@ export async function verifyApiKey(
  * Header names are case-insensitive; we check both forms.
  */
 export function readApiKeyHeader(req: {
-	headers: Record<string, string | string[] | undefined>
+	headers: Record<string, string | string[] | undefined>;
 }): string | null {
-	const h = req.headers || {}
-	const v = h['x-webhook-key'] ?? h['X-Webhook-Key']
-	if (typeof v === 'string' && v.trim().length > 0) return v.trim()
-	if (Array.isArray(v) && typeof v[0] === 'string' && v[0].trim().length > 0)
-		return v[0].trim()
-	return null
+	const h = req.headers || {};
+	const v = h["x-webhook-key"] ?? h["X-Webhook-Key"];
+	if (typeof v === "string" && v.trim().length > 0) return v.trim();
+	if (Array.isArray(v) && typeof v[0] === "string" && v[0].trim().length > 0)
+		return v[0].trim();
+	return null;
 }

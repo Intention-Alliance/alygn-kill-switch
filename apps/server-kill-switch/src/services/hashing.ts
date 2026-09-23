@@ -19,7 +19,7 @@
  * @see docs/webhook-api-keys-db-spec.md §5, §9
  */
 
-import { createHash, randomBytes, timingSafeEqual } from 'node:crypto'
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 
 export class HashingService {
 	/**
@@ -34,7 +34,7 @@ export class HashingService {
 	 * @returns 64-char hex digest
 	 */
 	hashApiKey(apiKey: string): string {
-		return createHash('sha256').update(apiKey, 'utf8').digest('hex')
+		return createHash("sha256").update(apiKey, "utf8").digest("hex");
 	}
 
 	/**
@@ -50,11 +50,11 @@ export class HashingService {
 	 * @returns true if the hashes are byte-for-byte equal
 	 */
 	verifyApiKeyHash(expected: string, actual: string): boolean {
-		if (expected.length !== actual.length) return false
-		const a = Buffer.from(expected, 'hex')
-		const b = Buffer.from(actual, 'hex')
-		if (a.length !== b.length) return false
-		return timingSafeEqual(a, b)
+		if (expected.length !== actual.length) return false;
+		const a = Buffer.from(expected, "hex");
+		const b = Buffer.from(actual, "hex");
+		if (a.length !== b.length) return false;
+		return timingSafeEqual(a, b);
 	}
 
 	/**
@@ -77,10 +77,10 @@ export class HashingService {
 	generateApiKey(): string {
 		// 32 random bytes → hex (64 chars) → first 48 chars = 192 bits of entropy.
 		// Spec §6 requires 190-bit minimum. No padding chars — every char is random.
-		const hex = randomBytes(32).toString('hex').slice(0, 48)
-		return `wk_${hex}`
+		const hex = randomBytes(32).toString("hex").slice(0, 48);
+		return `wk_${hex}`;
 	}
 }
 
 // Singleton export (mirrors the dashboard's `hashingService` shape)
-export const hashingService = new HashingService()
+export const hashingService = new HashingService();

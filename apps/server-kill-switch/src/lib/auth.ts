@@ -16,84 +16,88 @@
  * if BETTER_AUTH_SECRET is missing.
  */
 
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { eq } from 'drizzle-orm';
-import { db } from '../db/index';
-import * as schema from '../db/schema';
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
+import { db } from "../db/index";
+import * as schema from "../db/schema";
 
 // ─── Environment Validation ──────────────────────────────────────────────
 
 function requireEnv(name: string): string {
-  const val = process.env[name];
-  if (!val || val.trim().length === 0) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return val.trim();
+	const val = process.env[name];
+	if (!val || val.trim().length === 0) {
+		throw new Error(`Missing required environment variable: ${name}`);
+	}
+	return val.trim();
 }
 
 function requireSecretEnv(name: string, minLength: number): string {
-  const val = requireEnv(name);
-  if (val.length < minLength) {
-    throw new Error(
-      `${name} is too short (${val.length} chars). Minimum: ${minLength} chars.`
-    );
-  }
-  return val;
+	const val = requireEnv(name);
+	if (val.length < minLength) {
+		throw new Error(
+			`${name} is too short (${val.length} chars). Minimum: ${minLength} chars.`,
+		);
+	}
+	return val;
 }
 
-const BETTER_AUTH_SECRET = requireSecretEnv('BETTER_AUTH_SECRET', 32);
-const BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || 'http://localhost:3000';
-const BASE_PATH = '/v1/auth';
+const BETTER_AUTH_SECRET = requireSecretEnv("BETTER_AUTH_SECRET", 32);
+const BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || "http://localhost:3000";
+const BASE_PATH = "/v1/auth";
 
 // ─── Better-Auth Instance ────────────────────────────────────────────────
 
 export const auth = betterAuth({
-  baseURL: BETTER_AUTH_URL,
-  basePath: BASE_PATH,
-  secret: BETTER_AUTH_SECRET,
-  database: drizzleAdapter(db, {
-    provider: 'sqlite',
-    schema: {
-      user: schema.users,
-      session: schema.sessions,
-      account: schema.accounts,
-      verification: schema.verifications,
-    },
-  }),
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: false,
-    requireEmailVerification: false,
-    password: {
-      hash: (input: string) => Bun.password.hash(input),
-      verify: ({ password, hash }) => Bun.password.verify(password, hash),
-    },
-  },
-  session: {
-    expiresIn: 12 * 60 * 60,   // 12 hours (was 1 hour — sessions expired too fast)
-    updateAge: 60,             // refresh sliding expiry every 60s so navigation keeps the session alive
-  },
-  user: {
-    additionalFields: {
-      role: {
-        type: 'string',
-        required: false,
-        defaultValue: 'admin',
-        output: true,
-        input: false,
-      },
-    },
-  },
-  trustedOrigins: (process.env.TRUSTED_ORIGINS || process.env.TRUSTED_ORIGINS_DEFAULT || 'http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean),
+	baseURL: BETTER_AUTH_URL,
+	basePath: BASE_PATH,
+	secret: BETTER_AUTH_SECRET,
+	database: drizzleAdapter(db, {
+		provider: "sqlite",
+		schema: {
+			user: schema.users,
+			session: schema.sessions,
+			account: schema.accounts,
+			verification: schema.verifications,
+		},
+	}),
+	emailAndPassword: {
+		enabled: true,
+		autoSignIn: false,
+		requireEmailVerification: false,
+		password: {
+			hash: (input: string) => Bun.password.hash(input),
+			verify: ({ password, hash }) => Bun.password.verify(password, hash),
+		},
+	},
+	session: {
+		expiresIn: 12 * 60 * 60, // 12 hours (was 1 hour — sessions expired too fast)
+		updateAge: 60, // refresh sliding expiry every 60s so navigation keeps the session alive
+	},
+	user: {
+		additionalFields: {
+			role: {
+				type: "string",
+				required: false,
+				defaultValue: "admin",
+				output: true,
+				input: false,
+			},
+		},
+	},
+	trustedOrigins: (
+		process.env.TRUSTED_ORIGINS ||
+		process.env.TRUSTED_ORIGINS_DEFAULT ||
+		"http://localhost:3000,http://127.0.0.1:3000,http://host.docker.internal:3000,http://alygn-web-regulator:3000,http://localhost:3001"
+	)
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean),
 });
 
 // ─── Constants ───────────────────────────────────────────────────────────
 
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@alygn.com';
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@alygn.com";
 
 // ─── Auto-Seed Admin User ────────────────────────────────────────────────
 
@@ -114,73 +118,80 @@ export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@alygn.com';
  * backward compatibility). Idempotent: skips if the user already exists.
  */
 export async function seedAdminUser() {
-  // P2-2: Normalize the admin email to lowercase before insert so lookups and
-  // sign-in are case-insensitive-consistent (Better-Auth lowercases on signup).
-  const email = ADMIN_EMAIL.toLowerCase();
-  const password = process.env.KILL_SWITCH_AUTH_TOKEN;
+	// P2-2: Normalize the admin email to lowercase before insert so lookups and
+	// sign-in are case-insensitive-consistent (Better-Auth lowercases on signup).
+	const email = ADMIN_EMAIL.toLowerCase();
+	const password = process.env.KILL_SWITCH_AUTH_TOKEN;
 
-  if (!password || password.length < 16) {
-    console.warn(
-      `[auth] KILL_SWITCH_AUTH_TOKEN is missing or too short (< 16 chars). ` +
-      `Admin user will NOT be seeded. Set KILL_SWITCH_AUTH_TOKEN in environment.`
-    );
-    return;
-  }
+	if (!password || password.length < 16) {
+		console.warn(
+			`[auth] KILL_SWITCH_AUTH_TOKEN is missing or too short (< 16 chars). ` +
+				`Admin user will NOT be seeded. Set KILL_SWITCH_AUTH_TOKEN in environment.`,
+		);
+		return;
+	}
 
-  // Check if the admin user already exists (direct DB query — no HTTP).
-  const existing = await db
-    .select({ id: schema.users.id })
-    .from(schema.users)
-    .where(eq(schema.users.email, email))
-    .get();
+	// Check if the admin user already exists (direct DB query — no HTTP).
+	const existing = await db
+		.select({ id: schema.users.id })
+		.from(schema.users)
+		.where(eq(schema.users.email, email))
+		.get();
 
-  if (existing) {
-    console.log(`[auth] Admin user "${email}" already exists, skipping seed`);
-    return;
-  }
+	if (existing) {
+		console.log(`[auth] Admin user "${email}" already exists, skipping seed`);
+		return;
+	}
 
-  // Create the admin user + credential account directly in SQLite.
-  // Mirrors Better-Auth's signUpEmail persistence: a `user` row plus an
-  // `account` row with providerId='credential' holding the Argon2id hash.
-  const userId = crypto.randomUUID();
-  const now = new Date();
-  const passwordHash = await Bun.password.hash(password);
+	// Create the admin user + credential account directly in SQLite.
+	// Mirrors Better-Auth's signUpEmail persistence: a `user` row plus an
+	// `account` row with providerId='credential' holding the Argon2id hash.
+	const userId = crypto.randomUUID();
+	const now = new Date();
+	const passwordHash = await Bun.password.hash(password);
 
-  try {
-    await db.transaction(async (tx) => {
-      await tx.insert(schema.users).values({
-        id: userId,
-        email,
-        // P2-1: emailVerified stays `true` for the seeded admin — the admin is
-        // provisioned directly (no email verification flow), unlike signUpEmail
-        // which would leave it false pending verification.
-        emailVerified: true,
-        name: 'Admin',
-        role: 'admin',
-        createdAt: now,
-        updatedAt: now,
-      });
+	try {
+		await db.transaction(async (tx) => {
+			await tx.insert(schema.users).values({
+				id: userId,
+				email,
+				// P2-1: emailVerified stays `true` for the seeded admin — the admin is
+				// provisioned directly (no email verification flow), unlike signUpEmail
+				// which would leave it false pending verification.
+				emailVerified: true,
+				name: "Admin",
+				role: "admin",
+				createdAt: now,
+				updatedAt: now,
+			});
 
-      await tx.insert(schema.accounts).values({
-        id: crypto.randomUUID(),
-        userId,
-        accountId: userId, // Better-Auth credential accounts key on the user id
-        providerId: 'credential',
-        password: passwordHash,
-        createdAt: now,
-        updatedAt: now,
-      });
-    });
+			await tx.insert(schema.accounts).values({
+				id: crypto.randomUUID(),
+				userId,
+				accountId: userId, // Better-Auth credential accounts key on the user id
+				providerId: "credential",
+				password: passwordHash,
+				createdAt: now,
+				updatedAt: now,
+			});
+		});
 
-    console.log(`[auth] Admin user "${email}" seeded successfully (direct DB insert)`);
-  } catch (err: any) {
-    // Unique-constraint race (another process seeded first) is non-fatal.
-    if (err?.message?.includes('UNIQUE') || err?.message?.includes('already exists')) {
-      console.log(`[auth] Admin user "${email}" already exists (race condition), skipping`);
-      return;
-    }
-    console.error(`[auth] Failed to seed admin user: ${err?.message || err}`);
-  }
+		console.log(
+			`[auth] Admin user "${email}" seeded successfully (direct DB insert)`,
+		);
+	} catch (err: any) {
+		// Unique-constraint race (another process seeded first) is non-fatal.
+		if (
+			err?.message?.includes("UNIQUE") ||
+			err?.message?.includes("already exists")
+		) {
+			console.log(
+				`[auth] Admin user "${email}" already exists (race condition), skipping`,
+			);
+			return;
+		}
+		console.error(`[auth] Failed to seed admin user: ${err?.message || err}`);
+	}
 }
 
 export { BASE_PATH };

@@ -20,17 +20,17 @@
  * @author Keridz ⚙️ (be-coder)
  */
 
-import { Database } from 'bun:sqlite'
-import { mock } from 'bun:test'
-import path from 'node:path'
-import { drizzle } from 'drizzle-orm/bun-sqlite'
-import * as schema from '../db/schema'
+import { Database } from "bun:sqlite";
+import { mock } from "bun:test";
+import path from "node:path";
+import { drizzle } from "drizzle-orm/bun-sqlite";
+import * as schema from "../db/schema";
 
 export function mockDbIndex() {
-	const sqlite = new Database(':memory:', { create: true })
-	sqlite.run('PRAGMA journal_mode=WAL')
-	sqlite.run('PRAGMA foreign_keys=ON')
-	const db = drizzle(sqlite, { schema })
+	const sqlite = new Database(":memory:", { create: true });
+	sqlite.run("PRAGMA journal_mode=WAL");
+	sqlite.run("PRAGMA foreign_keys=ON");
+	const db = drizzle(sqlite, { schema });
 
 	// ─── Phase 4 tables (mirrors db/index.ts auto-migration) ──────────
 	sqlite.run(`
@@ -50,19 +50,19 @@ export function mockDbIndex() {
       revoked_at INTEGER,
       last_used_at INTEGER
     )
-  `)
+  `);
 	sqlite.run(
 		`CREATE UNIQUE INDEX IF NOT EXISTS webhook_keys_hashed_secret_unique ON webhook_keys(hashed_secret)`,
-	)
+	);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS webhook_keys_org_idx ON webhook_keys(org_id)`,
-	)
+	);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS webhook_keys_prefix_idx ON webhook_keys(key_prefix)`,
-	)
+	);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS webhook_keys_active_idx ON webhook_keys(revoked_at)`,
-	)
+	);
 
 	sqlite.run(`
     CREATE TABLE IF NOT EXISTS first_access (
@@ -74,16 +74,16 @@ export function mockDbIndex() {
       challenge_id TEXT,
       created_at INTEGER NOT NULL
     )
-  `)
+  `);
 	sqlite.run(
 		`CREATE UNIQUE INDEX IF NOT EXISTS first_access_key_ip_device_unique ON first_access(key_id, ip, device_fp)`,
-	)
+	);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS first_access_key_idx ON first_access(key_id)`,
-	)
+	);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS first_access_verified_idx ON first_access(verified_at)`,
-	)
+	);
 
 	sqlite.run(`
     CREATE TABLE IF NOT EXISTS chain_anchor (
@@ -94,10 +94,10 @@ export function mockDbIndex() {
       signed_payload TEXT NOT NULL,
       created_at INTEGER NOT NULL
     )
-  `)
+  `);
 	sqlite.run(
 		`CREATE UNIQUE INDEX IF NOT EXISTS chain_anchor_date_unique ON chain_anchor(date)`,
-	)
+	);
 
 	sqlite.run(`
     CREATE TABLE IF NOT EXISTS kill_switch_audit_log (
@@ -117,30 +117,30 @@ export function mockDbIndex() {
       server_hmac TEXT NOT NULL DEFAULT '',
       plain_explanation TEXT NOT NULL DEFAULT ''
     )
-  `)
+  `);
 	sqlite.run(
 		`CREATE INDEX IF NOT EXISTS ks_audit_self_hash_idx ON kill_switch_audit_log(self_hash)`,
-	)
+	);
 	sqlite.run(`
     CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_update
     BEFORE UPDATE ON kill_switch_audit_log
     BEGIN
       SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): UPDATE forbidden');
     END
-  `)
+  `);
 	sqlite.run(`
     CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_delete
     BEFORE DELETE ON kill_switch_audit_log
     BEGIN
       SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): DELETE forbidden');
     END
-  `)
+  `);
 
-	mock.module(path.resolve(__dirname, '../db/index.ts'), () => ({
+	mock.module(path.resolve(__dirname, "../db/index.ts"), () => ({
 		db,
 		sqlite,
 		initDatabase: () => ({ db, sqlite }),
-	}))
+	}));
 
-	return { db, sqlite }
+	return { db, sqlite };
 }

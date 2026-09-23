@@ -15,114 +15,131 @@
  *   - Offline = lastSeen older than heartbeatTimeoutMs
  */
 
-import { desc } from 'drizzle-orm';
-import { db } from '../db';
-import { agents, discoveredMachines, discoveredModels, discoveredProviders } from '../db/schema';
+import { desc } from "drizzle-orm";
+import { db } from "../db";
+import {
+	agents,
+	discoveredMachines,
+	discoveredModels,
+	discoveredProviders,
+} from "../db/schema";
 
 const DEFAULT_HEARTBEAT_TIMEOUT_MS = 90_000;
 
 interface Res {
-  writeHead: (status: number, headers?: Record<string, string>) => void;
-  end: (data?: string) => void;
+	writeHead: (status: number, headers?: Record<string, string>) => void;
+	end: (data?: string) => void;
 }
 
 function writeJson(res: Res, status: number, body: unknown) {
-  res.writeHead(status, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(body));
+	res.writeHead(status, { "Content-Type": "application/json" });
+	res.end(JSON.stringify(body));
 }
 
 function toIso(v: Date | number | null | undefined): string | null {
-  if (v === null || v === undefined) return null;
-  if (v instanceof Date) return v.toISOString();
-  return new Date(Number(v)).toISOString();
+	if (v === null || v === undefined) return null;
+	if (v instanceof Date) return v.toISOString();
+	return new Date(Number(v)).toISOString();
 }
 
 /**
  * GET /v1/registry/overview — consolidated live registry view.
  */
 export async function handleRegistryRoutes(
-  method: string,
-  url: string,
-  res: Res,
+	method: string,
+	url: string,
+	res: Res,
 ): Promise<boolean> {
-  const path = url.split('?')[0];
-  if (path !== '/v1/registry/overview') return false;
+	const path = url.split("?")[0];
+	if (path !== "/v1/registry/overview") return false;
 
-  if (method !== 'GET') {
-    writeJson(res, 405, { error: 'method not allowed' });
-    return true;
-  }
+	if (method !== "GET") {
+		writeJson(res, 405, { error: "method not allowed" });
+		return true;
+	}
 
-  const heartbeatTimeoutMs = Number(process.env.KILL_SWITCH_HEARTBEAT_TIMEOUT_MS ?? DEFAULT_HEARTBEAT_TIMEOUT_MS);
-  const cutoff = Date.now() - heartbeatTimeoutMs;
+	const heartbeatTimeoutMs = Number(
+		process.env.KILL_SWITCH_HEARTBEAT_TIMEOUT_MS ??
+			DEFAULT_HEARTBEAT_TIMEOUT_MS,
+	);
+	const cutoff = Date.now() - heartbeatTimeoutMs;
 
-  const [machineRows, agentRows, providerRows, modelRows] = await Promise.all([
-    db.select().from(discoveredMachines).orderBy(desc(discoveredMachines.lastSeen)).all(),
-    db.select().from(agents).orderBy(desc(agents.lastHeartbeat)).all(),
-    db.select().from(discoveredProviders).all(),
-    db.select().from(discoveredModels).all(),
-  ]);
+	const [machineRows, agentRows, providerRows, modelRows] = await Promise.all([
+		db
+			.select()
+			.from(discoveredMachines)
+			.orderBy(desc(discoveredMachines.lastSeen))
+			.all(),
+		db.select().from(agents).orderBy(desc(agents.lastHeartbeat)).all(),
+		db.select().from(discoveredProviders).all(),
+		db.select().from(discoveredModels).all(),
+	]);
 
-  const machines = machineRows.map((row) => {
-    const lastSeen = row.lastSeen instanceof Date ? row.lastSeen.getTime() : Number(row.lastSeen);
-    const online = lastSeen >= cutoff;
-    return {
-      id: String(row.id),
-      hostname: String(row.hostname),
-      ip: row.ip ? String(row.ip) : null,
-      source: String(row.source),
-      state: String(row.state),
-      online,
-      lastSeen: toIso(row.lastSeen),
-      firstSeen: toIso(row.firstSeen),
-      confirmedAt: toIso(row.confirmedAt),
-      confirmedBy: row.confirmedBy ? String(row.confirmedBy) : null,
-    };
-  });
+	const machines = machineRows.map((row) => {
+		const lastSeen =
+			row.lastSeen instanceof Date
+				? row.lastSeen.getTime()
+				: Number(row.lastSeen);
+		const online = lastSeen >= cutoff;
+		return {
+			id: String(row.id),
+			hostname: String(row.hostname),
+			ip: row.ip ? String(row.ip) : null,
+			source: String(row.source),
+			state: String(row.state),
+			online,
+			lastSeen: toIso(row.lastSeen),
+			firstSeen: toIso(row.firstSeen),
+			confirmedAt: toIso(row.confirmedAt),
+			confirmedBy: row.confirmedBy ? String(row.confirmedBy) : null,
+		};
+	});
 
-  const agentsList = agentRows.map((row) => ({
-    id: String(row.id),
-    machineId: String(row.machineId),
-    name: String(row.name),
-    version: String(row.version),
-    capabilities: row.capabilities ? (JSON.parse(String(row.capabilities)) as string[]) : [],
-    lastHeartbeat: toIso(row.lastHeartbeat),
-  }));
+	const agentsList = agentRows.map((row) => ({
+		id: String(row.id),
+		machineId: String(row.machineId),
+		name: String(row.name),
+		version: String(row.version),
+		capabilities: row.capabilities
+			? (JSON.parse(String(row.capabilities)) as string[])
+			: [],
+		lastHeartbeat: toIso(row.lastHeartbeat),
+	}));
 
-  const providers = providerRows.map((row) => ({
-    id: String(row.id),
-    machineId: String(row.machineId),
-    providerId: String(row.providerId),
-    baseUrl: row.baseUrl ? String(row.baseUrl) : null,
-    version: row.version ? String(row.version) : null,
-    status: String(row.status),
-    lastHealthyAt: toIso(row.lastHealthyAt),
-  }));
+	const providers = providerRows.map((row) => ({
+		id: String(row.id),
+		machineId: String(row.machineId),
+		providerId: String(row.providerId),
+		baseUrl: row.baseUrl ? String(row.baseUrl) : null,
+		version: row.version ? String(row.version) : null,
+		status: String(row.status),
+		lastHealthyAt: toIso(row.lastHealthyAt),
+	}));
 
-  const models = modelRows.map((row) => ({
-    id: String(row.id),
-    machineId: String(row.machineId),
-    providerId: String(row.providerId),
-    modelId: String(row.modelId),
-    name: String(row.name),
-    sizeBytes: row.sizeBytes !== null ? Number(row.sizeBytes) : null,
-    quantization: row.quantization ? String(row.quantization) : null,
-    family: row.family ? String(row.family) : null,
-    served: Boolean(row.served),
-  }));
+	const models = modelRows.map((row) => ({
+		id: String(row.id),
+		machineId: String(row.machineId),
+		providerId: String(row.providerId),
+		modelId: String(row.modelId),
+		name: String(row.name),
+		sizeBytes: row.sizeBytes !== null ? Number(row.sizeBytes) : null,
+		quantization: row.quantization ? String(row.quantization) : null,
+		family: row.family ? String(row.family) : null,
+		served: Boolean(row.served),
+	}));
 
-  const onlineCount = machines.filter((m) => m.online).length;
-  const offlineCount = machines.length - onlineCount;
+	const onlineCount = machines.filter((m) => m.online).length;
+	const offlineCount = machines.length - onlineCount;
 
-  writeJson(res, 200, {
-    machines,
-    agents: agentsList,
-    providers,
-    models,
-    onlineCount,
-    offlineCount,
-    heartbeatTimeoutMs,
-    timestamp: new Date().toISOString(),
-  });
-  return true;
+	writeJson(res, 200, {
+		machines,
+		agents: agentsList,
+		providers,
+		models,
+		onlineCount,
+		offlineCount,
+		heartbeatTimeoutMs,
+		timestamp: new Date().toISOString(),
+	});
+	return true;
 }

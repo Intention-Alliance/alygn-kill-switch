@@ -38,15 +38,15 @@
  * flows. The service + verifier are dependency-injected and reusable.
  */
 
-import type { VerificationService } from '../services/verification/verification-service'
-import type { VerificationResult } from '../services/verification/verifier'
+import type { VerificationService } from "../services/verification/verification-service";
+import type { VerificationResult } from "../services/verification/verifier";
 
 export interface VerificationHookResult {
-	verified: boolean
-	result?: VerificationResult
-	reject?: { status: number; body: unknown }
+	verified: boolean;
+	result?: VerificationResult;
+	reject?: { status: number; body: unknown };
 	/** Present in SYNC mode — the caller awaits this to get the final decision. */
-	awaitDecision?: Promise<VerificationHookResult>
+	awaitDecision?: Promise<VerificationHookResult>;
 }
 
 /**
@@ -68,19 +68,19 @@ export interface VerificationHookResult {
  */
 export function verifyInferenceOutput(
 	ctx: {
-		prompt: string
-		output: string
-		requestId: string
-		machineId?: string
+		prompt: string;
+		output: string;
+		requestId: string;
+		machineId?: string;
 		/** True when the verifier saw only the first 256 KB of a longer output. */
-		outputTruncated?: boolean
+		outputTruncated?: boolean;
 		/** True when the upstream response was a streaming NDJSON response. */
-		streamMode?: boolean
+		streamMode?: boolean;
 	},
 	service: VerificationService,
 ): void {
 	if (!ctx.prompt && !ctx.output) {
-		return // nothing to verify — nothing to log
+		return; // nothing to verify — nothing to log
 	}
 	const handle = service.handleInferenceRequest({
 		prompt: ctx.prompt,
@@ -90,7 +90,7 @@ export function verifyInferenceOutput(
 		// P1-3: thread the truncation flag through so the verification_event
 		// row gets the `output-truncated:streamed-above-256KB-cap` marker.
 		outputTruncated: ctx.outputTruncated,
-	})
+	});
 	void handle
 		.then((r) => {
 			// Surface the truncation context as a console line so it shows up in
@@ -100,15 +100,15 @@ export function verifyInferenceOutput(
 				console.warn(
 					`[inference-verification] output truncated for requestId=${ctx.requestId}: ` +
 						`verifier saw only the first ${256 * 1024} bytes of a streamed response`,
-				)
+				);
 			}
 		})
 		.catch((err) => {
 			console.error(
-				'[inference-verification] Output post-relay verification failed (non-fatal):',
+				"[inference-verification] Output post-relay verification failed (non-fatal):",
 				err instanceof Error ? err.message : err,
-			)
-		})
+			);
+		});
 }
 
 /**
@@ -144,16 +144,16 @@ export function checkInferenceVerification(
 	fingerprintSource?: FingerprintSource,
 ): VerificationHookResult {
 	// Only applies to POST /v1/inference/* requests.
-	if (!(method === 'POST' && url.startsWith('/v1/inference/'))) {
-		return { verified: false }
+	if (!(method === "POST" && url.startsWith("/v1/inference/"))) {
+		return { verified: false };
 	}
 
-	const prompt = typeof body?.prompt === 'string' ? body.prompt : ''
-	const output = typeof body?.output === 'string' ? body.output : ''
+	const prompt = typeof body?.prompt === "string" ? body.prompt : "";
+	const output = typeof body?.output === "string" ? body.output : "";
 
 	// Nothing to verify — pass through.
 	if (!prompt && !output) {
-		return { verified: false }
+		return { verified: false };
 	}
 
 	const handle = service.handleInferenceRequest({
@@ -164,37 +164,37 @@ export function checkInferenceVerification(
 		// P1-1: thread the fingerprint source so the service can derive the
 		// request fingerprint and block it on UNSAFE (scoped halt).
 		fingerprintSource,
-	})
+	});
 
-	if (service.mode === 'async') {
+	if (service.mode === "async") {
 		// Fire-and-forget — never reject the request. The verifier runs detached.
 		void handle.catch((err) => {
 			console.error(
-				'[inference-verification] Async verification failed (non-fatal):',
+				"[inference-verification] Async verification failed (non-fatal):",
 				err instanceof Error ? err.message : err,
-			)
-		})
-		return { verified: true }
+			);
+		});
+		return { verified: true };
 	}
 
 	// SYNC mode: await the decision. UNSAFE → reject with 403.
 	const awaitDecision = handle.then((r) => {
-		if (r.result?.verdict === 'UNSAFE') {
+		if (r.result?.verdict === "UNSAFE") {
 			return {
 				verified: true,
 				result: r.result,
 				reject: {
 					status: 403,
 					body: {
-						error: 'Inference output failed safety verification',
-						verdict: 'UNSAFE',
+						error: "Inference output failed safety verification",
+						verdict: "UNSAFE",
 						reason: r.result.reason,
 					},
 				},
-			} as VerificationHookResult
+			} as VerificationHookResult;
 		}
-		return { verified: true, result: r.result } as VerificationHookResult
-	})
+		return { verified: true, result: r.result } as VerificationHookResult;
+	});
 
-	return { verified: true, awaitDecision }
+	return { verified: true, awaitDecision };
 }

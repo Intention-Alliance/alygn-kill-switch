@@ -18,58 +18,58 @@
  * kill-switch service (state transitions, flag changes) are recorded.
  */
 
-import { cpus, totalmem, freemem, loadavg, uptime } from 'node:os';
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { cpus, freemem, loadavg, totalmem, uptime } from "node:os";
 
 // ─── Types ────────────────────────────────────────────────────────
 
 export interface MachineMetrics {
-  cpuUsage: number;     // percentage (0-100)
-  memoryUsage: number;  // percentage (0-100)
-  gpuUsage: number;     // percentage (0-100), 0 if no GPU
-  gpuModel: string;     // model name or "N/A"
-  dpuStatus: string;    // "inactive" (no DPU hardware)
-  loadAvg: number;      // 1-minute load average
-  uptime: number;       // system uptime in seconds
-  diskUsage: number;    // root disk usage percentage (0-100)
-  timestamp: number;    // unix millis at collection time
+	cpuUsage: number; // percentage (0-100)
+	memoryUsage: number; // percentage (0-100)
+	gpuUsage: number; // percentage (0-100), 0 if no GPU
+	gpuModel: string; // model name or "N/A"
+	dpuStatus: string; // "inactive" (no DPU hardware)
+	loadAvg: number; // 1-minute load average
+	uptime: number; // system uptime in seconds
+	diskUsage: number; // root disk usage percentage (0-100)
+	timestamp: number; // unix millis at collection time
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
 function readFileSafe(path: string): string | null {
-  try {
-    return readFileSync(path, 'utf-8').trim();
-  } catch {
-    return null;
-  }
+	try {
+		return readFileSync(path, "utf-8").trim();
+	} catch {
+		return null;
+	}
 }
 
 function readFileNumber(path: string): number | null {
-  const val = readFileSafe(path);
-  if (val === null) return null;
-  const num = parseInt(val, 10);
-  return Number.isFinite(num) ? num : null;
+	const val = readFileSafe(path);
+	if (val === null) return null;
+	const num = parseInt(val, 10);
+	return Number.isFinite(num) ? num : null;
 }
 
 function readMeminfoValue(meminfoPath: string, key: string): number | null {
-  try {
-    const content = readFileSync(meminfoPath, 'utf-8');
-    const match = content.match(new RegExp(`^${key}:\\s+(\\d+)`, 'm'));
-    return match ? parseInt(match[1], 10) : null;
-  } catch {
-    return null;
-  }
+	try {
+		const content = readFileSync(meminfoPath, "utf-8");
+		const match = content.match(new RegExp(`^${key}:\\s+(\\d+)`, "m"));
+		return match ? parseInt(match[1], 10) : null;
+	} catch {
+		return null;
+	}
 }
 
 function readCpuModel(cpuinfoPath: string): string | null {
-  try {
-    const content = readFileSync(cpuinfoPath, 'utf-8');
-    const match = content.match(/^model name\\s*:\\s*(.+)$/m);
-    return match ? match[1].trim() : null;
-  } catch {
-    return null;
-  }
+	try {
+		const content = readFileSync(cpuinfoPath, "utf-8");
+		const match = content.match(/^model name\\s*:\\s*(.+)$/m);
+		return match ? match[1].trim() : null;
+	} catch {
+		return null;
+	}
 }
 
 // ─── Real Metrics Collection ─────────────────────────────────────
@@ -78,176 +78,200 @@ function readCpuModel(cpuinfoPath: string): string | null {
 let _prevCpuTicks: { idle: number; total: number }[] | null = null;
 
 function collectCpuUsage(): number {
-  const cores = cpus();
-  if (cores.length === 0) return 0;
+	const cores = cpus();
+	if (cores.length === 0) return 0;
 
-  if (!_prevCpuTicks) {
-    // First call: store baseline, return 0
-    _prevCpuTicks = cores.map((c) => {
-      const total = Object.values(c.times).reduce((a, b) => a + b, 0);
-      return { idle: c.times.idle, total };
-    });
-    return 0;
-  }
+	if (!_prevCpuTicks) {
+		// First call: store baseline, return 0
+		_prevCpuTicks = cores.map((c) => {
+			const total = Object.values(c.times).reduce((a, b) => a + b, 0);
+			return { idle: c.times.idle, total };
+		});
+		return 0;
+	}
 
-  let totalDelta = 0;
-  let idleDelta = 0;
-  for (let i = 0; i < cores.length; i++) {
-    const total = Object.values(cores[i].times).reduce((a, b) => a + b, 0);
-    const idle = cores[i].times.idle;
-    totalDelta += total - _prevCpuTicks[i].total;
-    idleDelta += idle - _prevCpuTicks[i].idle;
-  }
+	let totalDelta = 0;
+	let idleDelta = 0;
+	for (let i = 0; i < cores.length; i++) {
+		const total = Object.values(cores[i].times).reduce((a, b) => a + b, 0);
+		const idle = cores[i].times.idle;
+		totalDelta += total - _prevCpuTicks[i].total;
+		idleDelta += idle - _prevCpuTicks[i].idle;
+	}
 
-  // Store current sample for next call
-  _prevCpuTicks = cores.map((c) => {
-    const total = Object.values(c.times).reduce((a, b) => a + b, 0);
-    return { idle: c.times.idle, total };
-  });
+	// Store current sample for next call
+	_prevCpuTicks = cores.map((c) => {
+		const total = Object.values(c.times).reduce((a, b) => a + b, 0);
+		return { idle: c.times.idle, total };
+	});
 
-  if (totalDelta === 0) return 0;
-  return ((totalDelta - idleDelta) / totalDelta) * 100;
+	if (totalDelta === 0) return 0;
+	return ((totalDelta - idleDelta) / totalDelta) * 100;
 }
 
-function collectMemoryUsage(): { usage: number; usedMb: number; totalMb: number } {
-  // Try cgroup v2 first (container's own cgroup — no mount needed)
-  const cgroupMax = readFileNumber('/sys/fs/cgroup/memory.max');
-  const cgroupCurrent = readFileNumber('/sys/fs/cgroup/memory.current');
-  if (cgroupMax && cgroupCurrent) {
-    return {
-      usage: (cgroupCurrent / cgroupMax) * 100,
-      totalMb: Math.round(cgroupMax / 1024 / 1024),
-      usedMb: Math.round(cgroupCurrent / 1024 / 1024),
-    };
-  }
+function collectMemoryUsage(): {
+	usage: number;
+	usedMb: number;
+	totalMb: number;
+} {
+	// Try cgroup v2 first (container's own cgroup — no mount needed)
+	const cgroupMax = readFileNumber("/sys/fs/cgroup/memory.max");
+	const cgroupCurrent = readFileNumber("/sys/fs/cgroup/memory.current");
+	if (cgroupMax && cgroupCurrent) {
+		return {
+			usage: (cgroupCurrent / cgroupMax) * 100,
+			totalMb: Math.round(cgroupMax / 1024 / 1024),
+			usedMb: Math.round(cgroupCurrent / 1024 / 1024),
+		};
+	}
 
-  // cgroup v1 fallback
-  const cgroupV1Limit = readFileNumber('/sys/fs/cgroup/memory/memory.limit_in_bytes');
-  const cgroupV1Usage = readFileNumber('/sys/fs/cgroup/memory/memory.usage_in_bytes');
-  if (cgroupV1Limit && cgroupV1Limit < Number.MAX_SAFE_INTEGER) {
-    return {
-      usage: (cgroupV1Usage! / cgroupV1Limit) * 100,
-      totalMb: Math.round(cgroupV1Limit / 1024 / 1024),
-      usedMb: Math.round(cgroupV1Usage! / 1024 / 1024),
-    };
-  }
+	// cgroup v1 fallback
+	const cgroupV1Limit = readFileNumber(
+		"/sys/fs/cgroup/memory/memory.limit_in_bytes",
+	);
+	const cgroupV1Usage = readFileNumber(
+		"/sys/fs/cgroup/memory/memory.usage_in_bytes",
+	);
+	if (cgroupV1Limit && cgroupV1Limit < Number.MAX_SAFE_INTEGER) {
+		return {
+			usage: (cgroupV1Usage! / cgroupV1Limit) * 100,
+			totalMb: Math.round(cgroupV1Limit / 1024 / 1024),
+			usedMb: Math.round(cgroupV1Usage! / 1024 / 1024),
+		};
+	}
 
-  // Fallback: host /proc/meminfo (requires /host/proc mount via docker)
-  const memTotal = readMeminfoValue('/host/proc/meminfo', 'MemTotal');
-  const memAvailable = readMeminfoValue('/host/proc/meminfo', 'MemAvailable');
-  if (memTotal && memAvailable) {
-    return {
-      usage: ((memTotal - memAvailable) / memTotal) * 100,
-      totalMb: Math.round(memTotal / 1024),
-      usedMb: Math.round((memTotal - memAvailable) / 1024),
-    };
-  }
+	// Fallback: host /proc/meminfo (requires /host/proc mount via docker)
+	const memTotal = readMeminfoValue("/host/proc/meminfo", "MemTotal");
+	const memAvailable = readMeminfoValue("/host/proc/meminfo", "MemAvailable");
+	if (memTotal && memAvailable) {
+		return {
+			usage: ((memTotal - memAvailable) / memTotal) * 100,
+			totalMb: Math.round(memTotal / 1024),
+			usedMb: Math.round((memTotal - memAvailable) / 1024),
+		};
+	}
 
-  // Last resort: os module (returns host values, bypasses cgroups)
-  const total = totalmem();
-  const free = freemem();
-  return {
-    usage: ((total - free) / total) * 100,
-    totalMb: Math.round(total / 1024 / 1024),
-    usedMb: Math.round((total - free) / 1024 / 1024),
-  };
+	// Last resort: os module (returns host values, bypasses cgroups)
+	const total = totalmem();
+	const free = freemem();
+	return {
+		usage: ((total - free) / total) * 100,
+		totalMb: Math.round(total / 1024 / 1024),
+		usedMb: Math.round((total - free) / 1024 / 1024),
+	};
 }
 
 interface GpuInfo {
-  usage: number;
-  name: string;
+	usage: number;
+	name: string;
 }
 
 function collectGpuInfo(): GpuInfo {
-  // Try nvidia-smi first
-  try {
-    const proc = Bun.spawnSync(
-      ['nvidia-smi', '--query-gpu=utilization.gpu,name', '--format=csv,noheader,nounits'],
-      { stdout: 'pipe', stderr: 'pipe' },
-    );
-    if (proc.exitCode === 0 && proc.stdout) {
-      const out = proc.stdout.toString().trim();
-      if (out) {
-        const [usageStr, nameStr] = out.split(',').map((s) => s.trim());
-        return {
-          usage: parseInt(usageStr, 10) || 0,
-          name: nameStr || 'NVIDIA GPU',
-        };
-      }
-    }
-  } catch { /* nvidia-smi not available */ }
+	// Try nvidia-smi first
+	try {
+		const proc = Bun.spawnSync(
+			[
+				"nvidia-smi",
+				"--query-gpu=utilization.gpu,name",
+				"--format=csv,noheader,nounits",
+			],
+			{ stdout: "pipe", stderr: "pipe" },
+		);
+		if (proc.exitCode === 0 && proc.stdout) {
+			const out = proc.stdout.toString().trim();
+			if (out) {
+				const [usageStr, nameStr] = out.split(",").map((s) => s.trim());
+				return {
+					usage: parseInt(usageStr, 10) || 0,
+					name: nameStr || "NVIDIA GPU",
+				};
+			}
+		}
+	} catch {
+		/* nvidia-smi not available */
+	}
 
-  // Fallback: read /sys/bus/pci/devices for VGA controllers (0x030000)
-  try {
-    const pciDevicesPath = '/sys/bus/pci/devices';
-    if (existsSync(pciDevicesPath)) {
-      const devices = readdirSync(pciDevicesPath);
-      for (const dev of devices) {
-        try {
-          const classHex = readFileSafe(`${pciDevicesPath}/${dev}/class`);
-          if (classHex && classHex.startsWith('0x030000')) {
-            const vendor = readFileSafe(`${pciDevicesPath}/${dev}/vendor`) || '';
-            const device = readFileSafe(`${pciDevicesPath}/${dev}/device`) || '';
-            // Try to resolve vendor name from the vendor file
-            let name = 'Unknown GPU';
-            const vendorLower = vendor.toLowerCase();
-            if (vendorLower.includes('0x8086')) name = 'Intel iGPU';
-            else if (vendorLower.includes('0x10de')) name = 'NVIDIA GPU';
-            else if (vendorLower.includes('0x1002')) name = 'AMD GPU';
-            else name = `VGA ${vendor}/${device}`;
-            // Can't get usage from sysfs — return 0 (no real-time GPU monitoring for iGPU)
-            return { usage: 0, name };
-          }
-        } catch { /* ignore individual device read errors */ }
-      }
-    }
-  } catch { /* pci devices not accessible */ }
+	// Fallback: read /sys/bus/pci/devices for VGA controllers (0x030000)
+	try {
+		const pciDevicesPath = "/sys/bus/pci/devices";
+		if (existsSync(pciDevicesPath)) {
+			const devices = readdirSync(pciDevicesPath);
+			for (const dev of devices) {
+				try {
+					const classHex = readFileSafe(`${pciDevicesPath}/${dev}/class`);
+					if (classHex?.startsWith("0x030000")) {
+						const vendor =
+							readFileSafe(`${pciDevicesPath}/${dev}/vendor`) || "";
+						const device =
+							readFileSafe(`${pciDevicesPath}/${dev}/device`) || "";
+						// Try to resolve vendor name from the vendor file
+						let name = "Unknown GPU";
+						const vendorLower = vendor.toLowerCase();
+						if (vendorLower.includes("0x8086")) name = "Intel iGPU";
+						else if (vendorLower.includes("0x10de")) name = "NVIDIA GPU";
+						else if (vendorLower.includes("0x1002")) name = "AMD GPU";
+						else name = `VGA ${vendor}/${device}`;
+						// Can't get usage from sysfs — return 0 (no real-time GPU monitoring for iGPU)
+						return { usage: 0, name };
+					}
+				} catch {
+					/* ignore individual device read errors */
+				}
+			}
+		}
+	} catch {
+		/* pci devices not accessible */
+	}
 
-  return { usage: 0, name: 'No GPU detected' };
+	return { usage: 0, name: "No GPU detected" };
 }
 
 function collectDiskUsage(): number {
-  // Try host-root mount first (docker volume mount of /)
-  try {
-    const proc = Bun.spawnSync(['df', '-h', '/host-root'], { stdout: 'pipe' });
-    if (proc.exitCode === 0 && proc.stdout) {
-      const lines = proc.stdout.toString().trim().split('\n');
-      if (lines.length > 1) {
-        const parts = lines[1].split(/\s+/);
-        return parseInt(parts[4], 10) || 0; // Use% column
-      }
-    }
-  } catch { /* ignore */ }
+	// Try host-root mount first (docker volume mount of /)
+	try {
+		const proc = Bun.spawnSync(["df", "-h", "/host-root"], { stdout: "pipe" });
+		if (proc.exitCode === 0 && proc.stdout) {
+			const lines = proc.stdout.toString().trim().split("\n");
+			if (lines.length > 1) {
+				const parts = lines[1].split(/\s+/);
+				return parseInt(parts[4], 10) || 0; // Use% column
+			}
+		}
+	} catch {
+		/* ignore */
+	}
 
-  // Fallback: container's own /
-  try {
-    const proc = Bun.spawnSync(['df', '-h', '/'], { stdout: 'pipe' });
-    if (proc.exitCode === 0 && proc.stdout) {
-      const lines = proc.stdout.toString().trim().split('\n');
-      if (lines.length > 1) {
-        const parts = lines[1].split(/\s+/);
-        return parseInt(parts[4], 10) || 0;
-      }
-    }
-  } catch { /* ignore */ }
+	// Fallback: container's own /
+	try {
+		const proc = Bun.spawnSync(["df", "-h", "/"], { stdout: "pipe" });
+		if (proc.exitCode === 0 && proc.stdout) {
+			const lines = proc.stdout.toString().trim().split("\n");
+			if (lines.length > 1) {
+				const parts = lines[1].split(/\s+/);
+				return parseInt(parts[4], 10) || 0;
+			}
+		}
+	} catch {
+		/* ignore */
+	}
 
-  return 0;
+	return 0;
 }
 
 function collectCpuModel(): string {
-  // Try host /proc/cpuinfo (requires /host/proc mount)
-  const model = readCpuModel('/host/proc/cpuinfo');
-  if (model) return model;
+	// Try host /proc/cpuinfo (requires /host/proc mount)
+	const model = readCpuModel("/host/proc/cpuinfo");
+	if (model) return model;
 
-  // Fallback: container's own /proc/cpuinfo
-  const containerModel = readCpuModel('/proc/cpuinfo');
-  if (containerModel) return containerModel;
+	// Fallback: container's own /proc/cpuinfo
+	const containerModel = readCpuModel("/proc/cpuinfo");
+	if (containerModel) return containerModel;
 
-  // Last resort: os.cpus()
-  const cpuList = cpus();
-  if (cpuList.length > 0 && cpuList[0].model) return cpuList[0].model;
+	// Last resort: os.cpus()
+	const cpuList = cpus();
+	if (cpuList.length > 0 && cpuList[0].model) return cpuList[0].model;
 
-  return 'Unknown CPU';
+	return "Unknown CPU";
 }
 
 /**
@@ -256,25 +280,25 @@ function collectCpuModel(): string {
  * Sync function — suitable for frequent calls (5s interval).
  */
 export function collectRealMetrics(): MachineMetrics {
-  const cpuUsage = collectCpuUsage();
-  const mem = collectMemoryUsage();
-  const gpu = collectGpuInfo();
-  const [load1] = loadavg();
-  const sysUptime = uptime();
-  const disk = collectDiskUsage();
-  const cpuModel = collectCpuModel();
+	const cpuUsage = collectCpuUsage();
+	const mem = collectMemoryUsage();
+	const gpu = collectGpuInfo();
+	const [load1] = loadavg();
+	const sysUptime = uptime();
+	const disk = collectDiskUsage();
+	const _cpuModel = collectCpuModel();
 
-  return {
-    cpuUsage: Math.round(cpuUsage * 100) / 100,
-    memoryUsage: Math.round(mem.usage * 100) / 100,
-    gpuUsage: gpu.usage,
-    gpuModel: gpu.name,
-    dpuStatus: 'inactive',
-    loadAvg: Math.round(load1 * 100) / 100,
-    uptime: sysUptime,
-    diskUsage: disk,
-    timestamp: Date.now(),
-  };
+	return {
+		cpuUsage: Math.round(cpuUsage * 100) / 100,
+		memoryUsage: Math.round(mem.usage * 100) / 100,
+		gpuUsage: gpu.usage,
+		gpuModel: gpu.name,
+		dpuStatus: "inactive",
+		loadAvg: Math.round(load1 * 100) / 100,
+		uptime: sysUptime,
+		diskUsage: disk,
+		timestamp: Date.now(),
+	};
 }
 
 // ─── Cached Access ───────────────────────────────────────────────
@@ -283,13 +307,13 @@ let _lastMetrics: MachineMetrics | null = null;
 
 /** Async alias — same as collectRealMetrics, for API route compatibility. */
 export async function collectSystemMetrics(): Promise<MachineMetrics> {
-  const metrics = collectRealMetrics();
-  _lastMetrics = metrics;
-  return metrics;
+	const metrics = collectRealMetrics();
+	_lastMetrics = metrics;
+	return metrics;
 }
 
 export function getLastMetrics(): MachineMetrics | null {
-  return _lastMetrics;
+	return _lastMetrics;
 }
 
 /**
@@ -297,15 +321,18 @@ export function getLastMetrics(): MachineMetrics | null {
  * Keeps the same function name so serializeMachine() doesn't break.
  */
 export function getMachineMetrics(_machineId: string): {
-  cpuUsage: number; memoryUsage: number; gpuUsage: number; dpuStatus: string;
+	cpuUsage: number;
+	memoryUsage: number;
+	gpuUsage: number;
+	dpuStatus: string;
 } {
-  const m = _lastMetrics ?? collectRealMetrics();
-  return {
-    cpuUsage: m.cpuUsage,
-    memoryUsage: m.memoryUsage,
-    gpuUsage: m.gpuUsage,
-    dpuStatus: m.dpuStatus,
-  };
+	const m = _lastMetrics ?? collectRealMetrics();
+	return {
+		cpuUsage: m.cpuUsage,
+		memoryUsage: m.memoryUsage,
+		gpuUsage: m.gpuUsage,
+		dpuStatus: m.dpuStatus,
+	};
 }
 
 // ─── Periodic Metrics Collection ─────────────────────────────────
@@ -315,8 +342,8 @@ let _publish: ((channel: string, msg: string) => Promise<void>) | null = null;
 let _running = false;
 
 export interface MetricCollectionOpts {
-  intervalMs?: number;
-  publish?: (channel: string, msg: string) => Promise<void>;
+	intervalMs?: number;
+	publish?: (channel: string, msg: string) => Promise<void>;
 }
 
 /**
@@ -333,45 +360,50 @@ export interface MetricCollectionOpts {
  * shows honest "No activity yet" when no real events have occurred.
  */
 export function startMetricGeneration(opts: MetricCollectionOpts = {}): void {
-  if (_interval) return;
+	if (_interval) return;
 
-  _publish = opts.publish || null;
-  const intervalMs = opts.intervalMs ?? 5000;
+	_publish = opts.publish || null;
+	const intervalMs = opts.intervalMs ?? 5000;
 
-  console.log(`[metrics] Real system metrics collection every ${intervalMs}ms`);
+	console.log(`[metrics] Real system metrics collection every ${intervalMs}ms`);
 
-  // Seed initial metrics on startup
-  collectRealMetrics();
+	// Seed initial metrics on startup
+	collectRealMetrics();
 
-  _interval = setInterval(async () => {
-    if (_running) return;
-    _running = true;
+	_interval = setInterval(async () => {
+		if (_running) return;
+		_running = true;
 
-    try {
-      const metrics = collectRealMetrics();
+		try {
+			const metrics = collectRealMetrics();
 
-      // Broadcast real-time metrics
-      if (_publish) {
-        try {
-          await _publish('bcp:machines:metrics', JSON.stringify({
-            type: 'machine-metrics',
-            payload: metrics,
-          }));
-        } catch { /* Redis unavailable */ }
-      }
-    } catch (err: any) {
-      console.error('[metrics] Collection error:', err.message);
-    } finally {
-      _running = false;
-    }
-  }, intervalMs);
+			// Broadcast real-time metrics
+			if (_publish) {
+				try {
+					await _publish(
+						"bcp:machines:metrics",
+						JSON.stringify({
+							type: "machine-metrics",
+							payload: metrics,
+						}),
+					);
+				} catch {
+					/* Redis unavailable */
+				}
+			}
+		} catch (err: any) {
+			console.error("[metrics] Collection error:", err.message);
+		} finally {
+			_running = false;
+		}
+	}, intervalMs);
 }
 
 export function stopMetricGeneration(): void {
-  if (_interval) {
-    clearInterval(_interval);
-    _interval = null;
-    _publish = null;
-    console.log('[metrics] Collection stopped');
-  }
+	if (_interval) {
+		clearInterval(_interval);
+		_interval = null;
+		_publish = null;
+		console.log("[metrics] Collection stopped");
+	}
 }

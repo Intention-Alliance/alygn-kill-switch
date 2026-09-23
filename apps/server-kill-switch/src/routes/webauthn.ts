@@ -24,27 +24,24 @@
  * Better-Auth session cookie for the credential's owner.
  */
 
-import { auth } from '../lib/auth';
+import { auth } from "../lib/auth";
 import {
-  startRegistration,
-  finishRegistration,
-  startAssertion,
-  finishAssertion,
-  startLoginAssertion,
-  finishLoginAssertion,
-  listActiveCredentialsForUser,
-  hasAnyRegisteredCredential,
-  renameCredential,
-  revokeCredential,
-  WebAuthnError,
-} from '../services/webauthn';
-import { parseBody } from '../utils/body-parser';
+	finishAssertion,
+	finishLoginAssertion,
+	finishRegistration,
+	hasAnyRegisteredCredential,
+	startAssertion,
+	startLoginAssertion,
+	startRegistration,
+	WebAuthnError,
+} from "../services/webauthn";
+import { parseBody } from "../utils/body-parser";
 
 // ─── Helpers ─────────────────────────────────────────────────────────
 
 function json(res: any, statusCode: number, body: Record<string, unknown>) {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(body));
+	res.writeHead(statusCode, { "Content-Type": "application/json" });
+	res.end(JSON.stringify(body));
 }
 
 /**
@@ -52,189 +49,202 @@ function json(res: any, statusCode: number, body: Record<string, unknown>) {
  * Returns null when there is no valid session — the caller decides the
  * status code (401 for ceremony endpoints).
  */
-async function getSessionUser(req: any): Promise<{ id: string; email: string; name: string } | null> {
-  try {
-    const headers = new Headers();
-    if (req.headers?.cookie) {
-      headers.set('cookie', req.headers.cookie);
-    }
-    const data = await auth.api.getSession({ headers }) as { user?: { id?: string; email?: string; name?: string } } | null;
-    if (data?.user?.id) {
-      return {
-        id: data.user.id,
-        email: data.user.email ?? '',
-        name: data.user.name ?? data.user.email ?? '',
-      };
-    }
-  } catch (err: any) {
-    console.error('[webauthn] Session check failed:', err.message);
-  }
-  return null;
+async function getSessionUser(
+	req: any,
+): Promise<{ id: string; email: string; name: string } | null> {
+	try {
+		const headers = new Headers();
+		if (req.headers?.cookie) {
+			headers.set("cookie", req.headers.cookie);
+		}
+		const data = (await auth.api.getSession({ headers })) as {
+			user?: { id?: string; email?: string; name?: string };
+		} | null;
+		if (data?.user?.id) {
+			return {
+				id: data.user.id,
+				email: data.user.email ?? "",
+				name: data.user.name ?? data.user.email ?? "",
+			};
+		}
+	} catch (err: any) {
+		console.error("[webauthn] Session check failed:", err.message);
+	}
+	return null;
 }
 
 // ─── Route handler ──────────────────────────────────────────────────
 
 export async function handleWebAuthnRoutes(
-  method: string,
-  url: string,
-  req: any,
-  res: any,
+	method: string,
+	url: string,
+	req: any,
+	res: any,
 ): Promise<boolean> {
-  if (!url.startsWith('/v1/auth/webauthn/')) return false;
+	if (!url.startsWith("/v1/auth/webauthn/")) return false;
 
-  try {
-    // ─── POST /v1/auth/webauthn/register/begin ───────────────────
-    if (method === 'POST' && url === '/v1/auth/webauthn/register/begin') {
-      const user = await getSessionUser(req);
-      if (!user) {
-        json(res, 401, { error: 'Authentication required' });
-        return true;
-      }
-      const body = await parseBody(req);
-      const result = await startRegistration({
-        userId: user.id,
-        userName: user.email,
-        userDisplayName: user.name,
-      });
-      json(res, 200, {
-        options: result.options,
-        challengeId: result.challengeId,
-      });
-      return true;
-    }
+	try {
+		// ─── POST /v1/auth/webauthn/register/begin ───────────────────
+		if (method === "POST" && url === "/v1/auth/webauthn/register/begin") {
+			const user = await getSessionUser(req);
+			if (!user) {
+				json(res, 401, { error: "Authentication required" });
+				return true;
+			}
+			const _body = await parseBody(req);
+			const result = await startRegistration({
+				userId: user.id,
+				userName: user.email,
+				userDisplayName: user.name,
+			});
+			json(res, 200, {
+				options: result.options,
+				challengeId: result.challengeId,
+			});
+			return true;
+		}
 
-    // ─── POST /v1/auth/webauthn/register/finish ──────────────────
-    if (method === 'POST' && url === '/v1/auth/webauthn/register/finish') {
-      const user = await getSessionUser(req);
-      if (!user) {
-        json(res, 401, { error: 'Authentication required' });
-        return true;
-      }
-      const body = await parseBody(req);
-      if (!body?.challengeId || !body?.response) {
-        json(res, 400, { error: 'Missing required fields: challengeId, response' });
-        return true;
-      }
-      const result = await finishRegistration({
-        userId: user.id,
-        challengeId: body.challengeId,
-        response: body.response,
-        name: body.name,
-      });
-      json(res, 201, { credential: result.credential });
-      return true;
-    }
+		// ─── POST /v1/auth/webauthn/register/finish ──────────────────
+		if (method === "POST" && url === "/v1/auth/webauthn/register/finish") {
+			const user = await getSessionUser(req);
+			if (!user) {
+				json(res, 401, { error: "Authentication required" });
+				return true;
+			}
+			const body = await parseBody(req);
+			if (!body?.challengeId || !body?.response) {
+				json(res, 400, {
+					error: "Missing required fields: challengeId, response",
+				});
+				return true;
+			}
+			const result = await finishRegistration({
+				userId: user.id,
+				challengeId: body.challengeId,
+				response: body.response,
+				name: body.name,
+			});
+			json(res, 201, { credential: result.credential });
+			return true;
+		}
 
-    // ─── POST /v1/auth/webauthn/login/begin ──────────────────────
-    // Sign-in with a security key (second factor / sole factor). Does NOT
-    // require a session cookie — the user is not yet authenticated. An
-    // optional `username` scopes the assertion to that user's keys.
-    if (method === 'POST' && url === '/v1/auth/webauthn/login/begin') {
-      const body = await parseBody(req);
-      const username =
-        typeof body?.username === 'string' && body.username.trim()
-          ? body.username.trim()
-          : undefined;
-      // Discoverable sign-in (no username): if no user has registered a
-      // key, the ceremony cannot succeed — return 404 so the client hides
-      // the "Sign in with security key" button.
-      if (!username && !(await hasAnyRegisteredCredential())) {
-        json(res, 404, { error: 'No registered security keys', code: 'NO_CREDENTIALS' });
-        return true;
-      }
-      const result = await startLoginAssertion({ username });
-      json(res, 200, {
-        options: result.options,
-        challengeId: result.challengeId,
-      });
-      return true;
-    }
+		// ─── POST /v1/auth/webauthn/login/begin ──────────────────────
+		// Sign-in with a security key (second factor / sole factor). Does NOT
+		// require a session cookie — the user is not yet authenticated. An
+		// optional `username` scopes the assertion to that user's keys.
+		if (method === "POST" && url === "/v1/auth/webauthn/login/begin") {
+			const body = await parseBody(req);
+			const username =
+				typeof body?.username === "string" && body.username.trim()
+					? body.username.trim()
+					: undefined;
+			// Discoverable sign-in (no username): if no user has registered a
+			// key, the ceremony cannot succeed — return 404 so the client hides
+			// the "Sign in with security key" button.
+			if (!username && !(await hasAnyRegisteredCredential())) {
+				json(res, 404, {
+					error: "No registered security keys",
+					code: "NO_CREDENTIALS",
+				});
+				return true;
+			}
+			const result = await startLoginAssertion({ username });
+			json(res, 200, {
+				options: result.options,
+				challengeId: result.challengeId,
+			});
+			return true;
+		}
 
-    // ─── POST /v1/auth/webauthn/login/finish ─────────────────────
-    // Completes the login assertion and mints a Better-Auth session
-    // cookie. Does NOT require a session cookie.
-    if (method === 'POST' && url === '/v1/auth/webauthn/login/finish') {
-      const body = await parseBody(req);
-      if (!body?.challengeId || !body?.response) {
-        json(res, 400, { error: 'Missing required fields: challengeId, response' });
-        return true;
-      }
-      const result = await finishLoginAssertion({
-        challengeId: body.challengeId,
-        response: body.response,
-      });
-      // Set the Better-Auth session cookie (httpOnly, sameSite=lax, Secure, path=/).
-      // Secure is mandatory: the demo runs over HTTPS in production.
-      res.setHeader('Set-Cookie', [
-        `better-auth.session_token=${result.sessionCookie}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600`,
-      ]);
-      json(res, 200, {
-        verified: result.verified,
-        userId: result.userId,
-        email: result.email,
-        name: result.name,
-        credentialId: result.credentialId,
-      });
-      return true;
-    }
+		// ─── POST /v1/auth/webauthn/login/finish ─────────────────────
+		// Completes the login assertion and mints a Better-Auth session
+		// cookie. Does NOT require a session cookie.
+		if (method === "POST" && url === "/v1/auth/webauthn/login/finish") {
+			const body = await parseBody(req);
+			if (!body?.challengeId || !body?.response) {
+				json(res, 400, {
+					error: "Missing required fields: challengeId, response",
+				});
+				return true;
+			}
+			const result = await finishLoginAssertion({
+				challengeId: body.challengeId,
+				response: body.response,
+			});
+			// Set the Better-Auth session cookie (httpOnly, sameSite=lax, Secure, path=/).
+			// Secure is mandatory: the demo runs over HTTPS in production.
+			res.setHeader("Set-Cookie", [
+				`better-auth.session_token=${result.sessionCookie}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=3600`,
+			]);
+			json(res, 200, {
+				verified: result.verified,
+				userId: result.userId,
+				email: result.email,
+				name: result.name,
+				credentialId: result.credentialId,
+			});
+			return true;
+		}
 
-    // ─── POST /v1/auth/webauthn/assert/begin ─────────────────────
-    if (method === 'POST' && url === '/v1/auth/webauthn/assert/begin') {
-      const user = await getSessionUser(req);
-      if (!user) {
-        json(res, 401, { error: 'Authentication required' });
-        return true;
-      }
-      const body = await parseBody(req);
-      if (!body?.action || typeof body.action !== 'string') {
-        json(res, 400, { error: 'Missing required field: action' });
-        return true;
-      }
-      const result = await startAssertion({
-        userId: user.id,
-        action: body.action,
-      });
-      json(res, 200, {
-        options: result.options,
-        challengeId: result.challengeId,
-      });
-      return true;
-    }
+		// ─── POST /v1/auth/webauthn/assert/begin ─────────────────────
+		if (method === "POST" && url === "/v1/auth/webauthn/assert/begin") {
+			const user = await getSessionUser(req);
+			if (!user) {
+				json(res, 401, { error: "Authentication required" });
+				return true;
+			}
+			const body = await parseBody(req);
+			if (!body?.action || typeof body.action !== "string") {
+				json(res, 400, { error: "Missing required field: action" });
+				return true;
+			}
+			const result = await startAssertion({
+				userId: user.id,
+				action: body.action,
+			});
+			json(res, 200, {
+				options: result.options,
+				challengeId: result.challengeId,
+			});
+			return true;
+		}
 
-    // ─── POST /v1/auth/webauthn/assert/finish ────────────────────
-    if (method === 'POST' && url === '/v1/auth/webauthn/assert/finish') {
-      const user = await getSessionUser(req);
-      if (!user) {
-        json(res, 401, { error: 'Authentication required' });
-        return true;
-      }
-      const body = await parseBody(req);
-      if (!body?.challengeId || !body?.response) {
-        json(res, 400, { error: 'Missing required fields: challengeId, response' });
-        return true;
-      }
-      const result = await finishAssertion({
-        challengeId: body.challengeId,
-        response: body.response,
-      });
-      json(res, 200, {
-        verified: result.verified,
-        assertionToken: result.assertionToken.token,
-        expiresAt: new Date(result.assertionToken.payload.exp).toISOString(),
-        userId: result.userId,
-        credentialId: result.credentialId,
-      });
-      return true;
-    }
+		// ─── POST /v1/auth/webauthn/assert/finish ────────────────────
+		if (method === "POST" && url === "/v1/auth/webauthn/assert/finish") {
+			const user = await getSessionUser(req);
+			if (!user) {
+				json(res, 401, { error: "Authentication required" });
+				return true;
+			}
+			const body = await parseBody(req);
+			if (!body?.challengeId || !body?.response) {
+				json(res, 400, {
+					error: "Missing required fields: challengeId, response",
+				});
+				return true;
+			}
+			const result = await finishAssertion({
+				challengeId: body.challengeId,
+				response: body.response,
+			});
+			json(res, 200, {
+				verified: result.verified,
+				assertionToken: result.assertionToken.token,
+				expiresAt: new Date(result.assertionToken.payload.exp).toISOString(),
+				userId: result.userId,
+				credentialId: result.credentialId,
+			});
+			return true;
+		}
 
-    return false;
-  } catch (err: any) {
-    if (err instanceof WebAuthnError) {
-      json(res, 400, { error: err.message, code: err.code });
-      return true;
-    }
-    console.error('[webauthn] Error:', err.message);
-    json(res, 500, { error: 'Internal server error' });
-    return true;
-  }
+		return false;
+	} catch (err: any) {
+		if (err instanceof WebAuthnError) {
+			json(res, 400, { error: err.message, code: err.code });
+			return true;
+		}
+		console.error("[webauthn] Error:", err.message);
+		json(res, 500, { error: "Internal server error" });
+		return true;
+	}
 }

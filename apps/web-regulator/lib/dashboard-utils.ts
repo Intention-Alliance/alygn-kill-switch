@@ -6,8 +6,9 @@ import type {
 } from "@/types/shared";
 
 // ─── Compatible Cluster Shape ─────────────────────────────────
-// Structural subset of Cluster from @/types/db.types
-// that ClusterTable actually reads.
+// The dashboard's own cluster type. The verifier is a pure API consumer
+// (it reads machines from the kill-switch API and adapts them), so this is
+// the display shape the table renders — not a database row type.
 
 export interface DashboardCluster {
   id: string;

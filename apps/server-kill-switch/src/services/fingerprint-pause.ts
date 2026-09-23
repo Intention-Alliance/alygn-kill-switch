@@ -50,25 +50,25 @@
  * requires cross-instance sharing.
  */
 
-import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
+import type { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 // Import Drizzle operators from the `drizzle-orm/sql` sub-path rather
 // than the top-level barrel. Some test files mock `drizzle-orm` to
 // strip/override individual operators, but the sub-path is unaffected
 // by those top-level mocks. This keeps the escalation query working
 // even when the test runner has loaded other test files that mock
 // `drizzle-orm` with partial exports.
-import { and, eq, gt, isNotNull } from 'drizzle-orm/sql'
-import { db } from '../db'
-import { verificationEvents } from '../db/schema'
+import { and, eq, gt, isNotNull } from "drizzle-orm/sql";
+import { db } from "../db";
+import { verificationEvents } from "../db/schema";
 import {
 	blockFingerprint as blockFingerprintImpl,
 	selfHealOnSafe as selfHealOnSafeImpl,
-} from './fingerprint-blocklist'
+} from "./fingerprint-blocklist";
 import {
 	isTrafficPaused,
 	pauseInferenceTraffic,
 	resumeInferenceTraffic,
-} from './traffic-pause'
+} from "./traffic-pause";
 
 // Re-export the pure-logic helpers so existing callers that import
 // from `../fingerprint-pause` keep working without change.
@@ -85,7 +85,7 @@ export {
 	selfHealOnSafe,
 	sweepExpiredBlocks,
 	unblockFingerprint,
-} from './fingerprint-blocklist'
+} from "./fingerprint-blocklist";
 
 // ─── Constants ────────────────────────────────────────────────────
 
@@ -95,7 +95,7 @@ export {
  * milliseconds. If every active fingerprint in that window shows UNSAFE,
  * the kill-switch transitions to global pause.
  */
-export const ESCALATION_WINDOW_MS = 60 * 1000
+export const ESCALATION_WINDOW_MS = 60 * 1000;
 
 // ─── Types ────────────────────────────────────────────────────────
 
@@ -106,20 +106,20 @@ export const ESCALATION_WINDOW_MS = 60 * 1000
  */
 export interface EscalationCounts {
 	/** Distinct fingerprints with ANY verdict in the window. */
-	totalActive: number
+	totalActive: number;
 	/** Distinct fingerprints with at least one UNSAFE verdict in the window. */
-	unsafeActive: number
+	unsafeActive: number;
 }
 
 export interface EscalationCheckResult {
 	/** True when escalation fired this call. */
-	escalated: boolean
+	escalated: boolean;
 	/** Number of distinct active fingerprints in the window. */
-	activeFingerprints: number
+	activeFingerprints: number;
 	/** Number of distinct UNSAFE fingerprints in the window. */
-	unsafeFingerprints: number
+	unsafeFingerprints: number;
 	/** Whether the kill-switch was already in a paused state at check time. */
-	alreadyPaused: boolean
+	alreadyPaused: boolean;
 }
 
 // ─── Pure query helper (extracted for testability) ───────────────
@@ -151,7 +151,7 @@ export async function queryEscalationCounts(
 	database: BunSQLiteDatabase<any>,
 	windowMs: number,
 ): Promise<EscalationCounts> {
-	const windowStart = new Date(Date.now() - windowMs)
+	const windowStart = new Date(Date.now() - windowMs);
 	try {
 		// Total distinct active fingerprints (any verdict) in the window.
 		const totalRows = await database
@@ -162,35 +162,35 @@ export async function queryEscalationCounts(
 					isNotNull(verificationEvents.machineId),
 					gt(verificationEvents.createdAt, windowStart),
 				),
-			)
+			);
 		// Distinct UNSAFE fingerprints in the window.
 		const unsafeRows = await database
 			.selectDistinct({ machineId: verificationEvents.machineId })
 			.from(verificationEvents)
 			.where(
 				and(
-					eq(verificationEvents.verdict, 'UNSAFE'),
+					eq(verificationEvents.verdict, "UNSAFE"),
 					isNotNull(verificationEvents.machineId),
 					gt(verificationEvents.createdAt, windowStart),
 				),
-			)
+			);
 		const totalActive = new Set(
 			totalRows
 				.map((r: { machineId: string | null }) => r.machineId)
 				.filter((m: string | null): m is string => Boolean(m)),
-		).size
+		).size;
 		const unsafeActive = new Set(
 			unsafeRows
 				.map((r: { machineId: string | null }) => r.machineId)
 				.filter((m: string | null): m is string => Boolean(m)),
-		).size
-		return { totalActive, unsafeActive }
+		).size;
+		return { totalActive, unsafeActive };
 	} catch (err) {
 		console.warn(
-			'[fingerprint-pause] escalation query failed (non-fatal):',
+			"[fingerprint-pause] escalation query failed (non-fatal):",
 			err,
-		)
-		return { totalActive: 0, unsafeActive: 0 }
+		);
+		return { totalActive: 0, unsafeActive: 0 };
 	}
 }
 
@@ -224,8 +224,8 @@ export async function shouldEscalateToGlobal(
 	const { totalActive, unsafeActive } = await queryEscalationCounts(
 		database,
 		windowMs,
-	)
-	const alreadyPaused = isTrafficPaused()
+	);
+	const alreadyPaused = isTrafficPaused();
 
 	// Escalation rule: every active fingerprint in the window showed
 	// UNSAFE, AND we have at least one active fingerprint, AND the
@@ -233,13 +233,13 @@ export async function shouldEscalateToGlobal(
 	// contract: SAFE fingerprints (or any fingerprint with no UNSAFE)
 	// must keep flowing, even when other fingerprints are UNSAFE.
 	if (totalActive > 0 && unsafeActive === totalActive && !alreadyPaused) {
-		await pauseInferenceTraffic()
+		await pauseInferenceTraffic();
 		return {
 			escalated: true,
 			activeFingerprints: totalActive,
 			unsafeFingerprints: unsafeActive,
 			alreadyPaused: false,
-		}
+		};
 	}
 
 	return {
@@ -247,7 +247,7 @@ export async function shouldEscalateToGlobal(
 		activeFingerprints: totalActive,
 		unsafeFingerprints: unsafeActive,
 		alreadyPaused,
-	}
+	};
 }
 
 /**
@@ -260,9 +260,9 @@ export async function shouldEscalateToGlobal(
  * human kills need to stay sticky.
  */
 export async function maybeResumeFromGlobal(): Promise<boolean> {
-	if (!isTrafficPaused()) return false
-	await resumeInferenceTraffic()
-	return true
+	if (!isTrafficPaused()) return false;
+	await resumeInferenceTraffic();
+	return true;
 }
 
 // ─── Module-side helpers (re-exported via fingerprint-blocklist.ts) ─
@@ -276,12 +276,12 @@ export async function maybeResumeFromGlobal(): Promise<boolean> {
  * Block a fingerprint via the blocklist helper. Pure passthrough.
  */
 export function blockFingerprintScoped(fingerprint: string, reason: string) {
-	return blockFingerprintImpl(fingerprint, reason)
+	return blockFingerprintImpl(fingerprint, reason);
 }
 
 /**
  * Self-heal via the blocklist helper. Pure passthrough.
  */
 export function selfHealOnSafeScoped(fingerprint: string, verdict: string) {
-	return selfHealOnSafeImpl(fingerprint, verdict)
+	return selfHealOnSafeImpl(fingerprint, verdict);
 }

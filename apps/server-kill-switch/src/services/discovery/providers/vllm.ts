@@ -13,72 +13,72 @@ import type {
 	ModelInfo,
 	ProviderHealth,
 	ProviderInfo,
-} from '@align/shared-types'
-import { boundedFetch, parseArrayField } from '../http'
+} from "@align/shared-types";
+import { boundedFetch, parseArrayField } from "../http";
 
-const DEFAULT_BASE_URL = 'http://127.0.0.1:8000'
+const DEFAULT_BASE_URL = "http://127.0.0.1:8000";
 
 interface VllmAdapterParams {
-	baseUrl?: string
+	baseUrl?: string;
 }
 
 interface VllmModelEntry {
-	id?: string
-	object?: string
-	created?: number
-	owned_by?: string
+	id?: string;
+	object?: string;
+	created?: number;
+	owned_by?: string;
 }
 
 function normalizeModelEntry(entry: VllmModelEntry): ModelInfo | null {
-	const id = entry.id
-	if (!id) return null
+	const id = entry.id;
+	if (!id) return null;
 	return {
 		id,
 		name: id,
-		providerId: 'vllm',
+		providerId: "vllm",
 		sizeBytes: null, // /v1/models does not expose sizes
 		quantization: null,
 		family: entry.owned_by ?? null,
 		served: true,
-	}
+	};
 }
 
 export class VllmDiscoveryProvider implements DiscoveryProvider {
-	readonly id = 'vllm' as const
-	private readonly baseUrl: string
+	readonly id = "vllm" as const;
+	private readonly baseUrl: string;
 
 	constructor({ baseUrl = DEFAULT_BASE_URL }: VllmAdapterParams = {}) {
-		this.baseUrl = baseUrl.replace(/\/$/, '')
+		this.baseUrl = baseUrl.replace(/\/$/, "");
 	}
 
 	async detect(): Promise<ProviderInfo | null> {
-		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` })
-		if (!result.ok) return null
+		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` });
+		if (!result.ok) return null;
 		return {
 			id: this.id,
-			name: 'vLLM',
+			name: "vLLM",
 			version: null,
 			baseUrl: this.baseUrl,
 			detectedAt: new Date().toISOString(),
-		}
+		};
 	}
 
 	async listModels(): Promise<ModelInfo[]> {
-		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` })
-		if (!result.ok) return []
-		const entries = parseArrayField(result.body, 'data')
+		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` });
+		if (!result.ok) return [];
+		const entries = parseArrayField(result.body, "data");
 		return entries
 			.map((entry) => normalizeModelEntry(entry as VllmModelEntry))
-			.filter((model): model is ModelInfo => model !== null)
+			.filter((model): model is ModelInfo => model !== null);
 	}
 
 	async health(): Promise<ProviderHealth> {
-		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` })
+		const result = await boundedFetch({ url: `${this.baseUrl}/v1/models` });
 		return {
 			healthy: result.ok,
 			latencyMs: result.latencyMs,
 			error: result.ok ? null : `vllm probe failed (status ${result.status})`,
 			checkedAt: new Date().toISOString(),
-		}
+		};
 	}
 }

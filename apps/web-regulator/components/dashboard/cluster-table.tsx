@@ -9,14 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Cluster } from "@/types/db.types";
+import type { DashboardCluster } from "@/lib/dashboard-utils";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface ClusterTableProps {
-  clusters: Cluster[];
+  clusters: DashboardCluster[];
   isLoading?: boolean;
-  onSelectMachine?: (machine: Cluster) => void;
+  onSelectMachine?: (machine: DashboardCluster) => void;
   selectedId?: string;
 }
 

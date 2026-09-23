@@ -11,136 +11,141 @@
  *  - tx_packets: total packets transmitted
  */
 
-import { readFileSync, existsSync } from 'node:fs';
-import { networkInterfaces } from 'node:os';
-import type { HardwareMonitor } from './interface';
-import type { HardwareMetric } from '../types';
+import { existsSync, readFileSync } from "node:fs";
+import { networkInterfaces } from "node:os";
+import type { HardwareMetric } from "../types";
+import type { HardwareMonitor } from "./interface";
 
 /** Path to Linux network device statistics */
-const NET_DEV_PATH = '/proc/net/dev';
+const NET_DEV_PATH = "/proc/net/dev";
 
 /** Interfaces to skip (loopback and virtual) */
-const SKIP_INTERFACES = new Set(['lo']);
+const SKIP_INTERFACES = new Set(["lo"]);
 
 /**
  * Network Monitor — collects per-interface network throughput stats.
  */
 export class NetworkMonitor implements HardwareMonitor {
-  public readonly name = 'network';
+	public readonly name = "network";
 
-  public async collect(): Promise<HardwareMetric[]> {
-    const metrics: HardwareMetric[] = [];
+	public async collect(): Promise<HardwareMetric[]> {
+		const metrics: HardwareMetric[] = [];
 
-    // ─── Interface Listing (os.networkInterfaces) ─────────────────
-    const interfaces = networkInterfaces();
-    for (const [interfaceName, addresses] of Object.entries(interfaces)) {
-      if (!addresses || SKIP_INTERFACES.has(interfaceName)) {
-        continue;
-      }
+		// ─── Interface Listing (os.networkInterfaces) ─────────────────
+		const interfaces = networkInterfaces();
+		for (const [interfaceName, addresses] of Object.entries(interfaces)) {
+			if (!addresses || SKIP_INTERFACES.has(interfaceName)) {
+				continue;
+			}
 
-      // Count active addresses per interface
-      const activeAddressCount = addresses.filter(
-        (addr) => !addr.internal,
-      ).length;
+			// Count active addresses per interface
+			const activeAddressCount = addresses.filter(
+				(addr) => !addr.internal,
+			).length;
 
-      metrics.push({
-        monitorName: this.name,
-        metricName: 'active_addresses',
-        metricValue: activeAddressCount,
-        unit: 'count',
-        labels: { interface: interfaceName },
-      });
-    }
+			metrics.push({
+				monitorName: this.name,
+				metricName: "active_addresses",
+				metricValue: activeAddressCount,
+				unit: "count",
+				labels: { interface: interfaceName },
+			});
+		}
 
-    // ─── Throughput Stats (Linux /proc/net/dev) ──────────────────
-    const throughputMetrics = this.readNetworkThroughput();
-    metrics.push(...throughputMetrics);
+		// ─── Throughput Stats (Linux /proc/net/dev) ──────────────────
+		const throughputMetrics = this.readNetworkThroughput();
+		metrics.push(...throughputMetrics);
 
-    return metrics;
-  }
+		return metrics;
+	}
 
-  /**
-   * Read RX/TX bytes and packet counts from /proc/net/dev.
-   */
-  private readNetworkThroughput(): HardwareMetric[] {
-    if (!existsSync(NET_DEV_PATH)) {
-      return [];
-    }
+	/**
+	 * Read RX/TX bytes and packet counts from /proc/net/dev.
+	 */
+	private readNetworkThroughput(): HardwareMetric[] {
+		if (!existsSync(NET_DEV_PATH)) {
+			return [];
+		}
 
-    const metrics: HardwareMetric[] = [];
+		const metrics: HardwareMetric[] = [];
 
-    try {
-      const content = readFileSync(NET_DEV_PATH, 'utf-8');
-      const lines = content.split('\n');
+		try {
+			const content = readFileSync(NET_DEV_PATH, "utf-8");
+			const lines = content.split("\n");
 
-      // Skip the first two header lines
-      for (let lineIndex = 2; lineIndex < lines.length; lineIndex++) {
-        const line = lines[lineIndex].trim();
-        if (!line) continue;
+			// Skip the first two header lines
+			for (let lineIndex = 2; lineIndex < lines.length; lineIndex++) {
+				const line = lines[lineIndex].trim();
+				if (!line) continue;
 
-        // Format: iface: rx_bytes rx_packets ... tx_bytes tx_packets ...
-        const colonIndex = line.indexOf(':');
-        if (colonIndex === -1) continue;
+				// Format: iface: rx_bytes rx_packets ... tx_bytes tx_packets ...
+				const colonIndex = line.indexOf(":");
+				if (colonIndex === -1) continue;
 
-        const interfaceName = line.substring(0, colonIndex).trim();
-        if (SKIP_INTERFACES.has(interfaceName)) continue;
+				const interfaceName = line.substring(0, colonIndex).trim();
+				if (SKIP_INTERFACES.has(interfaceName)) continue;
 
-        const statsPart = line.substring(colonIndex + 1).trim();
-        const stats = statsPart.split(/\s+/);
+				const statsPart = line.substring(colonIndex + 1).trim();
+				const stats = statsPart.split(/\s+/);
 
-        if (stats.length < 10) continue;
+				if (stats.length < 10) continue;
 
-        const rxBytes = parseInt(stats[0], 10);
-        const rxPackets = parseInt(stats[1], 10);
-        const txBytes = parseInt(stats[8], 10);
-        const txPackets = parseInt(stats[9], 10);
+				const rxBytes = parseInt(stats[0], 10);
+				const rxPackets = parseInt(stats[1], 10);
+				const txBytes = parseInt(stats[8], 10);
+				const txPackets = parseInt(stats[9], 10);
 
-        const interfaceLabel: Record<string, string> = { interface: interfaceName };
+				const interfaceLabel: Record<string, string> = {
+					interface: interfaceName,
+				};
 
-        if (!isNaN(rxBytes)) {
-          metrics.push({
-            monitorName: this.name,
-            metricName: 'rx_bytes',
-            metricValue: rxBytes,
-            unit: 'bytes',
-            labels: interfaceLabel,
-          });
-        }
+				if (!Number.isNaN(rxBytes)) {
+					metrics.push({
+						monitorName: this.name,
+						metricName: "rx_bytes",
+						metricValue: rxBytes,
+						unit: "bytes",
+						labels: interfaceLabel,
+					});
+				}
 
-        if (!isNaN(txBytes)) {
-          metrics.push({
-            monitorName: this.name,
-            metricName: 'tx_bytes',
-            metricValue: txBytes,
-            unit: 'bytes',
-            labels: interfaceLabel,
-          });
-        }
+				if (!Number.isNaN(txBytes)) {
+					metrics.push({
+						monitorName: this.name,
+						metricName: "tx_bytes",
+						metricValue: txBytes,
+						unit: "bytes",
+						labels: interfaceLabel,
+					});
+				}
 
-        if (!isNaN(rxPackets)) {
-          metrics.push({
-            monitorName: this.name,
-            metricName: 'rx_packets',
-            metricValue: rxPackets,
-            unit: 'count',
-            labels: interfaceLabel,
-          });
-        }
+				if (!Number.isNaN(rxPackets)) {
+					metrics.push({
+						monitorName: this.name,
+						metricName: "rx_packets",
+						metricValue: rxPackets,
+						unit: "count",
+						labels: interfaceLabel,
+					});
+				}
 
-        if (!isNaN(txPackets)) {
-          metrics.push({
-            monitorName: this.name,
-            metricName: 'tx_packets',
-            metricValue: txPackets,
-            unit: 'count',
-            labels: interfaceLabel,
-          });
-        }
-      }
-    } catch (error: unknown) {
-      console.warn('[network-monitor] Failed to read /proc/net/dev:', (error as Error).message);
-    }
+				if (!Number.isNaN(txPackets)) {
+					metrics.push({
+						monitorName: this.name,
+						metricName: "tx_packets",
+						metricValue: txPackets,
+						unit: "count",
+						labels: interfaceLabel,
+					});
+				}
+			}
+		} catch (error: unknown) {
+			console.warn(
+				"[network-monitor] Failed to read /proc/net/dev:",
+				(error as Error).message,
+			);
+		}
 
-    return metrics;
-  }
+		return metrics;
+	}
 }

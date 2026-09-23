@@ -150,7 +150,7 @@ export default function FlagsDashboardPage() {
     // F5: the Value switch toggles the flag VALUE (booleans only), not the
     // enabled state. Non-boolean flags render a plain value readout instead
     // of a switch, so this handler only ever sees boolean values.
-    const nextValue = !Boolean(flag.value);
+    const nextValue = !flag.value;
     try {
       await apiPut(`/api/flags/${flag.id}`, {
         value: nextValue,
