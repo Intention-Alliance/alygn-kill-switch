@@ -19,6 +19,12 @@ function json(res: any, statusCode: number, body: Record<string, unknown>) {
   res.end(JSON.stringify(body));
 }
 
+/** Injectable dependencies — lets tests avoid process-wide mock.module. */
+export interface InferenceLogsDeps {
+  insertLog?: (entry: Record<string, unknown>) => Promise<void>;
+  listLogs?: (opts: { limit: number; offset: number; machineId: string | null }) => Promise<any[]>;
+}
+
 export async function handleInferenceLogsRoutes(
   method: string,
   url: string,
@@ -26,6 +32,7 @@ export async function handleInferenceLogsRoutes(
   res: any,
   uid: string | null,
   userRole: string | null,
+  deps?: InferenceLogsDeps,
 ): Promise<boolean> {
   if (!url.startsWith('/v1/inference-logs')) return false;
 
@@ -46,10 +53,15 @@ export async function handleInferenceLogsRoutes(
       const offset = Math.max(parseInt(urlObj.searchParams.get('offset') ?? '0', 10) || 0, 0);
       const machineId = urlObj.searchParams.get('machineId');
 
-      const base = db.select().from(inferenceLogs);
-      const rows = machineId
-        ? await base.where(eq(inferenceLogs.machineId, machineId)).orderBy(desc(inferenceLogs.timestamp)).limit(limit).offset(offset).all()
-        : await base.orderBy(desc(inferenceLogs.timestamp)).limit(limit).offset(offset).all();
+      let rows: any[];
+      if (deps?.listLogs) {
+        rows = await deps.listLogs({ limit, offset, machineId });
+      } else {
+        const base = db.select().from(inferenceLogs);
+        rows = machineId
+          ? await base.where(eq(inferenceLogs.machineId, machineId)).orderBy(desc(inferenceLogs.timestamp)).limit(limit).offset(offset).all()
+          : await base.orderBy(desc(inferenceLogs.timestamp)).limit(limit).offset(offset).all();
+      }
 
       const logs = rows.map((r) => ({
         id: r.id,
@@ -64,6 +76,8 @@ export async function handleInferenceLogsRoutes(
         scored: !!r.scored,
         promptPreview: r.promptPreview,
         model: r.model,
+        provider: r.provider ?? null,
+        degraded: !!r.degraded,
       }));
 
       json(res, 200, { logs, total: logs.length, limit, offset });
@@ -99,9 +113,15 @@ export async function handleInferenceLogsRoutes(
         scored: body.scored !== false,
         promptPreview: typeof body.promptPreview === 'string' ? body.promptPreview.slice(0, 200) : null,
         model: typeof body.model === 'string' ? body.model : null,
+        // S6: which provider produced the decision (whitelisted — unlisted
+        // fields are silently dropped, so these must be read explicitly).
+        provider: typeof body.provider === 'string' ? body.provider.slice(0, 64) : null,
+        degraded: body.degraded === true,
       };
 
-      await db.insert(inferenceLogs).values(entry).run();
+      await (deps?.insertLog
+        ? deps.insertLog(entry)
+        : db.insert(inferenceLogs).values(entry).run());
       res.writeHead(201, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, id: entry.id }));
       return true;

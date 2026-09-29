@@ -728,11 +728,25 @@ export function initDatabase(dbPath: string = DB_PATH) {
       alert INTEGER NOT NULL DEFAULT 0,
       scored INTEGER NOT NULL DEFAULT 1,
       prompt_preview TEXT,
-      model TEXT
+      model TEXT,
+      provider TEXT,
+      degraded INTEGER NOT NULL DEFAULT 0
     )
   `);
   sqlite.run(`CREATE INDEX IF NOT EXISTS inference_log_time_idx ON inference_log(timestamp)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS inference_log_machine_idx ON inference_log(machine_id)`);
+
+  // S6: additive columns for existing databases (idempotent ALTER pattern).
+  for (const ddl of [
+    `ALTER TABLE inference_log ADD COLUMN provider TEXT`,
+    `ALTER TABLE inference_log ADD COLUMN degraded INTEGER NOT NULL DEFAULT 0`,
+  ]) {
+    try {
+      sqlite.run(ddl);
+    } catch {
+      // Column already exists — expected on every boot after the first.
+    }
+  }
 
   const db = drizzle(sqlite, { schema });
 

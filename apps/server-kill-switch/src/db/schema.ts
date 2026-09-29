@@ -661,12 +661,16 @@ export const inferenceLogs = sqliteTable(
     method: text('method').notNull(),
     path: text('path').notNull(),
     score: real('score').notNull().default(0),
-    action: text('action').notNull(),            // forward | block | escalate
+    action: text('action').notNull(),            // forward | block | escalate | review
     reasons: text('reasons'),                    // JSON array string
     alert: integer('alert', { mode: 'boolean' }).notNull().default(false),
     scored: integer('scored', { mode: 'boolean' }).notNull().default(true),
     promptPreview: text('prompt_preview'),
     model: text('model'),
+    // S6: which DecisionProvider produced this decision (keyword|ollama|jev|...)
+    provider: text('provider'),
+    // S6: true when the provider was unavailable / timed out / unparseable
+    degraded: integer('degraded', { mode: 'boolean' }).notNull().default(false),
   },
   (table) => ({
     timeIdx: index('inference_log_time_idx').on(table.timestamp),

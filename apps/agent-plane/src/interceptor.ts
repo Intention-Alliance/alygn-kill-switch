@@ -25,6 +25,13 @@
  * defaults are used — backward compatible.
  */
 
+import type { DecisionFlagReader } from '@align/shared-types';
+import {
+  decideWithProvider,
+  resolveProviderName,
+  type ProviderRegistry,
+} from '@align/decision-core';
+
 export interface InterceptedRequest {
   method: string
   path: string
@@ -32,15 +39,20 @@ export interface InterceptedRequest {
   headers: Record<string, string>
   timestamp: string
 }
-
 export interface ScoringResult {
   score: number
-  action: 'forward' | 'block' | 'escalate'
+  action: 'forward' | 'block' | 'escalate' | 'review'
   reasons: string[]
   /** True when the request was actually scored (not sampled out / disabled). */
   scored?: boolean
   /** True when score ≥ threshold and alert_on_critical_score is enabled. */
   alert?: boolean
+  /** Provider that produced the decision (S3). */
+  provider?: string
+  /** True when the provider was unavailable / timed out / unparseable (S3). */
+  degraded?: boolean
+  /** Calibrated confidence 0..1 when the provider supplies one (S3). */
+  confidence?: number
 }
 
 /** Reads runtime flag values (see flags.ts FlagClient). */
@@ -54,6 +66,8 @@ export class OllamaInterceptor {
   private readonly scoreThreshold: number
   private readonly isPaused: () => boolean
   private readonly flags?: FlagProvider
+  private readonly machineId: string
+  private readonly registry?: ProviderRegistry
 
   constructor(config: {
     ollamaUrl?: string
@@ -61,16 +75,22 @@ export class OllamaInterceptor {
     scoreThreshold?: number
     isPaused?: () => boolean
     flags?: FlagProvider
+    /** Machine id for DecisionInput attribution (S3). */
+    machineId?: string
+    /** Provider registry (S3). When absent, keyword-only behavior is used. */
+    registry?: ProviderRegistry
   }) {
     this.ollamaUrl = (config.ollamaUrl ?? 'http://localhost:11434').replace(/\/$/, '')
     this.listenPort = config.listenPort ?? 11436
     this.scoreThreshold = config.scoreThreshold ?? 0.7
     this.isPaused = config.isPaused ?? (() => false)
     this.flags = config.flags
+    this.machineId = config.machineId ?? 'unknown'
+    this.registry = config.registry
   }
 
   async start(onRequest?: (req: InterceptedRequest, result: ScoringResult) => void): Promise<ReturnType<typeof Bun.serve>> {
-    const { ollamaUrl, scoreThreshold, isPaused, flags } = this
+    const { ollamaUrl, scoreThreshold, isPaused, flags, machineId, registry } = this
     return Bun.serve({
       port: this.listenPort,
       async fetch(req) {
@@ -85,13 +105,22 @@ export class OllamaInterceptor {
           timestamp: new Date().toISOString(),
         }
 
-        const decision = decideInterception(intercepted, scoreThreshold, flags)
+        const decision = await decideInterceptionAsync(
+          intercepted,
+          scoreThreshold,
+          flags,
+          registry,
+          machineId,
+        )
         const scoring: ScoringResult = {
           score: decision.score,
           action: decision.action,
           reasons: decision.reasons,
           scored: decision.scored,
           alert: decision.alert,
+          provider: decision.provider,
+          degraded: decision.degraded,
+          confidence: decision.confidence,
         }
 
         onRequest?.(intercepted, scoring)
@@ -106,6 +135,21 @@ export class OllamaInterceptor {
               reasons: scoring.reasons,
             },
             { status: 503, headers: { 'Retry-After': '5' } },
+          )
+        }
+
+        // Fail-closed: a review decision must never reach the upstream fetch.
+        if (scoring.action === 'review') {
+          return Response.json(
+            {
+              error: 'Held for review by Alygn Kill Switch',
+              action: 'review',
+              provider: scoring.provider,
+              degraded: scoring.degraded,
+              score: scoring.score,
+              reasons: scoring.reasons,
+            },
+            { status: 403 },
           )
         }
 
@@ -134,10 +178,16 @@ export class OllamaInterceptor {
 
 export interface InterceptionDecision {
   score: number
-  action: 'forward' | 'block' | 'escalate'
+  action: 'forward' | 'block' | 'escalate' | 'review'
   reasons: string[]
   scored: boolean
   alert: boolean
+  /** Provider that produced the decision (S3). */
+  provider?: string
+  /** True when the provider was unavailable / timed out / unparseable (S3). */
+  degraded?: boolean
+  /** Calibrated confidence 0..1 when the provider supplies one (S3). */
+  confidence?: number
 }
 
 /**
@@ -185,6 +235,73 @@ function toNumber(v: unknown, fallback: number): number {
   if (v === null || v === undefined) return fallback
   const n = typeof v === 'number' ? v : Number(v)
   return Number.isFinite(n) ? n : fallback
+}
+
+/**
+ * Async, provider-aware decision (S3).
+ *
+ * When the resolved provider is `keyword` (the default) this delegates to the
+ * sync `decideInterception()` so behavior is byte-identical to today. For any
+ * other provider it goes through the fail-closed selector.
+ */
+export async function decideInterceptionAsync(
+  req: InterceptedRequest,
+  threshold: number,
+  flags: FlagProvider | undefined,
+  registry: ProviderRegistry | undefined,
+  machineId = 'unknown',
+): Promise<InterceptionDecision> {
+  // No registry → legacy keyword-only path (backward compatible).
+  if (!registry) return decideInterception(req, threshold, flags);
+
+  const flagReader: DecisionFlagReader = {
+    getFlag: (key: string) => flags?.getFlag(key) ?? null,
+  };
+
+  const providerName = resolveProviderName(flagReader);
+
+  // Default provider → exact legacy path (parity is asserted in tests).
+  if (providerName === 'keyword') return decideInterception(req, threshold, flags);
+
+  // Interception disabled / sampled out still short-circuit first, exactly as
+  // the legacy path does — those are explicit operator config, not failures.
+  const interceptionEnabled = flags?.getFlag('llm_interception_enabled') ?? true;
+  if (!interceptionEnabled) {
+    return {
+      score: 0,
+      action: 'forward',
+      reasons: ['interception disabled by flag'],
+      scored: false,
+      alert: false,
+    };
+  }
+  const samplingRate = toNumber(flags?.getFlag('request_sampling_rate'), 1.0);
+  if (samplingRate < 1.0 && Math.random() > samplingRate) {
+    return { score: 0, action: 'forward', reasons: ['request sampled out'], scored: false, alert: false };
+  }
+
+  const body = req.body as Record<string, unknown> | null;
+  const prompt = typeof body?.prompt === 'string' ? body.prompt : '';
+  const model = typeof body?.model === 'string' ? body.model : undefined;
+  const effectiveThreshold = toNumber(flags?.getFlag('auto_stop_threshold'), threshold);
+
+  const result = await decideWithProvider(
+    { kind: 'prompt', text: prompt, model, machineId },
+    flagReader,
+    registry,
+  );
+
+  const alertOnCritical = flags?.getFlag('alert_on_critical_score') ?? true;
+  return {
+    score: result.score,
+    action: result.action,
+    reasons: result.reasons,
+    scored: true,
+    alert: alertOnCritical !== false && result.score >= effectiveThreshold,
+    provider: result.provider,
+    degraded: result.degraded,
+    confidence: result.confidence,
+  };
 }
 
 function scoreRequest(req: InterceptedRequest, threshold: number): ScoringResult {

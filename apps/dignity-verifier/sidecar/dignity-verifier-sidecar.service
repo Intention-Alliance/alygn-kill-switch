@@ -1,0 +1,46 @@
+[Unit]
+Description=Dignity Verifier sidecar (Laya System 1 decision model)
+Documentation=file:///opt/dignity-verifier/sidecar/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=alygn
+Group=alygn
+WorkingDirectory=/opt/dignity-verifier/sidecar
+
+# USE_TF=0 is required: transformers probes for TensorFlow at import and TF's
+# abseil runtime can deadlock model construction.
+Environment=USE_TF=0
+# Pin threads — this host also runs the kill-switch, dashboard and Redis.
+Environment=OMP_NUM_THREADS=4
+Environment=LAYA_SIDECAR_HOST=127.0.0.1
+Environment=LAYA_SIDECAR_PORT=8787
+
+ExecStart=/opt/dignity-verifier/venv/bin/python sidecar.py
+ExecStartPost=/usr/bin/curl -sf --retry 30 --retry-delay 2 --retry-connrefused \
+  http://127.0.0.1:8787/health
+
+Restart=always
+RestartSec=5
+# The startup model load takes 26-43s; do not let systemd kill it mid-load.
+TimeoutStartSec=180
+TimeoutStopSec=30
+
+# Hardening — the service only needs to read its own directory and bind localhost.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/dignity-verifier
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+
+[Install]
+WantedBy=multi-user.target

@@ -103,7 +103,7 @@ const nextConfig: NextConfig = {
   },
 
   // ─── Server External Packages ────────────────────────────────
-  serverExternalPackages: ["better-auth", "@packages/db-schema"],
+  serverExternalPackages: ["better-auth"],
 
   // ─── Image Optimization ─────────────────────────────────────
   images: {

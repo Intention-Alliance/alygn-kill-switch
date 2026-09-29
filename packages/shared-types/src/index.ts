@@ -12,3 +12,4 @@ export * from "./auth";
 export * from "./kill-switch";
 export * from "./flags";
 export * from "./discovery";
+export * from "./decision";

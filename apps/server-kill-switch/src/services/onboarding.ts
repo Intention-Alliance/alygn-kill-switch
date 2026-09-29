@@ -27,6 +27,12 @@ import type {
 import { and, asc, desc, eq, inArray } from 'drizzle-orm'
 import { db } from '../db/index'
 import {
+	DEFAULT_READINESS_REQUIREMENTS,
+	evaluateReadiness,
+	type ReadinessReport,
+	type ReadinessRequirements,
+} from './readiness'
+import {
 	discoveredMachines,
 	featureFlags,
 	killSwitchAuditLog,
@@ -73,10 +79,33 @@ export class OnboardingStateError extends Error {
 	}
 }
 
+/**
+ * Raised when a machine fails the readiness gate (§7A step 4). Carries the
+ * findings so the caller can surface them to the human super admin who must
+ * close the gaps. Routes map this to HTTP 422 (Unprocessable Entity) — the
+ * request was understood, the machine is simply not armable yet.
+ */
+export class OnboardingReadinessError extends Error {
+	readonly statusCode = 422
+	readonly report: ReadinessReport
+
+	constructor(report: ReadinessReport) {
+		super(
+			`Machine is not ready to arm: ${report.findings
+				.map((f) => f.code)
+				.join(', ')}`,
+		)
+		this.name = 'OnboardingReadinessError'
+		this.report = report
+	}
+}
+
 export interface ApproveMachineParams {
 	machineId: string
 	reviewedBy: string
 	zone?: string
+	/** Readiness requirements for the onboarding→arming gate (§7A step 4). */
+	requirements?: ReadinessRequirements
 }
 
 export interface DenyMachineParams {
@@ -221,6 +250,7 @@ export class OnboardingService {
 		machineId,
 		reviewedBy,
 		zone = DEFAULT_ZONE,
+		requirements = DEFAULT_READINESS_REQUIREMENTS,
 	}: ApproveMachineParams): Promise<OnboardingDecision | null> {
 		const machine = await db
 			.select()
@@ -234,6 +264,20 @@ export class OnboardingService {
 			throw new OnboardingStateError(
 				`Cannot approve machine in state ${currentState} — only ${APPROVABLE_STATES.join(', ')} are approvable`,
 			)
+		}
+
+		// Readiness gate (DESIGN-SYSTEM §7A step 4). A machine that does not meet
+		// the security standards cannot be approved — the findings are returned so
+		// a human super admin can close them. The system never closes them itself:
+		// establishing trust is a human act (Invariants 1 & 9).
+		const readiness = evaluateReadiness(
+			machine.fingerprint
+				? parseJson<HardwareFingerprint>(String(machine.fingerprint))
+				: null,
+			requirements,
+		)
+		if (readiness.verdict === 'NOT_READY') {
+			throw new OnboardingReadinessError(readiness)
 		}
 
 		const now = new Date()

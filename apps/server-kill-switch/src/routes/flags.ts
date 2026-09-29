@@ -582,6 +582,35 @@ export async function handleFlagsRoutes(
           }
         }
 
+        // ─── Decision provider flags (S1) ────────────────────────────
+        if (flagKey === 'decision.provider') {
+          const allowed = ['keyword', 'ollama', 'jev', 'dignity'];
+          if (!allowed.includes(stored)) {
+            json(res, 400, { error: `decision.provider must be one of: ${allowed.join(', ')}` });
+            return true;
+          }
+        }
+        if (flagKey === 'decision.review_threshold') {
+          const n = Number(stored);
+          if (!Number.isFinite(n) || n < 0.0 || n > 1.0) {
+            json(res, 400, { error: 'decision.review_threshold must be in [0.0, 1.0]' });
+            return true;
+          }
+        }
+        if (flagKey === 'decision.jev.timeoutMs') {
+          const n = Number(stored);
+          if (!Number.isFinite(n) || n < 50 || n > 30_000) {
+            json(res, 400, { error: 'decision.jev.timeoutMs must be in [50, 30000]' });
+            return true;
+          }
+        }
+        if (flagKey === 'decision.jev.model') {
+          if (stored.trim().length === 0 || stored.length > 128) {
+            json(res, 400, { error: 'decision.jev.model must be a non-empty string (<=128 chars)' });
+            return true;
+          }
+        }
+
         // Upsert: read prior value for audit
         const prior = await db
           .select()

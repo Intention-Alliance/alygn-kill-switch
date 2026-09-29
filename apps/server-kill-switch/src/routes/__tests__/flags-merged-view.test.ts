@@ -148,6 +148,10 @@ describe('GET /v1/machines/:id/flags — merged view (F2/F3)', () => {
       { id: 'f6', key: 'kill.authorization.mode', value: 'true', description: 'd6', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
       { id: 'f7', key: 'kill.authorization.quorum', value: 'true', description: 'd7', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
       { id: 'f8', key: 'kill.authorization.timeoutMs', value: 'true', description: 'd8', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
+      { id: 'f9', key: 'decision.provider', value: 'keyword', description: 'd9', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
+      { id: 'f10', key: 'decision.jev.model', value: 'jev-latest', description: 'd10', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
+      { id: 'f11', key: 'decision.jev.timeoutMs', value: '500', description: 'd11', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
+      { id: 'f12', key: 'decision.review_threshold', value: '0.6', description: 'd12', enabled: true, createdBy: 'system', createdAt: new Date(), updatedAt: new Date() },
     ];
 
     const res = createMockRes();
@@ -158,6 +162,22 @@ describe('GET /v1/machines/:id/flags — merged view (F2/F3)', () => {
     expect(res.statusCode).toBe(200);
     const body = getJson(res);
     expect(body.flags.map((f: any) => f.key)).toEqual([
+      'llm_interception_enabled',
+      'auto_stop_threshold',
+      'damage_logging_level',
+      'alert_on_critical_score',
+      'request_sampling_rate',
+      'kill.authorization.mode',
+      'kill.authorization.quorum',
+      'kill.authorization.timeoutMs',
+      'decision.provider',
+      'decision.jev.model',
+      'decision.jev.timeoutMs',
+      'decision.review_threshold',
+    ]);
+    // S1 anti-regression: appending decision.* flags must not reorder or drop
+    // the original 8.
+    expect(body.flags.slice(0, 8).map((f: any) => f.key)).toEqual([
       'llm_interception_enabled',
       'auto_stop_threshold',
       'damage_logging_level',
