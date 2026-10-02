@@ -1,6 +1,8 @@
 import { Key, Check } from "lucide-react";
 import { fetchInitialSecrets } from "./actions";
 import { LoaderHealthBadge } from "@/components/secrets/secrets-loader-badge";
+import { AdminGuard } from "@/components/admin-guard";
+import { requireAdmin } from "@/lib/server-auth";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -15,6 +17,11 @@ export const metadata = {
 };
 
 export default async function SecretsPage() {
+  // Enforce the admin role server-side BEFORE fetching sensitive data, so a
+  // non-admin authenticated user never receives the RSC payload containing
+  // secrets + audit logs (Nikaya P1 finding).
+  await requireAdmin("/admin/secrets");
+
   let initial: SecretsPageData;
   try {
     initial = await fetchInitialSecrets();
@@ -23,10 +30,12 @@ export default async function SecretsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <PageHeader secretCount={initial.secrets.length} health={initial.health} />
-      <SecretsPageClient initial={initial} />
-    </div>
+    <AdminGuard>
+      <div className="space-y-4">
+        <PageHeader secretCount={initial.secrets.length} health={initial.health} />
+        <SecretsPageClient initial={initial} />
+      </div>
+    </AdminGuard>
   );
 }
 

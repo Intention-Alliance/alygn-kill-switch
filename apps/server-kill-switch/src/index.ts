@@ -7,7 +7,8 @@ import { assertProxyAndVerificationInvariant } from './config/proxy-invariants'
 import {
 	validateEnvironment,
 	validateVerifierConfig,
-	validateVerifierReachability,
+	getVerifierMaxRetries,
+	getVerifierReprobeIntervalMs,
 } from './config/validate-env'
 import { sqlite as sqliteDb } from './db/index'
 import { seedFeatureFlags } from './db/seed'
@@ -68,11 +69,12 @@ import { handleWebAuthnRoutes } from './routes/webauthn'
 import { handleWebhookKeysRoutes } from './routes/webhook-keys'
 import { startRegistryScheduler } from './services/discovery/registry-scheduler'
 import { sweepExpiredBlocks } from './services/fingerprint-blocklist'
-import { isIpAllowed, startDnsRefresh } from './services/ip-allowlist'
+import { isIpAllowed, isLocalhost, startDnsRefresh } from './services/ip-allowlist'
 import { KillSwitchService } from './services/kill-switch'
 import { startMachineHeartbeat } from './services/machine-heartbeat'
 import { startMetricGeneration } from './services/system-metrics'
 import { VerificationService } from './services/verification/verification-service'
+import { VerifierReachabilityTracker } from './services/verification/verifier-reachability'
 import { InferenceVerifier } from './services/verification/verifier'
 import { WebSocketManager } from './services/websocket-manager'
 
@@ -95,6 +97,7 @@ function createHandler(
 		secretsLoader: SecretsLoader
 		lockoutState: LockoutStateMachine
 		redis: RedisClient
+		verifierReachability?: VerifierReachabilityTracker
 	},
 	verification?: VerificationService,
 	/**
@@ -110,7 +113,7 @@ function createHandler(
 ) {
 	const authRateLimiter = new AuthRateLimiter()
 	const config = getConfig()
-	const { secretsLoader, lockoutState, redis } = ctx
+	const { secretsLoader, lockoutState, redis, verifierReachability } = ctx
 
 	return async (req: any, res: any) => {
 		const ip = req.ip || req.socket?.remoteAddress || 'unknown'
@@ -143,7 +146,38 @@ function createHandler(
 			if (lb) return
 		}
 
+		// ── IP allowlist gate (P0-1) ──────────────────────────────────
+		// Enforced at the TOP of the request pipeline, BEFORE any route
+		// handler. Previously the key-authenticated admin/internal routes
+		// (admin-secrets, api-keys, webhook-keys, internal-kill-switch) ran
+		// before this check, letting a non-allowlisted IP reach them. Auth
+		// routes (/v1/auth/*) remain exempt so login/registration stay
+		// reachable from anywhere (they are separately rate-limited below).
+		const isAuth = url.startsWith('/v1/auth/')
+		if (!isAuth && !isIpAllowed(ip)) {
+			res.writeHead(403, { 'Content-Type': 'application/json' })
+			res.end(JSON.stringify({ error: 'IP not allowed', ip }))
+			return
+		}
+
+		// ── Internal endpoints must be localhost-only (P0-5) ──────────
+		// /v1/internal/* is documented as loopback-only. The IP allowlist
+		// also permits Docker networks (172.16/12), so require an explicit
+		// loopback check in addition to KILL_SWITCH_INTERNAL_KEY. This
+		// applies to the internal api-keys routes and the internal
+		// kill-switch transition endpoint.
+		const isInternal = url.startsWith('/v1/internal/')
+		if (isInternal && !isLocalhost(ip)) {
+			res.writeHead(403, { 'Content-Type': 'application/json' })
+			res.end(
+				JSON.stringify({ error: 'Internal endpoints are localhost-only', ip }),
+			)
+			return
+		}
+
 		// ── Admin secrets routes (separate auth: ADMIN_UI_API_KEY) ──
+		// Runs AFTER the IP allowlist gate above. Keeps its own key-based
+		// auth (ADMIN_UI_API_KEY) — no user session required.
 		const secretsHandled = await handleAdminSecretsRoutes(
 			method,
 			url,
@@ -155,7 +189,7 @@ function createHandler(
 		if (secretsHandled) return
 
 		// ── Webhook API Key admin + internal routes (separate auth) ──
-		// Must run BEFORE checkAuth because:
+		// Runs AFTER the IP allowlist gate. Must run BEFORE checkAuth because:
 		//   - /v1/internal/* is called by the openclaw-webhook over loopback
 		//     with KILL_SWITCH_INTERNAL_KEY, NOT a user session.
 		//   - /v1/admin/api-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user session
@@ -166,7 +200,7 @@ function createHandler(
 
 		// ── Webhook Keys admin routes (ADR-139) — separate auth ──
 		// /v1/admin/webhook-keys/* uses ADMIN_UI_API_KEY Bearer, NOT a user
-		// session (mirrors api-keys.ts). Runs BEFORE checkAuth.
+		// session (mirrors api-keys.ts). Runs AFTER the IP allowlist gate.
 		const webhookKeysHandled = await handleWebhookKeysRoutes(
 			method,
 			url,
@@ -177,8 +211,9 @@ function createHandler(
 
 		// ── Internal kill-switch transition (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §d.1) ──
 		// Automated (non-human) STOPPED triggers. Loopback-only + KILL_SWITCH_INTERNAL_KEY,
-		// accepts only STOPPING/STOPPED. Runs BEFORE checkAuth (service-authenticated,
-		// not a user session). Mirrors the /v1/internal/* webhook pattern.
+		// accepts only STOPPING/STOPPED. Runs AFTER the IP allowlist gate and the
+		// localhost-only check above (service-authenticated, not a user session).
+		// Mirrors the /v1/internal/* webhook pattern.
 		const internalKsHandled = await handleInternalKillSwitchRoutes(
 			method,
 			url,
@@ -187,16 +222,6 @@ function createHandler(
 			service,
 		)
 		if (internalKsHandled) return
-
-		const admin = await handleAdminRoutes(method, url, req, res, service)
-		if (admin) return
-
-		const isAuth = url.startsWith('/v1/auth/')
-		if (!isAuth && !isIpAllowed(ip)) {
-			res.writeHead(403, { 'Content-Type': 'application/json' })
-			res.end(JSON.stringify({ error: 'IP not allowed', ip }))
-			return
-		}
 
 		if (isAuth) {
 			const check = authRateLimiter.check(ip)
@@ -288,6 +313,13 @@ function createHandler(
 			uid = ar.user?.email ?? null
 			userRole = ar.user?.role ?? null
 		}
+
+		// ── Admin routes (P0-1) ──────────────────────────────────────
+		// /admin/* requires a session-authenticated user. Moved AFTER
+		// checkAuth so it is gated by the session. The handler receives the
+		// authenticated user's role and verifies it before responding.
+		const admin = await handleAdminRoutes(method, url, req, res, service, userRole)
+		if (admin) return
 
 		// ── Inference verification (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b.4) ──
 		// Runs AFTER the gate (paused → 503 short-circuits first) and after auth,
@@ -417,7 +449,15 @@ function createHandler(
 					service,
 					authRateLimiter,
 				)) ||
-				(await handleKillSwitchRoutes(method, url, req, res, service, ip)) ||
+				(await handleKillSwitchRoutes(
+					method,
+					url,
+					req,
+					res,
+					service,
+					ip,
+					verifierReachability,
+				)) ||
 				(await handleKillAuthorizationRoutes(method, url, req, res, service)) ||
 				(await handleAuditRoutes(method, url, req, res)) ||
 				(await handleFlagsRoutes(
@@ -671,6 +711,15 @@ export async function startServer(
 	// startup (before Bun.serve). If verification is enabled but the verifier is
 	// unreachable, log a warning and continue with a degraded (no-op) verifier —
 	// the spec says fail-fast, but we allow startup with a degraded warning.
+	//
+	// H1.1: reachability is now probed via a retry loop (VerifierReachabilityTracker)
+	// instead of a single setTimeout. The tracker runs 5 attempts with exponential
+	// backoff (5s→60s); on success it flips verification to active, on persistent
+	// failure it schedules a re-probe every VERIFIER_REPROBE_INTERVAL_MS (default
+	// 5 min) while keeping the service degraded (no crash). The tracker's
+	// reachability state is surfaced on /v1/kill-switch/status as
+	// `verifierReachable`.
+	let verifierReachability: VerifierReachabilityTracker | undefined
 	if (verificationEnabled) {
 		try {
 			validateVerifierConfig(verificationConfig)
@@ -681,30 +730,28 @@ export async function startServer(
 			)
 			verificationEnabled = false
 		}
-		// Defer reachability probe to prevent blocking Bun.serve() startup.
-		// The probe runs after the server is listening; if unreachable, verification
-		// degrades gracefully (REVIEW + no auto-kill) per spec §c.3.
-		setTimeout(async () => {
-			try {
-				const reachable = await validateVerifierReachability(verificationConfig)
-				if (!reachable) {
-					console.warn(
-						`[verification] Verifier model '${verificationConfig?.verifierModel}' at ` +
-							`'${verificationConfig?.verifierBaseUrl}' is unreachable — verification will be degraded ` +
-							`(REVIEW + no auto-kill) until the model is reachable.`,
-					)
-				} else {
-					console.log(
-						`[verification] Verifier model reachable — inference verification active`,
-					)
-				}
-			} catch (err: any) {
-				console.warn(
-					`[verification] Reachability probe failed (non-fatal):`,
-					err.message,
-				)
-			}
-		}, 3000)
+		if (verificationEnabled) {
+			verifierReachability = new VerifierReachabilityTracker({
+				verification: verificationConfig,
+				maxRetries: getVerifierMaxRetries(),
+				reprobeIntervalMs: getVerifierReprobeIntervalMs(),
+				onStateChange: (reachable) => {
+					if (reachable) {
+						console.log(
+							'[verification] Verifier reachable — verification active (recovered)',
+						)
+					} else {
+						console.warn(
+							'[verification] Verifier unreachable — verification degraded (REVIEW + no auto-kill)',
+						)
+					}
+				},
+			})
+			// Defer the retry loop so it does not block Bun.serve() startup. The
+			// probe sequence runs after the server is listening; if unreachable,
+			// verification degrades gracefully (REVIEW + no auto-kill) per spec §c.3.
+			setTimeout(() => verifierReachability?.start(), 3000)
+		}
 	}
 
 	const verificationService = verificationEnabled
@@ -951,7 +998,7 @@ export async function startServer(
 
 				createHandler(
 					service,
-					{ secretsLoader, lockoutState, redis },
+					{ secretsLoader, lockoutState, redis, verifierReachability },
 					verificationService,
 					relayCtx,
 				)(nodeReq, nodeRes)

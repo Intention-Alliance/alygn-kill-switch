@@ -26,6 +26,65 @@ import path from 'node:path'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import * as schema from '../db/schema'
 
+/**
+ * Create the ADR-140 audit-chain tables (kill_switch_audit_log with the
+ * hash-chain columns + INSERT-only triggers, and chain_anchor) on a raw
+ * bun:sqlite handle. Shared by mockDbIndex and any test that needs a real
+ * audit chain without the full db/index mock.
+ */
+export function createAuditChainTables(sqlite: Database) {
+	sqlite.run(`
+    CREATE TABLE IF NOT EXISTS chain_anchor (
+      id TEXT PRIMARY KEY,
+      date TEXT NOT NULL UNIQUE,
+      chain_head_hash TEXT NOT NULL,
+      entry_count INTEGER NOT NULL DEFAULT 0,
+      signed_payload TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    )
+  `)
+	sqlite.run(
+		`CREATE UNIQUE INDEX IF NOT EXISTS chain_anchor_date_unique ON chain_anchor(date)`,
+	)
+
+	sqlite.run(`
+    CREATE TABLE IF NOT EXISTS kill_switch_audit_log (
+      id TEXT PRIMARY KEY,
+      timestamp INTEGER NOT NULL,
+      user_id TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      previous_state TEXT NOT NULL,
+      new_state TEXT NOT NULL,
+      trace_id TEXT NOT NULL,
+      machine_id TEXT,
+      severity TEXT NOT NULL DEFAULT 'info',
+      metadata TEXT,
+      prev_hash TEXT NOT NULL DEFAULT 'GENESIS',
+      self_hash TEXT NOT NULL DEFAULT '',
+      actor_signature TEXT,
+      server_hmac TEXT NOT NULL DEFAULT '',
+      plain_explanation TEXT NOT NULL DEFAULT ''
+    )
+  `)
+	sqlite.run(
+		`CREATE INDEX IF NOT EXISTS ks_audit_self_hash_idx ON kill_switch_audit_log(self_hash)`,
+	)
+	sqlite.run(`
+    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_update
+    BEFORE UPDATE ON kill_switch_audit_log
+    BEGIN
+      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): UPDATE forbidden');
+    END
+  `)
+	sqlite.run(`
+    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_delete
+    BEFORE DELETE ON kill_switch_audit_log
+    BEGIN
+      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): DELETE forbidden');
+    END
+  `)
+}
+
 export function mockDbIndex() {
 	const sqlite = new Database(':memory:', { create: true })
 	sqlite.run('PRAGMA journal_mode=WAL')
@@ -85,56 +144,7 @@ export function mockDbIndex() {
 		`CREATE INDEX IF NOT EXISTS first_access_verified_idx ON first_access(verified_at)`,
 	)
 
-	sqlite.run(`
-    CREATE TABLE IF NOT EXISTS chain_anchor (
-      id TEXT PRIMARY KEY,
-      date TEXT NOT NULL UNIQUE,
-      chain_head_hash TEXT NOT NULL,
-      entry_count INTEGER NOT NULL DEFAULT 0,
-      signed_payload TEXT NOT NULL,
-      created_at INTEGER NOT NULL
-    )
-  `)
-	sqlite.run(
-		`CREATE UNIQUE INDEX IF NOT EXISTS chain_anchor_date_unique ON chain_anchor(date)`,
-	)
-
-	sqlite.run(`
-    CREATE TABLE IF NOT EXISTS kill_switch_audit_log (
-      id TEXT PRIMARY KEY,
-      timestamp INTEGER NOT NULL,
-      user_id TEXT NOT NULL,
-      reason TEXT NOT NULL,
-      previous_state TEXT NOT NULL,
-      new_state TEXT NOT NULL,
-      trace_id TEXT NOT NULL,
-      machine_id TEXT,
-      severity TEXT NOT NULL DEFAULT 'info',
-      metadata TEXT,
-      prev_hash TEXT NOT NULL DEFAULT 'GENESIS',
-      self_hash TEXT NOT NULL DEFAULT '',
-      actor_signature TEXT,
-      server_hmac TEXT NOT NULL DEFAULT '',
-      plain_explanation TEXT NOT NULL DEFAULT ''
-    )
-  `)
-	sqlite.run(
-		`CREATE INDEX IF NOT EXISTS ks_audit_self_hash_idx ON kill_switch_audit_log(self_hash)`,
-	)
-	sqlite.run(`
-    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_update
-    BEFORE UPDATE ON kill_switch_audit_log
-    BEGIN
-      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): UPDATE forbidden');
-    END
-  `)
-	sqlite.run(`
-    CREATE TRIGGER IF NOT EXISTS kill_switch_audit_log_no_delete
-    BEFORE DELETE ON kill_switch_audit_log
-    BEGIN
-      SELECT RAISE(ABORT, 'kill_switch_audit_log is append-only (ADR-140): DELETE forbidden');
-    END
-  `)
+	createAuditChainTables(sqlite)
 
 	mock.module(path.resolve(__dirname, '../db/index.ts'), () => ({
 		db,

@@ -32,6 +32,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '../db/index';
 import { sessions, users, webauthnCredentials } from '../db/schema';
 import { getConfig } from '../config';
+import { appendAuditEntry } from './audit-chain';
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -443,6 +444,19 @@ export async function finishRegistration({
 
   await db.insert(webauthnCredentials).values(row).run();
 
+  // ADR-140: enrollment is a security-relevant event — append it to the
+  // tamper-evident audit chain so credential creation is reviewable.
+  await appendAuditEntry({
+    userId,
+    reason: 'webauthn_credential_enrolled',
+    previousState: 'none',
+    newState: 'enrolled',
+    machineId: null,
+    severity: 'info',
+    metadata: JSON.stringify({ credentialId, name: name ?? null }),
+    plainExplanation: `WebAuthn credential "${name ?? credentialId}" enrolled for user ${userId}`,
+  });
+
   return { credential: toStoredCredential(row) };
 }
 
@@ -703,6 +717,14 @@ export async function finishLoginAssertion({
     .get();
   if (!user) {
     throw new WebAuthnError('Credential owner no longer exists', 'USER_NOT_FOUND');
+  }
+
+  // P0-3: Only admin users may mint a session via a WebAuthn login
+  // assertion. Without this check, any registered credential owner
+  // (including a non-admin who enrolled before the P0-2 gate) could
+  // mint a full admin session — the account-takeover chain.
+  if (user.role !== 'admin') {
+    throw new WebAuthnError('Credential not authorized for admin access', 'NOT_ADMIN');
   }
 
   const sessionCookie = await mintSessionCookie(credential.userId);

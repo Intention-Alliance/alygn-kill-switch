@@ -42,6 +42,7 @@ const NAV_ITEMS = [
     href: "/admin/secrets",
     label: "Secrets",
     icon: Key,
+    adminOnly: true,
   },
   {
     href: "/flags",
@@ -111,28 +112,30 @@ export function MobileSidebar() {
             {/* Navigation */}
             <nav className="flex-1 overflow-y-auto py-3">
               <ul className="space-y-0.5 px-2">
-                {NAV_ITEMS.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    pathname.startsWith(item.href + "/");
-                  return (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                          isActive
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                        )}
-                        onClick={() => setOpen(false)}
-                      >
-                        <item.icon className="h-4 w-4 shrink-0" />
-                        <span>{item.label}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
+                {NAV_ITEMS.filter((item) => !item.adminOnly || user?.role === "admin").map(
+                  (item) => {
+                    const isActive =
+                      pathname === item.href ||
+                      pathname.startsWith(`${item.href}/`);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                            isActive
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                          )}
+                          onClick={() => setOpen(false)}
+                        >
+                          <item.icon className="h-4 w-4 shrink-0" />
+                          <span>{item.label}</span>
+                        </Link>
+                      </li>
+                    );
+                  },
+                )}
               </ul>
             </nav>
 

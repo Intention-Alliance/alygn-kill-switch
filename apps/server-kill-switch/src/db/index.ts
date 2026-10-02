@@ -46,7 +46,7 @@ export function initDatabase(dbPath: string = DB_PATH) {
       email_verified INTEGER DEFAULT 0,
       name TEXT,
       image TEXT,
-      role TEXT DEFAULT 'admin',
+      role TEXT DEFAULT 'viewer',
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     )

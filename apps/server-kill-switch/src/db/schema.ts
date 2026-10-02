@@ -28,7 +28,7 @@ export const users = sqliteTable(
     emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
     name: text('name'),
     image: text('image'),
-    role: text('role').default('admin'),
+    role: text('role').default('viewer'),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()).$onUpdate(() => new Date()),
   },

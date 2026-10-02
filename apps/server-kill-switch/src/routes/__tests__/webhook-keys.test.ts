@@ -326,7 +326,7 @@ describe('webhook-keys — revoke', () => {
 })
 
 describe('webhook-keys — verify-access (first-access completion)', () => {
-	it('completes first-access verification with a valid OTP', async () => {
+	it('rejects ALL OTP codes — OTP verification not yet implemented (P0-4)', async () => {
 		const createRes = makeRes()
 		await handleWebhookKeysRoutes(
 			'POST',
@@ -356,14 +356,17 @@ describe('webhook-keys — verify-access (first-access completion)', () => {
 			res,
 		)
 		expect(handled).toBe(true)
-		expect(res.calls[0].status).toBe(200)
+		expect(res.calls[0].status).toBe(403)
+		const body = res.calls[0].body as Record<string, unknown>
+		expect(body.error).toBe('OTP verification not yet implemented')
 
+		// The first_access row must NOT be marked verified.
 		const fa = sqlite
 			.query(
 				"SELECT verified_at FROM first_access WHERE key_id=? AND ip='10.0.0.1'",
 			)
 			.get(created.id) as { verified_at: number } | undefined
-		expect(fa?.verified_at).toBeTruthy()
+		expect(fa?.verified_at).toBeFalsy()
 	})
 
 	it('rejects an invalid OTP', async () => {
@@ -389,6 +392,6 @@ describe('webhook-keys — verify-access (first-access completion)', () => {
 			makeReq({ body: JSON.stringify({ ip: '10.0.0.1', otp: 'abc' }) }),
 			res,
 		)
-		expect(res.calls[0].status).toBe(400)
+		expect(res.calls[0].status).toBe(403)
 	})
 })

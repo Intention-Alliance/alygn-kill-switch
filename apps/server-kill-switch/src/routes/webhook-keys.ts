@@ -21,7 +21,6 @@
 
 import { randomBytes } from 'node:crypto'
 import { sqlite } from '../db/index'
-import { verifyFirstAccess } from '../middleware/webhook-auth'
 import { appendAuditEntry } from '../services/audit-chain'
 import { hashingService } from '../services/hashing'
 import { secureCompare } from '../utils/secure-compare'
@@ -421,25 +420,18 @@ async function verifyAccess(req: Req, res: Res, id: string): Promise<boolean> {
 		return true
 	}
 
-	// OTP verification stub: in production this would validate the OTP sent
-	// to the admin's registered channel. For this card we accept any
-	// 6-digit OTP (the challenge was raised via the Discord stub).
-	if (!/^\d{6}$/.test(otp)) {
-		writeJson(res, 400, {
-			error: 'otp must be a 6-digit code',
-			code: 'OTP_INVALID',
-		})
-		return true
-	}
-
-	await verifyFirstAccess(id, ip, deviceFp, 'admin')
-
-	writeJson(res, 200, {
-		ok: true,
-		keyId: id,
-		ip,
-		deviceFp,
-		verifiedAt: new Date().toISOString(),
+	// P0-4: OTP verification is NOT yet implemented. The OTP is generated
+	// and sent to the Discord webhook for audit-trail purposes, but the
+	// verification path previously accepted ANY 6-digit code — a critical
+	// auth bypass. Until a real OTP store + verification is built, reject
+	// ALL codes. It is safer to block first-access verification entirely
+	// than to accept any 6-digit code.
+	console.warn(
+		'[webhook-auth] OTP verification rejected — not yet implemented. Code rejected for security.',
+	)
+	writeJson(res, 403, {
+		verified: false,
+		error: 'OTP verification not yet implemented',
 	})
 	return true
 }

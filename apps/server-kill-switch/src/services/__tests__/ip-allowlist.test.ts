@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { isIpAllowed } from '../ip-allowlist';
+import { isIpAllowed, isLocalhost } from '../ip-allowlist';
 
 // ─── Exact IP matching ───────────────────────────
 
@@ -62,6 +62,30 @@ describe('isIpAllowed — CIDR matching', () => {
 });
 
 // ─── DNS-resolved IPs ────────────────────────────
+
+describe('isLocalhost — loopback detection (P0-5)', () => {
+  it('returns true for 127.0.0.1', () => {
+    expect(isLocalhost('127.0.0.1')).toBe(true);
+  });
+
+  it('returns true for ::1', () => {
+    expect(isLocalhost('::1')).toBe(true);
+  });
+
+  it('returns true for ::ffff:127.0.0.1', () => {
+    expect(isLocalhost('::ffff:127.0.0.1')).toBe(true);
+  });
+
+  it('returns false for a Docker-network IP that the allowlist permits', () => {
+    // 172.17.5.10 is IP-allowed (Docker bridge) but NOT localhost.
+    expect(isIpAllowed('172.17.5.10')).toBe(true);
+    expect(isLocalhost('172.17.5.10')).toBe(false);
+  });
+
+  it('returns false for a public IP', () => {
+    expect(isLocalhost('203.0.113.42')).toBe(false);
+  });
+});
 
 describe('isIpAllowed — DNS-resolved IPs', () => {
   it('includes DNS-resolved Tailscale IPs in the check', async () => {

@@ -69,6 +69,17 @@ function parseEnvList(envVar: string | undefined, defaults: string[]): string[] 
 const ALLOWED_IPS = parseEnvList(process.env.IP_ALLOWLIST, DEFAULT_ALLOWED_IPS);
 const CIDR_RANGES = parseEnvList(process.env.IP_ALLOWLIST_CIDRS, DEFAULT_CIDR_RANGES);
 
+/**
+ * True when the request originates from the loopback interface.
+ * Used to enforce that /v1/internal/* endpoints are localhost-only,
+ * independent of the broader IP allowlist (which also permits Docker
+ * networks 172.16/12).
+ */
+export function isLocalhost(ip: string): boolean {
+  const normalized = ip.replace(/^::ffff:/, '');
+  return normalized === '127.0.0.1' || normalized === '::1' || ip === '::ffff:127.0.0.1';
+}
+
 export function isIpAllowed(ip: string): boolean {
   const normalizedIp = ip.replace(/^::ffff:/, '');
   const allIps = [...ALLOWED_IPS, ...dnsResolvedIps];
