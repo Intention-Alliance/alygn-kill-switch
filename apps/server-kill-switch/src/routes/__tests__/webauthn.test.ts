@@ -53,6 +53,12 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => ({
     insert: () => ({ values: () => ({ run: () => {} }) }),
     update: () => ({ set: () => ({ where: () => ({ run: () => {} }) }) }),
   },
+  // Other modules in the graph (audit-chain, webhook-keys, websocket-manager)
+  // import `sqlite` from db/index; the mock must expose it or those imports
+  // fail with "Export named 'sqlite' not found".
+  sqlite: {
+    query: () => ({ get: () => undefined, all: () => [], run: () => {} }),
+  },
 }));
 
 // ─── Mock lib/auth — session resolution for getSessionUser ────────
