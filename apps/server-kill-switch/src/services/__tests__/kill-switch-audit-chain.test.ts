@@ -18,6 +18,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
+import { configModuleMock } from '../../test-utils/config-mock'
 import { mockDbIndex } from '../../test-utils/db-mock'
 
 process.env.AUDIT_HMAC_KEY = 'test-audit-hmac-key-0123456789abcdef'
@@ -47,17 +48,10 @@ mock.module('../../infra-loader', () => ({
 	}),
 }))
 
-// Mock config so the traffic-pause hook is enabled (mirrors kill-switch.test.ts)
-// and the webauthn service can mint assertion tokens (needs webauthn config).
-mock.module('../../config', () => ({
-	getConfig: () => ({
-		server: { port: 3000, host: '0.0.0.0' },
-		env: 'test',
-		redis: { urls: [] },
-		webauthn: { assertionTokenTtlMs: 120_000 },
-	}),
-	isFeatureEnabled: (key: string) => key === 'killSwitchTrafficPauseEnabled',
-}))
+// Mock config with the COMPLETE AppConfig shape (mirrors kill-switch.test.ts).
+// A partial config leaks process-globally into later test files — the
+// webauthn service reads getConfig().webauthn. See test-utils/config-mock.ts.
+mock.module('../../config', () => configModuleMock())
 
 const { KillSwitchService } = await import('../kill-switch')
 const { verifyChain } = await import('../audit-chain')
