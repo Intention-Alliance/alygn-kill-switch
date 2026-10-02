@@ -32,6 +32,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 import { db } from '../db/index';
 import { sessions, users, webauthnCredentials } from '../db/schema';
 import { getConfig } from '../config';
+import { appendAuditEntry } from './audit-chain';
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -442,6 +443,19 @@ export async function finishRegistration({
   };
 
   await db.insert(webauthnCredentials).values(row).run();
+
+  // ADR-140: enrollment is a security-relevant event — append it to the
+  // tamper-evident audit chain so credential creation is reviewable.
+  await appendAuditEntry({
+    userId,
+    reason: 'webauthn_credential_enrolled',
+    previousState: 'none',
+    newState: 'enrolled',
+    machineId: null,
+    severity: 'info',
+    metadata: JSON.stringify({ credentialId, name: name ?? null }),
+    plainExplanation: `WebAuthn credential "${name ?? credentialId}" enrolled for user ${userId}`,
+  });
 
   return { credential: toStoredCredential(row) };
 }

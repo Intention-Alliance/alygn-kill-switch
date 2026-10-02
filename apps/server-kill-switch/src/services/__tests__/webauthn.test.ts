@@ -11,10 +11,14 @@
  */
 
 import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
+import { Database } from 'bun:sqlite';
+import { createAuditChainTables } from '../../test-utils/db-mock';
 
 // ─── Test env (assertion token HMAC secret) ───────────────────────
 process.env.BETTER_AUTH_SECRET = process.env.BETTER_AUTH_SECRET || 'test-secret-0123456789abcdef0123456789abcdef';
 process.env.WEBAUTHN_ASSERTION_TOKEN_SECRET = process.env.WEBAUTHN_ASSERTION_TOKEN_SECRET || 'test-assertion-token-secret';
+// ADR-140: enrollment now appends to the audit chain, which signs with this key.
+process.env.AUDIT_HMAC_KEY = process.env.AUDIT_HMAC_KEY || 'test-audit-hmac-key-0123456789abcdef';
 
 // ─── Mock @simplewebauthn/server ─────────────────────────────────
 
@@ -123,6 +127,13 @@ interface MockSession {
 let userStore: MockUser[] = [];
 let sessionStore: MockSession[] = [];
 
+// Real in-memory SQLite for the ADR-140 audit chain. The webauthn service
+// appends an enrollment entry via appendAuditEntry, which reads/writes the
+// `sqlite` export of db/index — so the db mock below must expose a real
+// handle with the audit tables (acceptance criterion f).
+const auditSqlite = new Database(':memory:', { create: true });
+createAuditChainTables(auditSqlite);
+
 beforeEach(() => {
   credentialStore = [];
   userStore = [
@@ -130,6 +141,11 @@ beforeEach(() => {
     { id: 'user-2', email: 'other@alygn.com', name: 'Other', role: 'viewer' },
   ];
   sessionStore = [];
+  // Fresh chain per test. The audit log is INSERT-only (triggers block
+  // DELETE), so reset by dropping + recreating the tables.
+  auditSqlite.run('DROP TABLE IF EXISTS kill_switch_audit_log');
+  auditSqlite.run('DROP TABLE IF EXISTS chain_anchor');
+  createAuditChainTables(auditSqlite);
   mockGenerateRegistrationOptions.mockClear();
   mockVerifyRegistrationResponse.mockClear();
   mockGenerateAuthenticationOptions.mockClear();
@@ -240,6 +256,7 @@ mock.module('../../db/index', () => {
       insert: makeInsert,
       update: makeUpdate,
     },
+    sqlite: auditSqlite,
   };
 });
 
@@ -330,6 +347,39 @@ describe('WebAuthnService — registration ceremony', () => {
         response: { id: FAKE_CREDENTIAL_ID },
       }),
     ).rejects.toThrow();
+  });
+
+  it('register: enrollment appends a chained audit entry (acceptance f)', async () => {
+    const started = await webauthn.startRegistration({
+      userId: 'user-1',
+      userName: 'admin@alygn.com',
+    });
+    await webauthn.finishRegistration({
+      userId: 'user-1',
+      challengeId: started.challengeId,
+      response: { id: FAKE_CREDENTIAL_ID },
+      name: 'YubiKey 5C',
+    });
+
+    const rows = auditSqlite
+      .query('SELECT * FROM kill_switch_audit_log ORDER BY rowid ASC')
+      .all() as Record<string, unknown>[];
+    expect(rows.length).toBe(1);
+    const entry = rows[0];
+    expect(entry.user_id).toBe('user-1');
+    expect(entry.reason).toBe('webauthn_credential_enrolled');
+    expect(entry.new_state).toBe('enrolled');
+    // Chained: first entry links to GENESIS and carries a real self_hash + HMAC.
+    expect(entry.prev_hash).toBe('GENESIS');
+    expect(String(entry.self_hash)).toHaveLength(64);
+    expect(String(entry.server_hmac)).toHaveLength(64);
+    expect(String(entry.plain_explanation)).toContain('YubiKey 5C');
+
+    // The chain verifies end-to-end (no hand-rolled hashing in the test).
+    const { verifyChain } = await import('../audit-chain');
+    const result = await verifyChain();
+    expect(result.ok).toBe(true);
+    expect(result.total).toBe(1);
   });
 });
 
