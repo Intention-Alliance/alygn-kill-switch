@@ -8,6 +8,7 @@
  *   PATCH  /v1/machines/:id          — Update machine
  *   DELETE /v1/machines/:id          — Remove machine
  *   POST   /v1/machines/:id/heartbeat — Machine heartbeat
+ *   GET    /v1/machines/:id/heartbeats — Paginated heartbeat history
  *   GET    /v1/machines/:id/status   — Machine status + DPU info
  *
  * ADR-133: Kill Switch dashboard rebuild — machine inventory.
@@ -15,9 +16,10 @@
  */
 
 import { eq, ne, desc, asc, and, sql, or, isNull } from 'drizzle-orm';
-import { db } from '../db/index';
+import { db, sqlite } from '../db/index';
 import { machines, machineFlags, agents, featureFlags, killSwitchAuditLog } from '../db/schema';
 import { getMachineMetrics, collectSystemMetrics } from '../services/system-metrics';
+import { recordHeartbeat } from '../services/machine-heartbeat';
 import type { Machine, MachineSpecs, MachineStatus, DpuInfo, AgentInfo, ActiveFlagInfo } from '@align/shared-types';
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -58,6 +60,17 @@ function validateRole(role: string): string | null {
   if (!role || typeof role !== 'string') return 'role is required';
   if (role.length < 1 || role.length > 32) return 'role must be 1-32 characters';
   return null;
+}
+
+// Heartbeat history pagination bounds. Defaults keep the dashboard payload
+// small; the max caps a single query so history can't be used as a DoS vector.
+const HEARTBEAT_HISTORY_DEFAULT_LIMIT = 50;
+const HEARTBEAT_HISTORY_MAX_LIMIT = 500;
+
+function parseBoundedInt(raw: string | null, fallback: number, min: number, max: number): number {
+  const parsed = Number.parseInt(raw ?? '', 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
 }
 
 function serializeMachine(row: any): Machine {
@@ -212,15 +225,16 @@ export async function handleMachinesRoutes(
     }
 
     // ─── POST /v1/machines/:id/heartbeat — Machine heartbeat ────────
-    const heartbeatMatch = url.match(/^\/v1\/machines\/([^/]+)\/heartbeat$/);
+    const heartbeatMatch = url.match(/^\/v1\/machines\/([^/?]+)\/heartbeat(?:\?.*)?$/);
     if (method === 'POST' && heartbeatMatch) {
       const id = heartbeatMatch[1];
 
-      const existing = await db
-        .select()
-        .from(machines)
-        .where(eq(machines.id, id))
-        .get();
+      // Raw SQLite (not the Drizzle builder): several suites globally mock
+      // `drizzle-orm`, which breaks the builder's internal `sql` template.
+      // Same rationale as services/audit-chain.ts.
+      const existing = sqlite
+        .query('SELECT id FROM machine WHERE id = ?')
+        .get(id);
 
       if (!existing) {
         json(res, 404, { error: 'Machine not found', id });
@@ -230,17 +244,19 @@ export async function handleMachinesRoutes(
       const body = await parseJsonBody(req);
       const now = new Date();
 
-      await db.update(machines)
-        .set({
-          lastSeen: now,
-          status: 'active', // Heartbeat always sets status to active
-        })
-        .where(eq(machines.id, id));
+      sqlite.run('UPDATE machine SET last_seen = ?, status = ? WHERE id = ?', [
+        Math.floor(now.getTime() / 1000),
+        'active', // Heartbeat always sets status to active
+        id,
+      ]);
 
-      // Optionally log CPU/memory in audit log as metadata
-      if (body?.cpuUsage !== undefined || body?.memoryUsage !== undefined) {
-        // We'd log to kill_switch_audit_log but keeping it simple for now
-      }
+      // H5.1: persist one history row per tick so the dashboard can chart
+      // heartbeat history (the update above only moves the live pointer).
+      await recordHeartbeat(id, {
+        cpu: typeof body?.cpuUsage === 'number' ? body.cpuUsage : null,
+        memory: typeof body?.memoryUsage === 'number' ? body.memoryUsage : null,
+        status: 'active',
+      });
 
       // If agent version info provided, update/upsert agent
       if (body?.agentName && body?.agentVersion) {
@@ -282,6 +298,72 @@ export async function handleMachinesRoutes(
         acknowledged: true,
         machineId: id,
         timestamp: now.toISOString(),
+      });
+      return true;
+    }
+
+    // ─── GET /v1/machines/:id/heartbeats — Heartbeat history ────────
+    const heartbeatsMatch = url.match(/^\/v1\/machines\/([^/?]+)\/heartbeats(?:\?.*)?$/);
+    if (method === 'GET' && heartbeatsMatch) {
+      const id = heartbeatsMatch[1];
+
+      const machine = sqlite
+        .query('SELECT id FROM machine WHERE id = ?')
+        .get(id);
+
+      if (!machine) {
+        json(res, 404, { error: 'Machine not found', id });
+        return true;
+      }
+
+      const parsed = new URL(url, 'http://localhost');
+      const limit = parseBoundedInt(
+        parsed.searchParams.get('limit'),
+        HEARTBEAT_HISTORY_DEFAULT_LIMIT,
+        1,
+        HEARTBEAT_HISTORY_MAX_LIMIT,
+      );
+      const offset = parseBoundedInt(parsed.searchParams.get('offset'), 0, 0, Number.MAX_SAFE_INTEGER);
+
+      // Raw SQLite (not the Drizzle builder): several suites globally mock
+      // `drizzle-orm`, which breaks the builder's internal `sql` template.
+      // Same rationale as services/audit-chain.ts.
+      const rows = sqlite
+        .query(
+          `SELECT id, machine_id, timestamp, cpu, memory, status
+           FROM machine_heartbeat_log
+           WHERE machine_id = ?
+           ORDER BY timestamp DESC
+           LIMIT ? OFFSET ?`,
+        )
+        .all(id, limit, offset) as Array<{
+          id: string;
+          machine_id: string;
+          timestamp: number;
+          cpu: number | null;
+          memory: number | null;
+          status: string;
+        }>;
+
+      const totalRow = sqlite
+        .query('SELECT count(*) AS count FROM machine_heartbeat_log WHERE machine_id = ?')
+        .get(id) as { count: number } | null;
+
+      const data = rows.map((row) => ({
+        id: row.id,
+        machineId: row.machine_id,
+        timestamp: new Date(row.timestamp * 1000).toISOString(),
+        cpu: row.cpu,
+        memory: row.memory,
+        status: row.status,
+      }));
+
+      json(res, 200, {
+        data,
+        total: totalRow?.count ?? 0,
+        limit,
+        offset,
+        machineId: id,
       });
       return true;
     }
