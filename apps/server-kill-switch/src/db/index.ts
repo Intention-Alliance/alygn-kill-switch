@@ -610,6 +610,22 @@ export function initDatabase(dbPath: string = DB_PATH) {
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_hostname_idx ON machine(hostname)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS machine_status_idx ON machine(status)`);
 
+  // ─── H5.1: machine_heartbeat_log (durable heartbeat history) ────────
+  // Append-only history behind `machines.last_seen`; one row per tick.
+  // Retention is enforced by services/machine-heartbeat.ts.
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS machine_heartbeat_log (
+      id TEXT PRIMARY KEY,
+      machine_id TEXT NOT NULL REFERENCES machine(id) ON DELETE CASCADE,
+      timestamp INTEGER NOT NULL,
+      cpu REAL,
+      memory REAL,
+      status TEXT NOT NULL DEFAULT 'active'
+    )
+  `);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS machine_heartbeat_machine_time_idx ON machine_heartbeat_log(machine_id, timestamp)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS machine_heartbeat_time_idx ON machine_heartbeat_log(timestamp)`);
+
   // ─── Seed local machine ────────────────────────────────────────────
   // Ensure the dashboard always has at least the local host registered so
   // the web-regulator never renders an empty machine inventory. Uses

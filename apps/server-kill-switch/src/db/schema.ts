@@ -212,6 +212,28 @@ export const machines = sqliteTable(
   }),
 );
 
+// ─── Machine Heartbeat Log (H5.1 — durable heartbeat history) ────────────
+//
+// `machines.last_seen` is the live pointer; this table is the append-only
+// history the dashboard charts. One row per heartbeat tick. Bounded by the
+// `audit_log_retention_days` setting (see services/machine-heartbeat.ts).
+export const machineHeartbeatLog = sqliteTable(
+  'machine_heartbeat_log',
+  {
+    id: text('id').primaryKey(),
+    machineId: text('machine_id').notNull()
+      .references(() => machines.id, { onDelete: 'cascade' }),
+    timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+    cpu: real('cpu'),
+    memory: real('memory'),
+    status: text('status').notNull().default('active'),
+  },
+  (table) => ({
+    machineTimeIdx: index('machine_heartbeat_machine_time_idx').on(table.machineId, table.timestamp),
+    timeIdx: index('machine_heartbeat_time_idx').on(table.timestamp),
+  }),
+);
+
 // ─── Settings Persistence (New — ADR-133) ────────────────────────────────
 
 export const settings = sqliteTable(
