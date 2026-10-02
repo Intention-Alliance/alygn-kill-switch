@@ -6,7 +6,7 @@ import { getPausedRequestCount } from '../services/traffic-pause';
 import { parseBody } from '../utils/body-parser';
 import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
 import { killActionForTarget } from './kill-authorization';
-import { checkAuth } from '../middleware/auth';
+import { checkSessionAuth } from '../middleware/auth';
 import { getConfig } from '../config';
 import type { VerifierReachabilityTracker } from '../services/verification/verifier-reachability';
 
@@ -137,7 +137,9 @@ export async function handleKillSwitchRoutes(
         // 2. Fallback path: dashboard cookie-based session (super-admin).
         // The dashboard is already behind super-admin auth + Tailscale, so
         // a valid admin session is sufficient to authorize a kill/stop.
-        const ar = await checkAuth(service, req);
+        // Session-only: the API-key/Bearer fast path is structurally
+        // excluded here (ADR-136 §4).
+        const ar = await checkSessionAuth(req);
         if (!ar.authenticated || ar.user?.role !== 'admin') {
           res.writeHead(403, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
