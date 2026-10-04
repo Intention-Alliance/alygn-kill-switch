@@ -25,6 +25,9 @@
  */
 
 import { auth } from '../lib/auth';
+import { db } from '../db/index';
+import { users } from '../db/schema';
+import { eq } from 'drizzle-orm';
 import {
   startRegistration,
   finishRegistration,
@@ -72,6 +75,27 @@ async function getSessionUser(req: any): Promise<{ id: string; email: string; na
   return null;
 }
 
+/**
+ * Resolve the authenticated user's role from the DB and require it to be
+ * 'admin'. Credential enrollment (register/begin, register/finish) and
+ * assertion (assert/begin) are admin-only operations (P0-2). Returns
+ * true when the user is an admin, otherwise false.
+ */
+async function requireAdminRole(user: { id: string }): Promise<boolean> {
+  try {
+    const row = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, user.id))
+      .get();
+    return row?.role === 'admin';
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[webauthn] Role lookup failed:', message);
+    return false;
+  }
+}
+
 // ─── Route handler ──────────────────────────────────────────────────
 
 export async function handleWebAuthnRoutes(
@@ -88,6 +112,10 @@ export async function handleWebAuthnRoutes(
       const user = await getSessionUser(req);
       if (!user) {
         json(res, 401, { error: 'Authentication required' });
+        return true;
+      }
+      if (!(await requireAdminRole(user))) {
+        json(res, 403, { error: 'Admin role required for credential enrollment' });
         return true;
       }
       const body = await parseBody(req);
@@ -108,6 +136,10 @@ export async function handleWebAuthnRoutes(
       const user = await getSessionUser(req);
       if (!user) {
         json(res, 401, { error: 'Authentication required' });
+        return true;
+      }
+      if (!(await requireAdminRole(user))) {
+        json(res, 403, { error: 'Admin role required for credential enrollment' });
         return true;
       }
       const body = await parseBody(req);
@@ -185,6 +217,10 @@ export async function handleWebAuthnRoutes(
         json(res, 401, { error: 'Authentication required' });
         return true;
       }
+      if (!(await requireAdminRole(user))) {
+        json(res, 403, { error: 'Admin role required for credential enrollment' });
+        return true;
+      }
       const body = await parseBody(req);
       if (!body?.action || typeof body.action !== 'string') {
         json(res, 400, { error: 'Missing required field: action' });
@@ -206,6 +242,10 @@ export async function handleWebAuthnRoutes(
       const user = await getSessionUser(req);
       if (!user) {
         json(res, 401, { error: 'Authentication required' });
+        return true;
+      }
+      if (!(await requireAdminRole(user))) {
+        json(res, 403, { error: 'Admin role required for credential enrollment' });
         return true;
       }
       const body = await parseBody(req);

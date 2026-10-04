@@ -18,6 +18,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Fingerprint, Plus, Shield, Loader2 } from "lucide-react";
 import { apiGet } from "@/lib/api-client";
+import { AdminGuard } from "@/components/admin-guard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,74 +60,76 @@ export default function Fido2Page() {
   }, [refresh]);
 
   return (
-    <div className="space-y-4">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Fingerprint className="h-4 w-4 text-primary" aria-hidden="true" />
-          <h1 className="text-xl font-semibold tracking-tight">
-            FIDO2 Security Keys
-          </h1>
-          <Badge variant="secondary">{credentials.length} keys</Badge>
-        </div>
-        <Button onClick={() => setRegisterOpen(true)} data-testid="register-key">
-          <Plus className="h-4 w-4 mr-1" aria-hidden="true" />
-          Register New Key
-        </Button>
-      </div>
-
-      <p className="text-sm text-muted-foreground">
-        Manage hardware security keys for admin sign-in. Keys are verified
-        end-to-end via the WebAuthn ceremony before they are stored.
-      </p>
-
-      {/* Registered keys */}
-      <Card className="rounded-md border">
-        <CardHeader className="p-4 pb-2">
+    <AdminGuard>
+      <div className="space-y-4">
+        {/* Page header */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
-            <CardTitle className="text-sm font-semibold">
-              Registered Keys
-            </CardTitle>
+            <Fingerprint className="h-4 w-4 text-primary" aria-hidden="true" />
+            <h1 className="text-xl font-semibold tracking-tight">
+              FIDO2 Security Keys
+            </h1>
+            <Badge variant="secondary">{credentials.length} keys</Badge>
           </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {loading ? (
-            <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Loading keys…
-            </div>
-          ) : (
-            <Fido2KeysList
-              credentials={credentials}
-              onTest={setTestCredential}
-              onRename={setRenameCredential}
-              onRevoke={setRevokeCredential}
-            />
-          )}
-        </CardContent>
-      </Card>
+          <Button onClick={() => setRegisterOpen(true)} data-testid="register-key">
+            <Plus className="h-4 w-4 mr-1" aria-hidden="true" />
+            Register New Key
+          </Button>
+        </div>
 
-      {/* Dialogs */}
-      <Fido2RegisterDialog
-        open={registerOpen}
-        onOpenChange={setRegisterOpen}
-        onRegistered={refresh}
-      />
-      <Fido2TestDialog
-        credential={testCredential}
-        onOpenChange={(open) => !open && setTestCredential(null)}
-      />
-      <Fido2RevokeDialog
-        credential={revokeCredential}
-        onOpenChange={(open) => !open && setRevokeCredential(null)}
-        onRevoked={refresh}
-      />
-      <Fido2RenameDialog
-        credential={renameCredential}
-        onOpenChange={(open) => !open && setRenameCredential(null)}
-        onRenamed={refresh}
-      />
-    </div>
+        <p className="text-sm text-muted-foreground">
+          Manage hardware security keys for admin sign-in. Keys are verified
+          end-to-end via the WebAuthn ceremony before they are stored.
+        </p>
+
+        {/* Registered keys */}
+        <Card className="rounded-md border">
+          <CardHeader className="p-4 pb-2">
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-primary" aria-hidden="true" />
+              <CardTitle className="text-sm font-semibold">
+                Registered Keys
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {loading ? (
+              <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Loading keys…
+              </div>
+            ) : (
+              <Fido2KeysList
+                credentials={credentials}
+                onTest={setTestCredential}
+                onRename={setRenameCredential}
+                onRevoke={setRevokeCredential}
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Dialogs */}
+        <Fido2RegisterDialog
+          open={registerOpen}
+          onOpenChange={setRegisterOpen}
+          onRegistered={refresh}
+        />
+        <Fido2TestDialog
+          credential={testCredential}
+          onOpenChange={(open) => !open && setTestCredential(null)}
+        />
+        <Fido2RevokeDialog
+          credential={revokeCredential}
+          onOpenChange={(open) => !open && setRevokeCredential(null)}
+          onRevoked={refresh}
+        />
+        <Fido2RenameDialog
+          credential={renameCredential}
+          onOpenChange={(open) => !open && setRenameCredential(null)}
+          onRenamed={refresh}
+        />
+      </div>
+    </AdminGuard>
   );
 }

@@ -8,8 +8,9 @@
  */
 
 import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
-import { KillSwitchService } from '../kill-switch';
+import { configModuleMock } from '../../test-utils/config-mock';
 import type { RedisPool } from '../../types/redis-pool';
+import { KillSwitchService } from '../kill-switch';
 import { isTrafficPaused, resetTrafficPauseState } from '../traffic-pause';
 
 // transitionTo now persists via the tamper-evident audit chain (ADR-140),
@@ -31,11 +32,11 @@ mock.module('../../infra-loader', () => ({
   }),
 }));
 
-// Mock config so isFeatureEnabled returns true for traffic pause
-mock.module("../../config", () => ({
-  getConfig: () => ({ server: { port: 3000, host: "0.0.0.0" }, env: "test", redis: { urls: [] } }),
-  isFeatureEnabled: (key: string) => key === "killSwitchTrafficPauseEnabled",
-}));
+// Mock config with the COMPLETE AppConfig shape. Bun's mock.module is
+// process-global and never reset, so a partial config leaks into later
+// test files (the webauthn service reads getConfig().webauthn). See
+// test-utils/config-mock.ts.
+mock.module("../../config", () => configModuleMock());
 
 // Track the internal Redis state for get/set
 let internalState: string | null = null;

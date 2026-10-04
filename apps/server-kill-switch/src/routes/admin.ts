@@ -14,7 +14,21 @@ export async function handleAdminRoutes(
   req: any,
   res: any,
   service: KillSwitchService,
+  userRole: string | null,
 ): Promise<boolean> {
+  // Only handle /admin/* paths. Non-admin paths fall through to the
+  // main dispatcher.
+  if (!url.startsWith('/admin/')) return false;
+
+  // Admin routes require an authenticated admin session. The caller
+  // (index.ts) runs this AFTER checkAuth, so a non-authenticated request
+  // never reaches here. Defense-in-depth: verify the role is admin.
+  if (userRole !== 'admin') {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Admin role required' }));
+    return true;
+  }
+
   // GET /admin/cost — Cost tracking report
   if (method === 'GET' && url === '/admin/cost') {
     const report = getCostReport();

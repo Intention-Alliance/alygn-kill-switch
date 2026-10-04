@@ -38,13 +38,42 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => ({
     insert: () => ({ values: () => ({ run: () => {} }) }),
     update: () => ({ set: () => ({ where: () => ({ run: () => {} }) }) }),
   },
+  // Other modules in the graph (audit-chain, webhook-keys, websocket-manager)
+  // import `sqlite` from db/index; the mock must expose it or those imports
+  // fail with "Export named 'sqlite' not found".
+  sqlite: {
+    query: () => ({ get: () => undefined, all: () => [], run: () => {} }),
+  },
 }));
 
-// ─── Mock drizzle-orm ─────────────────────────────────────────────
+// ─── Mock ../lib/auth (avoids loading real better-auth, whose drizzle
+// adapter needs drizzle-orm exports missing from the installed version) ──
+// getSession returns an admin user only when the request carries a
+// better-auth session cookie, so the session-cookie path can be exercised.
+mock.module(path.resolve(__dirname, '../../lib/auth.ts'), () => ({
+  auth: {
+    api: {
+      getSession: async ({ headers }: { headers: Headers }) => {
+        const cookie = headers.get('cookie') || '';
+        if (cookie.includes('better-auth.session_token=admin-session')) {
+          return { user: { email: 'admin@alygn.com', role: 'admin' } };
+        }
+        return { user: null };
+      },
+    },
+  },
+  seedAdminUser: async () => {},
+}));
+
+// ─── Mock drizzle-orm (desc/sql/eq/and/isNull used by transitive imports) ──
 mock.module('drizzle-orm', () => ({
   eq: (left: any, right: any) => ({ __eq: right, __leftName: left?.name }),
   and: (...args: any[]) => ({ __and: args }),
   isNull: (col: any) => ({ __isNull: true, __col: col?.name }),
+  desc: (col: any) => ({ __desc: true, __col: col?.name }),
+  sql: (strings: TemplateStringsArray, ...values: unknown[]) => ({
+    __sql: String.raw(strings, ...values),
+  }),
 }));
 
 // ─── Mock kill-switch service ─────────────────────────────────────
@@ -165,6 +194,35 @@ describe('POST /v1/kill-switch/chaos — WebAuthn assertion authorization', () =
     expect(handled).toBe(true);
     expect(res.statusCode).toBe(403);
     expect(getJson(res).code).toBe('ASSERTION_REQUIRED');
+    expect(mockTransitionTo).not.toHaveBeenCalled();
+  });
+
+  it('valid admin session cookie → transition executes (session fallback)', async () => {
+    const res = createMockRes();
+    const req = createMockReq(
+      JSON.stringify({ state: 'STOPPED', reason: 'dashboard kill' }),
+      { cookie: 'better-auth.session_token=admin-session' },
+    );
+
+    const handled = await handleKillSwitchRoutes('POST', '/v1/kill-switch/chaos', req, res, mockService, '10.0.0.1');
+
+    expect(handled).toBe(true);
+    expect(res.statusCode).toBe(200);
+    expect(getJson(res).initiatedBy).toBe('admin@alygn.com');
+    expect(mockTransitionTo).toHaveBeenCalledTimes(1);
+  });
+
+  it('non-admin session cookie REJECTED (403)', async () => {
+    const res = createMockRes();
+    const req = createMockReq(
+      JSON.stringify({ state: 'STOPPED' }),
+      { cookie: 'better-auth.session_token=viewer-session' },
+    );
+
+    const handled = await handleKillSwitchRoutes('POST', '/v1/kill-switch/chaos', req, res, mockService, '10.0.0.1');
+
+    expect(handled).toBe(true);
+    expect(res.statusCode).toBe(403);
     expect(mockTransitionTo).not.toHaveBeenCalled();
   });
 

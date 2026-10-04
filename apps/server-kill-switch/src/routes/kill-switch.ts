@@ -6,8 +6,9 @@ import { getPausedRequestCount } from '../services/traffic-pause';
 import { parseBody } from '../utils/body-parser';
 import { verifyAssertionTokenForAction, WebAuthnError } from '../services/webauthn';
 import { killActionForTarget } from './kill-authorization';
-import { checkAuth } from '../middleware/auth';
+import { checkSessionAuth } from '../middleware/auth';
 import { getConfig } from '../config';
+import type { VerifierReachabilityTracker } from '../services/verification/verifier-reachability';
 
 /**
  * Extract and verify the WebAuthn assertion token required for kill
@@ -52,6 +53,7 @@ export async function handleKillSwitchRoutes(
   res: any,
   service: KillSwitchService,
   ip: string,
+  verifierReachability?: VerifierReachabilityTracker,
 ): Promise<boolean> {
   try {
     // GET /v1/kill-switch/activations
@@ -87,6 +89,10 @@ export async function handleKillSwitchRoutes(
         verificationEnabled: verification.verifyEnabled,
         verificationMode: verification.verifyMode,
         verifierModel: verification.verifierModel,
+        // H1.1: expose verifier reachability so the dashboard can surface
+        // whether inference verification is active or degraded. When
+        // verification is disabled, the tracker is undefined → null.
+        verifierReachable: verifierReachability?.getVerifierReachable() ?? null,
       };
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -131,7 +137,9 @@ export async function handleKillSwitchRoutes(
         // 2. Fallback path: dashboard cookie-based session (super-admin).
         // The dashboard is already behind super-admin auth + Tailscale, so
         // a valid admin session is sufficient to authorize a kill/stop.
-        const ar = await checkAuth(service, req);
+        // Session-only: the API-key/Bearer fast path is structurally
+        // excluded here (ADR-136 §4).
+        const ar = await checkSessionAuth(req);
         if (!ar.authenticated || ar.user?.role !== 'admin') {
           res.writeHead(403, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({

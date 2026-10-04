@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "09f22d98-d525-4aa0-914c-b443388d227a",
-  "prevId": "3c9ad305-d50b-4a16-99b4-118f18703c30",
+  "id": "994836e5-af49-4662-b683-843747b7a186",
+  "prevId": "812db5f6-0e4b-4d86-b29e-a023ab71562d",
   "tables": {
     "account": {
       "name": "account",
@@ -1463,6 +1463,89 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "machine_heartbeat_log": {
+      "name": "machine_heartbeat_log",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "machine_id": {
+          "name": "machine_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cpu": {
+          "name": "cpu",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "memory": {
+          "name": "memory",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        }
+      },
+      "indexes": {
+        "machine_heartbeat_machine_time_idx": {
+          "name": "machine_heartbeat_machine_time_idx",
+          "columns": [
+            "machine_id",
+            "timestamp"
+          ],
+          "isUnique": false
+        },
+        "machine_heartbeat_time_idx": {
+          "name": "machine_heartbeat_time_idx",
+          "columns": [
+            "timestamp"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "machine_heartbeat_log_machine_id_machine_id_fk": {
+          "name": "machine_heartbeat_log_machine_id_machine_id_fk",
+          "tableFrom": "machine_heartbeat_log",
+          "tableTo": "machine",
+          "columnsFrom": [
+            "machine_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "machine": {
       "name": "machine",
       "columns": {
@@ -2038,7 +2121,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'admin'"
+          "default": "'viewer'"
         },
         "created_at": {
           "name": "created_at",

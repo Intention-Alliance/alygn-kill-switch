@@ -234,6 +234,7 @@ export function validateVerifierConfig(verification: VerificationConfig): void {
 export async function validateVerifierReachability(
   verification: VerificationConfig,
   timeoutMs = 2_000,
+  fetchImpl: (input: string | URL | Request, init?: RequestInit) => Promise<Response> = fetch,
 ): Promise<boolean> {
   if (!verification.verifyEnabled) {
     return true;
@@ -244,7 +245,7 @@ export async function validateVerifierReachability(
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(`${base}/api/tags`, {
+      const res = await fetchImpl(`${base}/api/tags`, {
         signal: controller.signal,
       });
       return res.ok;
@@ -254,4 +255,36 @@ export async function validateVerifierReachability(
   } catch {
     return false;
   }
+}
+
+// ─── Verifier Retry-Loop Config (H1.1) ───────────────────────────
+
+/**
+ * Number of startup probe attempts before the verifier falls back to
+ * degraded-mode re-probing. Default 5. Read from VERIFIER_MAX_RETRIES.
+ */
+export function getVerifierMaxRetries(): number {
+  const raw = process.env.VERIFIER_MAX_RETRIES;
+  if (!raw) return 5;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    console.warn(`[verification] Invalid VERIFIER_MAX_RETRIES "${raw}" — using default 5`);
+    return 5;
+  }
+  return parsed;
+}
+
+/**
+ * Interval (ms) between re-probes while the verifier stays degraded.
+ * Default 300000 (5 min). Read from VERIFIER_REPROBE_INTERVAL_MS.
+ */
+export function getVerifierReprobeIntervalMs(): number {
+  const raw = process.env.VERIFIER_REPROBE_INTERVAL_MS;
+  if (!raw) return 300_000;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed < 1_000) {
+    console.warn(`[verification] Invalid VERIFIER_REPROBE_INTERVAL_MS "${raw}" — using default 300000`);
+    return 300_000;
+  }
+  return parsed;
 }
