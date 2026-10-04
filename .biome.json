@@ -10,10 +10,20 @@
 		"includes": [
 			"**",
 			"!apps/web-regulator/.next",
-			"!apps/server-slashing-engine/public"
+			"!apps/server-slashing-engine/public",
+			"!.vscode",
+			"!node_modules",
+			"!bun.lock"
 		]
 	},
-	"formatter": { "enabled": true, "indentStyle": "tab", "indentWidth": 2 },
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2
+	},
+	"organizeImports": {
+		"enabled": true
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -28,15 +38,56 @@
 			},
 			"correctness": {
 				"recommended": true,
-				"noEmptyPattern": "warn"
+				"noEmptyPattern": "warn",
+				"useExhaustiveDependencies": {
+					"level": "warn",
+					"options": {
+						"hooks": [
+							{
+								"name": "useMountEffect",
+								"stableResult": [0]
+							},
+							{
+								"name": "useUnmountEffect",
+								"stableResult": [0]
+							},
+							{
+								"name": "useWatchEffect",
+								"closureIndex": 0,
+								"dependenciesIndex": 1
+							},
+							{
+								"name": "useAsyncEffect",
+								"closureIndex": 0,
+								"dependenciesIndex": 1
+							},
+							{
+								"name": "useStoreSync",
+								"stableResult": []
+							},
+							{
+								"name": "useEventListener",
+								"stableResult": []
+							}
+						]
+					}
+				}
 			},
 			"suspicious": {
 				"recommended": true,
-				"noExplicitAny": "error"
+				"noExplicitAny": "warn",
+				"noArrayIndexKey": "warn"
+			},
+			"performance": {
+				"recommended": true,
+				"noAccumulatingSpread": "warn"
 			}
 		}
 	},
 	"javascript": {
-		"formatter": { "quoteStyle": "single", "semicolons": "asNeeded" }
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded"
+		}
 	}
 }

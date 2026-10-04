@@ -48,9 +48,9 @@ A comprehensive monorepo for the ALYGN (Artificial Ledger for Intelligence Gover
 | [`apps/web-regulator`](./apps/web-regulator) | Next.js | Real-time compliance dashboard |
 | [`apps/server-slashing-engine`](./apps/server-slashing-engine) | Express.js | Cryptoeconomic enforcement |
 | [`apps/server-telemetry-handler`](./apps/server-telemetry-handler) | C++ | ZKP telemetry logging |
-| [`apps/server-rdma-monitor`](./apps/server-rdma-monitor) | C++ | BlueField-3 DPU security |
-| [`apps/smart-contracts`](./apps/smart-contracts) | Bitcoin | ALYGN token (Taproot) |
-| [`packages/db-schema`](./packages/db-schema) | SQL | Supabase migrations |
+| [`apps/server-rdma-monitor`](./apps/server-rdma-monitor) | C++ | DPU security w/BlueField-3 Support |
+| [`apps/smart-contracts`](./apps/smart-contracts) | Inmutable Blockchain Contract | Kill Switch Logs + Actons |
+| [`packages/decision-core`](./packages/decision-core) | Typescript | Base Classification Model Providers for Dignity Verifier |
 | [`packages/shared-types`](./packages/shared-types) | TypeScript | Shared type definitions |
 
 ---
