@@ -110,7 +110,7 @@ function matchesFilters(row: Record<string, unknown>): boolean {
 	return true
 }
 
-function makeTableProxy(store: any[], tableName: string) {
+function makeTableProxy(store: any[], _tableName: string) {
 	return {
 		select: () => ({
 			from: (_table: unknown) => ({
@@ -331,9 +331,9 @@ describe('DiscoveryOrchestrator', () => {
 		})
 
 		expect(result.drift).not.toBeNull()
-		expect(result.drift!.event).toBe('swap')
-		expect(result.drift!.severity).toBe('high')
-		expect(result.drift!.driftedFields).toContain('macs')
+		expect(result.drift?.event).toBe('swap')
+		expect(result.drift?.severity).toBe('high')
+		expect(result.drift?.driftedFields).toContain('macs')
 		// Integrity event persisted
 		expect(integrityStore.length).toBe(1)
 		expect(integrityStore[0].event).toBe('swap')
@@ -373,7 +373,7 @@ describe('DiscoveryOrchestrator', () => {
 
 		// High-severity drift detected and persisted.
 		expect(result.drift).not.toBeNull()
-		expect(result.drift!.severity).toBe('high')
+		expect(result.drift?.severity).toBe('high')
 		expect(integrityStore.length).toBe(1)
 
 		// flagForReview fired: the ADMITTED machine returned to
@@ -414,7 +414,7 @@ describe('DiscoveryOrchestrator', () => {
 		})
 
 		expect(result.drift).not.toBeNull()
-		expect(result.drift!.severity).toBe('high')
+		expect(result.drift?.severity).toBe('high')
 		// Still NEW_MACHINE — flagForReview no-ops for non-admitted machines.
 		expect(machinesStore[0].state).toBe('NEW_MACHINE')
 	})
@@ -453,9 +453,9 @@ describe('DiscoveryOrchestrator', () => {
 		})
 
 		expect(result.drift).not.toBeNull()
-		expect(result.drift!.event).toBe('tamper')
-		expect(result.drift!.severity).toBe('high')
-		expect(result.drift!.driftedFields).toEqual([])
+		expect(result.drift?.event).toBe('tamper')
+		expect(result.drift?.severity).toBe('high')
+		expect(result.drift?.driftedFields).toEqual([])
 		// Integrity event persisted
 		expect(integrityStore.length).toBe(1)
 		expect(integrityStore[0].event).toBe('tamper')
@@ -493,12 +493,12 @@ describe('DiscoveryOrchestrator', () => {
 
 		const report = await orchestrator.getDiscoveryReport('machine-1')
 		expect(report).not.toBeNull()
-		expect(report!.machine.id).toBe('machine-1')
-		expect(report!.machine.state).toBe('NEW_MACHINE')
-		expect(report!.providers.length).toBe(1)
-		expect(report!.models.length).toBe(1)
-		expect(report!.integrity.signature).not.toBeNull()
-		expect(report!.integrity.drift).toBeNull()
+		expect(report?.machine.id).toBe('machine-1')
+		expect(report?.machine.state).toBe('NEW_MACHINE')
+		expect(report?.providers.length).toBe(1)
+		expect(report?.models.length).toBe(1)
+		expect(report?.integrity.signature).not.toBeNull()
+		expect(report?.integrity.drift).toBeNull()
 	})
 
 	it('returns null report for unknown machine', async () => {
@@ -525,9 +525,9 @@ describe('DiscoveryOrchestrator', () => {
 			true,
 		)
 		expect(confirmed).not.toBeNull()
-		expect(confirmed!.state).toBe('ADMITTED')
-		expect(confirmed!.confirmedBy).toBe('admin@alygn.com')
-		expect(confirmed!.confirmedAt).not.toBeNull()
+		expect(confirmed?.state).toBe('ADMITTED')
+		expect(confirmed?.confirmedBy).toBe('admin@alygn.com')
+		expect(confirmed?.confirmedAt).not.toBeNull()
 	})
 
 	it('denies a machine (zero authority granted)', async () => {
@@ -546,7 +546,7 @@ describe('DiscoveryOrchestrator', () => {
 			false,
 		)
 		expect(denied).not.toBeNull()
-		expect(denied!.state).toBe('DENIED')
+		expect(denied?.state).toBe('DENIED')
 	})
 
 	it('returns null when confirming an unknown machine', async () => {

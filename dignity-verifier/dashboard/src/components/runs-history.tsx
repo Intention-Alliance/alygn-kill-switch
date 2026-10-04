@@ -54,7 +54,7 @@ export function RunsHistory({ type, refreshKey = 0 }: RunsHistoryProps) {
 
 	useEffect(() => {
 		void loadRuns()
-	}, [loadRuns, refreshKey])
+	}, [loadRuns])
 
 	if (error) {
 		return (

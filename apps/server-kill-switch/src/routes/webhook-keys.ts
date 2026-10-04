@@ -400,7 +400,7 @@ async function verifyAccess(req: Req, res: Res, id: string): Promise<boolean> {
 	}
 
 	const ip = typeof body.ip === 'string' ? body.ip : ''
-	const deviceFp = typeof body.deviceFp === 'string' ? body.deviceFp : ip
+	const _deviceFp = typeof body.deviceFp === 'string' ? body.deviceFp : ip
 	const otp = typeof body.otp === 'string' ? body.otp : ''
 
 	if (!ip) {

@@ -18,13 +18,11 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import {
-	buildFallbackPrompt,
 	buildVerifierSystemPrompt,
 	buildVerifierUserMessage,
 	CANONICAL_EXAMPLES,
 	type ICLExample,
 	INJECTION_EXAMPLES,
-	INJECTION_SAFETY_PREAMBLE,
 } from '../../config/constants/prompts'
 
 export type Verdict = 'SAFE' | 'UNSAFE' | 'REVIEW'

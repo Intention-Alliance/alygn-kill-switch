@@ -13,7 +13,7 @@ export class SlashingRoute implements Routes {
 	public router: Router = Router();
 	public path = "/slashing";
 
-	constructor(@inject(SlashingController) private slashingController: SlashingController) {
+	constructor(@inject(SlashingController) private _slashingController: SlashingController) {
 		this.initializeRoutes();
 	}
 

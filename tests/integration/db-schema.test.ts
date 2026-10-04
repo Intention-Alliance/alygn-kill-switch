@@ -82,7 +82,7 @@ describe('Database Schema Validation', () => {
 			const { error } = await supabase
 				.from('compliance_audit_log')
 				.update({ dpu_id: 'modified' })
-				.eq('id', inserted!.id)
+				.eq('id', inserted?.id)
 
 			expect(error).not.toBeNull()
 			expect(error?.message).toContain('UPDATE operation not allowed')
@@ -107,7 +107,7 @@ describe('Database Schema Validation', () => {
 			const { error } = await supabase
 				.from('compliance_audit_log')
 				.delete()
-				.eq('id', inserted!.id)
+				.eq('id', inserted?.id)
 
 			expect(error).not.toBeNull()
 			expect(error?.message).toContain('DELETE operation not allowed')

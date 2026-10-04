@@ -1,6 +1,6 @@
+import { existsSync, mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { LOG_DIR, LOG_LEVEL, NODE_ENV } from '@config/env'
-import { existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
 import pino from 'pino'
 
 // Log environment configuration

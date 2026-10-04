@@ -10,7 +10,7 @@
  *   - monitoring-only gate: machine in monitoring_only cannot receive active responses
  */
 
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, it } from 'bun:test'
 import { OnboardingStateError } from '../../services/onboarding'
 
 // ─── Mock OnboardingService ─────────────────────────────────────

@@ -40,7 +40,7 @@ const DEFAULT_TIMEOUT_MS = 500
 function failClosed(
 	reason: string,
 	latencyMs: number,
-	model: string,
+	_model: string,
 ): DecisionResult {
 	return {
 		label: 'review',

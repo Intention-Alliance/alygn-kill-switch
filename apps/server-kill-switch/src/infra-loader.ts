@@ -18,7 +18,7 @@ export async function loadTracing() {
 			err.message,
 		)
 		return {
-			recordSpan: async (name: string, _attrs: any, fn: (span: any) => any) =>
+			recordSpan: async (_name: string, _attrs: any, fn: (span: any) => any) =>
 				fn({
 					spanContext: () => ({ traceId: 'noop' }),
 					setAttribute: () => {},

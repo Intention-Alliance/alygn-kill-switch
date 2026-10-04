@@ -6,7 +6,7 @@
  * the selector turns a missing provider into the fail-closed review path.
  */
 
-import type { DecisionProvider, ProviderName } from '@align/shared-types'
+import type { DecisionProvider } from '@align/shared-types'
 import { JevProvider } from './providers/jev'
 import { KeywordProvider } from './providers/keyword'
 import { LayaProvider } from './providers/laya'
@@ -55,7 +55,7 @@ export function buildRegistry(opts: BuildRegistryOpts): ProviderRegistry {
 		registry.register(new OllamaProvider(opts.verifier))
 	}
 
-	if (opts.jev && opts.jev.apiKey) {
+	if (opts.jev?.apiKey) {
 		registry.register(
 			new JevProvider({
 				apiKey: opts.jev.apiKey,
@@ -66,7 +66,7 @@ export function buildRegistry(opts: BuildRegistryOpts): ProviderRegistry {
 		)
 	}
 
-	if (opts.laya && opts.laya.baseUrl) {
+	if (opts.laya?.baseUrl) {
 		registry.register(
 			new LayaProvider({
 				baseUrl: opts.laya.baseUrl,
@@ -76,7 +76,7 @@ export function buildRegistry(opts: BuildRegistryOpts): ProviderRegistry {
 		)
 	}
 
-	if (opts.remote && opts.remote.motherUrl) {
+	if (opts.remote?.motherUrl) {
 		registry.register(
 			new RemoteProvider({
 				motherUrl: opts.remote.motherUrl,

@@ -121,7 +121,7 @@ export class DatasetIndex {
 		return [...scores.entries()]
 			.sort((a, b) => b[1] - a[1])
 			.slice(0, limit)
-			.map(([idx]) => this.examples[idx]!.example)
+			.map(([idx]) => this.examples[idx]?.example)
 	}
 
 	/**

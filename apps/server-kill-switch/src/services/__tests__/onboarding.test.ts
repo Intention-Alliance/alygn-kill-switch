@@ -199,7 +199,7 @@ function matchesFilters(row: Record<string, unknown>): boolean {
 	return true
 }
 
-function makeTableProxy(store: any[], tableName: string) {
+function makeTableProxy(store: any[], _tableName: string) {
 	// Sort rows by the orderBy conditions: asc(col) → { __asc }, desc(col)
 	// → { __desc }. Column names are snake_case; rows use camelCase.
 	const sorted = (rows: any[], conds: any[]): any[] => {
@@ -444,12 +444,12 @@ describe('OnboardingService', () => {
 		})
 
 		expect(decision).not.toBeNull()
-		expect(decision!.machine.state).toBe('ADMITTED')
-		expect(decision!.machine.confirmedBy).toBe('admin@alygn.com')
-		expect(decision!.machineRecord).not.toBeNull()
-		expect(decision!.machineRecord!.monitoringOnly).toBe(true)
-		expect(decision!.machineRecord!.zone).toBe('unassigned')
-		expect(decision!.registration.status).toBe('APPROVED')
+		expect(decision?.machine.state).toBe('ADMITTED')
+		expect(decision?.machine.confirmedBy).toBe('admin@alygn.com')
+		expect(decision?.machineRecord).not.toBeNull()
+		expect(decision?.machineRecord?.monitoringOnly).toBe(true)
+		expect(decision?.machineRecord?.zone).toBe('unassigned')
+		expect(decision?.registration.status).toBe('APPROVED')
 
 		// Machine tenant created with fingerprint-derived specs
 		expect(machinesStore.length).toBe(1)
@@ -480,7 +480,7 @@ describe('OnboardingService', () => {
 			zone: 'gpu-zone',
 		})
 
-		expect(decision!.machineRecord!.zone).toBe('gpu-zone')
+		expect(decision?.machineRecord?.zone).toBe('gpu-zone')
 		expect(machinesStore[0].zone).toBe('gpu-zone')
 	})
 
@@ -495,10 +495,10 @@ describe('OnboardingService', () => {
 		})
 
 		expect(decision).not.toBeNull()
-		expect(decision!.machine.state).toBe('DENIED')
-		expect(decision!.machineRecord).toBeNull()
-		expect(decision!.registration.status).toBe('DENIED')
-		expect(decision!.registration.denialReason).toBe('Unknown device')
+		expect(decision?.machine.state).toBe('DENIED')
+		expect(decision?.machineRecord).toBeNull()
+		expect(decision?.registration.status).toBe('DENIED')
+		expect(decision?.registration.denialReason).toBe('Unknown device')
 
 		// No machine tenant created
 		expect(machinesStore.length).toBe(0)
@@ -528,7 +528,7 @@ describe('OnboardingService', () => {
 				machineId: `machine-${i}`,
 				reviewedBy: 'admin@alygn.com',
 			})
-			expect(decision!.machine.state).toBe('DENIED')
+			expect(decision?.machine.state).toBe('DENIED')
 		}
 
 		// Threshold reached on the 3rd denial → alert raised
@@ -578,7 +578,7 @@ describe('OnboardingService', () => {
 				machineId: `machine-${i}`,
 				reviewedBy: 'admin@alygn.com',
 			})
-			expect(decision!.machine.state).toBe('DENIED')
+			expect(decision?.machine.state).toBe('DENIED')
 		}
 
 		// Still exactly one alert — the 4th denial updated it in place.
@@ -648,7 +648,7 @@ describe('OnboardingService', () => {
 			machineId: 'machine-1',
 			reviewedBy: 'admin@alygn.com',
 		})
-		expect(decision!.machine.state).toBe('ADMITTED')
+		expect(decision?.machine.state).toBe('ADMITTED')
 		expect(discoveredStore[0].state).toBe('ADMITTED')
 	})
 
@@ -731,7 +731,7 @@ describe('OnboardingService', () => {
 		const pending = await service.listPending()
 		expect(pending.length).toBe(2)
 		expect(pending.map((m: any) => m.id).sort()).toEqual(['m1', 'm2'])
-		expect(pending.find((m: any) => m.id === 'm2')!.state).toBe(
+		expect(pending.find((m: any) => m.id === 'm2')?.state).toBe(
 			'PENDING_REVIEW',
 		)
 	})

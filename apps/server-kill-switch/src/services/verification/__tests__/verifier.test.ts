@@ -214,7 +214,7 @@ describe('InferenceVerifier.verify', () => {
 	})
 
 	it('appends the injection-safety preamble to the loaded system prompt (P2-B)', async () => {
-		const verifier = new InferenceVerifier({
+		const _verifier = new InferenceVerifier({
 			model: 'test-model',
 			baseUrl: 'http://127.0.0.1:11434',
 			// No systemPrompt override → uses buildSystemPrompt() (loaded file + preamble).

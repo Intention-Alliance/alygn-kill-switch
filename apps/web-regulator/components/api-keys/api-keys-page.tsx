@@ -17,7 +17,6 @@
  */
 
 import {
-	Activity,
 	Check,
 	Clock,
 	Copy,
@@ -26,7 +25,6 @@ import {
 	Plus,
 	RotateCw,
 	ShieldOff,
-	Trash2,
 } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -114,7 +112,7 @@ export function ApiKeysPageClient({ initial }: Props) {
 	const [auditKey, setAuditKey] = useState<ApiKeyInfo | null>(null)
 	const [auditEntries, setAuditEntries] = useState<ApiKeyAuditEvent[]>([])
 	const [auditLoading, setAuditLoading] = useState(false)
-	const [pending, startTransition] = useTransition()
+	const [_pending, startTransition] = useTransition()
 
 	function handleCreated(result: CreateApiKeyResult) {
 		setRevealedKey(result)

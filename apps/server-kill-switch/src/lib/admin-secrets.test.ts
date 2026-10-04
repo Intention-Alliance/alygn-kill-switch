@@ -63,7 +63,7 @@ async function cleanupTestEnv() {
 
 function makeReq(method: string, url: string, body?: string, authKey?: string) {
 	const headers: Record<string, string> = {}
-	if (authKey) headers['authorization'] = `Bearer ${authKey}`
+	if (authKey) headers.authorization = `Bearer ${authKey}`
 	const nodeReq: any = {
 		method,
 		url,

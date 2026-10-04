@@ -35,7 +35,6 @@ import {
 } from './monitors/index'
 import type { HardwareMonitor } from './monitors/interface'
 import { SqlitePersister } from './persisters/sqlite-persister'
-import type { HardwareMetric } from './types'
 
 // ─── Type Aliases for External Dependencies ──────────────────────────────
 
@@ -174,7 +173,7 @@ export async function startTelemetryServer(
 	service.collector.startCollecting()
 
 	// ─── Create HTTP server ─────────────────────────────────────────
-	const http = await import('http')
+	const http = await import('node:http')
 	const port = opts.port || config.port
 
 	const requestHandler = async (req: any, res: any) => {

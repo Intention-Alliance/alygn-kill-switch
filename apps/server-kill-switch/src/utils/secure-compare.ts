@@ -1,7 +1,7 @@
 // Timing-safe string comparison — prevents timing attacks
 // Use this for ALL auth token comparisons instead of ===
 
-import { timingSafeEqual } from 'crypto'
+import { timingSafeEqual } from 'node:crypto'
 
 /**
  * Compare two strings in constant time to prevent timing attacks.

@@ -576,7 +576,7 @@ describe('POST /v1/kill-authorization/policy-change — quorum-gated flag change
 		expect(body.request.status).toBe('PENDING_QUORUM')
 		// The setting must NOT have changed yet
 		expect(
-			settingStore.find((s) => s.key === 'kill.authorization.mode')!.value,
+			settingStore.find((s) => s.key === 'kill.authorization.mode')?.value,
 		).toBe('quorum')
 	})
 
@@ -606,7 +606,7 @@ describe('POST /v1/kill-authorization/policy-change — quorum-gated flag change
 		const body = getJson(res)
 		expect(body.executed).toBe(true)
 		expect(
-			settingStore.find((s) => s.key === 'kill.authorization.timeoutMs')!.value,
+			settingStore.find((s) => s.key === 'kill.authorization.timeoutMs')?.value,
 		).toBe('300000')
 	})
 

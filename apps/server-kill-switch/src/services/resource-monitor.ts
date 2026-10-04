@@ -1,9 +1,8 @@
 // System Resource Monitor — CPU, Memory, Disk tracking with alert thresholds
 // Provides real-time resource stats and threshold-based alerting
 
-import { readdirSync, statfsSync } from 'fs'
-import { cpus, totalmem } from 'os'
-import { join } from 'path'
+import { statfsSync } from 'node:fs'
+import { totalmem } from 'node:os'
 
 // Keep os totalmem helper for the import above
 const _osTotalMem = totalmem

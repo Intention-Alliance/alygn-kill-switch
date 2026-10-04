@@ -64,7 +64,7 @@ function requireAssertion(
 	req: any,
 	action: string,
 ): { userId: string; credentialId: string } {
-	const header = req.headers?.['authorization'] ?? ''
+	const header = req.headers?.authorization ?? ''
 	if (!header.startsWith('Assertion ')) {
 		throw new KillAuthorizationError(
 			'Kill authorization requires a WebAuthn assertion token (Authorization: Assertion <token>)',

@@ -20,13 +20,6 @@ import {
 	WebSocketArchitectureDiagram,
 } from '@/components/docs/diagrams'
 import { Badge } from '@/components/ui/badge'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {

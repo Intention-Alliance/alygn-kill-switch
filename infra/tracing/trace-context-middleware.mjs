@@ -9,7 +9,7 @@
  * 4. Adds trace context to all outgoing requests
  */
 
-import { context, propagation, trace } from '@opentelemetry/api'
+import { context, trace } from '@opentelemetry/api'
 import { extractTraceContext, getTraceHeaders } from './tracing-sdk.mjs'
 
 // ─── Express Middleware ─────────────────────────────────────────────
@@ -76,7 +76,7 @@ export const traceContextPlugin = {
 	version: '1.0.0',
 
 	hook(fastify) {
-		fastify.addHook('onRequest', async (request, reply) => {
+		fastify.addHook('onRequest', async (request, _reply) => {
 			const extractedCtx = extractTraceContext(request.headers)
 
 			// Store context for downstream use
@@ -119,7 +119,7 @@ export const traceContextPlugin = {
 export const traceContextElysia = {
 	name: 'trace-context-propagation',
 	beforeHandle({ request, set }) {
-		const extractedCtx = extractTraceContext(
+		const _extractedCtx = extractTraceContext(
 			Object.fromEntries(
 				request.headers.entries ? request.headers.entries() : [],
 			),

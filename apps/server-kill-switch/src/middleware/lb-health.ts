@@ -13,7 +13,7 @@ import {
 export async function handleLbHealthRoutes(
 	method: string,
 	url: string,
-	req: any,
+	_req: any,
 	res: any,
 	service: KillSwitchService,
 ): Promise<boolean> {
@@ -74,7 +74,7 @@ export async function handleLbHealthRoutes(
  */
 function formatPrometheus(metrics: ReturnType<typeof getMetrics>): string {
 	const lines: string[] = []
-	const ts = metrics.uptimeSeconds * 1000 // approximate timestamp offset
+	const _ts = metrics.uptimeSeconds * 1000 // approximate timestamp offset
 
 	lines.push(`# HELP kill_switch_request_total Total number of HTTP requests`)
 	lines.push(`# TYPE kill_switch_request_total counter`)
@@ -113,7 +113,7 @@ function formatPrometheus(metrics: ReturnType<typeof getMetrics>): string {
 	lines.push(`# TYPE kill_switch_uptime_seconds gauge`)
 	lines.push(`kill_switch_uptime_seconds ${metrics.uptimeSeconds}`)
 
-	return lines.join('\n') + '\n'
+	return `${lines.join('\n')}\n`
 }
 
 /**

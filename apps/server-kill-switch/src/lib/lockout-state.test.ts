@@ -16,12 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { mkdir, unlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import {
-	AUTO_UNLOCK_MS,
-	LockoutStateMachine,
-	THRESHOLD_401_COUNT,
-	WINDOW_MS,
-} from './lockout-state'
+import { LockoutStateMachine, THRESHOLD_401_COUNT } from './lockout-state'
 
 const TEST_DIR = resolve(tmpdir(), `lockout-test-${process.pid}-${Date.now()}`)
 const TEST_LOCKOUT_PATH = join(TEST_DIR, 'secrets.lockout.json')

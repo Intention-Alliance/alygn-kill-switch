@@ -101,7 +101,7 @@ describe('EnforcementConsumer', () => {
 		stop()
 
 		expect(changes.length).toBeGreaterThanOrEqual(1)
-		expect(changes[0]!.previous).toBeNull()
-		expect(changes[0]!.state).toBe('RUNNING')
+		expect(changes[0]?.previous).toBeNull()
+		expect(changes[0]?.state).toBe('RUNNING')
 	}, 5_000)
 })

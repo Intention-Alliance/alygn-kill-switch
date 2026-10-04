@@ -48,7 +48,7 @@ function LoginFormInner({
 	// internal paths — never an external URL (open-redirect guard).
 	const getCallbackUrl = () => {
 		const raw = searchParams.get('callbackUrl')
-		if (raw && raw.startsWith('/') && !raw.startsWith('//')) {
+		if (raw?.startsWith('/') && !raw.startsWith('//')) {
 			return raw
 		}
 		return '/'
@@ -57,7 +57,7 @@ function LoginFormInner({
 	// Redirect if already authenticated
 	useEffect(() => {
 		if (isAuthenticated) router.push(getCallbackUrl())
-	}, [isAuthenticated, router])
+	}, [isAuthenticated, router, getCallbackUrl])
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault()

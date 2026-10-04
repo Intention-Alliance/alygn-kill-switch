@@ -31,7 +31,7 @@ export function buildServerRegistry(opts?: {
 }): ProviderRegistry {
 	const config = getConfig() as any
 	const decision = config?.decision ?? {}
-	const verification = config?.verification ?? {}
+	const _verification = config?.verification ?? {}
 
 	return buildRegistry({
 		threshold: 0.7,

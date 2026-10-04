@@ -14,7 +14,6 @@
  */
 
 import { spawn } from 'node:child_process'
-import { resolve } from 'node:path'
 import { atomicWriteFile } from './secrets-loader'
 
 // ─── Types ─────────────────────────────────────────────────────────────
@@ -204,7 +203,7 @@ async function readPidFile(pidPath: string): Promise<number | null> {
 		const { readFile } = await import('node:fs/promises')
 		const content = await readFile(pidPath, 'utf-8')
 		const pid = parseInt(content.trim(), 10)
-		return isNaN(pid) ? null : pid
+		return Number.isNaN(pid) ? null : pid
 	} catch {
 		return null
 	}

@@ -149,8 +149,8 @@ export function compareResults(
 	const compared: Array<{ expected: Verdict; actual: Verdict; pass: boolean }> =
 		[]
 	for (let i = 0; i < length; i++) {
-		const exp = expected[i]!.verdict
-		const act = actual[i]!.verdict
+		const exp = expected[i]?.verdict
+		const act = actual[i]?.verdict
 		compared.push({ expected: exp, actual: act, pass: exp === act })
 	}
 	return compared

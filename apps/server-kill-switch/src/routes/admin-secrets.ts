@@ -14,7 +14,7 @@
  * @author Keridz ⚙️
  */
 
-import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
+import { desc } from 'drizzle-orm'
 import { db } from '../db'
 import { secretsAuditLog } from '../db/schema'
 import type { LockoutStateMachine } from '../lib/lockout-state'
@@ -208,7 +208,7 @@ function getAdminApiKey(): string {
 }
 
 function checkAdminAuth(req: any): boolean {
-	const authHeader = req.headers?.['authorization']
+	const authHeader = req.headers?.authorization
 	if (!authHeader?.startsWith('Bearer ')) return false
 	const token = authHeader.slice(7)
 	const expected = getAdminApiKey()
@@ -237,7 +237,7 @@ function lookupPid(consumer: ConsumerConfig): number {
 			if (pidPath && fs.existsSync(pidPath)) {
 				const content = fs.readFileSync(pidPath, 'utf-8').trim()
 				const pid = parseInt(content, 10)
-				if (!isNaN(pid) && pid > 0) return pid
+				if (!Number.isNaN(pid) && pid > 0) return pid
 			}
 		} catch {}
 		// Fallback: self PID (the kill-switch process itself)

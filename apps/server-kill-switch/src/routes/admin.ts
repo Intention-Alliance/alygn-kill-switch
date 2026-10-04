@@ -17,7 +17,7 @@ import {
 export async function handleAdminRoutes(
 	method: string,
 	url: string,
-	req: any,
+	_req: any,
 	res: any,
 	service: KillSwitchService,
 	userRole: string | null,
@@ -73,7 +73,7 @@ export async function handleAdminRoutes(
 
 	// GET /admin/runbooks — View runbook status and links
 	if (method === 'GET' && url === '/admin/runbooks') {
-		const config = getConfig()
+		const _config = getConfig()
 		const incidentService = getIncidentResponseService()
 		const activeIncidents = incidentService.getActiveIncidents()
 		const metrics = getMetrics()

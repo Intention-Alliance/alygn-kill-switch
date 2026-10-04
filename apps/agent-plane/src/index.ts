@@ -19,14 +19,20 @@ const MACHINE_NAME = process.env.ALYGN_MACHINE_NAME ?? 'local-machine'
 const HOSTNAME = process.env.ALYGN_MACHINE_HOSTNAME ?? 'localhost'
 const HEARTBEAT_MS = parseInt(
 	process.env.ALYGN_HEARTBEAT_INTERVAL_MS ?? '30000',
+	10,
 )
 const OLLAMA_URL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
-const INTERCEPT_PORT = parseInt(process.env.OLLAMA_INTERCEPT_PORT ?? '11436')
+const INTERCEPT_PORT = parseInt(
+	process.env.OLLAMA_INTERCEPT_PORT ?? '11436',
+	10,
+)
 const ENFORCE_POLL_MS = parseInt(
 	process.env.ALYGN_ENFORCE_POLL_INTERVAL_MS ?? '5000',
+	10,
 )
 const FLAGS_POLL_MS = parseInt(
 	process.env.ALYGN_FLAGS_POLL_INTERVAL_MS ?? '10000',
+	10,
 )
 const STATE_DB_PATH = process.env.ALYGN_STATE_DB ?? './data/agent-state.sqlite'
 const LOG_LEVEL = process.env.LOG_LEVEL ?? 'info'

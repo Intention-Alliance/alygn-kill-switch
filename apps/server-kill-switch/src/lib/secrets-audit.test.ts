@@ -15,7 +15,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test'
 import { chmod, mkdir, unlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { desc } from 'drizzle-orm'
 import { db } from '../db'
 import { secretsAuditLog } from '../db/schema'
 import {
@@ -68,7 +67,7 @@ async function cleanupTestEnv() {
 
 function makeReq(method: string, url: string, body?: string, authKey?: string) {
 	const headers: Record<string, string> = {}
-	if (authKey) headers['authorization'] = `Bearer ${authKey}`
+	if (authKey) headers.authorization = `Bearer ${authKey}`
 	const nodeReq: any = {
 		method,
 		url,
@@ -124,7 +123,7 @@ async function countDbEntries(): Promise<number> {
 	return rows.length
 }
 
-async function countDbEntriesByAction(event: string): Promise<number> {
+async function _countDbEntriesByAction(event: string): Promise<number> {
 	const rows = await db
 		.select()
 		.from(secretsAuditLog)
@@ -244,7 +243,7 @@ describe('Secrets Audit Log — DB Persistence (S-A1)', () => {
 		// The rotate entry should have result='locked'
 		const lockedEntry = rotateRows.find((r) => r.result === 'locked')
 		expect(lockedEntry).toBeDefined()
-		expect(lockedEntry!.name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN')
+		expect(lockedEntry?.name).toBe('OLLAMA_TAILSCALE_AUTH_TOKEN')
 	})
 
 	it('FIFO eviction still works on hot cache (100 entries)', async () => {

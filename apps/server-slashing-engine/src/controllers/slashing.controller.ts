@@ -16,7 +16,7 @@ interface WebhookPayload {
 
 @injectable()
 export class SlashingController {
-	constructor(@inject(SlashingService) private slashingService: SlashingService) {}
+	constructor(@inject(SlashingService) private _slashingService: SlashingService) {}
 
 	public processWebhook = async (
 		req: Request,
@@ -27,7 +27,7 @@ export class SlashingController {
 			const payload = req.body as WebhookPayload;
 
 			// Validate webhook payload
-			if (!payload || payload.type !== "INSERT") {
+			if (payload?.type !== "INSERT") {
 				return res.status(400).json({
 					success: false,
 					error: "Invalid webhook payload",

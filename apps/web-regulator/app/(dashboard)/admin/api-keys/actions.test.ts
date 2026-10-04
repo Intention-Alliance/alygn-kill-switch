@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, mock, test } from 'bun:test'
+import { expect, test } from 'bun:test'
 
 // Test F4: isMockMode must return false in production regardless of ADMIN_UI_API_KEY.
 // We can't directly import isMockMode (it's not exported), so we test the logic

@@ -424,7 +424,7 @@ async function internalLookup(req: Req, res: Res): Promise<boolean> {
 	const q = url.includes('?') ? url.slice(url.indexOf('?') + 1) : ''
 	const params = new URLSearchParams(q)
 	const prefix = params.get('prefix')
-	if (!prefix || prefix.length !== 8) {
+	if (prefix?.length !== 8) {
 		writeJson(res, 400, { error: 'prefix query param (8 chars) required' })
 		return true
 	}

@@ -11,7 +11,7 @@
  * @author Keridz ⚙️ (be-coder)
  */
 
-import { beforeAll, beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -22,12 +22,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // We have to provide all the named exports the route file uses, even if
 // they're just no-ops for the test.
 mock.module('drizzle-orm', () => ({
-	eq: (left: any, right: any) => ({ __eq: right }),
+	eq: (_left: any, right: any) => ({ __eq: right }),
 	desc: (col: any) => ({ __desc: col }),
 	and: (...args: any[]) => ({ __and: args }),
 	isNull: (col: any) => ({ __isNull: col }),
 	lt: (left: any, right: any) => ({ __lt: { left, right } }),
-	sql: (strings: TemplateStringsArray, ...values: any[]) => ({
+	sql: (_strings: TemplateStringsArray, ..._values: any[]) => ({
 		__sql: 'sql-marker',
 	}),
 }))
@@ -192,7 +192,7 @@ mock.module(dbPath, () => {
 					return Promise.resolve({ success: true })
 				},
 			}),
-			update: (table: any) => ({
+			update: (_table: any) => ({
 				set: (patch: any) => ({
 					where: (cond: any) => {
 						const id = getEqValue(cond)
@@ -202,7 +202,7 @@ mock.module(dbPath, () => {
 					},
 				}),
 			}),
-			delete: (table: any) => ({
+			delete: (_table: any) => ({
 				where: (cond: any) => {
 					const id = getEqValue(cond)
 					if (id) {
@@ -222,7 +222,7 @@ mock.module(dbPath, () => {
 							},
 						},
 					},
-					update: (table: any) => ({
+					update: (_table: any) => ({
 						set: (patch: any) => ({
 							where: (cond: any) => {
 								const id = getEqValue(cond)
@@ -846,13 +846,13 @@ describe('F6: audit meta includes prefix + path', () => {
 		// Find the audit entry for this failed attempt
 		const audit = state.audits.find((a) => a.action === 'use_failed')
 		expect(audit).toBeTruthy()
-		const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+		const meta = audit?.meta ? JSON.parse(audit?.meta) : null
 		expect(meta).toBeTruthy()
 		expect(meta.reason).toBe('unknown_prefix')
 		expect(meta.prefix).toBe(fakeKey.slice(0, 8))
 		expect(meta.path).toBe('/v1/internal/api-keys/verify')
 		// The webhookPath column should also be set
-		expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+		expect(audit?.webhookPath).toBe('/v1/internal/api-keys/verify')
 	})
 
 	it('verify: malformed key audit includes prefix and path', async () => {
@@ -882,12 +882,12 @@ describe('F6: audit meta includes prefix + path', () => {
 
 		const audit = state.audits.find((a) => a.action === 'use_failed')
 		expect(audit).toBeTruthy()
-		const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+		const meta = audit?.meta ? JSON.parse(audit?.meta) : null
 		expect(meta).toBeTruthy()
 		expect(meta.reason).toBe('malformed')
 		expect(meta.prefix).toBe(shortKey.slice(0, 8))
 		expect(meta.path).toBe('/v1/internal/api-keys/verify')
-		expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+		expect(audit?.webhookPath).toBe('/v1/internal/api-keys/verify')
 	})
 
 	it('verify: missing key audit includes path', async () => {
@@ -915,11 +915,11 @@ describe('F6: audit meta includes prefix + path', () => {
 
 		const audit = state.audits.find((a) => a.action === 'use_failed')
 		expect(audit).toBeTruthy()
-		const meta = audit!.meta ? JSON.parse(audit!.meta) : null
+		const meta = audit?.meta ? JSON.parse(audit?.meta) : null
 		expect(meta).toBeTruthy()
 		expect(meta.reason).toBe('missing')
 		expect(meta.path).toBe('/v1/internal/api-keys/verify')
-		expect(audit!.webhookPath).toBe('/v1/internal/api-keys/verify')
+		expect(audit?.webhookPath).toBe('/v1/internal/api-keys/verify')
 	})
 })
 
@@ -976,7 +976,7 @@ describe('F9: rotateKey TOCTOU race', () => {
 		// However, since the mock transaction doesn't use real DB locking, we
 		// need to ensure they actually race. We use Promise.all to kick both
 		// off — the mock's transaction resolves sequentially.
-		const [result1, result2] = await Promise.all([
+		const [_result1, _result2] = await Promise.all([
 			handleApiKeysRoutes(
 				'POST',
 				`/v1/admin/api-keys/${oldId}/rotate`,

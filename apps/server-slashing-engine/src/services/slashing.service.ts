@@ -130,7 +130,7 @@ function verifyZKProof(proofData: ProofData): boolean {
 /**
  * Verify timestamp is within acceptable range (not too old)
  */
-function verifyTimestamp(
+function _verifyTimestamp(
 	proofData: ProofData,
 	maxAgeMs: number = 300000,
 ): boolean {

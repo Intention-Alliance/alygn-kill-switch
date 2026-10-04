@@ -28,7 +28,7 @@ function requireKillAssertion(
 	req: any,
 	target: string,
 ): { userId: string; credentialId: string } | null {
-	const header = req.headers?.['authorization'] ?? ''
+	const header = req.headers?.authorization ?? ''
 	if (!header.startsWith('Assertion ')) {
 		return null
 	}

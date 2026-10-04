@@ -106,10 +106,10 @@ describe('compareFingerprints', () => {
 		const current = makeFingerprint({ macs: ['11:22:33:44:55:66'] })
 		const drift = compareFingerprints(current, baseline, 'machine-1')
 		expect(drift).not.toBeNull()
-		expect(drift!.event).toBe('swap')
-		expect(drift!.severity).toBe('high')
-		expect(drift!.driftedFields).toContain('macs')
-		expect(drift!.machineId).toBe('machine-1')
+		expect(drift?.event).toBe('swap')
+		expect(drift?.severity).toBe('high')
+		expect(drift?.driftedFields).toContain('macs')
+		expect(drift?.machineId).toBe('machine-1')
 	})
 
 	it('flags GPU change as medium-severity swap', () => {
@@ -119,9 +119,9 @@ describe('compareFingerprints', () => {
 		})
 		const drift = compareFingerprints(current, baseline, 'machine-1')
 		expect(drift).not.toBeNull()
-		expect(drift!.event).toBe('swap')
-		expect(drift!.severity).toBe('medium')
-		expect(drift!.driftedFields).toContain('gpus')
+		expect(drift?.event).toBe('swap')
+		expect(drift?.severity).toBe('medium')
+		expect(drift?.driftedFields).toContain('gpus')
 	})
 
 	it('flags CPU change as low-severity tamper', () => {
@@ -129,9 +129,9 @@ describe('compareFingerprints', () => {
 		const current = makeFingerprint({ cpuModel: 'Different CPU' })
 		const drift = compareFingerprints(current, baseline, 'machine-1')
 		expect(drift).not.toBeNull()
-		expect(drift!.event).toBe('tamper')
-		expect(drift!.severity).toBe('low')
-		expect(drift!.driftedFields).toContain('cpuModel')
+		expect(drift?.event).toBe('tamper')
+		expect(drift?.severity).toBe('low')
+		expect(drift?.driftedFields).toContain('cpuModel')
 	})
 
 	it('reports multiple drifted fields', () => {
@@ -143,7 +143,7 @@ describe('compareFingerprints', () => {
 		})
 		const drift = compareFingerprints(current, baseline, 'machine-1')
 		expect(drift).not.toBeNull()
-		expect(drift!.driftedFields).toEqual(
+		expect(drift?.driftedFields).toEqual(
 			expect.arrayContaining(['cpuModel', 'memoryMb', 'macs']),
 		)
 	})
@@ -162,7 +162,7 @@ describe('detectFingerprintDrift (signature-only)', () => {
 		const sig = signFingerprint(baseline)
 		const drift = detectFingerprintDrift(current, sig, 'machine-1')
 		expect(drift).not.toBeNull()
-		expect(drift!.event).toBe('tamper')
-		expect(drift!.severity).toBe('high')
+		expect(drift?.event).toBe('tamper')
+		expect(drift?.severity).toBe('high')
 	})
 })

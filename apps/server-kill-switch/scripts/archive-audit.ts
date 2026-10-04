@@ -39,7 +39,7 @@ function parseArgs() {
 		if (a === '--dry-run') out.dryRun = true
 		else if (a === '--help' || a === '-h') out.help = true
 		else if (a.startsWith('--')) {
-			out[a.slice(2)] = isNaN(Number(args[i + 1]))
+			out[a.slice(2)] = Number.isNaN(Number(args[i + 1]))
 				? args[i + 1]
 				: Number(args[i + 1])
 			i++

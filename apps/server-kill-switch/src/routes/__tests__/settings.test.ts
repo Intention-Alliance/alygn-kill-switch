@@ -29,7 +29,7 @@ beforeEach(() => {
 
 // ─── Mock drizzle-orm ──────────────────────────────────────────
 mock.module('drizzle-orm', () => ({
-	eq: (left: any, right: any) => ({ __eq: right }),
+	eq: (_left: any, right: any) => ({ __eq: right }),
 }))
 
 // ─── Mock db/index.ts — must match resolution from settings.ts ───────
@@ -42,7 +42,7 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => {
 	function makeSelect() {
 		return {
 			from(table: any) {
-				const tableName = String(
+				const _tableName = String(
 					table?.name || table?.constructor?.name || table,
 				)
 				return {
@@ -84,11 +84,11 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => {
 		}
 	}
 
-	function makeInsert(table: any) {
+	function makeInsert(_table: any) {
 		return {
 			values(data: { key: string; value: string; updatedAt?: Date }) {
 				return {
-					onConflictDoUpdate(opts: { target: any; set: any }) {
+					onConflictDoUpdate(_opts: { target: any; set: any }) {
 						// Upsert behavior: update existing or insert new
 						const existing = settingsStore.find((s) => s.key === data.key)
 						const now = data.updatedAt || new Date()

@@ -158,5 +158,5 @@ export function AuditLog({ flagId, limit, className }: AuditLogProps) {
 }
 
 function truncate(str: string, len: number): string {
-	return str.length > len ? str.slice(0, len) + '…' : str
+	return str.length > len ? `${str.slice(0, len)}…` : str
 }

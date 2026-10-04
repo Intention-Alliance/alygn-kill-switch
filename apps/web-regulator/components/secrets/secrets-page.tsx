@@ -33,7 +33,7 @@ export function SecretsPageClient({ initial }: SecretsPageClientProps) {
 	const [dismissedLockouts, setDismissedLockouts] = useState<Set<string>>(
 		new Set(),
 	)
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, _setIsLoading] = useState(false)
 	const [focusedRowIndex, setFocusedRowIndex] = useState<number>(-1)
 	const rotateButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
 	const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)

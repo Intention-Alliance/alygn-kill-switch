@@ -233,7 +233,7 @@ describe('computeMetrics', () => {
 		expect(metrics.accuracy).toBe(0.5)
 		expect(metrics.fpr).toBe(0)
 		expect(metrics.fnr).toBe(1)
-		expect(metrics.confusionMatrix.counts[0]![0]).toBe(1)
+		expect(metrics.confusionMatrix.counts[0]?.[0]).toBe(1)
 		expect(metrics.perCategory).toHaveLength(2)
 		expect(metrics.latencyP95Ms).toBe(20)
 	})

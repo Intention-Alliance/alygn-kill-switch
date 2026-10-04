@@ -273,7 +273,7 @@ describe('handleFlagsRoutes — quorum-gated kill.authorization.* changes (ADR-1
 		expect(res.statusCode).toBe(403)
 		expect(getJson(res).code).toBe('QUORUM_REQUIRED')
 		// Flag must be unchanged
-		expect(flagsStore.find((f) => f.id === 'flag-kill-auth-mode')!.value).toBe(
+		expect(flagsStore.find((f) => f.id === 'flag-kill-auth-mode')?.value).toBe(
 			true,
 		)
 	})
@@ -313,7 +313,7 @@ describe('handleFlagsRoutes — quorum-gated kill.authorization.* changes (ADR-1
 		expect(handled).toBe(true)
 		expect(res.statusCode).toBe(200)
 		// v1.2: value stored as TEXT ('false'), not boolean
-		expect(flagsStore.find((f) => f.id === 'flag-interception')!.value).toBe(
+		expect(flagsStore.find((f) => f.id === 'flag-interception')?.value).toBe(
 			'false',
 		)
 		// Response body coerces back to the declared type

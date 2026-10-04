@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from 'bun:test'
-import { createHash } from 'crypto'
+import { createHash } from 'node:crypto'
 
 // Local implementation of ProofVerifier for testing
 interface ProofData {

@@ -180,8 +180,8 @@ describe('webhook-keys — create', () => {
 			)
 			.get() as { reason: string; plain_explanation: string } | undefined
 		expect(audit).toBeTruthy()
-		expect(audit!.plain_explanation).toContain('org-1')
-		expect(audit!.plain_explanation).toContain('mcp-prod')
+		expect(audit?.plain_explanation).toContain('org-1')
+		expect(audit?.plain_explanation).toContain('mcp-prod')
 	})
 })
 
@@ -254,7 +254,7 @@ describe('webhook-keys — rotate', () => {
 			)
 			.get() as { plain_explanation: string } | undefined
 		expect(audit).toBeTruthy()
-		expect(audit!.plain_explanation).toContain('rotated')
+		expect(audit?.plain_explanation).toContain('rotated')
 	})
 })
 

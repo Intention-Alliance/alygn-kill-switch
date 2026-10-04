@@ -20,7 +20,6 @@ import type {
 	AgentInfo,
 	DpuInfo,
 	Machine,
-	MachineSpecs,
 	MachineStatus,
 } from '@align/shared-types'
 import { and, asc, desc, eq, isNull, ne, or, sql } from 'drizzle-orm'
@@ -490,7 +489,7 @@ export async function handleMachinesRoutes(
 				.where(eq(machineFlags.machineId, id))
 				.all()
 
-			const machineFlagKeys = new Set(
+			const _machineFlagKeys = new Set(
 				machineFlagRows.map((f: any) => f.flagKey),
 			)
 

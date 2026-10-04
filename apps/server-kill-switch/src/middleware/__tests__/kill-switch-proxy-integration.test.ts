@@ -40,7 +40,6 @@ import {
 	getBlockedFingerprintCount,
 	resetFingerprintPauseState,
 	selfHealOnSafe,
-	shouldEscalateToGlobal,
 } from '../../services/fingerprint-pause'
 import {
 	isTrafficPaused,
@@ -204,7 +203,7 @@ async function runFlow(opts: {
 
 	// 2. Pre-screen prompt verification
 	const requestId = crypto.randomUUID()
-	const v = checkInferenceVerification(
+	const _v = checkInferenceVerification(
 		'POST',
 		'/v1/inference/generate',
 		opts.body,

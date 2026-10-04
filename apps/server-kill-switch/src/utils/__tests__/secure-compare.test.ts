@@ -39,7 +39,7 @@ describe('secureCompare', () => {
 
 	it('returns false for long different strings (1KB, timing-safe)', () => {
 		const a = 'x'.repeat(1024)
-		const b = 'x'.repeat(1023) + 'y'
+		const b = `${'x'.repeat(1023)}y`
 		expect(secureCompare(a, b)).toBe(false)
 	})
 })

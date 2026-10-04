@@ -112,8 +112,8 @@ describe('GpuMonitor', () => {
 					m.metricName === 'temperature' && m.labels?.gpu_index === '0',
 			)
 			expect(gpu0Temp).toBeDefined()
-			expect(gpu0Temp!.metricValue).toBe(45)
-			expect(gpu0Temp!.unit).toBe('celsius')
+			expect(gpu0Temp?.metricValue).toBe(45)
+			expect(gpu0Temp?.unit).toBe('celsius')
 
 			// GPU 0 utilization
 			const gpu0Util = metrics.find(
@@ -121,7 +121,7 @@ describe('GpuMonitor', () => {
 					m.metricName === 'utilization_percent' && m.labels?.gpu_index === '0',
 			)
 			expect(gpu0Util).toBeDefined()
-			expect(gpu0Util!.metricValue).toBe(72)
+			expect(gpu0Util?.metricValue).toBe(72)
 
 			// GPU 1 memory total
 			const gpu1MemTotal = metrics.find(
@@ -129,7 +129,7 @@ describe('GpuMonitor', () => {
 					m.metricName === 'memory_total_bytes' && m.labels?.gpu_index === '1',
 			)
 			expect(gpu1MemTotal).toBeDefined()
-			expect(gpu1MemTotal!.metricValue).toBe(49152 * 1024 * 1024)
+			expect(gpu1MemTotal?.metricValue).toBe(49152 * 1024 * 1024)
 
 			// GPU 0 power
 			const gpu0Power = metrics.find(
@@ -137,7 +137,7 @@ describe('GpuMonitor', () => {
 					m.metricName === 'power_draw' && m.labels?.gpu_index === '0',
 			)
 			expect(gpu0Power).toBeDefined()
-			expect(gpu0Power!.metricValue).toBe(180.5)
+			expect(gpu0Power?.metricValue).toBe(180.5)
 		})
 
 		it('should handle single-GPU output', async () => {
@@ -206,7 +206,7 @@ describe('GpuMonitor', () => {
 			)
 			expect(memUsage).toBeDefined()
 			// 4096 / 16384 = 25%
-			expect(memUsage!.metricValue).toBe(25)
+			expect(memUsage?.metricValue).toBe(25)
 		})
 	})
 })

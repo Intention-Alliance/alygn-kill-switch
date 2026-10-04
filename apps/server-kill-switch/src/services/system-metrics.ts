@@ -199,7 +199,7 @@ function collectGpuInfo(): GpuInfo {
 			for (const dev of devices) {
 				try {
 					const classHex = readFileSafe(`${pciDevicesPath}/${dev}/class`)
-					if (classHex && classHex.startsWith('0x030000')) {
+					if (classHex?.startsWith('0x030000')) {
 						const vendor = readFileSafe(`${pciDevicesPath}/${dev}/vendor`) || ''
 						const device = readFileSafe(`${pciDevicesPath}/${dev}/device`) || ''
 						// Try to resolve vendor name from the vendor file
@@ -284,7 +284,7 @@ export function collectRealMetrics(): MachineMetrics {
 	const [load1] = loadavg()
 	const sysUptime = uptime()
 	const disk = collectDiskUsage()
-	const cpuModel = collectCpuModel()
+	const _cpuModel = collectCpuModel()
 
 	return {
 		cpuUsage: Math.round(cpuUsage * 100) / 100,

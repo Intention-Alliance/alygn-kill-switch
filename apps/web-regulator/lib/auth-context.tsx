@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<AuthUser | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
-	const pathname = usePathname()
+	const _pathname = usePathname()
 	const isAuthenticated = user !== null
 	const wasAuthenticatedRef = useRef(isAuthenticated)
 
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			.catch(() => {
 				// Silent — don't log out on network errors
 			})
-	}, [pathname, isAuthenticated])
+	}, [isAuthenticated])
 
 	// Restore session on mount
 	useEffect(() => {

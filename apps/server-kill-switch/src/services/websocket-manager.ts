@@ -1,14 +1,7 @@
-/**
- * WebSocket Manager — Real-time Event Broadcast (ADR-133)
- * Uses Bun.serve() native WebSocket for reliable upgrades through nginx.
- */
-import { createHash } from 'node:crypto'
-import { sqlite as sqliteDb } from '../db/index'
-
-const WS_GUID = '258EAFA5-E914-47DA-95CA-C8AB5DC85B11'
+const _WS_GUID = '258EAFA5-E914-47DA-95CA-C8AB5DC85B11'
 const HEARTBEAT_INTERVAL = 30000
-const HEARTBEAT_TIMEOUT = 10000
-const MAX_CONNS_PER_IP = 5
+const _HEARTBEAT_TIMEOUT = 10000
+const _MAX_CONNS_PER_IP = 5
 
 const REDIS_CHANNELS = [
 	'bcp:kill-switch:chaos',
@@ -66,7 +59,7 @@ export class WebSocketManager {
 		}
 
 		if (!this.clients.has(userId)) this.clients.set(userId, new Set())
-		this.clients.get(userId)!.add(client)
+		this.clients.get(userId)?.add(client)
 		this.ipCounts.set(ip, (this.ipCounts.get(ip) || 0) + 1)
 
 		client.heartbeatTimer = setInterval(() => {

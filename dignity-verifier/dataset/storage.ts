@@ -338,7 +338,7 @@ export async function updateExample(
 	validateExample(updated)
 
 	examples[idx] = updated
-	await writeFile(file, examples.map(serialize).join('\n') + '\n', 'utf8')
+	await writeFile(file, `${examples.map(serialize).join('\n')}\n`, 'utf8')
 	return updated
 }
 
@@ -351,7 +351,7 @@ export async function deleteExample(id: string): Promise<void> {
 	const examples = await readDatasetFromFile(file, target.source)
 	const remaining = examples.filter((ex) => ex.id !== id)
 	if (remaining.length === examples.length) throw new ExampleNotFoundError(id)
-	await writeFile(file, remaining.map(serialize).join('\n') + '\n', 'utf8')
+	await writeFile(file, `${remaining.map(serialize).join('\n')}\n`, 'utf8')
 }
 
 /**
@@ -409,7 +409,7 @@ export async function exportJsonl(
 	const examples = await listExamples(filter)
 	const out = filePath ?? join(DEFAULT_DATASET_DIR, 'export.jsonl')
 	await mkdir(join(out, '..'), { recursive: true })
-	await writeFile(out, examples.map(serialize).join('\n') + '\n', 'utf8')
+	await writeFile(out, `${examples.map(serialize).join('\n')}\n`, 'utf8')
 	return out
 }
 
@@ -453,7 +453,6 @@ function fileForSource(source: DatasetSource): string {
 			return join(DEFAULT_DATASET_DIR, 'augmented', 'augmented.jsonl')
 		case 'eval':
 			return join(DEFAULT_DATASET_DIR, 'eval', 'eval-additions.jsonl')
-		case 'seed':
 		default:
 			return join(DEFAULT_DATASET_DIR, 'seed', 'seed-additions.jsonl')
 	}
@@ -464,5 +463,5 @@ async function appendLine(file: string, content: string): Promise<void> {
 	await mkdir(join(file, '..'), { recursive: true })
 	const existing = await readFile(file, 'utf8').catch(() => '')
 	const separator = existing.length > 0 && !existing.endsWith('\n') ? '\n' : ''
-	await writeFile(file, existing + separator + content + '\n', 'utf8')
+	await writeFile(file, `${existing + separator + content}\n`, 'utf8')
 }

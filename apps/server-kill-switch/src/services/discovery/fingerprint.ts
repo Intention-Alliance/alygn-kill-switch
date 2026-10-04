@@ -151,7 +151,7 @@ function collectGpus(): GpuFingerprint[] {
 			const gpus: GpuFingerprint[] = []
 			for (const dev of devices) {
 				const classHex = readFileSafe(`${pciDevicesPath}/${dev}/class`)
-				if (classHex && classHex.startsWith('0x030000')) {
+				if (classHex?.startsWith('0x030000')) {
 					const vendor = readFileSafe(`${pciDevicesPath}/${dev}/vendor`) ?? ''
 					const device = readFileSafe(`${pciDevicesPath}/${dev}/device`) ?? ''
 					let name = 'Unknown GPU'

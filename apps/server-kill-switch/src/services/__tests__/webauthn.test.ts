@@ -11,7 +11,7 @@
  */
 
 import { Database } from 'bun:sqlite'
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 import { createAuditChainTables } from '../../test-utils/db-mock'
 
 // ─── Test env (assertion token HMAC secret) ───────────────────────
@@ -303,12 +303,12 @@ mock.module('drizzle-orm', () => ({
 // ─── Import service after mocks ──────────────────────────────────
 
 let webauthn: any
-let WebAuthnError: any
+let _WebAuthnError: any
 
 beforeEach(async () => {
 	const mod = await import('../../services/webauthn')
 	webauthn = mod
-	WebAuthnError = mod.WebAuthnError
+	_WebAuthnError = mod.WebAuthnError
 })
 
 // ─── Tests ───────────────────────────────────────────────────────

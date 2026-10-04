@@ -246,12 +246,12 @@ mock.module('../../db/index', () => {
 // ─── Import service after mocks ───────────────────────────────────
 
 let killAuth: any
-let KillAuthorizationError: any
+let _KillAuthorizationError: any
 
 beforeEach(async () => {
 	const mod = await import('../../services/kill-authorization')
 	killAuth = mod
-	KillAuthorizationError = mod.KillAuthorizationError
+	_KillAuthorizationError = mod.KillAuthorizationError
 })
 
 // ─── Test executor ────────────────────────────────────────────────
@@ -479,7 +479,7 @@ describe('KillAuthorizationService — quorum mode', () => {
 
 		expect(calls.length).toBe(0)
 		expect(
-			requestStore.find((r) => r.id === initiated.request.id)!.status,
+			requestStore.find((r) => r.id === initiated.request.id)?.status,
 		).toBe('EXPIRED')
 	})
 
@@ -506,7 +506,7 @@ describe('KillAuthorizationService — quorum mode', () => {
 		const expired = await killAuth.expireStaleRequests()
 		expect(expired).toBe(1)
 		expect(
-			requestStore.find((r) => r.id === initiated.request.id)!.status,
+			requestStore.find((r) => r.id === initiated.request.id)?.status,
 		).toBe('EXPIRED')
 	})
 })

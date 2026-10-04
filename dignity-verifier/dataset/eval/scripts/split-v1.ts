@@ -65,11 +65,11 @@ for (const r of [...origTagged, ...heldTagged]) {
 mkdirSync(V1_DIR, { recursive: true })
 writeFileSync(
 	join(V1_DIR, 'original.jsonl'),
-	origTagged.map((r) => JSON.stringify(r)).join('\n') + '\n',
+	`${origTagged.map((r) => JSON.stringify(r)).join('\n')}\n`,
 )
 writeFileSync(
 	join(V1_DIR, 'heldout.jsonl'),
-	heldTagged.map((r) => JSON.stringify(r)).join('\n') + '\n',
+	`${heldTagged.map((r) => JSON.stringify(r)).join('\n')}\n`,
 )
 
 const manifest = {
@@ -87,7 +87,7 @@ const manifest = {
 }
 writeFileSync(
 	join(V1_DIR, 'manifest.json'),
-	JSON.stringify(manifest, null, 2) + '\n',
+	`${JSON.stringify(manifest, null, 2)}\n`,
 )
 
 // ---- Validation ----

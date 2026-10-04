@@ -303,7 +303,7 @@ export function initDatabase(dbPath: string = DB_PATH) {
 			.query('PRAGMA table_info(feature_flag)')
 			.all() as Array<{ name: string; type: string }>
 		const valueCol = flagCols.find((c) => c.name === 'value')
-		if (valueCol && valueCol.type.toUpperCase().includes('INT')) {
+		if (valueCol?.type.toUpperCase().includes('INT')) {
 			console.log('[db] v1.2 migration: feature_flag.value INTEGER → TEXT')
 
 			sqlite.run('PRAGMA foreign_keys=OFF')

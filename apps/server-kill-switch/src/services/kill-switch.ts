@@ -72,7 +72,7 @@ export class KillSwitchService {
 	// ─── Authentication ──────────────────────────────────────────────
 
 	authenticate(req: { headers: Record<string, string | undefined> }): boolean {
-		const authHeader = req.headers['authorization']
+		const authHeader = req.headers.authorization
 		if (authHeader?.startsWith('Bearer ')) {
 			const token = authHeader.slice(7)
 			if (secureCompare(token, this.authToken)) return true

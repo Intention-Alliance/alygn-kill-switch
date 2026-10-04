@@ -19,7 +19,7 @@ function loadApiKey(): string | null {
 		const match = readFileSync(envPath, 'utf8').match(
 			/^KILL_SWITCH_API_KEY=(.+)$/m,
 		)
-		if (match) return match[1]!.trim()
+		if (match) return match[1]?.trim()
 	}
 	return null
 }

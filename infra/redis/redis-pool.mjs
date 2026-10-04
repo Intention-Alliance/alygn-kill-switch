@@ -11,7 +11,7 @@
  *   chaos:experiment:{id}              # ADR-117
  */
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { createClient } from 'redis'
 
 // ─── Circuit Breaker ───────────────────────────────────────────────

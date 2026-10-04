@@ -2,7 +2,6 @@
 // Extracted from kill-switch-service.mjs
 
 import { resolve4 } from 'node:dns/promises'
-import { timingSafeEqual } from 'crypto'
 
 // ─── Tailscale MagicDNS — dynamic DNS resolution for Tailscale IP ──
 

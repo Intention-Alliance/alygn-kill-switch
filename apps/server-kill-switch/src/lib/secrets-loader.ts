@@ -437,14 +437,14 @@ export class SecretsLoader extends EventEmitter {
 		// Atomic write with mode 600
 		await atomicWriteFile(
 			this.secretsPath,
-			JSON.stringify(secrets, null, 2) + '\n',
+			`${JSON.stringify(secrets, null, 2)}\n`,
 		)
 
 		// Update process.env
 		process.env[keyName] = newValue
 
 		// Update hash
-		const content = JSON.stringify(secrets, null, 2) + '\n'
+		const content = `${JSON.stringify(secrets, null, 2)}\n`
 		this.currentHash = contentHash(content)
 
 		// Update loaded keys

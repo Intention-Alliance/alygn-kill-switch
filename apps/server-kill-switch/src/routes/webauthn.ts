@@ -33,9 +33,6 @@ import {
 	finishLoginAssertion,
 	finishRegistration,
 	hasAnyRegisteredCredential,
-	listActiveCredentialsForUser,
-	renameCredential,
-	revokeCredential,
 	startAssertion,
 	startLoginAssertion,
 	startRegistration,
@@ -120,7 +117,7 @@ export async function handleWebAuthnRoutes(
 				})
 				return true
 			}
-			const body = await parseBody(req)
+			const _body = await parseBody(req)
 			const result = await startRegistration({
 				userId: user.id,
 				userName: user.email,

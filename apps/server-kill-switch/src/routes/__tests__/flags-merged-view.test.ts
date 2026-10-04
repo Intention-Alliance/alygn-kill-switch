@@ -7,15 +7,7 @@
  * overrides by key.
  */
 
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	mock,
-} from 'bun:test'
+import { beforeAll, beforeEach, describe, expect, it, mock } from 'bun:test'
 
 // ─── Mock stores ────────────────────────────────────────────────
 

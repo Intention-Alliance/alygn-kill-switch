@@ -300,7 +300,7 @@ describe('SecretsLoader — rotateKey corrupt-JSON guard (Security #1)', () => {
 		// Write a valid secrets file first, load it
 		await setupTestFile()
 		await loader.load()
-		const originalContent = await readFile(TEST_SECRETS_PATH, 'utf-8')
+		const _originalContent = await readFile(TEST_SECRETS_PATH, 'utf-8')
 
 		// Now corrupt the file
 		await writeFile(TEST_SECRETS_PATH, 'CORRUPT{not valid json', {

@@ -3,7 +3,6 @@ import {
 	adaptAuditEntry,
 	type MachineAuditEntry,
 } from '@/components/machines/machine-logs'
-import type { ActivationRecord } from '@/types/shared'
 
 // ─── Fixtures ────────────────────────────────────────────────────────
 

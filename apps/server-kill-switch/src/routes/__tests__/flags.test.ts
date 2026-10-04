@@ -74,7 +74,7 @@ mock.module('drizzle-orm', () => ({
 // ─── Mock db/index ──────────────────────────────────────────────
 // Build a mock db that handles select/insert/update/delete chains
 
-function createTableProxy(tableId: string) {
+function _createTableProxy(tableId: string) {
 	return (
 		{
 			flagAuditLog: true,
@@ -173,7 +173,7 @@ mock.module('../../db/index', () => {
 		}
 	}
 
-	function makeUpdate(table: any) {
+	function makeUpdate(_table: any) {
 		return {
 			set(updates: any) {
 				return {
@@ -203,7 +203,7 @@ mock.module('../../db/index', () => {
 		}
 	}
 
-	function makeDelete(table: any) {
+	function makeDelete(_table: any) {
 		return {
 			where(condition: any) {
 				_lastEqValue = condition?.__eq ?? null

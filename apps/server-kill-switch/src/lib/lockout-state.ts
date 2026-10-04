@@ -137,7 +137,7 @@ export class LockoutStateMachine extends EventEmitter {
 	async persist(): Promise<void> {
 		await atomicWriteFile(
 			this.lockoutPath,
-			JSON.stringify(this.state, null, 2) + '\n',
+			`${JSON.stringify(this.state, null, 2)}\n`,
 		)
 	}
 

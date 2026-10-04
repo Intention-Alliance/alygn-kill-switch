@@ -50,7 +50,7 @@ function migrateFile(file: string): number {
 			source: rec.source ?? 'seed',
 		} satisfies SeedRecord
 	})
-	const out = migrated.map((r) => JSON.stringify(r)).join('\n') + '\n'
+	const out = `${migrated.map((r) => JSON.stringify(r)).join('\n')}\n`
 	writeFileSync(path, out, 'utf-8')
 	return migrated.length
 }

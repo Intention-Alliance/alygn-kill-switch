@@ -177,7 +177,7 @@ export class GpuMonitor implements HardwareMonitor {
 				labels: { ...gpuLabel, name: gpuName },
 			})
 
-			if (!isNaN(temperatureCelsius)) {
+			if (!Number.isNaN(temperatureCelsius)) {
 				metrics.push({
 					monitorName: this.name,
 					metricName: 'temperature',
@@ -187,7 +187,7 @@ export class GpuMonitor implements HardwareMonitor {
 				})
 			}
 
-			if (!isNaN(utilizationPercent)) {
+			if (!Number.isNaN(utilizationPercent)) {
 				metrics.push({
 					monitorName: this.name,
 					metricName: 'utilization_percent',
@@ -197,7 +197,7 @@ export class GpuMonitor implements HardwareMonitor {
 				})
 			}
 
-			if (!isNaN(memoryUsedMib)) {
+			if (!Number.isNaN(memoryUsedMib)) {
 				metrics.push({
 					monitorName: this.name,
 					metricName: 'memory_used_bytes',
@@ -207,7 +207,7 @@ export class GpuMonitor implements HardwareMonitor {
 				})
 			}
 
-			if (!isNaN(memoryTotalMib)) {
+			if (!Number.isNaN(memoryTotalMib)) {
 				metrics.push({
 					monitorName: this.name,
 					metricName: 'memory_total_bytes',
@@ -230,7 +230,7 @@ export class GpuMonitor implements HardwareMonitor {
 				})
 			}
 
-			if (!isNaN(powerDrawWatts)) {
+			if (!Number.isNaN(powerDrawWatts)) {
 				metrics.push({
 					monitorName: this.name,
 					metricName: 'power_draw',

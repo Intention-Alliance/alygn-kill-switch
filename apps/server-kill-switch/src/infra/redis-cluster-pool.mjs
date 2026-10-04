@@ -13,7 +13,7 @@
  *   chaos:experiment:{id}              # ADR-117
  */
 
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { createCluster } from 'redis'
 
 // ─── Circuit Breaker ───────────────────────────────────────────────
@@ -291,7 +291,7 @@ export class RedisPool extends EventEmitter {
 	}
 
 	/** Release client (no-op for cluster mode, singleton) */
-	release(client) {
+	release(_client) {
 		// No-op: cluster client is singleton
 	}
 

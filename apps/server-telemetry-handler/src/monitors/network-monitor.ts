@@ -99,7 +99,7 @@ export class NetworkMonitor implements HardwareMonitor {
 					interface: interfaceName,
 				}
 
-				if (!isNaN(rxBytes)) {
+				if (!Number.isNaN(rxBytes)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'rx_bytes',
@@ -109,7 +109,7 @@ export class NetworkMonitor implements HardwareMonitor {
 					})
 				}
 
-				if (!isNaN(txBytes)) {
+				if (!Number.isNaN(txBytes)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'tx_bytes',
@@ -119,7 +119,7 @@ export class NetworkMonitor implements HardwareMonitor {
 					})
 				}
 
-				if (!isNaN(rxPackets)) {
+				if (!Number.isNaN(rxPackets)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'rx_packets',
@@ -129,7 +129,7 @@ export class NetworkMonitor implements HardwareMonitor {
 					})
 				}
 
-				if (!isNaN(txPackets)) {
+				if (!Number.isNaN(txPackets)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'tx_packets',

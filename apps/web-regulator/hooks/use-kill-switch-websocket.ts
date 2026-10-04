@@ -561,7 +561,8 @@ export function useKillSwitchWebSocket(): UseKillSwitchWebSocketReturn {
 		stopPolling,
 		handleMessage,
 		resetHeartbeatTimer,
-		clearHeartbeatTimer,
+		clearHeartbeatTimer, // Fetch initial data on connect (WS doesn't push initial state)
+		fetchInitialData,
 	])
 
 	// ─── Lifecycle ──────────────────────────────────────────────

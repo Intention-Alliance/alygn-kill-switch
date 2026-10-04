@@ -5,8 +5,8 @@
  */
 
 import { beforeAll, describe, expect, it } from 'bun:test'
+import { createHash } from 'node:crypto'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { createHash } from 'crypto'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY
@@ -27,9 +27,9 @@ describe('End-to-End Telemetry Flow', () => {
 		'Challenge Scenario 1: Simulated DPU Violation',
 		async () => {
 			// Generate a valid ZKP proof
-			const zkp_commitment = 'e2e_commitment_' + Date.now()
-			const zkp_challenge = 'e2e_challenge_' + Date.now()
-			const zkp_response = 'e2e_response_' + Date.now()
+			const zkp_commitment = `e2e_commitment_${Date.now()}`
+			const zkp_challenge = `e2e_challenge_${Date.now()}`
+			const zkp_response = `e2e_response_${Date.now()}`
 			const public_hash = createHash('sha256')
 				.update(zkp_commitment + zkp_challenge + zkp_response)
 				.digest('hex')
@@ -112,7 +112,7 @@ describe('End-to-End Telemetry Flow', () => {
 			const { error: updateError } = await supabase
 				.from('compliance_audit_log')
 				.update({ dpu_id: 'malicious' })
-				.eq('id', inserted!.id)
+				.eq('id', inserted?.id)
 
 			expect(updateError).not.toBeNull()
 			expect(updateError?.message).toContain('UPDATE operation not allowed')
@@ -121,7 +121,7 @@ describe('End-to-End Telemetry Flow', () => {
 			const { error: deleteError } = await supabase
 				.from('compliance_audit_log')
 				.delete()
-				.eq('id', inserted!.id)
+				.eq('id', inserted?.id)
 
 			expect(deleteError).not.toBeNull()
 			expect(deleteError?.message).toContain('DELETE operation not allowed')

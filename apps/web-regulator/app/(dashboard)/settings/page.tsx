@@ -22,7 +22,7 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { useSettingsSync } from '@/hooks/use-settings-sync'
-import { apiGet, apiPost, apiPut } from '@/lib/api-client'
+import { apiGet, apiPut } from '@/lib/api-client'
 import { useAuth } from '@/lib/auth-context'
 import { BRAND_FULL_NAME, BRAND_TAGLINE, BRAND_VERSION } from '@/lib/branding'
 import {
@@ -35,7 +35,6 @@ import {
 	type AppSettings,
 	parseSettings,
 	type RawSettings,
-	serializeSettings,
 } from '@/types/shared'
 
 interface SettingsResponse {
@@ -54,7 +53,7 @@ const KEY_MAP: Record<keyof AppSettings, string> = {
 }
 
 /** Reverse map for API responses */
-function toRawSettings(appSettings: Partial<AppSettings>): RawSettings {
+function _toRawSettings(appSettings: Partial<AppSettings>): RawSettings {
 	const result: RawSettings = {}
 	if (appSettings.autoPollInterval !== undefined) {
 		result.auto_poll_interval = String(appSettings.autoPollInterval)
@@ -442,7 +441,7 @@ export default function SettingsPage() {
 									value={settings.autoPollInterval}
 									onChange={(e) => {
 										const n = parseInt(e.target.value, 10)
-										if (!isNaN(n) && n >= 1000 && n <= 60000) {
+										if (!Number.isNaN(n) && n >= 1000 && n <= 60000) {
 											updateSetting('autoPollInterval', n)
 										} else if (e.target.value === '') {
 											setSettings((prev) => ({
@@ -500,7 +499,7 @@ export default function SettingsPage() {
 									value={settings.auditLogRetentionDays}
 									onChange={(e) => {
 										const n = parseInt(e.target.value, 10)
-										if (!isNaN(n) && n >= 1 && n <= 365) {
+										if (!Number.isNaN(n) && n >= 1 && n <= 365) {
 											updateSetting('auditLogRetentionDays', n)
 										} else if (e.target.value === '') {
 											setSettings((prev) => ({
@@ -548,7 +547,7 @@ export default function SettingsPage() {
 									value={settings.sessionTimeoutMinutes}
 									onChange={(e) => {
 										const n = parseInt(e.target.value, 10)
-										if (!isNaN(n) && n >= 5 && n <= 480) {
+										if (!Number.isNaN(n) && n >= 5 && n <= 480) {
 											updateSetting('sessionTimeoutMinutes', n)
 										} else if (e.target.value === '') {
 											setSettings((prev) => ({
@@ -606,7 +605,7 @@ export default function SettingsPage() {
 									value={settings.rateLimitPerMinute}
 									onChange={(e) => {
 										const n = parseInt(e.target.value, 10)
-										if (!isNaN(n) && n >= 10 && n <= 1000) {
+										if (!Number.isNaN(n) && n >= 10 && n <= 1000) {
 											updateSetting('rateLimitPerMinute', n)
 										} else if (e.target.value === '') {
 											setSettings((prev) => ({

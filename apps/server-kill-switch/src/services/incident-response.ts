@@ -60,7 +60,6 @@ const authFailures = new Map<string, { count: number; windowStart: number }>()
 class IncidentResponseService {
 	private incidents: Incident[] = []
 	private circuitBreakerOpen = false
-	private circuitBreakerOpenedAt: number | null = null
 	private readonly maxIncidents = 100
 
 	/**

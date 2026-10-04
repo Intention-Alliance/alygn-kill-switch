@@ -32,7 +32,8 @@ const KNOWN_SETTING_KEYS = [
 const SETTING_VALIDATORS: Record<string, (value: string) => string | null> = {
 	auto_poll_interval: (v) => {
 		const n = parseInt(v, 10)
-		if (isNaN(n) || n < 1000 || n > 60000) return 'Must be integer 1000-60000'
+		if (Number.isNaN(n) || n < 1000 || n > 60000)
+			return 'Must be integer 1000-60000'
 		return null
 	},
 	enable_notifications: (v) => {
@@ -41,12 +42,12 @@ const SETTING_VALIDATORS: Record<string, (value: string) => string | null> = {
 	},
 	audit_log_retention_days: (v) => {
 		const n = parseInt(v, 10)
-		if (isNaN(n) || n < 1 || n > 365) return 'Must be integer 1-365'
+		if (Number.isNaN(n) || n < 1 || n > 365) return 'Must be integer 1-365'
 		return null
 	},
 	session_timeout_minutes: (v) => {
 		const n = parseInt(v, 10)
-		if (isNaN(n) || n < 5 || n > 480) return 'Must be integer 5-480'
+		if (Number.isNaN(n) || n < 5 || n > 480) return 'Must be integer 5-480'
 		return null
 	},
 	ip_allowlist_enabled: (v) => {
@@ -55,7 +56,7 @@ const SETTING_VALIDATORS: Record<string, (value: string) => string | null> = {
 	},
 	rate_limit_per_minute: (v) => {
 		const n = parseInt(v, 10)
-		if (isNaN(n) || n < 10 || n > 1000) return 'Must be integer 10-1000'
+		if (Number.isNaN(n) || n < 10 || n > 1000) return 'Must be integer 10-1000'
 		return null
 	},
 }
@@ -95,7 +96,7 @@ function getUserRole(req: any, passedRole?: string | null): string | null {
 	if (passedRole) return passedRole
 	try {
 		// Try to extract from request context set by auth middleware
-		if (req._user && req._user.role) return req._user.role
+		if (req._user?.role) return req._user.role
 		// Try user header set by auth proxy
 		if (req.headers?.['x-user-role']) return req.headers['x-user-role']
 	} catch {

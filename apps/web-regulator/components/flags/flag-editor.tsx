@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDown, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { apiPost, apiPut } from '@/lib/api-client'
-import { cn } from '@/lib/utils'
 import type { Flag } from '@/types/shared'
 
 // ─── ADR-133 Predefined Flag Keys ──────────────────────────────────

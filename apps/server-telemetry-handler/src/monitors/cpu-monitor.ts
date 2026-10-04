@@ -145,7 +145,7 @@ export class CpuMonitor implements HardwareMonitor {
 						10,
 					)
 
-					if (!isNaN(tempMilliC)) {
+					if (!Number.isNaN(tempMilliC)) {
 						// Prefer x86_pkg_temp or acpitz (CPU-specific zones)
 						if (zoneType === 'x86_pkg_temp' || zoneType === 'acpitz') {
 							temperatures.push(tempMilliC / 1000)

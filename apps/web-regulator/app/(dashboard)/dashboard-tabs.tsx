@@ -36,7 +36,6 @@ import type { Cluster } from '@/types/db.types'
 import type {
 	ActivationRecord,
 	KillSwitchState,
-	KillSwitchStatus,
 	Machine,
 	VerificationEventMessage,
 } from '@/types/shared'

@@ -15,9 +15,9 @@ import {
  * - Adds resource stats to response headers for observability
  */
 export function resourceCheckMiddleware(
-	req: any,
+	_req: any,
 	res: any,
-	next?: () => void,
+	_next?: () => void,
 ): boolean {
 	const stats = getResourceStats()
 	const alerts = checkResourceAlerts(stats)

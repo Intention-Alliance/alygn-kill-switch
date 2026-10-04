@@ -20,7 +20,6 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
 import { apiDelete } from '@/lib/api-client'
 import type { Fido2Credential, Fido2RevokeResponse } from '@/types/fido2'
 

@@ -95,8 +95,8 @@ describe('OllamaDiscoveryProvider', () => {
 		const adapter = new OllamaDiscoveryProvider({ baseUrl })
 		const info = await adapter.detect()
 		expect(info).not.toBeNull()
-		expect(info!.id).toBe('ollama')
-		expect(info!.baseUrl).toBe(baseUrl)
+		expect(info?.id).toBe('ollama')
+		expect(info?.baseUrl).toBe(baseUrl)
 	})
 
 	it('returns null when Ollama is absent', async () => {
@@ -146,7 +146,7 @@ describe('VllmDiscoveryProvider', () => {
 		const adapter = new VllmDiscoveryProvider({ baseUrl })
 		const info = await adapter.detect()
 		expect(info).not.toBeNull()
-		expect(info!.id).toBe('vllm')
+		expect(info?.id).toBe('vllm')
 	})
 
 	it('lists served models', async () => {
@@ -174,7 +174,7 @@ describe('OpenAiCompatibleDiscoveryProvider', () => {
 		const adapter = new OpenAiCompatibleDiscoveryProvider({ baseUrl })
 		const info = await adapter.detect()
 		expect(info).not.toBeNull()
-		expect(info!.id).toBe('openai-compatible')
+		expect(info?.id).toBe('openai-compatible')
 	})
 
 	it('lists models from /v1/models data array', async () => {
@@ -203,7 +203,7 @@ describe('HuggingFaceDiscoveryProvider', () => {
 		})
 		const info = await adapter.detect()
 		expect(info).not.toBeNull()
-		expect(info!.id).toBe('huggingface')
+		expect(info?.id).toBe('huggingface')
 	})
 
 	it('returns null when neither cache nor TGI is present', async () => {
@@ -237,7 +237,7 @@ describe('LlamaIndexDiscoveryProvider', () => {
 		})
 		const info = await adapter.detect()
 		expect(info).not.toBeNull()
-		expect(info!.id).toBe('llamaindex')
+		expect(info?.id).toBe('llamaindex')
 	})
 
 	it('returns null when neither artifacts nor server are present', async () => {
@@ -295,8 +295,8 @@ describe('ProviderRegistry', () => {
 		const registry = new ProviderRegistry({ ollamaBaseUrl: baseUrl })
 		const result = await registry.probeProvider('ollama')
 		expect(result).not.toBeNull()
-		expect(result!.provider.id).toBe('ollama')
-		expect(result!.models.length).toBe(2)
+		expect(result?.provider.id).toBe('ollama')
+		expect(result?.models.length).toBe(2)
 	})
 
 	it('returns null for unknown provider id', async () => {

@@ -7,7 +7,6 @@ import {
 	CircleOff,
 	Clock,
 	Flag,
-	Loader2,
 	Pencil,
 	Plus,
 	Server,
@@ -59,7 +58,6 @@ import { BRAND_NAME } from '@/lib/branding'
 import { effectiveStatus } from '@/lib/dashboard-utils'
 import { cn } from '@/lib/utils'
 import type {
-	KillSwitchState,
 	Machine,
 	MachineStatus as MachineStatusType,
 } from '@/types/shared'
@@ -125,7 +123,7 @@ export default function MachinesDashboardPage() {
 	const [machines, setMachines] = useState<Machine[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-	const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null)
+	const [selectedMachine, _setSelectedMachine] = useState<Machine | null>(null)
 	const [editorOpen, setEditorOpen] = useState(false)
 	const [editingMachine, setEditingMachine] = useState<Machine | undefined>()
 
@@ -821,7 +819,7 @@ function formatTimeAgo(dateInput: string | Date | null | undefined): string {
 	if (!dateInput) return '—'
 
 	const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput
-	if (isNaN(date.getTime())) return '—'
+	if (Number.isNaN(date.getTime())) return '—'
 
 	const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
 	if (seconds < 0) return 'just now'

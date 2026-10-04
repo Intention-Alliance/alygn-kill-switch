@@ -7,7 +7,7 @@
  * Covers 15 scenarios per docs/plans/REMAINING-P1-FIXES-PLAN.md §5.1
  */
 
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, it, mock } from 'bun:test'
 import { configModuleMock } from '../../test-utils/config-mock'
 import type { RedisPool } from '../../types/redis-pool'
 import { KillSwitchService } from '../kill-switch'
@@ -22,10 +22,10 @@ process.env.AUDIT_HMAC_KEY = 'test-audit-hmac-key-0123456789abcdef'
 // Mock loadTracing to return no-op tracer
 mock.module('../../infra-loader', () => ({
 	loadTracing: async () => ({
-		recordSpan: async (name: string, attrs: any, fn: (span: any) => any) => {
+		recordSpan: async (_name: string, _attrs: any, fn: (span: any) => any) => {
 			const span = {
 				spanContext: () => ({ traceId: 'mock-trace-id' }),
-				setAttribute: (key: string, value: any) => {},
+				setAttribute: (_key: string, _value: any) => {},
 			}
 			return fn(span)
 		},
@@ -46,17 +46,17 @@ function createMockRedis(): RedisPool {
 		getClient: async () => ({}),
 		releaseClient: () => {},
 		chaosKillSwitchKey: () => 'ks:state',
-		get: async (key: string) => internalState,
-		set: async (key: string, val: string) => {
+		get: async (_key: string) => internalState,
+		set: async (_key: string, val: string) => {
 			internalState = val
 			return 'OK'
 		},
-		del: async (key: string) => 0,
-		publish: async (ch: string, msg: string) => 0,
-		subscribe: async (ch: string, h: Function) => {},
+		del: async (_key: string) => 0,
+		publish: async (_ch: string, _msg: string) => 0,
+		subscribe: async (_ch: string, _h: Function) => {},
 		healthCheck: async () => ({ redis: 'OK' }),
 		acquire: async () => ({}),
-		release: (client: any) => {},
+		release: (_client: any) => {},
 		withClient: async <T>(fn: (client: any) => Promise<T>): Promise<T> => {
 			return fn({})
 		},
@@ -445,14 +445,14 @@ describe('KillSwitchService — healthCheck', () => {
 			getClient: async () => ({}),
 			releaseClient: () => {},
 			chaosKillSwitchKey: () => 'ks:state',
-			get: async (key: string) => null,
-			set: async (key: string, val: string) => 'OK',
-			del: async (key: string) => 0,
-			publish: async (ch: string, msg: string) => 0,
-			subscribe: async (ch: string, h: Function) => {},
+			get: async (_key: string) => null,
+			set: async (_key: string, _val: string) => 'OK',
+			del: async (_key: string) => 0,
+			publish: async (_ch: string, _msg: string) => 0,
+			subscribe: async (_ch: string, _h: Function) => {},
 			healthCheck: async () => ({ redis: 'ERROR: connection lost' }),
 			acquire: async () => ({}),
-			release: (client: any) => {},
+			release: (_client: any) => {},
 			withClient: async <T>(fn: (client: any) => Promise<T>): Promise<T> => {
 				return fn({})
 			},
@@ -609,9 +609,9 @@ describe('KillSwitchService — onStateChange listeners', () => {
 			resolvePromise = resolve
 		})
 
-		service.onStateChange(async (entry) => {
+		service.onStateChange(async (_entry) => {
 			// Simulate async work
-			resolvePromise!()
+			resolvePromise?.()
 		})
 
 		await service.transitionTo('RUNNING')
@@ -650,7 +650,7 @@ describe('KillSwitchService — subscribeToStateChanges', () => {
 		}
 
 		const service = new KillSwitchService({ redis: customRedis })
-		const handler = (msg: string) => {}
+		const handler = (_msg: string) => {}
 		await service.subscribeToStateChanges(handler)
 
 		expect(subscribedChannel).toBe('bcp:kill-switch:chaos')

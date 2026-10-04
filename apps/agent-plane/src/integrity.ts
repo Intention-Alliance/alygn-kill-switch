@@ -65,7 +65,7 @@ async function getMemoryMb(): Promise<number> {
 		// returns empty, yielding memoryMb=0 and blind memory drift detection.
 		const content = readFileSync('/proc/meminfo', 'utf8')
 		const match = content.match(/MemTotal:\s+(\d+)\s+kB/)
-		if (match) return Math.round(parseInt(match[1]) / 1024)
+		if (match) return Math.round(parseInt(match[1], 10) / 1024)
 	} catch {
 		// no /proc (non-Linux) — 0 is valid
 	}
@@ -81,9 +81,9 @@ async function getGpus(): Promise<HardwareFingerprint['gpus']> {
 			.split('\n')
 			.filter((l) => /VGA|3D controller|Display/.test(l))
 			.map((l) => {
-				const pciMatch = l.match(/^(\S+)/)
+				const _pciMatch = l.match(/^(\S+)/)
 				const nameMatch = l.match(/\[(\w{4}:\w{4})\]/)
-				const vendorMatch = l.match(/\[(\w{4}):\w{4}\]/)
+				const _vendorMatch = l.match(/\[(\w{4}):\w{4}\]/)
 				return {
 					name: l.split(':')[2]?.trim() ?? l.trim(),
 					vendor: /NVIDIA/i.test(l)
@@ -115,7 +115,7 @@ async function getDiskGb(): Promise<number> {
 		// find() matched the header and reported diskGb=1 instead of the real
 		// total. Take the last purely-numeric line, which is the --total row.
 		const totalLine = [...lines].reverse().find((l) => /^\d+$/.test(l.trim()))
-		return totalLine ? parseInt(totalLine.trim()) : 0
+		return totalLine ? parseInt(totalLine.trim(), 10) : 0
 	} catch {
 		return 0
 	}

@@ -13,13 +13,12 @@
  *  - writes_completed: cumulative write operations (from /proc/diskstats)
  */
 
-import { existsSync, readdirSync, readFileSync, statfsSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, readFileSync, statfsSync } from 'node:fs'
 import type { HardwareMetric } from '../types'
 import type { HardwareMonitor } from './interface'
 
 /** Directories to skip when enumerating block devices */
-const SKIP_PARTITIONS = new Set(['.', '..'])
+const _SKIP_PARTITIONS = new Set(['.', '..'])
 
 /**
  * Disk Monitor — collects filesystem usage and I/O statistics.
@@ -182,7 +181,7 @@ export class DiskMonitor implements HardwareMonitor {
 				const readsCompleted = parseInt(fields[3], 10)
 				const writesCompleted = parseInt(fields[7], 10)
 
-				if (!isNaN(readsCompleted)) {
+				if (!Number.isNaN(readsCompleted)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'reads_completed',
@@ -192,7 +191,7 @@ export class DiskMonitor implements HardwareMonitor {
 					})
 				}
 
-				if (!isNaN(writesCompleted)) {
+				if (!Number.isNaN(writesCompleted)) {
 					metrics.push({
 						monitorName: this.name,
 						metricName: 'writes_completed',

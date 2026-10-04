@@ -173,11 +173,11 @@ describe('JevProvider', () => {
 			machineId: 'm1',
 		})
 
-		expect(captured!.url).toBe('https://api.typesafe.ai/v1/systemone')
-		const headers = captured!.init.headers as Record<string, string>
+		expect(captured?.url).toBe('https://api.typesafe.ai/v1/systemone')
+		const headers = captured?.init.headers as Record<string, string>
 		expect(headers.Authorization).toBe(`Bearer ${KEY}`)
 
-		const body = JSON.parse(captured!.init.body as string)
+		const body = JSON.parse(captured?.init.body as string)
 		expect(body.model).toBe('jev-latest')
 		expect(body.questions.harmful.type).toBe('noul')
 		expect(body.questions.category.type).toBe('choice')

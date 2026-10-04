@@ -10,7 +10,6 @@ import {
 	validateEnvironment,
 	validateVerifierConfig,
 } from './config/validate-env'
-import { sqlite as sqliteDb } from './db/index'
 import { seedFeatureFlags } from './db/seed'
 import { loadRedisPool } from './infra-loader'
 import { seedAdminUser } from './lib/auth'
@@ -28,7 +27,7 @@ import {
 } from './middleware/inference-verification'
 import { isKillAuthBypassPath } from './middleware/kill-auth-bypass'
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason, _promise) => {
 	console.error('[FATAL] Unhandled rejection:', reason)
 })
 process.on('uncaughtException', (err) => {
@@ -43,10 +42,7 @@ import {
 import {
 	checkRateLimit,
 	initRateLimiter,
-	isReadRequest,
 	RATE_LIMIT_MAX,
-	READ_RATE_LIMIT_MAX,
-	WRITE_RATE_LIMIT_MAX,
 } from './middleware/rate-limit'
 import { handleAdminRoutes } from './routes/admin'
 import {
@@ -118,7 +114,7 @@ function createHandler(
 	relayCtx?: { upstreamBaseUrl: string; upstreamTimeoutMs?: number },
 ) {
 	const authRateLimiter = new AuthRateLimiter()
-	const config = getConfig()
+	const _config = getConfig()
 	const { secretsLoader, lockoutState, redis, verifierReachability } = ctx
 
 	return async (req: any, res: any) => {
@@ -600,7 +596,7 @@ export async function startServer(
 	const secretsLoader = new SecretsLoader({
 		onReload: (result) => {
 			console.log(
-				`[secrets-loader] reload: ${result.skipped ? 'skipped (' + (result.reason || 'unchanged') + ')' : result.loaded.length + ' keys loaded'}`,
+				`[secrets-loader] reload: ${result.skipped ? `skipped (${result.reason || 'unchanged'})` : `${result.loaded.length} keys loaded`}`,
 			)
 		},
 	})
@@ -883,7 +879,7 @@ export async function startServer(
 				wsManager.handleBunUpgrade(ws)
 			},
 			close() {},
-			message(ws: any, msg: string | Buffer) {
+			message(_ws: any, msg: string | Buffer) {
 				const text = typeof msg === 'string' ? msg : Buffer.from(msg).toString()
 				if (text === 'pong') {
 					/* handled by Bun's auto-pong */
@@ -936,7 +932,7 @@ export async function startServer(
 					const response = await auth.handler(sessionReq)
 
 					if (!response.ok) {
-						console.error('[ws] getSession returned ' + response.status)
+						console.error(`[ws] getSession returned ${response.status}`)
 						return new Response(
 							JSON.stringify({ error: 'Invalid or expired token', code: 4001 }),
 							{ status: 401, headers: { 'content-type': 'application/json' } },
@@ -965,7 +961,7 @@ export async function startServer(
 							{ status: 429, headers: { 'content-type': 'application/json' } },
 						)
 
-					console.log('[ws] Upgrading: ' + userId + ' from ' + ip)
+					console.log(`[ws] Upgrading: ${userId} from ${ip}`)
 					const ok = srv.upgrade(req, { data: { userId, ip } } as any)
 					return ok
 						? undefined

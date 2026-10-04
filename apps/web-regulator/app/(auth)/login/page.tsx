@@ -61,7 +61,7 @@ function LoginPageInner() {
 	// internal paths — never an external URL (open-redirect guard).
 	const getCallbackUrl = () => {
 		const raw = searchParams.get('callbackUrl')
-		if (raw && raw.startsWith('/') && !raw.startsWith('//')) {
+		if (raw?.startsWith('/') && !raw.startsWith('//')) {
 			return raw
 		}
 		return '/kill-switch'
@@ -72,7 +72,7 @@ function LoginPageInner() {
 		if (isAuthenticated && !isLoading) {
 			router.replace(getCallbackUrl())
 		}
-	}, [isAuthenticated, isLoading, router])
+	}, [isAuthenticated, isLoading, router, getCallbackUrl])
 
 	const form = useForm<LoginValues>({
 		resolver: zodResolver(loginSchema) as any,

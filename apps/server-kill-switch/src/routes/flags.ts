@@ -395,10 +395,10 @@ export async function handleFlagsRoutes(
 				flag: {
 					...updated,
 					value: coerceFlagValue(
-						updated!.value,
-						getFlagType(updated!.key) ?? inferType(String(updated!.value)),
+						updated?.value,
+						getFlagType(updated?.key) ?? inferType(String(updated?.value)),
 					),
-					enabled: !!updated!.enabled,
+					enabled: !!updated?.enabled,
 				},
 			})
 			if (publishEvent) {
