@@ -57,12 +57,17 @@ export const GLOSSARY_CATEGORIES: readonly GlossaryCategory[] = [
       {
         term: "Teacher model",
         definition:
-          "A large, capable model (e.g. glm-5.3-flash:cloud) that generates labels and paraphrases used to train the smaller student model.",
+          "Distillation vocabulary for a large, capable model (e.g. glm-5.3-flash:cloud) that proposes labels and generates paraphrases used to train the smaller student model. NOT a trainer — the human is the trainer. See the framework README's 'Who trains — the AI mediator policy'.",
+      },
+      {
+        term: "Mediator",
+        definition:
+          "The optional AI role in the training loop: proposes labels, generates paraphrases, and flags disagreements with human labels. Never decides. Disagreement routes a record to human review; it never rejects or overrides it.",
       },
       {
         term: "Student model",
         definition:
-          "The smaller model being fine-tuned (e.g. qwen2.5:0.5b) to learn the classification boundary from the teacher's outputs.",
+          "The smaller model being fine-tuned (e.g. qwen2.5:0.5b) to learn the classification boundary from human-authored, human-verified labels.",
       },
       {
         term: "Epochs",
@@ -139,7 +144,7 @@ export const GLOSSARY_CATEGORIES: readonly GlossaryCategory[] = [
       {
         term: "glm-5.3-flash",
         definition:
-          "A cloud-hosted model used as the primary teacher. It generates verdicts and paraphrases for distillation. Referenced as glm-5.3-flash:cloud. Earlier augmented records were produced by the prior deepseek-v4-flash:cloud teacher (no teacher field).",
+          "A cloud-hosted model used as the primary mediator. It proposes verdicts and generates paraphrases for distillation. Referenced as glm-5.3-flash:cloud. Its verdicts are advisory — human labels are authoritative. Earlier augmented records were produced by the prior deepseek-v4-flash:cloud era (no teacher field).",
       },
       {
         term: "nomic-embed-text-v2-moe",

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Server, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MachineDetailPanel } from "@/components/machines/machine-detail-panel";
+import { MachineFlagsPanel } from "@/components/machines/machine-flags-panel";
 import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { apiGet, apiPost } from "@/lib/api-client";
 import { toast } from "sonner";
@@ -129,6 +130,9 @@ function MachineDetailContent({ machineId }: { machineId: string }) {
         currentKillSwitchState={status?.state ?? "ARMED"}
         onKillSwitchStateChange={handleKillSwitchStateChange}
       />
+
+      {/* S4: per-machine flag overrides — primary surface */}
+      <MachineFlagsPanel machineId={machine.id} machineName={machine.name} />
     </div>
   );
 }

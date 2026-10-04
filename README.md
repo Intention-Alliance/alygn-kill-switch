@@ -292,7 +292,7 @@ We welcome contributions — from typo fixes to Rust enforcement modules. A cont
 
 ## 📄 License
 
-Private - All Rights Reserved
+- [GPL-3.0 License](./LICENSE)
 
 ---
 

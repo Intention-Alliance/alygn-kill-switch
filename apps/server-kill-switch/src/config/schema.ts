@@ -110,8 +110,7 @@ export const WebAuthnConfigSchema = z.object({
 // (dignity-verification-v0.1-preview). Until that adapter is created, the
 // verifier runs on the stock `verifierModel` (qwen2.5:0.5b). Once the LoRA
 // adapter exists, set KILL_SWITCH_VERIFIER_MODEL to the target model name.
-export const VerificationConfigSchema = z.object({
-	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
+export const VerificationConfigSchema = z.object({	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
 	verifierBaseUrl: z.string().url().default('http://localhost:11434'),
 	verifierTimeoutMs: z.number().int().min(1).default(500),
 	verifyEnabled: z.boolean().default(false),
@@ -126,6 +125,20 @@ export const VerificationConfigSchema = z.object({
 		.default('dignity-verification-v0.1-preview'),
 })
 
+// ─── Decision Provider (JEV-FEATURE-FLAG-STRATEGY) ──────────────────
+// The TypeSafe key is SERVER-SIDE ONLY. Its absence is a normal state:
+// decision.provider defaults to keyword, and selecting jev without a key
+// fails closed to review. Startup must NOT fail when it is missing.
+export const DecisionConfigSchema = z.object({
+	typesafeApiKey: z.string().default(''),
+	typesafeBaseUrl: z.string().url().default('https://api.typesafe.ai'),
+	// Laya runs in a local Python sidecar (open-weights model). Empty base URL
+	// means the provider is not registered; the selector then fails closed.
+	layaBaseUrl: z.string().default(''),
+	layaModel: z.string().default('laya-multilingual'),
+	layaTimeoutMs: z.number().int().min(50).max(30000).default(1000),
+})
+
 export const AppConfigSchema = z.object({
 	env: z.enum(['development', 'staging', 'production']),
 	redis: RedisConfigSchema,
@@ -137,6 +150,7 @@ export const AppConfigSchema = z.object({
 	telemetry: TelemetryConfigSchema,
 	webauthn: WebAuthnConfigSchema.default({}),
 	verification: VerificationConfigSchema.default({}),
+	decision: DecisionConfigSchema.default({}),
 })
 
 export type AppConfig = z.infer<typeof AppConfigSchema>
@@ -149,3 +163,4 @@ export type ServerConfig = z.infer<typeof ServerConfigSchema>
 export type TelemetryConfig = z.infer<typeof TelemetryConfigSchema>
 export type WebAuthnConfig = z.infer<typeof WebAuthnConfigSchema>
 export type VerificationConfig = z.infer<typeof VerificationConfigSchema>
+export type DecisionConfig = z.infer<typeof DecisionConfigSchema>

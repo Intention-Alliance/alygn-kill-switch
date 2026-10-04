@@ -17,9 +17,7 @@ import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
 import { ClusterTable } from "@/components/dashboard/cluster-table";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SystemHealthPanel } from "@/components/dashboard/system-health-panel";
-import { StatusIndicator } from "@/components/kill-switch/status-indicator";
-import { EmergencyStopButton } from "@/components/kill-switch/emergency-stop-button";
-import { ActivationHistory } from "@/components/kill-switch/activation-history";
+import { KillSwitchView } from "@/components/kill-switch/kill-switch-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,8 +26,6 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useMachineSelection } from "@/lib/machine-selection-context";
 import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/branding";
-import { apiPost } from "@/lib/api-client";
-import { toast } from "sonner";
 import type { DashboardCluster } from "@/lib/dashboard-utils";
 import type { Cluster } from "@/types/db.types";
 import type {
@@ -286,9 +282,9 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
           )}
         </TabsContent>
 
-        {/* ─── Kill Switch tab (current /kill-switch content) ── */}
+        {/* ─── Kill Switch tab — same component as /kill-switch (S5) ── */}
         <TabsContent value="kill-switch" className="space-y-6">
-          <KillSwitchTab
+          <KillSwitchView
             status={status}
             auditLog={auditLog}
             isConnected={isConnected}
@@ -305,241 +301,6 @@ export default function DashboardTabs({ initialTab }: { initialTab: TabKey }) {
     </div>
   );
 }
-
-// ============================================================================
-// Kill Switch tab — extracted from the former /kill-switch page
-// ============================================================================
-
-function KillSwitchTab({
-  status,
-  auditLog,
-  isConnected,
-  reconnectAttempt,
-  onStateChange,
-}: {
-  status: KillSwitchStatus | null;
-  auditLog: ActivationRecord[];
-  isConnected: boolean;
-  reconnectAttempt: number;
-  onStateChange: (state: KillSwitchState) => void;
-}) {
-  const isLoading = !status;
-
-  if (isLoading && !isConnected) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <div
-          className="rounded-lg border border-muted bg-muted/30 p-6 text-center"
-          role="status"
-          aria-live="polite"
-        >
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
-          <h2 className="mt-4 text-lg font-semibold">
-            Connecting to Kill Switch…
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Attempting WebSocket connection (attempt{" "}
-            {reconnectAttempt > 0 ? reconnectAttempt : 1}
-            /5)
-          </p>
-        </div>
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-48 w-full" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* WebSocket Connection Notice */}
-      <ConnectionNotice
-        isConnected={isConnected}
-        reconnectAttempt={reconnectAttempt}
-      />
-
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tight">
-              Kill Switch Dashboard
-            </h1>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Emergency shutdown control for the {BRAND_NAME} protocol network
-          </p>
-        </div>
-
-        {status && (
-          <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              Active experiments: {status.activeExperiments}
-            </span>
-          </div>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* Status Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-3 text-lg">
-            System Status
-            {status && <StatusIndicator state={status.state} />}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-md border p-4">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Last Activation
-              </p>
-              <p className="mt-1 text-sm font-semibold">
-                {status?.lastActivation
-                  ? new Date(status.lastActivation).toLocaleString()
-                  : "Never"}
-              </p>
-            </div>
-            <div className="rounded-md border p-4">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Activated By
-              </p>
-              <p className="mt-1 text-sm font-semibold">
-                {status?.lastActivationBy ?? "—"}
-              </p>
-            </div>
-            <div className="rounded-md border p-4">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Reason
-              </p>
-              <p className="mt-1 text-sm font-semibold line-clamp-2">
-                {status?.reason ?? "—"}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Emergency Stop Controls */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Controls</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {status ? (
-            <div className="space-y-4">
-              <EmergencyStopButton
-                currentState={status.state}
-                onStateChange={onStateChange}
-              />
-              {status.state === "STOPPED" && (
-                <ResumeButton
-                  onResumed={() => onStateChange("RUNNING")}
-                />
-              )}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Status unavailable — controls disabled.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Activation History — uses WebSocket auditLog */}
-      <ActivationHistory limit={20} webSocketRecords={auditLog} />
-    </div>
-  );
-}
-
-// ─── Resume Button ────────────────────────────────────────────────
-
-function ResumeButton({ onResumed }: { onResumed: () => void }) {
-  const [isResuming, setIsResuming] = useState(false);
-
-  const handleResume = useCallback(async () => {
-    setIsResuming(true);
-    try {
-      await apiPost("/api/kill-switch/chaos", {
-        state: "RUNNING",
-        reason: "Manual resume from dashboard",
-      });
-      toast.success("Kill Switch resumed — inference traffic flowing");
-      onResumed();
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to resume kill switch",
-      );
-    } finally {
-      setIsResuming(false);
-    }
-  }, [onResumed]);
-
-  return (
-    <Button
-      onClick={handleResume}
-      disabled={isResuming}
-      variant="default"
-      className="w-full sm:w-auto"
-      aria-label="Resume inference traffic"
-    >
-      {isResuming ? (
-        <>
-          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          Resuming…
-        </>
-      ) : (
-        <>
-          <Activity className="mr-2 h-4 w-4" />
-          Resume Inference Traffic
-        </>
-      )}
-    </Button>
-  );
-}
-
-// ─── Connection Notice ───────────────────────────────────────────
-
-function ConnectionNotice({
-  isConnected,
-  reconnectAttempt,
-}: {
-  isConnected: boolean;
-  reconnectAttempt: number;
-}) {
-  if (isConnected) {
-    return (
-      <div
-        className="flex items-center gap-2 rounded-md bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600 dark:text-emerald-400"
-        role="status"
-        aria-live="polite"
-      >
-        <Activity className="h-3.5 w-3.5" />
-        <span>Live — WebSocket connected</span>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="flex items-center gap-2 rounded-md bg-amber-500/10 px-4 py-2 text-sm text-amber-600 dark:text-amber-400"
-      role="alert"
-      aria-live="assertive"
-    >
-      <Activity className="h-3.5 w-3.5" />
-      <span>
-        WS disconnected
-        {reconnectAttempt > 0 ? ` (retry ${reconnectAttempt}/5)` : ""}, using
-        polling fallback
-      </span>
-    </div>
-  );
-}
-
 // ============================================================================
 // Logs tab — placeholder card linked to /kill-switch or future /logs route
 // ============================================================================
