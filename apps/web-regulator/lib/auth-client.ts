@@ -8,7 +8,7 @@
  * CSRF protection via double-submit cookie pattern.
  */
 
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient } from 'better-auth/react'
 
 /**
  * Resolve the auth base URL.
@@ -30,49 +30,53 @@ import { createAuthClient } from "better-auth/react";
  * through the Next.js rewrite to the backend.
  */
 function resolveAuthBaseURL(): string {
-  if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
-    return process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
-  }
-  if (typeof window !== "undefined" && window.location?.origin) {
-    return window.location.origin;
-  }
-  // SSR/build-time fallback — placeholder, only the protocol matters here
-  return "http://localhost:3000";
+	if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
+		return process.env.NEXT_PUBLIC_BETTER_AUTH_URL
+	}
+	if (typeof window !== 'undefined' && window.location?.origin) {
+		return window.location.origin
+	}
+	// SSR/build-time fallback — placeholder, only the protocol matters here
+	return 'http://localhost:3000'
 }
 
-const baseURL = resolveAuthBaseURL();
+const baseURL = resolveAuthBaseURL()
 
 // v1.1.1 dev-env-unlock: warn (not fail) if the auth client is pointed at a
 // non-localhost URL without a same-origin proxy. CSP 'self' will block the
 // getSession fetch, and login will silently fail in the browser.
-if (baseURL.startsWith("http") && !baseURL.includes("localhost") && !baseURL.includes("127.0.0.1")) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    `[auth-client] NEXT_PUBLIC_BETTER_AUTH_URL=${baseURL} is a non-localhost absolute URL. ` +
-    `If your CSP connect-src is 'self', the getSession fetch will be blocked. ` +
-    `Use the relative '/api/auth' (Next.js rewrite → backend) unless you have nginx ` +
-    `or another reverse proxy serving the API on the same origin.`
-  );
+if (
+	baseURL.startsWith('http') &&
+	!baseURL.includes('localhost') &&
+	!baseURL.includes('127.0.0.1')
+) {
+	// eslint-disable-next-line no-console
+	console.warn(
+		`[auth-client] NEXT_PUBLIC_BETTER_AUTH_URL=${baseURL} is a non-localhost absolute URL. ` +
+			`If your CSP connect-src is 'self', the getSession fetch will be blocked. ` +
+			`Use the relative '/api/auth' (Next.js rewrite → backend) unless you have nginx ` +
+			`or another reverse proxy serving the API on the same origin.`,
+	)
 }
 
 export const authClient = createAuthClient({
-  baseURL,
+	baseURL,
 
-  /** Session management options */
-  sessionOptions: {
-    /** Disable polling — rely on cookie-based sessions */
-    refetchInterval: 0,
-    /** Re-fetch session on window focus */
-    refetchOnWindowFocus: true,
-    /** Don't refetch when offline */
-    refetchWhenOffline: false,
-  },
+	/** Session management options */
+	sessionOptions: {
+		/** Disable polling — rely on cookie-based sessions */
+		refetchInterval: 0,
+		/** Re-fetch session on window focus */
+		refetchOnWindowFocus: true,
+		/** Don't refetch when offline */
+		refetchWhenOffline: false,
+	},
 
-  /** Fetch options — include credentials for httpOnly cookies */
-  fetchOptions: {
-    credentials: "include",
-  },
-});
+	/** Fetch options — include credentials for httpOnly cookies */
+	fetchOptions: {
+		credentials: 'include',
+	},
+})
 
 /** Type helper for the auth client */
-export type AuthClient = typeof authClient;
+export type AuthClient = typeof authClient

@@ -25,9 +25,9 @@
 import { createHash, randomBytes } from 'node:crypto'
 import { existsSync, mkdirSync, renameSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { lt } from 'drizzle-orm'
 import { db } from '../src/db'
 import { webhookApiKeyAudit } from '../src/db/schema'
-import { lt } from 'drizzle-orm'
 
 // ─── Argument parsing ─────────────────────────────────────────────
 
@@ -39,17 +39,27 @@ function parseArgs() {
 		if (a === '--dry-run') out.dryRun = true
 		else if (a === '--help' || a === '-h') out.help = true
 		else if (a.startsWith('--')) {
-			out[a.slice(2)] = isNaN(Number(args[i + 1])) ? args[i + 1] : Number(args[i + 1])
+			out[a.slice(2)] = isNaN(Number(args[i + 1]))
+				? args[i + 1]
+				: Number(args[i + 1])
 			i++
 		}
 	}
-	return out as { dryRun?: boolean; help?: boolean; days?: number; archiveDir?: string }
+	return out as {
+		dryRun?: boolean
+		help?: boolean
+		days?: number
+		archiveDir?: string
+	}
 }
 
 // ─── Defaults ─────────────────────────────────────────────────────
 
 const DEFAULT_RETENTION_DAYS = 120
-const ARCHIVE_DIR_DEFAULT = join(process.env.DATA_DIR || './data', 'audit-archive')
+const ARCHIVE_DIR_DEFAULT = join(
+	process.env.DATA_DIR || './data',
+	'audit-archive',
+)
 
 // ─── Main ──────────────────────────────────────────────────────────
 
@@ -80,7 +90,9 @@ Cron:
 	const archiveDate = cutoff.toISOString().slice(0, 10) // YYYY-MM-DD
 	const archiveFile = join(archiveDir, `${archiveDate}.jsonl`)
 
-	console.log(`[archive-audit] cutoff: ${cutoff.toISOString()} (>${retentionDays} days old)`)
+	console.log(
+		`[archive-audit] cutoff: ${cutoff.toISOString()} (>${retentionDays} days old)`,
+	)
 	console.log(`[archive-audit] target: ${archiveFile}`)
 	if (dryRun) console.log(`[archive-audit] DRY RUN — no writes`)
 
@@ -100,7 +112,9 @@ Cron:
 
 	if (dryRun) {
 		for (const r of oldRows.slice(0, 3)) {
-			console.log(`  sample: id=${r.id} keyId=${r.keyId} action=${r.action} at=${r.at instanceof Date ? r.at.toISOString() : r.at}`)
+			console.log(
+				`  sample: id=${r.id} keyId=${r.keyId} action=${r.action} at=${r.at instanceof Date ? r.at.toISOString() : r.at}`,
+			)
 		}
 		if (oldRows.length > 3) console.log(`  ... and ${oldRows.length - 3} more`)
 		return
@@ -109,15 +123,20 @@ Cron:
 	// Build JSONL payload (one entry per line)
 	const lines: string[] = []
 	for (const r of oldRows) {
-		const iso = r.at instanceof Date ? r.at.toISOString() : new Date(r.at as unknown as number * 1000).toISOString()
-		lines.push(JSON.stringify({
-			id: r.id,
-			keyId: r.keyId,
-			action: r.action,
-			actor: r.actor,
-			at: iso,
-			meta: r.meta ? JSON.parse(r.meta) : null,
-		}))
+		const iso =
+			r.at instanceof Date
+				? r.at.toISOString()
+				: new Date((r.at as unknown as number) * 1000).toISOString()
+		lines.push(
+			JSON.stringify({
+				id: r.id,
+				keyId: r.keyId,
+				action: r.action,
+				actor: r.actor,
+				at: iso,
+				meta: r.meta ? JSON.parse(r.meta) : null,
+			}),
+		)
 	}
 	const payload = `${lines.join('\n')}\n`
 
@@ -131,14 +150,18 @@ Cron:
 
 	// Compute a sha256 of the archived file for tamper-evidence
 	const fileHash = createHash('sha256').update(payload).digest('hex')
-	console.log(`[archive-audit] wrote ${oldRows.length} entries (${payload.length} bytes) to ${archiveFile}`)
+	console.log(
+		`[archive-audit] wrote ${oldRows.length} entries (${payload.length} bytes) to ${archiveFile}`,
+	)
 	console.log(`[archive-audit] sha256: ${fileHash}`)
 
 	// DELETE from the live table (wrapped in a transaction — if the archive
 	// write above somehow didn't actually land, this will still go through,
 	// so we re-verify the file exists before the DELETE).
 	if (!existsSync(archiveFile)) {
-		throw new Error(`archive file missing after rename: ${archiveFile} — aborting DELETE`)
+		throw new Error(
+			`archive file missing after rename: ${archiveFile} — aborting DELETE`,
+		)
 	}
 
 	// DELETE from the live table. We re-query the count after the delete to
@@ -148,7 +171,9 @@ Cron:
 	await db.delete(webhookApiKeyAudit).where(lt(webhookApiKeyAudit.at, cutoff))
 	const afterCount = await db.$count(webhookApiKeyAudit)
 	const deleted = beforeCount - afterCount
-	console.log(`[archive-audit] deleted ${deleted} entries from live table (${beforeCount} → ${afterCount})`)
+	console.log(
+		`[archive-audit] deleted ${deleted} entries from live table (${beforeCount} → ${afterCount})`,
+	)
 
 	// Append a final audit entry so the archive action itself is recorded
 	await db.insert(webhookApiKeyAudit).values({

@@ -8,7 +8,7 @@
  * at /api/auth via the Next.js route handler (src/app/api/auth/[...all]/route.ts).
  */
 
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient } from 'better-auth/react'
 
 /**
  * Resolve the auth base URL.
@@ -18,31 +18,31 @@ import { createAuthClient } from "better-auth/react";
  *   3. Otherwise a localhost placeholder for SSR/build-time.
  */
 function resolveAuthBaseURL(): string {
-  if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
-    return process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
-  }
-  if (typeof window !== "undefined" && window.location?.origin) {
-    return window.location.origin;
-  }
-  return "http://127.0.0.1:3002";
+	if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
+		return process.env.NEXT_PUBLIC_BETTER_AUTH_URL
+	}
+	if (typeof window !== 'undefined' && window.location?.origin) {
+		return window.location.origin
+	}
+	return 'http://127.0.0.1:3002'
 }
 
-const baseURL = resolveAuthBaseURL();
+const baseURL = resolveAuthBaseURL()
 
 export const authClient = createAuthClient({
-  baseURL,
+	baseURL,
 
-  /** Session management — cookie-based, no polling */
-  sessionOptions: {
-    refetchInterval: 0,
-    refetchOnWindowFocus: true,
-    refetchWhenOffline: false,
-  },
+	/** Session management — cookie-based, no polling */
+	sessionOptions: {
+		refetchInterval: 0,
+		refetchOnWindowFocus: true,
+		refetchWhenOffline: false,
+	},
 
-  /** Include credentials for httpOnly cookies */
-  fetchOptions: {
-    credentials: "include",
-  },
-});
+	/** Include credentials for httpOnly cookies */
+	fetchOptions: {
+		credentials: 'include',
+	},
+})
 
-export type AuthClient = typeof authClient;
+export type AuthClient = typeof authClient

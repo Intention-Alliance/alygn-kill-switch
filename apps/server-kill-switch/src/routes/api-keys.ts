@@ -79,13 +79,19 @@ const INTERNAL_RATE_LIMIT_MAX = 10
 const INTERNAL_RATE_LIMIT_WINDOW_MS = 60_000
 const internalRateBuckets = new Map<string, number[]>()
 
-function checkInternalRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
+function checkInternalRateLimit(ip: string): {
+	allowed: boolean
+	retryAfter?: number
+} {
 	const now = Date.now()
 	const cutoff = now - INTERNAL_RATE_LIMIT_WINDOW_MS
 	const bucket = internalRateBuckets.get(ip) ?? []
 	const recent = bucket.filter((t) => t > cutoff)
 	if (recent.length >= INTERNAL_RATE_LIMIT_MAX) {
-		return { allowed: false, retryAfter: Math.ceil(INTERNAL_RATE_LIMIT_WINDOW_MS / 1000) }
+		return {
+			allowed: false,
+			retryAfter: Math.ceil(INTERNAL_RATE_LIMIT_WINDOW_MS / 1000),
+		}
 	}
 	recent.push(now)
 	internalRateBuckets.set(ip, recent)
@@ -93,7 +99,11 @@ function checkInternalRateLimit(ip: string): { allowed: boolean; retryAfter?: nu
 }
 
 function rateLimited(res: Res): boolean {
-	writeJson(res, 429, { error: 'rate limit exceeded', limit: INTERNAL_RATE_LIMIT_MAX, retryAfter: 60 })
+	writeJson(res, 429, {
+		error: 'rate limit exceeded',
+		limit: INTERNAL_RATE_LIMIT_MAX,
+		retryAfter: 60,
+	})
 	return true
 }
 
@@ -286,7 +296,11 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 			where: eq(webhookApiKeys.id, id),
 		})
 		if (!existing) return { status: 404, body: { error: 'not found' } }
-		if (existing.revokedAt) return { status: 409, body: { error: 'cannot rotate a revoked key — create a new one' } }
+		if (existing.revokedAt)
+			return {
+				status: 409,
+				body: { error: 'cannot rotate a revoked key — create a new one' },
+			}
 
 		const newPlaintext = hashingService.generateApiKey()
 		const newPrefix = newPlaintext.slice(0, 8)
@@ -317,7 +331,10 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 			action: 'rotate',
 			actor: 'admin',
 			at: new Date(),
-			meta: JSON.stringify({ newKeyId: newId, oldKeyPrefix: existing.keyPrefix }),
+			meta: JSON.stringify({
+				newKeyId: newId,
+				oldKeyPrefix: existing.keyPrefix,
+			}),
 		})
 		await tx.insert(webhookApiKeyAudit).values({
 			keyId: newId,
@@ -333,7 +350,10 @@ async function rotateKey(res: Res, id: string): Promise<boolean> {
 				id: newId,
 				keyPrefix: newPrefix,
 				name: existing.name,
-				scopes: existing.scopes.split(',').map((s) => s.trim()).filter(Boolean),
+				scopes: existing.scopes
+					.split(',')
+					.map((s) => s.trim())
+					.filter(Boolean),
 				key: newPlaintext,
 				revokedKeyId: oldId,
 			},
@@ -452,7 +472,12 @@ async function internalVerify(
 	}
 	const requiredScope =
 		typeof body.requiredScope === 'string' ? body.requiredScope : undefined
-	const result = await verifyApiKey(rawKey, ip, requiredScope, req.url ? new URL(req.url, 'http://localhost').pathname : null)
+	const result = await verifyApiKey(
+		rawKey,
+		ip,
+		requiredScope,
+		req.url ? new URL(req.url, 'http://localhost').pathname : null,
+	)
 	if (!result.ok) {
 		writeJson(res, 401, { error: 'unauthorized', reason: result.reason })
 		return true

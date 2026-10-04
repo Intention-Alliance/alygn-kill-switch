@@ -17,7 +17,9 @@ function checkLine(label: string, ok: boolean, detail = ''): string {
 }
 
 /** Run the verification pass and render the report. */
-export async function runVerify(config: WizardConfig): Promise<VerificationReport> {
+export async function runVerify(
+	config: WizardConfig,
+): Promise<VerificationReport> {
 	const spin = spinner()
 	spin.start('Verifying installation…')
 	const report = await verifyInstall(config)
@@ -54,7 +56,11 @@ export async function runVerify(config: WizardConfig): Promise<VerificationRepor
 
 	note(lines.join('\n'), 'First-run verification')
 
-	const ok = report.api.ok && report.redis.ok && report.machines.length > 0 && report.auditLog.ok
+	const ok =
+		report.api.ok &&
+		report.redis.ok &&
+		report.machines.length > 0 &&
+		report.auditLog.ok
 
 	if (ok) {
 		log.success('Installation verified.')

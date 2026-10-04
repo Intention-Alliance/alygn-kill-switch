@@ -20,8 +20,11 @@ import type {
 import { desc, eq } from 'drizzle-orm'
 import { db } from '../db/index'
 import { discoveredMachines, integrityEvents } from '../db/schema'
+import {
+	HeartbeatCollector,
+	HostnameMismatchError,
+} from '../services/discovery/heartbeat-collector'
 import { DiscoveryOrchestrator } from '../services/discovery/orchestrator'
-import { HeartbeatCollector, HostnameMismatchError } from '../services/discovery/heartbeat-collector'
 import { OnboardingStateError } from '../services/onboarding'
 
 // ─── Helpers ────────────────────────────────────────────────────

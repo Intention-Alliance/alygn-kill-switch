@@ -1,24 +1,24 @@
 {
-  "compilerOptions": {
-    "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "types": ["node", "bun"],
-    "outDir": "./dist",
-    "rootDir": "../..",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@align/shared-types": ["../../packages/shared-types/src/index.ts"],
-      "@align/decision-core": ["../../packages/decision-core/src/index.ts"]
-    }
-  },
-  "include": ["src", "../infra/redis/*.mjs", "../infra/tracing/*.mjs"]
+	"compilerOptions": {
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"module": "Preserve",
+		"moduleDetection": "force",
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"noEmit": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"allowJs": true,
+		"types": ["node", "bun"],
+		"outDir": "./dist",
+		"rootDir": "../..",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@align/shared-types": ["../../packages/shared-types/src/index.ts"],
+			"@align/decision-core": ["../../packages/decision-core/src/index.ts"]
+		}
+	},
+	"include": ["src", "../infra/redis/*.mjs", "../infra/tracing/*.mjs"]
 }

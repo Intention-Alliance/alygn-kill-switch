@@ -24,18 +24,25 @@ export interface MigrationResult {
  * Run drizzle migrations for the kill-switch server (drizzle-kit migrate).
  * Runs in the server app directory so drizzle.config.ts resolves.
  */
-export async function runMigrations(config: WizardConfig): Promise<MigrationResult> {
+export async function runMigrations(
+	config: WizardConfig,
+): Promise<MigrationResult> {
 	const installDir = resolve(config.installDir)
 	const serverDir = join(installDir, 'apps/server-kill-switch')
 
 	try {
-		const { stdout, stderr } = await execFileAsync('bun', ['run', 'db:migrate'], {
-			cwd: serverDir,
-			timeout: 120_000,
-		})
+		const { stdout, stderr } = await execFileAsync(
+			'bun',
+			['run', 'db:migrate'],
+			{
+				cwd: serverDir,
+				timeout: 120_000,
+			},
+		)
 		return { ok: true, output: `${stdout}\n${stderr}`.trim() }
 	} catch (err) {
-		const message = err instanceof Error ? err.message : 'drizzle migration failed'
+		const message =
+			err instanceof Error ? err.message : 'drizzle migration failed'
 		return { ok: false, output: message }
 	}
 }

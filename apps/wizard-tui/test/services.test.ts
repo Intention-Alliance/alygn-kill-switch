@@ -4,7 +4,12 @@
 
 import { describe, expect, test } from 'bun:test'
 import { validateConfig } from '../src/lib/config'
-import { renderAgentUnit, renderServerUnit, renderUnits, UNITS } from '../src/lib/services'
+import {
+	renderAgentUnit,
+	renderServerUnit,
+	renderUnits,
+	UNITS,
+} from '../src/lib/services'
 
 const baseConfig = validateConfig({
 	orgName: 'TestOrg',
@@ -29,7 +34,9 @@ describe('renderServerUnit', () => {
 		expect(unit).toContain('[Unit]')
 		expect(unit).toContain('Description=ALYGN Web Regulator (Kill Switch)')
 		expect(unit).toContain('User=alygn')
-		expect(unit).toContain('WorkingDirectory=/opt/alygn/apps/server-kill-switch')
+		expect(unit).toContain(
+			'WorkingDirectory=/opt/alygn/apps/server-kill-switch',
+		)
 		expect(unit).toContain('EnvironmentFile=/opt/alygn/.env')
 		expect(unit).toContain('ExecStart=/usr/local/bin/bun run src/index.ts')
 		expect(unit).toContain('Restart=on-failure')
@@ -52,7 +59,9 @@ describe('renderAgentUnit', () => {
 	test('renders the agent-plane unit', () => {
 		const unit = renderAgentUnit(baseConfig, '/usr/local/bin/bun')
 
-		expect(unit).toContain('Description=ALYGN Agent Plane (heartbeat + interceptor)')
+		expect(unit).toContain(
+			'Description=ALYGN Agent Plane (heartbeat + interceptor)',
+		)
 		expect(unit).toContain('User=alygn')
 		expect(unit).toContain('WorkingDirectory=/opt/alygn/apps/agent-plane')
 		expect(unit).toContain('EnvironmentFile=/opt/alygn/.env')
@@ -64,7 +73,9 @@ describe('renderAgentUnit', () => {
 describe('renderUnits', () => {
 	test('returns both units keyed by filename', () => {
 		const units = renderUnits(baseConfig)
-		expect(Object.keys(units).sort()).toEqual([UNITS.server, UNITS.agent].sort())
+		expect(Object.keys(units).sort()).toEqual(
+			[UNITS.server, UNITS.agent].sort(),
+		)
 		expect(units[UNITS.server]).toContain('Kill Switch')
 		expect(units[UNITS.agent]).toContain('Agent Plane')
 	})

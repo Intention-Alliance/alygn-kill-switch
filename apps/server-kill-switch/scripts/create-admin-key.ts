@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+
 /**
  * Bootstrap the first webhook API key.
  *
@@ -18,13 +19,13 @@
  * @author Keridz ⚙️ (be-coder)
  */
 
-import { eq } from 'drizzle-orm'
-import { db } from '../src/db'
-import { hashingService } from '../src/services/hashing'
-import { webhookApiKeyAudit, webhookApiKeys } from '../src/db/schema'
 import { randomBytes } from 'node:crypto'
 import { chmodSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { eq } from 'drizzle-orm'
+import { db } from '../src/db'
+import { webhookApiKeyAudit, webhookApiKeys } from '../src/db/schema'
+import { hashingService } from '../src/services/hashing'
 
 // ─── Argument parsing ─────────────────────────────────────────────
 
@@ -40,7 +41,13 @@ function parseArgs() {
 			i++
 		}
 	}
-	return out as { force?: boolean; help?: boolean; name?: string; scopes?: string; seed?: string }
+	return out as {
+		force?: boolean
+		help?: boolean
+		name?: string
+		scopes?: string
+		seed?: string
+	}
 }
 
 // ─── Default seed (the existing v1 key) ────────────────────────────
@@ -97,7 +104,10 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 		try {
 			chmodSync(dbPath, 0o640)
 		} catch (e) {
-			console.warn(`[security] could not chmod ${dbPath} to 0640:`, e instanceof Error ? e.message : e)
+			console.warn(
+				`[security] could not chmod ${dbPath} to 0640:`,
+				e instanceof Error ? e.message : e,
+			)
 		}
 	}
 
@@ -107,15 +117,23 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 	})
 
 	if (existing && !force) {
-		console.error(`A key named "${name}" already exists (id=${existing.id}, prefix=${existing.keyPrefix}, revoked=${existing.revokedAt ? 'yes' : 'no'}).`)
-		console.error('Pass --force to rotate. The plaintext key is NOT recoverable from the DB.')
+		console.error(
+			`A key named "${name}" already exists (id=${existing.id}, prefix=${existing.keyPrefix}, revoked=${existing.revokedAt ? 'yes' : 'no'}).`,
+		)
+		console.error(
+			'Pass --force to rotate. The plaintext key is NOT recoverable from the DB.',
+		)
 		console.error('To issue a NEW key, use the admin UI or rotate via:')
-		console.error('  POST /v1/admin/api-keys/<id>/rotate  (Bearer ADMIN_UI_API_KEY)')
+		console.error(
+			'  POST /v1/admin/api-keys/<id>/rotate  (Bearer ADMIN_UI_API_KEY)',
+		)
 		process.exit(1)
 	}
 
 	// 2. Build the key
-	const plaintext = force ? hashingService.generateApiKey() : (args.seed || DEFAULT_SEED)
+	const plaintext = force
+		? hashingService.generateApiKey()
+		: args.seed || DEFAULT_SEED
 	const prefix = plaintext.slice(0, 8)
 	const hash = hashingService.hashApiKey(plaintext)
 	const id = newKeyId()
@@ -124,7 +142,11 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 	if (existing && force) {
 		await db
 			.update(webhookApiKeys)
-			.set({ revokedAt: new Date(), revokedBy: 'cli-bootstrap', expiresAt: new Date() })
+			.set({
+				revokedAt: new Date(),
+				revokedBy: 'cli-bootstrap',
+				expiresAt: new Date(),
+			})
 			.where(eq(webhookApiKeys.id, existing.id))
 		await db.insert(webhookApiKeyAudit).values({
 			keyId: existing.id,
@@ -145,12 +167,16 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 			scopes,
 			createdAt: new Date(),
 			createdBy: 'cli-bootstrap',
-			notes: force ? 'force-rotated via create-admin-key.ts' : 'initial bootstrap seed',
+			notes: force
+				? 'force-rotated via create-admin-key.ts'
+				: 'initial bootstrap seed',
 		})
 	} catch (e: unknown) {
 		const msg = e instanceof Error ? e.message : String(e)
 		if (msg.includes('UNIQUE')) {
-			console.error('Hash collision — that key already exists in the DB. Use a different seed or --force.')
+			console.error(
+				'Hash collision — that key already exists in the DB. Use a different seed or --force.',
+			)
 			process.exit(1)
 		}
 		throw e
@@ -188,10 +214,16 @@ Prints the plaintext key to stdout ONCE. The DB only stores the sha256 hash.`)
 	console.log('─'.repeat(72))
 	console.log('Next steps:')
 	console.log('  1. Store the plaintext key in 1Password / password manager.')
-	console.log('  2. Set it as WEBHOOK_API_KEY in the openclaw-webhook env (transitional fallback).')
-	console.log('  3. Set it as WEBHOOK_API_KEY in Vercel for outbound andler-landing requests.')
+	console.log(
+		'  2. Set it as WEBHOOK_API_KEY in the openclaw-webhook env (transitional fallback).',
+	)
+	console.log(
+		'  3. Set it as WEBHOOK_API_KEY in Vercel for outbound andler-landing requests.',
+	)
 	console.log('  4. Test with:')
-	console.log(`     curl -H "X-Webhook-Key: ${plaintext}" http://127.0.0.1:18765/webhook/live-chat -d '{}'`)
+	console.log(
+		`     curl -H "X-Webhook-Key: ${plaintext}" http://127.0.0.1:18765/webhook/live-chat -d '{}'`,
+	)
 	console.log('─'.repeat(72))
 }
 

@@ -47,7 +47,8 @@ beforeAll(async () => {
 				})
 			}
 			if (url.pathname === '/v1/discovery/machines') {
-				if (apiKey !== API_KEY) return Response.json({ error: 'unauthorized' }, { status: 401 })
+				if (apiKey !== API_KEY)
+					return Response.json({ error: 'unauthorized' }, { status: 401 })
 				return Response.json({
 					data: [{ id: 'machine-1', hostname: 'node-1', state: 'NEW_MACHINE' }],
 					total: 1,
@@ -135,7 +136,10 @@ describe('verifyInstall', () => {
 
 	test('degrades gracefully when the server is down', async () => {
 		const cfg = makeConfig()
-		const report = await verifyInstall({ ...cfg, motherUrl: 'http://localhost:1' })
+		const report = await verifyInstall({
+			...cfg,
+			motherUrl: 'http://localhost:1',
+		})
 
 		expect(report.api.ok).toBe(false)
 		expect(report.redis.ok).toBe(false)

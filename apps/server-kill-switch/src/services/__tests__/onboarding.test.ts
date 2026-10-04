@@ -233,10 +233,15 @@ function makeTableProxy(store: any[], tableName: string) {
 								all: async () => store.filter((row) => matchesFilters(row)),
 								orderBy: (...conds: any[]) => ({
 									get: async () =>
-										sorted(store.filter((row) => matchesFilters(row)), conds)[0] ??
-										null,
+										sorted(
+											store.filter((row) => matchesFilters(row)),
+											conds,
+										)[0] ?? null,
 									all: async () =>
-										sorted(store.filter((row) => matchesFilters(row)), conds),
+										sorted(
+											store.filter((row) => matchesFilters(row)),
+											conds,
+										),
 								}),
 								limit: () => ({
 									all: async () => store.filter((row) => matchesFilters(row)),
@@ -247,10 +252,15 @@ function makeTableProxy(store: any[], tableName: string) {
 						all: async () => store.filter((row) => matchesFilters(row)),
 						orderBy: (...conds: any[]) => ({
 							get: async () =>
-								sorted(store.filter((row) => matchesFilters(row)), conds)[0] ??
-								null,
+								sorted(
+									store.filter((row) => matchesFilters(row)),
+									conds,
+								)[0] ?? null,
 							all: async () =>
-								sorted(store.filter((row) => matchesFilters(row)), conds),
+								sorted(
+									store.filter((row) => matchesFilters(row)),
+									conds,
+								),
 						}),
 						limit: () => ({
 							all: async () => store.filter((row) => matchesFilters(row)),
@@ -721,7 +731,9 @@ describe('OnboardingService', () => {
 		const pending = await service.listPending()
 		expect(pending.length).toBe(2)
 		expect(pending.map((m: any) => m.id).sort()).toEqual(['m1', 'm2'])
-		expect(pending.find((m: any) => m.id === 'm2')!.state).toBe('PENDING_REVIEW')
+		expect(pending.find((m: any) => m.id === 'm2')!.state).toBe(
+			'PENDING_REVIEW',
+		)
 	})
 
 	it('listRogueAlerts returns alerts ordered by recency', async () => {

@@ -12,46 +12,46 @@
  */
 
 export interface ComplianceAuditLogRow {
-	dpu_id: string;
-	id: string;
-	intent_hash: string;
+	dpu_id: string
+	id: string
+	intent_hash: string
 	/** JSON payload; shape not consumed by the dashboard, kept permissive. */
-	proof_data: unknown;
-	redline_violated: string | null;
-	timestamp: string;
+	proof_data: unknown
+	redline_violated: string | null
+	timestamp: string
 }
 
 export interface DpuClusterRow {
-	avg_latency: number | null;
-	created_at: string | null;
-	gpus: number;
-	id: string;
-	last_heartbeat: string | null;
-	last_seen: string | null;
-	location: string;
-	name: string;
-	policy_violations: number | null;
-	slug: string;
-	status: string;
-	total_requests: number | null;
-	updated_at: string | null;
-	uptime: number | null;
+	avg_latency: number | null
+	created_at: string | null
+	gpus: number
+	id: string
+	last_heartbeat: string | null
+	last_seen: string | null
+	location: string
+	name: string
+	policy_violations: number | null
+	slug: string
+	status: string
+	total_requests: number | null
+	updated_at: string | null
+	uptime: number | null
 }
 
 export interface ClusterGpuRow {
-	cluster_id: string;
-	cores: number;
-	created_at: string | null;
-	id: string;
-	memory_gb: number;
-	model: string;
-	updated_at: string | null;
+	cluster_id: string
+	cores: number
+	created_at: string | null
+	id: string
+	memory_gb: number
+	model: string
+	updated_at: string | null
 }
 
 export interface AuditLogEntry extends ComplianceAuditLogRow {}
 
 export interface Cluster extends DpuClusterRow {
-	cluster_gpus?: ClusterGPU[];
+	cluster_gpus?: ClusterGPU[]
 }
 
 export interface ClusterGPU extends ClusterGpuRow {}

@@ -8,13 +8,13 @@
  * for startup reliability without depending on drizzle-kit migrations at runtime.
  */
 
-import { drizzle } from 'drizzle-orm/bun-sqlite';
-import { Database } from 'bun:sqlite';
-import { mkdirSync } from 'node:fs';
-import * as schema from './schema';
+import { Database } from 'bun:sqlite'
+import { mkdirSync } from 'node:fs'
+import { drizzle } from 'drizzle-orm/bun-sqlite'
+import * as schema from './schema'
 
-const DEFAULT_DATA_DIR = process.env.DATA_DIR || './data';
-const DEFAULT_DB_PATH = `${DEFAULT_DATA_DIR}/telemetry.sqlite`;
+const DEFAULT_DATA_DIR = process.env.DATA_DIR || './data'
+const DEFAULT_DB_PATH = `${DEFAULT_DATA_DIR}/telemetry.sqlite`
 
 /**
  * Initialize the telemetry database connection.
@@ -23,21 +23,21 @@ const DEFAULT_DB_PATH = `${DEFAULT_DATA_DIR}/telemetry.sqlite`;
  * Auto-creates telemetry_metric and telemetry_alert tables.
  */
 export function initTelemetryDatabase(databasePath: string = DEFAULT_DB_PATH): {
-  database: ReturnType<typeof drizzle>;
-  sqliteInstance: Database;
+	database: ReturnType<typeof drizzle>
+	sqliteInstance: Database
 } {
-  mkdirSync(DEFAULT_DATA_DIR, { recursive: true });
+	mkdirSync(DEFAULT_DATA_DIR, { recursive: true })
 
-  const sqliteInstance = new Database(databasePath, { create: true });
+	const sqliteInstance = new Database(databasePath, { create: true })
 
-  // Performance and integrity pragmas
-  sqliteInstance.run('PRAGMA journal_mode=WAL');
-  sqliteInstance.run('PRAGMA foreign_keys=ON');
-  sqliteInstance.run('PRAGMA busy_timeout=5000');
+	// Performance and integrity pragmas
+	sqliteInstance.run('PRAGMA journal_mode=WAL')
+	sqliteInstance.run('PRAGMA foreign_keys=ON')
+	sqliteInstance.run('PRAGMA busy_timeout=5000')
 
-  // ─── Auto-migrate: create tables ──────────────────────────────────
+	// ─── Auto-migrate: create tables ──────────────────────────────────
 
-  sqliteInstance.run(`
+	sqliteInstance.run(`
     CREATE TABLE IF NOT EXISTS telemetry_metric (
       id TEXT PRIMARY KEY,
       machine_id TEXT NOT NULL,
@@ -48,9 +48,9 @@ export function initTelemetryDatabase(databasePath: string = DEFAULT_DB_PATH): {
       labels TEXT,
       timestamp INTEGER NOT NULL
     )
-  `);
+  `)
 
-  sqliteInstance.run(`
+	sqliteInstance.run(`
     CREATE TABLE IF NOT EXISTS telemetry_alert (
       id TEXT PRIMARY KEY,
       machine_id TEXT NOT NULL,
@@ -63,28 +63,42 @@ export function initTelemetryDatabase(databasePath: string = DEFAULT_DB_PATH): {
       triggered_kill_switch INTEGER DEFAULT 0,
       timestamp INTEGER NOT NULL
     )
-  `);
+  `)
 
-  // ─── Indexes ──────────────────────────────────────────────────────
+	// ─── Indexes ──────────────────────────────────────────────────────
 
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS tm_machine_time_idx ON telemetry_metric(machine_id, timestamp)`);
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS tm_monitor_time_idx ON telemetry_metric(monitor_name, timestamp)`);
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS tm_metric_time_idx ON telemetry_metric(metric_name, timestamp)`);
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS tm_machine_time_idx ON telemetry_metric(machine_id, timestamp)`,
+	)
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS tm_monitor_time_idx ON telemetry_metric(monitor_name, timestamp)`,
+	)
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS tm_metric_time_idx ON telemetry_metric(metric_name, timestamp)`,
+	)
 
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS ta_severity_time_idx ON telemetry_alert(severity, timestamp)`);
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS ta_machine_time_idx ON telemetry_alert(machine_id, timestamp)`);
-  sqliteInstance.run(`CREATE INDEX IF NOT EXISTS ta_monitor_time_idx ON telemetry_alert(monitor_name, timestamp)`);
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS ta_severity_time_idx ON telemetry_alert(severity, timestamp)`,
+	)
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS ta_machine_time_idx ON telemetry_alert(machine_id, timestamp)`,
+	)
+	sqliteInstance.run(
+		`CREATE INDEX IF NOT EXISTS ta_monitor_time_idx ON telemetry_alert(monitor_name, timestamp)`,
+	)
 
-  const database = drizzle(sqliteInstance, { schema });
+	const database = drizzle(sqliteInstance, { schema })
 
-  console.log(`[telemetry-db] SQLite initialized: ${databasePath} (WAL mode, tables verified)`);
+	console.log(
+		`[telemetry-db] SQLite initialized: ${databasePath} (WAL mode, tables verified)`,
+	)
 
-  return { database, sqliteInstance };
+	return { database, sqliteInstance }
 }
 
 // ─── Singleton instances ────────────────────────────────────────────────
 
-const { database, sqliteInstance } = initTelemetryDatabase();
+const { database, sqliteInstance } = initTelemetryDatabase()
 
-export { database, sqliteInstance };
-export type TelemetryDatabase = typeof database;
+export { database, sqliteInstance }
+export type TelemetryDatabase = typeof database

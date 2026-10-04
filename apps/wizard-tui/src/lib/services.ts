@@ -56,7 +56,10 @@ async function resolveBunPath(): Promise<string> {
 }
 
 /** Render the kill-switch server unit (alygn-web-regulator.service). */
-export function renderServerUnit(config: WizardConfig, bunPath: string): string {
+export function renderServerUnit(
+	config: WizardConfig,
+	bunPath: string,
+): string {
 	const installDir = resolve(config.installDir)
 	const serverDir = join(installDir, 'apps/server-kill-switch')
 	return `[Unit]
@@ -110,7 +113,9 @@ export function renderUnits(config: WizardConfig): Record<UnitName, string> {
 }
 
 /** Write both unit files to /etc/systemd/system (root required). */
-export async function writeUnitFiles(config: WizardConfig): Promise<UnitName[]> {
+export async function writeUnitFiles(
+	config: WizardConfig,
+): Promise<UnitName[]> {
 	const bunPath = await resolveBunPath()
 	const units = {
 		[UNITS.server]: renderServerUnit(config, bunPath),
@@ -138,7 +143,9 @@ async function systemctl(verb: string, units: UnitName[]): Promise<boolean> {
  * Install services: write unit files, daemon-reload, enable + start.
  * Returns which units were written and whether enable/start succeeded.
  */
-export async function installServices(config: WizardConfig): Promise<InstallResult> {
+export async function installServices(
+	config: WizardConfig,
+): Promise<InstallResult> {
 	const units = await writeUnitFiles(config)
 	await systemctl('daemon-reload', [])
 	const enabled = await systemctl('enable', units)
@@ -150,7 +157,9 @@ export async function installServices(config: WizardConfig): Promise<InstallResu
  * Uninstall services: stop, disable, remove unit files, daemon-reload.
  * Returns per-phase success flags.
  */
-export async function uninstallServices(_config: WizardConfig): Promise<UninstallResult> {
+export async function uninstallServices(
+	_config: WizardConfig,
+): Promise<UninstallResult> {
 	const units: UnitName[] = [UNITS.server, UNITS.agent]
 	const stopped = await systemctl('stop', units)
 	const disabled = await systemctl('disable', units)
@@ -170,6 +179,9 @@ export async function uninstallServices(_config: WizardConfig): Promise<Uninstal
 
 /** Read the repo-root server template unit (used by tests to assert parity). */
 export async function readTemplateUnit(): Promise<string> {
-	const templatePath = resolve(import.meta.dir, '../../../../alygn-web-regulator.service')
+	const templatePath = resolve(
+		import.meta.dir,
+		'../../../../alygn-web-regulator.service',
+	)
 	return readFile(templatePath, 'utf8')
 }

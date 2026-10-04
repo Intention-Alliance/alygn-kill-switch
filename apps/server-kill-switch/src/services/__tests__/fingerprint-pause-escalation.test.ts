@@ -94,12 +94,13 @@ beforeAll(() => {
 // gets the real operators regardless of what other test files did
 // to `drizzle-orm` in their own context.
 import {
-	eq as realEq,
 	and as realAnd,
+	eq as realEq,
 	gt as realGt,
 	isNotNull as realIsNotNull,
 	sql as realSql,
 } from 'drizzle-orm/sql'
+
 mock.module('drizzle-orm', () => ({
 	eq: realEq,
 	and: realAnd,

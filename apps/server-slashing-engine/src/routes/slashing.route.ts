@@ -1,7 +1,7 @@
-import { SlashingController } from "@/controllers/slashing.controller";
 import type { Routes } from "@interfaces/routes.interface";
 import { Router } from "express";
 import { inject, injectable } from "tsyringe";
+import { SlashingController } from "@/controllers/slashing.controller";
 
 /**
  * Slashing Webhook Route

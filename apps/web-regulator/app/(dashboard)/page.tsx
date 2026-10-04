@@ -1,10 +1,10 @@
-import { Suspense } from "react";
-import DashboardTabs from "./dashboard-tabs";
-import { BRAND_FULL_NAME } from "@/lib/branding";
+import { Suspense } from 'react'
+import { BRAND_FULL_NAME } from '@/lib/branding'
+import DashboardTabs from './dashboard-tabs'
 
 export const metadata = {
-  title: `Dashboard | ${BRAND_FULL_NAME}`,
-};
+	title: `Dashboard | ${BRAND_FULL_NAME}`,
+}
 
 /**
  * Root `/` route — lives INSIDE the `(dashboard)` route group so it inherits
@@ -15,15 +15,15 @@ export const metadata = {
  * "/"` to render this full-screen (no max-w-6xl padding) with the sidebar.
  */
 export default function DashboardPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center py-20">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
-        </div>
-      }
-    >
-      <DashboardTabs initialTab="overview" />
-    </Suspense>
-  );
+	return (
+		<Suspense
+			fallback={
+				<div className="flex items-center justify-center py-20">
+					<div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-safe:animate-spin" />
+				</div>
+			}
+		>
+			<DashboardTabs initialTab="overview" />
+		</Suspense>
+	)
 }

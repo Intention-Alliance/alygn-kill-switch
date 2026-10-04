@@ -6,7 +6,11 @@ import { describe, expect, test } from 'bun:test'
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { loadConfig, validateConfig, wizardConfigSchema } from '../src/lib/config'
+import {
+	loadConfig,
+	validateConfig,
+	wizardConfigSchema,
+} from '../src/lib/config'
 
 describe('validateConfig', () => {
 	test('accepts an empty object and applies safe defaults', () => {
@@ -90,7 +94,10 @@ describe('loadConfig', () => {
 	test('loads and validates a JSON config file', async () => {
 		const dir = await mkdtemp(join(tmpdir(), 'wizard-config-'))
 		const path = join(dir, 'config.json')
-		await writeFile(path, JSON.stringify({ orgName: 'FileOrg', licenseAccepted: true }))
+		await writeFile(
+			path,
+			JSON.stringify({ orgName: 'FileOrg', licenseAccepted: true }),
+		)
 		const cfg = await loadConfig({ configPath: path, interactive: false })
 		expect(cfg.orgName).toBe('FileOrg')
 		expect(cfg.licenseAccepted).toBe(true)
@@ -100,15 +107,15 @@ describe('loadConfig', () => {
 		const dir = await mkdtemp(join(tmpdir(), 'wizard-config-'))
 		const path = join(dir, 'bad.json')
 		await writeFile(path, '{not json')
-		await expect(loadConfig({ configPath: path, interactive: false })).rejects.toThrow(
-			/not valid JSON/,
-		)
+		await expect(
+			loadConfig({ configPath: path, interactive: false }),
+		).rejects.toThrow(/not valid JSON/)
 	})
 
 	test('throws when no config path and interactive is disabled', async () => {
-		await expect(loadConfig({ configPath: undefined, interactive: false })).rejects.toThrow(
-			/--config/,
-		)
+		await expect(
+			loadConfig({ configPath: undefined, interactive: false }),
+		).rejects.toThrow(/--config/)
 	})
 
 	test('returns defaults when interactive and no config path', async () => {

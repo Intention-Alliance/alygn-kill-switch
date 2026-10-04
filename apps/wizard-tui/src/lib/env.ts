@@ -70,7 +70,9 @@ function agentEnvLines(config: WizardConfig): string[] {
 function parseEnvMap(envText: string): Map<string, string> {
 	const map = new Map<string, string>()
 	for (const line of envText.split('\n')) {
-		const match = line.match(/^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$/)
+		const match = line.match(
+			/^[ \t]*(?:export[ \t]+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$/,
+		)
 		const key = match?.[1]
 		const value = match?.[2]
 		if (key === undefined || value === undefined) continue
@@ -154,7 +156,10 @@ export async function generateSecrets(
 	const targetPath = resolve(targetEnv)
 	await mkdir(dirname(targetPath), { recursive: true })
 
-	const { stdout } = await execFileAsync('bash', [GENERATE_SECRETS_SCRIPT, targetPath])
+	const { stdout } = await execFileAsync('bash', [
+		GENERATE_SECRETS_SCRIPT,
+		targetPath,
+	])
 
 	const generated: string[] = []
 	const skipped: string[] = []

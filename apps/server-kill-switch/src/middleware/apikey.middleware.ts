@@ -98,20 +98,32 @@ export async function verifyApiKey(
 	requestPath?: string | null,
 ): Promise<VerifyResult> {
 	if (!rawKey) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'missing',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			null,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'missing',
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'missing' }
 	}
 	if (rawKey.length < 16) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'malformed',
-			requiredScope,
-			prefix: rawKey.slice(0, 8),
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			null,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'malformed',
+				requiredScope,
+				prefix: rawKey.slice(0, 8),
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'malformed' }
 	}
 
@@ -121,12 +133,18 @@ export async function verifyApiKey(
 	})
 
 	if (!row) {
-		await audit(null, 'use_failed', `request:${ip}`, {
-			reason: 'unknown_prefix',
-			requiredScope,
-			prefix: rawKey.slice(0, 8),
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			null,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'unknown_prefix',
+				requiredScope,
+				prefix: rawKey.slice(0, 8),
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'unknown' }
 	}
 
@@ -135,28 +153,46 @@ export async function verifyApiKey(
 	// pattern and costs ~0.01ms).
 	const rehash = hashingService.hashApiKey(rawKey)
 	if (!hashingService.verifyApiKeyHash(row.apiKeyHash, rehash)) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'hash_mismatch',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			row.id,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'hash_mismatch',
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'hash_mismatch' }
 	}
 
 	if (row.revokedAt) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'revoked',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			row.id,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'revoked',
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'revoked' }
 	}
 	if (row.expiresAt && row.expiresAt < new Date()) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'expired',
-			requiredScope,
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			row.id,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'expired',
+				requiredScope,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'expired' }
 	}
 
@@ -165,12 +201,18 @@ export async function verifyApiKey(
 		.map((s) => s.trim())
 		.filter(Boolean)
 	if (requiredScope && !scopes.includes(requiredScope)) {
-		await audit(row.id, 'use_failed', `request:${ip}`, {
-			reason: 'scope_mismatch',
-			requiredScope,
-			actualScopes: scopes,
-			path: requestPath ?? null,
-		}, requestPath)
+		await audit(
+			row.id,
+			'use_failed',
+			`request:${ip}`,
+			{
+				reason: 'scope_mismatch',
+				requiredScope,
+				actualScopes: scopes,
+				path: requestPath ?? null,
+			},
+			requestPath,
+		)
 		return { ok: false, reason: 'scope_mismatch' }
 	}
 
@@ -179,7 +221,15 @@ export async function verifyApiKey(
 		.update(webhookApiKeys)
 		.set({ lastUsedAt: new Date(), lastUsedIp: ip })
 		.where(eq(webhookApiKeys.id, row.id))
-		.then(() => audit(row.id, 'use', `request:${ip}`, { requiredScope, path: requestPath ?? null }, requestPath))
+		.then(() =>
+			audit(
+				row.id,
+				'use',
+				`request:${ip}`,
+				{ requiredScope, path: requestPath ?? null },
+				requestPath,
+			),
+		)
 		.catch((e) =>
 			console.error('[apikey.middleware] last_used update failed:', e),
 		)

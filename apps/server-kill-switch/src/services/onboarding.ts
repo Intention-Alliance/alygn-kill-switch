@@ -27,12 +27,6 @@ import type {
 import { and, asc, desc, eq, inArray } from 'drizzle-orm'
 import { db } from '../db/index'
 import {
-	DEFAULT_READINESS_REQUIREMENTS,
-	evaluateReadiness,
-	type ReadinessReport,
-	type ReadinessRequirements,
-} from './readiness'
-import {
 	discoveredMachines,
 	featureFlags,
 	killSwitchAuditLog,
@@ -41,6 +35,12 @@ import {
 	registrationRequests,
 	rogueDeviceAlerts,
 } from '../db/schema'
+import {
+	DEFAULT_READINESS_REQUIREMENTS,
+	evaluateReadiness,
+	type ReadinessReport,
+	type ReadinessRequirements,
+} from './readiness'
 
 // ─── Constants ───────────────────────────────────────────────────
 

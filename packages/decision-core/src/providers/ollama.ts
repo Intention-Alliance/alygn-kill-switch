@@ -12,59 +12,71 @@
  * and is tracked for S7 (calibration), where the eval can measure it.
  */
 
-import type { DecisionInput, DecisionProvider, DecisionResult } from '@align/shared-types';
+import type {
+	DecisionInput,
+	DecisionProvider,
+	DecisionResult,
+} from '@align/shared-types'
 
 /** Structural mirror of InferenceVerifier's public surface. */
 export interface VerifierLike {
-  verify(input: { prompt: string; output: string }): Promise<{
-    verdict: 'SAFE' | 'UNSAFE' | 'REVIEW';
-    confidence: number;
-    reason: string;
-    latencyMs: number;
-    model: string;
-    degraded: boolean;
-  }>;
+	verify(input: { prompt: string; output: string }): Promise<{
+		verdict: 'SAFE' | 'UNSAFE' | 'REVIEW'
+		confidence: number
+		reason: string
+		latencyMs: number
+		model: string
+		degraded: boolean
+	}>
 }
 
 /** Marker appended to reasons while the verifier's confidence is a constant. */
-export const CONSTANT_CONFIDENCE_MARKER = 'ollama: confidence is a fixed constant (calibration pending)';
+export const CONSTANT_CONFIDENCE_MARKER =
+	'ollama: confidence is a fixed constant (calibration pending)'
 
 export class OllamaProvider implements DecisionProvider {
-  readonly name = 'ollama' as const;
+	readonly name = 'ollama' as const
 
-  constructor(private readonly verifier: VerifierLike) {}
+	constructor(private readonly verifier: VerifierLike) {}
 
-  async decide(input: DecisionInput): Promise<DecisionResult> {
-    const started = Date.now();
+	async decide(input: DecisionInput): Promise<DecisionResult> {
+		const started = Date.now()
 
-    // The verifier needs the (prompt, output) pair.
-    const payload =
-      input.kind === 'output'
-        ? { prompt: input.prompt ?? '', output: input.text }
-        : { prompt: input.text, output: '' };
+		// The verifier needs the (prompt, output) pair.
+		const payload =
+			input.kind === 'output'
+				? { prompt: input.prompt ?? '', output: input.text }
+				: { prompt: input.text, output: '' }
 
-    const result = await this.verifier.verify(payload);
+		const result = await this.verifier.verify(payload)
 
-    const map: Record<string, { label: DecisionResult['label']; score: number; action: DecisionResult['action'] }> = {
-      SAFE: { label: 'safe', score: 0.0, action: 'forward' },
-      UNSAFE: { label: 'unsafe', score: 1.0, action: 'block' },
-      REVIEW: { label: 'review', score: 0.5, action: 'review' },
-    };
-    const mapped = map[result.verdict] ?? map.REVIEW;
+		const map: Record<
+			string,
+			{
+				label: DecisionResult['label']
+				score: number
+				action: DecisionResult['action']
+			}
+		> = {
+			SAFE: { label: 'safe', score: 0.0, action: 'forward' },
+			UNSAFE: { label: 'unsafe', score: 1.0, action: 'block' },
+			REVIEW: { label: 'review', score: 0.5, action: 'review' },
+		}
+		const mapped = map[result.verdict] ?? map.REVIEW
 
-    const reasons = result.reason ? [result.reason] : [];
-    // Surface F1 honestly: the verifier's confidence is a constant today.
-    if (!result.degraded) reasons.push(CONSTANT_CONFIDENCE_MARKER);
+		const reasons = result.reason ? [result.reason] : []
+		// Surface F1 honestly: the verifier's confidence is a constant today.
+		if (!result.degraded) reasons.push(CONSTANT_CONFIDENCE_MARKER)
 
-    return {
-      label: mapped.label,
-      score: mapped.score,
-      confidence: result.confidence,
-      action: mapped.action,
-      reasons,
-      provider: 'ollama',
-      degraded: result.degraded,
-      latencyMs: result.latencyMs ?? Date.now() - started,
-    };
-  }
+		return {
+			label: mapped.label,
+			score: mapped.score,
+			confidence: result.confidence,
+			action: mapped.action,
+			reasons,
+			provider: 'ollama',
+			degraded: result.degraded,
+			latencyMs: result.latencyMs ?? Date.now() - started,
+		}
+	}
 }

@@ -6,7 +6,11 @@
  */
 
 import { cancel, log, note } from '@clack/prompts'
-import { detectSystem, hasBlockingIssues, type SystemReport } from '../lib/system'
+import {
+	detectSystem,
+	hasBlockingIssues,
+	type SystemReport,
+} from '../lib/system'
 
 /** Render the preflight report and return it. */
 export async function runPreflight(): Promise<SystemReport> {

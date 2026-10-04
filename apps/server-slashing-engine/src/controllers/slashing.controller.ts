@@ -1,10 +1,10 @@
+import type { NextFunction, Request, Response } from "express";
+import { inject, injectable } from "tsyringe";
 import {
     SLASHING_RULES,
     SlashingService,
     type ViolationEvent,
 } from "@/services/slashing.service";
-import type { NextFunction, Request, Response } from "express";
-import { inject, injectable } from "tsyringe";
 
 interface WebhookPayload {
 	type: "INSERT" | "UPDATE" | "DELETE";

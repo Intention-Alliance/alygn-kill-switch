@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { ErrorBoundary } from "@/components/error-boundary";
-import { KillSwitchView } from "@/components/kill-switch/kill-switch-view";
-import { useKillSwitchWebSocket } from "@/hooks/use-kill-switch-websocket";
-import type { KillSwitchState } from "@/types/shared";
+import { useCallback } from 'react'
+import { ErrorBoundary } from '@/components/error-boundary'
+import { KillSwitchView } from '@/components/kill-switch/kill-switch-view'
+import { useKillSwitchWebSocket } from '@/hooks/use-kill-switch-websocket'
+import type { KillSwitchState } from '@/types/shared'
 
 /**
  * `/kill-switch` route.
@@ -15,22 +15,22 @@ import type { KillSwitchState } from "@/types/shared";
  * page only wires state and the no-op state-change callback.
  */
 export default function KillSwitchDashboardPage() {
-  const { status, auditLog, isConnected, reconnectAttempt } =
-    useKillSwitchWebSocket();
+	const { status, auditLog, isConnected, reconnectAttempt } =
+		useKillSwitchWebSocket()
 
-  const handleStateChange = useCallback((_newState: KillSwitchState) => {
-    // Status updates propagate via WebSocket; no manual set needed.
-  }, []);
+	const handleStateChange = useCallback((_newState: KillSwitchState) => {
+		// Status updates propagate via WebSocket; no manual set needed.
+	}, [])
 
-  return (
-    <ErrorBoundary>
-      <KillSwitchView
-        status={status}
-        auditLog={auditLog}
-        isConnected={isConnected}
-        reconnectAttempt={reconnectAttempt}
-        onStateChange={handleStateChange}
-      />
-    </ErrorBoundary>
-  );
+	return (
+		<ErrorBoundary>
+			<KillSwitchView
+				status={status}
+				auditLog={auditLog}
+				isConnected={isConnected}
+				reconnectAttempt={reconnectAttempt}
+				onStateChange={handleStateChange}
+			/>
+		</ErrorBoundary>
+	)
 }

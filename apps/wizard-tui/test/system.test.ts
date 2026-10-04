@@ -3,7 +3,11 @@
  */
 
 import { describe, expect, test } from 'bun:test'
-import { currentHostname, detectSystem, hasBlockingIssues } from '../src/lib/system'
+import {
+	currentHostname,
+	detectSystem,
+	hasBlockingIssues,
+} from '../src/lib/system'
 
 describe('detectSystem', () => {
 	test('returns a complete SystemReport without throwing', async () => {
@@ -52,7 +56,9 @@ describe('hasBlockingIssues', () => {
 			git: { installed: true, version: '2.40' },
 			ports: { 3000: 'free' as const, 3001: 'free' as const },
 			hardware: { cpu: 'x', cores: 4, memMb: 8192 },
-			issues: [{ severity: 'error' as const, message: 'boom', remediation: 'fix it' }],
+			issues: [
+				{ severity: 'error' as const, message: 'boom', remediation: 'fix it' },
+			],
 		}
 		expect(hasBlockingIssues(report)).toBe(true)
 	})
@@ -68,7 +74,9 @@ describe('hasBlockingIssues', () => {
 			git: { installed: true, version: '2.40' },
 			ports: { 3000: 'free' as const, 3001: 'free' as const },
 			hardware: { cpu: 'x', cores: 4, memMb: 8192 },
-			issues: [{ severity: 'warn' as const, message: 'meh', remediation: 'later' }],
+			issues: [
+				{ severity: 'warn' as const, message: 'meh', remediation: 'later' },
+			],
 		}
 		expect(hasBlockingIssues(report)).toBe(false)
 	})

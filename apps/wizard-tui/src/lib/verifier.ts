@@ -21,13 +21,17 @@ export interface VerificationReport {
 
 /** Read a KEY=value pair from a .env file (no export prefix). */
 function readEnvValue(envText: string, key: string): string | null {
-	const match = envText.match(new RegExp(`^[ \\t]*(?:export[ \\t]+)?${key}=(.+)$`, 'm'))
+	const match = envText.match(
+		new RegExp(`^[ \\t]*(?:export[ \\t]+)?${key}=(.+)$`, 'm'),
+	)
 	if (!match?.[1]) return null
 	return match[1].trim().replace(/^["']|["']$/g, '')
 }
 
 /** Load the API keys the verifier needs from the install .env. */
-async function loadApiKeys(config: WizardConfig): Promise<{ apiKey: string; adminUiKey: string }> {
+async function loadApiKeys(
+	config: WizardConfig,
+): Promise<{ apiKey: string; adminUiKey: string }> {
 	const envPath = join(resolve(config.installDir), '.env')
 	let envText = ''
 	try {
@@ -113,7 +117,9 @@ export async function probeHeartbeat(
  * Full post-install verification (spec §5). Every check degrades to a
  * non-throwing "not ok" so the caller can render a clear report.
  */
-export async function verifyInstall(config: WizardConfig): Promise<VerificationReport> {
+export async function verifyInstall(
+	config: WizardConfig,
+): Promise<VerificationReport> {
 	const motherUrl = config.motherUrl.replace(/\/$/, '')
 	const { apiKey, adminUiKey } = await loadApiKeys(config)
 
@@ -124,7 +130,11 @@ export async function verifyInstall(config: WizardConfig): Promise<VerificationR
 		status: health?.status !== undefined ? String(health.status) : undefined,
 		version: undefined as string | undefined,
 	}
-	if (health?.status === 200 && typeof health.body === 'object' && health.body) {
+	if (
+		health?.status === 200 &&
+		typeof health.body === 'object' &&
+		health.body
+	) {
 		const body = health.body as Record<string, unknown>
 		if (typeof body.status === 'string') api.status = body.status
 		if (typeof body.version === 'string') api.version = body.version
@@ -142,10 +152,17 @@ export async function verifyInstall(config: WizardConfig): Promise<VerificationR
 	// 3. Machines list — GET /v1/discovery/machines?state=NEW_MACHINE (x-api-key).
 	let machines: unknown[] = []
 	if (apiKey) {
-		const machinesRes = await getJson(`${motherUrl}/v1/discovery/machines?state=NEW_MACHINE`, {
-			'x-api-key': apiKey,
-		})
-		if (machinesRes?.status === 200 && typeof machinesRes.body === 'object' && machinesRes.body) {
+		const machinesRes = await getJson(
+			`${motherUrl}/v1/discovery/machines?state=NEW_MACHINE`,
+			{
+				'x-api-key': apiKey,
+			},
+		)
+		if (
+			machinesRes?.status === 200 &&
+			typeof machinesRes.body === 'object' &&
+			machinesRes.body
+		) {
 			const body = machinesRes.body as { data?: unknown[] }
 			machines = body.data ?? []
 		}

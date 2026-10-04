@@ -12,10 +12,7 @@
  * registration_request table.
  */
 
-import {
-	OnboardingService,
-	OnboardingStateError,
-} from '../services/onboarding'
+import { OnboardingService, OnboardingStateError } from '../services/onboarding'
 
 // ─── Helpers ────────────────────────────────────────────────────
 

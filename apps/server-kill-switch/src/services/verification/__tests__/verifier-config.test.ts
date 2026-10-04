@@ -47,19 +47,27 @@ describe('VerificationConfigSchema — defaults', () => {
 		expect(parsed.verifierTimeoutMs).toBe(500)
 		expect(parsed.verifyEnabled).toBe(false)
 		expect(parsed.verifyMode).toBe('async')
-		expect(parsed.verifierSystemPromptPath).toBe('docs/specs/verifier-system-prompt.md')
+		expect(parsed.verifierSystemPromptPath).toBe(
+			'docs/specs/verifier-system-prompt.md',
+		)
 	})
 
 	it('rejects an invalid verifyMode', () => {
-		expect(() => VerificationConfigSchema.parse({ verifyMode: 'bogus' })).toThrow()
+		expect(() =>
+			VerificationConfigSchema.parse({ verifyMode: 'bogus' }),
+		).toThrow()
 	})
 
 	it('rejects a non-URL verifierBaseUrl', () => {
-		expect(() => VerificationConfigSchema.parse({ verifierBaseUrl: 'not-a-url' })).toThrow()
+		expect(() =>
+			VerificationConfigSchema.parse({ verifierBaseUrl: 'not-a-url' }),
+		).toThrow()
 	})
 
 	it('rejects a non-integer verifierTimeoutMs', () => {
-		expect(() => VerificationConfigSchema.parse({ verifierTimeoutMs: 12.5 })).toThrow()
+		expect(() =>
+			VerificationConfigSchema.parse({ verifierTimeoutMs: 12.5 }),
+		).toThrow()
 	})
 })
 
@@ -81,7 +89,9 @@ describe('loadConfig — verification section', () => {
 		expect(config.verification.verifierBaseUrl).toBe('http://localhost:11434')
 		expect(config.verification.verifierTimeoutMs).toBe(500)
 		expect(config.verification.verifyMode).toBe('async')
-		expect(config.verification.verifierSystemPromptPath).toBe('docs/specs/verifier-system-prompt.md')
+		expect(config.verification.verifierSystemPromptPath).toBe(
+			'docs/specs/verifier-system-prompt.md',
+		)
 	})
 
 	it('development disables verification by default (P2-5: off until verifier confirmed reachable)', () => {
@@ -214,7 +224,7 @@ describe('validateVerifierReachability', () => {
 			verifyEnabled: false,
 			verifyMode: 'async',
 			verifierSystemPromptPath: 'docs/specs/verifier-system-prompt.md',
-				verifierTargetModel: 'dignity-verification-v0.1-preview',
+			verifierTargetModel: 'dignity-verification-v0.1-preview',
 		})
 		expect(ok).toBe(true)
 	})

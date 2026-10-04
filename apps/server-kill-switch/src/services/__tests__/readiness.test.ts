@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 import type { HardwareFingerprint } from '@align/shared-types'
-import {
-	DEFAULT_READINESS_REQUIREMENTS,
-	evaluateReadiness,
-} from '../readiness'
+import { DEFAULT_READINESS_REQUIREMENTS, evaluateReadiness } from '../readiness'
 
-function fingerprint(overrides: Partial<HardwareFingerprint> = {}): HardwareFingerprint {
+function fingerprint(
+	overrides: Partial<HardwareFingerprint> = {},
+): HardwareFingerprint {
 	return {
 		cpuModel: 'Test CPU',
 		cpuCores: 8,

@@ -243,7 +243,9 @@ describe('handleOnboardingRoutes', () => {
 		)
 		expect(handled).toBe(true)
 		expect(res.statusCode).toBe(409)
-		expect(getJson(res).error).toContain('Cannot approve machine in state ADMITTED')
+		expect(getJson(res).error).toContain(
+			'Cannot approve machine in state ADMITTED',
+		)
 	})
 
 	it('POST deny: NEW_MACHINE → DENIED + no machine record', async () => {

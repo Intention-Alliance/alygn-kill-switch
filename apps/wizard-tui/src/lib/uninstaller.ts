@@ -9,7 +9,10 @@
 import { rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import type { WizardConfig } from './config'
-import { type UninstallResult as ServicesUninstallResult, uninstallServices } from './services'
+import {
+	type UninstallResult as ServicesUninstallResult,
+	uninstallServices,
+} from './services'
 
 export interface UninstallResult {
 	units: ServicesUninstallResult['units']

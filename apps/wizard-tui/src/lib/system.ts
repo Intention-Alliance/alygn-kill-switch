@@ -93,15 +93,16 @@ async function detectRedisRunning(): Promise<boolean> {
  * conservative value and the report carries remediation hints instead.
  */
 export async function detectSystem(): Promise<SystemReport> {
-	const [os, kernel, arch, bunVersion, gitVersion, redisInstalled, systemd] = await Promise.all([
-		tryCommand('uname', ['-s']),
-		tryCommand('uname', ['-r']),
-		tryCommand('uname', ['-m']),
-		tryCommand('bun', ['--version']),
-		tryCommand('git', ['--version']),
-		commandExists('redis-server'),
-		detectSystemd(),
-	])
+	const [os, kernel, arch, bunVersion, gitVersion, redisInstalled, systemd] =
+		await Promise.all([
+			tryCommand('uname', ['-s']),
+			tryCommand('uname', ['-r']),
+			tryCommand('uname', ['-m']),
+			tryCommand('bun', ['--version']),
+			tryCommand('git', ['--version']),
+			commandExists('redis-server'),
+			detectSystemd(),
+		])
 
 	const [port3000, port3001, redisRunning] = await Promise.all([
 		portInUse(3000),
@@ -128,7 +129,8 @@ export async function detectSystem(): Promise<SystemReport> {
 		issues.push({
 			severity: 'error',
 			message: 'bun is not installed or not on PATH.',
-			remediation: 'Install bun: curl -fsSL https://bun.sh/install | bash, then re-run the wizard.',
+			remediation:
+				'Install bun: curl -fsSL https://bun.sh/install | bash, then re-run the wizard.',
 		})
 	}
 
@@ -143,7 +145,8 @@ export async function detectSystem(): Promise<SystemReport> {
 		issues.push({
 			severity: 'warn',
 			message: 'redis-server is installed but not running on 127.0.0.1:6379.',
-			remediation: 'Start redis (systemctl start redis / redis-server --daemonize yes).',
+			remediation:
+				'Start redis (systemctl start redis / redis-server --daemonize yes).',
 		})
 	}
 
@@ -151,7 +154,8 @@ export async function detectSystem(): Promise<SystemReport> {
 		issues.push({
 			severity: 'warn',
 			message: 'git is not installed.',
-			remediation: 'Install git — required for source installs and version checks.',
+			remediation:
+				'Install git — required for source installs and version checks.',
 		})
 	}
 
@@ -181,7 +185,10 @@ export async function detectSystem(): Promise<SystemReport> {
 		bun: { installed: bunVersion !== null, version: bunVersion },
 		redis: { installed: redisInstalled, running: redisRunning },
 		git: { installed: gitVersion !== null, version: gitVersion },
-		ports: { 3000: port3000 ? 'used' : 'free', 3001: port3001 ? 'used' : 'free' },
+		ports: {
+			3000: port3000 ? 'used' : 'free',
+			3001: port3001 ? 'used' : 'free',
+		},
 		hardware: { cpu, cores, memMb },
 		issues,
 	}

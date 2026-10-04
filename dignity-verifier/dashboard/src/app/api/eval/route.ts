@@ -8,17 +8,17 @@
  * shape when no artifact exists yet.
  */
 
-import { NextResponse } from "next/server";
-import type { EvalApiResponse } from "@/lib/eval-types";
-import { emptyReport, readNewestEvalReport } from "@/lib/eval-report";
+import { NextResponse } from 'next/server'
+import { emptyReport, readNewestEvalReport } from '@/lib/eval-report'
+import type { EvalApiResponse } from '@/lib/eval-types'
 
 export async function GET() {
-  const report = await readNewestEvalReport();
+	const report = await readNewestEvalReport()
 
-  const body: EvalApiResponse = {
-    data: report ?? emptyReport(),
-    error: null,
-    success: true,
-  };
-  return NextResponse.json(body);
+	const body: EvalApiResponse = {
+		data: report ?? emptyReport(),
+		error: null,
+		success: true,
+	}
+	return NextResponse.json(body)
 }

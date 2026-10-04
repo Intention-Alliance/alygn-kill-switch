@@ -8,67 +8,78 @@
  * default, because a flag read failure must not become a fail-open path.
  */
 
-import { and, eq } from 'drizzle-orm';
-import type { DecisionFlagReader } from '@align/shared-types';
-import { db } from '../../db/index';
-import { featureFlags, machineFlags } from '../../db/schema';
-import { getFlagDefinition } from '../../db/flag-definitions';
+import type { DecisionFlagReader } from '@align/shared-types'
+import { and, eq } from 'drizzle-orm'
+import { getFlagDefinition } from '../../db/flag-definitions'
+import { db } from '../../db/index'
+import { featureFlags, machineFlags } from '../../db/schema'
 
 const DECISION_KEYS = [
-  'decision.provider',
-  'decision.jev.model',
-  'decision.jev.timeoutMs',
-  'decision.review_threshold',
-] as const;
+	'decision.provider',
+	'decision.jev.model',
+	'decision.jev.timeoutMs',
+	'decision.review_threshold',
+] as const
 
-export async function readDecisionFlags(machineId: string): Promise<DecisionFlagReader> {
-  const resolved = new Map<string, boolean | number | string | null>();
+export async function readDecisionFlags(
+	machineId: string,
+): Promise<DecisionFlagReader> {
+	const resolved = new Map<string, boolean | number | string | null>()
 
-  for (const key of DECISION_KEYS) {
-    const def = getFlagDefinition(key);
-    let value: string | null = null;
+	for (const key of DECISION_KEYS) {
+		const def = getFlagDefinition(key)
+		let value: string | null = null
 
-    try {
-      // 1. machine override wins
-      const override = await db
-        .select()
-        .from(machineFlags)
-        .where(and(eq(machineFlags.machineId, machineId), eq(machineFlags.flagKey, key)))
-        .get();
-      if (override && override.value !== null && override.value !== undefined) {
-        value = String(override.value);
-      } else {
-        // 2. global row
-        const global = await db.select().from(featureFlags).where(eq(featureFlags.key, key)).get();
-        if (global && global.value !== null && global.value !== undefined) {
-          value = String(global.value);
-        }
-      }
-    } catch {
-      value = null; // never throw — fall through to the declared default
-    }
+		try {
+			// 1. machine override wins
+			const override = await db
+				.select()
+				.from(machineFlags)
+				.where(
+					and(
+						eq(machineFlags.machineId, machineId),
+						eq(machineFlags.flagKey, key),
+					),
+				)
+				.get()
+			if (override && override.value !== null && override.value !== undefined) {
+				value = String(override.value)
+			} else {
+				// 2. global row
+				const global = await db
+					.select()
+					.from(featureFlags)
+					.where(eq(featureFlags.key, key))
+					.get()
+				if (global && global.value !== null && global.value !== undefined) {
+					value = String(global.value)
+				}
+			}
+		} catch {
+			value = null // never throw — fall through to the declared default
+		}
 
-    // 3. declared default
-    if (value === null || value === undefined) {
-      resolved.set(key, def?.defaultValue ?? null);
-      continue;
-    }
+		// 3. declared default
+		if (value === null || value === undefined) {
+			resolved.set(key, def?.defaultValue ?? null)
+			continue
+		}
 
-    if (def) {
-      if (def.type === 'number') {
-        const n = Number(value);
-        resolved.set(key, Number.isFinite(n) ? n : def.defaultValue);
-      } else if (def.type === 'boolean') {
-        resolved.set(key, value === 'true' || value === '1');
-      } else {
-        resolved.set(key, value);
-      }
-    } else {
-      resolved.set(key, value);
-    }
-  }
+		if (def) {
+			if (def.type === 'number') {
+				const n = Number(value)
+				resolved.set(key, Number.isFinite(n) ? n : def.defaultValue)
+			} else if (def.type === 'boolean') {
+				resolved.set(key, value === 'true' || value === '1')
+			} else {
+				resolved.set(key, value)
+			}
+		} else {
+			resolved.set(key, value)
+		}
+	}
 
-  return {
-    getFlag: (key: string) => (resolved.has(key) ? resolved.get(key)! : null),
-  };
+	return {
+		getFlag: (key: string) => (resolved.has(key) ? resolved.get(key)! : null),
+	}
 }

@@ -12,16 +12,20 @@
  * request (getDb) rather than at module load.
  */
 
-import { mkdirSync } from "node:fs";
+import { mkdirSync } from 'node:fs'
 
-const DATA_DIR = process.env.DATA_DIR || "/app/data";
-const DB_PATH = `${DATA_DIR}/dignity-verifier.db`;
+const DATA_DIR = process.env.DATA_DIR || '/app/data'
+const DB_PATH = `${DATA_DIR}/dignity-verifier.db`
 
-export type DrizzleDb = ReturnType<typeof import("drizzle-orm/bun-sqlite")["drizzle"]>;
-export type SqliteDatabase = InstanceType<typeof import("bun:sqlite")["Database"]>;
+export type DrizzleDb = ReturnType<
+	typeof import('drizzle-orm/bun-sqlite')['drizzle']
+>
+export type SqliteDatabase = InstanceType<
+	typeof import('bun:sqlite')['Database']
+>
 
-let dbInstance: DrizzleDb | null = null;
-let sqliteInstance: SqliteDatabase | null = null;
+let dbInstance: DrizzleDb | null = null
+let sqliteInstance: SqliteDatabase | null = null
 
 /**
  * Idempotent bootstrap of the domain tables. Mirrors the Drizzle schema in
@@ -29,7 +33,7 @@ let sqliteInstance: SqliteDatabase | null = null;
  * every process start and against an existing database.
  */
 function bootstrapDomainTables(sqlite: SqliteDatabase): void {
-  sqlite.exec(`
+	sqlite.exec(`
     CREATE TABLE IF NOT EXISTS dataset_example (
       id TEXT PRIMARY KEY,
       prompt TEXT NOT NULL,
@@ -85,7 +89,7 @@ function bootstrapDomainTables(sqlite: SqliteDatabase): void {
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     );
-  `);
+  `)
 }
 
 /**
@@ -93,20 +97,20 @@ function bootstrapDomainTables(sqlite: SqliteDatabase): void {
  * domain tables. Returns the Drizzle query builder.
  */
 export async function getDb(): Promise<DrizzleDb> {
-  if (dbInstance) return dbInstance;
+	if (dbInstance) return dbInstance
 
-  mkdirSync(DATA_DIR, { recursive: true });
+	mkdirSync(DATA_DIR, { recursive: true })
 
-  const { Database } = await import("bun:sqlite");
-  const { drizzle } = await import("drizzle-orm/bun-sqlite");
+	const { Database } = await import('bun:sqlite')
+	const { drizzle } = await import('drizzle-orm/bun-sqlite')
 
-  const sqlite = new Database(DB_PATH);
-  sqlite.exec("PRAGMA journal_mode = WAL;");
-  bootstrapDomainTables(sqlite);
+	const sqlite = new Database(DB_PATH)
+	sqlite.exec('PRAGMA journal_mode = WAL;')
+	bootstrapDomainTables(sqlite)
 
-  sqliteInstance = sqlite;
-  dbInstance = drizzle(sqlite);
-  return dbInstance;
+	sqliteInstance = sqlite
+	dbInstance = drizzle(sqlite)
+	return dbInstance
 }
 
 /**
@@ -114,9 +118,9 @@ export async function getDb(): Promise<DrizzleDb> {
  * Initializes the same connection as getDb.
  */
 export async function getSqlite(): Promise<SqliteDatabase> {
-  if (sqliteInstance) return sqliteInstance;
-  await getDb();
-  return sqliteInstance as unknown as SqliteDatabase;
+	if (sqliteInstance) return sqliteInstance
+	await getDb()
+	return sqliteInstance as unknown as SqliteDatabase
 }
 
-export { DATA_DIR, DB_PATH };
+export { DATA_DIR, DB_PATH }

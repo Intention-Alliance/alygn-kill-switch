@@ -84,7 +84,10 @@ async function runNonInteractive(args: CliArgs): Promise<void> {
 		throw new Error('Non-interactive mode requires --config <path>.')
 	}
 
-	const config = await loadConfig({ configPath: args.configPath, interactive: false })
+	const config = await loadConfig({
+		configPath: args.configPath,
+		interactive: false,
+	})
 	log.success(`Loaded config from ${args.configPath}`)
 
 	if (!config.licenseAccepted) {
@@ -124,7 +127,9 @@ async function runUninstall(args: CliArgs): Promise<void> {
 		interactive: true,
 	})
 	const result = await uninstall(config, { purge: args.purge })
-	log.success(`Uninstalled: ${result.units.join(', ')} (purge=${result.envDeleted ? 'yes' : 'no'})`)
+	log.success(
+		`Uninstalled: ${result.units.join(', ')} (purge=${result.envDeleted ? 'yes' : 'no'})`,
+	)
 	const removed: string[] = []
 	if (result.envDeleted) removed.push('.env')
 	if (result.dataDeleted) removed.push('data dir')

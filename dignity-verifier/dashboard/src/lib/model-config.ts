@@ -59,35 +59,35 @@ export interface MediatorConfig {
 
 export const TEACHERS: TeacherConfig = {
 	primary: {
-		label: "Teacher",
-		value: "glm-5.3-flash:cloud",
-		note: "Allowed cloud model · generates verdicts + paraphrases",
+		label: 'Teacher',
+		value: 'glm-5.3-flash:cloud',
+		note: 'Allowed cloud model · generates verdicts + paraphrases',
 	},
 	fallbacks: [
 		{
-			label: "Teacher (fallback)",
-			value: "glm-5.2:cloud",
-			note: "Used when the primary is unavailable",
+			label: 'Teacher (fallback)',
+			value: 'glm-5.2:cloud',
+			note: 'Used when the primary is unavailable',
 		},
 		{
-			label: "Teacher (legacy)",
-			value: "deepseek-v4-flash:cloud",
-			note: "Prior teacher · records without a teacher field came from it",
+			label: 'Teacher (legacy)',
+			value: 'deepseek-v4-flash:cloud',
+			note: 'Prior teacher · records without a teacher field came from it',
 		},
 	],
 }
 
 export const STUDENTS: StudentConfig = {
 	primary: {
-		label: "Student",
-		value: "qwen2.5:0.5b",
-		note: "LoRA fine-tune target · CPU-trainable",
+		label: 'Student',
+		value: 'qwen2.5:0.5b',
+		note: 'LoRA fine-tune target · CPU-trainable',
 	},
 	alternatives: [
 		{
-			label: "Student (alt)",
-			value: "qwen2.5:1.5b",
-			note: "Larger base · more capacity, slower CPU training",
+			label: 'Student (alt)',
+			value: 'qwen2.5:1.5b',
+			note: 'Larger base · more capacity, slower CPU training',
 		},
 	],
 }
@@ -95,25 +95,25 @@ export const STUDENTS: StudentConfig = {
 export const MEDIATORS: MediatorConfig[] = [
 	{
 		ref: {
-			label: "Mediator (judge)",
-			value: "glm-5.3-flash:cloud",
-			note: "Cross-checks curated verdicts · advisory only",
+			label: 'Mediator (judge)',
+			value: 'glm-5.3-flash:cloud',
+			note: 'Cross-checks curated verdicts · advisory only',
 		},
 		policy:
-			"A divergence between mediator and curated verdict is logged and counted, never applied. The human verdict is authoritative.",
+			'A divergence between mediator and curated verdict is logged and counted, never applied. The human verdict is authoritative.',
 	},
 ]
 
 export const EMBEDDING: ModelRef = {
-	label: "Embedding",
-	value: "nomic-embed-text-v2-moe:latest",
-	note: "Local · F16",
+	label: 'Embedding',
+	value: 'nomic-embed-text-v2-moe:latest',
+	note: 'Local · F16',
 }
 
 export const TARGET: ModelRef = {
-	label: "Target",
-	value: "dignity-verification-v0.1-preview",
-	note: "Output model",
+	label: 'Target',
+	value: 'dignity-verification-v0.1-preview',
+	note: 'Output model',
 }
 
 /**

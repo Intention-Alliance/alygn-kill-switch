@@ -13,43 +13,43 @@
 // ─── Provider Adapter Contract ────────────────────────────────────
 
 export type ProviderId =
-  | 'ollama'
-  | 'huggingface'
-  | 'llamaindex'
-  | 'vllm'
-  | 'openai-compatible';
+	| 'ollama'
+	| 'huggingface'
+	| 'llamaindex'
+	| 'vllm'
+	| 'openai-compatible'
 
 export const PROVIDER_IDS: readonly ProviderId[] = [
-  'ollama',
-  'huggingface',
-  'llamaindex',
-  'vllm',
-  'openai-compatible',
-] as const;
+	'ollama',
+	'huggingface',
+	'llamaindex',
+	'vllm',
+	'openai-compatible',
+] as const
 
 export interface ProviderInfo {
-  id: ProviderId;
-  name: string;
-  version: string | null;
-  baseUrl: string | null;
-  detectedAt: string; // ISO timestamp
+	id: ProviderId
+	name: string
+	version: string | null
+	baseUrl: string | null
+	detectedAt: string // ISO timestamp
 }
 
 export interface ModelInfo {
-  id: string;
-  name: string;
-  providerId: ProviderId;
-  sizeBytes: number | null;
-  quantization: string | null;
-  family: string | null;
-  served: boolean; // actively served by an inference endpoint
+	id: string
+	name: string
+	providerId: ProviderId
+	sizeBytes: number | null
+	quantization: string | null
+	family: string | null
+	served: boolean // actively served by an inference endpoint
 }
 
 export interface ProviderHealth {
-  healthy: boolean;
-  latencyMs: number | null;
-  error: string | null;
-  checkedAt: string; // ISO timestamp
+	healthy: boolean
+	latencyMs: number | null
+	error: string | null
+	checkedAt: string // ISO timestamp
 }
 
 /**
@@ -59,50 +59,50 @@ export interface ProviderHealth {
  * A machine may host multiple providers — all are registered.
  */
 export interface DiscoveryProvider {
-  id: ProviderId;
-  detect(): Promise<ProviderInfo | null>;
-  listModels(): Promise<ModelInfo[]>;
-  health(): Promise<ProviderHealth>;
+	id: ProviderId
+	detect(): Promise<ProviderInfo | null>
+	listModels(): Promise<ModelInfo[]>
+	health(): Promise<ProviderHealth>
 }
 
 // ─── Hardware Integrity Fingerprint (ADR-134/135 §3) ──────────────
 
 export interface GpuFingerprint {
-  name: string;
-  vendor: string | null;
-  pciId: string | null;
+	name: string
+	vendor: string | null
+	pciId: string | null
 }
 
 export interface HardwareFingerprint {
-  cpuModel: string;
-  cpuCores: number;
-  memoryMb: number;
-  gpus: GpuFingerprint[];
-  diskGb: number;
-  osRelease: string;
-  macs: string[]; // network interface MACs — identity binding
-  collectedAt: string; // ISO timestamp
+	cpuModel: string
+	cpuCores: number
+	memoryMb: number
+	gpus: GpuFingerprint[]
+	diskGb: number
+	osRelease: string
+	macs: string[] // network interface MACs — identity binding
+	collectedAt: string // ISO timestamp
 }
 
 export interface IntegritySignature {
-  algorithm: 'sha256';
-  hash: string; // hex digest of canonical fingerprint JSON
-  signedAt: string; // ISO timestamp
+	algorithm: 'sha256'
+	hash: string // hex digest of canonical fingerprint JSON
+	signedAt: string // ISO timestamp
 }
 
-export type IntegrityEventType = 'tamper' | 'swap' | 'reconfirmed';
+export type IntegrityEventType = 'tamper' | 'swap' | 'reconfirmed'
 
 export interface IntegrityDrift {
-  event: IntegrityEventType;
-  machineId: string;
-  driftedFields: string[]; // e.g. ['gpus', 'macs']
-  severity: 'low' | 'medium' | 'high';
-  detectedAt: string; // ISO timestamp
+	event: IntegrityEventType
+	machineId: string
+	driftedFields: string[] // e.g. ['gpus', 'macs']
+	severity: 'low' | 'medium' | 'high'
+	detectedAt: string // ISO timestamp
 }
 
 // ─── Machine Discovery Lifecycle (ADR-135 §2, §5) ─────────────────
 
-export type DiscoverySource = 'mdns' | 'arp-sweep' | 'heartbeat';
+export type DiscoverySource = 'mdns' | 'arp-sweep' | 'heartbeat'
 
 /**
  * NO auto-admission (ADR-135 §5): a newly detected machine enters
@@ -118,48 +118,48 @@ export type DiscoverySource = 'mdns' | 'arp-sweep' | 'heartbeat';
  * drift (tamper/swap) and must be re-confirmed before operating again.
  */
 export type MachineDiscoveryState =
-  | 'NEW_MACHINE'
-  | 'PENDING_CONFIRMATION'
-  | 'ADMITTED'
-  | 'PENDING_REVIEW'
-  | 'DENIED';
+	| 'NEW_MACHINE'
+	| 'PENDING_CONFIRMATION'
+	| 'ADMITTED'
+	| 'PENDING_REVIEW'
+	| 'DENIED'
 
 export interface DiscoveredMachine {
-  id: string;
-  hostname: string;
-  ip: string | null;
-  source: DiscoverySource;
-  state: MachineDiscoveryState;
-  fingerprint: HardwareFingerprint | null;
-  integritySignature: IntegritySignature | null;
-  firstSeen: string; // ISO timestamp
-  lastSeen: string; // ISO timestamp
-  confirmedAt: string | null;
-  confirmedBy: string | null;
+	id: string
+	hostname: string
+	ip: string | null
+	source: DiscoverySource
+	state: MachineDiscoveryState
+	fingerprint: HardwareFingerprint | null
+	integritySignature: IntegritySignature | null
+	firstSeen: string // ISO timestamp
+	lastSeen: string // ISO timestamp
+	confirmedAt: string | null
+	confirmedBy: string | null
 }
 
 export interface DiscoveredProvider {
-  id: string;
-  machineId: string;
-  providerId: ProviderId;
-  baseUrl: string | null;
-  version: string | null;
-  status: 'detected' | 'healthy' | 'unhealthy';
-  detectedAt: string; // ISO timestamp
-  lastHealthyAt: string | null;
+	id: string
+	machineId: string
+	providerId: ProviderId
+	baseUrl: string | null
+	version: string | null
+	status: 'detected' | 'healthy' | 'unhealthy'
+	detectedAt: string // ISO timestamp
+	lastHealthyAt: string | null
 }
 
 export interface DiscoveredModel {
-  id: string;
-  machineId: string;
-  providerId: ProviderId;
-  modelId: string;
-  name: string;
-  sizeBytes: number | null;
-  quantization: string | null;
-  family: string | null;
-  served: boolean;
-  detectedAt: string; // ISO timestamp
+	id: string
+	machineId: string
+	providerId: ProviderId
+	modelId: string
+	name: string
+	sizeBytes: number | null
+	quantization: string | null
+	family: string | null
+	served: boolean
+	detectedAt: string // ISO timestamp
 }
 
 /**
@@ -168,54 +168,54 @@ export interface DiscoveredModel {
  * machine is ADMITTED.
  */
 export interface DiscoveryReport {
-  machine: DiscoveredMachine;
-  providers: DiscoveredProvider[];
-  models: DiscoveredModel[];
-  integrity: {
-    signature: IntegritySignature | null;
-    drift: IntegrityDrift | null;
-  };
+	machine: DiscoveredMachine
+	providers: DiscoveredProvider[]
+	models: DiscoveredModel[]
+	integrity: {
+		signature: IntegritySignature | null
+		drift: IntegrityDrift | null
+	}
 }
 
 // ─── Onboarding & Multi-Tenant Registration (ADR-138) ─────────────
 
-export type RegistrationRequestStatus = 'PENDING' | 'APPROVED' | 'DENIED';
+export type RegistrationRequestStatus = 'PENDING' | 'APPROVED' | 'DENIED'
 
 export interface RegistrationRequest {
-  id: string;
-  machineId: string;
-  requestedBy: string;
-  status: RegistrationRequestStatus;
-  denialReason: string | null;
-  reviewedBy: string | null;
-  reviewedAt: string | null; // ISO timestamp
-  createdAt: string; // ISO timestamp
+	id: string
+	machineId: string
+	requestedBy: string
+	status: RegistrationRequestStatus
+	denialReason: string | null
+	reviewedBy: string | null
+	reviewedAt: string | null // ISO timestamp
+	createdAt: string // ISO timestamp
 }
 
 export interface RogueDeviceAlert {
-  id: string;
-  hostname: string;
-  ip: string | null;
-  denialCount: number;
-  lastDeniedAt: string; // ISO timestamp
-  resolved: boolean;
-  resolvedBy: string | null;
-  resolvedAt: string | null; // ISO timestamp
-  createdAt: string; // ISO timestamp
+	id: string
+	hostname: string
+	ip: string | null
+	denialCount: number
+	lastDeniedAt: string // ISO timestamp
+	resolved: boolean
+	resolvedBy: string | null
+	resolvedAt: string | null // ISO timestamp
+	createdAt: string // ISO timestamp
 }
 
 /**
  * Result of an onboarding decision (approve/deny).
  */
 export interface OnboardingDecision {
-  machine: DiscoveredMachine;
-  registration: RegistrationRequest;
-  machineRecord: {
-    id: string;
-    name: string;
-    hostname: string;
-    monitoringOnly: boolean;
-    zone: string;
-  } | null;
-  rogueAlert: RogueDeviceAlert | null;
+	machine: DiscoveredMachine
+	registration: RegistrationRequest
+	machineRecord: {
+		id: string
+		name: string
+		hostname: string
+		monitoringOnly: boolean
+		zone: string
+	} | null
+	rogueAlert: RogueDeviceAlert | null
 }

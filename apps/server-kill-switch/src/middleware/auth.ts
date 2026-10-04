@@ -13,12 +13,12 @@
  * non-kill routes.
  */
 
-import type { KillSwitchService } from '../services/kill-switch';
-import { auth } from '../lib/auth';
+import { auth } from '../lib/auth'
+import type { KillSwitchService } from '../services/kill-switch'
 
 export interface AuthResult {
-  authenticated: boolean;
-  user?: { email: string; role: string };
+	authenticated: boolean
+	user?: { email: string; role: string }
 }
 
 /**
@@ -28,46 +28,48 @@ export interface AuthResult {
  * (ADR-136 §4).
  */
 export async function checkSessionAuth(req: any): Promise<AuthResult> {
-  const hasCookie = req.headers?.cookie?.includes('better-auth');
-  if (!hasCookie) {
-    return { authenticated: false };
-  }
+	const hasCookie = req.headers?.cookie?.includes('better-auth')
+	if (!hasCookie) {
+		return { authenticated: false }
+	}
 
-  try {
-    const headers = new Headers();
-    headers.set('cookie', req.headers.cookie);
+	try {
+		const headers = new Headers()
+		headers.set('cookie', req.headers.cookie)
 
-    const data = await Promise.race([
-      auth.api.getSession({ headers }) as any,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('auth timeout')), 3000)),
-    ]) as any;
+		const data = (await Promise.race([
+			auth.api.getSession({ headers }) as any,
+			new Promise((_, reject) =>
+				setTimeout(() => reject(new Error('auth timeout')), 3000),
+			),
+		])) as any
 
-    if (data?.user) {
-      return {
-        authenticated: true,
-        user: { email: data.user.email, role: data.user.role || 'viewer' },
-      };
-    }
-  } catch (err: any) {
-    console.error('[auth-middleware] Session check failed:', err.message);
-  }
+		if (data?.user) {
+			return {
+				authenticated: true,
+				user: { email: data.user.email, role: data.user.role || 'viewer' },
+			}
+		}
+	} catch (err: any) {
+		console.error('[auth-middleware] Session check failed:', err.message)
+	}
 
-  return { authenticated: false };
+	return { authenticated: false }
 }
 
 export async function checkAuth(
-  service: KillSwitchService,
-  req: any,
+	service: KillSwitchService,
+	req: any,
 ): Promise<AuthResult> {
-  // ── Fast path: Bearer token / API key (instant, no I/O) ──
-  // Check this FIRST — it's a synchronous comparison and avoids the
-  // Better-Auth session roundtrip entirely for machine-to-machine calls.
-  // Non-kill routes only; the kill path uses `checkSessionAuth`.
-  if (service.authenticate(req)) {
-    const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com';
-    return { authenticated: true, user: { email: validEmail, role: 'admin' } };
-  }
+	// ── Fast path: Bearer token / API key (instant, no I/O) ──
+	// Check this FIRST — it's a synchronous comparison and avoids the
+	// Better-Auth session roundtrip entirely for machine-to-machine calls.
+	// Non-kill routes only; the kill path uses `checkSessionAuth`.
+	if (service.authenticate(req)) {
+		const validEmail = process.env.ADMIN_EMAIL || 'admin@alygn.com'
+		return { authenticated: true, user: { email: validEmail, role: 'admin' } }
+	}
 
-  // ── Slow path: Better-Auth v2 session cookie (for dashboard users) ──
-  return checkSessionAuth(req);
+	// ── Slow path: Better-Auth v2 session cookie (for dashboard users) ──
+	return checkSessionAuth(req)
 }

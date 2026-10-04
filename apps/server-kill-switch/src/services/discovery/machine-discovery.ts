@@ -76,9 +76,13 @@ export function subnetHosts(subnet: LocalSubnet, maxHosts: number): string[] {
 
 function pingHost(ip: string, timeoutMs: number): Promise<boolean> {
 	return new Promise((resolve) => {
-		const child = spawn('ping', ['-c', '1', '-W', String(Math.max(1, Math.floor(timeoutMs / 1000))), ip], {
-			stdio: 'ignore',
-		})
+		const child = spawn(
+			'ping',
+			['-c', '1', '-W', String(Math.max(1, Math.floor(timeoutMs / 1000))), ip],
+			{
+				stdio: 'ignore',
+			},
+		)
 		const timer = setTimeout(() => {
 			child.kill('SIGKILL')
 			resolve(false)
@@ -96,13 +100,17 @@ function pingHost(ip: string, timeoutMs: number): Promise<boolean> {
 
 function resolveHostname(ip: string): Promise<string | null> {
 	return new Promise((resolve) => {
-		const child = spawn('getent', ['hosts', ip], { stdio: ['ignore', 'pipe', 'ignore'] })
+		const child = spawn('getent', ['hosts', ip], {
+			stdio: ['ignore', 'pipe', 'ignore'],
+		})
 		const timer = setTimeout(() => {
 			child.kill('SIGKILL')
 			resolve(null)
 		}, 2000)
 		let out = ''
-		child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
+		child.stdout?.on('data', (d: Buffer) => {
+			out += d.toString()
+		})
 		child.on('error', () => {
 			clearTimeout(timer)
 			resolve(null)
@@ -178,12 +186,25 @@ export async function discoverMdns({
 }: MachineDiscoveryParams = {}): Promise<DiscoveredMachine[]> {
 	try {
 		const output = await new Promise<string>((resolve) => {
-			const child = spawn('avahi-browse', ['-rt', '_alygn-killswitch._tcp'], { stdio: ['ignore', 'pipe', 'ignore'] })
-			const timer = setTimeout(() => { child.kill('SIGKILL'); resolve('') }, mdnsTimeoutMs + 1000)
+			const child = spawn('avahi-browse', ['-rt', '_alygn-killswitch._tcp'], {
+				stdio: ['ignore', 'pipe', 'ignore'],
+			})
+			const timer = setTimeout(() => {
+				child.kill('SIGKILL')
+				resolve('')
+			}, mdnsTimeoutMs + 1000)
 			let out = ''
-			child.stdout?.on('data', (d: Buffer) => { out += d.toString() })
-			child.on('error', () => { clearTimeout(timer); resolve('') })
-			child.on('close', () => { clearTimeout(timer); resolve(out) })
+			child.stdout?.on('data', (d: Buffer) => {
+				out += d.toString()
+			})
+			child.on('error', () => {
+				clearTimeout(timer)
+				resolve('')
+			})
+			child.on('close', () => {
+				clearTimeout(timer)
+				resolve(out)
+			})
 		})
 		const hosts: DiscoveredMachine[] = []
 		const lines = output.split('\n')

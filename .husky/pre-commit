@@ -1,4 +1,3 @@
 #!/bin/sh
 echo "Running pre-commit checks..."
-bun run type-check 2>/dev/null || echo "(type-check not configured)"
-bun run lint 2>/dev/null || echo "(lint not configured)"
+bun run format-and-lint:fix --max-diagnostics 2000 2>/dev/null || echo "(biome) not configured)"

@@ -122,8 +122,7 @@ mock.module('../../db/index', () => ({
 				// Probe route machine-existence check (WS-B):
 				// db.select().from(discoveredMachines).where(eq(id)).get()
 				where: () => ({
-					get: async () =>
-						mockMachineExists ? { id: 'machine-1' } : null,
+					get: async () => (mockMachineExists ? { id: 'machine-1' } : null),
 				}),
 				$dynamic: () => ({
 					where: () => ({
@@ -417,7 +416,9 @@ describe('handleDiscoveryRoutes', () => {
 		)
 		expect(handled).toBe(true)
 		expect(res.statusCode).toBe(409)
-		expect(getJson(res).error).toContain('Cannot approve machine in state ADMITTED')
+		expect(getJson(res).error).toContain(
+			'Cannot approve machine in state ADMITTED',
+		)
 	})
 
 	it('POST /v1/discovery/sweep rejects non-admin (403)', async () => {

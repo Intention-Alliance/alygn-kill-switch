@@ -1,31 +1,31 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 
-import App from "@/app";
-import "@config/env";
-import { SlashingRoute } from "@routes/slashing.route";
-import { container } from "tsyringe";
+import App from '@/app'
+import '@config/env'
+import { SlashingRoute } from '@routes/slashing.route'
+import { container } from 'tsyringe'
 
 // Route modules can be dynamically added to array as needed
-const routes = [container.resolve(SlashingRoute)];
+const routes = [container.resolve(SlashingRoute)]
 
 // API prefix is set in app.ts with default value, can be passed as argument if needed
-const appInstance = new App(routes);
+const appInstance = new App(routes)
 
 // listen() returns server object (http.Server) - modified in app.ts
-const server = appInstance.listen(); // Can pass PORT as argument if needed
+const server = appInstance.listen() // Can pass PORT as argument if needed
 
 // Graceful Shutdown: Essential for production environments!
-if (server && typeof server.close === "function") {
-	["SIGINT", "SIGTERM"].forEach((signal) => {
+if (server && typeof server.close === 'function') {
+	;['SIGINT', 'SIGTERM'].forEach((signal) => {
 		process.on(signal, () => {
-			console.log(`Received ${signal}, closing server...`);
+			console.log(`Received ${signal}, closing server...`)
 			server.close(() => {
-				console.log("HTTP server closed gracefully");
+				console.log('HTTP server closed gracefully')
 				// Add cleanup code for external resources (DB/Redis) if needed
-				process.exit(0);
-			});
-		});
-	});
+				process.exit(0)
+			})
+		})
+	})
 }
 
-export default server;
+export default server

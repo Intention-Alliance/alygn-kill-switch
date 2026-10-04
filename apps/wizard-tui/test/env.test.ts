@@ -18,7 +18,9 @@ async function makeTempDir(): Promise<string> {
 }
 
 afterEach(async () => {
-	await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
+	await Promise.all(
+		tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })),
+	)
 })
 
 const baseConfig = validateConfig({
@@ -59,8 +61,12 @@ describe('writeEnvFile', () => {
 		expect(text).toContain('WEBAUTHN_ORIGIN=http://localhost:3001')
 		expect(text).toContain('ALYGN_MACHINE_HOSTNAME=test-node.local')
 		expect(text).toContain('ALYGN_MACHINE_NAME=test-node')
-		expect(text).toContain('KILL_SWITCH_DISCOVERY_OLLAMA_BASE_URL=http://localhost:11434')
-		expect(text).toContain('KILL_SWITCH_VERIFIER_BASE_URL=http://localhost:11434')
+		expect(text).toContain(
+			'KILL_SWITCH_DISCOVERY_OLLAMA_BASE_URL=http://localhost:11434',
+		)
+		expect(text).toContain(
+			'KILL_SWITCH_VERIFIER_BASE_URL=http://localhost:11434',
+		)
 		expect(text).toContain('KILL_SWITCH_VERIFIER_MODEL=qwen2.5:0.5b')
 		expect(text).toContain('KILL_SWITCH_VERIFY_ENABLED=true')
 		expect(text).toContain('KILL_SWITCH_VERIFY_MODE=async')
@@ -165,7 +171,9 @@ describe('generateSecrets', () => {
 		expect(first.skipped).toContain('KILL_SWITCH_API_KEY')
 
 		const textAfterFirst = await readFile(target, 'utf8')
-		expect(textAfterFirst).toContain('KILL_SWITCH_API_KEY=my-own-secret-1234567890')
+		expect(textAfterFirst).toContain(
+			'KILL_SWITCH_API_KEY=my-own-secret-1234567890',
+		)
 
 		const second = await generateSecrets(target)
 		expect(second.generated).toEqual([])

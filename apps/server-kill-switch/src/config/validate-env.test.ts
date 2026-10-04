@@ -51,20 +51,29 @@ describe('validateEnvironment — placeholder guard (K6)', () => {
 		expect(() => validateEnvironment()).not.toThrow()
 	})
 
-	it.each(SECRET_KEYS)('rejects "change-me" placeholder for %s', (key: string) => {
-		setEnv({ [key]: 'change-me' })
-		expect(() => validateEnvironment()).toThrow(/placeholder/i)
-	})
+	it.each(SECRET_KEYS)(
+		'rejects "change-me" placeholder for %s',
+		(key: string) => {
+			setEnv({ [key]: 'change-me' })
+			expect(() => validateEnvironment()).toThrow(/placeholder/i)
+		},
+	)
 
-	it.each(SECRET_KEYS)('rejects "<generate-with-…>" placeholder for %s', (key: string) => {
-		setEnv({ [key]: '<generate-with-openssl-rand-hex-32>' })
-		expect(() => validateEnvironment()).toThrow(/placeholder/i)
-	})
+	it.each(SECRET_KEYS)(
+		'rejects "<generate-with-…>" placeholder for %s',
+		(key: string) => {
+			setEnv({ [key]: '<generate-with-openssl-rand-hex-32>' })
+			expect(() => validateEnvironment()).toThrow(/placeholder/i)
+		},
+	)
 
-	it.each(SECRET_KEYS)('rejects "your-secret-here" placeholder for %s', (key: string) => {
-		setEnv({ [key]: 'your-secret-here' })
-		expect(() => validateEnvironment()).toThrow(/placeholder/i)
-	})
+	it.each(SECRET_KEYS)(
+		'rejects "your-secret-here" placeholder for %s',
+		(key: string) => {
+			setEnv({ [key]: 'your-secret-here' })
+			expect(() => validateEnvironment()).toThrow(/placeholder/i)
+		},
+	)
 
 	it('rejects a single placeholder among otherwise-strong secrets', () => {
 		setEnv({ KILL_SWITCH_AUTH_TOKEN: 'change-this-token' })

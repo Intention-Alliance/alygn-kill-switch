@@ -1,56 +1,60 @@
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/lib/auth-context";
-import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
-import { Figtree, Inter } from "next/font/google";
-import { BRAND_FULL_NAME, BRAND_TAGLINE } from "@/lib/branding";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Figtree, Inter } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
+import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { AuthProvider } from '@/lib/auth-context'
+import { BRAND_FULL_NAME, BRAND_TAGLINE } from '@/lib/branding'
+import { cn } from '@/lib/utils'
+import './globals.css'
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
+	? `https://${process.env.VERCEL_URL}`
+	: 'http://localhost:3000'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: BRAND_FULL_NAME,
-  description: BRAND_TAGLINE,
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
+	metadataBase: new URL(defaultUrl),
+	title: BRAND_FULL_NAME,
+	description: BRAND_TAGLINE,
+	icons: {
+		icon: '/favicon.ico',
+	},
+}
 
 const figtreeSans = Figtree({
-  variable: "--font-figtree-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
+	variable: '--font-figtree-sans',
+	display: 'swap',
+	subsets: ['latin'],
+})
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
-      <body className={`${figtreeSans.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <TooltipProvider>
-              {children}
-              <Toaster richColors closeButton />
-            </TooltipProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+	return (
+		<html
+			lang="en"
+			suppressHydrationWarning
+			className={cn('font-sans', inter.variable)}
+		>
+			<body className={`${figtreeSans.className} antialiased`}>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+				>
+					<AuthProvider>
+						<TooltipProvider>
+							{children}
+							<Toaster richColors closeButton />
+						</TooltipProvider>
+					</AuthProvider>
+				</ThemeProvider>
+			</body>
+		</html>
+	)
 }

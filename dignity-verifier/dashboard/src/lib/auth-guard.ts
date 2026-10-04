@@ -7,18 +7,18 @@
  * caller has no valid session.
  */
 
-import { NextResponse } from "next/server";
-import { getAuth } from "./auth";
+import { NextResponse } from 'next/server'
+import { getAuth } from './auth'
 
 /**
  * Resolve the authenticated session for a request, or null when unauthenticated.
  */
 export async function getSessionUser(request: Request) {
-  const auth = await getAuth();
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
-  return session?.user ?? null;
+	const auth = await getAuth()
+	const session = await auth.api.getSession({
+		headers: request.headers,
+	})
+	return session?.user ?? null
 }
 
 /**
@@ -27,20 +27,20 @@ export async function getSessionUser(request: Request) {
  * it is a NextResponse.
  */
 export async function requireAuth(
-  request: Request,
+	request: Request,
 ): Promise<{ user: { id: string; email: string } } | NextResponse> {
-  const user = await getSessionUser(request);
-  if (!user) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: "UNAUTHORIZED",
-          message: "Authentication required",
-        },
-      },
-      { status: 401 },
-    );
-  }
-  return { user: { id: user.id, email: user.email ?? "" } };
+	const user = await getSessionUser(request)
+	if (!user) {
+		return NextResponse.json(
+			{
+				success: false,
+				error: {
+					code: 'UNAUTHORIZED',
+					message: 'Authentication required',
+				},
+			},
+			{ status: 401 },
+		)
+	}
+	return { user: { id: user.id, email: user.email ?? '' } }
 }

@@ -5,10 +5,10 @@
 import { getConfig, isFeatureEnabled } from './config'
 import { assertProxyAndVerificationInvariant } from './config/proxy-invariants'
 import {
-	validateEnvironment,
-	validateVerifierConfig,
 	getVerifierMaxRetries,
 	getVerifierReprobeIntervalMs,
+	validateEnvironment,
+	validateVerifierConfig,
 } from './config/validate-env'
 import { sqlite as sqliteDb } from './db/index'
 import { seedFeatureFlags } from './db/seed'
@@ -29,11 +29,12 @@ import {
 import { isKillAuthBypassPath } from './middleware/kill-auth-bypass'
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('[FATAL] Unhandled rejection:', reason)
+	console.error('[FATAL] Unhandled rejection:', reason)
 })
 process.on('uncaughtException', (err) => {
-  console.error('[FATAL] Uncaught exception:', err)
+	console.error('[FATAL] Uncaught exception:', err)
 })
+
 import { handleLbHealthRoutes } from './middleware/lb-health'
 import {
 	relayInferenceRequest,
@@ -55,10 +56,10 @@ import {
 import { handleApiKeysRoutes } from './routes/api-keys'
 import { handleAuditRoutes } from './routes/audit'
 import { handleAuthRoutes } from './routes/auth'
+import { handleDecisionRoutes } from './routes/decision'
 import { handleDiscoveryRoutes } from './routes/discovery'
 import { handleFlagsRoutes } from './routes/flags'
 import { handleInferenceLogsRoutes } from './routes/inference-logs'
-import { handleDecisionRoutes } from './routes/decision'
 import { handleInternalKillSwitchRoutes } from './routes/internal-kill-switch'
 import { handleKillAuthorizationRoutes } from './routes/kill-authorization'
 import { handleKillSwitchRoutes } from './routes/kill-switch'
@@ -70,13 +71,17 @@ import { handleWebAuthnRoutes } from './routes/webauthn'
 import { handleWebhookKeysRoutes } from './routes/webhook-keys'
 import { startRegistryScheduler } from './services/discovery/registry-scheduler'
 import { sweepExpiredBlocks } from './services/fingerprint-blocklist'
-import { isIpAllowed, isLocalhost, startDnsRefresh } from './services/ip-allowlist'
+import {
+	isIpAllowed,
+	isLocalhost,
+	startDnsRefresh,
+} from './services/ip-allowlist'
 import { KillSwitchService } from './services/kill-switch'
 import { startMachineHeartbeat } from './services/machine-heartbeat'
 import { startMetricGeneration } from './services/system-metrics'
 import { VerificationService } from './services/verification/verification-service'
-import { VerifierReachabilityTracker } from './services/verification/verifier-reachability'
 import { InferenceVerifier } from './services/verification/verifier'
+import { VerifierReachabilityTracker } from './services/verification/verifier-reachability'
 import { WebSocketManager } from './services/websocket-manager'
 
 // (Proxy-invariant guard lives in config/proxy-invariants.ts so unit tests
@@ -265,7 +270,13 @@ function createHandler(
 		// We parse the body up-front so both the gate (fingerprint
 		// derivation) and the downstream verification middleware can use
 		// the same parsed body.
-		let parsedBody: { prompt?: string; output?: string; machineId?: string; sessionId?: string; fingerprint?: string } | null = null
+		let parsedBody: {
+			prompt?: string
+			output?: string
+			machineId?: string
+			sessionId?: string
+			fingerprint?: string
+		} | null = null
 		if (method === 'POST' && url.startsWith('/v1/inference/')) {
 			try {
 				parsedBody = req.body ? JSON.parse(req.body) : null
@@ -275,7 +286,10 @@ function createHandler(
 		}
 		const gate = checkInferenceGate(req.method || 'GET', req.url || '/', {
 			body: parsedBody,
-			headers: (req as any).headers as Record<string, string | string[] | undefined>,
+			headers: (req as any).headers as Record<
+				string,
+				string | string[] | undefined
+			>,
 			ip,
 		})
 		if (gate.gated) {
@@ -319,7 +333,14 @@ function createHandler(
 		// /admin/* requires a session-authenticated user. Moved AFTER
 		// checkAuth so it is gated by the session. The handler receives the
 		// authenticated user's role and verifies it before responding.
-		const admin = await handleAdminRoutes(method, url, req, res, service, userRole)
+		const admin = await handleAdminRoutes(
+			method,
+			url,
+			req,
+			res,
+			service,
+			userRole,
+		)
 		if (admin) return
 
 		// ── Inference verification (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §b.4) ──
@@ -351,7 +372,10 @@ function createHandler(
 				// (not the global kill-switch) on UNSAFE.
 				{
 					body: parsedBody,
-					headers: (req as any).headers as Record<string, string | string[] | undefined>,
+					headers: (req as any).headers as Record<
+						string,
+						string | string[] | undefined
+					>,
 					ip,
 				},
 			)
@@ -405,7 +429,10 @@ function createHandler(
 							// this fingerprint.
 							fingerprintSource: {
 								body: parsedBody,
-								headers: (req as any).headers as Record<string, string | string[] | undefined>,
+								headers: (req as any).headers as Record<
+									string,
+									string | string[] | undefined
+								>,
 								ip,
 							},
 						},
@@ -587,22 +614,22 @@ export async function startServer(
 
 	// ─── Lockout State Machine ──────────────────────────────────────
 	const lockoutState = new LockoutStateMachine()
-			console.log('[startup] loading lockout state...')
-		await lockoutState.load()
-		console.log('[startup] lockout state loaded')
+	console.log('[startup] loading lockout state...')
+	await lockoutState.load()
+	console.log('[startup] lockout state loaded')
 	lockoutState.startWatchers()
 	console.log(`[lockout-state] state: ${lockoutState.getLockoutLabel()}`)
 
 	// ─── Secrets Audit Log: load recent entries from DB ─────────────
-			console.log('[startup] loading audit log from DB...')
-		await initAuditLogFromDb()
-		console.log('[startup] audit log loaded')
+	console.log('[startup] loading audit log from DB...')
+	await initAuditLogFromDb()
+	console.log('[startup] audit log loaded')
 
 	const RedisPool = (await loadRedisPool()) as any
 	const redis = new RedisPool({ urls: opts.redisUrls || config.redis.urls })
-			console.log('[startup] connecting to redis...')
-		await redis.connect()
-		console.log('[startup] redis connected')
+	console.log('[startup] connecting to redis...')
+	await redis.connect()
+	console.log('[startup] redis connected')
 
 	initRateLimiter(redis)
 	startDnsRefresh()
@@ -616,16 +643,16 @@ export async function startServer(
 	// Recover the kill-switch audit history from the DB so the dashboard's
 	// audit log isn't empty after a process restart / container rebuild
 	// (the in-memory hot cache starts empty).
-			console.log('[startup] loading audit from DB (service)...')
-		await service.loadAuditFromDb()
-		console.log('[startup] audit loaded (service)')
+	console.log('[startup] loading audit from DB (service)...')
+	await service.loadAuditFromDb()
+	console.log('[startup] audit loaded (service)')
 
 	// Seed a single "System initialized — kill switch running" audit entry if
 	// the DB audit log is empty (fresh container rebuild). Idempotent — only
 	// writes when there are zero rows.
-			console.log('[startup] seeding initial audit entry...')
-		await service.seedInitialAuditEntry()
-		console.log('[startup] audit entry seeded')
+	console.log('[startup] seeding initial audit entry...')
+	await service.seedInitialAuditEntry()
+	console.log('[startup] audit entry seeded')
 
 	const wsManager = new WebSocketManager()
 
@@ -828,9 +855,7 @@ export async function startServer(
 		try {
 			const removed = sweepExpiredBlocks()
 			if (removed > 0) {
-				console.log(
-					`[fingerprint-pause] swept ${removed} expired block(s)`,
-				)
+				console.log(`[fingerprint-pause] swept ${removed} expired block(s)`)
 			}
 		} catch (err) {
 			console.warn('[fingerprint-pause] sweep failed (non-fatal):', err)

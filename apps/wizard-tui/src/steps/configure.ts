@@ -10,7 +10,16 @@
  */
 
 import { hostname } from 'node:os'
-import { cancel, confirm, group, log, note, password, select, text } from '@clack/prompts'
+import {
+	cancel,
+	confirm,
+	group,
+	log,
+	note,
+	password,
+	select,
+	text,
+} from '@clack/prompts'
 import { validateConfig, type WizardConfig } from '../lib/config'
 
 /** Default thresholds (safe defaults from shared-types SecurityThresholds). */
@@ -43,12 +52,15 @@ export async function runConfigure(): Promise<WizardConfig> {
 					placeholder: 'admin@alygn.com',
 					initialValue: 'admin@alygn.com',
 					validate: (v) =>
-						v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? undefined : 'Invalid email',
+						v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+							? undefined
+							: 'Invalid email',
 				}),
 			adminPassword: () =>
 				password({
 					message: 'Admin password (min 16 chars — never echoed)',
-					validate: (v) => (v && v.length >= 16 ? undefined : 'Must be at least 16 characters'),
+					validate: (v) =>
+						v && v.length >= 16 ? undefined : 'Must be at least 16 characters',
 				}),
 			motherUrl: () =>
 				text({
@@ -112,7 +124,8 @@ export async function runConfigure(): Promise<WizardConfig> {
 				}),
 			licenseAccepted: () =>
 				confirm({
-					message: 'I acknowledge the ALYGN license and the kill-switch safety terms (see LICENSE)',
+					message:
+						'I acknowledge the ALYGN license and the kill-switch safety terms (see LICENSE)',
 					initialValue: false,
 				}),
 		},
@@ -150,7 +163,8 @@ export async function runConfigure(): Promise<WizardConfig> {
 					text({
 						message: 'Grid threat threshold (Gbps)?',
 						initialValue: '10',
-						validate: (v) => (v && Number(v) > 0 ? undefined : 'Positive number required'),
+						validate: (v) =>
+							v && Number(v) > 0 ? undefined : 'Positive number required',
 					}),
 				gridThreatWindowUs: () =>
 					text({

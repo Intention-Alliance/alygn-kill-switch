@@ -6,39 +6,39 @@
  * the selector turns a missing provider into the fail-closed review path.
  */
 
-import type { DecisionProvider, ProviderName } from '@align/shared-types';
-import { KeywordProvider } from './providers/keyword';
-import { OllamaProvider, type VerifierLike } from './providers/ollama';
-import { JevProvider } from './providers/jev';
-import { LayaProvider } from './providers/laya';
-import { RemoteProvider } from './providers/remote';
+import type { DecisionProvider, ProviderName } from '@align/shared-types'
+import { JevProvider } from './providers/jev'
+import { KeywordProvider } from './providers/keyword'
+import { LayaProvider } from './providers/laya'
+import { OllamaProvider, type VerifierLike } from './providers/ollama'
+import { RemoteProvider } from './providers/remote'
 
 export class ProviderRegistry {
-  private readonly providers = new Map<string, DecisionProvider>();
+	private readonly providers = new Map<string, DecisionProvider>()
 
-  register(provider: DecisionProvider): void {
-    this.providers.set(provider.name, provider);
-  }
+	register(provider: DecisionProvider): void {
+		this.providers.set(provider.name, provider)
+	}
 
-  get(name: string): DecisionProvider | undefined {
-    return this.providers.get(name);
-  }
+	get(name: string): DecisionProvider | undefined {
+		return this.providers.get(name)
+	}
 
-  has(name: string): boolean {
-    return this.providers.has(name);
-  }
+	has(name: string): boolean {
+		return this.providers.has(name)
+	}
 
-  names(): string[] {
-    return [...this.providers.keys()];
-  }
+	names(): string[] {
+		return [...this.providers.keys()]
+	}
 }
 
 export interface BuildRegistryOpts {
-  threshold: number;
-  verifier?: VerifierLike;
-  jev?: { apiKey: string; baseUrl?: string; model?: string; timeoutMs?: number };
-  laya?: { baseUrl?: string; model?: string; timeoutMs?: number };
-  remote?: { motherUrl: string; apiKey: string; machineId: string };
+	threshold: number
+	verifier?: VerifierLike
+	jev?: { apiKey: string; baseUrl?: string; model?: string; timeoutMs?: number }
+	laya?: { baseUrl?: string; model?: string; timeoutMs?: number }
+	remote?: { motherUrl: string; apiKey: string; machineId: string }
 }
 
 /**
@@ -47,44 +47,44 @@ export interface BuildRegistryOpts {
  *   agent-plane: keyword + ollama + remote (when a mother URL is set)
  */
 export function buildRegistry(opts: BuildRegistryOpts): ProviderRegistry {
-  const registry = new ProviderRegistry();
+	const registry = new ProviderRegistry()
 
-  registry.register(new KeywordProvider(opts.threshold));
+	registry.register(new KeywordProvider(opts.threshold))
 
-  if (opts.verifier) {
-    registry.register(new OllamaProvider(opts.verifier));
-  }
+	if (opts.verifier) {
+		registry.register(new OllamaProvider(opts.verifier))
+	}
 
-  if (opts.jev && opts.jev.apiKey) {
-    registry.register(
-      new JevProvider({
-        apiKey: opts.jev.apiKey,
-        baseUrl: opts.jev.baseUrl,
-        model: opts.jev.model,
-        timeoutMs: opts.jev.timeoutMs,
-      }),
-    );
-  }
+	if (opts.jev && opts.jev.apiKey) {
+		registry.register(
+			new JevProvider({
+				apiKey: opts.jev.apiKey,
+				baseUrl: opts.jev.baseUrl,
+				model: opts.jev.model,
+				timeoutMs: opts.jev.timeoutMs,
+			}),
+		)
+	}
 
-  if (opts.laya && opts.laya.baseUrl) {
-    registry.register(
-      new LayaProvider({
-        baseUrl: opts.laya.baseUrl,
-        model: opts.laya.model,
-        timeoutMs: opts.laya.timeoutMs,
-      }),
-    );
-  }
+	if (opts.laya && opts.laya.baseUrl) {
+		registry.register(
+			new LayaProvider({
+				baseUrl: opts.laya.baseUrl,
+				model: opts.laya.model,
+				timeoutMs: opts.laya.timeoutMs,
+			}),
+		)
+	}
 
-  if (opts.remote && opts.remote.motherUrl) {
-    registry.register(
-      new RemoteProvider({
-        motherUrl: opts.remote.motherUrl,
-        apiKey: opts.remote.apiKey,
-        machineId: opts.remote.machineId,
-      }),
-    );
-  }
+	if (opts.remote && opts.remote.motherUrl) {
+		registry.register(
+			new RemoteProvider({
+				motherUrl: opts.remote.motherUrl,
+				apiKey: opts.remote.apiKey,
+				machineId: opts.remote.machineId,
+			}),
+		)
+	}
 
-  return registry;
+	return registry
 }

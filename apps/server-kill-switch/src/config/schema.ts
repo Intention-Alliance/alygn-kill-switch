@@ -80,14 +80,8 @@ export const TelemetryConfigSchema = z.object({
 // The `localhost` fallback is only safe for local development.
 export const WebAuthnConfigSchema = z.object({
 	rpName: z.string().min(1).default('Alygn Kill Switch'),
-	rpID: z
-		.string()
-		.min(1)
-		.default('localhost'),
-	origin: z
-		.string()
-		.min(1)
-		.default('https://localhost:8443'),
+	rpID: z.string().min(1).default('localhost'),
+	origin: z.string().min(1).default('https://localhost:8443'),
 	challengeTtlMs: z.number().int().min(1000).default(300_000),
 	assertionTokenTtlMs: z.number().int().min(1000).default(120_000),
 })
@@ -110,7 +104,8 @@ export const WebAuthnConfigSchema = z.object({
 // (dignity-verification-v0.1-preview). Until that adapter is created, the
 // verifier runs on the stock `verifierModel` (qwen2.5:0.5b). Once the LoRA
 // adapter exists, set KILL_SWITCH_VERIFIER_MODEL to the target model name.
-export const VerificationConfigSchema = z.object({	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
+export const VerificationConfigSchema = z.object({
+	verifierModel: z.string().min(1).default('qwen2.5:0.5b'),
 	verifierBaseUrl: z.string().url().default('http://localhost:11434'),
 	verifierTimeoutMs: z.number().int().min(1).default(500),
 	verifyEnabled: z.boolean().default(false),

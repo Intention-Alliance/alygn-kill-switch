@@ -9,9 +9,9 @@
  * (default repo-relative: dignity-verifier/eval/eval-results/).
  */
 
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
-import type { EvalReport } from "./eval-types";
+import { readdir, readFile } from 'node:fs/promises'
+import path from 'node:path'
+import type { EvalReport } from './eval-types'
 
 /**
  * Resolve the eval-results directory at call time so DIGNITY_EVAL_DIR env
@@ -19,12 +19,12 @@ import type { EvalReport } from "./eval-types";
  * the repo-relative default when the env var is unset.
  */
 function evalResultsDir(): string {
-  const fromEnv = process.env.DIGNITY_EVAL_DIR;
-  const base =
-    fromEnv && fromEnv.trim().length > 0
-      ? fromEnv.trim()
-      : path.resolve(process.cwd(), "..", "..", "..", "dignity-verifier/eval");
-  return path.join(base, "eval-results");
+	const fromEnv = process.env.DIGNITY_EVAL_DIR
+	const base =
+		fromEnv && fromEnv.trim().length > 0
+			? fromEnv.trim()
+			: path.resolve(process.cwd(), '..', '..', '..', 'dignity-verifier/eval')
+	return path.join(base, 'eval-results')
 }
 
 /**
@@ -33,72 +33,69 @@ function evalResultsDir(): string {
  * the empty shape.
  */
 export function emptyReport(): EvalReport {
-  return {
-    runId: null,
-    accuracy: null,
-    fpr: null,
-    fnr: null,
-    confusionMatrix: null,
-    perCategory: [],
-    latencyP95Ms: null,
-    generatedAt: null,
-  };
+	return {
+		runId: null,
+		accuracy: null,
+		fpr: null,
+		fnr: null,
+		confusionMatrix: null,
+		perCategory: [],
+		latencyP95Ms: null,
+		generatedAt: null,
+	}
 }
 
 interface RawReport {
-  runId?: string | null;
-  accuracy?: number | null;
-  fpr?: number | null;
-  fnr?: number | null;
-  confusionMatrix?: EvalReport["confusionMatrix"];
-  perCategory?: EvalReport["perCategory"];
-  latencyP95Ms?: number | null;
-  generatedAt?: string | null;
+	runId?: string | null
+	accuracy?: number | null
+	fpr?: number | null
+	fnr?: number | null
+	confusionMatrix?: EvalReport['confusionMatrix']
+	perCategory?: EvalReport['perCategory']
+	latencyP95Ms?: number | null
+	generatedAt?: string | null
 }
 
 /**
  * Read the newest eval report.json. Returns null when no report exists.
  */
 export async function readNewestEvalReport(): Promise<EvalReport | null> {
-  const resultsDir = evalResultsDir();
-  let entries;
-  try {
-    entries = await readdir(resultsDir, { withFileTypes: true });
-  } catch {
-    return null;
-  }
+	const resultsDir = evalResultsDir()
+	let entries
+	try {
+		entries = await readdir(resultsDir, { withFileTypes: true })
+	} catch {
+		return null
+	}
 
-  const runDirs = entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort()
-    .reverse();
+	const runDirs = entries
+		.filter((entry) => entry.isDirectory())
+		.map((entry) => entry.name)
+		.sort()
+		.reverse()
 
-  for (const runDir of runDirs) {
-    const reportPath = path.join(resultsDir, runDir, "report.json");
-    try {
-      const text = await readFile(reportPath, "utf-8");
-      const raw = JSON.parse(text) as RawReport;
-      return mapReport(raw);
-    } catch {
-      // Skip malformed / unreadable reports and try the next run dir.
-      continue;
-    }
-  }
+	for (const runDir of runDirs) {
+		const reportPath = path.join(resultsDir, runDir, 'report.json')
+		try {
+			const text = await readFile(reportPath, 'utf-8')
+			const raw = JSON.parse(text) as RawReport
+			return mapReport(raw)
+		} catch {}
+	}
 
-  return null;
+	return null
 }
 
 /** Map a raw report.json to the dashboard EvalReport shape. */
 function mapReport(raw: RawReport): EvalReport {
-  return {
-    runId: raw.runId ?? null,
-    accuracy: raw.accuracy ?? null,
-    fpr: raw.fpr ?? null,
-    fnr: raw.fnr ?? null,
-    confusionMatrix: raw.confusionMatrix ?? null,
-    perCategory: raw.perCategory ?? [],
-    latencyP95Ms: raw.latencyP95Ms ?? null,
-    generatedAt: raw.generatedAt ?? null,
-  };
+	return {
+		runId: raw.runId ?? null,
+		accuracy: raw.accuracy ?? null,
+		fpr: raw.fpr ?? null,
+		fnr: raw.fnr ?? null,
+		confusionMatrix: raw.confusionMatrix ?? null,
+		perCategory: raw.perCategory ?? [],
+		latencyP95Ms: raw.latencyP95Ms ?? null,
+		generatedAt: raw.generatedAt ?? null,
+	}
 }

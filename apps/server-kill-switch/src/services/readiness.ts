@@ -146,7 +146,8 @@ export function evaluateReadiness(
 			code: 'gpu',
 			expected: `>= ${requirements.minGpus} GPU(s)`,
 			observed: `${fingerprint.gpus.length}`,
-			remediation: 'Attach the required accelerator, or agree a CPU-only profile with Alygn.',
+			remediation:
+				'Attach the required accelerator, or agree a CPU-only profile with Alygn.',
 		})
 	}
 

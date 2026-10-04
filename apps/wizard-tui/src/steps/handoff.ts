@@ -37,6 +37,8 @@ export function runHandoff(config: WizardConfig): void {
 		'Next steps — dashboard handoff',
 	)
 
-	log.message(`Rollback: run \`wizard uninstall\` (add --purge to also delete .env and data).`)
+	log.message(
+		`Rollback: run \`wizard uninstall\` (add --purge to also delete .env and data).`,
+	)
 	log.success('Installation complete. Welcome to the grid. 🎯')
 }

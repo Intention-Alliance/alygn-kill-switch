@@ -9,17 +9,17 @@
  * training run or framework milestone. The page picks it up automatically.
  */
 
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 
 export interface ChangelogEntry {
-  version: string;
-  date: string;
-  title: string;
-  description: string;
+	version: string
+	date: string
+	title: string
+	description: string
 }
 
-const CHANGELOG_PATH = join(process.cwd(), "docs", "changelog.json");
+const CHANGELOG_PATH = join(process.cwd(), 'docs', 'changelog.json')
 
 /**
  * Load changelog entries from `docs/changelog.json`, newest first.
@@ -28,24 +28,24 @@ const CHANGELOG_PATH = join(process.cwd(), "docs", "changelog.json");
  * degrades gracefully instead of crashing.
  */
 export async function getChangelog(): Promise<ChangelogEntry[]> {
-  try {
-    const raw = await readFile(CHANGELOG_PATH, "utf8");
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    const entries = parsed.filter(isChangelogEntry);
-    return entries.sort((a, b) => b.date.localeCompare(a.date));
-  } catch {
-    return [];
-  }
+	try {
+		const raw = await readFile(CHANGELOG_PATH, 'utf8')
+		const parsed: unknown = JSON.parse(raw)
+		if (!Array.isArray(parsed)) return []
+		const entries = parsed.filter(isChangelogEntry)
+		return entries.sort((a, b) => b.date.localeCompare(a.date))
+	} catch {
+		return []
+	}
 }
 
 function isChangelogEntry(value: unknown): value is ChangelogEntry {
-  if (typeof value !== "object" || value === null) return false;
-  const entry = value as Record<string, unknown>;
-  return (
-    typeof entry.version === "string" &&
-    typeof entry.date === "string" &&
-    typeof entry.title === "string" &&
-    typeof entry.description === "string"
-  );
+	if (typeof value !== 'object' || value === null) return false
+	const entry = value as Record<string, unknown>
+	return (
+		typeof entry.version === 'string' &&
+		typeof entry.date === 'string' &&
+		typeof entry.title === 'string' &&
+		typeof entry.description === 'string'
+	)
 }
