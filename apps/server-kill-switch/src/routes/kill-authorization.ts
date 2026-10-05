@@ -18,7 +18,8 @@
  */
 
 import { db } from '../db/index'
-import { killSwitchAuditLog, settings as settingsTable } from '../db/schema'
+import { settings as settingsTable } from '../db/schema'
+import { appendAuditEntry } from '../services/audit-chain'
 import {
 	approve,
 	expireStaleRequests,
@@ -97,21 +98,18 @@ async function writeAudit(entry: {
 	severity?: string
 	metadata?: string
 }): Promise<void> {
-	await db
-		.insert(killSwitchAuditLog)
-		.values({
-			id: crypto.randomUUID(),
-			timestamp: new Date(),
-			userId: entry.userId,
-			reason: entry.reason,
-			previousState: entry.previousState,
-			newState: entry.newState,
-			traceId: crypto.randomUUID(),
-			machineId: entry.machineId ?? null,
-			severity: entry.severity ?? 'info',
-			metadata: entry.metadata ?? null,
-		})
-		.run()
+	// Route through the ADR-140 chain-aware append so prev_hash/self_hash/
+	// server_hmac/plain_explanation are computed and the entry links into the chain.
+	await appendAuditEntry({
+		userId: entry.userId,
+		reason: entry.reason,
+		previousState: entry.previousState,
+		newState: entry.newState,
+		machineId: entry.machineId ?? null,
+		severity: entry.severity ?? 'info',
+		metadata: entry.metadata ?? null,
+		plainExplanation: `Kill authorization event: ${entry.reason} (${entry.previousState} → ${entry.newState}) by ${entry.userId}.`,
+	})
 }
 
 // ─── Executor (real side effects) ───────────────────────────────────

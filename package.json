@@ -12,6 +12,7 @@
 		"format-and-lint:fix": "biome check . --write",
 		"test": "bun --filter '*' test",
 		"test:challenges": "bun --filter '*' test:challenges",
+		"proof": "bun tests/proof-harness/run.ts",
 		"db:migrate": "cd apps/server-kill-switch && bunx drizzle-kit migrate",
 		"docker:up": "docker-compose up -d",
 		"docker:down": "docker-compose down"
