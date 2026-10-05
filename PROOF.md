@@ -69,7 +69,7 @@ restore result are recorded in `proof/latest.json` as `redis_pre_run` and
 `redis_restore`.
 
 Exit code is `0` only when checks 1–3 all pass. **The expected, correct result
-today is exit `1` with check 1 failing** (see "Check 1 finding" below).
+today is exit `0` with checks 1–3 all passing** (see "Check 1 finding" below).
 
 ## Environment caveats
 
@@ -101,22 +101,22 @@ today is exit `1` with check 1 failing** (see "Check 1 finding" below).
 
 | # | Check | Result |
 |---|-------|--------|
-| 1 | Append / audit-chain integrity (kill-authorization path) | **FAIL** — see finding |
+| 1 | Append / audit-chain integrity (kill-authorization path) | **PASS** — fixed in this branch |
 | 1c | Control: transition-path chain (`POST /v1/kill-switch/chaos`) recompute | PASS |
 | 2 | Mutation rejected (routes + direct SQL) | PASS |
 | 3 | Stop echoed (chaos STOPPED + real `EnforcementConsumer`, fail-closed) | PASS |
-| — | `POST /v1/audit/verify` (assertion `audit:verify`) | 409 `self_hash_mismatch` |
+| — | `POST /v1/audit/verify` (assertion `audit:verify`) | 200 `{ok:true}` |
 
-## Check 1 finding (the real product bug)
+## Check 1 finding (the real product bug — FIXED in this branch)
 
+**On `develop` @ `b5da409` the harness failed check 1.**
 `apps/server-kill-switch/src/routes/kill-authorization.ts` `writeAudit()`
-inserts `kill_switch_audit_log` rows via drizzle `.insert().values()` **without**
-`prevHash`, `selfHash`, `serverHmac`, or `plainExplanation`. The schema defaults
-(`self_hash=''`, `prev_hash='GENESIS'`, `server_hmac=''`, `plain_explanation=''`)
-are applied, so **every kill-authorization audit row has `self_hash=''` and
-`prev_hash='GENESIS'`**, breaking the ADR-140 hash chain.
-
-Verified: `POST /v1/audit/verify` returns
+inserted `kill_switch_audit_log` rows via drizzle `.insert().values()`
+**without** `prevHash`, `selfHash`, `serverHmac`, or `plainExplanation`. The
+schema defaults (`self_hash=''`, `prev_hash='GENESIS'`, `server_hmac=''`,
+`plain_explanation=''`) were applied, so **every kill-authorization audit row
+had `self_hash=''` and `prev_hash='GENESIS'`**, breaking the ADR-140 hash chain.
+Verified on `develop`: `POST /v1/audit/verify` returned
 `409 {"ok":false,"reason":"self_hash_mismatch"}`.
 
 The harness recomputes each row's `self_hash` independently (a re-implementation
@@ -125,6 +125,17 @@ and fails on the first mismatch, naming the file above. The transition path
 (`KillSwitchService.transitionTo` → `appendAuditEntry`) is recorded as a
 **passing control**: its entry recomputes correctly, proving the recompute
 algorithm is correct and the failure is specific to `writeAudit()`.
+
+**Fix (this branch, `feat/proof-harness`):** `writeAudit()` now routes through
+`appendAuditEntry()` from `../services/audit-chain` — the same chain-aware
+function the transition path uses. `appendAuditEntry()` computes `prevHash`
+(chaining to the prior `self_hash`), `selfHash`, and `serverHmac`, and inserts
+under `BEGIN IMMEDIATE`; the route calls `writeAudit()` outside any transaction,
+so the write lock is safe. The function's external call signature is unchanged,
+so no caller changed. The now-unused `killSwitchAuditLog` import was removed
+(`settings as settingsTable` retained). With the fix, the harness passes
+(exit `0`, checks 1–3 all PASS) and `POST /v1/audit/verify` returns
+`200 {"ok":true,"brokenAt":null}`.
 
 ## SKIPs (unimplemented claims — never faked)
 
@@ -141,6 +152,12 @@ algorithm is correct and the failure is specific to `writeAudit()`.
 
 ## Honest status
 
-Check 1 fails by design: it is the harness correctly detecting a real defect in
-the product's kill-authorization audit write. No product code was patched to
-make it pass.
+On `develop` @ `b5da409` the harness failed check 1: it correctly detected a
+real defect in the product's kill-authorization audit write (`writeAudit()`
+bypassed the ADR-140 chain). This branch (`feat/proof-harness`) fixes
+`writeAudit()` to route through `appendAuditEntry()`, so the harness now passes
+(exit `0`, checks 1–3 all PASS, `POST /v1/audit/verify` → `200 {ok:true}`).
+The fix is minimal and scoped to the audit write path; no other behavior was
+changed. The three disclaimers above (no SIL, no hardware inhibit, no
+deployment authorization) still hold — a passing run remains evidence about
+specific code paths, not a deployment gate.
