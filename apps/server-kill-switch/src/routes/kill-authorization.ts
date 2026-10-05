@@ -98,12 +98,8 @@ async function writeAudit(entry: {
 	severity?: string
 	metadata?: string
 }): Promise<void> {
-	// Route through the ADR-140 chain-aware append (the same path the
-	// transition service uses) so prev_hash/self_hash/server_hmac/
-	// plain_explanation are computed and the entry links into the
-	// tamper-evident chain. A raw db.insert here applied the schema defaults
-	// (self_hash='', prev_hash='GENESIS') and broke the chain
-	// (POST /v1/audit/verify → 409 self_hash_mismatch).
+	// Route through the ADR-140 chain-aware append so prev_hash/self_hash/
+	// server_hmac/plain_explanation are computed and the entry links into the chain.
 	await appendAuditEntry({
 		userId: entry.userId,
 		reason: entry.reason,

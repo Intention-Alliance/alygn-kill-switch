@@ -1,30 +1,9 @@
 /**
  * Alygn Kill-Switch — black-box proof harness.
  *
- * Boots the REAL server (apps/server-kill-switch/src/index.ts) against a
- * throwaway HOME + DATA_DIR + the local Redis, then runs three black-box
- * checks over HTTP and writes proof/latest.json.
- *
- *   Check 1  Append        — perform a real kill-authorization action, read
- *                            the audit row back, recompute self_hash
- *                            independently and FAIL on mismatch, naming the
- *                            file that writes the broken row. Also records
- *                            the transition-path chain (POST
- *                            /v1/kill-switch/chaos) as a PASSING control.
- *   Check 2  Mutation      — UPDATE/DELETE via public routes + direct SQL on
- *                            the SQLite file; PASS only if rejected/
- *                            ineffective AND a second read returns the same
- *                            hash.
- *   Check 3  Stop echoed   — reset state to RUNNING, POST
- *                            /v1/kill-switch/chaos {state:STOPPED} with an
- *                            assertion token; assert status leaves RUNNING;
- *                            run the REAL agent-plane EnforcementConsumer
- *                            against this server and assert it polls /
- *                            transitions / isPaused() fail-closed.
- *
- * SKIPPED (never faked): Bitcoin/Taproot anchor external publish,
- * BlueField-3, 3.4 ms hardware kill, Dignity Test score, agent-local
- * trace/hash echo (does not exist in apps/agent-plane/src/state.ts).
+ * Boots the REAL server against a throwaway HOME + DATA_DIR + local Redis,
+ * runs three black-box checks over HTTP, and writes proof/latest.json.
+ * Run: bun tests/proof-harness/run.ts
  *
  * Exit 0 only when checks 1–3 pass. The expected, correct result today is
  * exit 1 with check 1 failing on
@@ -60,8 +39,6 @@ import {
 	WORKTREE,
 } from './lib'
 
-// ─── Result model ──────────────────────────────────────────────────
-
 type CheckStatus = 'pass' | 'fail' | 'skip'
 interface CheckResult {
 	name: string
@@ -84,8 +61,6 @@ function skip(claim: string, reason: string, file?: string) {
 	console.log(`[SKIP] ${claim} — ${reason}${file ? ` (${file})` : ''}`)
 }
 
-// ─── Main ──────────────────────────────────────────────────────────
-
 async function main() {
 	const root = `/tmp/proof-harness-${process.pid}`
 	rmSync(root, { recursive: true, force: true })
@@ -96,9 +71,6 @@ async function main() {
 	const dbPath = join(dataDir, 'kill-switch.sqlite')
 	const secrets = makeSecrets()
 
-	// PREFLIGHT: the harness needs a free TCP port for the server under test.
-	// If PROOF_PORT (default 3999) is already bound, emit a legible SKIP
-	// (recorded in proof/latest.json, exit 2) instead of a fatal boot failure.
 	if (await portInUse(PORT)) {
 		const reason =
 			`Port ${PORT} is already in use — the harness needs a free port for ` +
@@ -131,9 +103,6 @@ async function main() {
 	}
 	console.log(`[preflight] port ${PORT} free`)
 
-	// PREFLIGHT: the harness needs the local Redis container. If it is
-	// unreachable, abort with a legible SKIP (recorded in proof/latest.json)
-	// instead of a confusing fatal boot failure.
 	const redis = redisReachable()
 	if (!redis.ok) {
 		const reason =
@@ -167,24 +136,21 @@ async function main() {
 	}
 	console.log(`[preflight] redis reachable: ${redis.output}`)
 
-	// A1: apply the repo's own drizzle migrations BEFORE boot so the schema
-	// matches the code (otherwise kill_authorization_request lacks `action`
-	// and POST /v1/kill-authorization/requests 500s).
+	// Apply the repo's own migrations BEFORE boot: the server's initDatabase()
+	// auto-creates a stale schema (kill_authorization_request lacks `action`).
 	const migrations = applyMigrations(dbPath)
 	console.log(
 		`[migrate] applied ${migrations.statements} statements from ${migrations.files.length} files` +
 			(migrations.errors.length ? ` (${migrations.errors.length} errors)` : ''),
 	)
 
-	// A3: capture the pre-run value of the SHARED `chaos:kill-switch` key so
-	// the finally block can restore it — other local consumers read this key,
-	// and leaving it STOPPED would silently pause them.
+	// Capture the pre-run value of the SHARED `chaos:kill-switch` key so the
+	// finally block can restore it — other local consumers read this key.
 	const chaosBefore = getChaosState()
 	console.log(
 		`[redis] pre-run chaos:kill-switch = ${chaosBefore.value === null ? '<absent>' : chaosBefore.value}`,
 	)
 
-	// A3: reset persisted state so the kill switch starts RUNNING.
 	const redisReset = resetChaosState()
 	console.log(`[redis] reset chaos state: ${JSON.stringify(redisReset)}`)
 
@@ -193,9 +159,8 @@ async function main() {
 		DATA_DIR: dataDir,
 		KILL_SWITCH_PORT: String(PORT),
 		KILL_SWITCH_ENV: 'development',
-		// A3: REDIS_URL is MANDATORY (validate-env.ts refuses to boot without
-		// it). It overrides REDIS_URLS in config/index.ts, so the server runs
-		// in standalone mode against node-1 only — see PROOF.md caveat.
+		// REDIS_URL is mandatory and overrides REDIS_URLS (config/index.ts),
+		// so the server runs standalone against node-1 only — see PROOF.md.
 		REDIS_URL: `redis://127.0.0.1:${REDIS_HOST_PORT}`,
 		REDIS_URLS:
 			`redis://127.0.0.1:${REDIS_HOST_PORT},redis://127.0.0.1:6381,redis://127.0.0.1:6382`,
@@ -220,13 +185,9 @@ async function main() {
 		started_at: startedAt,
 		harness: 'tests/proof-harness/run.ts',
 		server_port: PORT,
-		// The exact standard check 2 tests against — emitted ALWAYS (pass or
-		// fail) so a reader sees the criterion that was actually exercised.
 		adversary_sentence:
 			'tamper-evident against outsiders only, not against the key holder',
-		// Trace id observed on the kill-authorization audit row from check 1
-		// (the real UUID written by routes/kill-authorization.ts writeAudit(),
-		// NOT the transition path's 'noop'). Filled in after check 1 runs.
+		// Real UUID from the kill-authorization audit row (not the transition path's 'noop').
 		trace_id: null,
 		migrations: {
 			files: migrations.files,
@@ -256,22 +217,18 @@ async function main() {
 		if (!adminId) throw new Error('admin user never seeded')
 		console.log(`[boot] admin user id = ${adminId}`)
 
-		// ── Check 1: Append (kill-authorization path) ───────────────
 		const check1 = await checkAppend(secrets, dbPath)
 		record(check1)
 		proof.trace_id =
 			(check1.evidence?.kill_auth_entry as Record<string, unknown> | undefined)
 				?.trace_id ?? null
 
-		// ── Check 2: Mutation rejected ──────────────────────────────
 		const check2 = await checkMutation(secrets, dbPath)
 		record(check2)
 
-		// ── Check 3: Stop echoed ────────────────────────────────────
 		const check3 = await checkStopEchoed(secrets, adminId)
 		record(check3)
 
-		// ── Audit verify (assertion action audit:verify) ────────────
 		const verifyToken = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
 			sub: adminId,
 			cred: 'proof-harness-cred',
@@ -284,9 +241,8 @@ async function main() {
 		proof.audit_verify = {
 			status: verifyRes.status,
 			body: verifyRes.json,
-			// verifyChain() returns the FIRST mismatch it encounters, which may be
-			// a DIFFERENT broken row than the kill-authorization row named by
-			// check 1. Both are writeAudit() rows (self_hash='' / prev_hash='GENESIS').
+			// verifyChain() returns the FIRST mismatch, which may be a different
+			// broken row than the one check 1 names; both are writeAudit() rows.
 			note:
 				'audit_verify.brokenAt is the first mismatch returned by verifyChain() and may be a DIFFERENT broken row than the kill-authorization row named by check 1; both are writeAudit() rows.',
 		}
@@ -294,7 +250,6 @@ async function main() {
 			`[audit/verify] status=${verifyRes.status} body=${JSON.stringify(verifyRes.json)}`,
 		)
 
-		// ── Skips (unimplemented claims — never faked) ──────────────
 		skip(
 			'Bitcoin / Taproot external anchor publish',
 			'anchorChainHead() stores a signed payload locally; external publish is an explicit TODO stub',
@@ -336,9 +291,7 @@ async function main() {
 		server.stop()
 		await Bun.sleep(300)
 		rmSync(root, { recursive: true, force: true })
-		// Restore the SHARED `chaos:kill-switch` key to its pre-run value (or
-		// delete it if it was absent) so other local consumers are not left
-		// paused by the harness's STOPPED transition.
+		// Restore the SHARED key so other local consumers are not left paused.
 		const restored = restoreChaosState(chaosBefore.value)
 		proof.redis_restore = {
 			pre_run_value: chaosBefore.value,
@@ -350,7 +303,6 @@ async function main() {
 		)
 	}
 
-	// ── Write proof/latest.json ─────────────────────────────────────
 	const outDir = join(WORKTREE, 'proof')
 	mkdirSync(outDir, { recursive: true })
 	writeFileSync(
@@ -361,16 +313,12 @@ async function main() {
 	process.exit(exitCode)
 }
 
-// ─── Check 1: Append ───────────────────────────────────────────────
-
 async function checkAppend(
 	secrets: ReturnType<typeof makeSecrets>,
 	dbPath: string,
 ): Promise<CheckResult> {
 	const evidence: Record<string, unknown> = {}
 	try {
-		// (a) Real kill-authorization action (minted WebAuthn assertion token,
-		//     action kill:fleet). Single mode executes immediately.
 		const token = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
 			sub: 'proof-harness-user',
 			cred: 'proof-harness-cred',
@@ -390,7 +338,6 @@ async function checkAppend(
 			}
 		}
 
-		// (b) Read the chain back and locate the kill-authorization audit row.
 		const rows = readAuditRows(dbPath)
 		evidence.chain_length = rows.length
 		const killRow = rows.find((r) =>
@@ -416,17 +363,14 @@ async function checkAppend(
 			plain_explanation: entry.plainExplanation,
 		}
 
-		// (c) Control: the transition path (POST /v1/kill-switch/chaos) writes
-		//     through appendAuditEntry, so its row MUST recompute correctly.
-		//     This proves the recompute algorithm is right and isolates the
-		//     failure to the kill-authorization write path.
+		// Control: the transition path writes through appendAuditEntry, so its
+		// row MUST recompute — this isolates the failure to the kill-auth path.
 		const chaosToken = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
 			sub: 'proof-harness-user',
 			cred: 'proof-harness-cred',
 			action: 'kill:fleet',
 		})
-		// The kill-authorization action above already moved RUNNING → STOPPED,
-		// so the control uses the valid reverse transition STOPPED → RUNNING.
+		// The action above moved RUNNING → STOPPED, so use the reverse transition.
 		const chaos = await http('POST', '/v1/kill-switch/chaos', {
 			headers: { authorization: `Assertion ${chaosToken}` },
 			body: { state: 'RUNNING', reason: 'proof-harness control' },
@@ -462,9 +406,8 @@ async function checkAppend(
 			}
 		}
 
-		// (d) The kill-authorization row must fail the recompute. This is the
-		//     CORRECT outcome: writeAudit() inserts without prevHash/selfHash/
-		//     serverHmac/plainExplanation, so the schema defaults apply.
+		// The kill-auth row must fail the recompute — the CORRECT outcome:
+		// writeAudit() inserts without prevHash/selfHash, so defaults apply.
 		if (recomputed !== entry.selfHash) {
 			return {
 				name: 'check1_append',
@@ -494,8 +437,6 @@ async function checkAppend(
 	}
 }
 
-// ─── Check 2: Mutation rejected ────────────────────────────────────
-
 async function checkMutation(
 	secrets: ReturnType<typeof makeSecrets>,
 	dbPath: string,
@@ -515,8 +456,6 @@ async function checkMutation(
 		evidence.target_id = target.id
 		evidence.before_hash = beforeHash
 
-		// (a) Public routes: try UPDATE/DELETE through every route that could
-		//     plausibly touch the audit log. None should mutate it.
 		const token = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
 			sub: 'proof-harness-user',
 			cred: 'proof-harness-cred',
@@ -573,11 +512,10 @@ async function checkMutation(
 		}
 		evidence.route_attempts = routeResults
 
-		// (b) Direct SQL on the SQLite file (the "operator DB role").
+		// Direct SQL as the "operator DB role".
 		const sqlResult = directSqlMutation(dbPath, target.id)
 		evidence.direct_sql = sqlResult
 
-		// (c) Second read — the hash must be unchanged.
 		const after = readAuditRows(dbPath)
 		const afterEntry = after.find((r) => String(r.id) === target.id)
 		const afterHash = afterEntry ? rowToEntry(afterEntry).selfHash : null
@@ -656,18 +594,15 @@ function directSqlMutation(
 	return { updateSucceeded, deleteSucceeded, updateError, deleteError }
 }
 
-// ─── Check 3: Stop echoed ──────────────────────────────────────────
-
 async function checkStopEchoed(
 	secrets: ReturnType<typeof makeSecrets>,
 	adminId: string,
 ): Promise<CheckResult> {
 	const evidence: Record<string, unknown> = {}
 	try {
-		// A3: reset persisted state so the kill switch starts RUNNING.
 		evidence.redis_reset = resetChaosState()
 
-		// A5: GET /v1/kill-switch/status REQUIRES auth — send x-api-key.
+		// GET /v1/kill-switch/status requires auth (x-api-key).
 		const before = await http('GET', '/v1/kill-switch/status', {
 			headers: { 'x-api-key': secrets.KILL_SWITCH_API_KEY },
 		})
@@ -681,7 +616,6 @@ async function checkStopEchoed(
 			}
 		}
 
-		// POST /v1/kill-switch/chaos {state:STOPPED} with an assertion token.
 		const token = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
 			sub: adminId,
 			cred: 'proof-harness-cred',
@@ -763,8 +697,6 @@ async function checkStopEchoed(
 	}
 }
 
-// ─── Misc ──────────────────────────────────────────────────────────
-
 async function gitSha(): Promise<string> {
 	try {
 		const p = Bun.spawnSync(['git', 'rev-parse', 'HEAD'], { cwd: WORKTREE })
@@ -774,11 +706,6 @@ async function gitSha(): Promise<string> {
 	}
 }
 
-/**
- * PREFLIGHT: probe the local Redis container the harness depends on. Returns
- * ok=false (with a legible reason) when the container is missing or not
- * answering, so the harness can SKIP instead of failing a confusing boot.
- */
 function redisReachable(): { ok: boolean; output: string } {
 	try {
 		const p = Bun.spawnSync([

@@ -1,10 +1,10 @@
 /**
  * Proof-harness helpers — black-box HTTP + independent audit-chain recompute.
  *
- * Everything here is deliberately independent of the server's own modules
- * (except the pure canonical-JSON/hash algorithm, which is re-implemented
- * exactly per apps/server-kill-switch/src/services/audit-chain.ts so the
- * recompute is a genuine second opinion, not a call into the code under test).
+ * Deliberately independent of the server's own modules, except the pure
+ * canonical-JSON/hash algorithm, which is re-implemented exactly per
+ * apps/server-kill-switch/src/services/audit-chain.ts so the recompute is a
+ * genuine second opinion, not a call into the code under test.
  */
 
 import { createHash, createHmac, randomBytes } from 'node:crypto'
@@ -20,21 +20,15 @@ import { join } from 'node:path'
 import { Database } from 'bun:sqlite'
 
 export const WORKTREE = process.cwd()
-// Port the server under test binds. Override with PROOF_PORT when 3999 is
-// occupied (the harness emits a legible SKIP rather than a fatal boot).
 export const PORT = Number(process.env.PROOF_PORT ?? 3999)
 export const BASE = `http://127.0.0.1:${PORT}`
 
-// ─── Redis dependency (overridable) ────────────────────────────────
-// The harness talks to the local Redis cluster node via `docker exec`.
 // Defaults match docker-compose.yml: container `align-redis-node-1`,
 // redis-cli port 6379 inside the container, host port 6380 for the server.
 export const REDIS_CONTAINER =
 	process.env.PROOF_REDIS_CONTAINER ?? 'align-redis-node-1'
 export const REDIS_PORT = process.env.PROOF_REDIS_PORT ?? '6379'
 export const REDIS_HOST_PORT = process.env.PROOF_REDIS_HOST_PORT ?? '6380'
-
-// ─── Secrets / HOME ────────────────────────────────────────────────
 
 export function genSecret(): string {
 	return randomBytes(32).toString('hex')
@@ -64,10 +58,8 @@ export function makeSecrets(): HarnessSecrets {
 	}
 }
 
-/**
- * SecretsLoader reads a FIXED $HOME/.openclaw/secrets.json and requires
- * OLLAMA_TAILSCALE_AUTH_TOKEN. We give the server its own throwaway HOME.
- */
+// SecretsLoader reads a FIXED $HOME/.openclaw/secrets.json and requires
+// OLLAMA_TAILSCALE_AUTH_TOKEN, so the server gets its own throwaway HOME.
 export function setupHome(root: string): string {
 	const home = join(root, 'home')
 	const oc = join(home, '.openclaw')
@@ -81,18 +73,11 @@ export function setupHome(root: string): string {
 	return home
 }
 
-// ─── Drizzle migrations (A1) ───────────────────────────────────────
-
-/**
- * Apply the repo's OWN drizzle migrations to the temp SQLite file BEFORE
- * boot. The server's `initDatabase()` auto-creates a stale subset of tables
- * (e.g. `kill_authorization_request` without the `action` column), which
- * makes `POST /v1/kill-authorization/requests` 500. Applying the real
- * migrations first makes the schema match the code.
- *
- * Statements are split on `--> statement-breakpoint`; `already exists` /
- * `duplicate column name` errors are tolerated (idempotent re-application).
- */
+// Apply the repo's OWN migrations before boot: the server's initDatabase()
+// auto-creates a stale subset of tables (e.g. kill_authorization_request
+// without `action`), which 500s POST /v1/kill-authorization/requests.
+// Statements split on `--> statement-breakpoint`; `already exists` /
+// `duplicate column name` errors are tolerated (idempotent re-application).
 export function applyMigrations(dbPath: string): {
 	files: string[]
 	statements: number
@@ -128,11 +113,8 @@ export function applyMigrations(dbPath: string): {
 	return { files, statements, errors }
 }
 
-/**
- * Run a redis-cli command against the harness's Redis container. `-c` follows
- * MOVED redirects so the logical key is read/written on whichever cluster node
- * owns its slot (`chaos:kill-switch` hashes to node-2).
- */
+// `-c` follows MOVED redirects so the logical key is read/written on
+// whichever cluster node owns its slot (`chaos:kill-switch` hashes to node-2).
 function redisCli(args: string[]): { ok: boolean; output: string } {
 	try {
 		const p = Bun.spawnSync([
@@ -154,21 +136,14 @@ function redisCli(args: string[]): { ok: boolean; output: string } {
 	}
 }
 
-/**
- * Reset the persisted kill-switch state so the harness starts from RUNNING.
- * The state lives in Redis (`chaos:kill-switch`, ADR-117). We delete it on
- * the cluster node the server connects to (node-1, standalone mode).
- */
+// State lives in Redis (`chaos:kill-switch`, ADR-117); delete it on the
+// cluster node the server connects to (node-1, standalone mode).
 export function resetChaosState(): { ok: boolean; output: string } {
 	return redisCli(['DEL', 'chaos:kill-switch'])
 }
 
-/**
- * Capture the pre-run value of `chaos:kill-switch` so the harness can restore
- * it afterwards — the shared Redis is used by other local consumers, and
- * leaving it STOPPED would silently pause them. `value` is null when the key
- * was absent.
- */
+// Capture the pre-run value so the harness can restore it afterwards — the
+// shared Redis is used by other local consumers. `value` is null when absent.
 export function getChaosState(): {
 	ok: boolean
 	value: string | null
@@ -183,10 +158,7 @@ export function getChaosState(): {
 	}
 }
 
-/**
- * Restore `chaos:kill-switch` to its pre-run value. When the key was absent
- * before the run, delete it again so no state is left behind.
- */
+// When the key was absent before the run, delete it again so no state is left.
 export function restoreChaosState(value: string | null): {
 	ok: boolean
 	output: string
@@ -195,8 +167,6 @@ export function restoreChaosState(value: string | null): {
 		? redisCli(['DEL', 'chaos:kill-switch'])
 		: redisCli(['SET', 'chaos:kill-switch', value])
 }
-
-// ─── HTTP ──────────────────────────────────────────────────────────
 
 export interface HttpResult {
 	status: number
@@ -239,8 +209,6 @@ export async function http(
 	}
 }
 
-// ─── Assertion token minting (mirrors services/webauthn.ts) ─────────
-
 export function mintAssertionToken(
 	secret: string,
 	opts: { sub: string; cred: string; action: string; ttlMs?: number },
@@ -256,8 +224,6 @@ export function mintAssertionToken(
 	const sig = createHmac('sha256', secret).update(body).digest('base64url')
 	return `${body}.${sig}`
 }
-
-// ─── Audit-chain recompute (independent re-implementation) ──────────
 
 export interface ChainEntry {
 	id: string
@@ -276,7 +242,8 @@ export interface ChainEntry {
 	plainExplanation: string
 }
 
-/** Exact copy of canonicalEntryJson() from services/audit-chain.ts. */
+// Exact copy of canonicalEntryJson() from services/audit-chain.ts.
+// Timestamps are truncated to epoch SECONDS — the hash covers seconds only.
 export function canonicalEntryJson(e: ChainEntry): string {
 	const ts =
 		e.timestamp instanceof Date
@@ -299,7 +266,7 @@ export function canonicalEntryJson(e: ChainEntry): string {
 	})
 }
 
-/** Exact copy of computeSelfHash() from services/audit-chain.ts. */
+// Exact copy of computeSelfHash() from services/audit-chain.ts.
 export function computeSelfHash(e: ChainEntry): string {
 	return createHash('sha256')
 		.update(canonicalEntryJson(e) + e.prevHash, 'utf8')
@@ -349,8 +316,6 @@ export function readAdminUserId(dbPath: string): string | null {
 	}
 }
 
-// ─── Server lifecycle ──────────────────────────────────────────────
-
 export interface ServerHandle {
 	proc: ReturnType<typeof Bun.spawn>
 	logs: string[]
@@ -391,11 +356,8 @@ export function spawnServer(env: Record<string, string>): ServerHandle {
 	}
 }
 
-/**
- * Probe whether a TCP port is already bound on 127.0.0.1. Used to emit a
- * legible SKIP (exit 2) instead of a fatal boot failure when PROOF_PORT is
- * occupied.
- */
+// Probe whether a TCP port is already bound on 127.0.0.1, so the harness can
+// emit a legible SKIP (exit 2) instead of a fatal boot failure.
 export async function portInUse(port: number): Promise<boolean> {
 	return await new Promise<boolean>((resolve) => {
 		const srv = createServer()
