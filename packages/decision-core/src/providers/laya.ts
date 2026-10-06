@@ -7,9 +7,14 @@
  * provider, localhost instead of a vendor host.
  *
  * Sidecar contract:
- *   POST <baseUrl>/predict
+ *   POST <baseUrl>/v1/systemone
  *   { state: { kind, text, prompt }, model, questions: { <id>: Question } }
  *   → { answers: { <id>: Answer }, model, latencyMs }
+ *
+ * The sidecar is `laya-serve` (a systemd user service), bound to
+ * 127.0.0.1:8110 by default. The vendor default is 0.0.0.0:8000, but we pin
+ * 8110 to avoid OpenCode's vLLM-discovery collision on 8000. The request shape
+ * is Jev-compatible (POST /v1/systemone) — see providers/jev.ts.
  *
  * Fail-closed: this provider NEVER throws. Any transport/parse/HTTP failure
  * returns { label:'review', action:'review', degraded:true }.
@@ -32,7 +37,7 @@ import type {
 } from '@align/shared-types'
 
 export interface LayaProviderOpts {
-	/** Sidecar base URL. Default http://127.0.0.1:8787 */
+	/** Sidecar base URL. Default http://127.0.0.1:8110 */
 	baseUrl?: string
 	/** Checkpoint to use. Default 'laya-multilingual' (never the English one on mixed traffic). */
 	model?: string
@@ -48,7 +53,7 @@ export interface LayaProviderOpts {
 	fetchImpl?: typeof fetch
 }
 
-const DEFAULT_BASE_URL = 'http://127.0.0.1:8787'
+const DEFAULT_BASE_URL = 'http://127.0.0.1:8110'
 const DEFAULT_MODEL = 'laya-multilingual'
 /** CPU inference measured at 193-464ms; 1000ms leaves headroom without hanging. */
 const DEFAULT_TIMEOUT_MS = 1000
@@ -121,6 +126,7 @@ function failClosed(
 	reason: string,
 	latencyMs: number,
 	_model: string,
+	failureKind: 'transport' | 'semantic' = 'transport',
 ): DecisionResult {
 	return {
 		label: 'review',
@@ -130,6 +136,7 @@ function failClosed(
 		reasons: [reason],
 		provider: 'laya',
 		degraded: true,
+		failureKind,
 		latencyMs,
 	}
 }
@@ -183,7 +190,7 @@ export class LayaProvider implements DecisionProvider {
 
 		let response: Response
 		try {
-			response = await this.fetchImpl(`${this.baseUrl}/predict`, {
+			response = await this.fetchImpl(`${this.baseUrl}/v1/systemone`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(body),
@@ -271,6 +278,10 @@ export class LayaProvider implements DecisionProvider {
 			reasons,
 			provider: 'laya',
 			degraded,
+			// A well-formed HTTP 200 whose answer we cannot use is a SEMANTIC
+			// failure: it must fail closed to review and must NOT advance the
+			// fallback chain (KS-LAYA §B.2 — confidence fallback deferred).
+			...(degraded ? { failureKind: 'semantic' as const } : {}),
 			latencyMs: Date.now() - started,
 		}
 	}

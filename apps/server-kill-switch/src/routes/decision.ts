@@ -9,9 +9,17 @@
  * Never returns the api key or any upstream error body.
  */
 
-import { decideWithProvider, type ProviderRegistry } from '@align/decision-core'
+import {
+	decideWithProvider,
+	type DecideWithProviderOpts,
+	type ProviderRegistry,
+} from '@align/decision-core'
 import type { DecisionFlagReader, DecisionInput } from '@align/shared-types'
-import { buildServerRegistry, readDecisionFlags } from '../services/decision'
+import {
+	buildDecisionOpts,
+	buildServerRegistry,
+	readDecisionFlags,
+} from '../services/decision'
 import { parseBody } from '../utils/body-parser'
 
 const MAX_TEXT_BYTES = 256 * 1024
@@ -20,6 +28,8 @@ const MAX_TEXT_BYTES = 256 * 1024
 export interface DecisionRouteDeps {
 	registry?: ProviderRegistry
 	flagsReader?: (machineId: string) => Promise<DecisionFlagReader>
+	/** Selector options (fallback audit + shadow log). Injectable for tests. */
+	decisionOpts?: (machineId: string) => DecideWithProviderOpts
 }
 
 function json(res: any, statusCode: number, body: Record<string, unknown>) {
@@ -83,7 +93,10 @@ export async function handleDecisionRoutes(
 		const flagsReader = deps?.flagsReader ?? readDecisionFlags
 		const flags = await flagsReader(input.machineId)
 		const registry = deps?.registry ?? buildServerRegistry()
-		const result = await decideWithProvider(input, flags, registry)
+		const decisionOpts =
+			deps?.decisionOpts?.(input.machineId) ??
+			buildDecisionOpts(input.machineId)
+		const result = await decideWithProvider(input, flags, registry, decisionOpts)
 
 		json(res, 200, result as unknown as Record<string, unknown>)
 		return true

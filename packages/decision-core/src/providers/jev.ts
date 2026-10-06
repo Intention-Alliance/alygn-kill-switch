@@ -41,6 +41,7 @@ function failClosed(
 	reason: string,
 	latencyMs: number,
 	_model: string,
+	failureKind: 'transport' | 'semantic' = 'transport',
 ): DecisionResult {
 	return {
 		label: 'review',
@@ -50,6 +51,7 @@ function failClosed(
 		reasons: [reason],
 		provider: 'jev',
 		degraded: true,
+		failureKind,
 		latencyMs,
 	}
 }
@@ -202,6 +204,9 @@ export class JevProvider implements DecisionProvider {
 			reasons,
 			provider: 'jev',
 			degraded,
+			// Well-formed 200 with an unusable answer → semantic failure: fail
+			// closed to review, never advance the fallback chain (KS-LAYA §B.2).
+			...(degraded ? { failureKind: 'semantic' as const } : {}),
 			latencyMs: Date.now() - started,
 		}
 	}

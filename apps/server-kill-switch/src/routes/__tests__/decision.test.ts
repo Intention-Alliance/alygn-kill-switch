@@ -195,3 +195,63 @@ describe('handleDecisionRoutes', () => {
 		expect(res.body).not.toContain('typesafe')
 	})
 })
+
+describe('handleDecisionRoutes — fallback visibility (KS-LAYA §B.2)', () => {
+	it('a fallback that answers → degraded + fallbackFrom + onFallback', async () => {
+		const registry = new ProviderRegistry()
+		registry.register({
+			name: 'laya' as any,
+			decide: async () => ({
+				label: 'review',
+				score: 0.5,
+				confidence: 0,
+				action: 'review',
+				reasons: ['laya: sidecar unreachable'],
+				provider: 'laya',
+				degraded: true,
+				failureKind: 'transport' as const,
+				latencyMs: 1,
+			}),
+		})
+		registry.register({
+			name: 'jev' as any,
+			decide: async () => ({
+				label: 'unsafe',
+				score: 0.9,
+				confidence: 0.9,
+				action: 'block',
+				reasons: [],
+				provider: 'jev',
+				degraded: false,
+				latencyMs: 1,
+			}),
+		})
+		const fallbacks: any[] = []
+		const res = mockRes()
+		await handleDecisionRoutes(
+			'POST',
+			'/v1/decision',
+			mockReq({ kind: 'prompt', text: 'x', machineId: 'm1' }),
+			res,
+			'u1',
+			{
+				registry,
+				flagsReader: async (): Promise<DecisionFlagReader> => ({
+					getFlag: (k: string) =>
+						k === 'decision.laya.ready' ? true : null,
+				}),
+				decisionOpts: () => ({
+					onFallback: (info) => void fallbacks.push(info),
+				}),
+			},
+		)
+		expect(res.statusCode).toBe(200)
+		const body = parsed(res)
+		expect(body.provider).toBe('jev')
+		expect(body.degraded).toBe(true)
+		expect(body.action).toBe('review')
+		expect(body.fallbackFrom).toBe('laya')
+		expect(fallbacks.length).toBe(1)
+		expect(fallbacks[0].answeredBy).toBe('jev')
+	})
+})

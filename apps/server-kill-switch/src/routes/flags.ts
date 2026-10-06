@@ -690,10 +690,26 @@ export async function handleFlagsRoutes(
 
 				// ─── Decision provider flags (S1) ────────────────────────────
 				if (flagKey === 'decision.provider') {
-					const allowed = ['keyword', 'ollama', 'jev', 'dignity']
+					const allowed = ['keyword', 'ollama', 'jev', 'laya', 'dignity']
 					if (!allowed.includes(stored)) {
 						json(res, 400, {
 							error: `decision.provider must be one of: ${allowed.join(', ')}`,
+						})
+						return true
+					}
+				}
+				if (flagKey === 'decision.providerChain') {
+					// Ordered, comma-separated provider names. Empty is valid (code
+					// default). Every non-empty entry must be a known provider.
+					const allowed = ['keyword', 'ollama', 'jev', 'laya', 'dignity']
+					const entries = stored
+						.split(',')
+						.map((s) => s.trim())
+						.filter((s) => s.length > 0)
+					const invalid = entries.filter((s) => !allowed.includes(s))
+					if (invalid.length > 0) {
+						json(res, 400, {
+							error: `decision.providerChain has unknown providers: ${invalid.join(', ')} (allowed: ${allowed.join(', ')})`,
 						})
 						return true
 					}
@@ -721,6 +737,37 @@ export async function handleFlagsRoutes(
 						json(res, 400, {
 							error:
 								'decision.jev.model must be a non-empty string (<=128 chars)',
+						})
+						return true
+					}
+				}
+				if (flagKey === 'decision.laya.baseUrl') {
+					// Empty disables the provider (fail-closed); otherwise a URL.
+					if (stored.trim().length > 0) {
+						try {
+							new URL(stored)
+						} catch {
+							json(res, 400, {
+								error: 'decision.laya.baseUrl must be a valid URL or empty',
+							})
+							return true
+						}
+					}
+				}
+				if (flagKey === 'decision.laya.model') {
+					if (stored.trim().length === 0 || stored.length > 128) {
+						json(res, 400, {
+							error:
+								'decision.laya.model must be a non-empty string (<=128 chars)',
+						})
+						return true
+					}
+				}
+				if (flagKey === 'decision.laya.timeoutMs') {
+					const n = Number(stored)
+					if (!Number.isFinite(n) || n < 50 || n > 30_000) {
+						json(res, 400, {
+							error: 'decision.laya.timeoutMs must be in [50, 30000]',
 						})
 						return true
 					}

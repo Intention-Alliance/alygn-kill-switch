@@ -898,6 +898,35 @@ export function initDatabase(dbPath: string = DB_PATH) {
 		}
 	}
 
+	// ─── Decision shadow log (KS-LAYA §B.5 training-readiness gate) ──────
+	// Laya's shadow decisions while the readiness gate is closed.
+	sqlite.run(`
+    CREATE TABLE IF NOT EXISTS decision_shadow_log (
+      id TEXT PRIMARY KEY,
+      timestamp INTEGER NOT NULL,
+      machine_id TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      served_by TEXT NOT NULL,
+      shadow_label TEXT NOT NULL,
+      shadow_action TEXT NOT NULL,
+      shadow_score REAL NOT NULL DEFAULT 0,
+      shadow_confidence REAL NOT NULL DEFAULT 0,
+      shadow_degraded INTEGER NOT NULL DEFAULT 0,
+      live_label TEXT NOT NULL,
+      agreed INTEGER NOT NULL DEFAULT 0,
+      reasons TEXT
+    )
+  `)
+	sqlite.run(
+		`CREATE INDEX IF NOT EXISTS decision_shadow_log_time_idx ON decision_shadow_log(timestamp)`,
+	)
+	sqlite.run(
+		`CREATE INDEX IF NOT EXISTS decision_shadow_log_machine_idx ON decision_shadow_log(machine_id)`,
+	)
+	sqlite.run(
+		`CREATE INDEX IF NOT EXISTS decision_shadow_log_provider_idx ON decision_shadow_log(provider)`,
+	)
+
 	const db = drizzle(sqlite, { schema })
 
 	console.log(`[db] SQLite initialized: ${dbPath} (WAL mode, tables verified)`)

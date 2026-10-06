@@ -836,3 +836,42 @@ export const inferenceLogs = sqliteTable(
 		machineIdx: index('inference_log_machine_idx').on(table.machineId),
 	}),
 )
+
+// ─── Decision Shadow Log (KS-LAYA §B.5 training-readiness gate) ──────────
+// While `decision.laya.ready` is false, Laya runs in shadow mode alongside the
+// live provider: it logs what it WOULD have decided but never serves traffic.
+// The readiness flip is proposable only at >=95% agreement over >=200 shadow
+// decisions (computed from this table). Only Andler flips the gate.
+
+export const decisionShadowLog = sqliteTable(
+	'decision_shadow_log',
+	{
+		id: text('id').primaryKey(),
+		timestamp: integer('timestamp', { mode: 'timestamp' })
+			.notNull()
+			.$defaultFn(() => new Date()),
+		machineId: text('machine_id').notNull(),
+		/** The shadow provider (always 'laya' today). */
+		provider: text('provider').notNull(),
+		/** The provider that actually served the live decision. */
+		servedBy: text('served_by').notNull(),
+		/** What the shadow provider would have decided. */
+		shadowLabel: text('shadow_label').notNull(),
+		shadowAction: text('shadow_action').notNull(),
+		shadowScore: real('shadow_score').notNull().default(0),
+		shadowConfidence: real('shadow_confidence').notNull().default(0),
+		shadowDegraded: integer('shadow_degraded', { mode: 'boolean' })
+			.notNull()
+			.default(false),
+		/** The live decision's label, for agreement computation. */
+		liveLabel: text('live_label').notNull(),
+		/** True when shadowLabel === liveLabel (agreement numerator). */
+		agreed: integer('agreed', { mode: 'boolean' }).notNull().default(false),
+		reasons: text('reasons'), // JSON array string
+	},
+	(table) => ({
+		timeIdx: index('decision_shadow_log_time_idx').on(table.timestamp),
+		machineIdx: index('decision_shadow_log_machine_idx').on(table.machineId),
+		providerIdx: index('decision_shadow_log_provider_idx').on(table.provider),
+	}),
+)

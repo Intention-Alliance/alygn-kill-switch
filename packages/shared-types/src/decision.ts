@@ -43,6 +43,20 @@ export interface DecisionResult {
 	provider: string
 	/** True when the provider was unavailable / timed out / unparseable. */
 	degraded: boolean
+	/**
+	 * Failure classification (KS-LAYA §B.2). `transport` = connect error / 5xx /
+	 * timeout / unparseable — the ONLY class that advances the fallback chain in
+	 * v1. `semantic` = the provider answered but the answer was unusable (e.g. an
+	 * unknown label); it fails closed to review and does NOT fall back
+	 * (confidence-based fallback is deferred — no calibrated threshold yet).
+	 */
+	failureKind?: 'transport' | 'semantic'
+	/**
+	 * When a fallback provider answered because the primary was unavailable, the
+	 * primary provider name (KS-LAYA §B.2 fallback visibility). Absent when the
+	 * primary itself answered.
+	 */
+	fallbackFrom?: string
 	latencyMs: number
 }
 
@@ -59,9 +73,11 @@ export interface DecisionFlagReader {
 /** Canonical flag keys — string literals, kept in sync with flag-definitions.ts. */
 export type DecisionFlagKey =
 	| 'decision.provider'
+	| 'decision.providerChain'
 	| 'decision.jev.model'
 	| 'decision.jev.timeoutMs'
 	| 'decision.laya.baseUrl'
 	| 'decision.laya.model'
 	| 'decision.laya.timeoutMs'
+	| 'decision.laya.ready'
 	| 'decision.review_threshold'
