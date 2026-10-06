@@ -298,9 +298,14 @@ describe('GET /v1/machines/:id/flags — merged view (F2/F3)', () => {
 			'kill.authorization.quorum',
 			'kill.authorization.timeoutMs',
 			'decision.provider',
+			'decision.providerChain',
 			'decision.jev.model',
 			'decision.jev.timeoutMs',
 			'decision.review_threshold',
+			'decision.laya.baseUrl',
+			'decision.laya.model',
+			'decision.laya.timeoutMs',
+			'decision.laya.ready',
 		])
 		// S1 anti-regression: appending decision.* flags must not reorder or drop
 		// the original 8.

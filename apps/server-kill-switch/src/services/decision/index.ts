@@ -7,10 +7,7 @@
  * depend on the verification service's internals.
  */
 
-import type {
-	DecideWithProviderOpts,
-	VerifierLike,
-} from '@align/decision-core'
+import type { DecideWithProviderOpts, VerifierLike } from '@align/decision-core'
 import { buildRegistry, type ProviderRegistry } from '@align/decision-core'
 import { getConfig } from '../../config'
 import { appendAuditEntry } from '../audit-chain'

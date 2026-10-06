@@ -10,8 +10,8 @@
  */
 
 import {
-	decideWithProvider,
 	type DecideWithProviderOpts,
+	decideWithProvider,
 	type ProviderRegistry,
 } from '@align/decision-core'
 import type { DecisionFlagReader, DecisionInput } from '@align/shared-types'
@@ -96,7 +96,12 @@ export async function handleDecisionRoutes(
 		const decisionOpts =
 			deps?.decisionOpts?.(input.machineId) ??
 			buildDecisionOpts(input.machineId)
-		const result = await decideWithProvider(input, flags, registry, decisionOpts)
+		const result = await decideWithProvider(
+			input,
+			flags,
+			registry,
+			decisionOpts,
+		)
 
 		json(res, 200, result as unknown as Record<string, unknown>)
 		return true

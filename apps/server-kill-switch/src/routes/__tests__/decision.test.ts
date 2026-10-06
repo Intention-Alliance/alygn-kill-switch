@@ -237,8 +237,7 @@ describe('handleDecisionRoutes — fallback visibility (KS-LAYA §B.2)', () => {
 			{
 				registry,
 				flagsReader: async (): Promise<DecisionFlagReader> => ({
-					getFlag: (k: string) =>
-						k === 'decision.laya.ready' ? true : null,
+					getFlag: (k: string) => (k === 'decision.laya.ready' ? true : null),
 				}),
 				decisionOpts: () => ({
 					onFallback: (info) => void fallbacks.push(info),

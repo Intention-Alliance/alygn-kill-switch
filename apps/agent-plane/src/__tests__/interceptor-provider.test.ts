@@ -92,6 +92,22 @@ describe('decideInterceptionAsync — parity with the legacy path', () => {
 	})
 })
 
+describe('decideInterceptionAsync — default provider (no flags)', () => {
+	it('no flags → fail closed to review (the repo default `laya` is not registered in agent-plane)', async () => {
+		// agent-plane registers only keyword + remote; the shared default is
+		// `laya`, so the selector fails closed. Intended: it matches production,
+		// where the mother seeds decision.provider='laya' and agent-plane already
+		// fails closed. See the note in interceptor.ts.
+		const reg = new ProviderRegistry()
+		reg.register(stubProvider('keyword', { action: 'forward' }))
+		reg.register(stubProvider('remote', { action: 'forward' }))
+		const r = await decideInterceptionAsync(REQ, 0.7, flags({}), reg, 'm1')
+		expect(r.action).toBe('review')
+		expect(r.degraded).toBe(true)
+		expect(r.scored).toBe(true)
+	})
+})
+
 describe('decideInterceptionAsync — provider selection', () => {
 	it('decision.provider=jev with a stub returning unsafe → block + provider tag', async () => {
 		const f = flags({ 'decision.provider': 'jev' })
