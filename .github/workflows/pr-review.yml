@@ -116,6 +116,7 @@ jobs:
       - name: Dispatch PR Review to Wobblus MCP
         env:
           GH_ACTIONS_PRIVATE_KEY: ${{ secrets.GH_ACTIONS_PRIVATE_KEY }}
+          WEBHOOK_URL: https://webhook.andler.dev/webhook/pr-review
           WEBHOOK_X_KEY: ${{ secrets.WEBHOOK_X_KEY }}
           WEBHOOK_ISSUER: github-actions-kill-switch
           GITHUB_REPOSITORY: ${{ github.repository }}

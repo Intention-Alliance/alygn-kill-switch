@@ -15,7 +15,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run type-check || echo "type-check script not found — please add to package.json"
+      - run: bun run type-check
 
   lint:
     runs-on: blacksmith-2vcpu-ubuntu-2404
@@ -25,7 +25,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run lint || echo "lint script not found"
+      - run: bun run lint
 
   test:
     needs: [type-check]

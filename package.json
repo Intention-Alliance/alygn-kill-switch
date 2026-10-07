@@ -10,6 +10,8 @@
 		"build": "bun --filter '*' build",
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "biome check . --write",
+		"lint": "biome check apps/server-kill-switch/src/db/index.ts apps/server-kill-switch/src/db/schema.ts .github/scripts/pr-review-dispatch.mjs package.json",
+		"type-check": "cd apps/server-kill-switch && bunx tsc --ignoreConfig --noEmit --target ESNext --module Preserve --moduleResolution bundler --strict --skipLibCheck --types bun,node src/db/index.ts src/db/schema.ts",
 		"test": "bun --filter '*' test",
 		"test:challenges": "bun --filter '*' test:challenges",
 		"db:migrate": "cd apps/server-kill-switch && bunx drizzle-kit migrate",
