@@ -35,6 +35,7 @@ function signJwt(privateKeyPem, claims) {
 async function main() {
 	const privateKey = process.env.GH_ACTIONS_PRIVATE_KEY
 	const xKey = process.env.WEBHOOK_X_KEY
+	if (!WEBHOOK_URL) throw new Error('WEBHOOK_URL is not set')
 	if (!privateKey) throw new Error('GH_ACTIONS_PRIVATE_KEY is not set')
 	if (!xKey) throw new Error('WEBHOOK_X_KEY is not set')
 

@@ -38,6 +38,27 @@ function fakeFetch(response: Partial<Response> & { jsonBody?: unknown }) {
 }
 
 describe('LayaProvider — mapping', () => {
+	it('targets the pinned sidecar contract: 127.0.0.1:8110 + POST /v1/systemone', async () => {
+		let seenUrl = ''
+		const p = new LayaProvider({
+			fetchImpl: (async (url: string) => {
+				seenUrl = url
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({
+						answers: {
+							harmful: { noul: 0.01 },
+							category: { choice: 'safe', confidence: 0.9 },
+						},
+					}),
+				} as unknown as Response
+			}) as unknown as typeof fetch,
+		})
+		await p.decide(INPUT)
+		expect(seenUrl).toBe('http://127.0.0.1:8110/v1/systemone')
+	})
+
 	it('maps a safe choice to forward', async () => {
 		const p = new LayaProvider({
 			fetchImpl: fakeFetch({

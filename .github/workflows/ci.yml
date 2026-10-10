@@ -15,7 +15,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run type-check || echo "type-check script not found — please add to package.json"
+      - run: bun --filter @alygn/server-kill-switch type-check
 
   lint:
     runs-on: blacksmith-2vcpu-ubuntu-2404
@@ -25,7 +25,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run lint || echo "lint script not found"
+      - run: bun run format-and-lint
 
   test:
     needs: [type-check]
@@ -40,7 +40,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run test || echo "No tests yet"
+      - run: bun run test
         env:
           REDIS_URL: redis://localhost:6379
 
@@ -53,4 +53,4 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run build || echo "Build script not found"
+      - run: bun run build

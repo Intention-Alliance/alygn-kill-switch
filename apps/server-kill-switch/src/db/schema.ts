@@ -1,21 +1,3 @@
-/**
- * Kill Switch Drizzle SQLite Schema
- *
- * Central schema for:
- *  - Better-Auth v2 tables (user, session, account, verification)
- *  - Kill Switch state persistence
- *  - Audit log (extended with severity, machineId, metadata)
- *  - Feature flags + audit
- *  - Machine inventory (full rebuild)
- *  - Settings persistence (new)
- *  - Per-machine flag overrides (new)
- *  - Per-machine agent registry (new)
- *
- * ADR-121: SQLite over file adapter for durability + crash safety.
- * ADR-122: Drizzle ORM for type-safe queries tied to schema.
- * ADR-133: Kill Switch dashboard rebuild — extended schema.
- */
-
 import {
 	index,
 	integer,
@@ -25,8 +7,6 @@ import {
 	text,
 	uniqueIndex,
 } from 'drizzle-orm/sqlite-core'
-
-// ─── Better-Auth v2 Required Tables ──────────────────────────────────────
 
 export const users = sqliteTable(
 	'user',
@@ -127,8 +107,6 @@ export const verifications = sqliteTable(
 	}),
 )
 
-// ─── Kill Switch State ───────────────────────────────────────────────────
-
 export const killSwitchState = sqliteTable('kill_switch_state', {
 	id: text('id').primaryKey(),
 	state: text('state').notNull().default('ARMED'), // ARMED | RUNNING | STOPPING | STOPPED | LOCKED
@@ -140,8 +118,6 @@ export const killSwitchState = sqliteTable('kill_switch_state', {
 		.notNull()
 		.$defaultFn(() => new Date()),
 })
-
-// ─── Kill Switch Audit Log (Extended — ADR-133) ──────────────────────────
 
 export const killSwitchAuditLog = sqliteTable(
 	'kill_switch_audit_log',
@@ -156,7 +132,6 @@ export const killSwitchAuditLog = sqliteTable(
 		machineId: text('machine_id'),
 		severity: text('severity').notNull().default('info'),
 		metadata: text('metadata'), // JSON string
-		// ─── ADR-140: Immutable Audit Log (hash chain + signatures) ───
 		// prev_hash: sha256 of the previous entry's self_hash (chain link).
 		// self_hash: sha256(canonical_json(entry) + prev_hash) — tamper-evident.
 		// actor_signature: WebAuthn assertion (humans) or HMAC (services).
@@ -184,8 +159,6 @@ export const killSwitchAuditLog = sqliteTable(
 		selfHashIdx: index('ks_audit_self_hash_idx').on(table.selfHash),
 	}),
 )
-
-// ─── Feature Flags ───────────────────────────────────────────────────────
 
 export const featureFlags = sqliteTable(
 	'feature_flag',
@@ -240,8 +213,6 @@ export const flagAuditLog = sqliteTable(
 	}),
 )
 
-// ─── Machines Inventory (Rebuilt — ADR-133) ──────────────────────────────
-
 export const machines = sqliteTable(
 	'machine',
 	{
@@ -271,8 +242,6 @@ export const machines = sqliteTable(
 	}),
 )
 
-// ─── Machine Heartbeat Log (H5.1 — durable heartbeat history) ────────────
-//
 // `machines.last_seen` is the live pointer; this table is the append-only
 // history the dashboard charts. One row per heartbeat tick. Bounded by the
 // `audit_log_retention_days` setting (see services/machine-heartbeat.ts).
@@ -299,8 +268,6 @@ export const machineHeartbeatLog = sqliteTable(
 	}),
 )
 
-// ─── Settings Persistence (New — ADR-133) ────────────────────────────────
-
 export const settings = sqliteTable('setting', {
 	key: text('key').primaryKey(),
 	value: text('value').notNull(),
@@ -308,8 +275,6 @@ export const settings = sqliteTable('setting', {
 		.notNull()
 		.$defaultFn(() => new Date()),
 })
-
-// ─── Per-Machine Flag Overrides (New — ADR-133) ──────────────────────────
 
 export const machineFlags = sqliteTable(
 	'machine_flag',
@@ -328,8 +293,6 @@ export const machineFlags = sqliteTable(
 		flagKeyIdx: index('machine_flag_key_idx').on(table.flagKey),
 	}),
 )
-
-// ─── Secrets Audit Log (S-A1 — persisted audit trail for secret rotations/401s/lockouts) ──
 
 export const secretsAuditLog = sqliteTable(
 	'secrets_audit_log',
@@ -354,8 +317,6 @@ export const secretsAuditLog = sqliteTable(
 	}),
 )
 
-// ─── Per-Machine Agent Registry (New — ADR-133) ──────────────────────────
-
 export const agents = sqliteTable(
 	'agent',
 	{
@@ -377,7 +338,6 @@ export const agents = sqliteTable(
 	}),
 )
 
-// ─── Webhook API Keys (Card 0e2f9fec — DB-backed key management for openclaw-webhook) ──
 //
 // Single source of truth for the M2M keys that authenticate requests to
 // the openclaw-webhook gateway. Replaces the env-var-only model that had
@@ -445,7 +405,6 @@ export const webhookApiKeyAudit = sqliteTable(
 	}),
 )
 
-// ─── AI-Agnostic Discovery (ADR-135) ────────────────────────────────
 //
 // Provisional discovery registry. NOTHING here is authoritative until a
 // human confirms the machine (ADR-135 §5 — NO auto-admission, ADR-138
@@ -548,7 +507,6 @@ export const integrityEvents = sqliteTable(
 	}),
 )
 
-// ─── Onboarding & Multi-Tenant Registration (ADR-138) ───────────────
 //
 // Human-in-the-loop registration: a discovered machine requests
 // registration, a full-privilege admin reviews the discovery report and
@@ -605,7 +563,6 @@ export const rogueDeviceAlerts = sqliteTable(
 	}),
 )
 
-// ─── Human-Signature Kill Authorization (ADR-136) ──────────────────
 //
 // WebAuthn (FIDO2) hardware authenticator credentials. Private keys
 // never leave the authenticator; only the public key is stored here.
@@ -641,7 +598,6 @@ export const webauthnCredentials = sqliteTable(
 	}),
 )
 
-// ─── Kill Authorization Requests (ADR-136 §3) ──────────────────────
 //
 // Quorum workflow state. A request is created when a human initiates a
 // kill (or a quorum-gated policy change) with their WebAuthn signature.
@@ -675,7 +631,6 @@ export const killAuthorizationRequests = sqliteTable(
 	}),
 )
 
-// ─── Webhook Keys (ADR-139) — Per-Org Vault, Per-Machine Scope ────────
 //
 // Webhook API keys authorize AI EXECUTION calls (MCP, org chats, tool
 // invocations). They are structurally SEPARATE from human WebAuthn
@@ -715,7 +670,6 @@ export const webhookKeys = sqliteTable(
 	}),
 )
 
-// ─── First-Access Verification (ADR-139 §4 — semi-rigid) ──────────────
 //
 // Tracks which IP/device has been human-verified for a given key. On
 // first access from a NEW IP/device the call is HELD and a verification
@@ -748,7 +702,6 @@ export const firstAccess = sqliteTable(
 	}),
 )
 
-// ─── Chain Anchors (ADR-140 §6.1 — daily head anchor) ─────────────────
 //
 // One row per day: the daily chain-head hash signed by the server HMAC
 // key. This is the trusted verification point — a verifier with the
@@ -771,7 +724,6 @@ export const chainAnchors = sqliteTable(
 	}),
 )
 
-// ─── Inference Verification Events (KILL-SWITCH-INFERENCE-VERIFICATION-SPEC §e.3) ──
 //
 // Durable review trail for inference verification results. Stores HASHES of
 // prompt/output (not raw content) to keep the audit trail tamper-evident
@@ -805,7 +757,6 @@ export const verificationEvents = sqliteTable(
 	}),
 )
 
-// ─── Inference Log (intercepted requests from agent-plane) ───────────────
 // Each intercepted LLM request reported by the agent-plane interceptor.
 // The dashboard surfaces these as "inference logs".
 
@@ -834,5 +785,43 @@ export const inferenceLogs = sqliteTable(
 	(table) => ({
 		timeIdx: index('inference_log_time_idx').on(table.timestamp),
 		machineIdx: index('inference_log_machine_idx').on(table.machineId),
+	}),
+)
+
+// While `decision.laya.ready` is false, Laya runs in shadow mode alongside the
+// live provider: it logs what it WOULD have decided but never serves traffic.
+// The readiness flip is proposable only at >=95% agreement over >=200 shadow
+// decisions (computed from this table). Only Andler flips the gate.
+
+export const decisionShadowLog = sqliteTable(
+	'decision_shadow_log',
+	{
+		id: text('id').primaryKey(),
+		timestamp: integer('timestamp', { mode: 'timestamp' })
+			.notNull()
+			.$defaultFn(() => new Date()),
+		machineId: text('machine_id').notNull(),
+		/** The shadow provider (always 'laya' today). */
+		provider: text('provider').notNull(),
+		/** The provider that actually served the live decision. */
+		servedBy: text('served_by').notNull(),
+		/** What the shadow provider would have decided. */
+		shadowLabel: text('shadow_label').notNull(),
+		shadowAction: text('shadow_action').notNull(),
+		shadowScore: real('shadow_score').notNull().default(0),
+		shadowConfidence: real('shadow_confidence').notNull().default(0),
+		shadowDegraded: integer('shadow_degraded', { mode: 'boolean' })
+			.notNull()
+			.default(false),
+		/** The live decision's label, for agreement computation. */
+		liveLabel: text('live_label').notNull(),
+		/** True when shadowLabel === liveLabel (agreement numerator). */
+		agreed: integer('agreed', { mode: 'boolean' }).notNull().default(false),
+		reasons: text('reasons'), // JSON array string
+	},
+	(table) => ({
+		timeIdx: index('decision_shadow_log_time_idx').on(table.timestamp),
+		machineIdx: index('decision_shadow_log_machine_idx').on(table.machineId),
+		providerIdx: index('decision_shadow_log_provider_idx').on(table.provider),
 	}),
 )

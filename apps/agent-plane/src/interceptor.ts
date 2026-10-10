@@ -275,9 +275,17 @@ export async function decideInterceptionAsync(
 		getFlag: (key: string) => flags?.getFlag(key) ?? null,
 	}
 
+	// The repo-wide default provider is `laya` (decision-core DEFAULT_PROVIDER,
+	// aligned with the DB default). agent-plane's registry registers only
+	// `keyword` + `remote` — it is a proxy, not the decision plane, and the Laya
+	// sidecar lives on the mother, not the worker. So with no flags (or a failed
+	// flag fetch) the resolved default is an unregistered provider and the
+	// selector fails closed to review. That is intended: it matches production,
+	// where the mother seeds decision.provider='laya' and agent-plane already
+	// fails closed. Asserted in interceptor-provider.test.ts.
 	const providerName = resolveProviderName(flagReader)
 
-	// Default provider → exact legacy path (parity is asserted in tests).
+	// `keyword` (explicitly selected) → exact legacy path (parity asserted).
 	if (providerName === 'keyword')
 		return decideInterception(req, threshold, flags)
 

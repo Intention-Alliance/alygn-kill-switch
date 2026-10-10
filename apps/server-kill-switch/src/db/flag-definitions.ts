@@ -100,9 +100,19 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		type: 'string',
 		defaultValue: 'laya',
 		description:
-			'Decision provider for intercepted traffic: keyword | ollama | jev | dignity. ' +
+			'Decision provider for intercepted traffic: keyword | ollama | jev | laya | dignity. ' +
 			'Unknown or unavailable providers fail closed to review (never silent forward).',
 		order: 9,
+	},
+	{
+		key: 'decision.providerChain',
+		type: 'string',
+		defaultValue: '',
+		description:
+			'Ordered fallback chain (comma-separated provider names). Empty uses the code ' +
+			'default ["laya","jev"]. A fallback that answers is marked degraded and audited ' +
+			'(never silently served). Transport failures only advance the chain.',
+		order: 10,
 	},
 	{
 		key: 'decision.jev.model',
@@ -110,7 +120,7 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		defaultValue: 'jev-latest',
 		description:
 			'TypeSafe System One model id used by the jev provider (default: jev-latest)',
-		order: 10,
+		order: 11,
 	},
 	{
 		key: 'decision.jev.timeoutMs',
@@ -119,7 +129,7 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		description:
 			'Decision budget in ms for a TypeSafe System One call (D2: 500ms). On timeout the ' +
 			'decision fails closed to review with degraded=true (default: 500)',
-		order: 11,
+		order: 12,
 	},
 	{
 		key: 'decision.review_threshold',
@@ -128,17 +138,17 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		description:
 			'Confidence below which a decision is routed to review instead of forward/block ' +
 			'(0-1, default: 0.6)',
-		order: 12,
+		order: 13,
 	},
 	// ─── Laya (open-weights System 1 model, served by a local sidecar) ──
 	{
 		key: 'decision.laya.baseUrl',
 		type: 'string',
-		defaultValue: 'http://127.0.0.1:8787',
+		defaultValue: 'http://127.0.0.1:8110',
 		description:
 			'Base URL of the local Laya sidecar. The laya provider is registered only when ' +
-			'this is set; absent or unreachable fails closed to review (default: http://127.0.0.1:8787)',
-		order: 13,
+			'this is set; absent or unreachable fails closed to review (default: http://127.0.0.1:8110)',
+		order: 14,
 	},
 	{
 		key: 'decision.laya.model',
@@ -147,7 +157,7 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		description:
 			'Laya checkpoint to use. Default laya-multilingual — the English checkpoint ' +
 			'collapses outside English while staying confident (default: laya-multilingual)',
-		order: 14,
+		order: 15,
 	},
 	{
 		key: 'decision.laya.timeoutMs',
@@ -156,7 +166,17 @@ export const PREDEFINED_FLAG_DEFINITIONS: FlagDefinition[] = [
 		description:
 			'Decision budget in ms for a Laya call. CPU inference is 193-464ms, so this is ' +
 			'wider than the Jev budget. On timeout the decision fails closed to review (default: 1000)',
-		order: 15,
+		order: 16,
+	},
+	{
+		key: 'decision.laya.ready',
+		type: 'boolean',
+		defaultValue: false,
+		description:
+			'Training-readiness gate (KS-LAYA §B.5). While false, Laya NEVER serves live ' +
+			'traffic — it runs in shadow mode alongside the live provider. Only Andler flips ' +
+			'this (not an agent); proposable only at >=95% shadow agreement over >=200 decisions.',
+		order: 17,
 	},
 ]
 

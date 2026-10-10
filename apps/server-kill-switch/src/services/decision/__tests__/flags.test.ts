@@ -7,6 +7,7 @@
  */
 
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import path from 'node:path'
 import {
 	featureFlags as realFeatureFlags,
 	machineFlags as realMachineFlags,
@@ -30,8 +31,8 @@ function chainable(rowGetter: () => any) {
 	return chain
 }
 
-// Mock by absolute path — Bun resolves the specifier the same way flags.ts does.
-mock.module('/tmp/jev-flags/apps/server-kill-switch/src/db/index.ts', () => ({
+// Mock by resolved absolute path — Bun resolves the specifier the same way flags.ts does.
+mock.module(path.resolve(__dirname, '../../../db/index.ts'), () => ({
 	db: {
 		select: () => ({
 			from: (table: any) => {
@@ -57,6 +58,15 @@ describe('readDecisionFlags', () => {
 		expect(f.getFlag('decision.jev.timeoutMs')).toBe(500)
 		expect(f.getFlag('decision.review_threshold')).toBe(0.6)
 		expect(f.getFlag('decision.jev.model')).toBe('jev-latest')
+	})
+
+	it('resolves the Laya keys (KS-LAYA) from declared defaults', async () => {
+		const f = await readDecisionFlags('m1')
+		expect(f.getFlag('decision.laya.baseUrl')).toBe('http://127.0.0.1:8110')
+		expect(f.getFlag('decision.laya.model')).toBe('laya-multilingual')
+		expect(f.getFlag('decision.laya.timeoutMs')).toBe(1000)
+		expect(f.getFlag('decision.laya.ready')).toBe(false)
+		expect(f.getFlag('decision.providerChain')).toBe('')
 	})
 
 	it('global row beats the declared default', async () => {

@@ -122,14 +122,18 @@ export const VerificationConfigSchema = z.object({
 
 // ─── Decision Provider (JEV-FEATURE-FLAG-STRATEGY) ──────────────────
 // The TypeSafe key is SERVER-SIDE ONLY. Its absence is a normal state:
-// decision.provider defaults to keyword, and selecting jev without a key
-// fails closed to review. Startup must NOT fail when it is missing.
+// decision.provider defaults to laya (the open-weights System 1 model served
+// by the local sidecar), and selecting jev without a key fails closed to
+// review. Startup must NOT fail when the key is missing.
 export const DecisionConfigSchema = z.object({
 	typesafeApiKey: z.string().default(''),
 	typesafeBaseUrl: z.string().url().default('https://api.typesafe.ai'),
-	// Laya runs in a local Python sidecar (open-weights model). Empty base URL
-	// means the provider is not registered; the selector then fails closed.
-	layaBaseUrl: z.string().default(''),
+	// Laya runs in a local Python sidecar (`laya-serve`, open-weights model).
+	// Defaults to the pinned loopback bind 127.0.0.1:8110 (NOT the vendor
+	// 0.0.0.0:8000, which collides with OpenCode's vLLM discovery). An empty
+	// base URL means the provider is not registered; the selector then fails
+	// closed. Override per host via LAYA_BASE_URL (deployment config).
+	layaBaseUrl: z.string().default('http://127.0.0.1:8110'),
 	layaModel: z.string().default('laya-multilingual'),
 	layaTimeoutMs: z.number().int().min(50).max(30000).default(1000),
 })

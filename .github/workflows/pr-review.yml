@@ -43,11 +43,11 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run ESLint
-        run: bun run lint
+        run: bun run format-and-lint
         continue-on-error: false
 
       - name: Run TypeScript Check
-        run: bun run type-check
+        run: bun --filter @alygn/server-kill-switch type-check
         continue-on-error: false
 
   test:
@@ -116,6 +116,7 @@ jobs:
       - name: Dispatch PR Review to Wobblus MCP
         env:
           GH_ACTIONS_PRIVATE_KEY: ${{ secrets.GH_ACTIONS_PRIVATE_KEY }}
+          WEBHOOK_URL: https://webhook.andler.dev/webhook/request
           WEBHOOK_X_KEY: ${{ secrets.WEBHOOK_X_KEY }}
           WEBHOOK_ISSUER: github-actions-kill-switch
           GITHUB_REPOSITORY: ${{ github.repository }}

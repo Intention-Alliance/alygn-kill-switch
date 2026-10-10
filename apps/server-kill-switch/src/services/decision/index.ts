@@ -7,12 +7,21 @@
  * depend on the verification service's internals.
  */
 
-import type { VerifierLike } from '@align/decision-core'
+import type { DecideWithProviderOpts, VerifierLike } from '@align/decision-core'
 import { buildRegistry, type ProviderRegistry } from '@align/decision-core'
 import { getConfig } from '../../config'
+import { appendAuditEntry } from '../audit-chain'
+import { recordShadowDecision } from './shadow'
 
 // Re-export so consumers import everything from the barrel.
 export { readDecisionFlags } from './flags'
+export {
+	countShadowDecisions,
+	getShadowReadiness,
+	recordShadowDecision,
+	SHADOW_AGREEMENT_THRESHOLD,
+	SHADOW_MIN_DECISIONS,
+} from './shadow'
 
 /** Structural adapter over the existing InferenceVerifier. */
 export function createVerifierLike(): VerifierLike {
@@ -54,4 +63,53 @@ export function buildServerRegistry(opts?: {
 				}
 			: undefined,
 	})
+}
+
+/**
+ * Build the selector options for a decision (KS-LAYA §B.2 + §B.5).
+ *
+ *   - onFallback → an ADR-140 audit-chain entry naming the provider that
+ *     actually answered. Never silently serve from Jev.
+ *   - onShadow   → a decision_shadow_log row while the Laya readiness gate is
+ *     closed (Laya logs what it would have decided; it never serves).
+ *
+ * Both callbacks are best-effort: the selector swallows their errors so a
+ * logging failure can never change a decision.
+ */
+export function buildDecisionOpts(machineId: string): DecideWithProviderOpts {
+	return {
+		onFallback: async (info) => {
+			await appendAuditEntry({
+				userId: 'system:decision',
+				reason: `decision fallback: ${info.primary} unavailable → ${info.answeredBy}`,
+				previousState: info.primary,
+				newState: info.answeredBy,
+				machineId,
+				severity: 'warning',
+				metadata: JSON.stringify({
+					primary: info.primary,
+					answeredBy: info.answeredBy,
+					reason: info.reason,
+				}),
+				plainExplanation:
+					`The primary decision provider "${info.primary}" was unavailable ` +
+					`(${info.reason}); the fallback provider "${info.answeredBy}" answered. ` +
+					`The decision is marked degraded and routed to review.`,
+			})
+		},
+		onShadow: async (info) => {
+			await recordShadowDecision({
+				machineId,
+				provider: info.provider,
+				servedBy: info.servedBy,
+				shadowLabel: info.result.label,
+				shadowAction: info.result.action,
+				shadowScore: info.result.score,
+				shadowConfidence: info.result.confidence,
+				shadowDegraded: info.result.degraded,
+				liveLabel: info.live.label,
+				reasons: info.result.reasons,
+			})
+		},
+	}
 }

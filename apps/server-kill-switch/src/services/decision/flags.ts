@@ -16,9 +16,14 @@ import { featureFlags, machineFlags } from '../../db/schema'
 
 const DECISION_KEYS = [
 	'decision.provider',
+	'decision.providerChain',
 	'decision.jev.model',
 	'decision.jev.timeoutMs',
 	'decision.review_threshold',
+	'decision.laya.baseUrl',
+	'decision.laya.model',
+	'decision.laya.timeoutMs',
+	'decision.laya.ready',
 ] as const
 
 export async function readDecisionFlags(
