@@ -25,6 +25,10 @@ process.env.BETTER_AUTH_SECRET =
 	'test-secret-0123456789abcdef0123456789abcdef'
 process.env.WEBAUTHN_ASSERTION_TOKEN_SECRET =
 	process.env.WEBAUTHN_ASSERTION_TOKEN_SECRET || 'test-assertion-token-secret'
+// ADR-140 §6.2: the audit chain signs with a server HMAC key. Set it here for
+// the same reason the other suites do — the route under test writes audit rows.
+process.env.AUDIT_HMAC_KEY =
+	process.env.AUDIT_HMAC_KEY || 'test-audit-hmac-key-0123456789abcdef'
 
 // ─── In-memory stores ─────────────────────────────────────────────
 
@@ -285,7 +289,28 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => {
 			return cb(dbMock)
 		},
 	}
-	return { db: dbMock }
+	// db/index.ts also exports `sqlite` (the raw bun:sqlite handle), which four
+	// modules import directly (webhook-auth, machines, webhook-keys, audit-chain,
+	// machine-heartbeat). Omitting it makes those imports throw
+	// `SyntaxError: Export named 'sqlite' not found` the moment this file's
+	// process-global module mock is visible to them.
+	const sqliteMock = {
+		run: () => ({ changes: 0, lastInsertRowid: 0 }),
+		query: () => ({ all: () => [], get: () => undefined, run: () => ({}) }),
+		prepare: () => ({
+			all: () => [],
+			get: () => undefined,
+			run: () => ({}),
+			finalize: () => {},
+		}),
+		exec: () => {},
+		close: () => {},
+		transaction:
+			<T>(fn: (...args: unknown[]) => T) =>
+			(...args: unknown[]) =>
+				fn(...args),
+	}
+	return { db: dbMock, sqlite: sqliteMock }
 })
 
 // ─── Mock KillSwitchService ───────────────────────────────────────
