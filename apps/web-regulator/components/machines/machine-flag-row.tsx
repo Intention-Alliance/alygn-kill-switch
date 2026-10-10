@@ -55,9 +55,8 @@ export function MachineFlagRow({
 			: null
 
 	return (
-		<div
-			className="rounded-lg border bg-card p-3 space-y-2"
-			role="group"
+		<fieldset
+			className="rounded-lg border bg-card p-3 space-y-2 w-full"
 			aria-label={flag.key}
 		>
 			<div className="flex items-start justify-between gap-2">
@@ -149,7 +148,7 @@ export function MachineFlagRow({
 					</Button>
 				</div>
 			</div>
-		</div>
+		</fieldset>
 	)
 }
 

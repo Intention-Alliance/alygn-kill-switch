@@ -115,7 +115,8 @@ describe('blockFingerprint / unblockFingerprint', () => {
 		expect(second.unsafeCount).toBe(2)
 		expect(second.reason).toBe('second')
 		// TTL must be extended past the original.
-		expect(second.expiresAt).toBeGreaterThanOrEqual(first?.expiresAt)
+		expect(first).toBeDefined()
+		expect(second.expiresAt).toBeGreaterThanOrEqual(first?.expiresAt ?? 0)
 	})
 
 	it('unblockFingerprint removes the block', () => {

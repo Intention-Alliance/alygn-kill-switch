@@ -285,8 +285,11 @@ export function ApiKeysPageClient({ initial }: Props) {
 											<TableCell>{statusBadge(status)}</TableCell>
 											<TableCell className="text-right">
 												<div
+													role="toolbar"
+													aria-label="Key actions"
 													className="flex items-center justify-end gap-1"
 													onClick={(e) => e.stopPropagation()}
+													onKeyDown={(e) => e.stopPropagation()}
 												>
 													{status === 'active' && (
 														<Button

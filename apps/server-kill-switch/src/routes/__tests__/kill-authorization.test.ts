@@ -240,6 +240,7 @@ mock.module(path.resolve(__dirname, '../../db/index.ts'), () => {
 						// Drizzle insert builders are thenable — `await` executes them.
 						const result: any = {
 							run: execute,
+							// biome-ignore lint/suspicious/noThenProperty: test double emulates Drizzle's thenable insert builder
 							then(resolve: any) {
 								execute()
 								return Promise.resolve(resolve ? resolve(undefined) : undefined)

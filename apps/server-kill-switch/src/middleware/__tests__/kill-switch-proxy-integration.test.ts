@@ -48,7 +48,10 @@ import {
 	resumeInferenceTraffic,
 } from '../../services/traffic-pause'
 import { composeEventReason } from '../../services/verification/verification-event'
-import type { VerificationService } from '../../services/verification/verification-service'
+import type {
+	VerificationContext,
+	VerificationService,
+} from '../../services/verification/verification-service'
 import type { VerificationResult } from '../../services/verification/verifier'
 import {
 	checkInferenceGate,
@@ -102,7 +105,7 @@ function makeScriptedVerifier(
 	})
 	const fakeService: VerificationService = {
 		mode: 'async',
-		handleInferenceRequest: (opts) => {
+		handleInferenceRequest: (opts: VerificationContext) => {
 			calls.push({
 				prompt: opts.prompt,
 				output: opts.output,
@@ -115,7 +118,7 @@ function makeScriptedVerifier(
 				// For our test purposes we return the result so checkInferenceVerification
 				// can branch (we don't actually use it in the integration tests below, but
 				// a sync-mode test could).
-				...(false ? { result: r } : {}),
+				result: r,
 			})
 		},
 	} as unknown as VerificationService
@@ -174,8 +177,15 @@ function makeReq(
  * Returns the gate decision, the verifier calls observed, and the
  * final response written to the client.
  */
+interface FlowBody {
+	prompt: string
+	model?: string
+	stream?: boolean
+	machineId?: string
+}
+
 async function runFlow(opts: {
-	body: object
+	body: FlowBody
 	ip: string
 	headers?: Record<string, string>
 	service: VerificationService
@@ -315,6 +325,7 @@ describe('(a) stream:false generation', () => {
 			},
 		})
 		expect(result.gated).toBe(false)
+		if (!result.relay) throw new Error('expected relay result')
 		expect(result.response?.status).toBe(200)
 		expect(result.response?.body).toContain('Roses are red')
 		// The relay extracted the prompt and the output.
@@ -350,6 +361,7 @@ describe('(b) stream:true generation', () => {
 			},
 		})
 		expect(result.gated).toBe(false)
+		if (!result.relay) throw new Error('expected relay result')
 		expect(result.response?.status).toBe(200)
 		expect(result.response?.body).toContain('Hello')
 		expect(result.response?.body).toContain('!')

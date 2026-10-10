@@ -290,7 +290,8 @@ describe('RegistryScheduler', () => {
 			(p) => JSON.parse(p.msg).type === 'registry-reconciliation',
 		)
 		expect(recon).toBeDefined()
-		const payload = JSON.parse(recon?.msg)
+		if (!recon) throw new Error('expected registry-reconciliation publish')
+		const payload = JSON.parse(recon.msg)
 		expect(payload.payload.offline.some((m: any) => m.id === 'stale-1')).toBe(
 			true,
 		)

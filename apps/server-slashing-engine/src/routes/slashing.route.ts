@@ -1,7 +1,7 @@
-import type { Routes } from "@interfaces/routes.interface";
-import { Router } from "express";
-import { inject, injectable } from "tsyringe";
-import { SlashingController } from "@/controllers/slashing.controller";
+import type { Routes } from '@interfaces/routes.interface'
+import { Router } from 'express'
+import { inject, injectable } from 'tsyringe'
+import { SlashingController } from '@/controllers/slashing.controller'
 
 /**
  * Slashing Webhook Route
@@ -10,11 +10,13 @@ import { SlashingController } from "@/controllers/slashing.controller";
  */
 @injectable()
 export class SlashingRoute implements Routes {
-	public router: Router = Router();
-	public path = "/slashing";
+	public router: Router = Router()
+	public path = '/slashing'
 
-	constructor(@inject(SlashingController) private _slashingController: SlashingController) {
-		this.initializeRoutes();
+	constructor(
+		@inject(SlashingController) private _slashingController: SlashingController,
+	) {
+		this.initializeRoutes()
 	}
 
 	private initializeRoutes() {
@@ -25,16 +27,16 @@ export class SlashingRoute implements Routes {
 		 */
 		this.router.get(this.path, (_req, res) => {
 			res.json({
-				status: "OK",
-				message: "ALYGN Slashing API",
+				status: 'OK',
+				message: 'ALYGN Slashing API',
 				endpoints: {
 					webhook: `${this.path}/webhook`,
 					violations: `${this.path}/violations`,
 					rules: `${this.path}/rules`,
 					test: `${this.path}/test`,
 				},
-			});
-		});
+			})
+		})
 
 		/**
 		 * POST /api/slashing/webhook
@@ -44,7 +46,7 @@ export class SlashingRoute implements Routes {
 		this.router.post(
 			`${this.path}/webhook`,
 			this.slashingController.processWebhook,
-		);
+		)
 
 		/**
 		 * GET /api/slashing/violations
@@ -54,7 +56,7 @@ export class SlashingRoute implements Routes {
 		this.router.get(
 			`${this.path}/violations`,
 			this.slashingController.getRecentViolations,
-		);
+		)
 
 		/**
 		 * GET /api/slashing/rules
@@ -64,16 +66,13 @@ export class SlashingRoute implements Routes {
 		this.router.get(
 			`${this.path}/rules`,
 			this.slashingController.getSlashingRules,
-		);
+		)
 
 		/**
 		 * POST /api/slashing/test
 		 *
 		 * Test endpoint to simulate a violation (development only)
 		 */
-		this.router.post(
-			`${this.path}/test`,
-			this.slashingController.testViolation,
-		);
+		this.router.post(`${this.path}/test`, this.slashingController.testViolation)
 	}
 }
