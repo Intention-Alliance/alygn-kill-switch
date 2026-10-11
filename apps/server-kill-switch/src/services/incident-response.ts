@@ -60,6 +60,8 @@ const authFailures = new Map<string, { count: number; windowStart: number }>()
 class IncidentResponseService {
 	private incidents: Incident[] = []
 	private circuitBreakerOpen = false
+	/** Epoch ms when the circuit breaker last opened; null while closed. */
+	private circuitBreakerOpenedAt: number | null = null
 	private readonly maxIncidents = 100
 
 	/**

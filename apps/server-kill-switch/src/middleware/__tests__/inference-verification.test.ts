@@ -14,6 +14,7 @@
 import { beforeEach, describe, expect, it } from 'bun:test'
 import type {
 	HandleInferenceResult,
+	VerificationContext,
 	VerificationService,
 } from '../../services/verification/verification-service'
 import type { VerificationResult } from '../../services/verification/verifier'
@@ -234,7 +235,7 @@ describe('verifyInferenceOutput (P1-1)', () => {
 	function captureService(): VerificationService {
 		return {
 			mode: 'async',
-			handleInferenceRequest: (opts) => {
+			handleInferenceRequest: (opts: VerificationContext) => {
 				lastHandleCall = {
 					prompt: opts.prompt,
 					output: opts.output,

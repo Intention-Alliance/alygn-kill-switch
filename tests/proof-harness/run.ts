@@ -25,18 +25,18 @@ import {
 	mintAssertionToken,
 	PORT,
 	portInUse,
-	readAuditRows,
 	REDIS_CONTAINER,
 	REDIS_HOST_PORT,
 	REDIS_PORT,
+	readAuditRows,
 	resetChaosState,
 	restoreChaosState,
 	rowToEntry,
 	setupHome,
 	spawnServer,
+	WORKTREE,
 	waitForAdminUser,
 	waitForHealth,
-	WORKTREE,
 } from './lib'
 
 type CheckStatus = 'pass' | 'fail' | 'skip'
@@ -162,8 +162,7 @@ async function main() {
 		// REDIS_URL is mandatory and overrides REDIS_URLS (config/index.ts),
 		// so the server runs standalone against node-1 only — see PROOF.md.
 		REDIS_URL: `redis://127.0.0.1:${REDIS_HOST_PORT}`,
-		REDIS_URLS:
-			`redis://127.0.0.1:${REDIS_HOST_PORT},redis://127.0.0.1:6381,redis://127.0.0.1:6382`,
+		REDIS_URLS: `redis://127.0.0.1:${REDIS_HOST_PORT},redis://127.0.0.1:6381,redis://127.0.0.1:6382`,
 		REDIS_NODE_MAP:
 			'{"redis-node-1:6379":{"host":"127.0.0.1","port":6380},"redis-node-2:6379":{"host":"127.0.0.1","port":6381},"redis-node-3:6379":{"host":"127.0.0.1","port":6382}}',
 		BETTER_AUTH_SECRET: secrets.BETTER_AUTH_SECRET,
@@ -229,11 +228,14 @@ async function main() {
 		const check3 = await checkStopEchoed(secrets, adminId)
 		record(check3)
 
-		const verifyToken = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
-			sub: adminId,
-			cred: 'proof-harness-cred',
-			action: 'audit:verify',
-		})
+		const verifyToken = mintAssertionToken(
+			secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET,
+			{
+				sub: adminId,
+				cred: 'proof-harness-cred',
+				action: 'audit:verify',
+			},
+		)
 		const verifyRes = await http('POST', '/v1/audit/verify', {
 			headers: { authorization: `Assertion ${verifyToken}` },
 			body: {},
@@ -243,8 +245,7 @@ async function main() {
 			body: verifyRes.json,
 			// verifyChain() returns the FIRST mismatch, which may be a different
 			// broken row than the one check 1 names; both are writeAudit() rows.
-			note:
-				'audit_verify.brokenAt is the first mismatch returned by verifyChain() and may be a DIFFERENT broken row than the kill-authorization row named by check 1; both are writeAudit() rows.',
+			note: 'audit_verify.brokenAt is the first mismatch returned by verifyChain() and may be a DIFFERENT broken row than the kill-authorization row named by check 1; both are writeAudit() rows.',
 		}
 		console.log(
 			`[audit/verify] status=${verifyRes.status} body=${JSON.stringify(verifyRes.json)}`,
@@ -326,7 +327,11 @@ async function checkAppend(
 		})
 		const kill = await http('POST', '/v1/kill-authorization/requests', {
 			headers: { authorization: `Assertion ${token}` },
-			body: { target: 'fleet', state: 'STOPPED', reason: 'proof-harness append' },
+			body: {
+				target: 'fleet',
+				state: 'STOPPED',
+				reason: 'proof-harness append',
+			},
 		})
 		evidence.kill_auth_post = { status: kill.status, body: kill.json }
 		if (kill.status !== 200 && kill.status !== 202) {
@@ -365,11 +370,14 @@ async function checkAppend(
 
 		// Control: the transition path writes through appendAuditEntry, so its
 		// row MUST recompute — this isolates the failure to the kill-auth path.
-		const chaosToken = mintAssertionToken(secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET, {
-			sub: 'proof-harness-user',
-			cred: 'proof-harness-cred',
-			action: 'kill:fleet',
-		})
+		const chaosToken = mintAssertionToken(
+			secrets.WEBAUTHN_ASSERTION_TOKEN_SECRET,
+			{
+				sub: 'proof-harness-user',
+				cred: 'proof-harness-cred',
+				action: 'kill:fleet',
+			},
+		)
 		// The action above moved RUNNING → STOPPED, so use the reverse transition.
 		const chaos = await http('POST', '/v1/kill-switch/chaos', {
 			headers: { authorization: `Assertion ${chaosToken}` },
@@ -501,8 +509,11 @@ async function checkMutation(
 				headers: { authorization: `Assertion ${token}` },
 			},
 		]
-		const routeResults: Array<{ method: string; path: string; status: number }> =
-			[]
+		const routeResults: Array<{
+			method: string
+			path: string
+			status: number
+		}> = []
 		for (const a of routeAttempts) {
 			const r = await http(a.method, a.path, {
 				headers: a.headers,
@@ -538,7 +549,8 @@ async function checkMutation(
 			return {
 				name: 'check2_mutation',
 				status: 'fail',
-				detail: 'second read returned a different hash — mutation was effective',
+				detail:
+					'second read returned a different hash — mutation was effective',
 				evidence,
 			}
 		}

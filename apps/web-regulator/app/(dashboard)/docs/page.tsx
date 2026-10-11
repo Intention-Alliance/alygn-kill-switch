@@ -13,7 +13,7 @@ import {
 	Shield,
 	Wrench,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import {
 	FlagResolutionDiagram,
 	StateMachineDiagram,
@@ -32,6 +32,26 @@ import {
 } from '@/components/ui/table'
 import { BRAND_NAME } from '@/lib/branding'
 import { cn } from '@/lib/utils'
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Render a troubleshooting step that may embed an inline `<code>` token.
+ * The source strings are static, developer-authored copy — never user input —
+ * so we render the literal text and style the code token instead of injecting
+ * raw HTML.
+ */
+function renderStep(step: string): ReactNode {
+	const match = step.match(/^(.*?)<code>(.*?)<\/code>(.*)$/)
+	if (!match) return step
+	return (
+		<>
+			{match[1]}
+			<code className="text-xs bg-muted px-1 py-0.5 rounded">{match[2]}</code>
+			{match[3]}
+		</>
+	)
+}
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -286,6 +306,7 @@ function CollapsibleSection({
 	return (
 		<div className="rounded-xl border bg-card">
 			<button
+				type="button"
 				onClick={() => setOpen(!open)}
 				className="flex w-full items-center justify-between p-5 text-left hover:bg-muted/30 transition-colors rounded-t-xl"
 			>
@@ -1104,7 +1125,7 @@ export default function DocsPage() {
 							badge: 'destructive' as const,
 							desc: 'Rate limiting is blocking your requests. The server uses split rate limits: 60 req/min for reads (GET), 10 req/min for writes (POST/PUT/DELETE/PATCH). Heartbeat endpoints are not rate-limited.',
 							steps: [
-								'Check if you&apos;re making too many write requests in a 60-second window. Space out flag changes, machine registrations, and state transitions.',
+								"Check if you're making too many write requests in a 60-second window. Space out flag changes, machine registrations, and state transitions.",
 								'Polling at 5-second intervals is well within the 60/min read limit — but if multiple browser tabs are open, each maintains its own WebSocket/polling connection.',
 								'If using the API directly, implement exponential backoff on 429 responses respecting the Retry-After header.',
 								'Auth endpoints have a separate 5 req/min limit to prevent brute-force attacks.',
@@ -1129,7 +1150,7 @@ export default function DocsPage() {
 							steps: [
 								'Confirm that SQLite persistence is working. Check the server logs for SQLite-related errors.',
 								'Verify the database file exists and has data: the server uses a file-based SQLite database with WAL mode.',
-								'New activations should appear immediately via WebSocket. If they don&apos;t, check the WebSocket connection first.',
+								"New activations should appear immediately via WebSocket. If they don't, check the WebSocket connection first.",
 								'The audit log table is <code>kill_switch_audit_log</code>. Query it directly via SQLite CLI to verify data exists.',
 								'If data exists in SQLite but not in the UI, there may be a deserialization issue — check browser console for JS errors.',
 							],
@@ -1166,7 +1187,7 @@ export default function DocsPage() {
 								</p>
 								<ul className="list-disc ml-5 space-y-1 text-sm text-muted-foreground">
 									{item.steps.map((step, j) => (
-										<li key={j} dangerouslySetInnerHTML={{ __html: step }} />
+										<li key={j}>{renderStep(step)}</li>
 									))}
 								</ul>
 							</div>

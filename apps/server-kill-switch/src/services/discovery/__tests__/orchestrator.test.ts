@@ -275,6 +275,28 @@ class StubProviderRegistry {
 	}
 }
 
+// Deterministic READY fingerprint. The approval path runs the readiness gate
+// (services/readiness.ts, added in b954cf1), which requires >= 4 CPU cores and
+// >= 8192 MiB RAM. Feeding the real host fingerprint (collectHardwareFingerprint)
+// made this test pass locally (4 cores / 15864 MiB) but fail on CI's
+// blacksmith-2vcpu runner with
+// `OnboardingReadinessError: Machine is not ready to arm: cpu_cores, memory`.
+// The subject here is the human-approval flow (ADR-138), not the readiness gate
+// (covered by readiness.test.ts / onboarding.test.ts), so it must not depend on
+// the runner's hardware.
+function readyFingerprint(): HardwareFingerprint {
+	return {
+		cpuModel: 'Test CPU',
+		cpuCores: 8,
+		memoryMb: 16384,
+		gpus: [],
+		diskGb: 100,
+		osRelease: 'Linux 7.0.9',
+		macs: ['aa:bb:cc:dd:ee:ff'],
+		collectedAt: new Date().toISOString(),
+	}
+}
+
 // ─── Tests ──────────────────────────────────────────────────────
 
 let DiscoveryOrchestrator: any
@@ -516,7 +538,7 @@ describe('DiscoveryOrchestrator', () => {
 		await orchestrator.handleHeartbeat({
 			machineId: 'machine-1',
 			hostname: 'worker-01',
-			fingerprint: collectHardwareFingerprint(),
+			fingerprint: readyFingerprint(),
 		})
 
 		const confirmed = await orchestrator.confirmMachine(

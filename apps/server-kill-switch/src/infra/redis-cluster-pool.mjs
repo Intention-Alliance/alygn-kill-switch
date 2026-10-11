@@ -216,18 +216,6 @@ export class RedisPool extends EventEmitter {
 		// No env var set: return null (no mapping needed in bridge mode where
 		// internal Docker hostnames resolve directly via align-network).
 		return null
-		// No env var set: return null (no mapping needed in bridge mode where
-		// internal Docker hostnames resolve directly via align-network).
-		return null
-		// No env var set: return null (no mapping needed in bridge mode where
-		// internal Docker hostnames resolve directly via align-network).
-		return null
-		// No env var set: return null (no mapping needed in bridge mode where
-		// internal Docker hostnames resolve directly via align-network).
-		return null
-		// No env var set: return null (no mapping needed in bridge mode where
-		// internal Docker hostnames resolve directly via align-network).
-		return null
 	}
 
 	/** Initialize cluster connection */
