@@ -396,7 +396,8 @@ export async function handleFlagsRoutes(
 					...updated,
 					value: coerceFlagValue(
 						updated?.value,
-						getFlagType(updated?.key) ?? inferType(String(updated?.value)),
+						getFlagType(updated?.key ?? '') ??
+							inferType(String(updated?.value)),
 					),
 					enabled: !!updated?.enabled,
 				},

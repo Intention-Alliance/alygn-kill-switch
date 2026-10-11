@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 	const auth = await requireAuth(request)
 	if (auth instanceof NextResponse) return auth
 
-	let parsed
+	let parsed: z.infer<typeof bodySchema>
 	try {
 		parsed = bodySchema.parse(await request.json())
 	} catch {

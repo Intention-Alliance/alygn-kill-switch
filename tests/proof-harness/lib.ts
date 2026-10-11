@@ -7,17 +7,17 @@
  * genuine second opinion, not a call into the code under test.
  */
 
+import { Database } from 'bun:sqlite'
 import { createHash, createHmac, randomBytes } from 'node:crypto'
 import {
 	chmodSync,
 	mkdirSync,
-	readFileSync,
 	readdirSync,
+	readFileSync,
 	writeFileSync,
 } from 'node:fs'
 import { createServer } from 'node:net'
 import { join } from 'node:path'
-import { Database } from 'bun:sqlite'
 
 export const WORKTREE = process.cwd()
 export const PORT = Number(process.env.PROOF_PORT ?? 3999)
@@ -177,7 +177,11 @@ export interface HttpResult {
 export async function http(
 	method: string,
 	path: string,
-	opts: { headers?: Record<string, string>; body?: unknown; retries?: number } = {},
+	opts: {
+		headers?: Record<string, string>
+		body?: unknown
+		retries?: number
+	} = {},
 ): Promise<HttpResult> {
 	const headers: Record<string, string> = { ...(opts.headers ?? {}) }
 	let bodyText: string | undefined
@@ -324,12 +328,15 @@ export interface ServerHandle {
 
 export function spawnServer(env: Record<string, string>): ServerHandle {
 	const logs: string[] = []
-	const proc = Bun.spawn(['bun', 'run', 'apps/server-kill-switch/src/index.ts'], {
-		cwd: WORKTREE,
-		env: { ...process.env, ...env },
-		stdout: 'pipe',
-		stderr: 'pipe',
-	})
+	const proc = Bun.spawn(
+		['bun', 'run', 'apps/server-kill-switch/src/index.ts'],
+		{
+			cwd: WORKTREE,
+			env: { ...process.env, ...env },
+			stdout: 'pipe',
+			stderr: 'pipe',
+		},
+	)
 	const pump = async (stream: ReadableStream<Uint8Array> | null) => {
 		if (!stream) return
 		const reader = stream.getReader()

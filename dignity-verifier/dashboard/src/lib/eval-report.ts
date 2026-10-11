@@ -9,6 +9,7 @@
  * (default repo-relative: dignity-verifier/eval/eval-results/).
  */
 
+import type { Dirent } from 'node:fs'
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import type { EvalReport } from './eval-types'
@@ -61,7 +62,7 @@ interface RawReport {
  */
 export async function readNewestEvalReport(): Promise<EvalReport | null> {
 	const resultsDir = evalResultsDir()
-	let entries
+	let entries: Dirent[]
 	try {
 		entries = await readdir(resultsDir, { withFileTypes: true })
 	} catch {

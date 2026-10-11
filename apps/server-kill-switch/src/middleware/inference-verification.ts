@@ -38,6 +38,7 @@
  * flows. The service + verifier are dependency-injected and reusable.
  */
 
+import type { FingerprintSource } from '../services/fingerprint-pause'
 import type { VerificationService } from '../services/verification/verification-service'
 import type { VerificationResult } from '../services/verification/verifier'
 
@@ -76,6 +77,12 @@ export function verifyInferenceOutput(
 		outputTruncated?: boolean
 		/** True when the upstream response was a streaming NDJSON response. */
 		streamMode?: boolean
+		/**
+		 * P1-1: per-request fingerprint source used to derive the fingerprint for
+		 * the scoped halt layer. Threaded through to the service so UNSAFE
+		 * verdicts block ONLY this fingerprint instead of the global STOPPED.
+		 */
+		fingerprintSource?: FingerprintSource
 	},
 	service: VerificationService,
 ): void {
@@ -90,6 +97,9 @@ export function verifyInferenceOutput(
 		// P1-3: thread the truncation flag through so the verification_event
 		// row gets the `output-truncated:streamed-above-256KB-cap` marker.
 		outputTruncated: ctx.outputTruncated,
+		// P1-1: thread the fingerprint source so the service can derive the
+		// request fingerprint and block it on UNSAFE (scoped halt).
+		fingerprintSource: ctx.fingerprintSource,
 	})
 	void handle
 		.then((r) => {

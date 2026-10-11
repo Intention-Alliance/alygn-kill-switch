@@ -306,12 +306,20 @@ describe('KillSwitchService — state machine transitions', () => {
 // ─── getCurrentState ───────────────────────────────────────────
 
 describe('KillSwitchService — getCurrentState', () => {
-	// Scenario 10: Empty Redis returns ARMED
-	it('getCurrentState with empty Redis returns ARMED', async () => {
+	// Scenario 10: Empty Redis returns RUNNING (the documented fallback).
+	//
+	// The source default was deliberately changed ARMED -> RUNNING in commit
+	// 20b7ebd (2026-08-26, "Default state changed from ARMED to RUNNING
+	// (getCurrentState fallback)"), corroborated by seedInitialAuditEntry()
+	// ("System initialized — kill switch running", previousState/newState =
+	// RUNNING) and by the live production state. This assertion was written
+	// 2026-05-18 (dad3d83), before that change, and was never updated — it is
+	// stale. See the commit body for the fail-open/fail-safe review note.
+	it('getCurrentState with empty Redis returns RUNNING', async () => {
 		internalState = null
 		const service = createService()
 		const state = await service.getCurrentState()
-		expect(state).toBe('ARMED')
+		expect(state).toBe('RUNNING')
 	})
 
 	// Scenario 11: Stored state returns it

@@ -120,6 +120,7 @@ mock.module(dbPath, () => {
 				_limit = n
 				return chain
 			},
+			// biome-ignore lint/suspicious/noThenProperty: test double emulates Drizzle's thenable query builder
 			then(resolve: any) {
 				const t = tableName(_table)
 				const eqVal = getEqValue(_cond)
@@ -293,9 +294,9 @@ function makeRes() {
 		writeHead(s: number, h?: Record<string, string>) {
 			this._s = s
 			if (h)
-				Object.entries(h).forEach(
-					([k, v]) => (this._h[k.toLowerCase()] = String(v)),
-				)
+				Object.entries(h).forEach(([k, v]) => {
+					this._h[k.toLowerCase()] = String(v)
+				})
 		},
 		end(d?: string) {
 			this._b = d || ''

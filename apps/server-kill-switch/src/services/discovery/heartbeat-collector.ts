@@ -90,7 +90,7 @@ export class HeartbeatCollector {
 			if (admitted) {
 				await db
 					.update(machines)
-					.set({ monitoringOnly: 1 })
+					.set({ monitoringOnly: true })
 					.where(eq(machines.id, hb.machineId))
 			}
 

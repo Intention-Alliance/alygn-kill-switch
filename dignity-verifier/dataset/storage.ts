@@ -15,6 +15,7 @@
  */
 
 import { createHash } from 'node:crypto'
+import type { Dirent } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import type {
@@ -158,7 +159,7 @@ export async function readDataset(
 	const examples: DatasetExample[] = []
 	for (const subdir of DATASET_SUBDIRS) {
 		const subPath = join(dir, subdir)
-		let entries
+		let entries: Dirent[]
 		try {
 			entries = await readdir(subPath, { withFileTypes: true })
 		} catch {

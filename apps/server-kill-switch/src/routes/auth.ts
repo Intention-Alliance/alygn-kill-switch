@@ -31,7 +31,10 @@ function nodeToWebRequest(req: any, bodyOverride?: string): Request {
 	const headerKeys = Object.keys(req.headers || {})
 	for (const key of headerKeys) {
 		const val = req.headers[key]
-		if (Array.isArray(val)) val.forEach((v: string) => headers.append(key, v))
+		if (Array.isArray(val))
+			val.forEach((v: string) => {
+				headers.append(key, v)
+			})
 		else if (val != null) headers.set(key, val)
 	}
 

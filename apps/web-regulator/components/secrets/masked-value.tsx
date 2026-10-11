@@ -22,6 +22,7 @@ export function MaskedValue({
 }: MaskedValueProps) {
 	return (
 		<span
+			role="img"
 			className={cn('font-mono text-xs tracking-tight', className)}
 			aria-label={`Masked value ending in ${suffix}`}
 		>
