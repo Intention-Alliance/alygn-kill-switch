@@ -83,7 +83,7 @@ describe('S5 — kill-switch route parity', () => {
 		const literal = src.slice(start, src.indexOf('] as const', start))
 		let cursor = -1
 		for (const section of order) {
-			const at = literal.indexOf(`"${section}"`)
+			const at = literal.search(new RegExp(`["']${section}["']`))
 			expect(at).toBeGreaterThan(cursor)
 			cursor = at
 		}
